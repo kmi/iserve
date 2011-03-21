@@ -15,34 +15,34 @@
 
 		<init-param>
 			<param-name>com.sun.jersey.config.property.packages</param-name>
-			<param-value>uk.ac.open.kmi.iserve2.sal.rest;uk.ac.open.kmi.iserve2.discovery.engine;uk.ac.open.kmi.iserve2.discovery.disco</param-value>
+			<param-value>uk.ac.open.kmi.iserve.sal.rest;uk.ac.open.kmi.iserve.discovery.engine;uk.ac.open.kmi.iserve.discovery.disco</param-value>
 		</init-param>
 
 		<init-param>
 			<param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
-			<param-value>uk.ac.open.kmi.iserve2.sal.rest.auth.SecurityFilter</param-value>
+			<param-value>uk.ac.open.kmi.iserve.sal.rest.auth.SecurityFilter</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
 	<servlet>
 		<servlet-name>serviceBrowseService</servlet-name>
-		<servlet-class>uk.ac.open.kmi.iserve2.sal.gwt.server.ServiceBrowseServiceImpl</servlet-class>
+		<servlet-class>uk.ac.open.kmi.iserve.sal.gwt.server.ServiceBrowseServiceImpl</servlet-class>
 	</servlet>
 
 	<servlet>
 		<servlet-name>openid</servlet-name>
-		<servlet-class>uk.ac.open.kmi.iserve2.sal.gwt.server.servlets.OpenIdServlet</servlet-class>
+		<servlet-class>uk.ac.open.kmi.iserve.sal.gwt.server.servlets.OpenIdServlet</servlet-class>
 	</servlet>
 
 	<servlet>
 		<servlet-name>upload</servlet-name>
-		<servlet-class>uk.ac.open.kmi.iserve2.sal.gwt.server.servlets.UploadFileServlet</servlet-class>
+		<servlet-class>uk.ac.open.kmi.iserve.sal.gwt.server.servlets.UploadFileServlet</servlet-class>
 	</servlet>
 
 	<servlet>
 		<servlet-name>download</servlet-name>
-		<servlet-class>uk.ac.open.kmi.iserve2.sal.gwt.server.servlets.DownloadFileServlet</servlet-class>
+		<servlet-class>uk.ac.open.kmi.iserve.sal.gwt.server.servlets.DownloadFileServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
