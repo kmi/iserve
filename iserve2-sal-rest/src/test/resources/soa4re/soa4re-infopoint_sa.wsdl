@@ -1,0 +1,1751 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:sawsdl="http://www.w3.org/ns/sawsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:tns="http://soa4all.eu/webservices/soa4re-inforpoint/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://soa4all.eu/webservices/soa4re-inforpoint/"> 
+  <wsdl:types> 
+    <s:schema elementFormDefault="qualified" targetNamespace="http://soa4all.eu/webservices/soa4re-inforpoint/"> 
+      <s:element name="Ping"> 
+        <s:complexType/> 
+      </s:element> 
+      <s:element name="PingResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="PingResult" type="s:string"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="GetSchoolsInUkByNorthingEasting"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="1" name="northing" type="s:int"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="easting" type="s:int"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="distance" type="s:int"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="schoolType" type="tns:SchoolType"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:simpleType name="SchoolType"> 
+        <s:restriction base="s:string"> 
+          <s:enumeration value="All"/> 
+          <s:enumeration value="Primary"/> 
+          <s:enumeration value="Secondary"/> 
+          <s:enumeration value="PrimaryAndSecondary"/> 
+        </s:restriction> 
+      </s:simpleType> 
+      <s:element name="GetSchoolsInUkByNorthingEastingResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="GetSchoolsInUkByNorthingEastingResult" type="tns:ArrayOfSchool"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:complexType name="ArrayOfSchool"> 
+        <s:sequence> 
+          <s:element maxOccurs="unbounded" minOccurs="0" name="School" nillable="true" type="tns:School"/> 
+        </s:sequence> 
+      </s:complexType> 
+      <s:complexType name="School"> 
+        <s:complexContent mixed="false"> 
+          <s:extension base="tns:SparqlQueryResultEntityBase"> 
+            <s:sequence> 
+              <s:element maxOccurs="1" minOccurs="0" name="SchoolReference" type="s:string"/> 
+              <s:element maxOccurs="1" minOccurs="0" name="PhaseOfEducation" type="s:string"/> 
+              <s:element maxOccurs="1" minOccurs="0" name="SchoolCapacity" type="s:string"/> 
+              <s:element maxOccurs="1" minOccurs="0" name="PupilTeacherRatio" type="s:string"/> 
+              <s:element maxOccurs="1" minOccurs="0" name="WebsiteAddress" type="s:string"/> 
+              <s:element maxOccurs="1" minOccurs="0" name="NumberOfPupils" type="s:string"/> 
+              <s:element maxOccurs="1" minOccurs="0" name="Address1" type="s:string"/> 
+              <s:element maxOccurs="1" minOccurs="0" name="Address2" type="s:string"/> 
+              <s:element maxOccurs="1" minOccurs="0" name="Postcode" type="s:string"/> 
+              <s:element maxOccurs="1" minOccurs="0" name="Town" type="s:string"/> 
+            </s:sequence> 
+          </s:extension> 
+        </s:complexContent> 
+      </s:complexType> 
+      <s:complexType name="SparqlQueryResultEntityBase"> 
+        <s:sequence> 
+          <s:element maxOccurs="1" minOccurs="0" name="Name" type="s:string"/> 
+          <s:element maxOccurs="1" minOccurs="0" name="Latitude" type="s:string"/> 
+          <s:element maxOccurs="1" minOccurs="0" name="Longitude" type="s:string"/> 
+        </s:sequence> 
+      </s:complexType> 
+      <s:element name="GetSchoolsInUkByLatitudeLongitude"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="1" name="latitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="longitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="distance" type="s:int"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="schoolType" type="tns:SchoolType"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="GetSchoolsInUkByLatitudeLongitudeResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="GetSchoolsInUkByLatitudeLongitudeResult" type="tns:ArrayOfSchool"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsis"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="1" name="latitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="longitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="distance" type="s:int"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="schoolType" type="tns:SchoolType"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="sourceEllipsis" type="tns:Ellipsis"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:simpleType name="Ellipsis"> 
+        <s:restriction base="s:string"> 
+          <s:enumeration value="OSGB36"/> 
+          <s:enumeration value="WGS84"/> 
+        </s:restriction> 
+      </s:simpleType> 
+      <s:element name="GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsisResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsisResult" type="tns:ArrayOfSchool"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="GetSchoolInUkWithDetails"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="schoolReference" type="s:string"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="GetSchoolInUkWithDetailsResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="GetSchoolInUkWithDetailsResult" type="tns:School"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="GetNearestCity"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="1" name="latitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="longitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="distance" type="s:double"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="GetNearestCityResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="GetNearestCityResult" type="tns:City"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:complexType name="City"> 
+        <s:complexContent mixed="false"> 
+          <s:extension base="tns:SparqlQueryResultEntityBase"> 
+            <s:sequence> 
+              <s:element maxOccurs="1" minOccurs="0" name="CityReference" type="s:string"/> 
+              <s:element maxOccurs="1" minOccurs="0" name="PopulationTotal" type="s:string"/> 
+              <s:element maxOccurs="1" minOccurs="0" name="Description" type="s:string"/> 
+              <s:element maxOccurs="1" minOccurs="0" name="Thumbnail" type="s:string"/> 
+              <s:element maxOccurs="1" minOccurs="0" name="Depiction" type="s:string"/> 
+            </s:sequence> 
+          </s:extension> 
+        </s:complexContent> 
+      </s:complexType> 
+      <s:element name="GetNearestCityWithDetails"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="1" name="latitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="longitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="distance" type="s:double"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="GetNearestCityWithDetailsResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="GetNearestCityWithDetailsResult" type="tns:City"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="GetBusStopsInUkByLatitudeLongitude"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="1" name="latitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="longitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="distance" type="s:double"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="GetBusStopsInUkByLatitudeLongitudeResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="GetBusStopsInUkByLatitudeLongitudeResult" type="tns:ArrayOfBusStop"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:complexType name="ArrayOfBusStop"> 
+        <s:sequence> 
+          <s:element maxOccurs="unbounded" minOccurs="0" name="BusStop" nillable="true" type="tns:BusStop"/> 
+        </s:sequence> 
+      </s:complexType> 
+      <s:complexType name="BusStop"> 
+        <s:complexContent mixed="false"> 
+          <s:extension base="tns:SparqlQueryResultEntityBase"/> 
+        </s:complexContent> 
+      </s:complexType> 
+      <s:element name="GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsis"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="1" name="latitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="longitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="distance" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="sourceEllipsis" type="tns:Ellipsis"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsisResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsisResult" type="tns:ArrayOfBusStop"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="GetBusStopsInUkByNorthingEasting"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="1" name="northing" type="s:int"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="easting" type="s:int"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="distance" type="s:double"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="GetBusStopsInUkByNorthingEastingResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="GetBusStopsInUkByNorthingEastingResult" type="tns:ArrayOfBusStop"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="GetTrainStationsInUkByLatitudeLongitude"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="1" name="latitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="longitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="distance" type="s:double"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="GetTrainStationsInUkByLatitudeLongitudeResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="GetTrainStationsInUkByLatitudeLongitudeResult" type="tns:ArrayOfTrainStation"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:complexType name="ArrayOfTrainStation"> 
+        <s:sequence> 
+          <s:element maxOccurs="unbounded" minOccurs="0" name="TrainStation" nillable="true" type="tns:TrainStation"/> 
+        </s:sequence> 
+      </s:complexType> 
+      <s:complexType name="TrainStation"> 
+        <s:complexContent mixed="false"> 
+          <s:extension base="tns:SparqlQueryResultEntityBase"/> 
+        </s:complexContent> 
+      </s:complexType> 
+      <s:element name="GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsis"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="1" name="latitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="longitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="distance" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="sourceEllipsis" type="tns:Ellipsis"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsisResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsisResult" type="tns:ArrayOfTrainStation"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="GetTrainStationsInUkByNorthingEasting"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="1" name="northing" type="s:int"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="easting" type="s:int"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="distance" type="s:double"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="GetTrainStationsInUkByNorthingEastingResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="GetTrainStationsInUkByNorthingEastingResult" type="tns:ArrayOfTrainStation"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="ConvertWSG84LatitudeLongitudeToNorthingEasting"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="1" name="latitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="longitude" type="s:double"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="ConvertWSG84LatitudeLongitudeToNorthingEastingResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="ConvertWSG84LatitudeLongitudeToNorthingEastingResult" type="tns:NorthingEasting"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:complexType name="NorthingEasting"> 
+        <s:sequence> 
+          <s:element maxOccurs="1" minOccurs="1" name="Easting" type="s:int"/> 
+          <s:element maxOccurs="1" minOccurs="1" name="Northing" type="s:int"/> 
+        </s:sequence> 
+      </s:complexType> 
+      <s:element name="ConvertOSGB36LatitudeLongitudeToNorthingEasting"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="1" name="latitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="longitude" type="s:double"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="ConvertOSGB36LatitudeLongitudeToNorthingEastingResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="ConvertOSGB36LatitudeLongitudeToNorthingEastingResult" type="tns:NorthingEasting"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="ConvertNorthingEastingToWSG84LatitudeLongitude"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="1" name="northing" type="s:int"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="easting" type="s:int"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="ConvertNorthingEastingToWSG84LatitudeLongitudeResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="ConvertNorthingEastingToWSG84LatitudeLongitudeResult" type="tns:LatitudeLongitude"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:complexType name="LatitudeLongitude"> 
+        <s:sequence> 
+          <s:element maxOccurs="1" minOccurs="1" name="Latitude" type="s:double"/> 
+          <s:element maxOccurs="1" minOccurs="1" name="Longitude" type="s:double"/> 
+        </s:sequence> 
+      </s:complexType> 
+      <s:element name="ConvertNorthingEastingToOSGB36LatitudeLongitude"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="1" name="northing" type="s:int"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="easting" type="s:int"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="ConvertNorthingEastingToOSGB36LatitudeLongitudeResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="ConvertNorthingEastingToOSGB36LatitudeLongitudeResult" type="tns:LatitudeLongitude"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitude"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="1" name="latitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="longitude" type="s:double"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitudeResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitudeResult" type="tns:LatitudeLongitude"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitude"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="1" name="latitude" type="s:double"/> 
+            <s:element maxOccurs="1" minOccurs="1" name="longitude" type="s:double"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitudeResponse"> 
+        <s:complexType> 
+          <s:sequence> 
+            <s:element maxOccurs="1" minOccurs="0" name="ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitudeResult" type="tns:LatitudeLongitude"/> 
+          </s:sequence> 
+        </s:complexType> 
+      </s:element> 
+      <s:element name="string" nillable="true" type="s:string"/> 
+      <s:element name="ArrayOfSchool" nillable="true" type="tns:ArrayOfSchool"/> 
+      <s:element name="School" nillable="true" type="tns:School"/> 
+      <s:element name="City" nillable="true" type="tns:City"/> 
+      <s:element name="ArrayOfBusStop" nillable="true" type="tns:ArrayOfBusStop"/> 
+      <s:element name="ArrayOfTrainStation" nillable="true" type="tns:ArrayOfTrainStation"/> 
+      <s:element name="NorthingEasting" nillable="true" type="tns:NorthingEasting"/> 
+      <s:element name="LatitudeLongitude" nillable="true" type="tns:LatitudeLongitude"/> 
+    </s:schema> 
+  </wsdl:types> 
+  <wsdl:message name="PingSoapIn"> 
+    <wsdl:part element="tns:Ping" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="PingSoapOut"> 
+    <wsdl:part element="tns:PingResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolsInUkByNorthingEastingSoapIn"> 
+    <wsdl:part element="tns:GetSchoolsInUkByNorthingEasting" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolsInUkByNorthingEastingSoapOut"> 
+    <wsdl:part element="tns:GetSchoolsInUkByNorthingEastingResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolsInUkByLatitudeLongitudeSoapIn"> 
+    <wsdl:part element="tns:GetSchoolsInUkByLatitudeLongitude" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolsInUkByLatitudeLongitudeSoapOut"> 
+    <wsdl:part element="tns:GetSchoolsInUkByLatitudeLongitudeResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsisSoapIn"> 
+    <wsdl:part element="tns:GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsis" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsisSoapOut"> 
+    <wsdl:part element="tns:GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsisResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolInUkWithDetailsSoapIn"> 
+    <wsdl:part element="tns:GetSchoolInUkWithDetails" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolInUkWithDetailsSoapOut"> 
+    <wsdl:part element="tns:GetSchoolInUkWithDetailsResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetNearestCitySoapIn"> 
+    <wsdl:part element="tns:GetNearestCity" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetNearestCitySoapOut"> 
+    <wsdl:part element="tns:GetNearestCityResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetNearestCityWithDetailsSoapIn"> 
+    <wsdl:part element="tns:GetNearestCityWithDetails" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetNearestCityWithDetailsSoapOut"> 
+    <wsdl:part element="tns:GetNearestCityWithDetailsResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetBusStopsInUkByLatitudeLongitudeSoapIn"> 
+    <wsdl:part element="tns:GetBusStopsInUkByLatitudeLongitude" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetBusStopsInUkByLatitudeLongitudeSoapOut"> 
+    <wsdl:part element="tns:GetBusStopsInUkByLatitudeLongitudeResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsisSoapIn"> 
+    <wsdl:part element="tns:GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsis" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsisSoapOut"> 
+    <wsdl:part element="tns:GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsisResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetBusStopsInUkByNorthingEastingSoapIn"> 
+    <wsdl:part element="tns:GetBusStopsInUkByNorthingEasting" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetBusStopsInUkByNorthingEastingSoapOut"> 
+    <wsdl:part element="tns:GetBusStopsInUkByNorthingEastingResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetTrainStationsInUkByLatitudeLongitudeSoapIn"> 
+    <wsdl:part element="tns:GetTrainStationsInUkByLatitudeLongitude" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetTrainStationsInUkByLatitudeLongitudeSoapOut"> 
+    <wsdl:part element="tns:GetTrainStationsInUkByLatitudeLongitudeResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsisSoapIn"> 
+    <wsdl:part element="tns:GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsis" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsisSoapOut"> 
+    <wsdl:part element="tns:GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsisResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetTrainStationsInUkByNorthingEastingSoapIn"> 
+    <wsdl:part element="tns:GetTrainStationsInUkByNorthingEasting" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetTrainStationsInUkByNorthingEastingSoapOut"> 
+    <wsdl:part element="tns:GetTrainStationsInUkByNorthingEastingResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertWSG84LatitudeLongitudeToNorthingEastingSoapIn"> 
+    <wsdl:part element="tns:ConvertWSG84LatitudeLongitudeToNorthingEasting" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertWSG84LatitudeLongitudeToNorthingEastingSoapOut"> 
+    <wsdl:part element="tns:ConvertWSG84LatitudeLongitudeToNorthingEastingResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertOSGB36LatitudeLongitudeToNorthingEastingSoapIn"> 
+    <wsdl:part element="tns:ConvertOSGB36LatitudeLongitudeToNorthingEasting" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertOSGB36LatitudeLongitudeToNorthingEastingSoapOut"> 
+    <wsdl:part element="tns:ConvertOSGB36LatitudeLongitudeToNorthingEastingResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertNorthingEastingToWSG84LatitudeLongitudeSoapIn"> 
+    <wsdl:part element="tns:ConvertNorthingEastingToWSG84LatitudeLongitude" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertNorthingEastingToWSG84LatitudeLongitudeSoapOut"> 
+    <wsdl:part element="tns:ConvertNorthingEastingToWSG84LatitudeLongitudeResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertNorthingEastingToOSGB36LatitudeLongitudeSoapIn"> 
+    <wsdl:part element="tns:ConvertNorthingEastingToOSGB36LatitudeLongitude" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertNorthingEastingToOSGB36LatitudeLongitudeSoapOut"> 
+    <wsdl:part element="tns:ConvertNorthingEastingToOSGB36LatitudeLongitudeResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitudeSoapIn"> 
+    <wsdl:part element="tns:ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitude" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitudeSoapOut"> 
+    <wsdl:part element="tns:ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitudeResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitudeSoapIn"> 
+    <wsdl:part element="tns:ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitude" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitudeSoapOut"> 
+    <wsdl:part element="tns:ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitudeResponse" name="parameters"/> 
+  </wsdl:message> 
+  <wsdl:message name="PingHttpGetIn"/> 
+  <wsdl:message name="PingHttpGetOut"> 
+    <wsdl:part element="tns:string" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolsInUkByNorthingEastingHttpGetIn"> 
+    <wsdl:part name="northing" type="s:string"/> 
+    <wsdl:part name="easting" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+    <wsdl:part name="schoolType" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolsInUkByNorthingEastingHttpGetOut"> 
+    <wsdl:part element="tns:ArrayOfSchool" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolsInUkByLatitudeLongitudeHttpGetIn" sawsdl:modelReference="http://people.kmi.open.ac.uk/ning/Ontologies/Location.rdf#Location"> 
+    <wsdl:part name="latitude" type="s:string" sawsdl:modelReference="http://people.kmi.open.ac.uk/ning/Ontologies/Location.rdf#hasLatitude" /> 
+    <wsdl:part name="longitude" type="s:string" sawsdl:modelReference="http://people.kmi.open.ac.uk/ning/Ontologies/Location.rdf#hasLongitude"/> 
+    <wsdl:part name="distance" type="s:string" sawsdl:modelReference="http://people.kmi.open.ac.uk/ning/Ontologies/Location.rdf#hasDistance"/> 
+    <wsdl:part name="schoolType" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolsInUkByLatitudeLongitudeHttpGetOut"> 
+    <wsdl:part element="tns:ArrayOfSchool" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsisHttpGetIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+    <wsdl:part name="schoolType" type="s:string"/> 
+    <wsdl:part name="sourceEllipsis" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsisHttpGetOut"> 
+    <wsdl:part element="tns:ArrayOfSchool" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolInUkWithDetailsHttpGetIn"> 
+    <wsdl:part name="schoolReference" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolInUkWithDetailsHttpGetOut"> 
+    <wsdl:part element="tns:School" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetNearestCityHttpGetIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetNearestCityHttpGetOut"> 
+    <wsdl:part element="tns:City" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetNearestCityWithDetailsHttpGetIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetNearestCityWithDetailsHttpGetOut"> 
+    <wsdl:part element="tns:City" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetBusStopsInUkByLatitudeLongitudeHttpGetIn" sawsdl:modelReference="http://people.kmi.open.ac.uk/ning/Ontologies/Location.rdf#Location"> 
+    <wsdl:part name="latitude" type="s:string" sawsdl:modelReference="http://people.kmi.open.ac.uk/ning/Ontologies/Location.rdf#hasLatitude"/> 
+    <wsdl:part name="longitude" type="s:string" sawsdl:modelReference="http://people.kmi.open.ac.uk/ning/Ontologies/Location.rdf#hasLongitude"/> 
+    <wsdl:part name="distance" type="s:string" sawsdl:modelReference="http://people.kmi.open.ac.uk/ning/Ontologies/Location.rdf#hasDistance"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetBusStopsInUkByLatitudeLongitudeHttpGetOut"> 
+    <wsdl:part element="tns:ArrayOfBusStop" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsisHttpGetIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+    <wsdl:part name="sourceEllipsis" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsisHttpGetOut"> 
+    <wsdl:part element="tns:ArrayOfBusStop" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetBusStopsInUkByNorthingEastingHttpGetIn"> 
+    <wsdl:part name="northing" type="s:string"/> 
+    <wsdl:part name="easting" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetBusStopsInUkByNorthingEastingHttpGetOut"> 
+    <wsdl:part element="tns:ArrayOfBusStop" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetTrainStationsInUkByLatitudeLongitudeHttpGetIn" sawsdl:modelReference="http://people.kmi.open.ac.uk/ning/Ontologies/Location.rdf#Location" > 
+    <wsdl:part name="latitude" type="s:string" sawsdl:modelReference="http://people.kmi.open.ac.uk/ning/Ontologies/Location.rdf#hasLatitude"/> 
+    <wsdl:part name="longitude" type="s:string" sawsdl:modelReference="http://people.kmi.open.ac.uk/ning/Ontologies/Location.rdf#hasLongitude"/> 
+    <wsdl:part name="distance" type="s:string" sawsdl:modelReference="http://people.kmi.open.ac.uk/ning/Ontologies/Location.rdf#hasDistance"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetTrainStationsInUkByLatitudeLongitudeHttpGetOut"> 
+    <wsdl:part element="tns:ArrayOfTrainStation" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsisHttpGetIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+    <wsdl:part name="sourceEllipsis" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsisHttpGetOut"> 
+    <wsdl:part element="tns:ArrayOfTrainStation" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetTrainStationsInUkByNorthingEastingHttpGetIn"> 
+    <wsdl:part name="northing" type="s:string"/> 
+    <wsdl:part name="easting" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetTrainStationsInUkByNorthingEastingHttpGetOut"> 
+    <wsdl:part element="tns:ArrayOfTrainStation" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertWSG84LatitudeLongitudeToNorthingEastingHttpGetIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertWSG84LatitudeLongitudeToNorthingEastingHttpGetOut"> 
+    <wsdl:part element="tns:NorthingEasting" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertOSGB36LatitudeLongitudeToNorthingEastingHttpGetIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertOSGB36LatitudeLongitudeToNorthingEastingHttpGetOut"> 
+    <wsdl:part element="tns:NorthingEasting" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertNorthingEastingToWSG84LatitudeLongitudeHttpGetIn"> 
+    <wsdl:part name="northing" type="s:string"/> 
+    <wsdl:part name="easting" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertNorthingEastingToWSG84LatitudeLongitudeHttpGetOut"> 
+    <wsdl:part element="tns:LatitudeLongitude" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertNorthingEastingToOSGB36LatitudeLongitudeHttpGetIn"> 
+    <wsdl:part name="northing" type="s:string"/> 
+    <wsdl:part name="easting" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertNorthingEastingToOSGB36LatitudeLongitudeHttpGetOut"> 
+    <wsdl:part element="tns:LatitudeLongitude" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitudeHttpGetIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitudeHttpGetOut"> 
+    <wsdl:part element="tns:LatitudeLongitude" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitudeHttpGetIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitudeHttpGetOut"> 
+    <wsdl:part element="tns:LatitudeLongitude" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="PingHttpPostIn"/> 
+  <wsdl:message name="PingHttpPostOut"> 
+    <wsdl:part element="tns:string" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolsInUkByNorthingEastingHttpPostIn"> 
+    <wsdl:part name="northing" type="s:string"/> 
+    <wsdl:part name="easting" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+    <wsdl:part name="schoolType" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolsInUkByNorthingEastingHttpPostOut"> 
+    <wsdl:part element="tns:ArrayOfSchool" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolsInUkByLatitudeLongitudeHttpPostIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+    <wsdl:part name="schoolType" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolsInUkByLatitudeLongitudeHttpPostOut"> 
+    <wsdl:part element="tns:ArrayOfSchool" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsisHttpPostIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+    <wsdl:part name="schoolType" type="s:string"/> 
+    <wsdl:part name="sourceEllipsis" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsisHttpPostOut"> 
+    <wsdl:part element="tns:ArrayOfSchool" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolInUkWithDetailsHttpPostIn"> 
+    <wsdl:part name="schoolReference" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetSchoolInUkWithDetailsHttpPostOut"> 
+    <wsdl:part element="tns:School" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetNearestCityHttpPostIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetNearestCityHttpPostOut"> 
+    <wsdl:part element="tns:City" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetNearestCityWithDetailsHttpPostIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetNearestCityWithDetailsHttpPostOut"> 
+    <wsdl:part element="tns:City" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetBusStopsInUkByLatitudeLongitudeHttpPostIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetBusStopsInUkByLatitudeLongitudeHttpPostOut"> 
+    <wsdl:part element="tns:ArrayOfBusStop" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsisHttpPostIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+    <wsdl:part name="sourceEllipsis" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsisHttpPostOut"> 
+    <wsdl:part element="tns:ArrayOfBusStop" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetBusStopsInUkByNorthingEastingHttpPostIn"> 
+    <wsdl:part name="northing" type="s:string"/> 
+    <wsdl:part name="easting" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetBusStopsInUkByNorthingEastingHttpPostOut"> 
+    <wsdl:part element="tns:ArrayOfBusStop" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetTrainStationsInUkByLatitudeLongitudeHttpPostIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetTrainStationsInUkByLatitudeLongitudeHttpPostOut"> 
+    <wsdl:part element="tns:ArrayOfTrainStation" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsisHttpPostIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+    <wsdl:part name="sourceEllipsis" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsisHttpPostOut"> 
+    <wsdl:part element="tns:ArrayOfTrainStation" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetTrainStationsInUkByNorthingEastingHttpPostIn"> 
+    <wsdl:part name="northing" type="s:string"/> 
+    <wsdl:part name="easting" type="s:string"/> 
+    <wsdl:part name="distance" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="GetTrainStationsInUkByNorthingEastingHttpPostOut"> 
+    <wsdl:part element="tns:ArrayOfTrainStation" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertWSG84LatitudeLongitudeToNorthingEastingHttpPostIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertWSG84LatitudeLongitudeToNorthingEastingHttpPostOut"> 
+    <wsdl:part element="tns:NorthingEasting" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertOSGB36LatitudeLongitudeToNorthingEastingHttpPostIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertOSGB36LatitudeLongitudeToNorthingEastingHttpPostOut"> 
+    <wsdl:part element="tns:NorthingEasting" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertNorthingEastingToWSG84LatitudeLongitudeHttpPostIn"> 
+    <wsdl:part name="northing" type="s:string"/> 
+    <wsdl:part name="easting" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertNorthingEastingToWSG84LatitudeLongitudeHttpPostOut"> 
+    <wsdl:part element="tns:LatitudeLongitude" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertNorthingEastingToOSGB36LatitudeLongitudeHttpPostIn"> 
+    <wsdl:part name="northing" type="s:string"/> 
+    <wsdl:part name="easting" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertNorthingEastingToOSGB36LatitudeLongitudeHttpPostOut"> 
+    <wsdl:part element="tns:LatitudeLongitude" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitudeHttpPostIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitudeHttpPostOut"> 
+    <wsdl:part element="tns:LatitudeLongitude" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitudeHttpPostIn"> 
+    <wsdl:part name="latitude" type="s:string"/> 
+    <wsdl:part name="longitude" type="s:string"/> 
+  </wsdl:message> 
+  <wsdl:message name="ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitudeHttpPostOut"> 
+    <wsdl:part element="tns:LatitudeLongitude" name="Body"/> 
+  </wsdl:message> 
+  <wsdl:portType name="WebServiceSoap"> 
+    <wsdl:operation name="Ping"> 
+      <wsdl:input message="tns:PingSoapIn"/> 
+      <wsdl:output message="tns:PingSoapOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByNorthingEasting"> 
+      <wsdl:input message="tns:GetSchoolsInUkByNorthingEastingSoapIn"/> 
+      <wsdl:output message="tns:GetSchoolsInUkByNorthingEastingSoapOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByLatitudeLongitude"> 
+      <wsdl:input message="tns:GetSchoolsInUkByLatitudeLongitudeSoapIn"/> 
+      <wsdl:output message="tns:GetSchoolsInUkByLatitudeLongitudeSoapOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsis"> 
+      <wsdl:input message="tns:GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsisSoapIn"/> 
+      <wsdl:output message="tns:GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsisSoapOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolInUkWithDetails"> 
+      <wsdl:input message="tns:GetSchoolInUkWithDetailsSoapIn"/> 
+      <wsdl:output message="tns:GetSchoolInUkWithDetailsSoapOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetNearestCity"> 
+      <wsdl:input message="tns:GetNearestCitySoapIn"/> 
+      <wsdl:output message="tns:GetNearestCitySoapOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetNearestCityWithDetails"> 
+      <wsdl:input message="tns:GetNearestCityWithDetailsSoapIn"/> 
+      <wsdl:output message="tns:GetNearestCityWithDetailsSoapOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByLatitudeLongitude"> 
+      <wsdl:input message="tns:GetBusStopsInUkByLatitudeLongitudeSoapIn"/> 
+      <wsdl:output message="tns:GetBusStopsInUkByLatitudeLongitudeSoapOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsis"> 
+      <wsdl:input message="tns:GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsisSoapIn"/> 
+      <wsdl:output message="tns:GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsisSoapOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByNorthingEasting"> 
+      <wsdl:input message="tns:GetBusStopsInUkByNorthingEastingSoapIn"/> 
+      <wsdl:output message="tns:GetBusStopsInUkByNorthingEastingSoapOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByLatitudeLongitude"> 
+      <wsdl:input message="tns:GetTrainStationsInUkByLatitudeLongitudeSoapIn"/> 
+      <wsdl:output message="tns:GetTrainStationsInUkByLatitudeLongitudeSoapOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsis"> 
+      <wsdl:input message="tns:GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsisSoapIn"/> 
+      <wsdl:output message="tns:GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsisSoapOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByNorthingEasting"> 
+      <wsdl:input message="tns:GetTrainStationsInUkByNorthingEastingSoapIn"/> 
+      <wsdl:output message="tns:GetTrainStationsInUkByNorthingEastingSoapOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertWSG84LatitudeLongitudeToNorthingEasting"> 
+      <wsdl:input message="tns:ConvertWSG84LatitudeLongitudeToNorthingEastingSoapIn"/> 
+      <wsdl:output message="tns:ConvertWSG84LatitudeLongitudeToNorthingEastingSoapOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertOSGB36LatitudeLongitudeToNorthingEasting"> 
+      <wsdl:input message="tns:ConvertOSGB36LatitudeLongitudeToNorthingEastingSoapIn"/> 
+      <wsdl:output message="tns:ConvertOSGB36LatitudeLongitudeToNorthingEastingSoapOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertNorthingEastingToWSG84LatitudeLongitude"> 
+      <wsdl:input message="tns:ConvertNorthingEastingToWSG84LatitudeLongitudeSoapIn"/> 
+      <wsdl:output message="tns:ConvertNorthingEastingToWSG84LatitudeLongitudeSoapOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertNorthingEastingToOSGB36LatitudeLongitude"> 
+      <wsdl:input message="tns:ConvertNorthingEastingToOSGB36LatitudeLongitudeSoapIn"/> 
+      <wsdl:output message="tns:ConvertNorthingEastingToOSGB36LatitudeLongitudeSoapOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitude"> 
+      <wsdl:input message="tns:ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitudeSoapIn"/> 
+      <wsdl:output message="tns:ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitudeSoapOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitude"> 
+      <wsdl:input message="tns:ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitudeSoapIn"/> 
+      <wsdl:output message="tns:ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitudeSoapOut"/> 
+    </wsdl:operation> 
+  </wsdl:portType> 
+  <wsdl:portType name="WebServiceHttpGet"> 
+    <wsdl:operation name="Ping"> 
+      <wsdl:input message="tns:PingHttpGetIn"/> 
+      <wsdl:output message="tns:PingHttpGetOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByNorthingEasting" sawsdl:modelReference="http://hanival-projects.at/ontologies/SOA4RE.rdf#SchoolInformation"> 
+      <wsdl:input message="tns:GetSchoolsInUkByNorthingEastingHttpGetIn"/> 
+      <wsdl:output message="tns:GetSchoolsInUkByNorthingEastingHttpGetOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByLatitudeLongitude" sawsdl:modelReference="http://hanival-projects.at/ontologies/SOA4RE.rdf#SchoolInformation"> 
+      <wsdl:input message="tns:GetSchoolsInUkByLatitudeLongitudeHttpGetIn"/> 
+      <wsdl:output message="tns:GetSchoolsInUkByLatitudeLongitudeHttpGetOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsis" sawsdl:modelReference="http://hanival-projects.at/ontologies/SOA4RE.rdf#SchoolInformation"> 
+      <wsdl:input message="tns:GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsisHttpGetIn"/> 
+      <wsdl:output message="tns:GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsisHttpGetOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolInUkWithDetails" sawsdl:modelReference="http://hanival-projects.at/ontologies/SOA4RE.rdf#SchoolInformation"> 
+      <wsdl:input message="tns:GetSchoolInUkWithDetailsHttpGetIn"/> 
+      <wsdl:output message="tns:GetSchoolInUkWithDetailsHttpGetOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetNearestCity"> 
+      <wsdl:input message="tns:GetNearestCityHttpGetIn"/> 
+      <wsdl:output message="tns:GetNearestCityHttpGetOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetNearestCityWithDetails"> 
+      <wsdl:input message="tns:GetNearestCityWithDetailsHttpGetIn"/> 
+      <wsdl:output message="tns:GetNearestCityWithDetailsHttpGetOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByLatitudeLongitude" sawsdl:modelReference="http://hanival-projects.at/ontologies/SOA4RE.rdf#BusInformation"> 
+      <wsdl:input message="tns:GetBusStopsInUkByLatitudeLongitudeHttpGetIn"/> 
+      <wsdl:output message="tns:GetBusStopsInUkByLatitudeLongitudeHttpGetOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsis" sawsdl:modelReference="http://hanival-projects.at/ontologies/SOA4RE.rdf#BusInformation"> 
+      <wsdl:input message="tns:GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsisHttpGetIn"/> 
+      <wsdl:output message="tns:GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsisHttpGetOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByNorthingEasting" sawsdl:modelReference="http://hanival-projects.at/ontologies/SOA4RE.rdf#BusInformation"> 
+      <wsdl:input message="tns:GetBusStopsInUkByNorthingEastingHttpGetIn"/> 
+      <wsdl:output message="tns:GetBusStopsInUkByNorthingEastingHttpGetOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByLatitudeLongitude" sawsdl:modelReference="http://hanival-projects.at/ontologies/SOA4RE.rdf#TrainInformation"> 
+      <wsdl:input message="tns:GetTrainStationsInUkByLatitudeLongitudeHttpGetIn"/> 
+      <wsdl:output message="tns:GetTrainStationsInUkByLatitudeLongitudeHttpGetOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsis" sawsdl:modelReference="http://hanival-projects.at/ontologies/SOA4RE.rdf#TrainInformation"> 
+      <wsdl:input message="tns:GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsisHttpGetIn"/> 
+      <wsdl:output message="tns:GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsisHttpGetOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByNorthingEasting" sawsdl:modelReference="http://hanival-projects.at/ontologies/SOA4RE.rdf#TrainInformation"> 
+      <wsdl:input message="tns:GetTrainStationsInUkByNorthingEastingHttpGetIn"/> 
+      <wsdl:output message="tns:GetTrainStationsInUkByNorthingEastingHttpGetOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertWSG84LatitudeLongitudeToNorthingEasting"> 
+      <wsdl:input message="tns:ConvertWSG84LatitudeLongitudeToNorthingEastingHttpGetIn"/> 
+      <wsdl:output message="tns:ConvertWSG84LatitudeLongitudeToNorthingEastingHttpGetOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertOSGB36LatitudeLongitudeToNorthingEasting"> 
+      <wsdl:input message="tns:ConvertOSGB36LatitudeLongitudeToNorthingEastingHttpGetIn"/> 
+      <wsdl:output message="tns:ConvertOSGB36LatitudeLongitudeToNorthingEastingHttpGetOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertNorthingEastingToWSG84LatitudeLongitude"> 
+      <wsdl:input message="tns:ConvertNorthingEastingToWSG84LatitudeLongitudeHttpGetIn"/> 
+      <wsdl:output message="tns:ConvertNorthingEastingToWSG84LatitudeLongitudeHttpGetOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertNorthingEastingToOSGB36LatitudeLongitude"> 
+      <wsdl:input message="tns:ConvertNorthingEastingToOSGB36LatitudeLongitudeHttpGetIn"/> 
+      <wsdl:output message="tns:ConvertNorthingEastingToOSGB36LatitudeLongitudeHttpGetOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitude"> 
+      <wsdl:input message="tns:ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitudeHttpGetIn"/> 
+      <wsdl:output message="tns:ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitudeHttpGetOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitude"> 
+      <wsdl:input message="tns:ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitudeHttpGetIn"/> 
+      <wsdl:output message="tns:ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitudeHttpGetOut"/> 
+    </wsdl:operation> 
+  </wsdl:portType> 
+  <wsdl:portType name="WebServiceHttpPost"> 
+    <wsdl:operation name="Ping"> 
+      <wsdl:input message="tns:PingHttpPostIn"/> 
+      <wsdl:output message="tns:PingHttpPostOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByNorthingEasting"> 
+      <wsdl:input message="tns:GetSchoolsInUkByNorthingEastingHttpPostIn"/> 
+      <wsdl:output message="tns:GetSchoolsInUkByNorthingEastingHttpPostOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByLatitudeLongitude"> 
+      <wsdl:input message="tns:GetSchoolsInUkByLatitudeLongitudeHttpPostIn"/> 
+      <wsdl:output message="tns:GetSchoolsInUkByLatitudeLongitudeHttpPostOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsis"> 
+      <wsdl:input message="tns:GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsisHttpPostIn"/> 
+      <wsdl:output message="tns:GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsisHttpPostOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolInUkWithDetails"> 
+      <wsdl:input message="tns:GetSchoolInUkWithDetailsHttpPostIn"/> 
+      <wsdl:output message="tns:GetSchoolInUkWithDetailsHttpPostOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetNearestCity"> 
+      <wsdl:input message="tns:GetNearestCityHttpPostIn"/> 
+      <wsdl:output message="tns:GetNearestCityHttpPostOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetNearestCityWithDetails"> 
+      <wsdl:input message="tns:GetNearestCityWithDetailsHttpPostIn"/> 
+      <wsdl:output message="tns:GetNearestCityWithDetailsHttpPostOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByLatitudeLongitude"> 
+      <wsdl:input message="tns:GetBusStopsInUkByLatitudeLongitudeHttpPostIn"/> 
+      <wsdl:output message="tns:GetBusStopsInUkByLatitudeLongitudeHttpPostOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsis"> 
+      <wsdl:input message="tns:GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsisHttpPostIn"/> 
+      <wsdl:output message="tns:GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsisHttpPostOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByNorthingEasting"> 
+      <wsdl:input message="tns:GetBusStopsInUkByNorthingEastingHttpPostIn"/> 
+      <wsdl:output message="tns:GetBusStopsInUkByNorthingEastingHttpPostOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByLatitudeLongitude"> 
+      <wsdl:input message="tns:GetTrainStationsInUkByLatitudeLongitudeHttpPostIn"/> 
+      <wsdl:output message="tns:GetTrainStationsInUkByLatitudeLongitudeHttpPostOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsis"> 
+      <wsdl:input message="tns:GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsisHttpPostIn"/> 
+      <wsdl:output message="tns:GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsisHttpPostOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByNorthingEasting"> 
+      <wsdl:input message="tns:GetTrainStationsInUkByNorthingEastingHttpPostIn"/> 
+      <wsdl:output message="tns:GetTrainStationsInUkByNorthingEastingHttpPostOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertWSG84LatitudeLongitudeToNorthingEasting"> 
+      <wsdl:input message="tns:ConvertWSG84LatitudeLongitudeToNorthingEastingHttpPostIn"/> 
+      <wsdl:output message="tns:ConvertWSG84LatitudeLongitudeToNorthingEastingHttpPostOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertOSGB36LatitudeLongitudeToNorthingEasting"> 
+      <wsdl:input message="tns:ConvertOSGB36LatitudeLongitudeToNorthingEastingHttpPostIn"/> 
+      <wsdl:output message="tns:ConvertOSGB36LatitudeLongitudeToNorthingEastingHttpPostOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertNorthingEastingToWSG84LatitudeLongitude"> 
+      <wsdl:input message="tns:ConvertNorthingEastingToWSG84LatitudeLongitudeHttpPostIn"/> 
+      <wsdl:output message="tns:ConvertNorthingEastingToWSG84LatitudeLongitudeHttpPostOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertNorthingEastingToOSGB36LatitudeLongitude"> 
+      <wsdl:input message="tns:ConvertNorthingEastingToOSGB36LatitudeLongitudeHttpPostIn"/> 
+      <wsdl:output message="tns:ConvertNorthingEastingToOSGB36LatitudeLongitudeHttpPostOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitude"> 
+      <wsdl:input message="tns:ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitudeHttpPostIn"/> 
+      <wsdl:output message="tns:ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitudeHttpPostOut"/> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitude"> 
+      <wsdl:input message="tns:ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitudeHttpPostIn"/> 
+      <wsdl:output message="tns:ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitudeHttpPostOut"/> 
+    </wsdl:operation> 
+  </wsdl:portType> 
+  <wsdl:binding name="WebServiceSoap" type="tns:WebServiceSoap"> 
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/> 
+    <wsdl:operation name="Ping"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/Ping" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByNorthingEasting"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetSchoolsInUkByNorthingEasting" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByLatitudeLongitude"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetSchoolsInUkByLatitudeLongitude" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsis"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsis" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolInUkWithDetails"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetSchoolInUkWithDetails" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetNearestCity"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetNearestCity" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetNearestCityWithDetails"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetNearestCityWithDetails" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByLatitudeLongitude"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetBusStopsInUkByLatitudeLongitude" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsis"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsis" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByNorthingEasting"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetBusStopsInUkByNorthingEasting" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByLatitudeLongitude"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetTrainStationsInUkByLatitudeLongitude" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsis"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsis" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByNorthingEasting"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetTrainStationsInUkByNorthingEasting" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertWSG84LatitudeLongitudeToNorthingEasting"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/ConvertWSG84LatitudeLongitudeToNorthingEasting" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertOSGB36LatitudeLongitudeToNorthingEasting"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/ConvertOSGB36LatitudeLongitudeToNorthingEasting" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertNorthingEastingToWSG84LatitudeLongitude"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/ConvertNorthingEastingToWSG84LatitudeLongitude" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertNorthingEastingToOSGB36LatitudeLongitude"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/ConvertNorthingEastingToOSGB36LatitudeLongitude" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitude"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitude" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitude"> 
+      <soap:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitude" style="document"/> 
+      <wsdl:input> 
+        <soap:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+  </wsdl:binding> 
+  <wsdl:binding name="WebServiceSoap12" type="tns:WebServiceSoap"> 
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http"/> 
+    <wsdl:operation name="Ping"> 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/Ping" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByNorthingEasting"> 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetSchoolsInUkByNorthingEasting" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByLatitudeLongitude"> 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetSchoolsInUkByLatitudeLongitude" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsis"> 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsis" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolInUkWithDetails" sawsdl:modelReference="http://hanival-projects.at/ontologies/SOA4RE.rdf#SchoolInformation"> 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetSchoolInUkWithDetails" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetNearestCity"> 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetNearestCity" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetNearestCityWithDetails"> 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetNearestCityWithDetails" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByLatitudeLongitude" > 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetBusStopsInUkByLatitudeLongitude" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsis" > 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsis" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByNorthingEasting" > 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetBusStopsInUkByNorthingEasting" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByLatitudeLongitude" > 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetTrainStationsInUkByLatitudeLongitude" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsis" > 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsis" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByNorthingEasting" > 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/GetTrainStationsInUkByNorthingEasting" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertWSG84LatitudeLongitudeToNorthingEasting"> 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/ConvertWSG84LatitudeLongitudeToNorthingEasting" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertOSGB36LatitudeLongitudeToNorthingEasting"> 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/ConvertOSGB36LatitudeLongitudeToNorthingEasting" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertNorthingEastingToWSG84LatitudeLongitude"> 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/ConvertNorthingEastingToWSG84LatitudeLongitude" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertNorthingEastingToOSGB36LatitudeLongitude"> 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/ConvertNorthingEastingToOSGB36LatitudeLongitude" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitude"> 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitude" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitude"> 
+      <soap12:operation soapAction="http://soa4all.eu/webservices/soa4re-inforpoint/ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitude" style="document"/> 
+      <wsdl:input> 
+        <soap12:body use="literal"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <soap12:body use="literal"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+  </wsdl:binding> 
+  <wsdl:binding name="WebServiceHttpGet" type="tns:WebServiceHttpGet"> 
+    <http:binding verb="GET"/> 
+    <wsdl:operation name="Ping"> 
+      <http:operation location="/Ping"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByNorthingEasting"> 
+      <http:operation location="/GetSchoolsInUkByNorthingEasting"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByLatitudeLongitude"> 
+      <http:operation location="/GetSchoolsInUkByLatitudeLongitude"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsis"> 
+      <http:operation location="/GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsis"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolInUkWithDetails"> 
+      <http:operation location="/GetSchoolInUkWithDetails"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetNearestCity"> 
+      <http:operation location="/GetNearestCity"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetNearestCityWithDetails"> 
+      <http:operation location="/GetNearestCityWithDetails"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByLatitudeLongitude"> 
+      <http:operation location="/GetBusStopsInUkByLatitudeLongitude"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsis" > 
+      <http:operation location="/GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsis"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByNorthingEasting" > 
+      <http:operation location="/GetBusStopsInUkByNorthingEasting"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByLatitudeLongitude" > 
+      <http:operation location="/GetTrainStationsInUkByLatitudeLongitude"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsis" > 
+      <http:operation location="/GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsis"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByNorthingEasting" > 
+      <http:operation location="/GetTrainStationsInUkByNorthingEasting"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertWSG84LatitudeLongitudeToNorthingEasting"> 
+      <http:operation location="/ConvertWSG84LatitudeLongitudeToNorthingEasting"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertOSGB36LatitudeLongitudeToNorthingEasting"> 
+      <http:operation location="/ConvertOSGB36LatitudeLongitudeToNorthingEasting"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertNorthingEastingToWSG84LatitudeLongitude"> 
+      <http:operation location="/ConvertNorthingEastingToWSG84LatitudeLongitude"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertNorthingEastingToOSGB36LatitudeLongitude"> 
+      <http:operation location="/ConvertNorthingEastingToOSGB36LatitudeLongitude"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitude"> 
+      <http:operation location="/ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitude"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitude"> 
+      <http:operation location="/ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitude"/> 
+      <wsdl:input> 
+        <http:urlEncoded/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+  </wsdl:binding> 
+  <wsdl:binding name="WebServiceHttpPost" type="tns:WebServiceHttpPost"> 
+    <http:binding verb="POST"/> 
+    <wsdl:operation name="Ping"> 
+      <http:operation location="/Ping"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByNorthingEasting" > 
+      <http:operation location="/GetSchoolsInUkByNorthingEasting"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByLatitudeLongitude" > 
+      <http:operation location="/GetSchoolsInUkByLatitudeLongitude"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsis" > 
+      <http:operation location="/GetSchoolsInUkByLatitudeLongitudeWithSourceEllipsis"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetSchoolInUkWithDetails"> 
+      <http:operation location="/GetSchoolInUkWithDetails"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetNearestCity"> 
+      <http:operation location="/GetNearestCity"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetNearestCityWithDetails"> 
+      <http:operation location="/GetNearestCityWithDetails"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByLatitudeLongitude" > 
+      <http:operation location="/GetBusStopsInUkByLatitudeLongitude"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsis" > 
+      <http:operation location="/GetBusStopsInUkByLatitudeLongitudeWithSourceEllipsis"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetBusStopsInUkByNorthingEasting" > 
+      <http:operation location="/GetBusStopsInUkByNorthingEasting"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByLatitudeLongitude" > 
+      <http:operation location="/GetTrainStationsInUkByLatitudeLongitude"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsis" > 
+      <http:operation location="/GetTrainStationsInUkByLatitudeLongitudeWithSourceEllipsis"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="GetTrainStationsInUkByNorthingEasting" > 
+      <http:operation location="/GetTrainStationsInUkByNorthingEasting"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertWSG84LatitudeLongitudeToNorthingEasting"> 
+      <http:operation location="/ConvertWSG84LatitudeLongitudeToNorthingEasting"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertOSGB36LatitudeLongitudeToNorthingEasting"> 
+      <http:operation location="/ConvertOSGB36LatitudeLongitudeToNorthingEasting"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertNorthingEastingToWSG84LatitudeLongitude"> 
+      <http:operation location="/ConvertNorthingEastingToWSG84LatitudeLongitude"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertNorthingEastingToOSGB36LatitudeLongitude"> 
+      <http:operation location="/ConvertNorthingEastingToOSGB36LatitudeLongitude"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitude"> 
+      <http:operation location="/ConvertWGS84LatitudeLongitudeToOSGB36LatitudeLongitude"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+    <wsdl:operation name="ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitude"> 
+      <http:operation location="/ConvertOSGB36LatitudeLongitudeToWGS84LatitudeLongitude"/> 
+      <wsdl:input> 
+        <mime:content type="application/x-www-form-urlencoded"/> 
+      </wsdl:input> 
+      <wsdl:output> 
+        <mime:mimeXml part="Body"/> 
+      </wsdl:output> 
+    </wsdl:operation> 
+  </wsdl:binding> 
+  <wsdl:service name="WebService" sawsdl:modelReference="http://hanival-projects.at/ontologies/SOA4RE.rdf#TransportInformation http://hanival-projects.at/ontologies/SOA4RE.rdf#BusInformation http://hanival-projects.at/ontologies/SOA4RE.rdf#TrainInformation http://hanival-projects.at/ontologies/SOA4RE.rdf#SchoolInformation"> 
+    <wsdl:port binding="tns:WebServiceSoap" name="WebServiceSoap"> 
+      <soap:address location="http://87.213.46.7/soa4re-inforpoint/WebService.asmx"/> 
+    </wsdl:port> 
+    <wsdl:port binding="tns:WebServiceSoap12" name="WebServiceSoap12"> 
+      <soap12:address location="http://87.213.46.7/soa4re-inforpoint/WebService.asmx"/> 
+    </wsdl:port> 
+    <wsdl:port binding="tns:WebServiceHttpGet" name="WebServiceHttpGet"> 
+      <http:address location="http://87.213.46.7/soa4re-inforpoint/WebService.asmx"/> 
+    </wsdl:port> 
+    <wsdl:port binding="tns:WebServiceHttpPost" name="WebServiceHttpPost"> 
+      <http:address location="http://87.213.46.7/soa4re-inforpoint/WebService.asmx"/> 
+    </wsdl:port> 
+  </wsdl:service> 
+</wsdl:definitions> 
+ 

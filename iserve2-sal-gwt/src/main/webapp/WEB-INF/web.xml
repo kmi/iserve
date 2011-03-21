@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+	<context-param>
+		<param-name>config-file</param-name>
+		<param-value>config.properties</param-value>
+	</context-param>
+
+	<!-- Servlets -->
+	<servlet>
+		<servlet-name>serviceBrowseService</servlet-name>
+		<servlet-class>uk.ac.open.kmi.iserve2.sal.gwt.server.ServiceBrowseServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>openid</servlet-name>
+		<servlet-class>uk.ac.open.kmi.iserve2.sal.gwt.server.servlets.OpenIdServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>upload</servlet-name>
+		<servlet-class>uk.ac.open.kmi.iserve2.sal.gwt.server.servlets.UploadFileServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>download</servlet-name>
+		<servlet-class>uk.ac.open.kmi.iserve2.sal.gwt.server.servlets.DownloadFileServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>serviceBrowseService</servlet-name>
+		<url-pattern>/iServeBrowser/browse</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>openid</servlet-name>
+		<url-pattern>/iServeBrowser/CallOpenID</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>upload</servlet-name>
+		<url-pattern>/iServeBrowser/upload</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>download</servlet-name>
+		<url-pattern>/iServeBrowser/download</url-pattern>
+	</servlet-mapping>
+
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>browser.html</welcome-file>
+	</welcome-file-list>
+
+</web-app>

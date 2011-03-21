@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>iserve2-parent</artifactId>
+		<groupId>uk.ac.open.kmi.iserve2</groupId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<groupId>uk.ac.open.kmi.iserve2</groupId>
+	<artifactId>iserve2-discovery-api</artifactId>
+	<version>1.1.0-SNAPSHOT</version>
+
+	<name>iServe2 Discovery Plug-in API</name>
+
+	<developers>
+		<developer>
+			<id>cpedrinaci</id>
+			<name>Carlos Pedrinaci</name>
+			<email>c.pedrinaci-{AT}-open.ac.uk</email>
+			<url>http://people.kmi.open.ac.uk/carlos/</url>
+			<organization>Knowledge Media Institute - The Open University</organization>
+			<organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+		</developer>
+		<developer>
+			<id>dong</id>
+			<name>Dong Liu</name>
+			<email>d.liu-{AT}-open.ac.uk</email>
+			<organization>Knowledge Media Institute - The Open University</organization>
+			<organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+		</developer>
+		<developer>
+			<id>jkopecky</id>
+			<name>Jacek Kopecky</name>
+			<email>j.kopecky-{AT}-open.ac.uk</email>
+			<organization>Knowledge Media Institute - The Open University</organization>
+			<organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+		</developer>
+	</developers>
+	<organization>
+		<name>Knowledge Media Institute - The Open University</name>
+		<url>http://kmi.open.ac.uk</url>
+	</organization>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.5</maven.compiler.source>
+		<maven.compiler.target>1.5</maven.compiler.target>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-core</artifactId>
+			<version>1.5</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.abdera</groupId>
+			<artifactId>abdera-core</artifactId>
+			<version>1.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.abdera</groupId>
+			<artifactId>abdera-parser</artifactId>
+			<version>1.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+</project>
