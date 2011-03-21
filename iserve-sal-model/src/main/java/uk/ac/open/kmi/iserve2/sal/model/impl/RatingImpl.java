@@ -13,9 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.model.impl;
+package uk.ac.open.kmi.iserve.sal.model.impl;
 
-import uk.ac.open.kmi.iserve2.sal.model.review.Rating;
+import uk.ac.open.kmi.iserve.sal.model.review.Rating;
 
 public class RatingImpl extends ReviewImpl implements Rating {
 

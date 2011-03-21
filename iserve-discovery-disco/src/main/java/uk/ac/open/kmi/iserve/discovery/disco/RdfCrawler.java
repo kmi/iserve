@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package uk.ac.open.kmi.iserve2.discovery.disco;
+package uk.ac.open.kmi.iserve.discovery.disco;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.RDFS;
 
-import uk.ac.open.kmi.iserve2.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 
 /**
  * This class is a parametric tool for crawling for RDF data.

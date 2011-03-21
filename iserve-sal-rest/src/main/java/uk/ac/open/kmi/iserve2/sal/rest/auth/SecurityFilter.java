@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.rest.auth;
+package uk.ac.open.kmi.iserve.sal.rest.auth;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -25,14 +25,14 @@ import javax.ws.rs.core.UriInfo;
 
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve2.sal.exception.UserException;
-import uk.ac.open.kmi.iserve2.sal.manager.UserManager;
-import uk.ac.open.kmi.iserve2.sal.model.oauth.AccessToken;
-import uk.ac.open.kmi.iserve2.sal.model.oauth.Consumer;
-import uk.ac.open.kmi.iserve2.sal.model.user.User;
-import uk.ac.open.kmi.iserve2.sal.rest.Factory;
-import uk.ac.open.kmi.iserve2.sal.rest.auth.oauth.KeyManager;
-import uk.ac.open.kmi.iserve2.sal.util.MD5;
+import uk.ac.open.kmi.iserve.sal.exception.UserException;
+import uk.ac.open.kmi.iserve.sal.manager.UserManager;
+import uk.ac.open.kmi.iserve.sal.model.oauth.AccessToken;
+import uk.ac.open.kmi.iserve.sal.model.oauth.Consumer;
+import uk.ac.open.kmi.iserve.sal.model.user.User;
+import uk.ac.open.kmi.iserve.sal.rest.Factory;
+import uk.ac.open.kmi.iserve.sal.rest.auth.oauth.KeyManager;
+import uk.ac.open.kmi.iserve.sal.util.MD5;
 
 import com.sun.jersey.api.container.MappableContainerException;
 import com.sun.jersey.core.util.Base64;

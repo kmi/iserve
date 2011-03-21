@@ -35,7 +35,7 @@
  * holder.
  */
 
-package uk.ac.open.kmi.iserve2.sal.rest.auth;
+package uk.ac.open.kmi.iserve.sal.rest.auth;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;

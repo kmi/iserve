@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.manager;
+package uk.ac.open.kmi.iserve.sal.manager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,12 +29,12 @@ import org.ontoware.rdf2go.vocabulary.RDF;
 import org.openrdf.rdf2go.RepositoryModel;
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve2.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve2.sal.config.SalConfig;
-import uk.ac.open.kmi.iserve2.sal.exception.TaxonomyException;
-import uk.ac.open.kmi.iserve2.sal.model.impl.CategoryImpl;
-import uk.ac.open.kmi.iserve2.sal.model.impl.URIImpl;
-import uk.ac.open.kmi.iserve2.sal.model.taxonomy.Category;
+import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.sal.config.SalConfig;
+import uk.ac.open.kmi.iserve.sal.exception.TaxonomyException;
+import uk.ac.open.kmi.iserve.sal.model.impl.CategoryImpl;
+import uk.ac.open.kmi.iserve.sal.model.impl.URIImpl;
+import uk.ac.open.kmi.iserve.sal.model.taxonomy.Category;
 
 public class TaxonomyManager extends BaseSemanticManager {
 

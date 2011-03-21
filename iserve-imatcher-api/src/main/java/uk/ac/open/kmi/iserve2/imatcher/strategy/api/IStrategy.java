@@ -5,7 +5,7 @@
  *
  * See LICENSE for more information about licensing and warranties.
  */
-package uk.ac.open.kmi.iserve2.imatcher.strategy.api;
+package uk.ac.open.kmi.iserve.imatcher.strategy.api;
 
 import java.util.List;
 

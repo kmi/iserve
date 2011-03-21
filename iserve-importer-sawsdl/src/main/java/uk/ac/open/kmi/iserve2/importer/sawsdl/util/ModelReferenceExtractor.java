@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.importer.sawsdl.util;
+package uk.ac.open.kmi.iserve.importer.sawsdl.util;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.model.node.URI;
 import org.w3c.dom.NamedNodeMap;
 
-import uk.ac.open.kmi.iserve2.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 
 public class ModelReferenceExtractor {
 

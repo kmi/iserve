@@ -13,11 +13,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.model.service;
+package uk.ac.open.kmi.iserve.sal.model.service;
 
 import java.util.List;
 
-import uk.ac.open.kmi.iserve2.sal.model.common.URI;
+import uk.ac.open.kmi.iserve.sal.model.common.URI;
 
 public interface MessageContent extends MessagePart {
 

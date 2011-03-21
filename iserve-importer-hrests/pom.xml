@@ -4,14 +4,14 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>iserve2-parent</artifactId>
-		<groupId>uk.ac.open.kmi.iserve2</groupId>
+		<artifactId>iserve-parent</artifactId>
+		<groupId>uk.ac.open.kmi.iserve</groupId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<groupId>uk.ac.open.kmi.iserve2</groupId>
-	<artifactId>iserve2-importer-hrests</artifactId>
+	<groupId>uk.ac.open.kmi.iserve</groupId>
+	<artifactId>iserve-importer-hrests</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
-	<name>iServe2 hRESTS Importer</name>
+	<name>iserve hRESTS Importer</name>
 
 	<developers>
 		<developer>
@@ -50,8 +50,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>uk.ac.open.kmi.iserve2</groupId>
-			<artifactId>iserve2-importer-api</artifactId>
+			<groupId>uk.ac.open.kmi.iserve</groupId>
+			<artifactId>iserve-importer-api</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 	    <dependency>

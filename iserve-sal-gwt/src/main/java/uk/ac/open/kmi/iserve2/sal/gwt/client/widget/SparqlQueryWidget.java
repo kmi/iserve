@@ -13,11 +13,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.gwt.client.widget;
+package uk.ac.open.kmi.iserve.sal.gwt.client.widget;
 
-import uk.ac.open.kmi.iserve2.sal.gwt.client.ServiceBrowseServiceAsync;
-import uk.ac.open.kmi.iserve2.sal.gwt.model.StringModel;
-import uk.ac.open.kmi.iserve2.sal.model.query.QueryResult;
+import uk.ac.open.kmi.iserve.sal.gwt.client.ServiceBrowseServiceAsync;
+import uk.ac.open.kmi.iserve.sal.gwt.model.StringModel;
+import uk.ac.open.kmi.iserve.sal.model.query.QueryResult;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;

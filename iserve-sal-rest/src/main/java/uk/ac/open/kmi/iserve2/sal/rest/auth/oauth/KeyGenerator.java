@@ -1,10 +1,10 @@
-package uk.ac.open.kmi.iserve2.sal.rest.auth.oauth;
+package uk.ac.open.kmi.iserve.sal.rest.auth.oauth;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 import java.util.UUID;
 
-import uk.ac.open.kmi.iserve2.sal.util.MD5;
+import uk.ac.open.kmi.iserve.sal.util.MD5;
 
 public class KeyGenerator {
 

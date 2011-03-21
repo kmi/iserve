@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.iserve2.sal.rest;
+package uk.ac.open.kmi.iserve.sal.rest;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -8,7 +8,7 @@ import java.net.URISyntaxException;
 
 import javax.ws.rs.core.MediaType;
 
-import uk.ac.open.kmi.iserve2.commons.io.IOUtil;
+import uk.ac.open.kmi.iserve.commons.io.IOUtil;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -22,14 +22,14 @@ import com.sun.jersey.oauth.signature.OAuthSecrets;
 public class OAuthClientTest {
 
 	// base URL for the API calls
-	private static final String URL_API = "http://localhost:8083/iserve2/resource/services";
+	private static final String URL_API = "http://localhost:8083/iserve/resource/services";
 
-	private static final String URL_REQUEST_TOKEN = "http://localhost:8080/iserve2/oauth/request_token";
+	private static final String URL_REQUEST_TOKEN = "http://localhost:8080/iserve/oauth/request_token";
 	// authorization URL
-	private static final String URL_AUTHORIZE = "http://localhost:8080/iserve2/oauth/authorize";
+	private static final String URL_AUTHORIZE = "http://localhost:8080/iserve/oauth/authorize";
 
 	// access token URL
-	private static final String URL_ACCESS_TOKEN = "http://localhost:8083/iserve2/oauth/access_token";
+	private static final String URL_ACCESS_TOKEN = "http://localhost:8083/iserve/oauth/access_token";
 
 	private static final String CONSUMER_KEY = "27d02ae0d5288ec91438e70f6f39a674";
 

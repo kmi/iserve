@@ -13,13 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.manager;
+package uk.ac.open.kmi.iserve.sal.manager;
 
 import org.ontoware.rdf2go.model.Model;
 import org.openrdf.rdf2go.RepositoryModel;
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve2.commons.io.RDFRepositoryConnector;
+import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 
 public class BaseSemanticManager {
 

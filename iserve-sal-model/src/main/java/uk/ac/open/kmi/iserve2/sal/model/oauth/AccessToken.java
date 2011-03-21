@@ -1,6 +1,6 @@
-package uk.ac.open.kmi.iserve2.sal.model.oauth;
+package uk.ac.open.kmi.iserve.sal.model.oauth;
 
-import uk.ac.open.kmi.iserve2.sal.model.common.URI;
+import uk.ac.open.kmi.iserve.sal.model.common.URI;
 
 public interface AccessToken extends Token {
 

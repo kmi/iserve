@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.importer.sawsdl.schema;
+package uk.ac.open.kmi.iserve.importer.sawsdl.schema;
 
 import java.util.List;
 

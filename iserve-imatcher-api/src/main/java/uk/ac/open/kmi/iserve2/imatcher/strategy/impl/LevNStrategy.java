@@ -5,11 +5,11 @@
  *
  * See LICENSE for more information about licensing and warranties.
  */
-package uk.ac.open.kmi.iserve2.imatcher.strategy.impl;
+package uk.ac.open.kmi.iserve.imatcher.strategy.impl;
 
 import java.util.List;
 
-import uk.ac.open.kmi.iserve2.imatcher.strategy.api.AbstractStrategy;
+import uk.ac.open.kmi.iserve.imatcher.strategy.api.AbstractStrategy;
 
 public final class LevNStrategy extends AbstractStrategy {
 

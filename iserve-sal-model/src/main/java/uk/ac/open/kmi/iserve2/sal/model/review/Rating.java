@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.model.review;
+package uk.ac.open.kmi.iserve.sal.model.review;
 
 public interface Rating extends Review {
 

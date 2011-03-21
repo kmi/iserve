@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.discovery.disco;
+package uk.ac.open.kmi.iserve.discovery.disco;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,11 +35,11 @@ import org.ontoware.rdf2go.model.node.Node;
 import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.rdf2go.RepositoryModel;
 
-import uk.ac.open.kmi.iserve2.commons.io.RDFRepositoryConnector;
-import uk.ac.open.kmi.iserve2.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve2.discovery.api.DiscoveryException;
-import uk.ac.open.kmi.iserve2.discovery.api.IServiceDiscoveryPlugin;
-import uk.ac.open.kmi.iserve2.discovery.api.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
+import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
+import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.util.DiscoveryUtil;
 
 public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugin {
 
@@ -84,7 +84,7 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 	/* 
 	 * FIXME: This plugin should probably implement the Ranked plugin interface
 	 * (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve2.discovery.api.IServiceDiscoveryPlugin#discover(javax.ws.rs.core.MultivaluedMap)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin#discover(javax.ws.rs.core.MultivaluedMap)
 	 */
 	public Set<Entry> discover(MultivaluedMap<String, String> parameters) throws DiscoveryException {
 		List<String> classes = parameters.get("class");

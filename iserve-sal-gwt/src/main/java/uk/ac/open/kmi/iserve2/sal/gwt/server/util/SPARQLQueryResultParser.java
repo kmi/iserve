@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.gwt.server.util;
+package uk.ac.open.kmi.iserve.sal.gwt.server.util;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -33,10 +33,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import uk.ac.open.kmi.iserve2.sal.model.impl.QueryResultImpl;
-import uk.ac.open.kmi.iserve2.sal.model.impl.QueryRowImpl;
-import uk.ac.open.kmi.iserve2.sal.model.query.QueryResult;
-import uk.ac.open.kmi.iserve2.sal.model.query.QueryRow;
+import uk.ac.open.kmi.iserve.sal.model.impl.QueryResultImpl;
+import uk.ac.open.kmi.iserve.sal.model.impl.QueryRowImpl;
+import uk.ac.open.kmi.iserve.sal.model.query.QueryResult;
+import uk.ac.open.kmi.iserve.sal.model.query.QueryRow;
 
 public class SPARQLQueryResultParser {
 

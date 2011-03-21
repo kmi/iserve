@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.iserve2.commons.vocabulary;
+package uk.ac.open.kmi.iserve.commons.vocabulary;
 
 import org.ontoware.rdf2go.model.node.URI;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;

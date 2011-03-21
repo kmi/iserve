@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.gwt.server;
+package uk.ac.open.kmi.iserve.sal.gwt.server;
 
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -41,32 +41,32 @@ import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.QueryRow;
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve2.commons.io.URIUtil;
-import uk.ac.open.kmi.iserve2.commons.vocabulary.LOG;
-import uk.ac.open.kmi.iserve2.sal.exception.LogException;
-import uk.ac.open.kmi.iserve2.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve2.sal.exception.TaxonomyException;
-import uk.ac.open.kmi.iserve2.sal.exception.UserException;
-import uk.ac.open.kmi.iserve2.sal.gwt.client.ServiceBrowseService;
-import uk.ac.open.kmi.iserve2.sal.gwt.client.exception.BrowserException;
-import uk.ac.open.kmi.iserve2.sal.gwt.model.ServiceCategoryModel;
-import uk.ac.open.kmi.iserve2.sal.gwt.model.ServiceListModel;
-import uk.ac.open.kmi.iserve2.sal.model.common.URI;
-import uk.ac.open.kmi.iserve2.sal.model.impl.URIImpl;
-import uk.ac.open.kmi.iserve2.sal.model.log.LogItem;
-import uk.ac.open.kmi.iserve2.sal.model.query.QueryResult;
-import uk.ac.open.kmi.iserve2.sal.model.review.Comment;
-import uk.ac.open.kmi.iserve2.sal.model.review.Rating;
-import uk.ac.open.kmi.iserve2.sal.model.service.Service;
-import uk.ac.open.kmi.iserve2.sal.model.user.User;
-import uk.ac.open.kmi.iserve2.sal.gwt.server.servlets.OpenIdServlet;
-import uk.ac.open.kmi.iserve2.sal.gwt.server.util.LufConnector;
-import uk.ac.open.kmi.iserve2.sal.manager.LogManager;
-import uk.ac.open.kmi.iserve2.sal.manager.ServiceManager;
-import uk.ac.open.kmi.iserve2.sal.manager.TaxonomyManager;
-import uk.ac.open.kmi.iserve2.sal.manager.UserManager;
-import uk.ac.open.kmi.iserve2.sal.model.taxonomy.Category;
-import uk.ac.open.kmi.iserve2.sal.util.ModelConverter;
+import uk.ac.open.kmi.iserve.commons.io.URIUtil;
+import uk.ac.open.kmi.iserve.commons.vocabulary.LOG;
+import uk.ac.open.kmi.iserve.sal.exception.LogException;
+import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
+import uk.ac.open.kmi.iserve.sal.exception.TaxonomyException;
+import uk.ac.open.kmi.iserve.sal.exception.UserException;
+import uk.ac.open.kmi.iserve.sal.gwt.client.ServiceBrowseService;
+import uk.ac.open.kmi.iserve.sal.gwt.client.exception.BrowserException;
+import uk.ac.open.kmi.iserve.sal.gwt.model.ServiceCategoryModel;
+import uk.ac.open.kmi.iserve.sal.gwt.model.ServiceListModel;
+import uk.ac.open.kmi.iserve.sal.model.common.URI;
+import uk.ac.open.kmi.iserve.sal.model.impl.URIImpl;
+import uk.ac.open.kmi.iserve.sal.model.log.LogItem;
+import uk.ac.open.kmi.iserve.sal.model.query.QueryResult;
+import uk.ac.open.kmi.iserve.sal.model.review.Comment;
+import uk.ac.open.kmi.iserve.sal.model.review.Rating;
+import uk.ac.open.kmi.iserve.sal.model.service.Service;
+import uk.ac.open.kmi.iserve.sal.model.user.User;
+import uk.ac.open.kmi.iserve.sal.gwt.server.servlets.OpenIdServlet;
+import uk.ac.open.kmi.iserve.sal.gwt.server.util.LufConnector;
+import uk.ac.open.kmi.iserve.sal.manager.LogManager;
+import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.sal.manager.TaxonomyManager;
+import uk.ac.open.kmi.iserve.sal.manager.UserManager;
+import uk.ac.open.kmi.iserve.sal.model.taxonomy.Category;
+import uk.ac.open.kmi.iserve.sal.util.ModelConverter;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;

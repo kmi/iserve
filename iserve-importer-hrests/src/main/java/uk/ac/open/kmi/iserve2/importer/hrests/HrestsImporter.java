@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.importer.hrests;
+package uk.ac.open.kmi.iserve.importer.hrests;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -32,9 +32,9 @@ import org.openrdf.repository.RepositoryException;
 import org.w3c.dom.Document;
 import org.w3c.tidy.Tidy;
 
-import uk.ac.open.kmi.iserve2.importer.ImporterConfig;
-import uk.ac.open.kmi.iserve2.importer.ImporterException;
-import uk.ac.open.kmi.iserve2.importer.ServiceImporter;
+import uk.ac.open.kmi.iserve.importer.ImporterConfig;
+import uk.ac.open.kmi.iserve.importer.ImporterException;
+import uk.ac.open.kmi.iserve.importer.ServiceImporter;
 
 public class HrestsImporter extends ServiceImporter {
 

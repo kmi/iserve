@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.manager;
+package uk.ac.open.kmi.iserve.sal.manager;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,23 +35,23 @@ import org.ontoware.rdf2go.vocabulary.RDF;
 import org.openrdf.rdf2go.RepositoryModel;
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve2.commons.io.FileUtil;
-import uk.ac.open.kmi.iserve2.commons.io.StringUtil;
-import uk.ac.open.kmi.iserve2.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve2.imatcher.IServeIMatcher;
-import uk.ac.open.kmi.iserve2.importer.ImporterException;
-import uk.ac.open.kmi.iserve2.importer.ServiceImporter;
-import uk.ac.open.kmi.iserve2.importer.hrests.HrestsImporter;
-import uk.ac.open.kmi.iserve2.importer.owls.OwlsImporter;
-import uk.ac.open.kmi.iserve2.importer.rdf.RdfImporter;
-import uk.ac.open.kmi.iserve2.importer.sawsdl.SawsdlImporter;
-import uk.ac.open.kmi.iserve2.sal.ServiceFormat;
-import uk.ac.open.kmi.iserve2.sal.ServiceFormatDetector;
-import uk.ac.open.kmi.iserve2.sal.config.SalConfig;
-import uk.ac.open.kmi.iserve2.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve2.sal.model.common.URI;
-import uk.ac.open.kmi.iserve2.sal.model.service.Service;
-import uk.ac.open.kmi.iserve2.sal.util.ModelConverter;
+import uk.ac.open.kmi.iserve.commons.io.FileUtil;
+import uk.ac.open.kmi.iserve.commons.io.StringUtil;
+import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.imatcher.IServeIMatcher;
+import uk.ac.open.kmi.iserve.importer.ImporterException;
+import uk.ac.open.kmi.iserve.importer.ServiceImporter;
+import uk.ac.open.kmi.iserve.importer.hrests.HrestsImporter;
+import uk.ac.open.kmi.iserve.importer.owls.OwlsImporter;
+import uk.ac.open.kmi.iserve.importer.rdf.RdfImporter;
+import uk.ac.open.kmi.iserve.importer.sawsdl.SawsdlImporter;
+import uk.ac.open.kmi.iserve.sal.ServiceFormat;
+import uk.ac.open.kmi.iserve.sal.ServiceFormatDetector;
+import uk.ac.open.kmi.iserve.sal.config.SalConfig;
+import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
+import uk.ac.open.kmi.iserve.sal.model.common.URI;
+import uk.ac.open.kmi.iserve.sal.model.service.Service;
+import uk.ac.open.kmi.iserve.sal.util.ModelConverter;
 
 public class ServiceManager extends BaseSemanticManager {
 

@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.gwt.server.servlets;
+package uk.ac.open.kmi.iserve.sal.gwt.server.servlets;
 
 import java.io.IOException;
 import java.net.URL;
@@ -37,17 +37,17 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve2.commons.io.IOUtil;
-import uk.ac.open.kmi.iserve2.commons.vocabulary.LOG;
-import uk.ac.open.kmi.iserve2.sal.exception.LogException;
-import uk.ac.open.kmi.iserve2.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve2.sal.exception.UserException;
-import uk.ac.open.kmi.iserve2.sal.gwt.server.Factory;
-import uk.ac.open.kmi.iserve2.sal.manager.LogManager;
-import uk.ac.open.kmi.iserve2.sal.manager.ServiceManager;
-import uk.ac.open.kmi.iserve2.sal.manager.UserManager;
-import uk.ac.open.kmi.iserve2.sal.model.common.URI;
-import uk.ac.open.kmi.iserve2.sal.model.impl.URIImpl;
+import uk.ac.open.kmi.iserve.commons.io.IOUtil;
+import uk.ac.open.kmi.iserve.commons.vocabulary.LOG;
+import uk.ac.open.kmi.iserve.sal.exception.LogException;
+import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
+import uk.ac.open.kmi.iserve.sal.exception.UserException;
+import uk.ac.open.kmi.iserve.sal.gwt.server.Factory;
+import uk.ac.open.kmi.iserve.sal.manager.LogManager;
+import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.sal.manager.UserManager;
+import uk.ac.open.kmi.iserve.sal.model.common.URI;
+import uk.ac.open.kmi.iserve.sal.model.impl.URIImpl;
 
 public class UploadFileServlet extends HttpServlet {
 

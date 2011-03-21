@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.iserve2.sal.rest.auth.oauth;
+package uk.ac.open.kmi.iserve.sal.rest.auth.oauth;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -13,8 +13,8 @@ import javax.ws.rs.core.Response.Status;
 
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve2.sal.model.oauth.Consumer;
-import uk.ac.open.kmi.iserve2.sal.rest.Factory;
+import uk.ac.open.kmi.iserve.sal.model.oauth.Consumer;
+import uk.ac.open.kmi.iserve.sal.rest.Factory;
 
 import com.sun.jersey.api.core.HttpContext;
 import com.sun.jersey.oauth.server.OAuthServerRequest;

@@ -13,13 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.manager;
+package uk.ac.open.kmi.iserve.sal.manager;
 
 import java.security.NoSuchAlgorithmException;
 
-import uk.ac.open.kmi.iserve2.commons.vocabulary.USER;
-import uk.ac.open.kmi.iserve2.sal.model.common.URI;
-import uk.ac.open.kmi.iserve2.sal.model.impl.URIImpl;
+import uk.ac.open.kmi.iserve.commons.vocabulary.USER;
+import uk.ac.open.kmi.iserve.sal.model.common.URI;
+import uk.ac.open.kmi.iserve.sal.model.impl.URIImpl;
 
 import org.ontoware.aifbcommons.collection.ClosableIterator;
 import org.ontoware.rdf2go.exception.ModelRuntimeException;
@@ -29,11 +29,11 @@ import org.ontoware.rdf2go.model.node.Variable;
 import org.openrdf.rdf2go.RepositoryModel;
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve2.sal.config.SalConfig;
-import uk.ac.open.kmi.iserve2.sal.exception.UserException;
-import uk.ac.open.kmi.iserve2.sal.model.impl.UserImpl;
-import uk.ac.open.kmi.iserve2.sal.model.user.User;
-import uk.ac.open.kmi.iserve2.sal.util.MD5;
+import uk.ac.open.kmi.iserve.sal.config.SalConfig;
+import uk.ac.open.kmi.iserve.sal.exception.UserException;
+import uk.ac.open.kmi.iserve.sal.model.impl.UserImpl;
+import uk.ac.open.kmi.iserve.sal.model.user.User;
+import uk.ac.open.kmi.iserve.sal.util.MD5;
 
 public class UserManager extends BaseSemanticManager {
 

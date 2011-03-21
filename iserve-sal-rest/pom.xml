@@ -4,16 +4,16 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>iserve2-parent</artifactId>
-		<groupId>uk.ac.open.kmi.iserve2</groupId>
+		<artifactId>iserve-parent</artifactId>
+		<groupId>uk.ac.open.kmi.iserve</groupId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<groupId>uk.ac.open.kmi.iserve2</groupId>
-	<artifactId>iserve2-sal-rest</artifactId>
+	<groupId>uk.ac.open.kmi.iserve</groupId>
+	<artifactId>iserve-sal-rest</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-	<name>iServe2 SAL RESTful API based on Jersey</name>
+	<name>iserve SAL RESTful API based on Jersey</name>
 
 	<developers>
 		<developer>
@@ -50,8 +50,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>uk.ac.open.kmi.iserve2</groupId>
-			<artifactId>iserve2-sal-core</artifactId>
+			<groupId>uk.ac.open.kmi.iserve</groupId>
+			<artifactId>iserve-sal-core</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -101,7 +101,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>iserve2-sal-rest</finalName>
+		<finalName>iserve-sal-rest</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>

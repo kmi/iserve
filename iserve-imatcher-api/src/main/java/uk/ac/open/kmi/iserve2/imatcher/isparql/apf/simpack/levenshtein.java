@@ -5,7 +5,7 @@
  *
  * See LICENSE for more information about licensing and warranties.
  */
-package uk.ac.open.kmi.iserve2.imatcher.isparql.apf.simpack;
+package uk.ac.open.kmi.iserve.imatcher.isparql.apf.simpack;
 
 import simpack.accessor.string.StringAccessor;
 import simpack.measure.sequence.Levenshtein;

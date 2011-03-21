@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.importer.sawsdl.schema;
+package uk.ac.open.kmi.iserve.importer.sawsdl.schema;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +23,8 @@ import org.ontoware.rdf2go.model.node.URI;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import uk.ac.open.kmi.iserve2.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve2.importer.sawsdl.util.ModelReferenceExtractor;
+import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.importer.sawsdl.util.ModelReferenceExtractor;
 
 public class ComplexType extends Type {
 

@@ -13,10 +13,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.model.taxonomy;
+package uk.ac.open.kmi.iserve.sal.model.taxonomy;
 
-import uk.ac.open.kmi.iserve2.sal.model.Entity;
-import uk.ac.open.kmi.iserve2.sal.model.common.URI;
+import uk.ac.open.kmi.iserve.sal.model.Entity;
+import uk.ac.open.kmi.iserve.sal.model.common.URI;
 
 public interface Category extends Entity {
 

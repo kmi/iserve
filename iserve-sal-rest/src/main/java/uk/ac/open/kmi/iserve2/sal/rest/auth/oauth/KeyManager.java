@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.iserve2.sal.rest.auth.oauth;
+package uk.ac.open.kmi.iserve.sal.rest.auth.oauth;
 
 import org.ontoware.aifbcommons.collection.ClosableIterator;
 import org.ontoware.rdf2go.model.QueryResultTable;
@@ -11,16 +11,16 @@ import org.ontoware.rdf2go.vocabulary.RDF;
 import org.openrdf.rdf2go.RepositoryModel;
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve2.commons.vocabulary.OAUTH;
-import uk.ac.open.kmi.iserve2.sal.config.SalConfig;
-import uk.ac.open.kmi.iserve2.sal.manager.BaseSemanticManager;
-import uk.ac.open.kmi.iserve2.sal.model.impl.AccessTokenImpl;
-import uk.ac.open.kmi.iserve2.sal.model.impl.ConsumerImpl;
-import uk.ac.open.kmi.iserve2.sal.model.impl.RequestTokenImpl;
-import uk.ac.open.kmi.iserve2.sal.model.oauth.AccessToken;
-import uk.ac.open.kmi.iserve2.sal.model.oauth.Consumer;
-import uk.ac.open.kmi.iserve2.sal.model.oauth.RequestToken;
-import uk.ac.open.kmi.iserve2.sal.model.oauth.Token;
+import uk.ac.open.kmi.iserve.commons.vocabulary.OAUTH;
+import uk.ac.open.kmi.iserve.sal.config.SalConfig;
+import uk.ac.open.kmi.iserve.sal.manager.BaseSemanticManager;
+import uk.ac.open.kmi.iserve.sal.model.impl.AccessTokenImpl;
+import uk.ac.open.kmi.iserve.sal.model.impl.ConsumerImpl;
+import uk.ac.open.kmi.iserve.sal.model.impl.RequestTokenImpl;
+import uk.ac.open.kmi.iserve.sal.model.oauth.AccessToken;
+import uk.ac.open.kmi.iserve.sal.model.oauth.Consumer;
+import uk.ac.open.kmi.iserve.sal.model.oauth.RequestToken;
+import uk.ac.open.kmi.iserve.sal.model.oauth.Token;
 
 public class KeyManager extends BaseSemanticManager {
 
@@ -74,7 +74,7 @@ public class KeyManager extends BaseSemanticManager {
 			QueryRow row = iter.next();
 			String uriString= row.getValue("consumer").toString();
 			String consumerSecret = row.getValue("secret_text").toString();
-			consumer.setURI(new uk.ac.open.kmi.iserve2.sal.model.impl.URIImpl(uriString));
+			consumer.setURI(new uk.ac.open.kmi.iserve.sal.model.impl.URIImpl(uriString));
 			consumer.setConsumerKey(consumerKey);
 			consumer.setConsumerSecret(consumerSecret);
 			iter.close();
@@ -109,15 +109,15 @@ public class KeyManager extends BaseSemanticManager {
 			QueryRow row = iter.next();
 			if ( row.getValue("consumer") != null ) {
 				String consumer = row.getValue("consumer").toString();
-				requestToken.setConsumer(new uk.ac.open.kmi.iserve2.sal.model.impl.URIImpl(consumer));
+				requestToken.setConsumer(new uk.ac.open.kmi.iserve.sal.model.impl.URIImpl(consumer));
 			}
 			if ( row.getValue("grant") != null ) {
 				String grant = row.getValue("grant").toString();
-				requestToken.setGrantedBy(new uk.ac.open.kmi.iserve2.sal.model.impl.URIImpl(grant));
+				requestToken.setGrantedBy(new uk.ac.open.kmi.iserve.sal.model.impl.URIImpl(grant));
 			}
 			if ( row.getValue("callback") != null ) {
 				String callback = row.getValue("callback").toString();
-				requestToken.setCallback(new uk.ac.open.kmi.iserve2.sal.model.impl.URIImpl(callback));
+				requestToken.setCallback(new uk.ac.open.kmi.iserve.sal.model.impl.URIImpl(callback));
 			}
 			iter.close();
 		}
@@ -150,7 +150,7 @@ public class KeyManager extends BaseSemanticManager {
 			QueryRow row = iter.next();
 			if ( row.getValue("access_as") != null ) {
 				String accessAs = row.getValue("access_as").toString();
-				accessToken.setAccessAs(new uk.ac.open.kmi.iserve2.sal.model.impl.URIImpl(accessAs));
+				accessToken.setAccessAs(new uk.ac.open.kmi.iserve.sal.model.impl.URIImpl(accessAs));
 			}
 			if ( row.getValue("request_token_key") != null ) {
 				String requestTokenKey = row.getValue("request_token_key").toString();
@@ -217,7 +217,7 @@ public class KeyManager extends BaseSemanticManager {
 			QueryRow row = iter.next();
 			String uriString= row.getValue("token").toString();
 			String tokenSecret = row.getValue("secret_text").toString();
-			token.setURI(new uk.ac.open.kmi.iserve2.sal.model.impl.URIImpl(uriString));
+			token.setURI(new uk.ac.open.kmi.iserve.sal.model.impl.URIImpl(uriString));
 			token.setTokenKey(tokenKey);
 			token.setTokenSecret(tokenSecret);
 			iter.close();

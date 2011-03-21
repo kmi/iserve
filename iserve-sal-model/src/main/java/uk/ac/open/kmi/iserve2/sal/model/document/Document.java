@@ -13,9 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.model.document;
+package uk.ac.open.kmi.iserve.sal.model.document;
 
-import uk.ac.open.kmi.iserve2.sal.model.Entity;
+import uk.ac.open.kmi.iserve.sal.model.Entity;
 
 public interface Document extends Entity {
 

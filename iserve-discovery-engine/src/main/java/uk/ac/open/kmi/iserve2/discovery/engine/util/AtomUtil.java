@@ -13,13 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.discovery.engine.util;
+package uk.ac.open.kmi.iserve.discovery.engine.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-import uk.ac.open.kmi.iserve2.discovery.api.Result;
+import uk.ac.open.kmi.iserve.discovery.api.Result;
 
 public class AtomUtil {
 

@@ -13,11 +13,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.config;
+package uk.ac.open.kmi.iserve.sal.config;
 
 import java.util.Properties;
 
-import uk.ac.open.kmi.iserve2.importer.ImporterConfig;
+import uk.ac.open.kmi.iserve.importer.ImporterConfig;
 
 public class SalConfig {
 

@@ -13,19 +13,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.gwt.client;
+package uk.ac.open.kmi.iserve.sal.gwt.client;
 
 import java.util.List;
 
-import uk.ac.open.kmi.iserve2.sal.gwt.client.exception.BrowserException;
-import uk.ac.open.kmi.iserve2.sal.gwt.model.ServiceCategoryModel;
-import uk.ac.open.kmi.iserve2.sal.gwt.model.ServiceListModel;
-import uk.ac.open.kmi.iserve2.sal.model.common.URI;
-import uk.ac.open.kmi.iserve2.sal.model.query.QueryResult;
-import uk.ac.open.kmi.iserve2.sal.model.review.Comment;
-import uk.ac.open.kmi.iserve2.sal.model.review.Rating;
-import uk.ac.open.kmi.iserve2.sal.model.service.Service;
-import uk.ac.open.kmi.iserve2.sal.model.user.User;
+import uk.ac.open.kmi.iserve.sal.gwt.client.exception.BrowserException;
+import uk.ac.open.kmi.iserve.sal.gwt.model.ServiceCategoryModel;
+import uk.ac.open.kmi.iserve.sal.gwt.model.ServiceListModel;
+import uk.ac.open.kmi.iserve.sal.model.common.URI;
+import uk.ac.open.kmi.iserve.sal.model.query.QueryResult;
+import uk.ac.open.kmi.iserve.sal.model.review.Comment;
+import uk.ac.open.kmi.iserve.sal.model.review.Rating;
+import uk.ac.open.kmi.iserve.sal.model.service.Service;
+import uk.ac.open.kmi.iserve.sal.model.user.User;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
