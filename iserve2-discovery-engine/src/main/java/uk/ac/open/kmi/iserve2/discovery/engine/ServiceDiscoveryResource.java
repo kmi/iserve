@@ -60,27 +60,27 @@ import uk.ac.open.kmi.iserve2.discovery.imatcher.IMatcherDiscoveryPlugin;
 import uk.ac.open.kmi.iserve2.sal.config.SalConfig;
 import uk.ac.open.kmi.iserve2.sal.manager.ServiceManager;
 
-@Path("/disco/{name}")
-public class DiscoveryResource {
+@Path("/disco/svc/{name}")
+public class ServiceDiscoveryResource {
 	
 	private Map<String, IServiceDiscoveryPlugin> plugins;
 	private SalConfig config;
 	private RDFRepositoryConnector connector;
 	private ServiceManager serviceManager;
 
-	public DiscoveryResource() throws RepositoryException, 
+	public ServiceDiscoveryResource() throws RepositoryException, 
 		TransformerConfigurationException, IOException, WSDLException, 
 		ParserConfigurationException {
 		init();
 		plugins = new HashMap<String, IServiceDiscoveryPlugin>();
 
-		IServiceDiscoveryPlugin plugin = new RDFSInputOutputDiscoveryPlugin();
+		IServiceDiscoveryPlugin plugin = new RDFSInputOutputDiscoveryPlugin(connector, false);
 		plugins.put(plugin.getName(), plugin);
 
 		plugin = new IMatcherDiscoveryPlugin(connector);
 		plugins.put(plugin.getName(), plugin);
 
-		plugin = new RDFSClassificationDiscoveryPlugin(connector);
+		plugin = new RDFSClassificationDiscoveryPlugin(connector, false);
 		plugins.put(plugin.getName(), plugin);
 
 		plugin = new AllServicesPlugin(connector);
@@ -125,7 +125,7 @@ public class DiscoveryResource {
 	}
 
 	private void init() throws IOException, RepositoryException, TransformerConfigurationException, WSDLException, ParserConfigurationException {
-		String baseDir = DiscoveryResource.class.getResource("/").getPath();
+		String baseDir = ServiceDiscoveryResource.class.getResource("/").getPath();
 		baseDir = baseDir.replaceAll("%20", " ");
 
 		Properties prop = IOUtil.readProperties(new File(baseDir + "../config.properties"));

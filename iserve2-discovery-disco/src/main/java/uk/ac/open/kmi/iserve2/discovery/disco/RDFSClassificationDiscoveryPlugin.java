@@ -50,14 +50,21 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 	private int count;
 
 	private String feedSuffix;
+	
+	/**
+	 * This plugin supports discovery over services and operations
+	 * If this is true we will discovery operations rather than services
+	 */
+	private boolean operationDiscovery = false;
 
-	public RDFSClassificationDiscoveryPlugin(RDFRepositoryConnector connector) {
+	public RDFSClassificationDiscoveryPlugin(RDFRepositoryConnector connector, boolean operationDiscovery) {
 		this.connector = connector;
 		matchTypesValuesMap = new HashMap<String, Integer>();
 		matchTypesValuesMap.put(DiscoveryUtil.EXACT_DEGREE, Integer.valueOf(0));
 		matchTypesValuesMap.put(DiscoveryUtil.SSSOG_DEGREE, Integer.valueOf(1));
 		matchTypesValuesMap.put(DiscoveryUtil.GSSOS_DEGREE, Integer.valueOf(2));
 		matchTypesValuesMap.put(DiscoveryUtil.INTER_DEGREE, Integer.valueOf(3));
+		this.operationDiscovery = operationDiscovery;
 	}
 
 	public String getName() {
@@ -75,11 +82,15 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 	}
 
 	public String getFeedTitle() {
-		String feedTitle = "rdfs i/o discovery results: " + count + " service(s) for " + feedSuffix;
+		String feedTitle;
+		if (operationDiscovery) {
+			feedTitle = "rdfs i/o discovery results: " + count + " operation(s) for " + feedSuffix;
+		}
+		else {
+			feedTitle = "rdfs i/o discovery results: " + count + " service(s) for " + feedSuffix;
+		}
 		return feedTitle;
 	}
-
-	
 
 	/* 
 	 * FIXME: This plugin should probably implement the Ranked plugin interface
@@ -107,13 +118,13 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 
 		funcClassificationDisco(classes, s_exact, s_sssog, s_gssos, s_intersection, labels);
 
-		Set<Entry> matchingResults = serializeServices(matchTypesValuesMap.get(DiscoveryUtil.EXACT_DEGREE), 
+		Set<Entry> matchingResults = serializeResults(matchTypesValuesMap.get(DiscoveryUtil.EXACT_DEGREE), 
 				DiscoveryUtil.EXACT_DEGREE, s_exact, labels);
-		matchingResults.addAll(serializeServices(matchTypesValuesMap.get(DiscoveryUtil.SSSOG_DEGREE),
+		matchingResults.addAll(serializeResults(matchTypesValuesMap.get(DiscoveryUtil.SSSOG_DEGREE),
 				DiscoveryUtil.SSSOG_DEGREE, s_sssog, labels));
-		matchingResults.addAll(serializeServices(matchTypesValuesMap.get(DiscoveryUtil.GSSOS_DEGREE),
+		matchingResults.addAll(serializeResults(matchTypesValuesMap.get(DiscoveryUtil.GSSOS_DEGREE),
 				DiscoveryUtil.GSSOS_DEGREE, s_gssos, labels));
-		matchingResults.addAll(serializeServices(matchTypesValuesMap.get(DiscoveryUtil.INTER_DEGREE),
+		matchingResults.addAll(serializeResults(matchTypesValuesMap.get(DiscoveryUtil.INTER_DEGREE),
 				DiscoveryUtil.INTER_DEGREE, s_intersection, labels));
 
 		count = s_exact.size() + s_sssog.size() + s_gssos.size() + s_intersection.size();
@@ -127,21 +138,22 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 	}
 
 	/**
-	 * FIXME: Provide a comparator so that results are ordered 
+	 * FIXME: Make this return a sorted set a comparator so that results are ordered 
 	 * @param degreeNum
 	 * @param degree
-	 * @param services
+	 * @param results
 	 * @param labels
 	 * @return
 	 */
-	private SortedSet<Entry> serializeServices(int degreeNum, String degree, Set<String> services, Map<String, String> labels) {
-		SortedSet<Entry> matchingResults = new TreeSet<Entry>();
-		for (Iterator<String> it = services.iterator(); it.hasNext();) {
-			String svc = it.next();
+	private Set<Entry> serializeResults(int degreeNum, String degree, Set<String> results, Map<String, String> labels) {
+		Set<Entry> matchingResults = new HashSet<Entry>();
+		for (Iterator<String> it = results.iterator(); it.hasNext();) {
+			String item = it.next();
 			String content = "Matching degree: " + degree;
 			Entry result = DiscoveryUtil.getAbderaInstance().newEntry();
-			result.addLink(svc);
-			result.setTitle(labels.get(svc));
+			result.setId(item);
+			result.addLink(item, "alternate");
+			result.setTitle(labels.get(item));
 			ExtensibleElement e = result.addExtension(DiscoveryUtil.MATCH_DEGREE);
 			e.setAttributeValue("num", Integer.toString(degreeNum));
 			e.setText(degree);
@@ -151,9 +163,9 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 		return matchingResults;
 	}
 
-	private void funcClassificationDisco(List<String> classes, Set<String> exact, Set<String> svcSubclassOfGoal,
-            Set<String> goalSubclassOfSvc, Set<String> intersection, Map<String, String> labels) {
-        Set<String> goalNotSubclassOfSvc = new HashSet<String>();
+	private void funcClassificationDisco(List<String> classes, Set<String> exact, Set<String> itemSubclassOfGoal,
+            Set<String> goalSubclassOfItem, Set<String> intersection, Map<String, String> labels) {
+        Set<String> goalNotSubclassOfItem = new HashSet<String>();
 
         RepositoryModel repoModel = connector.openRepositoryModel();
         
@@ -165,17 +177,26 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
         // in the query, the presence of sssog0 means that the service contains subcategories of all goal categories (service is a subset of goal)
         // the presence of gX means the goal contains a subcategory of a class category; if every row for a service contains at least one gX then the goal is a subset of service
         // todo what about kinda-gssos where all goal classes are subclasses of service classes? it's stronger gssos if also all service classes have goal subclasses.
+        
         String query = "prefix wl: <" + MSM.WL_NS_URI + ">\n"
         		+ "prefix sawsdl: <" + MSM.SAWSDL_NS_URI + ">\n"
         		+ "prefix msm: <" + MSM.NS_URI + ">\n"
         		+ "prefix rdfs: <" + RDFS.NAMESPACE + ">\n"
-        		+ "select ?svc ?label ?sssog0 ?cat ";
+        		+ "select ?item ?label ?sssog0 ?cat ";
+        
         for (int i=0; i<classes.size(); i++) {
         	query += "?g" + i + " ";
         }
-        query += "\nwhere {\n  ?svc a msm:Service ; sawsdl:modelReference ?cat .\n"
+        
+        String itemClass = "msm:Service";
+        if (operationDiscovery) {
+        	itemClass = "msm:Operation";
+        }
+        
+        query += "\nwhere {\n  ?item a " + itemClass + " ; sawsdl:modelReference ?cat .\n"
         		+ "  ?cat rdfs:subClassOf [ a wl:FunctionalClassificationRoot ] .\n" 
-        		+ "  optional { ?svc rdfs:label ?label }";
+        		+ "  optional { ?item rdfs:label ?label }";
+        
         for (int i = 0; i < classes.size(); i++) {
         	query += "  optional {\n"
         			+ "    <" + classes.get(i).replace(">", "%3e") + "> rdfs:subClassOf ?cat ; ?g" + i + " ?cat .\n"
@@ -183,7 +204,7 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
         }
         query += "  optional {\n";
         for (int i = 0; i < classes.size(); i++) {
-        	query += "    ?svc sawsdl:modelReference ?sssog" + i + " . \n    ?sssog" + i + " rdfs:subClassOf <" + classes.get(i).replace(">", "%3e") + "> .\n";
+        	query += "    ?item sawsdl:modelReference ?sssog" + i + " . \n    ?sssog" + i + " rdfs:subClassOf <" + classes.get(i).replace(">", "%3e") + "> .\n";
         }
         query += "  }\n";
         query += "}";
@@ -192,12 +213,12 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
         QueryResultTable qresult = repoModel.querySelect(query, "sparql");
         for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
         	QueryRow row = it.next();
-        	String svc = row.getValue("svc").toString();
+        	String item = row.getValue("item").toString();
         	Node sssog0 = row.getValue("sssog0");
         	if (sssog0 != null) {
-        		svcSubclassOfGoal.add(svc);
+        		itemSubclassOfGoal.add(item);
         	}
-        	goalSubclassOfSvc.add(svc); // initially, all services are counted as being supersets of the goal, below the set s_notgssos counts the instances that aren't, which are removed from s_gssos after the loop
+        	goalSubclassOfItem.add(item); // initially, all services are counted as being supersets of the goal, below the set s_notgssos counts the instances that aren't, which are removed from s_gssos after the loop
         	boolean lacks_gX = true;
         	for (int i=0; i<classes.size(); i++) {
         		Node gi = row.getValue("g"+i);
@@ -207,24 +228,24 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
         		}
         	}
         	if (lacks_gX) {
-        		goalNotSubclassOfSvc.add(svc);
+        		goalNotSubclassOfItem.add(item);
         	}
         	
         	Node label = row.getValue("label");
         	if (label != null) {
-        		labels.put(svc, label.toString());
+        		labels.put(item, label.toString());
         	}
         }
-        goalSubclassOfSvc.removeAll(goalNotSubclassOfSvc);
+        goalSubclassOfItem.removeAll(goalNotSubclassOfItem);
         
-        exact.addAll(svcSubclassOfGoal);
-        exact.retainAll(goalSubclassOfSvc);
-        svcSubclassOfGoal.removeAll(exact);
-        goalSubclassOfSvc.removeAll(exact);
+        exact.addAll(itemSubclassOfGoal);
+        exact.retainAll(goalSubclassOfItem);
+        itemSubclassOfGoal.removeAll(exact);
+        goalSubclassOfItem.removeAll(exact);
         
         // intersection match:
-        // todo find services for which there exists a category that is a subcategory of all the categories of both the goal and the svc; but remove any from above
-        // todo also find potential intersections where some service and goal classes are related through subclass
+        // TODO: find services for which there exists a category that is a subcategory of all the categories of both the goal and the svc; but remove any from above
+        // TODO: also find potential intersections where some service and goal classes are related through subclass
         
         connector.closeRepositoryModel(repoModel);
 	}
