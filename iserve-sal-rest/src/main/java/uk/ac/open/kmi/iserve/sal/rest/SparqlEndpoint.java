@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.rest;
+package uk.ac.open.kmi.iserve.sal.rest;
 
 import java.io.IOException;
 
@@ -36,8 +36,8 @@ import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 
-import uk.ac.open.kmi.iserve2.commons.io.RDFRepositoryConnector;
-import uk.ac.open.kmi.iserve2.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
+import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 
 @Path("/")
 public class SparqlEndpoint {

@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.discovery.engine;
+package uk.ac.open.kmi.iserve.discovery.engine;
 
 import java.text.ParseException;
 import java.util.List;
@@ -53,7 +53,7 @@ public class AtomSubtraction extends AtomBase {
 	}
 
 	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve2.discovery.engine.AtomBase#combineResults(java.util.Set, java.util.List)
+	 * @see uk.ac.open.kmi.iserve.discovery.engine.AtomBase#combineResults(java.util.Set, java.util.List)
 	 */
 	@Override
 	Set<Entry> combineResults(Set<Entry> combination, List<Entry> entries) {

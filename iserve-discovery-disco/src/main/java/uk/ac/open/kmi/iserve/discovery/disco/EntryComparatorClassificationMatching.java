@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.discovery.disco;
+package uk.ac.open.kmi.iserve.discovery.disco;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ import java.util.HashMap;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
 
-import uk.ac.open.kmi.iserve2.discovery.api.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.discovery.api.util.DiscoveryUtil;
 
 /**
  * Comparator for sorting Entries obtained when matching Entries

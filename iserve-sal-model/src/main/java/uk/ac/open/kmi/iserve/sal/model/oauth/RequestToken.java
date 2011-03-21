@@ -1,8 +1,8 @@
-package uk.ac.open.kmi.iserve2.sal.model.oauth;
+package uk.ac.open.kmi.iserve.sal.model.oauth;
 
 import java.util.Date;
 
-import uk.ac.open.kmi.iserve2.sal.model.common.URI;
+import uk.ac.open.kmi.iserve.sal.model.common.URI;
 
 public interface RequestToken extends Token {
 

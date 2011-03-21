@@ -13,14 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.importer.sawsdl.schema;
+package uk.ac.open.kmi.iserve.importer.sawsdl.schema;
 
 import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.model.node.URI;
 import org.w3c.dom.Node;
 
-import uk.ac.open.kmi.iserve2.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve2.importer.sawsdl.util.ModelReferenceExtractor;
+import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.importer.sawsdl.util.ModelReferenceExtractor;
 
 public class SimpleType extends Type {
 

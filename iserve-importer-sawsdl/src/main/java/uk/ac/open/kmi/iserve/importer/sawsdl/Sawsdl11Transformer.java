@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.importer.sawsdl;
+package uk.ac.open.kmi.iserve.importer.sawsdl;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -49,11 +49,11 @@ import org.ontoware.rdf2go.vocabulary.RDF;
 import org.ontoware.rdf2go.vocabulary.RDFS;
 import org.xml.sax.InputSource;
 
-import uk.ac.open.kmi.iserve2.importer.sawsdl.schema.Element;
-import uk.ac.open.kmi.iserve2.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve2.importer.sawsdl.schema.SchemaMap;
-import uk.ac.open.kmi.iserve2.importer.sawsdl.schema.SchemaParser;
-import uk.ac.open.kmi.iserve2.importer.sawsdl.util.ModelReferenceExtractor;
+import uk.ac.open.kmi.iserve.importer.sawsdl.schema.Element;
+import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.importer.sawsdl.schema.SchemaMap;
+import uk.ac.open.kmi.iserve.importer.sawsdl.schema.SchemaParser;
+import uk.ac.open.kmi.iserve.importer.sawsdl.util.ModelReferenceExtractor;
 
 public class Sawsdl11Transformer {
 

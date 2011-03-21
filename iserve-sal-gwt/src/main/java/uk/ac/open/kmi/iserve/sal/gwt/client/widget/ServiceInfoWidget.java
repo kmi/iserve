@@ -13,25 +13,25 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.gwt.client.widget;
+package uk.ac.open.kmi.iserve.sal.gwt.client.widget;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import uk.ac.open.kmi.iserve2.sal.gwt.model.OperationInfoModel;
-import uk.ac.open.kmi.iserve2.sal.model.impl.CommentImpl;
-import uk.ac.open.kmi.iserve2.sal.model.impl.RatingImpl;
-import uk.ac.open.kmi.iserve2.sal.model.impl.URIImpl;
-import uk.ac.open.kmi.iserve2.sal.model.common.URI;
-import uk.ac.open.kmi.iserve2.sal.model.review.Comment;
-import uk.ac.open.kmi.iserve2.sal.model.service.MessageContent;
-import uk.ac.open.kmi.iserve2.sal.model.service.MessagePart;
-import uk.ac.open.kmi.iserve2.sal.model.service.ModelReference;
-import uk.ac.open.kmi.iserve2.sal.model.service.Operation;
-import uk.ac.open.kmi.iserve2.sal.model.review.Rating;
-import uk.ac.open.kmi.iserve2.sal.model.review.Review;
-import uk.ac.open.kmi.iserve2.sal.model.service.Service;
+import uk.ac.open.kmi.iserve.sal.gwt.model.OperationInfoModel;
+import uk.ac.open.kmi.iserve.sal.model.impl.CommentImpl;
+import uk.ac.open.kmi.iserve.sal.model.impl.RatingImpl;
+import uk.ac.open.kmi.iserve.sal.model.impl.URIImpl;
+import uk.ac.open.kmi.iserve.sal.model.common.URI;
+import uk.ac.open.kmi.iserve.sal.model.review.Comment;
+import uk.ac.open.kmi.iserve.sal.model.service.MessageContent;
+import uk.ac.open.kmi.iserve.sal.model.service.MessagePart;
+import uk.ac.open.kmi.iserve.sal.model.service.ModelReference;
+import uk.ac.open.kmi.iserve.sal.model.service.Operation;
+import uk.ac.open.kmi.iserve.sal.model.review.Rating;
+import uk.ac.open.kmi.iserve.sal.model.review.Review;
+import uk.ac.open.kmi.iserve.sal.model.service.Service;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.MenuEvent;

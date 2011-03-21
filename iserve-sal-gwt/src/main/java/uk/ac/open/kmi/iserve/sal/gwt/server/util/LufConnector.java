@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.gwt.server.util;
+package uk.ac.open.kmi.iserve.sal.gwt.server.util;
 
 import info.aduna.io.IOUtil;
 
@@ -33,15 +33,15 @@ import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 
-import uk.ac.open.kmi.iserve2.sal.model.common.URI;
-import uk.ac.open.kmi.iserve2.sal.model.impl.CommentImpl;
-import uk.ac.open.kmi.iserve2.sal.model.impl.RatingImpl;
-import uk.ac.open.kmi.iserve2.sal.model.impl.URIImpl;
-import uk.ac.open.kmi.iserve2.sal.model.query.QueryResult;
-import uk.ac.open.kmi.iserve2.sal.model.query.QueryRow;
-import uk.ac.open.kmi.iserve2.sal.model.review.Comment;
-import uk.ac.open.kmi.iserve2.sal.model.review.Rating;
-import uk.ac.open.kmi.iserve2.sal.model.review.Review;
+import uk.ac.open.kmi.iserve.sal.model.common.URI;
+import uk.ac.open.kmi.iserve.sal.model.impl.CommentImpl;
+import uk.ac.open.kmi.iserve.sal.model.impl.RatingImpl;
+import uk.ac.open.kmi.iserve.sal.model.impl.URIImpl;
+import uk.ac.open.kmi.iserve.sal.model.query.QueryResult;
+import uk.ac.open.kmi.iserve.sal.model.query.QueryRow;
+import uk.ac.open.kmi.iserve.sal.model.review.Comment;
+import uk.ac.open.kmi.iserve.sal.model.review.Rating;
+import uk.ac.open.kmi.iserve.sal.model.review.Review;
 
 public class LufConnector {
 

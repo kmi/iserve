@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.discovery.imatcher;
+package uk.ac.open.kmi.iserve.discovery.imatcher;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,14 +30,14 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 
-import uk.ac.open.kmi.iserve2.commons.io.RDFRepositoryConnector;
-import uk.ac.open.kmi.iserve2.discovery.api.DiscoveryException;
-import uk.ac.open.kmi.iserve2.discovery.api.IServiceDiscoveryPlugin;
-import uk.ac.open.kmi.iserve2.discovery.api.util.DiscoveryUtil;
-import uk.ac.open.kmi.iserve2.imatcher.IServeIMatcher;
-import uk.ac.open.kmi.iserve2.imatcher.strategy.api.IStrategy;
-import uk.ac.open.kmi.iserve2.imatcher.strategy.impl.LevNStrategy;
-import uk.ac.open.kmi.iserve2.imatcher.strategy.impl.TFIDFDStrategy;
+import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
+import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
+import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.imatcher.IServeIMatcher;
+import uk.ac.open.kmi.iserve.imatcher.strategy.api.IStrategy;
+import uk.ac.open.kmi.iserve.imatcher.strategy.impl.LevNStrategy;
+import uk.ac.open.kmi.iserve.imatcher.strategy.impl.TFIDFDStrategy;
 
 public class IMatcherDiscoveryPlugin implements IServiceDiscoveryPlugin {
 
@@ -59,7 +59,7 @@ public class IMatcherDiscoveryPlugin implements IServiceDiscoveryPlugin {
 	 * and return a SortedSet instead
 	 * 
 	 * (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve2.discovery.api.IServiceDiscoveryPlugin#discover(javax.ws.rs.core.MultivaluedMap)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin#discover(javax.ws.rs.core.MultivaluedMap)
 	 */
 	public Set<Entry> discover(MultivaluedMap<String, String> parameters) throws DiscoveryException {
 		IStrategy strategy = null;

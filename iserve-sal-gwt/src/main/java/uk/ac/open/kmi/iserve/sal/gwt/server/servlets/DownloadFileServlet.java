@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.gwt.server.servlets;
+package uk.ac.open.kmi.iserve.sal.gwt.server.servlets;
 
 import java.io.IOException;
 
@@ -29,9 +29,9 @@ import javax.xml.transform.TransformerConfigurationException;
 import org.ontoware.rdf2go.model.Syntax;
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve2.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve2.sal.gwt.server.Factory;
-import uk.ac.open.kmi.iserve2.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
+import uk.ac.open.kmi.iserve.sal.gwt.server.Factory;
+import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 
 public class DownloadFileServlet extends HttpServlet {
 

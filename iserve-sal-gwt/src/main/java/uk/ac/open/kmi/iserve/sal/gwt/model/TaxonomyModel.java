@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.gwt.model;
+package uk.ac.open.kmi.iserve.sal.gwt.model;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
 

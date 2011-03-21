@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.rest.resource;
+package uk.ac.open.kmi.iserve.sal.rest.resource;
 
 import java.io.IOException;
 import java.net.URI;
@@ -51,20 +51,20 @@ import org.openrdf.rio.RDFHandlerException;
 
 import com.sun.jersey.api.container.MappableContainerException;
 
-import uk.ac.open.kmi.iserve2.commons.io.RDFRepositoryConnector;
-import uk.ac.open.kmi.iserve2.commons.io.URIUtil;
-import uk.ac.open.kmi.iserve2.commons.vocabulary.LOG;
-import uk.ac.open.kmi.iserve2.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve2.sal.config.SalConfig;
-import uk.ac.open.kmi.iserve2.sal.exception.LogException;
-import uk.ac.open.kmi.iserve2.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve2.sal.manager.LogManager;
-import uk.ac.open.kmi.iserve2.sal.manager.ServiceManager;
-import uk.ac.open.kmi.iserve2.sal.rest.Factory;
-import uk.ac.open.kmi.iserve2.sal.rest.auth.AuthenticationException;
-import uk.ac.open.kmi.iserve2.sal.util.HtmlUtil;
-import uk.ac.open.kmi.iserve2.sal.util.ModelReferenceUtil;
-import uk.ac.open.kmi.iserve2.sal.util.XmlUtil;
+import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
+import uk.ac.open.kmi.iserve.commons.io.URIUtil;
+import uk.ac.open.kmi.iserve.commons.vocabulary.LOG;
+import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.sal.config.SalConfig;
+import uk.ac.open.kmi.iserve.sal.exception.LogException;
+import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
+import uk.ac.open.kmi.iserve.sal.manager.LogManager;
+import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.sal.rest.Factory;
+import uk.ac.open.kmi.iserve.sal.rest.auth.AuthenticationException;
+import uk.ac.open.kmi.iserve.sal.util.HtmlUtil;
+import uk.ac.open.kmi.iserve.sal.util.ModelReferenceUtil;
+import uk.ac.open.kmi.iserve.sal.util.XmlUtil;
 
 @Path("/services")
 public class ServiceResource {

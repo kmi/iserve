@@ -13,16 +13,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.model.impl;
+package uk.ac.open.kmi.iserve.sal.model.impl;
 
 import java.util.Date;
 import java.util.List;
 
-import uk.ac.open.kmi.iserve2.sal.model.common.URI;
-import uk.ac.open.kmi.iserve2.sal.model.review.Review;
-import uk.ac.open.kmi.iserve2.sal.model.service.ModelReference;
-import uk.ac.open.kmi.iserve2.sal.model.service.Operation;
-import uk.ac.open.kmi.iserve2.sal.model.service.Service;
+import uk.ac.open.kmi.iserve.sal.model.common.URI;
+import uk.ac.open.kmi.iserve.sal.model.review.Review;
+import uk.ac.open.kmi.iserve.sal.model.service.ModelReference;
+import uk.ac.open.kmi.iserve.sal.model.service.Operation;
+import uk.ac.open.kmi.iserve.sal.model.service.Service;
 
 public class ServiceImpl extends SemanticEntityImpl implements Service {
 

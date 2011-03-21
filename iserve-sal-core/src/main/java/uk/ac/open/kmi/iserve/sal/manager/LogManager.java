@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.manager;
+package uk.ac.open.kmi.iserve.sal.manager;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -35,12 +35,12 @@ import org.ontoware.rdf2go.vocabulary.XSD;
 import org.openrdf.rdf2go.RepositoryModel;
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve2.commons.vocabulary.DC;
-import uk.ac.open.kmi.iserve2.commons.vocabulary.LOG;
-import uk.ac.open.kmi.iserve2.sal.config.SalConfig;
-import uk.ac.open.kmi.iserve2.sal.exception.LogException;
-import uk.ac.open.kmi.iserve2.sal.model.impl.LogItemImpl;
-import uk.ac.open.kmi.iserve2.sal.model.log.LogItem;
+import uk.ac.open.kmi.iserve.commons.vocabulary.DC;
+import uk.ac.open.kmi.iserve.commons.vocabulary.LOG;
+import uk.ac.open.kmi.iserve.sal.config.SalConfig;
+import uk.ac.open.kmi.iserve.sal.exception.LogException;
+import uk.ac.open.kmi.iserve.sal.model.impl.LogItemImpl;
+import uk.ac.open.kmi.iserve.sal.model.log.LogItem;
 
 public class LogManager extends BaseSemanticManager {
 

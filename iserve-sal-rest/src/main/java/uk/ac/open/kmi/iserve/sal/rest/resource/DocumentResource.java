@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.rest.resource;
+package uk.ac.open.kmi.iserve.sal.rest.resource;
 
 import java.io.IOException;
 import java.net.URI;
@@ -40,15 +40,15 @@ import org.openrdf.repository.RepositoryException;
 
 import com.sun.jersey.api.container.MappableContainerException;
 
-import uk.ac.open.kmi.iserve2.commons.io.URIUtil;
-import uk.ac.open.kmi.iserve2.commons.vocabulary.LOG;
-import uk.ac.open.kmi.iserve2.sal.exception.DocumentException;
-import uk.ac.open.kmi.iserve2.sal.exception.LogException;
-import uk.ac.open.kmi.iserve2.sal.manager.DocumentManager;
-import uk.ac.open.kmi.iserve2.sal.manager.LogManager;
-import uk.ac.open.kmi.iserve2.sal.rest.Factory;
-import uk.ac.open.kmi.iserve2.sal.rest.auth.AuthenticationException;
-import uk.ac.open.kmi.iserve2.sal.util.HtmlUtil;
+import uk.ac.open.kmi.iserve.commons.io.URIUtil;
+import uk.ac.open.kmi.iserve.commons.vocabulary.LOG;
+import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
+import uk.ac.open.kmi.iserve.sal.exception.LogException;
+import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
+import uk.ac.open.kmi.iserve.sal.manager.LogManager;
+import uk.ac.open.kmi.iserve.sal.rest.Factory;
+import uk.ac.open.kmi.iserve.sal.rest.auth.AuthenticationException;
+import uk.ac.open.kmi.iserve.sal.util.HtmlUtil;
 
 @Path("/documents")
 public class DocumentResource {

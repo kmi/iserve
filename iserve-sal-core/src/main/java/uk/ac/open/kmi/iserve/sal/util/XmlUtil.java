@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.util;
+package uk.ac.open.kmi.iserve.sal.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,12 +39,12 @@ import org.ontoware.rdf2go.model.Model;
 import org.openrdf.rdf2go.RepositoryModel;
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve2.commons.io.IOUtil;
-import uk.ac.open.kmi.iserve2.commons.io.URIUtil;
-import uk.ac.open.kmi.iserve2.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve2.sal.config.SalConfig;
-import uk.ac.open.kmi.iserve2.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve2.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.commons.io.IOUtil;
+import uk.ac.open.kmi.iserve.commons.io.URIUtil;
+import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.sal.config.SalConfig;
+import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
+import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 
 public class XmlUtil {
 
@@ -269,12 +269,12 @@ public class XmlUtil {
 	}
 
 	public static void main(String[] args) throws IOException, RepositoryException, TransformerConfigurationException, ParserConfigurationException, ServiceException, WSDLException {
-		Properties prop = IOUtil.readProperties(new File("/Users/dl3962/Workspace/JWS/iserve2-parent/iserve2-sal-rest/src/main/webapp/WEB-INF/config.properties"));
+		Properties prop = IOUtil.readProperties(new File("/Users/dl3962/Workspace/JWS/iserve-parent/iserve-sal-rest/src/main/webapp/WEB-INF/config.properties"));
 		prop.setProperty(SalConfig.XSLT_PATH, "/Users/dl3962/Workspace/JWS/iserve-webapp/src/main/webapp/servicebrowser/im/hrests.xslt");
 		SalConfig config = new SalConfig(prop);
 		ServiceManager serviceManager = new ServiceManager(config);
-		RepositoryModel model = serviceManager.getServiceAsModel("http://service-repository.kmi.open.ac.uk:8080/iserve2/resource/services/0f59a383-6324-4fce-865a-506517c801c1#NestoriaService");
-//		RepositoryModel model = serviceManager.getServiceAsModel("http://service-repository.kmi.open.ac.uk:8080/iserve2/resource/services/7c985dba-143b-43e3-b081-a45a8c87f09e#PoliceAPIService");
+		RepositoryModel model = serviceManager.getServiceAsModel("http://service-repository.kmi.open.ac.uk:8080/iserve/resource/services/0f59a383-6324-4fce-865a-506517c801c1#NestoriaService");
+//		RepositoryModel model = serviceManager.getServiceAsModel("http://service-repository.kmi.open.ac.uk:8080/iserve/resource/services/7c985dba-143b-43e3-b081-a45a8c87f09e#PoliceAPIService");
 		String xml = serializeService(model);
 		System.out.println(xml);
 	}

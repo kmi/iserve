@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.iserve2.sal.rest.auth.oauth;
+package uk.ac.open.kmi.iserve.sal.rest.auth.oauth;
 
 import java.io.IOException;
 import java.net.URI;
@@ -30,8 +30,8 @@ import org.openid4java.message.MessageException;
 import org.openid4java.message.ParameterList;
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve2.sal.model.oauth.RequestToken;
-import uk.ac.open.kmi.iserve2.sal.rest.Factory;
+import uk.ac.open.kmi.iserve.sal.model.oauth.RequestToken;
+import uk.ac.open.kmi.iserve.sal.rest.Factory;
 
 @Path("/authorize")
 public class AuthorizeResource {
@@ -143,7 +143,7 @@ public class AuthorizeResource {
 			}
 			return Response.status(Status.BAD_REQUEST).entity("Error occurs during authorization").build();
 		} else {
-			String returnToUrl = "http://localhost:8080/iserve2/oauth/authorize?oauth_token=" + oauthToken;
+			String returnToUrl = "http://localhost:8080/iserve/oauth/authorize?oauth_token=" + oauthToken;
 			// perform discovery on the user-supplied identifier
 			List discoveries = manager.discover(userSuppliedString);
 	

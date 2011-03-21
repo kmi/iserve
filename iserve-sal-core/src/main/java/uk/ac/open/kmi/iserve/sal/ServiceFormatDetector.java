@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal;
+package uk.ac.open.kmi.iserve.sal;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

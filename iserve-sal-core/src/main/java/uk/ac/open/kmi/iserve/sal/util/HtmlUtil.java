@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.util;
+package uk.ac.open.kmi.iserve.sal.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +29,8 @@ import org.ontoware.rdf2go.model.node.URI;
 import org.ontoware.rdf2go.model.node.Variable;
 import org.ontoware.rdf2go.vocabulary.RDF;
 
-import uk.ac.open.kmi.iserve2.commons.io.URIUtil;
-import uk.ac.open.kmi.iserve2.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.commons.io.URIUtil;
+import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 
 public class HtmlUtil {
 

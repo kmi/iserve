@@ -5,7 +5,7 @@
  *
  * See LICENSE for more information about licensing and warranties.
  */
-package uk.ac.open.kmi.iserve2.imatcher.tool;
+package uk.ac.open.kmi.iserve.imatcher.tool;
 
 public class Timer {
 

@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.manager;
+package uk.ac.open.kmi.iserve.sal.manager;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import uk.ac.open.kmi.iserve2.commons.io.FileUtil;
-import uk.ac.open.kmi.iserve2.commons.io.IOUtil;
-import uk.ac.open.kmi.iserve2.commons.io.StringUtil;
-import uk.ac.open.kmi.iserve2.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve2.sal.config.SalConfig;
-import uk.ac.open.kmi.iserve2.sal.exception.DocumentException;
+import uk.ac.open.kmi.iserve.commons.io.FileUtil;
+import uk.ac.open.kmi.iserve.commons.io.IOUtil;
+import uk.ac.open.kmi.iserve.commons.io.StringUtil;
+import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.sal.config.SalConfig;
+import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 
 public class DocumentManager {
 

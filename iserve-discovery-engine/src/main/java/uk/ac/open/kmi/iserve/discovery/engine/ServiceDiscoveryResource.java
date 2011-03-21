@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.discovery.engine;
+package uk.ac.open.kmi.iserve.discovery.engine;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,18 +47,18 @@ import com.sun.jersey.api.NotFoundException;
 
 //import com.sun.jersey.api.NotFoundException;
 
-import uk.ac.open.kmi.iserve2.commons.io.IOUtil;
-import uk.ac.open.kmi.iserve2.commons.io.RDFRepositoryConnector;
-import uk.ac.open.kmi.iserve2.discovery.api.DiscoveryException;
-import uk.ac.open.kmi.iserve2.discovery.api.IServiceDiscoveryPlugin;
-import uk.ac.open.kmi.iserve2.discovery.api.util.DiscoveryUtil;
-import uk.ac.open.kmi.iserve2.discovery.disco.AllServicesPlugin;
-import uk.ac.open.kmi.iserve2.discovery.disco.RDFSClassificationDiscoveryPlugin;
-import uk.ac.open.kmi.iserve2.discovery.disco.RDFSInputOutputDiscoveryPlugin;
-import uk.ac.open.kmi.iserve2.discovery.engine.util.AtomUtil;
-import uk.ac.open.kmi.iserve2.discovery.imatcher.IMatcherDiscoveryPlugin;
-import uk.ac.open.kmi.iserve2.sal.config.SalConfig;
-import uk.ac.open.kmi.iserve2.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.commons.io.IOUtil;
+import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
+import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
+import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.discovery.disco.AllServicesPlugin;
+import uk.ac.open.kmi.iserve.discovery.disco.RDFSClassificationDiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.disco.RDFSInputOutputDiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.engine.util.AtomUtil;
+import uk.ac.open.kmi.iserve.discovery.imatcher.IMatcherDiscoveryPlugin;
+import uk.ac.open.kmi.iserve.sal.config.SalConfig;
+import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 
 @Path("/disco/svc/{name}")
 public class ServiceDiscoveryResource {

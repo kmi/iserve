@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.discovery.engine;
+package uk.ac.open.kmi.iserve.discovery.engine;
 
 import java.io.StringWriter;
 import java.net.URLDecoder;
@@ -64,8 +64,8 @@ import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
 import com.sun.jersey.client.apache.ApacheHttpClient;
 import com.sun.jersey.client.apache.ApacheHttpClientHandler;
 
-import uk.ac.open.kmi.iserve2.discovery.api.DiscoveryException;
-import uk.ac.open.kmi.iserve2.discovery.api.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
+import uk.ac.open.kmi.iserve.discovery.api.util.DiscoveryUtil;
 
 /**
  * provides base functionality for atom combinators

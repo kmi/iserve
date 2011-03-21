@@ -13,9 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.importer;
+package uk.ac.open.kmi.iserve.importer;
 
-import uk.ac.open.kmi.iserve2.commons.io.StringUtil;
+import uk.ac.open.kmi.iserve.commons.io.StringUtil;
 
 public class ImporterConfig {
 

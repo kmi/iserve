@@ -13,11 +13,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.model.impl;
+package uk.ac.open.kmi.iserve.sal.model.impl;
 
 import java.util.Date;
 
-import uk.ac.open.kmi.iserve2.sal.model.log.LogItem;
+import uk.ac.open.kmi.iserve.sal.model.log.LogItem;
 
 public class LogItemImpl implements LogItem {
 

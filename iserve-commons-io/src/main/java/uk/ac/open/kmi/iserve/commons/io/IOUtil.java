@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.commons.io;
+package uk.ac.open.kmi.iserve.commons.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

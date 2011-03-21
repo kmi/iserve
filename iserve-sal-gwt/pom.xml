@@ -4,16 +4,16 @@
 
 	<!-- POM file generated with GWT webAppCreator -->
 	<parent>
-		<artifactId>iserve2-parent</artifactId>
-		<groupId>uk.ac.open.kmi.iserve2</groupId>
+		<artifactId>iserve-parent</artifactId>
+		<groupId>uk.ac.open.kmi.iserve</groupId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>uk.ac.open.kmi.iserve2</groupId>
-	<artifactId>iserve2-sal-gwt</artifactId>
+	<groupId>uk.ac.open.kmi.iserve</groupId>
+	<artifactId>iserve-sal-gwt</artifactId>
 	<packaging>war</packaging>
 	<version>1.0.0-SNAPSHOT</version>
-	<name>iServe2 Browser based on GWT</name>
+	<name>iserve Browser based on GWT</name>
 
 	<developers>
 		<developer>
@@ -78,8 +78,8 @@
 			<version>2.2.0</version>
 		</dependency>
 		<dependency>
-			<groupId>uk.ac.open.kmi.iserve2</groupId>
-			<artifactId>iserve2-sal-core</artifactId>
+			<groupId>uk.ac.open.kmi.iserve</groupId>
+			<artifactId>iserve-sal-core</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>

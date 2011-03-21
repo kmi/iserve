@@ -5,7 +5,7 @@
  *
  * See LICENSE for more information about licensing and warranties.
  */
-package uk.ac.open.kmi.iserve2.imatcher.strategy.api;
+package uk.ac.open.kmi.iserve.imatcher.strategy.api;
 
 public abstract class AbstractStrategy implements IStrategy {
 
@@ -29,7 +29,7 @@ public abstract class AbstractStrategy implements IStrategy {
 			+ NL
 			+ "PREFIX ph: <http://www.ifi.uzh.ch/ddis/ph/2006/08/ProcessHandbook.owl#> ";
 
-	public final static String simpackNS = "PREFIX simpack: <java:uk.ac.open.kmi.iserve2.imatcher.isparql.apf.simpack.>"; 
+	public final static String simpackNS = "PREFIX simpack: <java:uk.ac.open.kmi.iserve.imatcher.isparql.apf.simpack.>"; 
 
 	public final static String olaNS = "PREFIX ola: <java:ch.uzh.ifi.isparql.apf.ola.>";
 

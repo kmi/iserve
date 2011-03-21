@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.importer.sawsdl;
+package uk.ac.open.kmi.iserve.importer.sawsdl;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -49,10 +49,10 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import uk.ac.open.kmi.iserve2.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve2.importer.sawsdl.schema.SchemaMap;
-import uk.ac.open.kmi.iserve2.importer.sawsdl.schema.SchemaParser;
-import uk.ac.open.kmi.iserve2.importer.sawsdl.util.ModelReferenceExtractor;
+import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.importer.sawsdl.schema.SchemaMap;
+import uk.ac.open.kmi.iserve.importer.sawsdl.schema.SchemaParser;
+import uk.ac.open.kmi.iserve.importer.sawsdl.util.ModelReferenceExtractor;
 
 public class Sawsdl20Transformer {
 

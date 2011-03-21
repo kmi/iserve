@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.rest.resource;
+package uk.ac.open.kmi.iserve.sal.rest.resource;
 
 import static org.junit.Assert.*;
 
@@ -61,7 +61,7 @@ public class ServiceResourceTest {
 	
 	private static final String PASSWORD = "dong";
 
-	private static final String ISERVE_URL = "http://localhost:9080/iserve2-sal-rest";
+	private static final String ISERVE_URL = "http://localhost:9080/iserve-sal-rest";
 	
 	private IServeHttpClient iServeClient;
 	
@@ -107,7 +107,7 @@ public class ServiceResourceTest {
 	}
 
 	/**
-	 * Test method for {@link uk.ac.open.kmi.iserve2.sal.rest.resource.ServiceResource#listServicesAsHtml()}.
+	 * Test method for {@link uk.ac.open.kmi.iserve.sal.rest.resource.ServiceResource#listServicesAsHtml()}.
 	 */
 	@Test
 	public final void testListServicesAsHtml() {
@@ -125,7 +125,7 @@ public class ServiceResourceTest {
 	}
 
 	/**
-	 * Test method for {@link uk.ac.open.kmi.iserve2.sal.rest.resource.ServiceResource#listServicesAsRdf()}.
+	 * Test method for {@link uk.ac.open.kmi.iserve.sal.rest.resource.ServiceResource#listServicesAsRdf()}.
 	 */
 	@Test
 	public final void testListServicesAsRdf() {
@@ -133,7 +133,7 @@ public class ServiceResourceTest {
 	}
 
 	/**
-	 * Test method for {@link uk.ac.open.kmi.iserve2.sal.rest.resource.ServiceResource#getServiceAsHtml(java.lang.String)}.
+	 * Test method for {@link uk.ac.open.kmi.iserve.sal.rest.resource.ServiceResource#getServiceAsHtml(java.lang.String)}.
 	 */
 	@Test
 	public final void testGetServiceAsHtml() {
@@ -141,7 +141,7 @@ public class ServiceResourceTest {
 	}
 
 	/**
-	 * Test method for {@link uk.ac.open.kmi.iserve2.sal.rest.resource.ServiceResource#getServiceAsXml(java.lang.String)}.
+	 * Test method for {@link uk.ac.open.kmi.iserve.sal.rest.resource.ServiceResource#getServiceAsXml(java.lang.String)}.
 	 */
 	@Test
 	public final void testGetServiceAsXml() {
@@ -149,7 +149,7 @@ public class ServiceResourceTest {
 	}
 
 	/**
-	 * Test method for {@link uk.ac.open.kmi.iserve2.sal.rest.resource.ServiceResource#getServiceAsRdfXml(java.lang.String)}.
+	 * Test method for {@link uk.ac.open.kmi.iserve.sal.rest.resource.ServiceResource#getServiceAsRdfXml(java.lang.String)}.
 	 */
 	@Test
 	public final void testGetServiceAsRdfXml() {
@@ -157,7 +157,7 @@ public class ServiceResourceTest {
 	}
 
 	/**
-	 * Test method for {@link uk.ac.open.kmi.iserve2.sal.rest.resource.ServiceResource#getServiceAsTurtle(java.lang.String)}.
+	 * Test method for {@link uk.ac.open.kmi.iserve.sal.rest.resource.ServiceResource#getServiceAsTurtle(java.lang.String)}.
 	 */
 	@Test
 	public final void testGetServiceAsTurtle() {
@@ -165,7 +165,7 @@ public class ServiceResourceTest {
 	}
 
 	/**
-	 * Test method for {@link uk.ac.open.kmi.iserve2.sal.rest.resource.ServiceResource#getServiceAsNtriples(java.lang.String)}.
+	 * Test method for {@link uk.ac.open.kmi.iserve.sal.rest.resource.ServiceResource#getServiceAsNtriples(java.lang.String)}.
 	 */
 	@Test
 	public final void testGetServiceAsNtriples() {
@@ -173,7 +173,7 @@ public class ServiceResourceTest {
 	}
 
 	/**
-	 * Test method for {@link uk.ac.open.kmi.iserve2.sal.rest.resource.ServiceResource#addService(java.lang.String, java.lang.String, java.lang.String)}.
+	 * Test method for {@link uk.ac.open.kmi.iserve.sal.rest.resource.ServiceResource#addService(java.lang.String, java.lang.String, java.lang.String)}.
 	 */
 	@Test
 	public final void testAddService() {
@@ -242,7 +242,7 @@ public class ServiceResourceTest {
 	}
 
 	/**
-	 * Test method for {@link uk.ac.open.kmi.iserve2.sal.rest.resource.ServiceResource#deleteService(java.lang.String)}.
+	 * Test method for {@link uk.ac.open.kmi.iserve.sal.rest.resource.ServiceResource#deleteService(java.lang.String)}.
 	 */
 	@Test
 	public final void testDeleteService() {

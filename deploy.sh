@@ -1,14 +1,14 @@
-rm -rf ./iserve2/*
-cp -R ./iserve2-discovery-engine/target/iserve2-discovery-engine/* ./iserve2/
-cp -R ./iserve2-sal-rest/target/iserve2-sal-rest/* ./iserve2/
-cp -R ./iserve2-sal-gwt/target/iserve2-sal-gwt-0.0.1-SNAPSHOT/* ./iserve2/
-cp -R ./web.xml ./iserve2/WEB-INF/
-cd ./iserve2/
-jar -cvfM0 iserve2.war ./
+rm -rf ./iserve/*
+cp -R ./iserve-discovery-engine/target/iserve-discovery-engine/* ./iserve/
+cp -R ./iserve-sal-rest/target/iserve-sal-rest/* ./iserve/
+cp -R ./iserve-sal-gwt/target/iserve-sal-gwt-0.0.1-SNAPSHOT/* ./iserve/
+cp -R ./web.xml ./iserve/WEB-INF/
+cd ./iserve/
+jar -cvfM0 iserve.war ./
 cd ..
-mv ./iserve2/iserve2.war ./
-rm /Users/dl3962/Workspace/apache-tomcat-6.0.29/webapps/iserve2.war
-rm -rf /Users/dl3962/Workspace/apache-tomcat-6.0.29/webapps/iserve2
-cp ./iserve2.war /Users/dl3962/Workspace/apache-tomcat-6.0.29/webapps/iserve2.war
+mv ./iserve/iserve.war ./
+rm /Users/dl3962/Workspace/apache-tomcat-6.0.29/webapps/iserve.war
+rm -rf /Users/dl3962/Workspace/apache-tomcat-6.0.29/webapps/iserve
+cp ./iserve.war /Users/dl3962/Workspace/apache-tomcat-6.0.29/webapps/iserve.war
 /Users/dl3962/Workspace/apache-tomcat-6.0.29/bin/catalina.sh run
 

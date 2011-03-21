@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.importer.hrests;
+package uk.ac.open.kmi.iserve.importer.hrests;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,9 +22,9 @@ import javax.xml.transform.TransformerConfigurationException;
 
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve2.commons.io.IOUtil;
-import uk.ac.open.kmi.iserve2.importer.ImporterConfig;
-import uk.ac.open.kmi.iserve2.importer.ImporterException;
+import uk.ac.open.kmi.iserve.commons.io.IOUtil;
+import uk.ac.open.kmi.iserve.importer.ImporterConfig;
+import uk.ac.open.kmi.iserve.importer.ImporterException;
 
 public class HrestsImporterTest {
 

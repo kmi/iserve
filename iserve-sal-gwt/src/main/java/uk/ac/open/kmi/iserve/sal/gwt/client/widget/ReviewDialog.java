@@ -13,16 +13,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.gwt.client.widget;
+package uk.ac.open.kmi.iserve.sal.gwt.client.widget;
 
-import uk.ac.open.kmi.iserve2.sal.gwt.client.ServiceBrowseServiceAsync;
-import uk.ac.open.kmi.iserve2.sal.gwt.model.ServiceListModel;
-import uk.ac.open.kmi.iserve2.sal.gwt.model.StringModel;
-import uk.ac.open.kmi.iserve2.sal.model.impl.URIImpl;
-import uk.ac.open.kmi.iserve2.sal.model.review.Comment;
-import uk.ac.open.kmi.iserve2.sal.model.impl.RatingImpl;
-import uk.ac.open.kmi.iserve2.sal.model.impl.CommentImpl;
-import uk.ac.open.kmi.iserve2.sal.model.review.Rating;
+import uk.ac.open.kmi.iserve.sal.gwt.client.ServiceBrowseServiceAsync;
+import uk.ac.open.kmi.iserve.sal.gwt.model.ServiceListModel;
+import uk.ac.open.kmi.iserve.sal.gwt.model.StringModel;
+import uk.ac.open.kmi.iserve.sal.model.impl.URIImpl;
+import uk.ac.open.kmi.iserve.sal.model.review.Comment;
+import uk.ac.open.kmi.iserve.sal.model.impl.RatingImpl;
+import uk.ac.open.kmi.iserve.sal.model.impl.CommentImpl;
+import uk.ac.open.kmi.iserve.sal.model.review.Rating;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;

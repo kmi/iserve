@@ -5,14 +5,14 @@
  *
  * See LICENSE for more information about licensing and warranties.
  */
-package uk.ac.open.kmi.iserve2.imatcher.isparql.apf.simpack;
+package uk.ac.open.kmi.iserve.imatcher.isparql.apf.simpack;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import uk.ac.open.kmi.iserve2.imatcher.IServeIMatcher;
-import uk.ac.open.kmi.iserve2.imatcher.tool.MITPHv1CorpusForIServe;
+import uk.ac.open.kmi.iserve.imatcher.IServeIMatcher;
+import uk.ac.open.kmi.iserve.imatcher.tool.MITPHv1CorpusForIServe;
 
 import com.hp.hpl.jena.graph.Node;
 

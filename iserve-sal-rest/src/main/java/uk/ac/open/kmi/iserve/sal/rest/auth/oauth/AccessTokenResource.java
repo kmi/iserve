@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.iserve2.sal.rest.auth.oauth;
+package uk.ac.open.kmi.iserve.sal.rest.auth.oauth;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -20,9 +20,9 @@ import com.sun.jersey.oauth.signature.OAuthSecrets;
 import com.sun.jersey.oauth.signature.OAuthSignature;
 import com.sun.jersey.oauth.signature.OAuthSignatureException;
 
-import uk.ac.open.kmi.iserve2.sal.model.oauth.Consumer;
-import uk.ac.open.kmi.iserve2.sal.model.oauth.RequestToken;
-import uk.ac.open.kmi.iserve2.sal.rest.Factory;
+import uk.ac.open.kmi.iserve.sal.model.oauth.Consumer;
+import uk.ac.open.kmi.iserve.sal.model.oauth.RequestToken;
+import uk.ac.open.kmi.iserve.sal.rest.Factory;
 
 @Path("/access_token")
 public class AccessTokenResource {

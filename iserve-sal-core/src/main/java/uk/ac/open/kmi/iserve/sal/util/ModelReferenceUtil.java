@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.iserve2.sal.util;
+package uk.ac.open.kmi.iserve.sal.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -16,9 +16,9 @@ import org.ontoware.rdf2go.vocabulary.OWL;
 import org.ontoware.rdf2go.vocabulary.XSD;
 import org.openrdf.rdf2go.RepositoryModel;
 
-import uk.ac.open.kmi.iserve2.commons.io.IOUtil;
-import uk.ac.open.kmi.iserve2.commons.io.RDFRepositoryConnector;
-import uk.ac.open.kmi.iserve2.commons.io.URIUtil;
+import uk.ac.open.kmi.iserve.commons.io.IOUtil;
+import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
+import uk.ac.open.kmi.iserve.commons.io.URIUtil;
 
 public class ModelReferenceUtil {
 

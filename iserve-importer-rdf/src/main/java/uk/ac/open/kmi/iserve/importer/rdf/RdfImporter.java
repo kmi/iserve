@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.importer.rdf;
+package uk.ac.open.kmi.iserve.importer.rdf;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -28,10 +28,10 @@ import org.ontoware.rdf2go.model.Statement;
 import org.ontoware.rdf2go.model.Syntax;
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve2.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve2.importer.ImporterConfig;
-import uk.ac.open.kmi.iserve2.importer.ImporterException;
-import uk.ac.open.kmi.iserve2.importer.ServiceImporter;
+import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.importer.ImporterConfig;
+import uk.ac.open.kmi.iserve.importer.ImporterException;
+import uk.ac.open.kmi.iserve.importer.ServiceImporter;
 
 public class RdfImporter extends ServiceImporter {
 

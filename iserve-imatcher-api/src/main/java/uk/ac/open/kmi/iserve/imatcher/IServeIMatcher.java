@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.imatcher;
+package uk.ac.open.kmi.iserve.imatcher;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -25,9 +25,9 @@ import org.ontoware.rdf2go.model.node.URI;
 import org.openrdf.rdf2go.RepositoryModel;
 
 import simpack.measure.weightingscheme.StringTFIDF;
-import uk.ac.open.kmi.iserve2.commons.io.RDFRepositoryConnector;
-import uk.ac.open.kmi.iserve2.imatcher.strategy.api.IStrategy;
-import uk.ac.open.kmi.iserve2.imatcher.tool.MITPHv1CorpusForIServe;
+import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
+import uk.ac.open.kmi.iserve.imatcher.strategy.api.IStrategy;
+import uk.ac.open.kmi.iserve.imatcher.tool.MITPHv1CorpusForIServe;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;

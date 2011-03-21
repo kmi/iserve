@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.iserve2.sal.util;
+package uk.ac.open.kmi.iserve.sal.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,24 +13,24 @@ import org.ontoware.rdf2go.model.node.Variable;
 import org.ontoware.rdf2go.vocabulary.RDFS;
 import org.openrdf.rdf2go.RepositoryModel;
 
-import uk.ac.open.kmi.iserve2.commons.vocabulary.DC;
-import uk.ac.open.kmi.iserve2.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve2.sal.model.impl.MessageContentImpl;
-import uk.ac.open.kmi.iserve2.sal.model.impl.MessagePartImpl;
-import uk.ac.open.kmi.iserve2.sal.model.impl.ModelReferenceImpl;
-import uk.ac.open.kmi.iserve2.sal.model.impl.OperationImpl;
-import uk.ac.open.kmi.iserve2.sal.model.impl.QueryResultImpl;
-import uk.ac.open.kmi.iserve2.sal.model.impl.QueryRowImpl;
-import uk.ac.open.kmi.iserve2.sal.model.impl.ServiceImpl;
-import uk.ac.open.kmi.iserve2.sal.model.impl.URIImpl;
-import uk.ac.open.kmi.iserve2.sal.model.common.URI;
-import uk.ac.open.kmi.iserve2.sal.model.query.QueryResult;
-import uk.ac.open.kmi.iserve2.sal.model.query.QueryRow;
-import uk.ac.open.kmi.iserve2.sal.model.service.MessageContent;
-import uk.ac.open.kmi.iserve2.sal.model.service.MessagePart;
-import uk.ac.open.kmi.iserve2.sal.model.service.ModelReference;
-import uk.ac.open.kmi.iserve2.sal.model.service.Operation;
-import uk.ac.open.kmi.iserve2.sal.model.service.Service;
+import uk.ac.open.kmi.iserve.commons.vocabulary.DC;
+import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.sal.model.impl.MessageContentImpl;
+import uk.ac.open.kmi.iserve.sal.model.impl.MessagePartImpl;
+import uk.ac.open.kmi.iserve.sal.model.impl.ModelReferenceImpl;
+import uk.ac.open.kmi.iserve.sal.model.impl.OperationImpl;
+import uk.ac.open.kmi.iserve.sal.model.impl.QueryResultImpl;
+import uk.ac.open.kmi.iserve.sal.model.impl.QueryRowImpl;
+import uk.ac.open.kmi.iserve.sal.model.impl.ServiceImpl;
+import uk.ac.open.kmi.iserve.sal.model.impl.URIImpl;
+import uk.ac.open.kmi.iserve.sal.model.common.URI;
+import uk.ac.open.kmi.iserve.sal.model.query.QueryResult;
+import uk.ac.open.kmi.iserve.sal.model.query.QueryRow;
+import uk.ac.open.kmi.iserve.sal.model.service.MessageContent;
+import uk.ac.open.kmi.iserve.sal.model.service.MessagePart;
+import uk.ac.open.kmi.iserve.sal.model.service.ModelReference;
+import uk.ac.open.kmi.iserve.sal.model.service.Operation;
+import uk.ac.open.kmi.iserve.sal.model.service.Service;
 
 public class ModelConverter {
 

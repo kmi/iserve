@@ -13,15 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.gwt.client;
+package uk.ac.open.kmi.iserve.sal.gwt.client;
 
-import uk.ac.open.kmi.iserve2.sal.gwt.client.widget.HeaderWidget;
-import uk.ac.open.kmi.iserve2.sal.gwt.client.widget.ProfileDialog;
-import uk.ac.open.kmi.iserve2.sal.gwt.client.widget.ServiceCategoryWidget;
-import uk.ac.open.kmi.iserve2.sal.gwt.client.widget.ServiceDetailWidget;
-import uk.ac.open.kmi.iserve2.sal.gwt.client.widget.ServiceListWidget;
-import uk.ac.open.kmi.iserve2.sal.gwt.client.widget.WidgetController;
-import uk.ac.open.kmi.iserve2.sal.model.user.User;
+import uk.ac.open.kmi.iserve.sal.gwt.client.widget.HeaderWidget;
+import uk.ac.open.kmi.iserve.sal.gwt.client.widget.ProfileDialog;
+import uk.ac.open.kmi.iserve.sal.gwt.client.widget.ServiceCategoryWidget;
+import uk.ac.open.kmi.iserve.sal.gwt.client.widget.ServiceDetailWidget;
+import uk.ac.open.kmi.iserve.sal.gwt.client.widget.ServiceListWidget;
+import uk.ac.open.kmi.iserve.sal.gwt.client.widget.WidgetController;
+import uk.ac.open.kmi.iserve.sal.model.user.User;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.util.Margins;

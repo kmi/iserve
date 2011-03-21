@@ -13,12 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve2.sal.model.impl;
+package uk.ac.open.kmi.iserve.sal.model.impl;
 
 import java.util.List;
 
-import uk.ac.open.kmi.iserve2.sal.model.query.QueryResult;
-import uk.ac.open.kmi.iserve2.sal.model.query.QueryRow;
+import uk.ac.open.kmi.iserve.sal.model.query.QueryResult;
+import uk.ac.open.kmi.iserve.sal.model.query.QueryRow;
 
 public class QueryResultImpl implements QueryResult {
 

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>uk.ac.open.kmi.iserve2</groupId>
-	<artifactId>iserve2-parent</artifactId>
+	<groupId>uk.ac.open.kmi.iserve</groupId>
+	<artifactId>iserve-parent</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>iServe2 Parent</name>
+	<name>iserve Parent</name>
 
 	<developers>
 		<developer>
@@ -37,22 +37,22 @@
 		<url>http://kmi.open.ac.uk</url>
 	</organization>
 	<modules>
-		<module>iserve2-commons-io</module>
-		<module>iserve2-commons-vocabulary</module>
-		<module>iserve2-imatcher-api</module>
-		<module>iserve2-importer-api</module>
-		<module>iserve2-importer-sawsdl</module>
-		<module>iserve2-importer-hrests</module>
-		<module>iserve2-importer-owls</module>
-		<module>iserve2-importer-rdf</module>
-		<module>iserve2-sal-model</module>
-		<module>iserve2-sal-core</module>
-		<module>iserve2-sal-rest</module>
-		<module>iserve2-sal-gwt</module>
-		<module>iserve2-discovery-api</module>
-		<module>iserve2-discovery-disco</module>
-		<module>iserve2-discovery-imatcher</module>
-		<module>iserve2-discovery-engine</module>
+		<module>iserve-commons-io</module>
+		<module>iserve-commons-vocabulary</module>
+		<module>iserve-imatcher-api</module>
+		<module>iserve-importer-api</module>
+		<module>iserve-importer-sawsdl</module>
+		<module>iserve-importer-hrests</module>
+		<module>iserve-importer-owls</module>
+		<module>iserve-importer-rdf</module>
+		<module>iserve-sal-model</module>
+		<module>iserve-sal-core</module>
+		<module>iserve-sal-rest</module>
+		<module>iserve-sal-gwt</module>
+		<module>iserve-discovery-api</module>
+		<module>iserve-discovery-disco</module>
+		<module>iserve-discovery-imatcher</module>
+		<module>iserve-discovery-engine</module>
 	</modules>
 
 </project>

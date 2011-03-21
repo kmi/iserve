@@ -35,7 +35,7 @@
  * holder.
  */
 
-package uk.ac.open.kmi.iserve2.sal.rest.auth;
+package uk.ac.open.kmi.iserve.sal.rest.auth;
 
 /**
  * <p>A runtime exception representing a failure to provide correct
