@@ -21,11 +21,8 @@ import uk.ac.open.kmi.iserve.sal.gwt.client.ServiceBrowseServiceAsync;
 import uk.ac.open.kmi.iserve.sal.gwt.model.ServiceCategoryModel;
 import uk.ac.open.kmi.iserve.sal.gwt.model.TaxonomyModel;
 import uk.ac.open.kmi.iserve.sal.model.common.URI;
-import uk.ac.open.kmi.iserve.sal.model.impl.URIImpl;
 
 import com.extjs.gxt.ui.client.data.ModelKeyProvider;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
