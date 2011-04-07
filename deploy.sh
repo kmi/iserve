@@ -1,7 +1,7 @@
 rm -rf ./iserve/*
 cp -R ./iserve-discovery-engine/target/iserve-discovery-engine/* ./iserve/
 cp -R ./iserve-sal-rest/target/iserve-sal-rest/* ./iserve/
-cp -R ./iserve-sal-gwt/target/iserve-sal-gwt-0.0.1-SNAPSHOT/* ./iserve/
+cp -R ./iserve-sal-gwt/target/iserve-sal-gwt-1.0.0-SNAPSHOT/* ./iserve/
 cp -R ./web.xml ./iserve/WEB-INF/
 cd ./iserve/
 jar -cvfM0 iserve.war ./
