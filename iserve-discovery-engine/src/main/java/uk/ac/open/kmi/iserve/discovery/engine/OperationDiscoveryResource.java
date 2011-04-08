@@ -74,7 +74,7 @@ public class OperationDiscoveryResource {
 		init();
 		plugins = new HashMap<String, IServiceDiscoveryPlugin>();
 
-		IServiceDiscoveryPlugin plugin = new RDFSInputOutputDiscoveryPlugin(connector, true);
+		IServiceDiscoveryPlugin plugin = new RDFSInputOutputDiscoveryPlugin();
 		plugins.put(plugin.getName(), plugin);
 
 		plugin = new RDFSClassificationDiscoveryPlugin(connector, true);

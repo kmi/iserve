@@ -74,7 +74,7 @@ public class ServiceDiscoveryResource {
 		init();
 		plugins = new HashMap<String, IServiceDiscoveryPlugin>();
 
-		IServiceDiscoveryPlugin plugin = new RDFSInputOutputDiscoveryPlugin(connector, false);
+		IServiceDiscoveryPlugin plugin = new RDFSInputOutputDiscoveryPlugin();
 		plugins.put(plugin.getName(), plugin);
 
 		plugin = new IMatcherDiscoveryPlugin(connector);
