@@ -15,6 +15,7 @@
 */
 package uk.ac.open.kmi.iserve.discovery.disco;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -39,6 +40,7 @@ import org.ontoware.rdf2go.model.QueryRow;
 import org.ontoware.rdf2go.model.Statement;
 import org.ontoware.rdf2go.model.node.URI;
 import org.openrdf.rdf2go.RepositoryModel;
+import org.openrdf.repository.RepositoryException;
 
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
@@ -69,16 +71,8 @@ public class OntologyUpdateResource {
 		builtinExtras = Collections.unmodifiableList(extras);
 	}
 
-	public OntologyUpdateResource() {
-
-	}
-
-	/**
-	 * set the repository connector to be used by the update resource, must be called before the first request
-	 * @param c the connector
-	 */
-	public static void setRdfRepositoryConnector(RDFRepositoryConnector c) { 
-		rdfRepositoryConnector = c;
+	public OntologyUpdateResource() throws RepositoryException, IOException {
+		rdfRepositoryConnector = Factory.getInstance().createRDFRepositoryConnector();
 		if (updaterThread == null) {
 		    initUpdaterThread();
 		}

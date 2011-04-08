@@ -15,6 +15,7 @@
 */
 package uk.ac.open.kmi.iserve.discovery.disco;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -28,7 +29,6 @@ import java.util.TreeSet;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.apache.commons.collections.iterators.IteratorChain;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
@@ -37,6 +37,7 @@ import org.ontoware.rdf2go.model.QueryRow;
 import org.ontoware.rdf2go.model.node.Node;
 import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.rdf2go.RepositoryModel;
+import org.openrdf.repository.RepositoryException;
 
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
@@ -55,18 +56,10 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 	private int count;
 
 	private String feedSuffix;
-	
-	/**
-	 * This plugin supports discovery over services and operations
-	 * If this is true we will discovery operations rather than services
-	 */
-	private boolean operationDiscovery = false;
 
-	public RDFSInputOutputDiscoveryPlugin(RDFRepositoryConnector connector, boolean operationDiscovery) {
-		this.connector = connector;
+	public RDFSInputOutputDiscoveryPlugin() throws RepositoryException, IOException {
+		this.connector = Factory.getInstance().createRDFRepositoryConnector();
 		this.count = 0;
-		OntologyUpdateResource.setRdfRepositoryConnector(connector);
-		this.operationDiscovery = operationDiscovery;
 	}
 
 	public String getName() {
@@ -170,8 +163,8 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 	 * @param labels
 	 * @return
 	 */
-	private Set<Entry> serializeServices(Set<String> services, Map<String, Degree> inputDegrees, Map<String, Degree> outputDegrees, Map<String, String> labels) {
-		Set<Entry> matchingResults = new HashSet<Entry>();
+	private SortedSet<Entry> serializeServices(Set<String> services, Map<String, Degree> inputDegrees, Map<String, Degree> outputDegrees, Map<String, String> labels) {
+		SortedSet<Entry> matchingResults = new TreeSet<Entry>();
 
 		final Map<String, String> combinedServiceDegrees = new HashMap<String, String>();
         Map<String, String> degreeNames = new HashMap<String, String>();
@@ -225,8 +218,7 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 		for (String svc : sortedServices) {
 			String degreeNum = combinedServiceDegrees.get(svc);
 			Entry result = DiscoveryUtil.getAbderaInstance().newEntry();
-			result.setId(svc);
-			result.addLink(svc, "alternate");
+			result.addLink(svc);
 			result.setTitle(labels.get(svc));
 			ExtensibleElement e = result.addExtension(DiscoveryUtil.MATCH_DEGREE);
 			e.setAttributeValue("num", degreeNum);
@@ -251,55 +243,36 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 		// 5 find services that have a superclass for any of the goal classes
 		// in the query, ?exX is exact annotation, ?cpX is annotation class for
 		// plugin, ?csX is annotation class for subsume
-		
-		//FIXME: We should look into this process for optimization and
-		// for simplifying the code
-		
-		// Pick the top-level annotations
-		String preamble = "prefix wl: <" + MSM.WL_NS_URI + ">\n"
+		String query = "prefix wl: <" + MSM.WL_NS_URI + ">\n"
 				+ "prefix sawsdl: <" + MSM.SAWSDL_NS_URI + ">\n"
 				+ "prefix msm: <" + MSM.NS_URI + ">\n" + "prefix rdfs: <"
 				+ RDFS.NAMESPACE + ">\n"
 				+ "select ?svc ?labels ?op ?labelop ?ic ";
 		for (int i = 0; i < classes.size(); i++) {
-			preamble += "?su" + i + " ?pl" + i + " ?ex" + i + " ";
+			query += "?su" + i + " ?pl" + i + " ?ex" + i + " ";
 		}
-		
-		String queryTop = preamble + "\nwhere {\n  ?svc a msm:Service ; msm:hasOperation ?op .\n"
-				+ "  ?op msm:hasInput  ?i .\n"
+		query += "\nwhere {\n  ?svc a msm:Service ; msm:hasOperation ?op .\n"
+				+ "  ?op msm:hasInput  ?imsg .\n"
+				+ "  ?imsg msm:hasPart ?i .\n"
+				+ "  OPTIONAL { ?imsg msm:hasPartTransitive ?i .\n }"
 				+ "  ?i sawsdl:modelReference ?ic . \n"
 				+ "  optional { ?svc rdfs:label ?labels }\n"
 				+ "  optional { ?op rdfs:label ?labelop }\n";
-		
-		String optionalClasses = "";
 		for (int i = 0; i < classes.size(); i++) {
-			optionalClasses += "  optional {\n" + "    ?ic rdfs:subClassOf <"
+			query += "  optional {\n" + "    ?ic rdfs:subClassOf <"
 					+ classes.get(i).replace(">", "%3e") + "> ; ?su" + i + " <"
 					+ classes.get(i).replace(">", "%3e") + "> .\n" + "  }\n";
-			optionalClasses += "  optional {\n" + "    <"
+			query += "  optional {\n" + "    <"
 					+ classes.get(i).replace(">", "%3e")
 					+ "> rdfs:subClassOf ?ic ; ?pl" + i + " ?ic .\n" + "  }\n";
-			optionalClasses += "  optional {\n" + "    ?i sawsdl:modelReference <"
+			query += "  optional {\n" + "    ?i sawsdl:modelReference <"
 					+ classes.get(i).replace(">", "%3e") + "> ; ?ex" + i + " <"
 					+ classes.get(i).replace(">", "%3e") + "> .\n" + "  }\n";
 		}
-		
-		queryTop += optionalClasses + "}";
-		System.err.println("input matching query: \n" + queryTop);
-		
-		// Pick parts annotations
-		String queryParts = preamble + "\nwhere {\n  ?svc a msm:Service ; msm:hasOperation ?op .\n"
-				+ "  ?op msm:hasInput  ?imsg .\n"
-				+ "  ?imsg msm:hasPartTransitive ?i .\n"
-				+ "  ?i sawsdl:modelReference ?ic . \n"
-				+ "  optional { ?svc rdfs:label ?labels }\n"
-				+ "  optional { ?op rdfs:label ?labelop }\n";
+		query += "}";
+		System.err.println("input matching query: \n" + query);
 
-		queryParts += optionalClasses + "}";
-		System.err.println("input matching query: \n" + queryParts);
-
-		QueryResultTable qresultTop = repoModel.querySelect(queryTop, "sparql");
-		QueryResultTable qresultParts = repoModel.querySelect(queryParts, "sparql");
+		QueryResultTable qresult = repoModel.querySelect(query, "sparql");
 
 		Map<String, String> op2svc = new HashMap<String, String>();
 		Set<String> opExact = new HashSet<String>();
@@ -311,7 +284,7 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 		Set<String> opPartPlugin = new HashSet<String>();
 		Set<String> opPartSubsume = new HashSet<String>();
 
-		for (Iterator<QueryRow> it = new IteratorChain(qresultTop.iterator(), qresultParts.iterator()); it.hasNext();) {
+		for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
 			QueryRow row = it.next();
 			String svc = row.getValue("svc").toString();
 			String op = row.getValue("op").toString();
@@ -370,47 +343,25 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 
 		// the following order is significant - worse matches get rewritten by
 		// better ones
-		//FIXME: This should be done on the basis of a SortedSet
 		for (String op : opPartSubsume) {
-			if (operationDiscovery) {
-				matches.put(op, Degree.PARTIAL_SUBSUME);
-			} else {
-				matches.put(op2svc.get(op), Degree.PARTIAL_SUBSUME);
-			}
+			matches.put(op2svc.get(op), Degree.PARTIAL_SUBSUME);
 		}
 		for (String op : opPartPlugin) {
-			if (operationDiscovery) {
-				matches.put(op, Degree.PARTIAL_PLUGIN);
-			} else {
-				matches.put(op2svc.get(op), Degree.PARTIAL_PLUGIN);
-			}
+			matches.put(op2svc.get(op), Degree.PARTIAL_PLUGIN);
 		}
 		for (String op : opSubsume) {
-			if (operationDiscovery) {
-				matches.put(op, Degree.SUBSUME);
-			} else {
-				matches.put(op2svc.get(op), Degree.SUBSUME);
-			}
+			matches.put(op2svc.get(op), Degree.SUBSUME);
 		}
 		for (String op : opPlugin) {
-			if (operationDiscovery) {
-				matches.put(op, Degree.PLUGIN);
-			} else {
-				matches.put(op2svc.get(op), Degree.PLUGIN);
-			}
+			matches.put(op2svc.get(op), Degree.PLUGIN);
 		}
 		for (String op : opExact) {
-			if (operationDiscovery) {
-				matches.put(op, Degree.EXACT);
-			} else {
-				matches.put(op2svc.get(op), Degree.EXACT);
-			}
+			matches.put(op2svc.get(op), Degree.EXACT);
 		}
 
 		connector.closeRepositoryModel(repoModel);
 	}
 
-	//FIXME: Fix this method also to take into top-level annotations
 	private void matchOutputs(List<String> classes, Map<String, Degree> matches, Map<String, String> labels) throws DiscoveryException {
 		RepositoryModel repoModel = connector.openRepositoryModel();
 
@@ -529,13 +480,8 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 		return "http://iserve.kmi.open.ac.uk/";
 	}
 
-	public String getFeedTitle() {		
-		String feedTitle;
-		if (operationDiscovery) {
-			feedTitle = "rdfs i/o discovery results: " + count + " operation(s) for " + feedSuffix;
-		} else {
-			feedTitle = "rdfs i/o discovery results: " + count + " service(s) for " + feedSuffix;
-		}
+	public String getFeedTitle() {
+		String feedTitle = "rdfs i/o discovery results: " + count + " service(s) for " + feedSuffix;
 		return feedTitle;
 	}
 
