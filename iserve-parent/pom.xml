@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>uk.ac.open.kmi.iserve</groupId>
+	<artifactId>iserve-parent</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>iserve Parent</name>
+
+	<developers>
+		<developer>
+			<id>cpedrinaci</id>
+			<name>Carlos Pedrinaci</name>
+			<email>c.pedrinaci-{AT}-open.ac.uk</email>
+			<url>http://people.kmi.open.ac.uk/carlos/</url>
+			<organization>Knowledge Media Institute - The Open University</organization>
+			<organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+		</developer>
+		<developer>
+			<id>dong</id>
+			<name>Dong Liu</name>
+			<email>d.liu-{AT}-open.ac.uk</email>
+			<organization>Knowledge Media Institute - The Open University</organization>
+			<organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+		</developer>
+		<developer>
+			<id>jkopecky</id>
+			<name>Jacek Kopecky</name>
+			<email>j.kopecky-{AT}-open.ac.uk</email>
+			<organization>Knowledge Media Institute - The Open University</organization>
+			<organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+		</developer>
+	</developers>
+	<organization>
+		<name>Knowledge Media Institute - The Open University</name>
+		<url>http://kmi.open.ac.uk</url>
+	</organization>
+	<modules>
+		<module>iserve-commons-io</module>
+		<module>iserve-commons-vocabulary</module>
+		<module>iserve-importer-api</module>
+		<module>iserve-importer-sawsdl</module>
+		<module>iserve-importer-hrests</module>
+		<module>iserve-importer-owls</module>
+		<module>iserve-importer-rdf</module>
+		<module>iserve-sal-model</module>
+		<module>iserve-sal-core</module>
+		<module>iserve-sal-rest</module>
+		<module>iserve-sal-gwt</module>
+		<module>iserve-discovery-api</module>
+	</modules>
+
+</project>

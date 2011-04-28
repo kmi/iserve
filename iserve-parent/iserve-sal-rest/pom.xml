@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>iserve-parent</artifactId>
+		<groupId>uk.ac.open.kmi.iserve</groupId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<groupId>uk.ac.open.kmi.iserve</groupId>
+	<artifactId>iserve-sal-rest</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<name>iserve SAL RESTful API based on Jersey</name>
+
+	<developers>
+		<developer>
+			<id>cpedrinaci</id>
+			<name>Carlos Pedrinaci</name>
+			<email>c.pedrinaci-{AT}-open.ac.uk</email>
+			<url>http://people.kmi.open.ac.uk/carlos/</url>
+			<organization>Knowledge Media Institute - The Open University</organization>
+			<organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+		</developer>
+		<developer>
+			<id>dong</id>
+			<name>Dong Liu</name>
+			<email>d.liu-{AT}-open.ac.uk</email>
+			<organization>Knowledge Media Institute - The Open University</organization>
+			<organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+		</developer>
+		<developer>
+			<id>jkopecky</id>
+			<name>Jacek Kopecky</name>
+			<email>j.kopecky-{AT}-open.ac.uk</email>
+			<organization>Knowledge Media Institute - The Open University</organization>
+			<organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+		</developer>
+	</developers>
+	<organization>
+		<name>Knowledge Media Institute - The Open University</name>
+		<url>http://kmi.open.ac.uk</url>
+	</organization>
+
+	<properties>
+		<jersey-version>1.5</jersey-version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>uk.ac.open.kmi.iserve</groupId>
+			<artifactId>iserve-sal-core</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>${jersey-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey.contribs.jersey-oauth</groupId>
+			<artifactId>oauth-server</artifactId>
+			<version>${jersey-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey.contribs.jersey-oauth</groupId>
+			<artifactId>oauth-signature</artifactId>
+			<version>${jersey-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey.contribs.jersey-oauth</groupId>
+			<artifactId>oauth-client</artifactId>
+			<version>${jersey-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openid4java</groupId>
+			<artifactId>openid4java-full</artifactId>
+			<version>0.9.5</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- <dependency>
+			<groupId>uk.ac.open.kmi.iserve</groupId>
+			<artifactId>iserve-rest-client</artifactId>
+			<version>0.2</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency> -->
+	</dependencies>
+
+	<build>
+		<finalName>iserve-sal-rest</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<inherited>true</inherited>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
