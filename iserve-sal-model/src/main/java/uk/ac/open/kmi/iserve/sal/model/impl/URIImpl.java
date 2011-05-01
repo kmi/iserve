@@ -44,7 +44,7 @@ public class URIImpl implements URI {
 
 	public String getLocalName() {
 		if ( uriString.endsWith("/") ) {
-			return "";
+			return uriString;
 		}
 		int localNameIdx = getLocalNameIndex(uriString);
 		if ( localNameIdx >= uriString.length() ) {
