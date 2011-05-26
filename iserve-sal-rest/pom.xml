@@ -98,6 +98,13 @@
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency> -->
+		<dependency>
+			<groupId>uk.ac.open.kmi.iserve</groupId>
+			<artifactId>iserve-rest-client</artifactId>
+			<version>0.2</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
