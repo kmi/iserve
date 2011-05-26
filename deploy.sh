@@ -13,8 +13,8 @@ echo copying sal gwt
 cp -R ./iserve-sal-gwt/target/iserve-sal-gwt-1.0.0-SNAPSHOT/* ./iserve/
 cp -R ./web.xml ./iserve/WEB-INF/
 cd ./iserve/
-rm iserve/WEB-INF/lib/slf4j-api-1.5.6.jar
-rm iserve/WEB-INF/lib/slf4j-jcl-1.0.1.jar
+rm WEB-INF/lib/slf4j-api-1.5.6.jar
+rm WEB-INF/lib/slf4j-jcl-1.0.1.jar
 echo making war
 jar -cfM0 iserve.war ./
 cd ..
