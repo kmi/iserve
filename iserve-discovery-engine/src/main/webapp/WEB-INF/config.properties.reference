@@ -1,5 +1,5 @@
 # Core Data RDF Server
-serverName = localhost:9080/iserve2-sal-rest
+serverName = localhost:9080/iserve-sal-rest
 sesameServerURL = http://localhost:8080/openrdf-sesame
 repoName = serv_repo_owlim
 
