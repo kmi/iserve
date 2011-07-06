@@ -6,6 +6,10 @@
 	<packaging>jar</packaging>
 	<name>iServe RESTful Client</name>
 	<version>0.2</version>
+	<properties>
+		<maven.compiler.source>1.5</maven.compiler.source>
+		<maven.compiler.target>1.5</maven.compiler.target>
+	</properties>
 
 	<dependencies>
 		<dependency>
