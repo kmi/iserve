@@ -210,6 +210,12 @@ public abstract class AtomBase {
 			}
 		}
 
+		if ( combination != null ) {
+			for ( Entry result : combination ) {
+				combinedFeed.addEntry(result);
+			}
+		}
+
 		combinedFeed.setUpdated(new Date());
 		combinedFeed.setRights(rights);
 		return combinedFeed;
@@ -235,7 +241,7 @@ public abstract class AtomBase {
 				System.err.println("only http and https schemes supported; bad URI: " + properuri.toString());
 				uris.remove(i);
 			} else {
-				uris.set(i, URLDecoder.decode(properuri.toString()));
+				uris.set(i, URLDecoder.decode(properuri.toString()).replaceAll("#", "%23"));
 			}
 		}
 	}
