@@ -91,7 +91,8 @@ public class AllServicesPlugin implements IServiceDiscoveryPlugin {
 			String svc = it.next();
 			
 			Entry result = DiscoveryUtil.getAbderaInstance().newEntry();
-			result.addLink(svc);
+			result.setId(svc);
+			result.addLink(svc, "alternate");
 			result.setTitle(labels.get(svc));
 			matchingResults.add(result);
 

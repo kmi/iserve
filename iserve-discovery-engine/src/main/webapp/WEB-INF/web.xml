@@ -9,7 +9,7 @@
 
 		<init-param>
 			<param-name>com.sun.jersey.config.property.packages</param-name>
-			<param-value>uk.ac.open.kmi.iserve.discovery.engine;uk.ac.open.kmi.iserve.discovery.disco</param-value>
+			<param-value>uk.ac.open.kmi.iserve.discovery.engine</param-value>
 		</init-param>
 
 		<load-on-startup>1</load-on-startup>
