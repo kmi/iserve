@@ -8,10 +8,10 @@
 		<groupId>uk.ac.open.kmi.iserve</groupId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<groupId>uk.ac.open.kmi.iserve</groupId>
+	<groupId>uk.ac.open.kmi.iserve.import</groupId>
 	<artifactId>iserve-importer-owls</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
-	<name>iserve OWL-S Importer</name>
+	<name>iServe OWL-S Importer</name>
 
 	<developers>
 		<developer>
@@ -62,4 +62,5 @@
 		</dependency>
 	</dependencies>
 
+	<url>http://iserve.kmi.open.ac.uk/</url>
 </project>

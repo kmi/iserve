@@ -9,11 +9,11 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>uk.ac.open.kmi.iserve</groupId>
+	<groupId>uk.ac.open.kmi.iserve.sal</groupId>
 	<artifactId>iserve-sal-gwt</artifactId>
 	<packaging>war</packaging>
 	<version>1.0.0-SNAPSHOT</version>
-	<name>iserve Browser based on GWT</name>
+	<name>iServe Browser based on GWT</name>
 
 	<developers>
 		<developer>
@@ -153,4 +153,5 @@
 		</plugins>
 	</build>
 
+	<url>http://iserve.kmi.open.ac.uk/</url>
 </project>
