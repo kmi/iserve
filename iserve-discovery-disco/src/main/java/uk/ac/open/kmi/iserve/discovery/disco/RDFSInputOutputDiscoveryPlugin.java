@@ -36,8 +36,10 @@ import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.QueryRow;
 import org.ontoware.rdf2go.model.node.Node;
 import org.openrdf.model.vocabulary.RDFS;
+import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.rdf2go.RepositoryModel;
 import org.openrdf.repository.RepositoryException;
+
 
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
@@ -60,6 +62,7 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 	public RDFSInputOutputDiscoveryPlugin() throws RepositoryException, IOException {
 		this.connector = Factory.getInstance().createRDFRepositoryConnector();
 		this.count = 0;
+		this.feedSuffix = "";
 	}
 
 	public String getName() {
@@ -134,7 +137,7 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 		count = matchingResults.size();
 
 		if (matchingInputs) {
-			feedSuffix += "provided inputs: ";
+			feedSuffix += count + " provided inputs: ";
 			for (int i = 0; i < inputClasses.size(); i++) {
 				feedSuffix += inputClasses.get(i)
 						+ ((i < inputClasses.size() - 1) ? ", " : "");
@@ -144,7 +147,7 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 			}
 		}
 		if (matchingOutputs) {
-			feedSuffix += "requested outputs: ";
+			feedSuffix += " requested outputs: ";
 			for (int i = 0; i < outputClasses.size(); i++) {
 				feedSuffix += outputClasses.get(i)
 						+ ((i < outputClasses.size() - 1) ? ", " : "");
@@ -245,31 +248,58 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 		// plugin, ?csX is annotation class for subsume
 		String query = "prefix wl: <" + MSM.WL_NS_URI + ">\n"
 				+ "prefix sawsdl: <" + MSM.SAWSDL_NS_URI + ">\n"
-				+ "prefix msm: <" + MSM.NS_URI + ">\n" + "prefix rdfs: <"
-				+ RDFS.NAMESPACE + ">\n"
-				+ "select ?svc ?labels ?op ?labelop ?ic ";
+				+ "prefix msm: <" + MSM.NS_URI + ">\n"  
+				+ "prefix rdfs: <" + RDFS.NAMESPACE + ">\n"
+				+ "prefix rdf: <" + RDF.NAMESPACE + ">\n"
+				+ "select ?svc ?labels ?op ?labelop ?ic ?icp ";
 		for (int i = 0; i < classes.size(); i++) {
 			query += "?su" + i + " ?pl" + i + " ?ex" + i + " ";
 		}
-		query += "\nwhere {\n  ?svc a msm:Service ; msm:hasOperation ?op .\n"
+		query += "\nwhere {\n "
+				+ "  {?svc a msm:Service ; msm:hasOperation ?op .\n"
 				+ "  ?op msm:hasInput  ?imsg .\n"
 				+ "  ?imsg msm:hasPart ?i .\n"
 				+ "  OPTIONAL { ?imsg msm:hasPartTransitive ?i .\n }"
 				+ "  ?i sawsdl:modelReference ?ic . \n"
-				+ "  optional { ?svc rdfs:label ?labels }\n"
-				+ "  optional { ?op rdfs:label ?labelop }\n";
+				+ "  OPTIONAL { ?svc rdfs:label ?labels }\n"
+				+ "  OPTIONAL { ?op rdfs:label ?labelop }\n";
 		for (int i = 0; i < classes.size(); i++) {
-			query += "  optional {\n" + "    ?ic rdfs:subClassOf <"
+			query += "  OPTIONAL {\n" + "    ?ic rdfs:subClassOf <"
 					+ classes.get(i).replace(">", "%3e") + "> ; ?su" + i + " <"
 					+ classes.get(i).replace(">", "%3e") + "> .\n" + "  }\n";
-			query += "  optional {\n" + "    <"
+			query += "  OPTIONAL {\n" + "    <"
 					+ classes.get(i).replace(">", "%3e")
 					+ "> rdfs:subClassOf ?ic ; ?pl" + i + " ?ic .\n" + "  }\n";
-			query += "  optional {\n" + "    ?i sawsdl:modelReference <"
+			query += "  OPTIONAL {\n" + "    ?i sawsdl:modelReference <"
 					+ classes.get(i).replace(">", "%3e") + "> ; ?ex" + i + " <"
 					+ classes.get(i).replace(">", "%3e") + "> .\n" + "  }\n";
 		}
-		query += "}";
+		// Take into account annotations to properties of the type
+		query += "} UNION {"
+			+ "  ?svc a msm:Service ; msm:hasOperation ?op .\n"
+			+ "  ?op msm:hasInput  ?imsg .\n"
+			+ "  ?imsg msm:hasPart ?i .\n"
+			+ "  OPTIONAL { ?imsg msm:hasPartTransitive ?i .\n }"
+			+ "  ?i sawsdl:modelReference ?ic . \n"
+			+ "  OPTIONAL { ?svc rdfs:label ?labels }\n"
+			+ "  OPTIONAL { ?op rdfs:label ?labelop }\n"
+			+ " ?i sawsdl:modelReference ?prop . \n"
+			+ " ?prop rdfs:range ?icp .";
+
+		for (int i = 0; i < classes.size(); i++) {
+			query += "  OPTIONAL {\n" + "    ?icp rdfs:subClassOf <"
+				+ classes.get(i).replace(">", "%3e") + "> ; ?su" + i + " <"
+				+ classes.get(i).replace(">", "%3e") + "> .\n" + "  }\n";
+			query += "  OPTIONAL {\n" + "    <"
+					+ classes.get(i).replace(">", "%3e")
+					+ "> rdfs:subClassOf ?icp ; ?pl" + i + " ?icp .\n" + "  }\n";
+			query += "  OPTIONAL {\n" + "    ?icp rdfs:subClassOf <"
+					+ classes.get(i).replace(">", "%3e") + "> ."
+					+ "<" + classes.get(i).replace(">", "%3e") + "> rdfs:subClassOf ?icp ;"
+					+ " ?ex" + i + " <"
+					+ classes.get(i).replace(">", "%3e") + "> .\n" + "  }\n";
+		}
+		query += "}}";
 		System.err.println("input matching query: \n" + query);
 
 		QueryResultTable qresult = repoModel.querySelect(query, "sparql");
