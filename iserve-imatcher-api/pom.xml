@@ -97,7 +97,7 @@
 			<version>2.1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>uk.ac.open.kmi.iserve</groupId>
+			<groupId>uk.ac.open.kmi.iserve.commons</groupId>
 			<artifactId>iserve-commons-io</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>

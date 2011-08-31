@@ -56,36 +56,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>uk.ac.open.kmi.iserve</groupId>
-			<artifactId>iserve-commons-io</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>uk.ac.open.kmi.iserve</groupId>
-			<artifactId>iserve-importer-hrests</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>uk.ac.open.kmi.iserve</groupId>
-			<artifactId>iserve-importer-owls</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>uk.ac.open.kmi.iserve</groupId>
-			<artifactId>iserve-importer-sawsdl</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>uk.ac.open.kmi.iserve</groupId>
-			<artifactId>iserve-importer-rdf</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>uk.ac.open.kmi.iserve</groupId>
-			<artifactId>iserve-sal-model</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.tika</groupId>
 			<artifactId>tika-core</artifactId>
 			<version>0.7</version>
@@ -101,7 +71,37 @@
 			<version>2.1</version>
 		</dependency>
 		<dependency>
-			<groupId>uk.ac.open.kmi.iserve</groupId>
+			<groupId>uk.ac.open.kmi.iserve.commons</groupId>
+			<artifactId>iserve-commons-io</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>uk.ac.open.kmi.iserve.import</groupId>
+			<artifactId>iserve-importer-hrests</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>uk.ac.open.kmi.iserve.import</groupId>
+			<artifactId>iserve-importer-owls</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>uk.ac.open.kmi.iserve.import</groupId>
+			<artifactId>iserve-importer-sawsdl</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>uk.ac.open.kmi.iserve.import</groupId>
+			<artifactId>iserve-importer-rdf</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>uk.ac.open.kmi.iserve.sal</groupId>
+			<artifactId>iserve-sal-model</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>uk.ac.open.kmi.iserve.discovery</groupId>
 			<artifactId>iserve-imatcher-api</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>

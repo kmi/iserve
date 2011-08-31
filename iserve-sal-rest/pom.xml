@@ -50,11 +50,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>uk.ac.open.kmi.iserve</groupId>
-			<artifactId>iserve-sal-core</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-server</artifactId>
 			<version>${jersey-version}</version>
@@ -105,6 +100,11 @@
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>uk.ac.open.kmi.iserve.sal</groupId>
+			<artifactId>iserve-sal-core</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -112,6 +112,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
 				<inherited>true</inherited>
 				<configuration>
 					<source>1.5</source>
