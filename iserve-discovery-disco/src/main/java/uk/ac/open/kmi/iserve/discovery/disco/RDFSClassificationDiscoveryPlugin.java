@@ -99,12 +99,12 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 	 */
 	public Set<Entry> discover(MultivaluedMap<String, String> parameters) throws DiscoveryException {
 		List<String> classes = parameters.get("class");
-		if ( classes.size() == 0 ) {
-			throw new DiscoveryException(403, "functional discovery without parameters is not supported - add parameter 'class=uri'");
+		if ( classes == null || classes.size() == 0 ) {
+			throw new DiscoveryException(403, "Functional discovery without parameters is not supported - add parameter 'class=uri'");
 		}
 		for (int i = 0; i < classes.size(); i++) {
 			if ( classes.get(i) == null) {
-				throw new DiscoveryException(400, "empty class URI not allowed");
+				throw new DiscoveryException(400, "Empty class URI not allowed");
 			}
 		}
 
@@ -188,12 +188,16 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
         	query += "?g" + i + " ";
         }
         
-        String itemClass = "msm:Service";
+        String itemTypeStatement = "?item a msm:Service ";
         if (operationDiscovery) {
-        	itemClass = "msm:Operation";
+        	// Operations should inherit the service classifications
+        	// FIXME: Return the actual opertaion not the SERVICE
+        	itemTypeStatement += ". \n OPTIONAL {?item a msm:Operation} ";
         }
         
-        query += "\nwhere {\n  ?item a " + itemClass + " ; sawsdl:modelReference ?cat .\n"
+        query += "\nwhere {\n  " 
+        		+ itemTypeStatement + " . \n"
+        		+ "?item sawsdl:modelReference ?cat .\n"
         		+ "  ?cat rdfs:subClassOf [ a wl:FunctionalClassificationRoot ] .\n" 
         		+ "  optional { ?item rdfs:label ?label }";
         
@@ -208,7 +212,9 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
         }
         query += "  }\n";
         query += "}";
-//			System.err.println("query: \n" + query);
+        
+        
+        System.out.println("query: \n" + query);
 
         QueryResultTable qresult = repoModel.querySelect(query, "sparql");
         for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
