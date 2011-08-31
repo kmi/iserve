@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -38,27 +37,21 @@ import javax.wsdl.WSDLException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 
-import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.openrdf.repository.RepositoryException;
-
-import com.sun.jersey.api.NotFoundException;
-
-//import com.sun.jersey.api.NotFoundException;
 
 import uk.ac.open.kmi.iserve.commons.io.IOUtil;
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.util.DiscoveryUtil;
-import uk.ac.open.kmi.iserve.discovery.disco.AllServicesPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.RDFSClassificationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.RDFSInputOutputDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.engine.util.AtomUtil;
-import uk.ac.open.kmi.iserve.discovery.imatcher.IMatcherDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.sal.config.SalConfig;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
+
+import com.sun.jersey.api.NotFoundException;
 
 @Path("/disco/op/{name}")
 public class OperationDiscoveryResource {
