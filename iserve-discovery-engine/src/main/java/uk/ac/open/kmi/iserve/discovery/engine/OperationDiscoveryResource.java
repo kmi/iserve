@@ -60,14 +60,20 @@ public class OperationDiscoveryResource {
 	private SalConfig config;
 	private RDFRepositoryConnector connector;
 	private ServiceManager serviceManager;
-
+	
+	/**
+	 * This plugin supports discovery over services and operations
+	 * If this is true we will discovery operations rather than services
+	 */
+	private boolean operationDiscovery = false;
+	
 	public OperationDiscoveryResource() throws RepositoryException, 
 		TransformerConfigurationException, IOException, WSDLException, 
 		ParserConfigurationException {
 		init();
 		plugins = new HashMap<String, IServiceDiscoveryPlugin>();
 
-		IServiceDiscoveryPlugin plugin = new RDFSInputOutputDiscoveryPlugin();
+		IServiceDiscoveryPlugin plugin = new RDFSInputOutputDiscoveryPlugin(connector, true);
 		plugins.put(plugin.getName(), plugin);
 
 		plugin = new RDFSClassificationDiscoveryPlugin(connector, true);
