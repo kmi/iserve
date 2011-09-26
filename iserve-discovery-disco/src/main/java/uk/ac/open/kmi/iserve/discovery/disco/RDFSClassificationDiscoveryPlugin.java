@@ -84,10 +84,10 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 	public String getFeedTitle() {
 		String feedTitle;
 		if (operationDiscovery) {
-			feedTitle = "rdfs i/o discovery results: " + count + " operation(s) for " + feedSuffix;
+			feedTitle = "rdfs functional classification discovery results: " + count + " operation(s) for " + feedSuffix;
 		}
 		else {
-			feedTitle = "rdfs i/o discovery results: " + count + " service(s) for " + feedSuffix;
+			feedTitle = "rdfs functional classification discovery results: " + count + " service(s) for " + feedSuffix;
 		}
 		return feedTitle;
 	}
