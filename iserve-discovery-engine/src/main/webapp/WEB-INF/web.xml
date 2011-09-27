@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
 	<servlet>
-		<servlet-name>Jersey Web Application</servlet-name>
+		<servlet-name>Discovery Endpoint</servlet-name>
 		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
 
 		<init-param>
@@ -16,7 +16,7 @@
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>Jersey Web Application</servlet-name>
+		<servlet-name>Discovery Endpoint</servlet-name>
 		<url-pattern>/data/*</url-pattern>
 	</servlet-mapping>
 

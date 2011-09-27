@@ -43,16 +43,12 @@
 		<url>http://kmi.open.ac.uk</url>
 	</organization>
 
-	<properties>
-		<jersey-version>1.5</jersey-version>
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
-	</properties>
-
 	<repositories>
 		<repository>
-			<id>Java.net</id>
-			<url>http://download.java.net/maven/2/</url>
+		    <id>maven2-repository.java.net</id>
+		    <name>Java.net Repository for Maven</name>
+		    <url>http://download.java.net/maven/2</url>
+		    <layout>default</layout>
 		</repository>
 	</repositories>
 	<dependencies>
@@ -65,8 +61,7 @@
 		<dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>jersey-atom-abdera</artifactId>
-			<version>1.5</version>
-			<scope>runtime</scope>
+			<version>${jersey-version}</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.httpcomponents</groupId>
@@ -77,19 +72,19 @@
 		<dependency>
 		  <groupId>com.sun.jersey</groupId>
 		  <artifactId>jersey-server</artifactId>
-		  <version>1.5</version>
+		  <version>${jersey-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
-			<version>1.5</version>
+			<version>${jersey-version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
-			<artifactId>jersey-apache-client</artifactId>
-			<version>1.5</version>
+			<artifactId>jersey-apache-client4</artifactId>
+			<version>${jersey-version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>

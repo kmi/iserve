@@ -59,9 +59,10 @@ import com.sun.jersey.api.client.AsyncWebResource;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
-import com.sun.jersey.client.apache.ApacheHttpClient;
-import com.sun.jersey.client.apache.ApacheHttpClientHandler;
+import com.sun.jersey.client.apache4.config.ApacheHttpClient4Config;
+import com.sun.jersey.client.apache4.config.DefaultApacheHttpClient4Config;
+import com.sun.jersey.client.apache4.ApacheHttpClient4;
+import com.sun.jersey.client.apache4.ApacheHttpClient4Handler;
 
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.util.DiscoveryUtil;
@@ -126,13 +127,11 @@ public abstract class AtomBase {
         connectionManager.getParams().setDefaultMaxConnectionsPerHost(MAX_CONNECTIONS_PER_HOST); 
         connectionManager.getParams().setMaxTotalConnections(MAX_TOTAL_CONNECTIONS); 
 
-        ApacheHttpClientHandler apacheHandler = new ApacheHttpClientHandler(
-            	new HttpClient(connectionManager));
-        
-        apacheHandler.getConfig().getProperties().put(DefaultApacheHttpClientConfig.PROPERTY_PREEMPTIVE_AUTHENTICATION, 
-                Boolean.TRUE); 
+        DefaultApacheHttpClient4Config config = new DefaultApacheHttpClient4Config();
+//    	config.getProperties().put(ApacheHttpClient4Config.PROPERTY_PREEMPTIVE_BASIC_AUTHENTICATION, Boolean.TRUE);
+        config.getProperties().put(ApacheHttpClient4Config.PROPERTY_CONNECTION_MANAGER, connectionManager);
 
-        httpClient = new ApacheHttpClient(apacheHandler);
+        httpClient = ApacheHttpClient4.create(config);
     }
 
     // ------------------------------------------------- Contacts Public Methods
