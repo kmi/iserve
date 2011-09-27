@@ -6,7 +6,7 @@
 	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>iserve Parent</name>
+	<name>iServe Parent</name>
 
 	<developers>
 		<developer>
@@ -36,6 +36,14 @@
 		<name>Knowledge Media Institute - The Open University</name>
 		<url>http://kmi.open.ac.uk</url>
 	</organization>
+	
+	<properties>
+		<jersey-version>1.9</jersey-version>
+		<maven.compiler.source>1.6</maven.compiler.source>
+		<maven.compiler.target>1.6</maven.compiler.target>
+	</properties>
+	
+	
 	<modules>
 		<module>iserve-commons-io</module>
 		<module>iserve-commons-vocabulary</module>
@@ -53,6 +61,7 @@
 		<module>iserve-discovery-disco</module>
 		<module>iserve-discovery-imatcher</module>
 		<module>iserve-discovery-engine</module>
+<!-- 		<module>iserve-analysis-engine</module> -->
 	</modules>
 
 </project>
