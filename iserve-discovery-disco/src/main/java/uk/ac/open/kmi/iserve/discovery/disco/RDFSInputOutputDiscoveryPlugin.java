@@ -173,8 +173,8 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 	 * @param labels
 	 * @return
 	 */
-	private SortedSet<Entry> serializeMatches(Set<String> matches, Map<String, Degree> inputDegrees, Map<String, Degree> outputDegrees, Map<String, String> labels) {
-		SortedSet<Entry> matchingResults = new TreeSet<Entry>();
+	private Set<Entry> serializeMatches(Set<String> matches, Map<String, Degree> inputDegrees, Map<String, Degree> outputDegrees, Map<String, String> labels) {
+		Set<Entry> matchingResults = new HashSet<Entry>();
 
 		final Map<String, String> combinedMatchDegrees = new HashMap<String, String>();
 		Map<String, String> degreeNames = new HashMap<String, String>();
@@ -212,21 +212,23 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 			degreeNames.put(degreeNum, degreeName);
 			degreeDescs.put(degreeNum, degreeDesc);
 		}
-		
-		SortedSet<String> sortedMatches = new TreeSet<String>(new Comparator<String>() {
-			public int compare(String o1, String o2) {
-				String deg1 = combinedMatchDegrees.get(o1);
-				String deg2 = combinedMatchDegrees.get(o2);
-				int retval = deg1.compareTo(deg2);
-				if (retval == 0) {
-					retval = o1.compareTo(o2);
-				}
-				return retval;
-			}
-		});
-		sortedMatches.addAll(matches);
+//		
+//		SortedSet<String> sortedMatches = new TreeSet<String>(new Comparator<String>() {
+//			public int compare(String o1, String o2) {
+//				String deg1 = combinedMatchDegrees.get(o1);
+//				String deg2 = combinedMatchDegrees.get(o2);
+//				int retval = deg1.compareTo(deg2);
+//				if (retval == 0) {
+//					retval = o1.compareTo(o2);
+//				}
+//				return retval;
+//			}
+//		});
+//		sortedMatches.addAll(matches);
 
-		for (String match : sortedMatches) {
+//		for (String match : sortedMatches) {
+		
+		for (String match : matches) {			
 			String degreeNum = combinedMatchDegrees.get(match);
 			Entry result = DiscoveryUtil.getAbderaInstance().newEntry();
 			result.addLink(match);
