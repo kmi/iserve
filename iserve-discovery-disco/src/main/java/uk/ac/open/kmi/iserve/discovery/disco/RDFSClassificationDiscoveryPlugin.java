@@ -73,7 +73,7 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 
 	//FIXME: Replace with the actual version of the plugin
 	public String getDescription() {
-		return "iServe RDFS functional discovery API 2010/06/23";
+		return "iServe RDFS functional discovery API 2011/09/19";
 	}
 
 	//FIXME: Replace with the actual URL of the discovery endpoint for the plugin?
@@ -84,10 +84,10 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 	public String getFeedTitle() {
 		String feedTitle;
 		if (operationDiscovery) {
-			feedTitle = "rdfs functional classification discovery results: " + count + " operation(s) for " + feedSuffix;
+			feedTitle = "RDFS Functional Classification discovery results: " + count + " operation(s) for " + feedSuffix;
 		}
 		else {
-			feedTitle = "rdfs functional classification discovery results: " + count + " service(s) for " + feedSuffix;
+			feedTitle = "RDFS Functional Classification discovery results: " + count + " service(s) for " + feedSuffix;
 		}
 		return feedTitle;
 	}
@@ -178,53 +178,92 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
         // the presence of gX means the goal contains a subcategory of a class category; if every row for a service contains at least one gX then the goal is a subset of service
         // todo what about kinda-gssos where all goal classes are subclasses of service classes? it's stronger gssos if also all service classes have goal subclasses.
         
+        String selectStatement = "select ?svc ?labelSvc ?catSvc ?sssog0";
+        if (operationDiscovery) {
+        	selectStatement += " ?op  ?labelOp  ?catOp ";
+        }
+        
         String query = "prefix wl: <" + MSM.WL_NS_URI + ">\n"
         		+ "prefix sawsdl: <" + MSM.SAWSDL_NS_URI + ">\n"
         		+ "prefix msm: <" + MSM.NS_URI + ">\n"
         		+ "prefix rdfs: <" + RDFS.NAMESPACE + ">\n"
-        		+ "select ?item ?label ?sssog0 ?cat ";
+        		+ selectStatement;
         
         for (int i=0; i<classes.size(); i++) {
         	query += "?g" + i + " ";
         }
         
-        String itemTypeStatement = "?item a msm:Service ";
+        query += "\nwhere {\n  " 
+        		+ "?svc a msm:Service . \n"
+        		+ "optional { ?svc rdfs:label ?labelSvc } \n";
+        
         if (operationDiscovery) {
-        	// Operations should inherit the service classifications
-        	// FIXME: Return the actual opertaion not the SERVICE
-        	itemTypeStatement += ". \n OPTIONAL {?item a msm:Operation} ";
+        	query += "?svc msm:hasOperation ?op . \n" +
+        			"?op a msm:Operation . \n" +
+        			"optional { ?op rdfs:label ?labelOp } \n";
         }
         
-        query += "\nwhere {\n  " 
-        		+ itemTypeStatement + " . \n"
-        		+ "?item sawsdl:modelReference ?cat .\n"
-        		+ "  ?cat rdfs:subClassOf [ a wl:FunctionalClassificationRoot ] .\n" 
-        		+ "  optional { ?item rdfs:label ?label }";
+        // Generate the optional query for SVC and subclasses of the FC
+        query += "optional {" +
+				"?svc sawsdl:modelReference ?catSvc .\n"
+        		+ "  ?catSvc rdfs:subClassOf [ a wl:FunctionalClassificationRoot ] . \n" ;
         
         for (int i = 0; i < classes.size(); i++) {
-        	query += "  optional {\n"
-        			+ "    <" + classes.get(i).replace(">", "%3e") + "> rdfs:subClassOf ?cat ; ?g" + i + " ?cat .\n"
-        			+ "  }\n";
+        	query += " <" + classes.get(i).replace(">", "%3e") + "> rdfs:subClassOf ?catSvc ; ?g" + i + " ?catSvc .\n" ;
         }
+        
+        query += "  }\n";
+        // End
+        
+        // Generate the optional query for OP and subclasses of the FC
+    	if (operationDiscovery) {
+    		query += "optional {" +
+        	"?op sawsdl:modelReference ?catOp . \n" +
+        	"?catOp rdfs:subClassOf [ a wl:FunctionalClassificationRoot ] . \n" ;
+    		
+    		for (int i = 0; i < classes.size(); i++) {
+    			query+= "    <" + classes.get(i).replace(">", "%3e") + "> rdfs:subClassOf ?catOp ; ?g" + i + " ?catOp .\n";
+    		}
+    		query += "  }\n";
+    	}		        
+        
         query += "  optional {\n";
         for (int i = 0; i < classes.size(); i++) {
-        	query += "    ?item sawsdl:modelReference ?sssog" + i + " . \n    ?sssog" + i + " rdfs:subClassOf <" + classes.get(i).replace(">", "%3e") + "> .\n";
+        	query += "    ?svc sawsdl:modelReference ?sssog" + i + " . \n    ?sssog" + i + " rdfs:subClassOf <" + classes.get(i).replace(">", "%3e") + "> .\n";
         }
         query += "  }\n";
+        
+        if (operationDiscovery) {
+        	query += "  optional {\n";
+            for (int i = 0; i < classes.size(); i++) {
+            	query += "    ?op sawsdl:modelReference ?sssog" + i + " . \n    ?sssog" + i + " rdfs:subClassOf <" + classes.get(i).replace(">", "%3e") + "> .\n";
+            }
+            query += "  }\n";
+        }
+        
         query += "}";
         
-        
+        //FIXME: Use a proper logging framework
         System.out.println("query: \n" + query);
-
+        
         QueryResultTable qresult = repoModel.querySelect(query, "sparql");
         for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
         	QueryRow row = it.next();
-        	String item = row.getValue("item").toString();
+        	String item;
+        	if (operationDiscovery) {
+        		item = row.getValue("op").toString();
+        	} else {
+        		item = row.getValue("svc").toString();
+        	}
+        
         	Node sssog0 = row.getValue("sssog0");
         	if (sssog0 != null) {
         		itemSubclassOfGoal.add(item);
         	}
-        	goalSubclassOfItem.add(item); // initially, all services are counted as being supersets of the goal, below the set s_notgssos counts the instances that aren't, which are removed from s_gssos after the loop
+        	// initially, all services are counted as being supersets of the goal, 
+        	// below the set s_notgssos counts the instances that aren't, which 
+        	// are removed from s_gssos after the loop
+        	goalSubclassOfItem.add(item); 
         	boolean lacks_gX = true;
         	for (int i=0; i<classes.size(); i++) {
         		Node gi = row.getValue("g"+i);
@@ -237,7 +276,13 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
         		goalNotSubclassOfItem.add(item);
         	}
         	
-        	Node label = row.getValue("label");
+        	Node label;
+        	if (operationDiscovery) {
+        		label = row.getValue("labelOp");
+        	} else {
+        		label = row.getValue("labelSvc");
+        	}
+        	
         	if (label != null) {
         		labels.put(item, label.toString());
         	}
