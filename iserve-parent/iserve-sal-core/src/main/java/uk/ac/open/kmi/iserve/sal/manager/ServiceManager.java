@@ -38,7 +38,6 @@ import org.openrdf.repository.RepositoryException;
 import uk.ac.open.kmi.iserve.commons.io.FileUtil;
 import uk.ac.open.kmi.iserve.commons.io.StringUtil;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve.imatcher.IServeIMatcher;
 import uk.ac.open.kmi.iserve.importer.ImporterException;
 import uk.ac.open.kmi.iserve.importer.ServiceImporter;
 import uk.ac.open.kmi.iserve.importer.hrests.HrestsImporter;
@@ -140,14 +139,6 @@ public class ServiceManager extends BaseSemanticManager {
 			throw new ServiceException(e);
 		}
 
-		// add to iServe iMatcher
-		Model model = getServiceAsModel(serviceUri);
-		model.open();
-		String serviceInRdf = model.serialize(Syntax.RdfXml);
-		IServeIMatcher.getInstance().addRdf(serviceInRdf, serviceUri);
-		model.close();
-		model = null;
-
 		return serviceUri;
 	}
 
@@ -172,8 +163,6 @@ public class ServiceManager extends BaseSemanticManager {
 		while ( iter.hasNext() ) {
 			Statement stmt = iter.next();
 			model.removeStatement(stmt);
-			// Remove from iServe iMatcher
-			IServeIMatcher.getInstance().removeStatement(stmt);
 		}
 		iter.close();
 		iter = null;
