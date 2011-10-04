@@ -66,7 +66,15 @@ Currently iServe provides the following discovery plugins:
 - Inputs and Outputs with RDFS reasoning
 - Keywords similarity 
 
+NOTE: These discovery plugins are currently been cleaned-up and re-engineered 
+prior to their public release, although they are available in our public 
+deployment. Should you wish to use them in your own deployment, or wish to 
+modify or extend them, do let us know and we will provide you copies of the code.
 
+Contact and Support
+===================
+Mailing List: iserve-general@googlegroups.com
+Bugs and Feature requests: https://github.com/kmi/iserve/issues
 
 
 
