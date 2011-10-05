@@ -42,10 +42,11 @@ import org.openrdf.repository.RepositoryException;
 
 
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
+import uk.ac.open.kmi.iserve.commons.io.URIUtil;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.api.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.discovery.disco.util.DiscoveryUtil;
 
 public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 
@@ -265,7 +266,19 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 		for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
 			QueryRow row = it.next();
 			String svc = row.getValue("svc").toString();
+			String labelSvc = null;
+			Node label = row.getValue("labelSvc");
+			if (label != null) {
+				labelSvc = label.toString();
+			}
+			
 			String op = row.getValue("op").toString();
+			String labelOp = null;
+			label = row.getValue("labelOp");
+			if (label != null) {
+				labelOp = label.toString();
+			}
+			
 			op2svc.put(op, svc);
 			// initially all ops are assumed to match until proven otherwise
 			// (below)
@@ -273,13 +286,11 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 			opPlugin.add(op);
 			opSubsume.add(op);
 
-			Node label = row.getValue("labels");
-			if (label != null) {
-				labels.put(svc, label.toString());
-			}
-			label = row.getValue("labelop");
-			if (label != null) {
-				labels.put(op, label.toString());
+			String entryTitle = DiscoveryUtil.createEntryTitle(operationDiscovery, svc, labelSvc, op, labelOp);
+			if (operationDiscovery) {
+				labels.put(op, entryTitle);
+			} else {
+				labels.put(svc, entryTitle);
 			}
 
 			boolean has_ex = false;

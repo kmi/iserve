@@ -39,7 +39,7 @@ import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.api.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.discovery.disco.util.DiscoveryUtil;
 
 public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugin {
 
@@ -249,11 +249,28 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
         QueryResultTable qresult = repoModel.querySelect(query, "sparql");
         for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
         	QueryRow row = it.next();
-        	String item;
+        	
+        	String svcUri = row.getValue("svc").toString();
+			String svcLabel = null;
+			String opUri = null;
+			String opLabel = null;
+			
+			Node label = row.getValue("labelSvc");
+			if (label != null) {
+				svcLabel = label.toString();
+			}
+			
+			String item;
+			
         	if (operationDiscovery) {
-        		item = row.getValue("op").toString();
+        		opUri = row.getValue("op").toString();
+    			label = row.getValue("labelOp");
+    			if (label != null) {
+    				opLabel = label.toString();
+    			}
+    			item = opUri;
         	} else {
-        		item = row.getValue("svc").toString();
+        		item = svcUri;
         	}
         
         	Node sssog0 = row.getValue("sssog0");
@@ -276,16 +293,8 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
         		goalNotSubclassOfItem.add(item);
         	}
         	
-        	Node label;
-        	if (operationDiscovery) {
-        		label = row.getValue("labelOp");
-        	} else {
-        		label = row.getValue("labelSvc");
-        	}
+        	labels.put(item, DiscoveryUtil.createEntryTitle(operationDiscovery, svcUri, svcLabel, opUri, opLabel));
         	
-        	if (label != null) {
-        		labels.put(item, label.toString());
-        	}
         }
         goalSubclassOfItem.removeAll(goalNotSubclassOfItem);
         
