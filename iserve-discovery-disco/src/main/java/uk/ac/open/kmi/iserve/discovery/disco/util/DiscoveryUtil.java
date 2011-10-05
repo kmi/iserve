@@ -13,11 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve.discovery.api.util;
+package uk.ac.open.kmi.iserve.discovery.disco.util;
 
 import javax.xml.namespace.QName;
 
 import org.apache.abdera.Abdera;
+
+import uk.ac.open.kmi.iserve.commons.io.URIUtil;
 
 /**
  * Class Description
@@ -44,9 +46,6 @@ public class DiscoveryUtil {
 	  
     /**
      * Abdera singleton.
-     * Currently it is used publicly by the plugins to minimise resource 
-     * consumption which means they can't be deployed independently in other
-     * servers. They could however be adapted easily. 
      */
     private static Abdera abdera = null;
     
@@ -54,5 +53,34 @@ public class DiscoveryUtil {
       if (abdera == null) abdera = new Abdera();
       return abdera;
     }
-	
+    
+	/**
+	 * @param svcUri
+	 * @param svcLabel
+	 * @param opUri
+	 * @param opLabel
+	 * @return
+	 */
+	public static String createEntryTitle(boolean operationDiscovery, String svcUri, String svcLabel, String opUri, String opLabel) {
+		String result;
+		String serviceLabel = getLabel(svcUri, svcLabel);
+		if (operationDiscovery) {
+			result = serviceLabel + "." + getLabel(opUri, opLabel);
+		} else {
+			result = serviceLabel;
+		}
+		return result;
+	}
+
+	/**
+	 * @param uri
+	 * @param label
+	 * @return
+	 */
+	private static String getLabel(String uri, String label) {
+		if (label != null)
+			return label;
+		return URIUtil.getLocalName(uri);
+	}
+    
 }

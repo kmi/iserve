@@ -38,7 +38,7 @@ import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.api.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.discovery.disco.util.DiscoveryUtil;
 
 public class AllServicesPlugin implements IServiceDiscoveryPlugin {
 

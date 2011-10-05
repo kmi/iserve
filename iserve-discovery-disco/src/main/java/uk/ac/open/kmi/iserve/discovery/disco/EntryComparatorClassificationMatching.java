@@ -21,7 +21,7 @@ import java.util.HashMap;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
 
-import uk.ac.open.kmi.iserve.discovery.api.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.discovery.disco.util.DiscoveryUtil;
 
 /**
  * Comparator for sorting Entries obtained when matching Entries

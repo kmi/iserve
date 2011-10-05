@@ -45,9 +45,9 @@ import uk.ac.open.kmi.iserve.commons.io.IOUtil;
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.api.util.DiscoveryUtil;
 import uk.ac.open.kmi.iserve.discovery.disco.RDFSClassificationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.RDFSInputOutputDiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.disco.util.DiscoveryUtil;
 import uk.ac.open.kmi.iserve.sal.config.SalConfig;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 

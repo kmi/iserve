@@ -33,7 +33,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.api.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.discovery.disco.util.DiscoveryUtil;
 import uk.ac.open.kmi.iserve.imatcher.IServeIMatcher;
 import uk.ac.open.kmi.iserve.imatcher.strategy.api.IStrategy;
 import uk.ac.open.kmi.iserve.imatcher.strategy.impl.LevNStrategy;
