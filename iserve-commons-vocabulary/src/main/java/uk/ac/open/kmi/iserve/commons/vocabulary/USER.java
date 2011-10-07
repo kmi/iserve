@@ -20,12 +20,6 @@ import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
 public class USER {
 
-	public static final String FOAF_NS_URI = "http://xmlns.com/foaf/0.1/";
-	public static final String FOAF_NS_PREFIX = "foaf";
-
-	public static final String FOAF_OPENID = FOAF_NS_URI + "openid";
-	public static final URI foafOpenId = new URIImpl(FOAF_OPENID);
-
 	public static final String AGENT = "/resource/agent/";
 
 	public static final String PEOPLE = "/resource/people/";

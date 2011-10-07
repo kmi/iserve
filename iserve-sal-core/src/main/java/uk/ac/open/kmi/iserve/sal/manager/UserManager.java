@@ -17,6 +17,7 @@ package uk.ac.open.kmi.iserve.sal.manager;
 
 import java.security.NoSuchAlgorithmException;
 
+import uk.ac.open.kmi.iserve.commons.vocabulary.FOAF;
 import uk.ac.open.kmi.iserve.commons.vocabulary.USER;
 import uk.ac.open.kmi.iserve.sal.model.common.URI;
 import uk.ac.open.kmi.iserve.sal.model.impl.URIImpl;
@@ -54,7 +55,7 @@ public class UserManager extends BaseSemanticManager {
 		User result = new UserImpl();
 		result.setOpenId(openId);
 		String queryString = "SELECT ?p ?u ?pwd WHERE { " +
-			"?p " + USER.foafOpenId.toSPARQL() + " " + openId.toSPARQL() + " . " +
+			"?p " + FOAF.foafOpenId.toSPARQL() + " " + openId.toSPARQL() + " . " +
 			"?p " + hasUserName.toSPARQL() + " ?u . " +
 			"?p " + hasPassword.toSPARQL() + " ?pwd . }";
 		RepositoryModel repoModel = repoConnector.openRepositoryModel();
@@ -83,7 +84,7 @@ public class UserManager extends BaseSemanticManager {
 		User result = new UserImpl();
 		result.setUserName(userName);
 		String queryString = "SELECT ?p ?o ?pwd WHERE { " +
-			"?p " + USER.foafOpenId.toSPARQL() + " ?o . " +
+			"?p " + FOAF.foafOpenId.toSPARQL() + " ?o . " +
 			"?p " + hasUserName.toSPARQL() + " \"" + userName +  "\" . " +
 			"?p " + hasPassword.toSPARQL() + " ?pwd . }";
 		RepositoryModel repoModel = repoConnector.openRepositoryModel();
@@ -128,7 +129,7 @@ public class UserManager extends BaseSemanticManager {
 		}
 
 		qrt = repoModel.sparqlSelect("SELECT ?o WHERE { \n" +
-				foafId.toSPARQL() + " " + USER.foafOpenId.toSPARQL() + " ?o . }");
+				foafId.toSPARQL() + " " + FOAF.foafOpenId.toSPARQL() + " ?o . }");
 		if ( qrt != null ) {
 			ClosableIterator<QueryRow> iter = qrt.iterator();
 			if ( iter.hasNext() ) {
@@ -146,7 +147,7 @@ public class UserManager extends BaseSemanticManager {
 		org.ontoware.rdf2go.model.node.URI openIdInst = new org.ontoware.rdf2go.model.node.impl.URIImpl(openId.toString());
 		org.ontoware.rdf2go.model.node.URI foafIdInst = new org.ontoware.rdf2go.model.node.impl.URIImpl(foafId.toString());
 		if ( foafIdInst != null ) {
-			repoModel.addStatement(foafIdInst, USER.foafOpenId, openIdInst);
+			repoModel.addStatement(foafIdInst, FOAF.foafOpenId, openIdInst);
 		}
 		if ( userName != null && userName != "" ) {
 			repoModel.addStatement(foafIdInst, hasUserName, userName);
@@ -179,7 +180,7 @@ public class UserManager extends BaseSemanticManager {
 		RepositoryModel repoModel = repoConnector.openRepositoryModel();
 		org.ontoware.rdf2go.model.node.URI foafIdInst = new org.ontoware.rdf2go.model.node.impl.URIImpl(foafId.toString());
 		if ( foafIdInst != null ) {
-			repoModel.removeStatements(foafIdInst, USER.foafOpenId, Variable.ANY);
+			repoModel.removeStatements(foafIdInst, FOAF.foafOpenId, Variable.ANY);
 			repoModel.removeStatements(foafIdInst, hasUserName, Variable.ANY);
 			repoModel.removeStatements(foafIdInst, hasPassword, Variable.ANY);
 		}
