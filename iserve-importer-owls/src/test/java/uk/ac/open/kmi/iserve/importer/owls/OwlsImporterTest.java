@@ -37,7 +37,7 @@ public class OwlsImporterTest {
 	public void test() throws ImporterException {
 		try {
 			String contents = IOUtil.readString(new File("/Users/dl3962/Workspace/gtd/Action/iServe/data/testing-20100125/vehicle_price_service.owls"));
-			String serviceUri = importer.importService("vehicle_price_service.owls", contents, "http://test.com/test.html");
+			String serviceUri = importer.importService("vehicle_price_service.owls", contents, null);
 			System.out.println(serviceUri);
 		} catch (IOException e) {
 			e.printStackTrace();

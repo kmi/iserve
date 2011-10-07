@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>uk.ac.open.kmi.iserve.sal</groupId>
 	<artifactId>iserve-sal-rest</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<name>iServe SAL RESTful API based on Jersey</name>

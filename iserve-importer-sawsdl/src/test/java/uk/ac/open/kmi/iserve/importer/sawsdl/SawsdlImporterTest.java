@@ -89,7 +89,7 @@ public class SawsdlImporterTest {
 		        // Get filename of file or directory
 		        File file = children[i];
 		        String contents = IOUtil.readString(file);
-				String serviceUri = importer.importService(file.getName(), contents, "http://test.com/test.html");
+				String serviceUri = importer.importService(file.getName(), contents, null);
 		        System.out.println(serviceUri);
 		        
 		    }
@@ -105,7 +105,7 @@ public class SawsdlImporterTest {
 //		String contents = IOUtil.readString(new File("/Users/dl3962/Workspace/gtd/Action/iServe/data/testing-20100125/title_videomediarecommendedprice_service.wsdl"));
 //		String serviceUri = importer.importService("title_videomediarecommendedprice_service.wsdl", contents, "http://test.com/test.html");
 		String contents = IOUtil.readString(new File("/Users/dl3962/Workspace/gtd/Action/iServe/data/testing-20100125/00all.wsdl"));
-		String serviceUri = importer.importService("00all.wsdl", contents, "http://test.com/test.html");
+		String serviceUri = importer.importService("00all.wsdl", contents, null);
 		System.out.println(serviceUri);
 	}
 

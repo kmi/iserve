@@ -83,8 +83,8 @@ public class ServiceResourceTest {
 		iServeClient = new IServeHttpClient(ISERVE_URL, USER_NAME, PASSWORD);
 		testFolders = new ArrayList<String>();
 		workingDir = System.getProperty("user.dir");
-//		testFolders.add(workingDir + "/src/test/resources/jgd-services");
-		testFolders.add(workingDir + "/src/test/resources/soa4re");
+		testFolders.add(workingDir + "/src/test/resources/jgd-services");
+//		testFolders.add(workingDir + "/src/test/resources/soa4re");
 		
 		FilenameFilter wsdlFilter = new FilenameFilter() {
 		    public boolean accept(File dir, String name) {
@@ -194,26 +194,38 @@ public class ServiceResourceTest {
 	 * @param files
 	 */
 	private void uploadFiles(File[] files) {
-		String fileContent;
-		String result;
 		for (File file : files) {
-			fileContent = readFile(file);
-			try {
-				result = iServeClient.addService(fileContent, ISERVE_URL + 
-						"/tests/" + file.getName());
-				System.out.println("Service uploaded: " + file.getAbsolutePath());
-				System.out.println("Result: " + result);
-			} catch (HttpException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (MimeTypeDetectionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			this.uploadFile(file);
 		}	
+	}
+	
+	private void uploadFile(File file) {	
+		try {
+			String fileContent = readFile(file);
+			String result = iServeClient.addService(fileContent, null);
+			System.out.println("Service uploaded: " + file.getAbsolutePath());
+			System.out.println("Result: " + result);
+		} catch (HttpException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MimeTypeDetectionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Test
+	public final void uploadCopyFile() {
+		String workingDir = System.getProperty("user.dir");
+		String testFolder = workingDir + "/src/test/resources/copies/";
+		
+		System.out.println("Uploading copy file");
+		File copyFile = new File(testFolder + "5704_6846_GeoNames_FindNearbyPostalCodes1-Copy.html");
+		uploadFile(copyFile);
 	}
 
 	/**

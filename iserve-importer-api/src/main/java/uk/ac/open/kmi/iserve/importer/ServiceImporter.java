@@ -82,9 +82,13 @@ public abstract class ServiceImporter {
 				throw new ImporterException("Errors in transformation results, because MSM service cannot be found");
 			}
 			serviceURIs.close();
-			model.addStatement(stmt.getSubject(), DC.source, model.createURI(documentBaseURI + fileName));
-			if ( sourceUri != null && sourceUri.equalsIgnoreCase("") == false ) {
+			
+			// Only store the document and include the dc:source if no original
+			// source for the document is given
+			if ( sourceUri != null && sourceUri.equalsIgnoreCase("") ) {
 				model.addStatement(stmt.getSubject(), DC.source, model.createURI(sourceUri));
+			} else {
+				model.addStatement(stmt.getSubject(), DC.source, model.createURI(documentBaseURI + fileName));
 			}
 			newServiceUri = stmt.getSubject().toString();
 		} catch (ModelRuntimeException e) {
@@ -95,16 +99,18 @@ public abstract class ServiceImporter {
 			connector.closeRepositoryModel(model);
 		}
 
-		// save file to disk
-		try {
-			FileUtil.createDirIfNotExists(new File(config.getDocFolderPath() + uuid + "/" ));
-			IOUtil.writeString(serviceDescription, new File(config.getDocFolderPath() + uuid + "/" + fileName));
-		} catch (IOException e) {
-			model.open();
-			// FIXME: May remove ALL the statement in the repository, when using early version of Swift OWLim!
-			model.removeAll();
-			connector.closeRepositoryModel(model);
-			throw new ImporterException(e);
+		if ( sourceUri == null || sourceUri.equalsIgnoreCase("") ) {
+			// save file to disk
+			try {
+				FileUtil.createDirIfNotExists(new File(config.getDocFolderPath() + uuid + "/" ));
+				IOUtil.writeString(serviceDescription, new File(config.getDocFolderPath() + uuid + "/" + fileName));
+			} catch (IOException e) {
+				model.open();
+				// FIXME: May remove ALL the statement in the repository, when using early version of Swift OWLim!
+				model.removeAll();
+				connector.closeRepositoryModel(model);
+				throw new ImporterException(e);
+			}
 		}
 
 		return newServiceUri;

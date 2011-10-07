@@ -56,7 +56,7 @@ public class HrestsImporterTest {
 	public void test() throws ImporterException {
 		try {
 			String contents = IOUtil.readString(new File("/Users/dl3962/Workspace/gtd/Action/iServe/data/testing-20100125/hrestAnnotation.html"));
-			String serviceUri = importer.importService("hrestAnnotation.html", contents, "http://test.com/test.html");
+			String serviceUri = importer.importService("hrestAnnotation.html", contents, null);
 			System.out.println(serviceUri);
 		} catch (IOException e) {
 			e.printStackTrace();
