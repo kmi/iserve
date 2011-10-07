@@ -51,7 +51,7 @@ public interface ServiceBrowseService extends RemoteService {
 
 	public List<ServiceCategoryModel> getAllCategories(String uri) throws BrowserException;
 
-	public List<ServiceCategoryModel> getSubCategories(ServiceCategoryModel serviceCategory) throws BrowserException;
+	List getSubCategories(ServiceCategoryModel p0) throws BrowserException;
 
 	public List<ServiceCategoryModel> listServiceClassificationRoots() throws BrowserException;
 

@@ -191,7 +191,7 @@ public class ServiceCategoryWidget extends LayoutContainer {
 			}
 		});
 
-		serviceBrowseService.listTaxonomy(new AsyncCallback<List>() {
+		serviceBrowseService.listTaxonomy(new AsyncCallback<List<URI>>() {
 
 			public void onSuccess(List taxonomyList) {
 				for ( URI taxonomyUri : (List<URI>) taxonomyList ) {

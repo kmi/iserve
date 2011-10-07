@@ -15,8 +15,11 @@
 */
 package uk.ac.open.kmi.iserve.sal.gwt.client;
 
+import java.util.List;
+
 import uk.ac.open.kmi.iserve.sal.gwt.model.ServiceCategoryModel;
 import uk.ac.open.kmi.iserve.sal.gwt.model.ServiceListModel;
+import uk.ac.open.kmi.iserve.sal.model.common.URI;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.google.gwt.core.client.GWT;
@@ -89,11 +92,7 @@ public interface ServiceBrowseServiceAsync
     void executeLogQuery( java.lang.String p0, AsyncCallback<uk.ac.open.kmi.iserve.sal.model.query.QueryResult> callback );
 
 
-    /**
-     * GWT-RPC service  asynchronous (client-side) interface
-     * @see uk.ac.open.kmi.iserve.sal.gwt.client.ServiceBrowseService
-     */
-    void listTaxonomy( AsyncCallback<java.util.List> callback );
+    void listTaxonomy(AsyncCallback<List<URI>> callback);
 
 
     /**
@@ -110,11 +109,8 @@ public interface ServiceBrowseServiceAsync
     void getSubCategories( uk.ac.open.kmi.iserve.sal.gwt.model.ServiceCategoryModel p0, AsyncCallback<java.util.List> callback );
 
 
-    /**
-     * GWT-RPC service  asynchronous (client-side) interface
-     * @see uk.ac.open.kmi.iserve.sal.gwt.client.ServiceBrowseService
-     */
-    void listServiceClassificationRoots( AsyncCallback<java.util.List> callback );
+    void listServiceClassificationRoots(
+			AsyncCallback<List<ServiceCategoryModel>> callback);
 
 
     /**
