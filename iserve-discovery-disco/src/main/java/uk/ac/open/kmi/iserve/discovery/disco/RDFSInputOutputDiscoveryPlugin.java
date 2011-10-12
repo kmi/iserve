@@ -489,11 +489,12 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 			query += "?su" + i + " ?pl" + i + " ?ex" + i + " ";
 		}
 		query += "\nwhere {\n "
-			+ "  {?svc a msm:Service ; msm:hasOperation ?op .\n"
+			+ "  ?svc a msm:Service ; msm:hasOperation ?op .\n"
 			+ "  ?op <" + relOperationAndClasses + "> ?imsg .\n"
-			+ "  ?imsg msm:hasPart ?i .\n"
-			+ "  OPTIONAL { ?imsg msm:hasPartTransitive ?i .\n }"
-			+ "  ?i sawsdl:modelReference ?ic . \n"
+			+ "  ?imsg msm:hasPartTransitive ?i .\n"
+			+ "  ?i sawsdl:modelReference ?ic . \n"     
+			+ "  ?i sawsdl:modelReference ?prop . \n"   // Take into account annotations to properties of the type
+			+ "  ?prop rdfs:range ?icp . \n"
 			+ "  OPTIONAL { ?svc rdfs:label ?labels }\n"
 			+ "  OPTIONAL { ?op rdfs:label ?labelop }\n";
 		for (int i = 0; i < classes.size(); i++) {
@@ -508,17 +509,6 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 			+ classes.get(i).replace(">", "%3e") + "> .\n" + "  }\n";
 		}
 		// Take into account annotations to properties of the type
-		query += "} UNION {"
-			+ "  ?svc a msm:Service ; msm:hasOperation ?op .\n"
-			+ "  ?op msm:hasInput  ?imsg .\n"
-			+ "  ?imsg msm:hasPart ?i .\n"
-			+ "  OPTIONAL { ?imsg msm:hasPartTransitive ?i .\n }"
-			+ "  ?i sawsdl:modelReference ?ic . \n"
-			+ "  OPTIONAL { ?svc rdfs:label ?labels }\n"
-			+ "  OPTIONAL { ?op rdfs:label ?labelop }\n"
-			+ " ?i sawsdl:modelReference ?prop . \n"
-			+ " ?prop rdfs:range ?icp .";
-
 		for (int i = 0; i < classes.size(); i++) {
 			query += "  OPTIONAL {\n" + "    ?icp rdfs:subClassOf <"
 			+ classes.get(i).replace(">", "%3e") + "> ; ?su" + i + " <"
@@ -532,12 +522,13 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 			+ " ?ex" + i + " <"
 			+ classes.get(i).replace(">", "%3e") + "> .\n" + "  }\n";
 		}
-		query += "}}";
+		query += "}";
 		return query;
 	}
 
 	public String getDescription() {
-		return "iServe RDFS input/output discovery API 2011/09/24";
+		return "iServe RDFS input/output discovery API 2011/09/02";
+//		return "iServe RDFS input/output discovery API 2011/10/08";
 	}
 
 	public String getUri() {

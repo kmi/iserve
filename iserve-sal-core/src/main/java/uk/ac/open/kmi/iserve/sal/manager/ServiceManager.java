@@ -158,6 +158,7 @@ public class ServiceManager extends BaseSemanticManager {
 		}
 
 		// delete from hard disk
+		// FIXME: This should probably take place via the Document Manager
 		String prefix = config.getImporterConfig().getUriPrefix() + MSM.DOCUMENT_INFIX;
 		String relativePath = StringUtil.subStrings(contextUri, prefix); 
 		String filePath = config.getImporterConfig().getDocFolderPath() + relativePath;
