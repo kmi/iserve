@@ -136,7 +136,8 @@ public class ServiceListWidget extends LayoutContainer {
 		grid.setLoadMask(true);
 		grid.setBorders(false);
 		grid.setStripeRows(true);
-
+		grid.getView().setAutoFill(true);
+		
 		grid.addListener(Events.Attach, new Listener<GridEvent<ServiceListModel>>() {
 			public void handleEvent(GridEvent<ServiceListModel> be) {
 				PagingLoadConfig config = new BasePagingLoadConfig();
