@@ -466,6 +466,9 @@ public class ServiceListWidget extends LayoutContainer {
 						"?s <" + msmNS + "hasOperation> ?o . ?o <http://www.wsmo.org/ns/hrests#hasAddress> ?a FILTER (" +
 						generateRegex("?a", rawKeys) + ") }";
 			}
+			// FIXME: Add ORDERBY Clause?
+			// FIXME: Add LIMIT Clause? 
+			
 			return result;
 		}
 	}
