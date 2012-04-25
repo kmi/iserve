@@ -58,17 +58,12 @@
 		<dependency>
 			<groupId>org.apache.tika</groupId>
 			<artifactId>tika-core</artifactId>
-			<version>0.7</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tika</groupId>
 			<artifactId>tika-parsers</artifactId>
-			<version>0.7</version>
-		</dependency>
-		<dependency>
-			<groupId>apache-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.1</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>uk.ac.open.kmi.iserve.commons</groupId>
@@ -104,6 +99,11 @@
 			<groupId>uk.ac.open.kmi.iserve.discovery</groupId>
 			<artifactId>iserve-imatcher-api</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.1</version>
 		</dependency>
 	</dependencies>
 
