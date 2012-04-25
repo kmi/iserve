@@ -71,34 +71,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.httpcomponents</groupId>
-		    <artifactId>httpclient</artifactId>
-		    <version>4.1</version>
-		    <scope>compile</scope>
-	  </dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.1</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
-	<repositories>
-	  <repository>
-           <id>semweb4j-repo</id>
-           <name>Semweb4j.org maven repo</name>
-           <url>http://semweb4j.org/repo/</url>
-           <releases>
-               <enabled>true</enabled>
-           </releases>
-       </repository>
-       <repository>
-           <id>semweb4j-snapshots</id>
-           <name>Semweb4j.org maven snapshot repo</name>
-           <url>http://semweb4j.org/snapshots/</url>
-           <releases>
-               <enabled>false</enabled>
-           </releases>
-           <snapshots>
-               <enabled>true</enabled>
-               <updatePolicy>always</updatePolicy>
-               <checksumPolicy>fail</checksumPolicy>
-           </snapshots>
-       </repository>
-       </repositories>
+
 	<url>http://iserve.kmi.open.ac.uk/</url>
 </project>
