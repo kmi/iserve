@@ -61,7 +61,7 @@
 		    <scope>compile</scope>
 		  </dependency>
 		<dependency>
-			<groupId>apache-collections</groupId>
+			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
 			<version>3.1</version>
 			<type>jar</type>
