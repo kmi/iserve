@@ -69,6 +69,26 @@ import uk.ac.open.kmi.iserve.sal.util.XmlUtil;
 @Path("/services")
 public class ServiceResource {
 
+	/**
+	 * Relative path to data resources
+	 */
+	private static final String DATA_REL_PATH = "data";
+
+	/**
+	 * Relative path to html resources
+	 */
+	private static final String PAGE_REL_PATH = "page";
+	
+	/**
+	 * Relative path to resources
+	 */
+	private static final String RESOURCE_REL_PATH = "resource";
+	
+	/**
+	 * Relative path to services resources
+	 */
+	private static final String SERVICES_REL_PATH = "services";
+
 	private ServiceManager serviceManager;
 
 	private LogManager logManager;
@@ -94,49 +114,49 @@ public class ServiceResource {
 	@Produces({MediaType.TEXT_HTML, MediaType.WILDCARD})
 	public Response listServicesAsHtml() throws URISyntaxException, RepositoryException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, RDFHandlerException, IOException {
 		String absolutePath = uriInfo.getAbsolutePath().toString();
-		return listServices(absolutePath, "page");
+		return listServices(absolutePath, PAGE_REL_PATH);
 	}
 
 	@GET
 	@Produces({"application/rdf+xml", "text/turtle", "text/n3", "text/rdf+n3", "text/plain", "application/sparql-results+xml"})
 	public Response listServicesAsRdf() throws URISyntaxException, RepositoryException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, RDFHandlerException, IOException {
 		String absolutePath = uriInfo.getAbsolutePath().toString();
-		return listServices(absolutePath, "data");
+		return listServices(absolutePath, DATA_REL_PATH);
 	}
 
 	@GET @Path("/{id}")
 	@Produces({MediaType.TEXT_HTML, MediaType.WILDCARD})
 	public Response getServiceAsHtml(@PathParam("id") String id) throws URISyntaxException, ServiceException {
 		String absolutePath = uriInfo.getAbsolutePath().toString();
-		return getService(absolutePath, id, "page", null);
+		return getService(absolutePath, id, PAGE_REL_PATH, null);
 	}
 
 	@GET @Path("/{id}")
 	@Produces({MediaType.TEXT_XML})
 	public Response getServiceAsXml(@PathParam("id") String id) throws URISyntaxException, ServiceException {
 		String absolutePath = uriInfo.getAbsolutePath().toString();
-		return getService(absolutePath, id, "data", xmlSyntax);
+		return getService(absolutePath, id, DATA_REL_PATH, xmlSyntax);
 	}
 
 	@GET @Path("/{id}")
 	@Produces({"application/rdf+xml"})
 	public Response getServiceAsRdfXml(@PathParam("id") String id) throws ServiceException, URISyntaxException {
 		String absolutePath = uriInfo.getAbsolutePath().toString();
-		return getService(absolutePath, id, "data", Syntax.RdfXml);
+		return getService(absolutePath, id, DATA_REL_PATH, Syntax.RdfXml);
 	}
 
 	@GET @Path("/{id}")
 	@Produces({"text/turtle", "text/n3", "text/rdf+n3"})
 	public Response getServiceAsTurtle(@PathParam("id") String id) throws ServiceException, URISyntaxException {
 		String absolutePath = uriInfo.getAbsolutePath().toString();
-		return getService(absolutePath, id, "data", Syntax.Turtle);
+		return getService(absolutePath, id, DATA_REL_PATH, Syntax.Turtle);
 	}
 
 	@GET @Path("/{id}")
 	@Produces({MediaType.TEXT_PLAIN})
 	public Response getServiceAsNtriples(@PathParam("id") String id) throws ServiceException, URISyntaxException {
 		String absolutePath = uriInfo.getAbsolutePath().toString();
-		return getService(absolutePath, id, "data", Syntax.Ntriples);
+		return getService(absolutePath, id, DATA_REL_PATH, Syntax.Ntriples);
 	}
 
 	@POST
@@ -209,7 +229,7 @@ public class ServiceResource {
 		}
 		if ( absolutePath.endsWith("resource/services/") ) {
 			String newPath = absolutePath.substring(0, absolutePath.length() - "resource/services/".length() );
-			newPath += redirect + "/services";
+			newPath += redirect + "/" + SERVICES_REL_PATH ;
 			return Response.seeOther(new URI(newPath)).build();
 		} else if ( absolutePath.endsWith("page/services/") ) {
 			StringBuffer sb = new StringBuffer();
@@ -233,7 +253,7 @@ public class ServiceResource {
 		}
 		if (absolutePath.endsWith("resource/services/" + id + "/")) {
 			String newPath = absolutePath.substring(0, absolutePath.length() - ("resource/services/" + id + "/").length());
-			newPath += redirect + "/services/" + id;
+			newPath += redirect + "/" + SERVICES_REL_PATH + "/" + id;
 			return Response.seeOther(new URI(newPath)).build();
 		} else if (absolutePath.endsWith("page/services/" + id + "/")) {
 			StringBuffer sb = new StringBuffer();
