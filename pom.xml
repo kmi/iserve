@@ -39,9 +39,13 @@
 	</organization>
 
 	<properties>
-		<jersey-version>1.9</jersey-version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jersey.version>1.9</jersey.version>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
+		<junit.version>4.7</junit.version>
+		<!-- Convenience property to set the GWT version -->
+		<gwtVersion>2.1.0</gwtVersion>
 	</properties>
 
 

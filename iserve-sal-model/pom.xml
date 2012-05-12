@@ -43,14 +43,11 @@
 		<url>http://kmi.open.ac.uk</url>
 	</organization>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -65,9 +62,9 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<target>1.5</target>
-					<source>1.5</source>
-					<encoding>UTF-8</encoding>
+					<target>${maven.compiler.target}</target>
+					<source>${maven.compiler.source}</source>
+					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -4,7 +4,7 @@
 
 	<!-- POM file generated with GWT webAppCreator -->
 	<parent>
-		<artifactId>iserve-parent</artifactId> 
+		<artifactId>iserve-parent</artifactId>
 		<groupId>uk.ac.open.kmi.iserve</groupId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
@@ -45,11 +45,6 @@
 	</organization>
 
 	<properties>
-		<!-- Convenience property to set the GWT version -->
-		<gwtVersion>2.4.0</gwtVersion>
-		<!-- GWT needs at least java 1.5 -->
-		<maven.compiler.source>1.5</maven.compiler.source>
-		<maven.compiler.target>1.5</maven.compiler.target>
 		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
 	</properties>
 
@@ -153,7 +148,8 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -188,9 +184,7 @@
 										<artifactId>
 											gwt-maven-plugin
 										</artifactId>
-										<versionRange>
-											[2.4.0,)
-										</versionRange>
+										<versionRange>[2.1.0,)</versionRange>
 										<goals>
 											<goal>generateAsync</goal>
 										</goals>
