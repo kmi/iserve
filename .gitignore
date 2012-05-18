@@ -8,3 +8,4 @@ iserve.war
 iserve/*
 deploy.sh
 
+/iserve
