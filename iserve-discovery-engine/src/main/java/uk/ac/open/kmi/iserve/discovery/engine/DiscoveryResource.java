@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+*/
 package uk.ac.open.kmi.iserve.discovery.engine;
 
 import java.io.File;
@@ -54,25 +54,25 @@ import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 
 import com.sun.jersey.api.NotFoundException;
 
-@Path("/disco/svc")
-public class ServiceDiscoveryResource {
-
+@Path("/disco")
+public class DiscoveryResource {
+	
 	private Map<String, IServiceDiscoveryPlugin> plugins;
 	private SalConfig config;
 	private RDFRepositoryConnector connector;
 	private ServiceManager serviceManager;
 
-	public ServiceDiscoveryResource() throws RepositoryException, 
-	TransformerConfigurationException, IOException, WSDLException, 
-	ParserConfigurationException {
+	public DiscoveryResource() throws RepositoryException, 
+		TransformerConfigurationException, IOException, WSDLException, 
+		ParserConfigurationException {
 		init();
 		plugins = new HashMap<String, IServiceDiscoveryPlugin>();
 
 		IServiceDiscoveryPlugin plugin = new RDFSInputOutputDiscoveryPlugin(connector, false);
 		plugins.put(plugin.getName(), plugin);
 
-		//		plugin = new IMatcherDiscoveryPlugin(connector);
-		//		plugins.put(plugin.getName(), plugin);
+//		plugin = new IMatcherDiscoveryPlugin(connector);
+//		plugins.put(plugin.getName(), plugin);
 
 		plugin = new RDFSClassificationDiscoveryPlugin(connector, false);
 		plugins.put(plugin.getName(), plugin);
@@ -80,48 +80,9 @@ public class ServiceDiscoveryResource {
 		plugin = new AllServicesPlugin(connector);
 		plugins.put(plugin.getName(), plugin);
 	}
-
-	@GET
-	@Produces({MediaType.APPLICATION_ATOM_XML,
-		MediaType.APPLICATION_JSON,
-		MediaType.TEXT_XML})
-	@Path("{name}")
-	public Response discover(@PathParam("name") String name, @Context UriInfo ui) throws WebApplicationException {
-		MultivaluedMap<String, String> queryParams = ui.getQueryParameters();
-
-		// Else find discovery plug-in and apply it
-		IServiceDiscoveryPlugin plugin = plugins.get(name);
-		if ( plugin == null ) {
-			throw new NotFoundException("Plugin named " + name + " is not found");
-		}
-
-		Set<Entry> matchingResults;
-		try {
-			matchingResults = plugin.discover(queryParams);
-		} catch (DiscoveryException e) {
-			throw new WebApplicationException(e, e.getStatus());
-		}
-
-		// process the results
-		Feed feed = DiscoveryUtil.getAbderaInstance().getFactory().newFeed();
-		feed.setId(ui.getRequestUri().toString());
-		feed.addLink(ui.getRequestUri().toString(),"self");
-		feed.setTitle(plugin.getFeedTitle());
-		feed.setUpdated(new Date());
-		//FIXME: we should include the version
-		feed.setGenerator(plugin.getUri(), null, plugin.getDescription()); 
-
-		if ( matchingResults != null ) {
-			for ( Entry result : matchingResults ) {
-				feed.addEntry(result);
-			}
-		}
-
-		return Response.ok(feed).build();
-	}
-
+	
 	private void init() throws IOException, RepositoryException, TransformerConfigurationException, WSDLException, ParserConfigurationException {
-		String baseDir = ServiceDiscoveryResource.class.getResource("/").getPath();
+		String baseDir = DiscoveryResource.class.getResource("/").getPath();
 		baseDir = baseDir.replaceAll("%20", " ");
 
 		Properties prop = IOUtil.readProperties(new File(baseDir + "../config.properties"));
@@ -129,6 +90,82 @@ public class ServiceDiscoveryResource {
 		config = new SalConfig(prop);
 		serviceManager = new ServiceManager(config);
 		connector = serviceManager.getConnector();
+	}
+	
+	@GET
+	@Produces(MediaType.TEXT_HTML)	
+	public Response listPluginsRegistered() throws WebApplicationException {
+		return Response.ok(generateListOfPlugins()).build();
+	}
+	
+	/**
+	 * Generates an HTML page with the list of plugins currently loaded, their
+	 * URLs, and further details
+	 * 
+	 * @return
+	 */
+	private String generateListOfPlugins() {
+		
+		String result = "";
+		result += insertHeader();
+		
+		if (plugins != null) {
+			
+			Set<java.util.Map.Entry<String, IServiceDiscoveryPlugin>> runningPlugins = 
+				plugins.entrySet();
+		
+			// Create table
+			result += "<table border=\"1\" width=\"90%\">" +
+					"<tr><th>Plugin</th>" +
+					"<th>Description</th>" +
+					"<th>Endpoint</th>" +
+					"</tr>";
+			
+			for (java.util.Map.Entry<String, IServiceDiscoveryPlugin> entry : runningPlugins) {
+				IServiceDiscoveryPlugin regPlugin = entry.getValue();
+				result += "<tr>";
+				result += "<td>" + regPlugin.getName() + "</td>";
+				result += "<td>" + regPlugin.getDescription() + "</td>";
+				result += "<td>" + regPlugin.getUri() + "</td>";
+				result += "</tr>";
+			}
+			
+			// Close table
+			result += "</table>";
+		} else {
+			result += "No plugins registered.";
+		}
+		
+		result += insertFooter();
+		return result;
+	}
+
+	/**
+	 * TODO: Replace with a common HTML footer for all iServe related pages
+	 * @return
+	 */
+	private String insertFooter() {
+		String result = "";
+		result += "</body>" + "\n" +
+				"</html>";
+		return result;
+	}
+
+	/**
+	 * TODO: Replace with a common HTML header for all iServe related pages
+	 * @return
+	 */
+	private String insertHeader() {
+		String result = "";
+		result += "<!DOCTYPE html>" + "\n" + 
+				"<html lang=\"en-UK\">" + "\n" +
+				"<head>" + "\n" +
+				"<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />" + "\n" +
+				"<title>iServe Service Discovery Plugins</title>" + "\n" +
+				"</head>" + "\n" +
+				"<body>";
+		
+		return result;
 	}
 
 }
