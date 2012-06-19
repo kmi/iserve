@@ -22,39 +22,21 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.wsdl.WSDLException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
 
 import org.ontoware.rdf2go.model.Syntax;
-import org.openrdf.repository.RepositoryException;
 
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve.sal.gwt.server.Factory;
-import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 public class DownloadFileServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -1509060391445229084L;
 
-	private ServiceManager serviceManager;
-
-	public void init() throws ServletException {
-		super.init();
-		try {
-			Factory facotry = Factory.getInstance();
-			serviceManager = facotry.createServiceManager();
-		} catch (RepositoryException e) {
-			throw new ServletException(e);
-		} catch (TransformerConfigurationException e) {
-			throw new ServletException(e);
-		} catch (WSDLException e) {
-			throw new ServletException(e);
-		} catch (ParserConfigurationException e) {
-			throw new ServletException(e);
-		} catch (IOException e) {
-			throw new ServletException(e);
-		}
+	private ManagerSingleton iserveManager;
+	
+	public DownloadFileServlet(ManagerSingleton iserveManager) {
+		super();
+		this.iserveManager = iserveManager;
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -64,15 +46,15 @@ public class DownloadFileServlet extends HttpServlet {
 		String content = "";
 		try {
 			if ( format.equalsIgnoreCase("xml") ) {
-				content = serviceManager.getService(uri, Syntax.RdfXml);
+				content = iserveManager.getService(uri, Syntax.RdfXml);
 			} else if ( format.equalsIgnoreCase("nt") ) {
-				content = serviceManager.getService(uri, Syntax.Ntriples);
+				content = iserveManager.getService(uri, Syntax.Ntriples);
 			} else if ( format.equalsIgnoreCase("trig") ) {
-				content = serviceManager.getService(uri, Syntax.Trig);
+				content = iserveManager.getService(uri, Syntax.Trig);
 			} else if ( format.equalsIgnoreCase("trix") ) {
-				content = serviceManager.getService(uri, Syntax.Trix);
+				content = iserveManager.getService(uri, Syntax.Trix);
 			} else if ( format.equalsIgnoreCase("ttl") ) {
-				content = serviceManager.getService(uri, Syntax.Turtle);
+				content = iserveManager.getService(uri, Syntax.Turtle);
 			}
 		} catch (ServiceException e) {
 			throw new ServletException(e);
@@ -97,15 +79,15 @@ public class DownloadFileServlet extends HttpServlet {
 		String content = "";
 		try {
 			if ( format.equalsIgnoreCase("xml") ) {
-				content = serviceManager.getService(uri, Syntax.RdfXml);
+				content = iserveManager.getService(uri, Syntax.RdfXml);
 			} else if ( format.equalsIgnoreCase("nt") ) {
-				content = serviceManager.getService(uri, Syntax.Ntriples);
+				content = iserveManager.getService(uri, Syntax.Ntriples);
 			} else if ( format.equalsIgnoreCase("trig") ) {
-				content = serviceManager.getService(uri, Syntax.Trig);
+				content = iserveManager.getService(uri, Syntax.Trig);
 			} else if ( format.equalsIgnoreCase("trix") ) {
-				content = serviceManager.getService(uri, Syntax.Trix);
+				content = iserveManager.getService(uri, Syntax.Trix);
 			} else if ( format.equalsIgnoreCase("ttl") ) {
-				content = serviceManager.getService(uri, Syntax.Turtle);
+				content = iserveManager.getService(uri, Syntax.Turtle);
 			}
 		} catch (ServiceException e) {
 			throw new ServletException(e);

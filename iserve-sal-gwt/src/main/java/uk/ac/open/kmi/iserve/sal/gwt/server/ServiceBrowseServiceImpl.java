@@ -12,14 +12,13 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package uk.ac.open.kmi.iserve.sal.gwt.server;
 
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,17 +28,13 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
-import javax.wsdl.WSDLException;
 import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
 
 import org.apache.commons.httpclient.HttpException;
 import org.ontoware.aifbcommons.collection.ClosableIterator;
 import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.QueryRow;
-import org.openrdf.repository.RepositoryException;
 
 import uk.ac.open.kmi.iserve.commons.io.URIUtil;
 import uk.ac.open.kmi.iserve.commons.vocabulary.LOG;
@@ -51,6 +46,13 @@ import uk.ac.open.kmi.iserve.sal.gwt.client.ServiceBrowseService;
 import uk.ac.open.kmi.iserve.sal.gwt.client.exception.BrowserException;
 import uk.ac.open.kmi.iserve.sal.gwt.model.ServiceCategoryModel;
 import uk.ac.open.kmi.iserve.sal.gwt.model.ServiceListModel;
+import uk.ac.open.kmi.iserve.sal.gwt.server.servlets.OpenIdServlet;
+import uk.ac.open.kmi.iserve.sal.manager.LogManager;
+import uk.ac.open.kmi.iserve.sal.manager.ReviewManager;
+import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.sal.manager.TaxonomyManager;
+import uk.ac.open.kmi.iserve.sal.manager.UserManager;
+import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
 import uk.ac.open.kmi.iserve.sal.model.common.URI;
 import uk.ac.open.kmi.iserve.sal.model.impl.URIImpl;
 import uk.ac.open.kmi.iserve.sal.model.log.LogItem;
@@ -58,14 +60,8 @@ import uk.ac.open.kmi.iserve.sal.model.query.QueryResult;
 import uk.ac.open.kmi.iserve.sal.model.review.Comment;
 import uk.ac.open.kmi.iserve.sal.model.review.Rating;
 import uk.ac.open.kmi.iserve.sal.model.service.Service;
-import uk.ac.open.kmi.iserve.sal.model.user.User;
-import uk.ac.open.kmi.iserve.sal.gwt.server.servlets.OpenIdServlet;
-import uk.ac.open.kmi.iserve.sal.gwt.server.util.LufConnector;
-import uk.ac.open.kmi.iserve.sal.manager.LogManager;
-import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
-import uk.ac.open.kmi.iserve.sal.manager.TaxonomyManager;
-import uk.ac.open.kmi.iserve.sal.manager.UserManager;
 import uk.ac.open.kmi.iserve.sal.model.taxonomy.Category;
+import uk.ac.open.kmi.iserve.sal.model.user.User;
 import uk.ac.open.kmi.iserve.sal.util.ModelConverter;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
@@ -80,25 +76,12 @@ public class ServiceBrowseServiceImpl extends RemoteServiceServlet implements Se
 	private static final String PREFIXED_TAXONOMY_URI = "file://service-categories-dong.rdfs";
 
 	private String rootUri;
+	
+	private iServeManager manager;
 
-	private ServiceManager serviceManager;
-
-	private UserManager userManager;
-
-	private TaxonomyManager taxonomyManager;
-
-	private LogManager logManager;
-
-	private LufConnector lufConnector;
-
-	public ServiceBrowseServiceImpl() throws IOException, RepositoryException, TransformerConfigurationException, WSDLException, ParserConfigurationException {
-		Factory facotry = Factory.getInstance();
-		taxonomyManager = facotry.createTaxonomyManager();
-		serviceManager = facotry.createServiceManager();
-		userManager = facotry.createUserManager();
-		logManager = facotry.createLogManager();
-		lufConnector = facotry.createLufConnector();
-		rootUri = "http://" + facotry.getSalConfig().getUriPrefix();
+	public ServiceBrowseServiceImpl(iServeManager manager) {
+		this.manager = manager;
+		rootUri = "http://" + manager.getConfiguration().getUriPrefix();
 	}
 
 	public PagingLoadResult<ServiceListModel> listServicesByQuery(String queryString, PagingLoadConfig config) throws BrowserException {
@@ -106,8 +89,8 @@ public class ServiceBrowseServiceImpl extends RemoteServiceServlet implements Se
 		ArrayList<ServiceListModel> sublist = new ArrayList<ServiceListModel>();
 		if ( queryString != null && queryString.equalsIgnoreCase("") == false ) {
 			try {
-				Map<String, LogItem> serviceLog = logManager.getAllLogItems();
-				Model model = serviceManager.getModel();
+				Map<String, LogItem> serviceLog = manager.getAllLogItems();
+				Model model = manager.getServicesRepositoryConnector().openRepositoryModel();
 				QueryResultTable qrt = model.sparqlSelect(queryString);
 				if ( qrt != null ) {
 					ClosableIterator<QueryRow> iter = qrt.iterator();
@@ -176,22 +159,23 @@ public class ServiceBrowseServiceImpl extends RemoteServiceServlet implements Se
 		}
 		Service result = null;
 		try {
-			result = serviceManager.getService(serviceUri);
+			result = manager.getService(serviceUri);
 		} catch (ServiceException e) {
 			throw new BrowserException(e);
 		}
-		try {
-			result.setReviews(lufConnector.getReviews(serviceUri));
-		} catch (HttpException e) {
-			// ignore the execptions caused by LUF connector
-			// e.printStackTrace();
-		} catch (IOException e) {
-			// ignore the execptions caused by LUF connector
-			// e.printStackTrace();
-		} catch (ParseException e) {
-			// ignore the execptions caused by LUF connector
-			// e.printStackTrace();
-		}
+//		try {
+//			//TODO: Fix get reviews
+//			result.setReviews(manager.getReviews(serviceUri));
+//		} catch (HttpException e) {
+//			// ignore the execptions caused by LUF connector
+//			// e.printStackTrace();
+//		} catch (IOException e) {
+//			// ignore the execptions caused by LUF connector
+//			// e.printStackTrace();
+//		} catch (ParseException e) {
+//			// ignore the execptions caused by LUF connector
+//			// e.printStackTrace();
+//		}
 		return result;
 	}
 
@@ -200,9 +184,10 @@ public class ServiceBrowseServiceImpl extends RemoteServiceServlet implements Se
 		if ( user == null ) return false;
 		for ( URI serviceUri : serviceURIs ) {
 			try {
-				String returnedUri = serviceManager.deleteService(serviceUri.toString());
+				String returnedUri = manager.deleteService(serviceUri.toString());
+				// TODO: PUsh loggin to the method above
 				if ( returnedUri != null && "".equalsIgnoreCase(returnedUri) == false ) {
-					logManager.log(user.getFoafId().toString(), LOG.ITEM_DELETING, returnedUri, new Date(), "WebApp");
+					manager.log(user.getFoafId().toString(), LOG.ITEM_DELETING, returnedUri, new Date(), "WebApp");
 				}
 			} catch (ServiceException e) {
 				throw new BrowserException(e);
@@ -218,17 +203,20 @@ public class ServiceBrowseServiceImpl extends RemoteServiceServlet implements Se
 		if ( user == null ) {
 			return false;
 		}
-		try {
-			return lufConnector.reviewService(serviceUri, user.getFoafId(), rating, comment);
-		} catch (HttpException e) {
-			throw new BrowserException(e);
-		} catch (IOException e) {
-			throw new BrowserException(e);
-		}
+		
+		return false;
+//		try {
+//			// TODO: Implement Review manager 
+//			return lufConnector.reviewService(serviceUri, user.getFoafId(), rating, comment);
+//		} catch (HttpException e) {
+//			throw new BrowserException(e);
+//		} catch (IOException e) {
+//			throw new BrowserException(e);
+//		}
 	}
 
 	public QueryResult executeQuery(String queryString) throws BrowserException {
-		Model model = serviceManager.getModel();
+		Model model = manager.getServicesRepositoryConnector().openRepositoryModel();
 		QueryResultTable qrt = model.sparqlSelect(queryString);
 		model.close();
 		model = null;
@@ -236,7 +224,7 @@ public class ServiceBrowseServiceImpl extends RemoteServiceServlet implements Se
 	}
 
 	public QueryResult executeLogQuery(String queryString) throws BrowserException {
-		Model model = logManager.getModel();
+		Model model = manager.getServicesRepositoryConnector().openRepositoryModel();
 		QueryResultTable qrt = model.sparqlSelect(queryString);
 		model.close();
 		model = null;
@@ -245,7 +233,7 @@ public class ServiceBrowseServiceImpl extends RemoteServiceServlet implements Se
 
 	public List<URI> listTaxonomy() throws BrowserException {
 		List<URI> result = new ArrayList<URI>();
-		List<String> taxonomies = taxonomyManager.listTaxonomy();
+		List<String> taxonomies = manager.listTaxonomy();
 		if ( taxonomies != null ) {
 			for ( String taxonomy : taxonomies ) {
 				result.add(new URIImpl(taxonomy));
@@ -258,9 +246,9 @@ public class ServiceBrowseServiceImpl extends RemoteServiceServlet implements Se
 		List<Category> allCategories = null;
 		try {
 			if ( uri.equalsIgnoreCase("Prefixed") ) {
-				allCategories = taxonomyManager.loadTaxonomy(PREFIXED_TAXONOMY_URI);
+				allCategories = manager.loadTaxonomy(PREFIXED_TAXONOMY_URI);
 			} else {
-				allCategories = taxonomyManager.loadTaxonomy(uri);
+				allCategories = manager.loadTaxonomy(uri);
 			}
 		} catch (TaxonomyException e) {
 			throw new BrowserException(e);
@@ -348,7 +336,7 @@ public class ServiceBrowseServiceImpl extends RemoteServiceServlet implements Se
 
 	public User getUser(URI openId) throws BrowserException {
 		try {
-			return userManager.getUser(openId);
+			return manager.getUser(openId);
 		} catch (UserException e) {
 			throw new BrowserException(e);
 		}
@@ -356,7 +344,7 @@ public class ServiceBrowseServiceImpl extends RemoteServiceServlet implements Se
 
 	public URI updateUser(User user) throws BrowserException {
 		try {
-			return userManager.updateUser(user);
+			return manager.updateUser(user);
 		} catch (UserException e) {
 			throw new BrowserException(e);
 		}
@@ -364,7 +352,7 @@ public class ServiceBrowseServiceImpl extends RemoteServiceServlet implements Se
 
 	public URI addUser(User user) throws BrowserException {
 		try {
-			return userManager.addUser(user);
+			return manager.addUser(user);
 		} catch (UserException e) {
 			throw new BrowserException(e);
 		}
@@ -372,8 +360,8 @@ public class ServiceBrowseServiceImpl extends RemoteServiceServlet implements Se
 
 	public String login(String openId, String url) {
 		if (openId == null || openId.length() == 0) {
-            return null;
-        }
+			return null;
+		}
 		return rootUri + "/iServeBrowser/" + getAuthenticationURL(openId, rootUri);
 	}
 
@@ -390,7 +378,7 @@ public class ServiceBrowseServiceImpl extends RemoteServiceServlet implements Se
 		if ( (null != httpSession) && (null != httpSession.getAttribute("logged-in")) ) {
 			try {
 				URI openid = new URIImpl(httpSession.getAttribute("logged-in").toString());
-				User user = userManager.getUser(openid);
+				User user = manager.getUser(openid);
 				return user;
 			} catch (UserException e) {
 				throw new BrowserException(e);
@@ -404,6 +392,96 @@ public class ServiceBrowseServiceImpl extends RemoteServiceServlet implements Se
 		// on responses coming from a GWT servlet, only a redirect via the web page is made.
 
 		return MessageFormat.format("{0}?{1}=true&{2}={3}&returnToUrl={4}", "CallOpenID", OpenIdServlet.authParameter, OpenIdServlet.nameParameter, openIdName, URLEncoder.encode(url));
-    }
+	}
 
+//	/* (non-Javadoc)
+//	 * @see com.google.gwt.user.server.rpc.RemoteServiceServlet#doGetSerializationPolicy(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
+//	 * 
+//	 * Overriden to support the deployment in different folders (e.g., behind a proxy) 
+//	 * and still be able to load the serialization policy file of GWT
+//	 * Taken from: 
+//	 * https://groups.google.com/forum/?fromgroups#!topic/google-web-toolkit/j3tAhgbGk08 
+//	 */
+//	protected SerializationPolicy doGetSerializationPolicy( HttpServletRequest request, String moduleBaseURL, String 
+//			strongName) { 
+//		// The request can tell you the path of the web app relative to the 
+//		// container root. 
+//
+//		SerializationPolicy serializationPolicy = null; 
+//		String serializationPolicyFilePath = ""; 
+//		InputStream is = null; 
+//
+//		String contextPath = request.getContextPath(); 
+//		URL moduleUrl = null;
+//		String modulePath = null; 
+//		if (moduleBaseURL != null) { 
+//			try { 
+//				moduleUrl = new URL(moduleBaseURL);
+//				modulePath = moduleUrl.getPath(); 
+//			} catch (MalformedURLException ex) { 
+//				// log the information, we will default 
+//				getServletContext().log("Malformed moduleBaseURL: " + 
+//						moduleBaseURL, ex); 
+//			} 
+//		} 
+//		else {                
+//			//Just quit, if we do not know the module base. (07/11/08 -	Danny) 
+//			return serializationPolicy; 
+//		} 
+//
+//		if (modulePath == null ) { 
+//			String message = "ERROR: The module path requested, " 
+//				+ modulePath 
+//				+ ", is null, " 
+//				+ contextPath 
+//				+ ".  Your module may not be properly configured or your client and server code maybe out of date."; 
+//			getServletContext().log(message); 
+//		} else {  
+//
+//			// TODO: Ensure the module and the request are for the same host, e.g., proxied server  
+//			if (moduleUrl != null) {
+//				String policyFile = "http://" + moduleUrl.getHost() + contextPath + modulePath + strongName;
+//
+//				serializationPolicyFilePath = 
+//					SerializationPolicyLoader.getSerializationPolicyFileName(policyFile);
+//
+//				getServletContext().log("XXX: Loading file " + policyFile);
+//
+//				// Open the RPC resource file read its contents. 
+//				is = getServletContext().getResourceAsStream(
+//						serializationPolicyFilePath); 
+//			} 
+//			try { 
+//				if (is != null) { 
+//					try { 
+//						serializationPolicy = 
+//							SerializationPolicyLoader.loadFromStream(is, null); 
+//					} catch (ParseException e) { 
+//						getServletContext().log( 
+//								"ERROR: Failed to parse the policy file '" 
+//								+ serializationPolicyFilePath + "'", e); 
+//					} catch (IOException e) { 
+//						getServletContext().log( 
+//								"ERROR: Could not read the policy file '" 
+//								+ serializationPolicyFilePath + "'", e); 
+//					} 
+//				} else { 
+//					String message = "ERROR: The serialization policy file '" 
+//						+ serializationPolicyFilePath 
+//						+ "' was not found; did you forget to include it in this deployment?"; 
+//					getServletContext().log(message); 
+//				} 
+//			} finally { 
+//				if (is != null) { 
+//					try { 
+//						is.close(); 
+//					} catch (IOException e) { 
+//						// Ignore this error 
+//					} 
+//				} 
+//			} 
+//		}
+//		return serializationPolicy; 
+//	}
+	
 }

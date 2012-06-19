@@ -26,26 +26,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.wsdl.WSDLException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.openrdf.repository.RepositoryException;
 
 import uk.ac.open.kmi.iserve.commons.io.IOUtil;
 import uk.ac.open.kmi.iserve.commons.vocabulary.LOG;
 import uk.ac.open.kmi.iserve.sal.exception.LogException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.exception.UserException;
-import uk.ac.open.kmi.iserve.sal.gwt.server.Factory;
-import uk.ac.open.kmi.iserve.sal.manager.LogManager;
-import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
-import uk.ac.open.kmi.iserve.sal.manager.UserManager;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 import uk.ac.open.kmi.iserve.sal.model.common.URI;
 import uk.ac.open.kmi.iserve.sal.model.impl.URIImpl;
 
@@ -53,30 +46,11 @@ public class UploadFileServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 7327068834980432770L;
 
-	private ServiceManager serviceManager;
+	private ManagerSingleton iserveManager;
 
-	private UserManager userManager;
-
-	private LogManager logManager;
-
-	public void init() throws ServletException {
-		super.init();
-		try {
-			Factory facotry = Factory.getInstance();
-			logManager = facotry.createLogManager();
-			serviceManager = facotry.createServiceManager();
-			userManager = facotry.createUserManager();
-		} catch (IOException e) {
-			throw new ServletException(e);
-		} catch (RepositoryException e) {
-			throw new ServletException(e);
-		} catch (TransformerConfigurationException e) {
-			throw new ServletException(e);
-		} catch (WSDLException e) {
-			throw new ServletException(e);
-		} catch (ParserConfigurationException e) {
-			throw new ServletException(e);
-		}
+	public UploadFileServlet(ManagerSingleton iserveManager) {
+		super();
+		this.iserveManager = iserveManager;
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -94,7 +68,7 @@ public class UploadFileServlet extends HttpServlet {
 		}
 		URI agentUri = null;
 		try {
-			agentUri = userManager.getUser(new URIImpl(agentId)).getFoafId();
+			agentUri = iserveManager.getUser(new URIImpl(agentId)).getFoafId();
 		} catch (UserException e1) {
 			throw new ServletException(e1);
 		}
@@ -166,8 +140,9 @@ public class UploadFileServlet extends HttpServlet {
 	}
 
 	private URI addService(String fileName, String serviceDescription, String sourceUri, String agentUri) throws ServiceException, LogException {
-		String serviceUri = serviceManager.addService(fileName, serviceDescription, sourceUri);
-		logManager.log(agentUri, LOG.ITEM_CREATION, serviceUri, new Date(), "WebApp");
+		String serviceUri = iserveManager.addService(fileName, serviceDescription, sourceUri);
+		// TODO: We should abstract the higher levels from the logging of Actions
+		iserveManager.log(agentUri, LOG.ITEM_CREATION, serviceUri, new Date(), "WebApp");
 		return new URIImpl(serviceUri);
 	}
 
