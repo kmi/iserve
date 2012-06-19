@@ -42,17 +42,17 @@ import org.openrdf.rio.rdfxml.util.RDFXMLPrettyWriter;
 
 public class RDFRepositoryConnector {
 
-	private Repository sesameRepository;
+	private Repository rdfRepository;
 
 	public RDFRepositoryConnector(String repoServerUrl, String repoName) throws RepositoryException {
-		sesameRepository  = new HTTPRepository(repoServerUrl, repoName);
-		sesameRepository.initialize();
+		rdfRepository  = new HTTPRepository(repoServerUrl, repoName);
+		rdfRepository.initialize();
 	}
 
 	public RepositoryModel openRepositoryModel() {
-		if ( null == sesameRepository )
+		if ( null == rdfRepository )
 			return null;
-		RepositoryModel result = new RepositoryModel(sesameRepository);
+		RepositoryModel result = new RepositoryModel(rdfRepository);
 		if ( result != null ) {
 			result.open();
 		}
@@ -60,9 +60,9 @@ public class RDFRepositoryConnector {
 	}
 
 	public RepositoryModel openRepositoryModel(String context) {
-		if ( null == context || context.equalsIgnoreCase("") || null == sesameRepository )
+		if ( null == context || context.equalsIgnoreCase("") || null == rdfRepository )
 			return null;
-		RepositoryModel result = new RepositoryModel(new URIImpl(context), sesameRepository);
+		RepositoryModel result = new RepositoryModel(new URIImpl(context), rdfRepository);
 		if ( result != null ) {
 			result.open();
 		}
@@ -76,7 +76,7 @@ public class RDFRepositoryConnector {
 	}
 
 	public HTTPRepository getRepository() {
-		return (HTTPRepository) sesameRepository;
+		return (HTTPRepository) rdfRepository;
 	}
 
 	public String query(String queryString) throws RepositoryException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, RDFHandlerException, IOException {
