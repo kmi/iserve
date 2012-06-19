@@ -17,28 +17,27 @@ package uk.ac.open.kmi.iserve.importer.owls;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.openrdf.repository.RepositoryException;
 
 import uk.ac.open.kmi.iserve.commons.io.IOUtil;
 import uk.ac.open.kmi.iserve.importer.ImporterConfig;
-import uk.ac.open.kmi.iserve.importer.ImporterException;
+import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 
 public class OwlsImporterTest {
 
 	private OwlsImporter importer;
 
 	public OwlsImporterTest() throws RepositoryException {
-		ImporterConfig config = new ImporterConfig("http://iserve.open.ac.uk/", "/Users/dl3962/Workspace/gtd/Action/iServe/testing-doc-home/",
-				"http://localhost:8080/openrdf-sesame", "serv_repo_owlim");
-		importer = new OwlsImporter(config);
+		importer = new OwlsImporter();
 	}
 
 	public void test() throws ImporterException {
 		try {
 			String contents = IOUtil.readString(new File("/Users/dl3962/Workspace/gtd/Action/iServe/data/testing-20100125/vehicle_price_service.owls"));
-			String serviceUri = importer.importService("vehicle_price_service.owls", contents, null);
-			System.out.println(serviceUri);
+			InputStream result = importer.transformStream(contents);
+			System.out.println(result.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

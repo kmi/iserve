@@ -29,10 +29,10 @@ import org.openrdf.repository.RepositoryException;
 import org.xml.sax.SAXException;
 
 import uk.ac.open.kmi.iserve.importer.ImporterConfig;
-import uk.ac.open.kmi.iserve.importer.ImporterException;
-import uk.ac.open.kmi.iserve.importer.ServiceImporter;
+import uk.ac.open.kmi.iserve.sal.ServiceImporter;
+import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 
-public class SawsdlImporter extends ServiceImporter {
+public class SawsdlImporter implements ServiceImporter {
 
 	private static final int vUnknown = -1;
 
@@ -44,8 +44,7 @@ public class SawsdlImporter extends ServiceImporter {
 
 	private Sawsdl20Transformer sawsdl20Transformer;
 
-	public SawsdlImporter(ImporterConfig config) throws RepositoryException, WSDLException, ParserConfigurationException {
-		super(config);
+	public SawsdlImporter() throws WSDLException, ParserConfigurationException {
 		sawsdl11Transformer = new Sawsdl11Transformer();
 		sawsdl20Transformer = new Sawsdl20Transformer();
 	}
@@ -58,8 +57,11 @@ public class SawsdlImporter extends ServiceImporter {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.ServiceImporter#transformStream(java.lang.String)
+	 */
 	@Override
-	protected InputStream transformStream(String serviceDescription) throws ImporterException {
+	public InputStream transformStream(String serviceDescription) throws ImporterException {
 		String resultString = null;
 		try {
 			int v = getVersion(serviceDescription);

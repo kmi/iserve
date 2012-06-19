@@ -33,10 +33,10 @@ import org.w3c.dom.Document;
 import org.w3c.tidy.Tidy;
 
 import uk.ac.open.kmi.iserve.importer.ImporterConfig;
-import uk.ac.open.kmi.iserve.importer.ImporterException;
-import uk.ac.open.kmi.iserve.importer.ServiceImporter;
+import uk.ac.open.kmi.iserve.sal.ServiceImporter;
+import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 
-public class HrestsImporter extends ServiceImporter {
+public class HrestsImporter implements ServiceImporter {
 
 	private Tidy parser;
 
@@ -44,17 +44,18 @@ public class HrestsImporter extends ServiceImporter {
 
 	private Transformer transformer;
 
-	public HrestsImporter(ImporterConfig config, String xsltPath) throws RepositoryException, TransformerConfigurationException {
-		super(config);
+	public HrestsImporter(String xsltPath) throws RepositoryException, TransformerConfigurationException {
 		parser = new Tidy();
-
 		xsltFile = new File(xsltPath);
 		TransformerFactory xformFactory = TransformerFactory.newInstance();
 		transformer = xformFactory.newTransformer(new StreamSource(this.xsltFile));
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.ServiceImporter#transformStream(java.lang.String)
+	 */
 	@Override
-	protected InputStream transformStream(String serviceDescription) throws ImporterException {
+	public InputStream transformStream(String serviceDescription) throws ImporterException {
 		Document document = parser.parseDOM(new ByteArrayInputStream(serviceDescription.getBytes()), null);
 		DOMSource source = new DOMSource(document);
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();

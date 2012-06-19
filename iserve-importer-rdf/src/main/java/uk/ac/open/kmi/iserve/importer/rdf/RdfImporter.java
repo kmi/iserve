@@ -30,10 +30,10 @@ import org.openrdf.repository.RepositoryException;
 
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.importer.ImporterConfig;
-import uk.ac.open.kmi.iserve.importer.ImporterException;
-import uk.ac.open.kmi.iserve.importer.ServiceImporter;
+import uk.ac.open.kmi.iserve.sal.ServiceImporter;
+import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 
-public class RdfImporter extends ServiceImporter {
+public class RdfImporter implements ServiceImporter {
 
 	private static final String TEMP_NS = "http://owls-transformer.baseuri/2878757605265003094#";
 
@@ -57,13 +57,15 @@ public class RdfImporter extends ServiceImporter {
 
 	private Model tempModel;
 
-	public RdfImporter(ImporterConfig config) throws RepositoryException {
-		super(config);
+	public RdfImporter() throws RepositoryException {
 		tempModel = RDF2Go.getModelFactory().createModel();
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.ServiceImporter#transformStream(java.lang.String)
+	 */
 	@Override
-	protected InputStream transformStream(String serviceDescription) throws ImporterException {
+	public InputStream transformStream(String serviceDescription) throws ImporterException {
 		try {
 			String serviceUriInRdf = RdfTransformer.getServiceUri(serviceDescription);
 			String rdfToStore = RdfTransformer.replaceBaseUri(serviceDescription, serviceUriInRdf, "#");

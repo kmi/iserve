@@ -17,6 +17,7 @@ package uk.ac.open.kmi.iserve.importer.hrests;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.transform.TransformerConfigurationException;
 
@@ -24,14 +25,14 @@ import org.openrdf.repository.RepositoryException;
 
 import uk.ac.open.kmi.iserve.commons.io.IOUtil;
 import uk.ac.open.kmi.iserve.importer.ImporterConfig;
-import uk.ac.open.kmi.iserve.importer.ImporterException;
+import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 
 public class HrestsImporterTest {
 
 	/**
 	 * 
 	 */
-	private static final String HRESTS_XSLT = "/Users/dl3962/Workspace/JWS/iserve-webapp/src/main/webapp/servicebrowser/im/hrests.xslt";
+	private static final String HRESTS_XSLT = "../hrests.xslt";
 	/**
 	 * 
 	 */
@@ -48,16 +49,14 @@ public class HrestsImporterTest {
 	private HrestsImporter importer;
 
 	public HrestsImporterTest() throws RepositoryException, TransformerConfigurationException {
-		ImporterConfig config = new ImporterConfig("http://iserve.open.ac.uk/", TESTING_DOC_FOLDER,
-				SESAME_URL, REPOSITORY_NAME);
-		importer = new HrestsImporter(config, HRESTS_XSLT);
+		importer = new HrestsImporter(HRESTS_XSLT);
 	}
 
 	public void test() throws ImporterException {
 		try {
 			String contents = IOUtil.readString(new File("/Users/dl3962/Workspace/gtd/Action/iServe/data/testing-20100125/hrestAnnotation.html"));
-			String serviceUri = importer.importService("hrestAnnotation.html", contents, null);
-			System.out.println(serviceUri);
+			InputStream result = importer.transformStream(contents);
+			System.out.println(result.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

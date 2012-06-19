@@ -32,10 +32,10 @@ import org.openrdf.repository.RepositoryException;
 
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.importer.ImporterConfig;
-import uk.ac.open.kmi.iserve.importer.ImporterException;
-import uk.ac.open.kmi.iserve.importer.ServiceImporter;
+import uk.ac.open.kmi.iserve.sal.ServiceImporter;
+import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 
-public class OwlsImporter extends ServiceImporter {
+public class OwlsImporter implements ServiceImporter {
 
 	private static final String PREFIX = "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>\n"
 			+ "PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>\n"
@@ -109,12 +109,13 @@ public class OwlsImporter extends ServiceImporter {
 
 	private static final String TEMP_NS = "http://owls-transformer.baseuri/8965949584020236497#";
 
-	public OwlsImporter(ImporterConfig config) throws RepositoryException {
-		super(config);
-	}
+	public OwlsImporter() {	}
 
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.ServiceImporter#transformStream(java.lang.String)
+	 */
 	@Override
-	protected InputStream transformStream(String serviceDescription) throws ImporterException {
+	public InputStream transformStream(String serviceDescription) throws ImporterException {
 		// store the service into a temporary repository.
 		Model tempModel = RDF2Go.getModelFactory().createModel();
 		tempModel.open();

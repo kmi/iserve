@@ -18,6 +18,7 @@ package uk.ac.open.kmi.iserve.importer.sawsdl;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.wsdl.WSDLException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -26,7 +27,7 @@ import org.openrdf.repository.RepositoryException;
 
 import uk.ac.open.kmi.iserve.commons.io.IOUtil;
 import uk.ac.open.kmi.iserve.importer.ImporterConfig;
-import uk.ac.open.kmi.iserve.importer.ImporterException;
+import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 
 public class SawsdlImporterTest {
 
@@ -51,9 +52,7 @@ public class SawsdlImporterTest {
 	private SawsdlImporter importer;
 
 	public SawsdlImporterTest() throws RepositoryException, WSDLException, ParserConfigurationException {
-		ImporterConfig config = new ImporterConfig(ISERVE_URL, DOC_FOLDER_PATH,
-				SESAME_URL, REPOSITORY_NAME);
-		importer = new SawsdlImporter(config);
+		importer = new SawsdlImporter();
 	}
 
 	public void test() throws ImporterException {
@@ -89,24 +88,11 @@ public class SawsdlImporterTest {
 		        // Get filename of file or directory
 		        File file = children[i];
 		        String contents = IOUtil.readString(file);
-				String serviceUri = importer.importService(file.getName(), contents, null);
-		        System.out.println(serviceUri);
+				InputStream result = importer.transformStream(contents);
+		        System.out.println(result.toString());
 		        
 		    }
 		}
-	}
-
-	/**
-	 * @throws IOException 
-	 * @throws ImporterException 
-	 * 
-	 */
-	private void importSpecificFiles() throws IOException, ImporterException {
-//		String contents = IOUtil.readString(new File("/Users/dl3962/Workspace/gtd/Action/iServe/data/testing-20100125/title_videomediarecommendedprice_service.wsdl"));
-//		String serviceUri = importer.importService("title_videomediarecommendedprice_service.wsdl", contents, "http://test.com/test.html");
-		String contents = IOUtil.readString(new File("/Users/dl3962/Workspace/gtd/Action/iServe/data/testing-20100125/00all.wsdl"));
-		String serviceUri = importer.importService("00all.wsdl", contents, null);
-		System.out.println(serviceUri);
 	}
 
 	public static void main(String[] args) {
