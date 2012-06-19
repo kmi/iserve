@@ -15,47 +15,51 @@
 */
 package uk.ac.open.kmi.iserve.discovery.disco;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.abdera.model.Entry;
-import org.apache.abdera.model.ExtensibleElement;
 import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.QueryRow;
+import org.ontoware.rdf2go.model.node.BlankNode;
 import org.ontoware.rdf2go.model.node.Node;
 import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.rdf2go.RepositoryModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.disco.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 public class AllServicesPlugin implements IServiceDiscoveryPlugin {
 
-	private RDFRepositoryConnector connector;
+	private static final Logger log = LoggerFactory.getLogger(AllServicesPlugin.class);
 
 	private int count;
 
-	public AllServicesPlugin(RDFRepositoryConnector connector) {
-		this.connector = connector;
-	}
+	public AllServicesPlugin() {	}
 
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin#discover(javax.ws.rs.core.MultivaluedMap)
+	 */
 	public Set<Entry> discover(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+		log.debug("Discover services: " + parameters);
+		
 		// set of services
 		Set<String> services = new HashSet<String>();
 
 		Map<String, String> labels = new HashMap<String,String>();
 
+		RDFRepositoryConnector connector = ManagerSingleton.getInstance().getServicesRepositoryConnector();
 		RepositoryModel repoModel = connector.openRepositoryModel();
 
         String query = "prefix msm: <" + MSM.NS_URI + ">\n"
@@ -65,16 +69,28 @@ public class AllServicesPlugin implements IServiceDiscoveryPlugin {
 			+ "  optional { ?svc rdfs:label ?label }\n"
 		    + "}";
 
+        log.info("Querying for services: " + query);
+        
 		QueryResultTable qresult = repoModel.querySelect(query, "sparql");
 		for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
 			QueryRow row = it.next();
-			String svc = row.getValue("svc").toString();
-			services.add(svc);
+			Node svcNode = row.getValue("svc");
+			
+			// Filter blank nodes
+			if (svcNode instanceof BlankNode) {
+				log.warn("Service blank node found: " + svcNode.toString());
+			} else {
+				String svc = svcNode.asURI().toString();
+				services.add(svc);
+				
+				log.debug("Adding result: " + svc);
 
-			Node label = row.getValue("label");
-			if (label != null) {
-				labels.put(svc, label.toString());
+				Node label = row.getValue("label");
+				if (label != null) {
+					labels.put(svc, label.toString());
+				} 
 			}
+
 		}
 
 		connector.closeRepositoryModel(repoModel);
@@ -86,10 +102,12 @@ public class AllServicesPlugin implements IServiceDiscoveryPlugin {
 	}
 
 	private Set<Entry> serializeServices(Set<String> services, Map<String, String> labels) {
+		
+		log.debug("Serialising " + services.size() + " results");
+		
 		Set<Entry> matchingResults = new HashSet<Entry>();
 		for (Iterator<String> it = services.iterator(); it.hasNext();) {
 			String svc = it.next();
-			
 			Entry result = DiscoveryUtil.getAbderaInstance().newEntry();
 			result.setId(svc);
 			result.addLink(svc, "alternate");
@@ -105,7 +123,7 @@ public class AllServicesPlugin implements IServiceDiscoveryPlugin {
 	}
 
 	public String getDescription() {
-		return "iServe trivial discovery (all services) API 2010/04/27";
+		return "iServe trivial discovery (all services) API 2012/06/01";
 	}
 
 	public String getUri() {

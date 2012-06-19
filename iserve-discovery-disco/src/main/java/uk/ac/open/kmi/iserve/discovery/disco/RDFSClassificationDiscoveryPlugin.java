@@ -12,18 +12,15 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package uk.ac.open.kmi.iserve.discovery.disco;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -34,31 +31,33 @@ import org.ontoware.rdf2go.model.QueryRow;
 import org.ontoware.rdf2go.model.node.Node;
 import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.rdf2go.RepositoryModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.disco.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugin {
 
-	HashMap<String,Integer> matchTypesValuesMap;
+	private static final Logger log = LoggerFactory.getLogger(RDFSClassificationDiscoveryPlugin.class);
 
-	private RDFRepositoryConnector connector;
+	HashMap<String,Integer> matchTypesValuesMap;
 
 	private int count;
 
 	private String feedSuffix;
-	
+
 	/**
 	 * This plugin supports discovery over services and operations
 	 * If this is true we will discovery operations rather than services
 	 */
 	private boolean operationDiscovery = false;
 
-	public RDFSClassificationDiscoveryPlugin(RDFRepositoryConnector connector, boolean operationDiscovery) {
-		this.connector = connector;
+	public RDFSClassificationDiscoveryPlugin(boolean operationDiscovery) {
 		matchTypesValuesMap = new HashMap<String, Integer>();
 		matchTypesValuesMap.put(DiscoveryUtil.EXACT_DEGREE, Integer.valueOf(0));
 		matchTypesValuesMap.put(DiscoveryUtil.SSSOG_DEGREE, Integer.valueOf(1));
@@ -73,7 +72,7 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 
 	//FIXME: Replace with the actual version of the plugin
 	public String getDescription() {
-		return "iServe RDFS functional discovery API 2011/09/19";
+		return "iServe RDFS functional discovery API 2012/06/01";
 	}
 
 	//FIXME: Replace with the actual URL of the discovery endpoint for the plugin?
@@ -113,7 +112,7 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 		Set<String> s_sssog = new HashSet<String>();
 		Set<String> s_gssos = new HashSet<String>();
 		Set<String> s_intersection = new HashSet<String>();
-		
+
 		Map<String, String> labels = new HashMap<String,String>();
 
 		funcClassificationDisco(classes, s_exact, s_sssog, s_gssos, s_intersection, labels);
@@ -130,11 +129,11 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 		count = s_exact.size() + s_sssog.size() + s_gssos.size() + s_intersection.size();
 
 		feedSuffix = "";
-        for (int i = 0; i < classes.size(); i++) {
-        	feedSuffix += xmlEncode(classes.get(i)) + ((i<classes.size() - 1) ? ", " : "");
-        }
+		for (int i = 0; i < classes.size(); i++) {
+			feedSuffix += xmlEncode(classes.get(i)) + ((i<classes.size() - 1) ? ", " : "");
+		}
 
-        return matchingResults;
+		return matchingResults;
 	}
 
 	/**
@@ -164,150 +163,150 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 	}
 
 	private void funcClassificationDisco(List<String> classes, Set<String> exact, Set<String> itemSubclassOfGoal,
-            Set<String> goalSubclassOfItem, Set<String> intersection, Map<String, String> labels) {
-        Set<String> goalNotSubclassOfItem = new HashSet<String>();
+			Set<String> goalSubclassOfItem, Set<String> intersection, Map<String, String> labels) {
+		Set<String> goalNotSubclassOfItem = new HashSet<String>();
 
-        RepositoryModel repoModel = connector.openRepositoryModel();
-        
-        // todo extension: don't care about WSMO-Lite wl:FCR
-        
-        // 1 exact match, 2 service subset of goal, 3 goal subset of service:
-        // 1,2 find services that have a subcategory of each of the goal categories			
-        // 1,3 find services for which the goal has a subcategory of every service category
-        // in the query, the presence of sssog0 means that the service contains subcategories of all goal categories (service is a subset of goal)
-        // the presence of gX means the goal contains a subcategory of a class category; if every row for a service contains at least one gX then the goal is a subset of service
-        // todo what about kinda-gssos where all goal classes are subclasses of service classes? it's stronger gssos if also all service classes have goal subclasses.
-        
-        String selectStatement = "select ?svc ?labelSvc ?catSvc ?sssog0";
-        if (operationDiscovery) {
-        	selectStatement += " ?op  ?labelOp  ?catOp ";
-        }
-        
-        String query = "prefix wl: <" + MSM.WL_NS_URI + ">\n"
-        		+ "prefix sawsdl: <" + MSM.SAWSDL_NS_URI + ">\n"
-        		+ "prefix msm: <" + MSM.NS_URI + ">\n"
-        		+ "prefix rdfs: <" + RDFS.NAMESPACE + ">\n"
-        		+ selectStatement;
-        
-        for (int i=0; i<classes.size(); i++) {
-        	query += "?g" + i + " ";
-        }
-        
-        query += "\nwhere {\n  " 
-        		+ "?svc a msm:Service . \n"
-        		+ "optional { ?svc rdfs:label ?labelSvc } \n";
-        
-        if (operationDiscovery) {
-        	query += "?svc msm:hasOperation ?op . \n" +
-        			"?op a msm:Operation . \n" +
-        			"optional { ?op rdfs:label ?labelOp } \n";
-        }
-        
-        // Generate the optional query for SVC and subclasses of the FC
-        query += "optional {" +
-				"?svc sawsdl:modelReference ?catSvc .\n"
-        		+ "  ?catSvc rdfs:subClassOf [ a wl:FunctionalClassificationRoot ] . \n" ;
-        
-        for (int i = 0; i < classes.size(); i++) {
-        	query += " <" + classes.get(i).replace(">", "%3e") + "> rdfs:subClassOf ?catSvc ; ?g" + i + " ?catSvc .\n" ;
-        }
-        
-        query += "  }\n";
-        // End
-        
-        // Generate the optional query for OP and subclasses of the FC
-    	if (operationDiscovery) {
-    		query += "optional {" +
-        	"?op sawsdl:modelReference ?catOp . \n" +
-        	"?catOp rdfs:subClassOf [ a wl:FunctionalClassificationRoot ] . \n" ;
-    		
-    		for (int i = 0; i < classes.size(); i++) {
-    			query+= "    <" + classes.get(i).replace(">", "%3e") + "> rdfs:subClassOf ?catOp ; ?g" + i + " ?catOp .\n";
-    		}
-    		query += "  }\n";
-    	}		        
-        
-        query += "  optional {\n";
-        for (int i = 0; i < classes.size(); i++) {
-        	query += "    ?svc sawsdl:modelReference ?sssog" + i + " . \n    ?sssog" + i + " rdfs:subClassOf <" + classes.get(i).replace(">", "%3e") + "> .\n";
-        }
-        query += "  }\n";
-        
-        if (operationDiscovery) {
-        	query += "  optional {\n";
-            for (int i = 0; i < classes.size(); i++) {
-            	query += "    ?op sawsdl:modelReference ?sssog" + i + " . \n    ?sssog" + i + " rdfs:subClassOf <" + classes.get(i).replace(">", "%3e") + "> .\n";
-            }
-            query += "  }\n";
-        }
-        
-        query += "}";
-        
-        //FIXME: Use a proper logging framework
-        System.out.println("query: \n" + query);
-        
-        QueryResultTable qresult = repoModel.querySelect(query, "sparql");
-        for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
-        	QueryRow row = it.next();
-        	
-        	String svcUri = row.getValue("svc").toString();
+		RDFRepositoryConnector connector = ManagerSingleton.getInstance().getServicesRepositoryConnector();
+		RepositoryModel repoModel = connector.openRepositoryModel();
+
+		// todo extension: don't care about WSMO-Lite wl:FCR
+
+		// 1 exact match, 2 service subset of goal, 3 goal subset of service:
+		// 1,2 find services that have a subcategory of each of the goal categories			
+		// 1,3 find services for which the goal has a subcategory of every service category
+		// in the query, the presence of sssog0 means that the service contains subcategories of all goal categories (service is a subset of goal)
+		// the presence of gX means the goal contains a subcategory of a class category; if every row for a service contains at least one gX then the goal is a subset of service
+		// todo what about kinda-gssos where all goal classes are subclasses of service classes? it's stronger gssos if also all service classes have goal subclasses.
+
+		String selectStatement = "select ?svc ?labelSvc ?catSvc ?sssog0";
+		if (operationDiscovery) {
+			selectStatement += " ?op  ?labelOp  ?catOp ";
+		}
+
+		String query = "prefix wl: <" + MSM.WL_NS_URI + ">\n"
+		+ "prefix sawsdl: <" + MSM.SAWSDL_NS_URI + ">\n"
+		+ "prefix msm: <" + MSM.NS_URI + ">\n"
+		+ "prefix rdfs: <" + RDFS.NAMESPACE + ">\n"
+		+ selectStatement;
+
+		for (int i=0; i<classes.size(); i++) {
+			query += "?g" + i + " ";
+		}
+
+		query += "\nwhere {\n  " 
+			+ "?svc a msm:Service . \n"
+			+ "optional { ?svc rdfs:label ?labelSvc } \n";
+
+		if (operationDiscovery) {
+			query += "?svc msm:hasOperation ?op . \n" +
+			"?op a msm:Operation . \n" +
+			"optional { ?op rdfs:label ?labelOp } \n";
+		}
+
+		// Generate the optional query for SVC and subclasses of the FC
+		query += "optional {" +
+		"?svc sawsdl:modelReference ?catSvc .\n"
+		+ "  ?catSvc rdfs:subClassOf [ a wl:FunctionalClassificationRoot ] . \n" ;
+
+		for (int i = 0; i < classes.size(); i++) {
+			query += " <" + classes.get(i).replace(">", "%3e") + "> rdfs:subClassOf ?catSvc ; ?g" + i + " ?catSvc .\n" ;
+		}
+
+		query += "  }\n";
+		// End
+
+		// Generate the optional query for OP and subclasses of the FC
+		if (operationDiscovery) {
+			query += "optional {" +
+			"?op sawsdl:modelReference ?catOp . \n" +
+			"?catOp rdfs:subClassOf [ a wl:FunctionalClassificationRoot ] . \n" ;
+
+			for (int i = 0; i < classes.size(); i++) {
+				query+= "    <" + classes.get(i).replace(">", "%3e") + "> rdfs:subClassOf ?catOp ; ?g" + i + " ?catOp .\n";
+			}
+			query += "  }\n";
+		}		        
+
+		query += "  optional {\n";
+		for (int i = 0; i < classes.size(); i++) {
+			query += "    ?svc sawsdl:modelReference ?sssog" + i + " . \n    ?sssog" + i + " rdfs:subClassOf <" + classes.get(i).replace(">", "%3e") + "> .\n";
+		}
+		query += "  }\n";
+
+		if (operationDiscovery) {
+			query += "  optional {\n";
+			for (int i = 0; i < classes.size(); i++) {
+				query += "    ?op sawsdl:modelReference ?sssog" + i + " . \n    ?sssog" + i + " rdfs:subClassOf <" + classes.get(i).replace(">", "%3e") + "> .\n";
+			}
+			query += "  }\n";
+		}
+
+		query += "}";
+
+		log.info("Querying for services: \n" + query);
+
+		QueryResultTable qresult = repoModel.querySelect(query, "sparql");
+		for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
+			QueryRow row = it.next();
+
+			String svcUri = row.getValue("svc").toString();
 			String svcLabel = null;
 			String opUri = null;
 			String opLabel = null;
-			
+
 			Node label = row.getValue("labelSvc");
 			if (label != null) {
 				svcLabel = label.toString();
 			}
-			
+
 			String item;
-			
-        	if (operationDiscovery) {
-        		opUri = row.getValue("op").toString();
-    			label = row.getValue("labelOp");
-    			if (label != null) {
-    				opLabel = label.toString();
-    			}
-    			item = opUri;
-        	} else {
-        		item = svcUri;
-        	}
-        
-        	Node sssog0 = row.getValue("sssog0");
-        	if (sssog0 != null) {
-        		itemSubclassOfGoal.add(item);
-        	}
-        	// initially, all services are counted as being supersets of the goal, 
-        	// below the set s_notgssos counts the instances that aren't, which 
-        	// are removed from s_gssos after the loop
-        	goalSubclassOfItem.add(item); 
-        	boolean lacks_gX = true;
-        	for (int i=0; i<classes.size(); i++) {
-        		Node gi = row.getValue("g"+i);
-        		if (gi != null) {
-        			lacks_gX = false;
-        			break;
-        		}
-        	}
-        	if (lacks_gX) {
-        		goalNotSubclassOfItem.add(item);
-        	}
-        	
-        	labels.put(item, DiscoveryUtil.createEntryTitle(operationDiscovery, svcUri, svcLabel, opUri, opLabel));
-        	
-        }
-        goalSubclassOfItem.removeAll(goalNotSubclassOfItem);
-        
-        exact.addAll(itemSubclassOfGoal);
-        exact.retainAll(goalSubclassOfItem);
-        itemSubclassOfGoal.removeAll(exact);
-        goalSubclassOfItem.removeAll(exact);
-        
-        // intersection match:
-        // TODO: find services for which there exists a category that is a subcategory of all the categories of both the goal and the svc; but remove any from above
-        // TODO: also find potential intersections where some service and goal classes are related through subclass
-        
-        connector.closeRepositoryModel(repoModel);
+
+			if (operationDiscovery) {
+				opUri = row.getValue("op").toString();
+				label = row.getValue("labelOp");
+				if (label != null) {
+					opLabel = label.toString();
+				}
+				item = opUri;
+			} else {
+				item = svcUri;
+			}
+
+			Node sssog0 = row.getValue("sssog0");
+			if (sssog0 != null) {
+				itemSubclassOfGoal.add(item);
+			}
+			// initially, all services are counted as being supersets of the goal, 
+			// below the set s_notgssos counts the instances that aren't, which 
+			// are removed from s_gssos after the loop
+			goalSubclassOfItem.add(item); 
+			boolean lacks_gX = true;
+			for (int i=0; i<classes.size(); i++) {
+				Node gi = row.getValue("g"+i);
+				if (gi != null) {
+					lacks_gX = false;
+					break;
+				}
+			}
+			if (lacks_gX) {
+				goalNotSubclassOfItem.add(item);
+			}
+
+			labels.put(item, DiscoveryUtil.createEntryTitle(operationDiscovery, svcUri, svcLabel, opUri, opLabel));
+
+		}
+		goalSubclassOfItem.removeAll(goalNotSubclassOfItem);
+
+		exact.addAll(itemSubclassOfGoal);
+		exact.retainAll(goalSubclassOfItem);
+		itemSubclassOfGoal.removeAll(exact);
+		goalSubclassOfItem.removeAll(exact);
+
+		// intersection match:
+			// TODO: find services for which there exists a category that is a subcategory of all the categories of both the goal and the svc; but remove any from above
+		// TODO: also find potential intersections where some service and goal classes are related through subclass
+
+		connector.closeRepositoryModel(repoModel);
 	}
 
 	/**
@@ -316,9 +315,9 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 	 * @return encoded string
 	 */
 	public static String xmlEncode(String src) {
-	    if (src == null) {
-	        return "";
-	    }
+		if (src == null) {
+			return "";
+		}
 		return src.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
 	}
 

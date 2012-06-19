@@ -16,45 +16,37 @@
 package uk.ac.open.kmi.iserve.discovery.disco;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
 import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.QueryRow;
 import org.ontoware.rdf2go.model.node.Node;
-import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.model.vocabulary.RDF;
+import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.rdf2go.RepositoryModel;
 import org.openrdf.repository.RepositoryException;
 
-
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
-import uk.ac.open.kmi.iserve.commons.io.URIUtil;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.disco.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 
 	private enum Degree {
 		EXACT, PLUGIN, SUBSUME, PARTIAL_PLUGIN, PARTIAL_SUBSUME, FAIL
 	};
-
-	private RDFRepositoryConnector connector;
 
 	private int count;
 
@@ -66,8 +58,7 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 	 */
 	private boolean operationDiscovery = false;
 
-	public RDFSInputOutputDiscoveryPlugin(RDFRepositoryConnector connector, boolean operationDiscovery) throws RepositoryException, IOException {
-		this.connector = connector;
+	public RDFSInputOutputDiscoveryPlugin(boolean operationDiscovery) throws RepositoryException, IOException {
 		this.count = 0;
 		this.feedSuffix = "";
 		this.operationDiscovery = operationDiscovery;
@@ -245,8 +236,10 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 	}
 
 	private void matchInputs(List<String> classes, Map<String, Degree> matches, Map<String, String> labels) throws DiscoveryException {
-		RepositoryModel repoModel = connector.openRepositoryModel();
 
+		RDFRepositoryConnector connector = ManagerSingleton.getInstance().getServicesRepositoryConnector();
+		RepositoryModel repoModel = connector.openRepositoryModel();
+		
 		String query = generateQuery(MSM.NS_URI + "hasInput", classes);
 		//FIXME: Replace with proper logging framework
 		System.err.println("Input matching query: \n" + query);
@@ -367,11 +360,15 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 				matches.put(op2svc.get(op), Degree.EXACT);
 			}
 		}
+		
+		connector.closeRepositoryModel(repoModel);
 	}
 
 	private void matchOutputs(List<String> classes, Map<String, Degree> matches, Map<String, String> labels) throws DiscoveryException {
-		RepositoryModel repoModel = connector.openRepositoryModel();
 
+		RDFRepositoryConnector connector = ManagerSingleton.getInstance().getServicesRepositoryConnector();
+		RepositoryModel repoModel = connector.openRepositoryModel();
+		
 		String query = generateQuery(MSM.NS_URI + "hasOutput", classes);
 		//FIXME: Replace with proper logging framework
 		System.err.println("Output matching query: \n" + query);
@@ -454,6 +451,8 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 			}
 
 		}
+		
+		connector.closeRepositoryModel(repoModel);
 	}
 	
 	/**
@@ -527,8 +526,7 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 	}
 
 	public String getDescription() {
-		return "iServe RDFS input/output discovery API 2011/09/02";
-//		return "iServe RDFS input/output discovery API 2011/10/08";
+		return "iServe RDFS input/output discovery API 2012/06/01";
 	}
 
 	public String getUri() {
