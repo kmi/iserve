@@ -26,38 +26,49 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
-import javax.wsdl.WSDLException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
 
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
+import org.openrdf.rdf2go.RepositoryModel;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
-import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 @Path("/")
 public class SparqlEndpoint {
 
-	private ServiceManager serviceManager;
+	private ServiceManagerRdf serviceManager;
 
 	@Context
 	UriInfo uriInfo;
 
-	public SparqlEndpoint() throws RepositoryException, TransformerConfigurationException, WSDLException, ParserConfigurationException, IOException {
-		serviceManager = Factory.getInstance().createServiceManager();
-	}
+	public SparqlEndpoint() { }
 
+	/**
+	 * Provides querying access support to the underlying services registry
+	 * Access to log information or users information is not provided
+	 * 
+	 * @param queryString the SPARQL query string
+	 * @return the response
+	 * @throws RepositoryException
+	 * @throws MalformedQueryException
+	 * @throws QueryEvaluationException
+	 * @throws TupleQueryResultHandlerException
+	 * @throws RDFHandlerException
+	 * @throws IOException
+	 */
 	@GET
 	@Produces({"application/sparql-results+xml", "application/rdf+xml", MediaType.WILDCARD})
 	public Response query(@QueryParam("query") String queryString) throws RepositoryException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, RDFHandlerException, IOException {
 		String absolutePath = uriInfo.getAbsolutePath().toString();
 		if ( absolutePath.endsWith("sparql/") || absolutePath.endsWith("execute-query/") ||
 				absolutePath.endsWith("sparql") || absolutePath.endsWith("execute-query")) {
-			RDFRepositoryConnector connector = serviceManager.getConnector();
+			
+			RDFRepositoryConnector connector = ManagerSingleton.getInstance().getServicesRepositoryConnector();
 			String result = connector.query(queryString);
 
 			if ( result.contains("http://www.w3.org/2005/sparql-results") ) {

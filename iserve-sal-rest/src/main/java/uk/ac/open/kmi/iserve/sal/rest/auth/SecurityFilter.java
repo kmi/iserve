@@ -26,12 +26,10 @@ import javax.ws.rs.core.UriInfo;
 import org.openrdf.repository.RepositoryException;
 
 import uk.ac.open.kmi.iserve.sal.exception.UserException;
-import uk.ac.open.kmi.iserve.sal.manager.UserManager;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 import uk.ac.open.kmi.iserve.sal.model.oauth.AccessToken;
 import uk.ac.open.kmi.iserve.sal.model.oauth.Consumer;
 import uk.ac.open.kmi.iserve.sal.model.user.User;
-import uk.ac.open.kmi.iserve.sal.rest.Factory;
-import uk.ac.open.kmi.iserve.sal.rest.auth.oauth.KeyManager;
 import uk.ac.open.kmi.iserve.sal.util.MD5;
 
 import com.sun.jersey.api.container.MappableContainerException;
@@ -61,14 +59,7 @@ public class SecurityFilter implements ContainerRequestFilter {
 	@Context
 	UriInfo uriInfo;
 
-	private UserManager userManager;
-
-	private KeyManager keyManager;
-
-	public SecurityFilter() throws RepositoryException, IOException {
-		userManager = Factory.getInstance().createUserManager();
-		keyManager = Factory.getInstance().createKeyManager();
-	}
+	public SecurityFilter() throws RepositoryException, IOException { 	}
 
 	public ContainerRequest filter(ContainerRequest request) {
 		if ( request.getPath().equals("authorize") )
@@ -108,7 +99,7 @@ public class SecurityFilter implements ContainerRequestFilter {
 
 		// Set the secret(s), against which we will verify the request
 		OAuthSecrets secrets = new OAuthSecrets();
-		Consumer consumer = keyManager.findConsumer(params.getConsumerKey());
+		Consumer consumer = ManagerSingleton.getInstance().findConsumer(params.getConsumerKey());
 		if ( consumer != null && consumer.getConsumerKey() != null && consumer.getConsumerSecret() != null ) {
 			secrets.setConsumerSecret(consumer.getConsumerSecret());
 		} else {
@@ -116,7 +107,7 @@ public class SecurityFilter implements ContainerRequestFilter {
 					new AuthenticationException("Consumer is not registered: " + params.getConsumerKey(), REALM));
 		}
 
-		AccessToken accessToken = keyManager.findAccessToken(params.getToken());
+		AccessToken accessToken = ManagerSingleton.getInstance().findAccessToken(params.getToken());
 		secrets.setTokenSecret(accessToken.getTokenSecret());
 
 		// TODO: Check that the timestamp has not expired
@@ -135,7 +126,7 @@ public class SecurityFilter implements ContainerRequestFilter {
 		}
 		User user = null;
 		try {
-			user = userManager.getUser(accessToken.getAccessAs());
+			user = ManagerSingleton.getInstance().getUser(accessToken.getAccessAs());
 		} catch (UserException e) {
 			throw new MappableContainerException(e);
 		}
@@ -165,7 +156,7 @@ public class SecurityFilter implements ContainerRequestFilter {
 
 		User user = null;
 		try {
-			user = userManager.getUser(username);
+			user = ManagerSingleton.getInstance().getUser(username);
 		} catch (UserException e) {
 			throw new MappableContainerException(e);
 		}
