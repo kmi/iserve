@@ -1,1 +1,6 @@
 config.properties
+/config.properties.carlos
+/config.properties.local-iserve-dev
+/config.properties.local-tests
+/config.properties.tests
+/config.properties.vph
