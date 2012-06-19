@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<definitions name="PromoSerSOAP" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://biowulf.bu.edu/PromoSer/wsdl" xmlns:tns="http://biowulf.bu.edu/PromoSer/wsdl" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:xsdl="http://biowulf.bu.edu/PromoSer">
+	<message name="helpRequest" />
+	<message name="helpResponse">
+		<part name="helpResponseSoapMsg" type="xsd:string"/>
+	</message>
+	<message name="submit_jobRequest">
+		<part name="submit_jobRequestSoapMsg1" type="xsd:string"/>
+		<part name="submit_jobRequestSoapMsg2" type="xsd:string"/>
+		<part name="submit_jobRequestSoapMsg3" type="xsd:string"/>
+		<part name="submit_jobRequestSoapMsg4" type="xsd:string"/>
+		<part name="submit_jobRequestSoapMsg5" type="xsd:string"/>
+		<part name="submit_jobRequestSoapMsg6" type="xsd:string"/>
+		<part name="submit_jobRequestSoapMsg7" type="xsd:string"/>
+		<part name="submit_jobRequestSoapMsg8" type="xsd:string"/>
+		<part name="submit_jobRequestSoapMsg9" type="xsd:string"/>
+		<part name="submit_jobRequestSoapMsg10" type="xsd:string"/>
+		<part name="submit_jobRequestSoapMsg11" type="xsd:string"/>
+		<part name="submit_jobRequestSoapMsg12" type="xsd:string"/>
+	</message>
+	<message name="submit_jobResponse">
+		<part name="submit_jobResponseSoapMsg" type="xsd:string"/>
+	</message>
+	<portType name="PromoSerPromoSerSOAPPortType">
+		<operation name="help">
+			<input message="tns:helpRequest" />
+			<output message="tns:helpResponse" />
+		</operation>
+		<operation name="submit_job">
+			<input message="tns:submit_jobRequest" />
+			<output message="tns:submit_jobResponse" />
+		</operation>
+	</portType>
+	<binding name="PromoSerPromoSerSOAPBinding" type="tns:PromoSerPromoSerSOAPPortType">
+		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+			<operation name="help">
+				<soap:operation style="rpc" soapAction="http://biowulf.bu.edu/PromoSer#help"/>
+				<input>
+					<soap:body use="encoded" namespace="http://biowulf.bu.edu/PromoSer" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+				</input>
+				<output>
+					<soap:body use="encoded" namespace="http://biowulf.bu.edu/PromoSer" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+				</output>
+			</operation>
+			<operation name="submit_job">
+				<soap:operation style="rpc" soapAction="http://biowulf.bu.edu/PromoSer#submit_job"/>
+				<input>
+					<soap:body use="encoded" namespace="http://biowulf.bu.edu/PromoSer" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+				</input>
+				<output>
+					<soap:body use="encoded" namespace="http://biowulf.bu.edu/PromoSer" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+				</output>
+			</operation>
+	</binding>
+	<service name="PromoSerSOAP">
+		<documentation>
+			A large-scale, batch service for promoter extraction
+		</documentation>
+		<port name="PromoSerPromoSerSOAPPort" binding="tns:PromoSerPromoSerSOAPBinding">
+			<soap:address location="http://biowulf.bu.edu/cgi-bin/zlab/promoser.soap"/>
+		</port>
+	</service>
+</definitions>

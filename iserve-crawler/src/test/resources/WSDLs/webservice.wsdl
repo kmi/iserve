@@ -1,0 +1,438 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.1.7-b01-. --><definitions xmlns:tns="http://www.ebi.ac.uk/webservices/chebi" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="ChebiWebServices" targetNamespace="http://www.ebi.ac.uk/webservices/chebi">
+   <types>
+      <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.ebi.ac.uk/webservices/chebi">
+
+         <xsd:complexType name="LiteEntity">
+            <xsd:sequence>
+               <xsd:element maxOccurs="1" minOccurs="1" name="chebiId" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="0" name="chebiAsciiName" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="0" name="searchScore" type="xsd:float" />
+               <xsd:element maxOccurs="1" minOccurs="0" name="entityStar" type="xsd:int" />
+            </xsd:sequence>
+         </xsd:complexType>
+
+         <xsd:complexType name="LiteEntityList">
+            <xsd:sequence>
+               <xsd:element maxOccurs="unbounded" minOccurs="0" name="ListElement" type="tns:LiteEntity" />
+            </xsd:sequence>
+         </xsd:complexType>
+
+         <xsd:complexType name="OntologyDataItemList">
+            <xsd:sequence>
+               <xsd:element maxOccurs="unbounded" minOccurs="0" name="ListElement" type="tns:OntologyDataItem" />
+            </xsd:sequence>
+         </xsd:complexType>
+
+         <xsd:complexType name="CommentDataItem">
+            <xsd:sequence>
+               <xsd:element maxOccurs="1" minOccurs="1" name="text" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="1" name="date" type="xsd:string" />
+            </xsd:sequence>
+         </xsd:complexType>
+
+         <xsd:complexType name="DataItem">
+            <xsd:sequence>
+               <xsd:element maxOccurs="1" minOccurs="1" name="data" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="0" name="type" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="0" name="source" type="xsd:string" />
+               <xsd:element maxOccurs="unbounded" minOccurs="0" name="Comments" type="tns:CommentDataItem" />
+            </xsd:sequence>
+         </xsd:complexType>
+
+         <xsd:complexType name="StructureDataItem">
+            <xsd:sequence>
+               <xsd:element maxOccurs="1" minOccurs="1" name="structure" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="1" name="type" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="0" name="dimension" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="0" name="defaultStructure" type="xsd:boolean" />
+               <xsd:element maxOccurs="unbounded" minOccurs="0" name="Comments" type="tns:CommentDataItem" />
+            </xsd:sequence>
+         </xsd:complexType>
+
+         <xsd:complexType name="OntologyDataItem">
+            <xsd:sequence>
+               <xsd:element maxOccurs="1" minOccurs="1" name="chebiName" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="1" name="chebiId" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="1" name="type" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="1" name="status" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="1" name="cyclicRelationship" type="xsd:boolean" />
+               <xsd:element maxOccurs="unbounded" minOccurs="0" name="Comments" type="tns:CommentDataItem" />
+               <xsd:element maxOccurs="unbounded" minOccurs="0" name="OntologyElement" type="tns:OntologyDataItem" />
+            </xsd:sequence>
+         </xsd:complexType>
+
+         <xsd:complexType name="Entity">
+            <xsd:sequence>
+               <xsd:element maxOccurs="1" minOccurs="1" name="chebiId" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="1" name="chebiAsciiName" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="0" name="definition" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="1" name="status" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="0" name="smiles" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="0" name="inchi" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="0" name="inchiKey" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="0" name="charge" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="0" name="mass" type="xsd:string" />
+               <xsd:element maxOccurs="1" minOccurs="0" name="entityStar" type="xsd:int" />
+               <xsd:element maxOccurs="unbounded" minOccurs="0" name="SecondaryChEBIIds" type="xsd:string" />
+               <xsd:element maxOccurs="unbounded" minOccurs="0" name="Synonyms" type="tns:DataItem" />
+               <xsd:element maxOccurs="unbounded" minOccurs="0" name="IupacNames" type="tns:DataItem" />
+               <xsd:element maxOccurs="unbounded" minOccurs="0" name="Formulae" type="tns:DataItem" />
+               <xsd:element maxOccurs="unbounded" minOccurs="0" name="RegistryNumbers" type="tns:DataItem" />
+               <xsd:element maxOccurs="unbounded" minOccurs="0" name="Citations" type="tns:DataItem" />                
+               <xsd:element maxOccurs="unbounded" minOccurs="0" name="ChemicalStructures" type="tns:StructureDataItem" />
+               <xsd:element maxOccurs="unbounded" minOccurs="0" name="DatabaseLinks" type="tns:DataItem" />
+               <xsd:element maxOccurs="unbounded" minOccurs="0" name="OntologyParents" type="tns:OntologyDataItem" />
+               <xsd:element maxOccurs="unbounded" minOccurs="0" name="OntologyChildren" type="tns:OntologyDataItem" />
+               <xsd:element maxOccurs="unbounded" minOccurs="0" name="GeneralComments" type="tns:CommentDataItem" />
+            </xsd:sequence>
+         </xsd:complexType>
+
+         <complexType name="getLiteEntityResponse">
+            <sequence>
+               <element name="return" type="tns:LiteEntityList" />
+            </sequence>
+         </complexType>
+         <element name="getLiteEntityResponse" type="tns:getLiteEntityResponse" />
+
+         <simpleType name="SearchCategory">
+            <restriction base="xsd:string">
+               <enumeration value="ALL" />
+               <enumeration value="CHEBI ID" />
+               <enumeration value="CHEBI NAME" />
+                <enumeration value="DEFINITION" />
+               <enumeration value="ALL NAMES" />
+               <enumeration value="IUPAC NAME" />
+               <enumeration value="DATABASE LINK/REGISTRY NUMBER/CITATION" />
+               <enumeration value="FORMULA" />
+               <enumeration value="MASS" />
+               <enumeration value="CHARGE" />
+               <enumeration value="INCHI/INCHI KEY" />
+               <enumeration value="SMILES" />
+            </restriction>
+         </simpleType>
+
+         <simpleType name="StructureSearchCategory">
+            <restriction base="xsd:string">
+               <enumeration value="IDENTITY" />
+               <enumeration value="SUBSTRUCTURE" />
+               <enumeration value="SIMILARITY" />
+            </restriction>
+         </simpleType>
+
+         <simpleType name="StructureType">
+            <restriction base="xsd:string">
+               <enumeration value="MOLFILE" />
+               <enumeration value="CML" />
+               <enumeration value="SMILES" />
+            </restriction>
+         </simpleType>
+
+         <simpleType name="RelationshipType">
+            <restriction base="xsd:string">
+               <enumeration value="is a" />
+               <enumeration value="has part" />
+               <enumeration value="is conjugate base of" />
+               <enumeration value="is conjugate acid of" />
+               <enumeration value="is tautomer of" />
+               <enumeration value="is enantiomer of" />
+               <enumeration value="has functional parent" />
+               <enumeration value="has parent hydride" />
+               <enumeration value="is substituent group from" />
+               <enumeration value="has role" />
+            </restriction>
+         </simpleType>
+         
+         <simpleType name="StarsCategory">
+            <restriction base="xsd:string">
+               <enumeration value="ALL" />
+               <enumeration value="TWO ONLY" />
+               <enumeration value="THREE ONLY" />
+            </restriction>
+         </simpleType>
+
+         <complexType name="getLiteEntity">
+            <sequence>
+               <element name="search" type="xsd:string" />
+               <element name="searchCategory" type="tns:SearchCategory" />
+               <element name="maximumResults" type="xsd:int" />
+               <element name="stars" type="tns:StarsCategory" />
+            </sequence>
+         </complexType>
+         <element name="getLiteEntity" type="tns:getLiteEntity" />
+
+         <complexType name="getCompleteEntityResponse">
+            <sequence>
+               <element name="return" type="tns:Entity" />
+            </sequence>
+         </complexType>
+         <element name="getCompleteEntityResponse" type="tns:getCompleteEntityResponse" />
+
+         <complexType name="getCompleteEntity">
+            <sequence>
+               <element name="chebiId" type="xsd:string" />
+            </sequence>
+         </complexType>
+         <element name="getCompleteEntity" type="tns:getCompleteEntity" />
+
+          <!--Returns a the complete entity's using a list of LiteEntities. The maximum list passed is 50-->
+         <complexType name="getCompleteEntityByListResponse">
+            <sequence>
+               <xsd:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:Entity" />
+            </sequence>
+         </complexType>
+         <element name="getCompleteEntityByListResponse" type="tns:getCompleteEntityByListResponse" />
+
+         <complexType name="getCompleteEntityByList">
+            <sequence>
+               <xsd:element maxOccurs="50" minOccurs="0" name="ListOfChEBIIds" type="xsd:string" />
+            </sequence>
+         </complexType>
+         <element name="getCompleteEntityByList" type="tns:getCompleteEntityByList" />
+
+         <complexType name="getOntologyParentsResponse">
+            <sequence>
+               <element name="return" type="tns:OntologyDataItemList" />
+            </sequence>
+         </complexType>
+         <element name="getOntologyParentsResponse" type="tns:getOntologyParentsResponse" />
+
+         <complexType name="getOntologyParents">
+            <sequence>
+               <element name="chebiId" type="xsd:string" />
+            </sequence>
+         </complexType>
+         <element name="getOntologyParents" type="tns:getOntologyParents" />
+
+         <complexType name="getOntologyChildrenResponse">
+            <sequence>
+               <element name="return" type="tns:OntologyDataItemList" />
+            </sequence>
+         </complexType>
+         <element name="getOntologyChildrenResponse" type="tns:getOntologyChildrenResponse" />
+
+         <complexType name="getOntologyChildren">
+            <sequence>
+               <element name="chebiId" type="xsd:string" />
+            </sequence>
+         </complexType>
+         <element name="getOntologyChildren" type="tns:getOntologyChildren" />
+         <complexType name="getAllOntologyChildrenInPathResponse">
+            <sequence>
+               <element name="return" type="tns:OntologyDataItemList" />
+            </sequence>
+         </complexType>
+         <element name="getAllOntologyChildrenInPathResponse" type="tns:getAllOntologyChildrenInPathResponse" />
+
+         <complexType name="getAllOntologyChildrenInPath">
+            <sequence>
+               <element name="chebiId" type="xsd:string" />
+               <element name="relationshipType" type="tns:RelationshipType" />
+               <element name="structureOnly" type="xsd:boolean" />
+            </sequence>
+         </complexType>
+         <element name="getAllOntologyChildrenInPath" type="tns:getAllOntologyChildrenInPath" />
+
+         <complexType name="getStructureSearchResponse">
+            <sequence>
+               <element name="return" type="tns:LiteEntityList" />
+            </sequence>
+         </complexType>
+         <element name="getStructureSearchResponse" type="tns:getLiteEntityResponse" />
+
+         <complexType name="getStructureSearch">
+            <sequence>
+               <element name="structure" type="xsd:string" />
+               <element name="type" type="tns:StructureType" />
+               <element name="structureSearchCategory" type="tns:StructureSearchCategory" />
+               <element name="totalResults" type="xsd:int" />
+               <element name="tanimotoCutoff" type="xsd:float" />
+            </sequence>
+         </complexType>
+         <element name="getStructureSearch" type="tns:getStructureSearch" />
+
+         <element name="ChebiWebServiceFault" type="tns:ChebiWebServiceFault" />
+
+         <complexType name="ChebiWebServiceFault">
+            <sequence>
+               <element name="faultInfo" type="xsd:string" />
+               <element name="message" type="xsd:string" />
+            </sequence>
+         </complexType>
+
+      </xsd:schema>
+   </types>
+   <message name="getLiteEntity">
+      <part name="parameters" element="tns:getLiteEntity" />
+   </message>
+   <message name="getLiteEntityResponse">
+      <part name="result" element="tns:getLiteEntityResponse" />
+   </message>
+   <message name="getCompleteEntity">
+      <part name="parameters" element="tns:getCompleteEntity" />
+   </message>
+   <message name="getCompleteEntityResponse">
+      <part name="result" element="tns:getCompleteEntityResponse" />
+   </message>
+   <message name="getCompleteEntityByList">
+      <part name="parameters" element="tns:getCompleteEntityByList" />
+   </message>
+   <message name="getCompleteEntityByListResponse">
+      <part name="result" element="tns:getCompleteEntityByListResponse" />
+   </message>
+   <message name="getOntologyParents">
+      <part name="parameters" element="tns:getOntologyParents" />
+   </message>
+   <message name="getOntologyParentsResponse">
+      <part name="result" element="tns:getOntologyParentsResponse" />
+   </message>
+   <message name="getOntologyChildren">
+      <part name="parameters" element="tns:getOntologyChildren" />
+   </message>
+   <message name="getOntologyChildrenResponse">
+      <part name="result" element="tns:getOntologyChildrenResponse" />
+   </message>
+   <message name="getAllOntologyChildrenInPath">
+      <part name="parameters" element="tns:getAllOntologyChildrenInPath" />
+   </message>
+   <message name="getAllOntologyChildrenInPathResponse">
+      <part name="result" element="tns:getAllOntologyChildrenInPathResponse" />
+   </message>
+   <message name="getStructureSearch">
+      <part name="parameters" element="tns:getStructureSearch" />
+   </message>
+   <message name="getStructureSearchResponse">
+      <part name="result" element="tns:getStructureSearchResponse" />
+   </message>
+   <message name="chebiWebServiceFault">
+      <part name="ChebiWebServiceFault" element="tns:ChebiWebServiceFault" />
+   </message>
+   <portType name="ChebiWebServicePortType">
+      <operation name="getLiteEntity">
+         <input message="tns:getLiteEntity" />
+         <output message="tns:getLiteEntityResponse" />
+         <fault name="chebiWebServiceFault" message="tns:chebiWebServiceFault" />
+      </operation>
+      <operation name="getCompleteEntity">
+         <input message="tns:getCompleteEntity" />
+         <output message="tns:getCompleteEntityResponse" />
+         <fault name="chebiWebServiceFault" message="tns:chebiWebServiceFault" />
+      </operation>
+      <operation name="getCompleteEntityByList">
+         <input message="tns:getCompleteEntityByList" />
+         <output message="tns:getCompleteEntityByListResponse" />
+         <fault name="chebiWebServiceFault" message="tns:chebiWebServiceFault" />
+      </operation>
+      <operation name="getOntologyParents">
+         <input message="tns:getOntologyParents" />
+         <output message="tns:getOntologyParentsResponse" />
+         <fault name="chebiWebServiceFault" message="tns:chebiWebServiceFault" />
+      </operation>
+      <operation name="getOntologyChildren">
+         <input message="tns:getOntologyChildren" />
+         <output message="tns:getOntologyChildrenResponse" />
+         <fault name="chebiWebServiceFault" message="tns:chebiWebServiceFault" />
+      </operation>
+      <operation name="getAllOntologyChildrenInPath">
+         <input message="tns:getAllOntologyChildrenInPath" />
+         <output message="tns:getLiteEntityResponse" />
+         <fault name="chebiWebServiceFault" message="tns:chebiWebServiceFault" />
+      </operation>
+      <operation name="getStructureSearch">
+         <input message="tns:getStructureSearch" />
+         <output message="tns:getStructureSearchResponse" />
+         <fault name="chebiWebServiceFault" message="tns:chebiWebServiceFault" />
+      </operation>
+   </portType>
+   <binding name="ChebiWebServiceBinding" type="tns:ChebiWebServicePortType">
+      <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+      <operation name="getCompleteEntity">
+         <soap:operation soapAction="" />
+         <input>
+            <soap:body use="literal" />
+         </input>
+         <output>
+            <soap:body use="literal" />
+         </output>
+         <fault name="chebiWebServiceFault">
+            <soap:fault name="chebiWebServiceFault" use="literal" />
+         </fault>
+      </operation>
+      <operation name="getCompleteEntityByList">
+         <soap:operation soapAction="" />
+         <input>
+            <soap:body use="literal" />
+         </input>
+         <output>
+            <soap:body use="literal" />
+         </output>
+         <fault name="chebiWebServiceFault">
+            <soap:fault name="chebiWebServiceFault" use="literal" />
+         </fault>
+      </operation>
+      <operation name="getLiteEntity">
+         <soap:operation soapAction="" />
+         <input>
+            <soap:body use="literal" />
+         </input>
+         <output>
+            <soap:body use="literal" />
+         </output>
+         <fault name="chebiWebServiceFault">
+            <soap:fault name="chebiWebServiceFault" use="literal" />
+         </fault>
+      </operation>
+      <operation name="getOntologyParents">
+         <soap:operation soapAction="" />
+         <input>
+            <soap:body use="literal" />
+         </input>
+         <output>
+            <soap:body use="literal" />
+         </output>
+         <fault name="chebiWebServiceFault">
+            <soap:fault name="chebiWebServiceFault" use="literal" />
+         </fault>
+      </operation>
+      <operation name="getOntologyChildren">
+         <soap:operation soapAction="" />
+         <input>
+            <soap:body use="literal" />
+         </input>
+         <output>
+            <soap:body use="literal" />
+         </output>
+         <fault name="chebiWebServiceFault">
+            <soap:fault name="chebiWebServiceFault" use="literal" />
+         </fault>
+      </operation>
+      <operation name="getAllOntologyChildrenInPath">
+         <soap:operation soapAction="" />
+         <input>
+            <soap:body use="literal" />
+         </input>
+         <output>
+            <soap:body use="literal" />
+         </output>
+         <fault name="chebiWebServiceFault">
+            <soap:fault name="chebiWebServiceFault" use="literal" />
+         </fault>
+      </operation>
+      <operation name="getStructureSearch">
+         <soap:operation soapAction="" />
+         <input>
+            <soap:body use="literal" />
+         </input>
+         <output>
+            <soap:body use="literal" />
+         </output>
+         <fault name="chebiWebServiceFault">
+            <soap:fault name="chebiWebServiceFault" use="literal" />
+         </fault>
+      </operation>
+   </binding>
+   <service name="ChebiWebServiceService">
+      <port name="ChebiWebServicePort" binding="tns:ChebiWebServiceBinding">
+         <soap:address location="http://www.ebi.ac.uk:80/webservices/chebi/2.0/webservice" />
+      </port>
+   </service>
+</definitions>

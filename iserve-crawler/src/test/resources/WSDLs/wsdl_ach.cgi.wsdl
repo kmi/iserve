@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- WSDL for http://seed-viewer.theseed.org/webservices_ACH.cgi created by Pod::WSDL version: 0.05 on Wed Feb 29 15:42:06 2012 -->
+<wsdl:definitions targetNamespace="http://seed-viewer.theseed.org/ACHWebServices" xmlns:impl="http://seed-viewer.theseed.org/ACHWebServices" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns1="http://seed-viewer.theseed.org/ACHWebServices">
+
+	<wsdl:types>
+		<schema targetNamespace="http://seed-viewer.theseed.org/ACHWebServices" xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+			<complexType name="ArrayOfString">
+				<complexContent>
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="soapenc:string[]" />
+					</restriction>
+				</complexContent>
+			</complexType>
+		</schema>
+	</wsdl:types>
+
+	<wsdl:message name="get_corresponding_idsRequest">
+		<wsdl:part name="Gene_ID" type="xsd:string" />
+		<wsdl:part name="ID_type" type="xsd:string" />
+	</wsdl:message>
+
+	<wsdl:message name="get_corresponding_idsResponse">
+		<wsdl:part name="get_corresponding_idsReturn" type="tns1:ArrayOfString" />
+	</wsdl:message>
+
+	<wsdl:portType name="ACHWebServicesHandler">
+		<wsdl:operation name="get_corresponding_ids" parameterOrder="Gene_ID ID_type">
+			<wsdl:documentation>Given a protein ID from any source we know about, returns a list of ID's of the requested type. If no type is given, returns all corresponding iD's</wsdl:documentation>
+			<wsdl:input message="impl:get_corresponding_idsRequest" name="get_corresponding_idsRequest" />
+			<wsdl:output message="impl:get_corresponding_idsResponse" name="get_corresponding_idsResponse" />
+		</wsdl:operation>
+
+	</wsdl:portType>
+
+	<wsdl:binding name="ACHWebServicesSoapBinding" type="impl:ACHWebServicesHandler">
+		<wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
+
+		<wsdl:operation name="get_corresponding_ids">
+			<wsdlsoap:operation soapAction="http://seed-viewer.theseed.org/ACHWebServices#get_corresponding_ids" />
+			<wsdl:input name="get_corresponding_idsRequest">
+				<wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://seed-viewer.theseed.org/ACHWebServices" use="encoded" />
+			</wsdl:input>
+			<wsdl:output name="get_corresponding_idsResponse">
+				<wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://seed-viewer.theseed.org/ACHWebServices" use="encoded" />
+			</wsdl:output>
+		</wsdl:operation>
+
+	</wsdl:binding>
+
+	<wsdl:service name="ACHWebServicesHandlerService">
+		<wsdl:port binding="impl:ACHWebServicesSoapBinding" name="ACHWebServices">
+			<wsdlsoap:address location="http://seed-viewer.theseed.org/webservices_ACH.cgi" />
+		</wsdl:port>
+	</wsdl:service>
+
+</wsdl:definitions>

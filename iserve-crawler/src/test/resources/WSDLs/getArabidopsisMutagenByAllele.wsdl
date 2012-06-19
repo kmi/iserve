@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="getArabidopsisMutagenByAlleleInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="getArabidopsisMutagenByAlleleOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="getArabidopsisMutagenByAllelePortType">
+          <wsdl:operation name="getArabidopsisMutagenByAllele">
+                 <wsdl:input message="tns:getArabidopsisMutagenByAlleleInput"/>
+                 <wsdl:output message="tns:getArabidopsisMutagenByAlleleOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="getArabidopsisMutagenByAlleleBinding" type="tns:getArabidopsisMutagenByAllelePortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="getArabidopsisMutagenByAllele"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#getArabidopsisMutagenByAllele' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="getArabidopsisMutagenByAlleleService">
+          <wsdl:documentation>Authority: arabidopsis.info  -  Retrieves NASC mutagens for a given allele from the Nottingham Arabidopsis Stock Centre Germplasm database (http://arabidopsis.info). Example input: cer5-1.</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="getArabidopsisMutagenByAllelePort" binding="tns:getArabidopsisMutagenByAlleleBinding">
+                 <wsdlsoap:address location="http://arabidopsis.info/cgi-bin/moby_services/Services/germplasm_services/germplasm_services.cgi"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

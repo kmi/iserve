@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+    targetNamespace="http://protein.osaka-u.ac.jp/pdbj/soap"
+    xmlns:impl="http://protein.osaka-u.ac.jp/pdbj/soap"
+    xmlns:apachesoap="http://xml.apache.org/xml-soap"
+    xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:tns1="http://protein.osaka-u.ac.jp/pdbj/soap"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns="http://schemas.xmlsoap.org/wsdl/">
+ <wsdl:types>
+  <schema
+      	xmlns="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://protein.osaka-u.ac.jp/pdbj/soap">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="SeqnaviInput">
+    <sequence>
+     <element name="pdbId" nillable="true" type="xsd:string"/>
+     <element name="chainId" nillable="true" type="xsd:string"/>
+     <element name="seq" nillable="true" type="xsd:string"/>
+     <element name="clusterOption" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="SeqnaviExactMatch">
+    <sequence>
+     <element name="pdbId" nillable="true" type="xsd:string"/>
+     <element name="chainId" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="SeqnaviSuperposition">
+    <sequence>
+     <element name="querySeq" type="xsd:string"/>
+     <element name="querySst" type="xsd:string"/>
+     <element name="templSeq" type="xsd:string"/>
+     <element name="templSst" type="xsd:string"/>
+     <element name="nerSimilarity" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="SeqnaviClusterInfo">
+    <sequence>
+     <element name="cindex" type="xsd:int"/>
+     <element name="alignment" type="xsd:int"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema
+      xmlns="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://protein.osaka-u.ac.jp/pdbj/soap">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_tns1_SeqnaviNeighbor">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:SeqnaviNeighbor[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema
+      xmlns="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://protein.osaka-u.ac.jp/pdbj/soap">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_tns1_SeqnaviSuperposition">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:SeqnaviSuperposition[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema
+      xmlns="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://protein.osaka-u.ac.jp/pdbj/soap">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_tns1_SeqnaviExactMatch">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:SeqnaviExactMatch[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema
+      xmlns="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://protein.osaka-u.ac.jp/pdbj/soap">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_tns1_SeqnaviClusterInfo">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:SeqnaviClusterInfo[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema
+      xmlns="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://protein.osaka-u.ac.jp/pdbj/soap">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="SeqnaviNeighbor">
+    <sequence>
+     <element name="clusterIndex" type="xsd:int" nillable="true"/>
+     <element name="query_exact_match" nillable="true" type="impl:ArrayOf_tns1_SeqnaviExactMatch"/>
+     <element name="message" type="xsd:string"/>
+     <element name="queryChainId" nillable="true" type="xsd:string"/>
+     <element name="queryPdbId" type="xsd:string"/>
+     <element name="querySeq" type="xsd:string"/>
+     <element name="querySeqIndex" type="xsd:int"/>	
+     <element name="querySeqLength" type="xsd:int"/>	
+     <element name="templPdbId" type="xsd:string"/>
+     <element name="templChainId" nillable="true" type="xsd:string"/>
+     <element name="templSeq" type="xsd:string"/>
+     <element name="templSeqIndex" type="xsd:int"/>	
+     <element name="templSeqLength" type="xsd:int"/>	
+     <element name="templ_exact_match" nillable="true" type="impl:ArrayOf_tns1_SeqnaviExactMatch"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema
+      xmlns="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://protein.osaka-u.ac.jp/pdbj/soap">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="SeqnaviNeighborResult">
+    <sequence>
+     <element name="message" type="xsd:string"/>
+     <element name="query_exact_match" nillable="true" type="impl:ArrayOf_tns1_SeqnaviExactMatch"/>
+     <element name="neighbors" nillable="true" type="impl:ArrayOf_tns1_SeqnaviNeighbor"/>
+     <element name="clusterInfo" nillable="true" type="impl:ArrayOf_tns1_SeqnaviClusterInfo"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema
+      xmlns="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://protein.osaka-u.ac.jp/pdbj/soap">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="SeqnaviSuperpositionResult">
+    <sequence>
+     <element name="message" type="xsd:string"/>
+     <element name="queryTemplNAlign" type="xsd:int"/>
+     <element name="CA_RMSD" type="xsd:float"/>
+     <element name="RMSDSuperposition" nillable="true" type="impl:ArrayOf_tns1_SeqnaviSuperposition"/>
+     <element name="nerScore" type="xsd:int"/>
+     <element name="NERSuperposition" nillable="true" type="impl:ArrayOf_tns1_SeqnaviSuperposition"/>
+    </sequence>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="seqNeighborsRequest">
+      <wsdl:part name="in0" type="tns1:SeqnaviInput"/>
+   </wsdl:message>
+
+   <wsdl:message name="seqNeighborsResponse">
+      <wsdl:part name="seqNeighborsReturn" type="tns1:SeqnaviNeighborResult"/>
+   </wsdl:message>
+
+   <wsdl:message name="seqSupRmsdRequest">
+      <wsdl:part name="in0" type="tns1:SeqnaviNeighbor"/>
+   </wsdl:message>
+
+   <wsdl:message name="seqSupRmsdResponse">
+      <wsdl:part name="seqSupRmsdReturn" type="xsd:string"/>
+   </wsdl:message>
+
+   <wsdl:message name="seqSupNerRequest">
+      <wsdl:part name="in0" type="tns1:SeqnaviNeighbor"/>
+   </wsdl:message>
+
+   <wsdl:message name="seqSupNerResponse">
+      <wsdl:part name="seqSupNerReturn" type="xsd:string"/>
+   </wsdl:message>
+
+   <wsdl:message name="seqAlignRequest">
+      <wsdl:part name="in0" type="tns1:SeqnaviNeighbor"/>
+   </wsdl:message>
+
+   <wsdl:message name="seqAlignResponse">
+      <wsdl:part name="seqAlignReturn" type="tns1:SeqnaviSuperpositionResult"/>
+   </wsdl:message>
+
+   <wsdl:portType name="SeqnaviXSoapApi">
+      <wsdl:operation name="seq_neighbors" parameterOrder="in0">
+         <wsdl:input name="seqNeighborsRequest" message="impl:seqNeighborsRequest"/>
+         <wsdl:output name="seqNeighborsResponse" message="impl:seqNeighborsResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="seq_sup_rmsd" parameterOrder="in0">
+         <wsdl:input name="seqSupRmsdRequest" message="impl:seqSupRmsdRequest"/>
+         <wsdl:output name="seqSupRmsdResponse" message="impl:seqSupRmsdResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="seq_sup_ner" parameterOrder="in0">
+         <wsdl:input name="seqSupNerRequest" message="impl:seqSupNerRequest"/>
+         <wsdl:output name="seqSupNerResponse" message="impl:seqSupNerResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="seq_align" parameterOrder="in0">
+         <wsdl:input name="seqAlignRequest" message="impl:seqAlignRequest"/>
+         <wsdl:output name="seqAlignResponse" message="impl:seqAlignResponse"/>
+      </wsdl:operation>
+   </wsdl:portType>
+
+   <wsdl:binding name="SeqnaviXServiceSoapBinding" type="impl:SeqnaviXSoapApi">
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="seq_neighbors">
+         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input name="seqNeighborsRequest">
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://protein.osaka-u.ac.jp/pdbj/soap"/>
+         </wsdl:input>
+         <wsdl:output name="seqNeighborsResponse">
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://protein.osaka-u.ac.jp/pdbj/soap"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="seq_sup_rmsd">
+         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input name="seqSupRmsdRequest">
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://protein.osaka-u.ac.jp/pdbj/soap"/>
+         </wsdl:input>
+         <wsdl:output name="seqSupRmsdResponse">
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://protein.osaka-u.ac.jp/pdbj/soap"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="seq_sup_ner">
+         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input name="seqSupNerRequest">
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://protein.osaka-u.ac.jp/pdbj/soap"/>
+         </wsdl:input>
+         <wsdl:output name="seqSupNerResponse">
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://protein.osaka-u.ac.jp/pdbj/soap"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="seq_align">
+         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input name="seqAlignRequest">
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://protein.osaka-u.ac.jp/pdbj/soap"/>
+         </wsdl:input>
+         <wsdl:output name="seqAlignResponse">
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://protein.osaka-u.ac.jp/pdbj/soap"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+
+   <wsdl:service name="SeqnaviXSoapApiService">
+      <wsdl:port name="SeqnaviXSoapService" binding="impl:SeqnaviXServiceSoapBinding">
+         <wsdlsoap:address location="http://pdbjs3.protein.osaka-u.ac.jp/seqnavix/services/SeqnaviXSoapService"/>
+      </wsdl:port>
+   </wsdl:service>
+
+</wsdl:definitions>

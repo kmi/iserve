@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="parseFeatureAASequenceFromFSOLVTextInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="parseFeatureAASequenceFromFSOLVTextOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="parseFeatureAASequenceFromFSOLVTextPortType">
+          <wsdl:operation name="parseFeatureAASequenceFromFSOLVText">
+                 <wsdl:input message="tns:parseFeatureAASequenceFromFSOLVTextInput"/>
+                 <wsdl:output message="tns:parseFeatureAASequenceFromFSOLVTextOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="parseFeatureAASequenceFromFSOLVTextBinding" type="tns:parseFeatureAASequenceFromFSOLVTextPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="parseFeatureAASequenceFromFSOLVText"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#parseFeatureAASequenceFromFSOLVText' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="parseFeatureAASequenceFromFSOLVTextService">
+          <wsdl:documentation>Authority: mmb.pcb.ub.es  -  
+		
+			Parses a FSOLVText report into a FeatureAASequence (the feature is DPS DG)
+		
+	</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="parseFeatureAASequenceFromFSOLVTextPort" binding="tns:parseFeatureAASequenceFromFSOLVTextBinding">
+                 <wsdlsoap:address location="http://mmb2.pcb.ub.es:8080/FSolv/parseFeatureAASequenceFromFSOLVText"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

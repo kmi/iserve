@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="get_other_database_accessions_by_database_accessionInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="get_other_database_accessions_by_database_accessionOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="get_other_database_accessions_by_database_accessionPortType">
+          <wsdl:operation name="get_other_database_accessions_by_database_accession">
+                 <wsdl:input message="tns:get_other_database_accessions_by_database_accessionInput"/>
+                 <wsdl:output message="tns:get_other_database_accessions_by_database_accessionOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="get_other_database_accessions_by_database_accessionBinding" type="tns:get_other_database_accessions_by_database_accessionPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="get_other_database_accessions_by_database_accession"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#get_other_database_accessions_by_database_accession' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="get_other_database_accessions_by_database_accessionService">
+          <wsdl:documentation>Authority: mpiz-koeln.mpg.de  -  Gets a database identifier as input and returns all stored alternative names (database identifiers, accessions, locus codes, ...) from the AFAWE database.</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="get_other_database_accessions_by_database_accessionPort" binding="tns:get_other_database_accessions_by_database_accessionBinding">
+                 <wsdlsoap:address location="http://bioinfo.mpiz-koeln.mpg.de/axis/services/get_other_database_accessions_by_database_accession"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

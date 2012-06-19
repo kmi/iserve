@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="getArabidopsisAlleleByNASCstockCodeInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="getArabidopsisAlleleByNASCstockCodeOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="getArabidopsisAlleleByNASCstockCodePortType">
+          <wsdl:operation name="getArabidopsisAlleleByNASCstockCode">
+                 <wsdl:input message="tns:getArabidopsisAlleleByNASCstockCodeInput"/>
+                 <wsdl:output message="tns:getArabidopsisAlleleByNASCstockCodeOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="getArabidopsisAlleleByNASCstockCodeBinding" type="tns:getArabidopsisAlleleByNASCstockCodePortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="getArabidopsisAlleleByNASCstockCode"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#getArabidopsisAlleleByNASCstockCode' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="getArabidopsisAlleleByNASCstockCodeService">
+          <wsdl:documentation>Authority: arabidopsis.info  -  Retrieves the Arabidosis allele for a given NASC code from the Nottingham Arabidopsis Stock Centre Germplasm database (http://arabidopsis.info). Example input: N6.</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="getArabidopsisAlleleByNASCstockCodePort" binding="tns:getArabidopsisAlleleByNASCstockCodeBinding">
+                 <wsdlsoap:address location="http://arabidopsis.info/cgi-bin/moby_services/Services/germplasm_services/germplasm_services.cgi"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

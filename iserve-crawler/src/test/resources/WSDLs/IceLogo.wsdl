@@ -1,0 +1,1205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="urn:IceLogoFetcher" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:IceLogoFetcher" xmlns:intf="urn:IceLogoFetcher" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="urn:IceLogoFetcher" xmlns="http://www.w3.org/2001/XMLSchema">
+   <element name="getAvailableAaParameters">
+    <complexType/>
+   </element>
+   <element name="getAvailableAaParametersResponse">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="getAvailableAaParametersReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getAvailableSubstitutionMatrices">
+    <complexType/>
+   </element>
+   <element name="getAvailableSubstitutionMatricesResponse">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="getAvailableSubstitutionMatricesReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="testService">
+    <complexType>
+     <sequence>
+      <element name="lTestString" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="testServiceResponse">
+    <complexType>
+     <sequence>
+      <element name="testServiceReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getSamplingIceLogo">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="lExperimentalSet" type="xsd:string"/>
+      <element maxOccurs="unbounded" name="lExperimentalSet2" type="xsd:string"/>
+      <element name="lSpecies" type="xsd:string"/>
+      <element name="lScoringType" type="xsd:string"/>
+      <element name="lYaxis" type="xsd:int"/>
+      <element name="lStartPosition" type="xsd:int"/>
+      <element name="lPvalue" type="xsd:double"/>
+      <element name="lHeight" type="xsd:int"/>
+      <element name="lWidth" type="xsd:int"/>
+      <element name="lSamplingType" type="xsd:string"/>
+      <element name="lSamplingPosition" type="xsd:int"/>
+      <element name="lSamplingIterations" type="xsd:int"/>
+      <element name="lAnchorPosition" type="xsd:int"/>
+      <element name="lSamplingDirection" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getSamplingIceLogoResponse">
+    <complexType>
+     <sequence>
+      <element name="getSamplingIceLogoReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getSamplingHeatMap">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="lExperimentalSet" type="xsd:string"/>
+      <element maxOccurs="unbounded" name="lExperimentalSet2" type="xsd:string"/>
+      <element name="lSpecies" type="xsd:string"/>
+      <element name="lStartPosition" type="xsd:int"/>
+      <element name="lPvalue" type="xsd:double"/>
+      <element name="lHeight" type="xsd:int"/>
+      <element name="lWidth" type="xsd:int"/>
+      <element name="lSamplingType" type="xsd:string"/>
+      <element name="lSamplingPosition" type="xsd:int"/>
+      <element name="lSamplingIterations" type="xsd:int"/>
+      <element name="lAnchorPosition" type="xsd:int"/>
+      <element name="lSamplingDirection" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getSamplingHeatMapResponse">
+    <complexType>
+     <sequence>
+      <element name="getSamplingHeatMapReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getSamplingAaParameterGraph">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="lExperimentalSet" type="xsd:string"/>
+      <element maxOccurs="unbounded" name="lExperimentalSet2" type="xsd:string"/>
+      <element name="lSpecies" type="xsd:string"/>
+      <element name="lAaMatrixTitle" type="xsd:string"/>
+      <element name="lStartPosition" type="xsd:int"/>
+      <element name="lPvalue" type="xsd:double"/>
+      <element name="lHeight" type="xsd:int"/>
+      <element name="lWidth" type="xsd:int"/>
+      <element name="lSamplingType" type="xsd:string"/>
+      <element name="lSamplingPosition" type="xsd:int"/>
+      <element name="lSamplingIterations" type="xsd:int"/>
+      <element name="lAnchorPosition" type="xsd:int"/>
+      <element name="lSamplingDirection" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getSamplingAaParameterGraphResponse">
+    <complexType>
+     <sequence>
+      <element name="getSamplingAaParameterGraphReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getSamplingConservationLine">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="lExperimentalSet" type="xsd:string"/>
+      <element maxOccurs="unbounded" name="lExperimentalSet2" type="xsd:string"/>
+      <element name="lSpecies" type="xsd:string"/>
+      <element name="lSubstitutionMatrixTitle" type="xsd:string"/>
+      <element name="lStartPosition" type="xsd:int"/>
+      <element name="lPvalue" type="xsd:double"/>
+      <element name="lHeight" type="xsd:int"/>
+      <element name="lWidth" type="xsd:int"/>
+      <element name="lSamplingType" type="xsd:string"/>
+      <element name="lSamplingPosition" type="xsd:int"/>
+      <element name="lSamplingIterations" type="xsd:int"/>
+      <element name="lAnchorPosition" type="xsd:int"/>
+      <element name="lSamplingDirection" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getSamplingConservationLineResponse">
+    <complexType>
+     <sequence>
+      <element name="getSamplingConservationLineReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticIceLogo">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="lExperimentalSet" type="xsd:string"/>
+      <element name="lSpecies" type="xsd:string"/>
+      <element name="lScoringType" type="xsd:string"/>
+      <element name="lYaxis" type="xsd:int"/>
+      <element name="lStartPosition" type="xsd:int"/>
+      <element name="lPvalue" type="xsd:double"/>
+      <element name="lHeight" type="xsd:int"/>
+      <element name="lWidth" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticIceLogoResponse">
+    <complexType>
+     <sequence>
+      <element name="getStaticIceLogoReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticHeatMap">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="lExperimentalSet" type="xsd:string"/>
+      <element name="lSpecies" type="xsd:string"/>
+      <element name="lStartPosition" type="xsd:int"/>
+      <element name="lPvalue" type="xsd:double"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticHeatMapResponse">
+    <complexType>
+     <sequence>
+      <element name="getStaticHeatMapReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticSequenceLogo">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="lExperimentalSet" type="xsd:string"/>
+      <element name="lSpecies" type="xsd:string"/>
+      <element name="lStartPosition" type="xsd:int"/>
+      <element name="lHeight" type="xsd:int"/>
+      <element name="lWidth" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticSequenceLogoResponse">
+    <complexType>
+     <sequence>
+      <element name="getStaticSequenceLogoReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getFilledLogo">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="lExperimentalSet" type="xsd:string"/>
+      <element name="lStartPosition" type="xsd:int"/>
+      <element name="lHeight" type="xsd:int"/>
+      <element name="lWidth" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getFilledLogoResponse">
+    <complexType>
+     <sequence>
+      <element name="getFilledLogoReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticAaParameterGraph">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="lExperimentalSet" type="xsd:string"/>
+      <element name="lSpecies" type="xsd:string"/>
+      <element name="lAaMatrixTitle" type="xsd:string"/>
+      <element name="lStartPosition" type="xsd:int"/>
+      <element name="lPvalue" type="xsd:double"/>
+      <element name="lHeight" type="xsd:int"/>
+      <element name="lWidth" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticAaParameterGraphResponse">
+    <complexType>
+     <sequence>
+      <element name="getStaticAaParameterGraphReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticConservationLine">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="lExperimentalSet" type="xsd:string"/>
+      <element name="lSpecies" type="xsd:string"/>
+      <element name="lSubstitutionMatrixTitle" type="xsd:string"/>
+      <element name="lStartPosition" type="xsd:int"/>
+      <element name="lPvalue" type="xsd:double"/>
+      <element name="lHeight" type="xsd:int"/>
+      <element name="lWidth" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticConservationLineResponse">
+    <complexType>
+     <sequence>
+      <element name="getStaticConservationLineReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticReferenceSetIceLogo">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="lExperimentalSet" type="xsd:string"/>
+      <element maxOccurs="unbounded" name="lReferenceSet" type="xsd:string"/>
+      <element name="lScoringType" type="xsd:string"/>
+      <element name="lYaxis" type="xsd:int"/>
+      <element name="lStartPosition" type="xsd:int"/>
+      <element name="lPvalue" type="xsd:double"/>
+      <element name="lHeight" type="xsd:int"/>
+      <element name="lWidth" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticReferenceSetIceLogoResponse">
+    <complexType>
+     <sequence>
+      <element name="getStaticReferenceSetIceLogoReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticReferenceSetHeatMap">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="lExperimentalSet" type="xsd:string"/>
+      <element maxOccurs="unbounded" name="lReferenceSet" type="xsd:string"/>
+      <element name="lStartPosition" type="xsd:int"/>
+      <element name="lPvalue" type="xsd:double"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticReferenceSetHeatMapResponse">
+    <complexType>
+     <sequence>
+      <element name="getStaticReferenceSetHeatMapReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticReferenceSetSequenceLogo">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="lExperimentalSet" type="xsd:string"/>
+      <element maxOccurs="unbounded" name="lReferenceSet" type="xsd:string"/>
+      <element name="lStartPosition" type="xsd:int"/>
+      <element name="lHeight" type="xsd:int"/>
+      <element name="lWidth" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticReferenceSetSequenceLogoResponse">
+    <complexType>
+     <sequence>
+      <element name="getStaticReferenceSetSequenceLogoReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticReferenceSetAaParameterGraph">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="lExperimentalSet" type="xsd:string"/>
+      <element maxOccurs="unbounded" name="lReferenceSet" type="xsd:string"/>
+      <element name="lAaMatrixTitle" type="xsd:string"/>
+      <element name="lStartPosition" type="xsd:int"/>
+      <element name="lPvalue" type="xsd:double"/>
+      <element name="lHeight" type="xsd:int"/>
+      <element name="lWidth" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticReferenceSetAaParameterGraphResponse">
+    <complexType>
+     <sequence>
+      <element name="getStaticReferenceSetAaParameterGraphReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticReferenceSetConservationLine">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="lExperimentalSet" type="xsd:string"/>
+      <element maxOccurs="unbounded" name="lReferenceSet" type="xsd:string"/>
+      <element name="lSubstitutionMatrixTitle" type="xsd:string"/>
+      <element name="lStartPosition" type="xsd:int"/>
+      <element name="lPvalue" type="xsd:double"/>
+      <element name="lHeight" type="xsd:int"/>
+      <element name="lWidth" type="xsd:int"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getStaticReferenceSetConservationLineResponse">
+    <complexType>
+     <sequence>
+      <element name="getStaticReferenceSetConservationLineReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="getStaticConservationLineResponse">
+
+      <wsdl:part element="impl:getStaticConservationLineResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="testServiceResponse">
+
+      <wsdl:part element="impl:testServiceResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSamplingIceLogoResponse">
+
+      <wsdl:part element="impl:getSamplingIceLogoResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticReferenceSetAaParameterGraphResponse">
+
+      <wsdl:part element="impl:getStaticReferenceSetAaParameterGraphResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticReferenceSetSequenceLogoResponse">
+
+      <wsdl:part element="impl:getStaticReferenceSetSequenceLogoResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticReferenceSetSequenceLogoRequest">
+
+      <wsdl:part element="impl:getStaticReferenceSetSequenceLogo" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAvailableAaParametersRequest">
+
+      <wsdl:part element="impl:getAvailableAaParameters" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getFilledLogoRequest">
+
+      <wsdl:part element="impl:getFilledLogo" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticReferenceSetHeatMapRequest">
+
+      <wsdl:part element="impl:getStaticReferenceSetHeatMap" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticAaParameterGraphResponse">
+
+      <wsdl:part element="impl:getStaticAaParameterGraphResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAvailableAaParametersResponse">
+
+      <wsdl:part element="impl:getAvailableAaParametersResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticAaParameterGraphRequest">
+
+      <wsdl:part element="impl:getStaticAaParameterGraph" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticIceLogoRequest">
+
+      <wsdl:part element="impl:getStaticIceLogo" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticReferenceSetConservationLineRequest">
+
+      <wsdl:part element="impl:getStaticReferenceSetConservationLine" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticHeatMapRequest">
+
+      <wsdl:part element="impl:getStaticHeatMap" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getFilledLogoResponse">
+
+      <wsdl:part element="impl:getFilledLogoResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSamplingAaParameterGraphResponse">
+
+      <wsdl:part element="impl:getSamplingAaParameterGraphResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSamplingIceLogoRequest">
+
+      <wsdl:part element="impl:getSamplingIceLogo" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticConservationLineRequest">
+
+      <wsdl:part element="impl:getStaticConservationLine" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticHeatMapResponse">
+
+      <wsdl:part element="impl:getStaticHeatMapResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAvailableSubstitutionMatricesResponse">
+
+      <wsdl:part element="impl:getAvailableSubstitutionMatricesResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticReferenceSetAaParameterGraphRequest">
+
+      <wsdl:part element="impl:getStaticReferenceSetAaParameterGraph" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticSequenceLogoRequest">
+
+      <wsdl:part element="impl:getStaticSequenceLogo" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticIceLogoResponse">
+
+      <wsdl:part element="impl:getStaticIceLogoResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSamplingHeatMapResponse">
+
+      <wsdl:part element="impl:getSamplingHeatMapResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticReferenceSetIceLogoResponse">
+
+      <wsdl:part element="impl:getStaticReferenceSetIceLogoResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSamplingConservationLineResponse">
+
+      <wsdl:part element="impl:getSamplingConservationLineResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticSequenceLogoResponse">
+
+      <wsdl:part element="impl:getStaticSequenceLogoResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSamplingHeatMapRequest">
+
+      <wsdl:part element="impl:getSamplingHeatMap" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticReferenceSetHeatMapResponse">
+
+      <wsdl:part element="impl:getStaticReferenceSetHeatMapResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticReferenceSetIceLogoRequest">
+
+      <wsdl:part element="impl:getStaticReferenceSetIceLogo" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSamplingAaParameterGraphRequest">
+
+      <wsdl:part element="impl:getSamplingAaParameterGraph" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSamplingConservationLineRequest">
+
+      <wsdl:part element="impl:getSamplingConservationLine" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAvailableSubstitutionMatricesRequest">
+
+      <wsdl:part element="impl:getAvailableSubstitutionMatrices" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="testServiceRequest">
+
+      <wsdl:part element="impl:testService" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStaticReferenceSetConservationLineResponse">
+
+      <wsdl:part element="impl:getStaticReferenceSetConservationLineResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:portType name="IceLogo">
+
+      <wsdl:operation name="getAvailableAaParameters">
+
+         <wsdl:input message="impl:getAvailableAaParametersRequest" name="getAvailableAaParametersRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getAvailableAaParametersResponse" name="getAvailableAaParametersResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAvailableSubstitutionMatrices">
+
+         <wsdl:input message="impl:getAvailableSubstitutionMatricesRequest" name="getAvailableSubstitutionMatricesRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getAvailableSubstitutionMatricesResponse" name="getAvailableSubstitutionMatricesResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="testService">
+
+         <wsdl:input message="impl:testServiceRequest" name="testServiceRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:testServiceResponse" name="testServiceResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSamplingIceLogo">
+
+         <wsdl:input message="impl:getSamplingIceLogoRequest" name="getSamplingIceLogoRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getSamplingIceLogoResponse" name="getSamplingIceLogoResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSamplingHeatMap">
+
+         <wsdl:input message="impl:getSamplingHeatMapRequest" name="getSamplingHeatMapRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getSamplingHeatMapResponse" name="getSamplingHeatMapResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSamplingAaParameterGraph">
+
+         <wsdl:input message="impl:getSamplingAaParameterGraphRequest" name="getSamplingAaParameterGraphRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getSamplingAaParameterGraphResponse" name="getSamplingAaParameterGraphResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSamplingConservationLine">
+
+         <wsdl:input message="impl:getSamplingConservationLineRequest" name="getSamplingConservationLineRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getSamplingConservationLineResponse" name="getSamplingConservationLineResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticIceLogo">
+
+         <wsdl:input message="impl:getStaticIceLogoRequest" name="getStaticIceLogoRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getStaticIceLogoResponse" name="getStaticIceLogoResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticHeatMap">
+
+         <wsdl:input message="impl:getStaticHeatMapRequest" name="getStaticHeatMapRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getStaticHeatMapResponse" name="getStaticHeatMapResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticSequenceLogo">
+
+         <wsdl:input message="impl:getStaticSequenceLogoRequest" name="getStaticSequenceLogoRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getStaticSequenceLogoResponse" name="getStaticSequenceLogoResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getFilledLogo">
+
+         <wsdl:input message="impl:getFilledLogoRequest" name="getFilledLogoRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getFilledLogoResponse" name="getFilledLogoResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticAaParameterGraph">
+
+         <wsdl:input message="impl:getStaticAaParameterGraphRequest" name="getStaticAaParameterGraphRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getStaticAaParameterGraphResponse" name="getStaticAaParameterGraphResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticConservationLine">
+
+         <wsdl:input message="impl:getStaticConservationLineRequest" name="getStaticConservationLineRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getStaticConservationLineResponse" name="getStaticConservationLineResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticReferenceSetIceLogo">
+
+         <wsdl:input message="impl:getStaticReferenceSetIceLogoRequest" name="getStaticReferenceSetIceLogoRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getStaticReferenceSetIceLogoResponse" name="getStaticReferenceSetIceLogoResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticReferenceSetHeatMap">
+
+         <wsdl:input message="impl:getStaticReferenceSetHeatMapRequest" name="getStaticReferenceSetHeatMapRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getStaticReferenceSetHeatMapResponse" name="getStaticReferenceSetHeatMapResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticReferenceSetSequenceLogo">
+
+         <wsdl:input message="impl:getStaticReferenceSetSequenceLogoRequest" name="getStaticReferenceSetSequenceLogoRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getStaticReferenceSetSequenceLogoResponse" name="getStaticReferenceSetSequenceLogoResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticReferenceSetAaParameterGraph">
+
+         <wsdl:input message="impl:getStaticReferenceSetAaParameterGraphRequest" name="getStaticReferenceSetAaParameterGraphRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getStaticReferenceSetAaParameterGraphResponse" name="getStaticReferenceSetAaParameterGraphResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticReferenceSetConservationLine">
+
+         <wsdl:input message="impl:getStaticReferenceSetConservationLineRequest" name="getStaticReferenceSetConservationLineRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getStaticReferenceSetConservationLineResponse" name="getStaticReferenceSetConservationLineResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="icelogoSoapBinding" type="impl:IceLogo">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="getAvailableAaParameters">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getAvailableAaParametersRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getAvailableAaParametersResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAvailableSubstitutionMatrices">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getAvailableSubstitutionMatricesRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getAvailableSubstitutionMatricesResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="testService">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="testServiceRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="testServiceResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSamplingIceLogo">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getSamplingIceLogoRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getSamplingIceLogoResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSamplingHeatMap">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getSamplingHeatMapRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getSamplingHeatMapResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSamplingAaParameterGraph">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getSamplingAaParameterGraphRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getSamplingAaParameterGraphResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSamplingConservationLine">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getSamplingConservationLineRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getSamplingConservationLineResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticIceLogo">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getStaticIceLogoRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getStaticIceLogoResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticHeatMap">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getStaticHeatMapRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getStaticHeatMapResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticSequenceLogo">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getStaticSequenceLogoRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getStaticSequenceLogoResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getFilledLogo">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getFilledLogoRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getFilledLogoResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticAaParameterGraph">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getStaticAaParameterGraphRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getStaticAaParameterGraphResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticConservationLine">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getStaticConservationLineRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getStaticConservationLineResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticReferenceSetIceLogo">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getStaticReferenceSetIceLogoRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getStaticReferenceSetIceLogoResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticReferenceSetHeatMap">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getStaticReferenceSetHeatMapRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getStaticReferenceSetHeatMapResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticReferenceSetSequenceLogo">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getStaticReferenceSetSequenceLogoRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getStaticReferenceSetSequenceLogoResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticReferenceSetAaParameterGraph">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getStaticReferenceSetAaParameterGraphRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getStaticReferenceSetAaParameterGraphResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStaticReferenceSetConservationLine">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getStaticReferenceSetConservationLineRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getStaticReferenceSetConservationLineResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="IceLogoService">
+
+      <wsdl:port binding="impl:icelogoSoapBinding" name="icelogo">
+
+         <wsdlsoap:address location="http://iomics.ugent.be/icelogoserver/services/icelogo"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

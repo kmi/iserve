@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Revision: $Id: WSCensor.wsdl,v 1.5 2011/02/15 14:15:12 hpm Exp $ -->
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.ebi.ac.uk/WSCensor" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" name="WSCensor" targetNamespace="http://www.ebi.ac.uk/WSCensor">
+  <documentation>WSCensor: Sequence repeat identification and masking using CENSOR (see http://www.ebi.ac.uk/Tools/webservices/services/censor).</documentation>
+  <types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://www.ebi.ac.uk/WSCensor">
+      <xsd:complexType name="inputParams">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="en">Input parameters for tool, see http://www.ebi.ac.uk/Tools/webservices/services/censor#inputparams for details.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:all>
+          <xsd:element name="translate" type="xsd:boolean">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">Perform a translated search.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="mode" nillable="true" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">Stringency of search.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="lib" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">Repeat library to use to identify repeats.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="maskpseudo" type="xsd:boolean">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">Mask pseudogenes.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="identity" type="xsd:boolean">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">Limit to identical matches.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="showsimple" type="xsd:boolean">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">Show simple repeats.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="email" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">User e-mail address.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="async" type="xsd:boolean">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">Asynchronous submission.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="EBIParams">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="en">Not used.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:all>
+          <xsd:element name="email" type="xsd:string"/>
+          <xsd:element name="async" type="xsd:boolean"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="data">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="en">Input data for tool, see http://www.ebi.ac.uk/Tools/webservices/services/censor#data for details.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:all>
+          <xsd:element name="type" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">Input data type</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="content" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">Input data</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="ArrayOf_xsd_string">
+        <xsd:complexContent>
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="WSArrayofFile">
+        <xsd:complexContent>
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="tns:WSFile[]"/>
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="WSArrayofData">
+        <xsd:complexContent>
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="tns:data[]"/>
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="WSFile">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="en">Result data type description, see http://www.ebi.ac.uk/Tools/webservices/services/censor#wsfile for details.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:all>
+          <xsd:element name="type" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">Result type name.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="ext" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">File extension for result type.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:all>
+      </xsd:complexType>
+    </schema>
+  </types>
+  <message name="statusRequest">
+    <part name="jobid" type="xsd:string"/>
+  </message>
+  <message name="statusResponse">
+    <part name="status" type="xsd:string"/>
+  </message>
+  <message name="resultsRequest">
+    <part name="jobid" type="xsd:string"/>
+  </message>
+  <message name="resultsResponse">
+    <part name="results" type="tns:WSArrayofFile"/>
+  </message>
+  <message name="pollRequest">
+    <part name="jobid" type="xsd:string"/>
+    <part name="type" type="xsd:string"/>
+  </message>
+  <message name="pollResponse">
+    <part name="output" type="xsd:base64Binary"/>
+  </message>
+  <message name="getSupportedLibsResponse">
+    <part name="getSupportedLibsReturn" type="xsd:base64Binary"/>
+  </message>
+  <message name="getSupportedLibsRequest">
+  </message>
+  <message name="runCensorRequest">
+    <part name="params" type="tns:inputParams"/>
+    <part name="content" type="tns:WSArrayofData"/>
+  </message>
+  <message name="runCensorResponse">
+    <part name="jobid" type="xsd:string"/>
+  </message>
+  <portType name="WSCensor">
+    <operation name="runCensor" parameterOrder="params content">
+      <documentation>Submit a CENSOR analysis job (see http://www.ebi.ac.uk/Tools/webservices/services/censor#runcensor_params_content)</documentation>
+      <input name="runCensorRequest" message="tns:runCensorRequest"/>
+      <output name="runCensorResponse" message="tns:runCensorResponse"/>
+    </operation>
+    <operation name="checkStatus" parameterOrder="jobid">
+      <documentation>Get the status of a submited job (see http://www.ebi.ac.uk/Tools/webservices/services/censor#checkstatus_jobid)</documentation>
+      <input name="statusRequest" message="tns:statusRequest"/>
+      <output name="statusResponse" message="tns:statusResponse"/>
+    </operation>
+    <operation name="poll" parameterOrder="jobid type">
+      <documentation>Get the results of a job (see http://www.ebi.ac.uk/Tools/webservices/services/censor#poll_jobid_type)</documentation>
+      <input name="pollRequest" message="tns:pollRequest"/>
+      <output name="pollResponse" message="tns:pollResponse"/>
+    </operation>
+    <operation name="getResults" parameterOrder="jobid">
+      <documentation>Get the available result types for a completed job (see http://www.ebi.ac.uk/Tools/webservices/services/censor#getresults_jobid)</documentation>
+      <input name="resultsRequest" message="tns:resultsRequest"/>
+      <output name="resultsResponse" message="tns:resultsResponse"/>
+    </operation>
+    <operation name="getSupportedLibs">
+      <documentation>Get a list of the available repeat libraries (see http://www.ebi.ac.uk/Tools/webservices/services/censor#getsupportedlibs)</documentation>
+      <input message="tns:getSupportedLibsRequest" name="getSupportedLibsRequest"/>
+      <output message="tns:getSupportedLibsResponse" name="getSupportedLibsResponse"/>
+    </operation>
+  </portType>
+  <binding name="WSCensorSoapBinding" type="tns:WSCensor">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="poll">
+      <documentation>Get the results of a job (see http://www.ebi.ac.uk/Tools/webservices/services/censor#poll_jobid_type)</documentation>
+      <soap:operation soapAction="http://www.ebi.ac.uk/WSCensor#poll"/>
+      <input name="pollRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ebi.ac.uk/WSCensor" use="encoded"/>
+      </input>
+      <output name="pollResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ebi.ac.uk/WSCensor" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="runCensor">
+      <documentation>Submit a CENSOR analysis job (see http://www.ebi.ac.uk/Tools/webservices/services/censor#runcensor_params_content)</documentation>
+      <soap:operation soapAction="http://www.ebi.ac.uk/WSCensor#runCensor"/>
+      <input name="runCensorRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ebi.ac.uk/WSCensor" use="encoded"/>
+      </input>
+      <output name="runCensorResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ebi.ac.uk/WSCensor" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="getSupportedLibs">
+      <documentation>Get a list of the available repeat libraries (see http://www.ebi.ac.uk/Tools/webservices/services/censor#getsupportedlibs)</documentation>
+      <soap:operation soapAction="http://www.ebi.ac.uk/WSCensor#getSupportedLibs"/>
+      <input name="getSupportedLibsRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ebi.ac.uk/WSCensor" use="encoded"/>
+      </input>
+      <output name="getSupportedLibsResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ebi.ac.uk/WSCensor" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="checkStatus">
+      <documentation>Get the status of a submited job (see http://www.ebi.ac.uk/Tools/webservices/services/censor#checkstatus_jobid)</documentation>
+      <soap:operation soapAction="http://www.ebi.ac.uk/WSCensor#checkStatus"/>
+      <input name="statusRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ebi.ac.uk/WSCensor" use="encoded"/>
+      </input>
+      <output name="statusResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ebi.ac.uk/WSCensor" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="getResults">
+      <documentation>Get the available result types for a completed job (see http://www.ebi.ac.uk/Tools/webservices/services/censor#getresults_jobid)</documentation>
+      <soap:operation soapAction="http://www.ebi.ac.uk/WSCensor#getResults"/>
+      <input name="resultsRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ebi.ac.uk/WSCensor" use="encoded"/>
+      </input>
+      <output name="resultsResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ebi.ac.uk/WSCensor" use="encoded"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="WSCensorService">
+	<documentation>WSCensor: Sequence repeat identification and masking using CENSOR (see http://www.ebi.ac.uk/Tools/webservices/services/censor).</documentation>
+    <port name="WSCensor" binding="tns:WSCensorSoapBinding">
+      <soap:address location="http://www.ebi.ac.uk/Tools/es/ws-servers/WSCensor"/>
+    </port>
+  </service>
+</definitions>

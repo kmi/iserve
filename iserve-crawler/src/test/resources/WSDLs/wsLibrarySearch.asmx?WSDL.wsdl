@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://gmd.mpimp-golm.mpg.de/webservices/wsLibrarySearch.asmx/" xmlns:s1="http://microsoft.com/wsdl/types/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://gmd.mpimp-golm.mpg.de/webservices/wsLibrarySearch.asmx/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+            These web services provide access to methods for matching user submitted spectra against the GMD.
+            Please send all feedback to &lt;a href="mailto:hummel@mpimp-golm.mpg.de"&gt;hummel@mpimp-golm.mpg.de&lt;/a&gt;</wsdl:documentation>
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://gmd.mpimp-golm.mpg.de/webservices/wsLibrarySearch.asmx/">
+      <s:import namespace="http://microsoft.com/wsdl/types/" />
+      <s:element name="LibrarySearch">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ri" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="riWindow" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="AlkaneRetentionIndexGcColumnComposition" type="tns:AlkaneRetentionIndexGcColumnComposition" />
+            <s:element minOccurs="0" maxOccurs="1" name="spectrum" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:simpleType name="AlkaneRetentionIndexGcColumnComposition">
+        <s:restriction base="s:string">
+          <s:enumeration value="none" />
+          <s:enumeration value="VAR5" />
+          <s:enumeration value="MDN35" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="LibrarySearchResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="LibrarySearchResult" type="tns:ResultOfAnnotatedMatch" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ResultOfAnnotatedMatch">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Status" type="tns:Status" />
+          <s:element minOccurs="0" maxOccurs="1" name="Message" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Results" type="tns:AnnotatedMatch" />
+          <s:element minOccurs="0" maxOccurs="1" name="ProcessingTime" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ElapsedTime" type="tns:TimeSpan" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="Status">
+        <s:restriction base="s:string">
+          <s:enumeration value="indefinite" />
+          <s:enumeration value="success" />
+          <s:enumeration value="failure" />
+          <s:enumeration value="exception" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="AnnotatedMatch">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:Match">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="spectrumName" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="analyteName" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="metaboliteID" type="s1:guid" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="Match">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:BaseHit">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="DotproductDistance" type="s:float" />
+              <s:element minOccurs="1" maxOccurs="1" name="EuclideanDistance" type="s:float" />
+              <s:element minOccurs="1" maxOccurs="1" name="HammingDistance" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="JaccardDistance" type="s:float" />
+              <s:element minOccurs="1" maxOccurs="1" name="s12GowerLegendreDistance" type="s:float" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="BaseHit">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="spectrumID" type="s1:guid" />
+          <s:element minOccurs="1" maxOccurs="1" name="analyteID" type="s1:guid" />
+          <s:element minOccurs="1" maxOccurs="1" name="ri" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="riDiscrepancy" type="s:float" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="TimeSpan" />
+      <s:element name="MPIMP_Quad_Name">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SpectrumID" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="MPIMP_Quad_NameResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="MPIMP_Quad_NameResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCompoundNames">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="prefixText" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="count" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCompoundNamesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetCompoundNamesResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ResultOfAnnotatedMatch" nillable="true" type="tns:ResultOfAnnotatedMatch" />
+      <s:element name="string" nillable="true" type="s:string" />
+      <s:element name="ArrayOfString" nillable="true" type="tns:ArrayOfString" />
+    </s:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://microsoft.com/wsdl/types/">
+      <s:simpleType name="guid">
+        <s:restriction base="s:string">
+          <s:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" />
+        </s:restriction>
+      </s:simpleType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="LibrarySearchSoapIn">
+    <wsdl:part name="parameters" element="tns:LibrarySearch" />
+  </wsdl:message>
+  <wsdl:message name="LibrarySearchSoapOut">
+    <wsdl:part name="parameters" element="tns:LibrarySearchResponse" />
+  </wsdl:message>
+  <wsdl:message name="MPIMP_Quad_NameSoapIn">
+    <wsdl:part name="parameters" element="tns:MPIMP_Quad_Name" />
+  </wsdl:message>
+  <wsdl:message name="MPIMP_Quad_NameSoapOut">
+    <wsdl:part name="parameters" element="tns:MPIMP_Quad_NameResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCompoundNamesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCompoundNames" />
+  </wsdl:message>
+  <wsdl:message name="GetCompoundNamesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCompoundNamesResponse" />
+  </wsdl:message>
+  <wsdl:message name="LibrarySearchHttpGetIn">
+    <wsdl:part name="ri" type="s:string" />
+    <wsdl:part name="riWindow" type="s:string" />
+    <wsdl:part name="AlkaneRetentionIndexGcColumnComposition" type="s:string" />
+    <wsdl:part name="spectrum" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="LibrarySearchHttpGetOut">
+    <wsdl:part name="Body" element="tns:ResultOfAnnotatedMatch" />
+  </wsdl:message>
+  <wsdl:message name="MPIMP_Quad_NameHttpGetIn">
+    <wsdl:part name="SpectrumID" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="MPIMP_Quad_NameHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="GetCompoundNamesHttpGetIn">
+    <wsdl:part name="prefixText" type="s:string" />
+    <wsdl:part name="count" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetCompoundNamesHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfString" />
+  </wsdl:message>
+  <wsdl:message name="LibrarySearchHttpPostIn">
+    <wsdl:part name="ri" type="s:string" />
+    <wsdl:part name="riWindow" type="s:string" />
+    <wsdl:part name="AlkaneRetentionIndexGcColumnComposition" type="s:string" />
+    <wsdl:part name="spectrum" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="LibrarySearchHttpPostOut">
+    <wsdl:part name="Body" element="tns:ResultOfAnnotatedMatch" />
+  </wsdl:message>
+  <wsdl:message name="MPIMP_Quad_NameHttpPostIn">
+    <wsdl:part name="SpectrumID" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="MPIMP_Quad_NameHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="GetCompoundNamesHttpPostIn">
+    <wsdl:part name="prefixText" type="s:string" />
+    <wsdl:part name="count" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetCompoundNamesHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfString" />
+  </wsdl:message>
+  <wsdl:portType name="wsLibrarySearchSoap">
+    <wsdl:operation name="LibrarySearch">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Matches a single user submitted GC-EI mass spectrum against the Golm Metabolome Database (GMD).
+                'ri' is the retention index based on the retention of the alkane homologues.
+                'riWindow' is the retention index window.
+                'gccolumn' is either 'VAR5', 'MDN35' or 'none'.
+                'Spectrum' is the GC-MS mass spectrum. All matching hits will be returned together with appropiate distance measures.</wsdl:documentation>
+      <wsdl:input message="tns:LibrarySearchSoapIn" />
+      <wsdl:output message="tns:LibrarySearchSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="MPIMP_Quad_Name">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns a clear name (i.e. '&lt;strong&gt;{A138002-13C-DL--4}&lt;/strong&gt; for a particular spectrum given by ID (i.e. 'ae7dc939-0674-40e8-ad59-db0c491a043f'). The returned string includes the linked Anlayte name and A-number, the steroisomer code, the isotopomer code and the spectra replica number.</wsdl:documentation>
+      <wsdl:input message="tns:MPIMP_Quad_NameSoapIn" />
+      <wsdl:output message="tns:MPIMP_Quad_NameSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundNames">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns a list of compound names from the Golm Metabolome Database (GMD).
+                &lt;strong&gt;prefixText&lt;/strong&gt; the first characters of the compound name to search for.
+                &lt;strong&gt;count&lt;/strong&gt; the number of names to return. This service is consumed from an control on the &lt;a href="/search.aspx"&gt;search.aspx&lt;/a&gt; web page, to populate the list of available compound names</wsdl:documentation>
+      <wsdl:input message="tns:GetCompoundNamesSoapIn" />
+      <wsdl:output message="tns:GetCompoundNamesSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="wsLibrarySearchHttpGet">
+    <wsdl:operation name="LibrarySearch">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Matches a single user submitted GC-EI mass spectrum against the Golm Metabolome Database (GMD).
+                'ri' is the retention index based on the retention of the alkane homologues.
+                'riWindow' is the retention index window.
+                'gccolumn' is either 'VAR5', 'MDN35' or 'none'.
+                'Spectrum' is the GC-MS mass spectrum. All matching hits will be returned together with appropiate distance measures.</wsdl:documentation>
+      <wsdl:input message="tns:LibrarySearchHttpGetIn" />
+      <wsdl:output message="tns:LibrarySearchHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="MPIMP_Quad_Name">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns a clear name (i.e. '&lt;strong&gt;{A138002-13C-DL--4}&lt;/strong&gt; for a particular spectrum given by ID (i.e. 'ae7dc939-0674-40e8-ad59-db0c491a043f'). The returned string includes the linked Anlayte name and A-number, the steroisomer code, the isotopomer code and the spectra replica number.</wsdl:documentation>
+      <wsdl:input message="tns:MPIMP_Quad_NameHttpGetIn" />
+      <wsdl:output message="tns:MPIMP_Quad_NameHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundNames">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns a list of compound names from the Golm Metabolome Database (GMD).
+                &lt;strong&gt;prefixText&lt;/strong&gt; the first characters of the compound name to search for.
+                &lt;strong&gt;count&lt;/strong&gt; the number of names to return. This service is consumed from an control on the &lt;a href="/search.aspx"&gt;search.aspx&lt;/a&gt; web page, to populate the list of available compound names</wsdl:documentation>
+      <wsdl:input message="tns:GetCompoundNamesHttpGetIn" />
+      <wsdl:output message="tns:GetCompoundNamesHttpGetOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="wsLibrarySearchHttpPost">
+    <wsdl:operation name="LibrarySearch">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Matches a single user submitted GC-EI mass spectrum against the Golm Metabolome Database (GMD).
+                'ri' is the retention index based on the retention of the alkane homologues.
+                'riWindow' is the retention index window.
+                'gccolumn' is either 'VAR5', 'MDN35' or 'none'.
+                'Spectrum' is the GC-MS mass spectrum. All matching hits will be returned together with appropiate distance measures.</wsdl:documentation>
+      <wsdl:input message="tns:LibrarySearchHttpPostIn" />
+      <wsdl:output message="tns:LibrarySearchHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="MPIMP_Quad_Name">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns a clear name (i.e. '&lt;strong&gt;{A138002-13C-DL--4}&lt;/strong&gt; for a particular spectrum given by ID (i.e. 'ae7dc939-0674-40e8-ad59-db0c491a043f'). The returned string includes the linked Anlayte name and A-number, the steroisomer code, the isotopomer code and the spectra replica number.</wsdl:documentation>
+      <wsdl:input message="tns:MPIMP_Quad_NameHttpPostIn" />
+      <wsdl:output message="tns:MPIMP_Quad_NameHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundNames">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns a list of compound names from the Golm Metabolome Database (GMD).
+                &lt;strong&gt;prefixText&lt;/strong&gt; the first characters of the compound name to search for.
+                &lt;strong&gt;count&lt;/strong&gt; the number of names to return. This service is consumed from an control on the &lt;a href="/search.aspx"&gt;search.aspx&lt;/a&gt; web page, to populate the list of available compound names</wsdl:documentation>
+      <wsdl:input message="tns:GetCompoundNamesHttpPostIn" />
+      <wsdl:output message="tns:GetCompoundNamesHttpPostOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="wsLibrarySearchSoap" type="tns:wsLibrarySearchSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="LibrarySearch">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsLibrarySearch.asmx/LibrarySearch" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MPIMP_Quad_Name">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsLibrarySearch.asmx/MPIMP_Quad_Name" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundNames">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsLibrarySearch.asmx/GetCompoundNames" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="wsLibrarySearchSoap12" type="tns:wsLibrarySearchSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="LibrarySearch">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsLibrarySearch.asmx/LibrarySearch" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MPIMP_Quad_Name">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsLibrarySearch.asmx/MPIMP_Quad_Name" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundNames">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsLibrarySearch.asmx/GetCompoundNames" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="wsLibrarySearchHttpGet" type="tns:wsLibrarySearchHttpGet">
+    <http:binding verb="GET" />
+    <wsdl:operation name="LibrarySearch">
+      <http:operation location="/LibrarySearch" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MPIMP_Quad_Name">
+      <http:operation location="/MPIMP_Quad_Name" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundNames">
+      <http:operation location="/GetCompoundNames" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="wsLibrarySearchHttpPost" type="tns:wsLibrarySearchHttpPost">
+    <http:binding verb="POST" />
+    <wsdl:operation name="LibrarySearch">
+      <http:operation location="/LibrarySearch" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MPIMP_Quad_Name">
+      <http:operation location="/MPIMP_Quad_Name" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundNames">
+      <http:operation location="/GetCompoundNames" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="wsLibrarySearch">
+    <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+            These web services provide access to methods for matching user submitted spectra against the GMD.
+            Please send all feedback to &lt;a href="mailto:hummel@mpimp-golm.mpg.de"&gt;hummel@mpimp-golm.mpg.de&lt;/a&gt;</wsdl:documentation>
+    <wsdl:port name="wsLibrarySearchSoap" binding="tns:wsLibrarySearchSoap">
+      <soap:address location="http://gmd.mpimp-golm.mpg.de/webservices/wsLibrarySearch.asmx" />
+    </wsdl:port>
+    <wsdl:port name="wsLibrarySearchSoap12" binding="tns:wsLibrarySearchSoap12">
+      <soap12:address location="http://gmd.mpimp-golm.mpg.de/webservices/wsLibrarySearch.asmx" />
+    </wsdl:port>
+    <wsdl:port name="wsLibrarySearchHttpGet" binding="tns:wsLibrarySearchHttpGet">
+      <http:address location="http://gmd.mpimp-golm.mpg.de/webservices/wsLibrarySearch.asmx" />
+    </wsdl:port>
+    <wsdl:port name="wsLibrarySearchHttpPost" binding="tns:wsLibrarySearchHttpPost">
+      <http:address location="http://gmd.mpimp-golm.mpg.de/webservices/wsLibrarySearch.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

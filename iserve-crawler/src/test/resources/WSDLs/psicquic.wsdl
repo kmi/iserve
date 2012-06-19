@@ -1,0 +1,919 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions name="PsicquicService" targetNamespace="http://psi.hupo.org/mi/psicquic" xmlns:ns1="http://cxf.apache.org/bindings/xformat" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://psi.hupo.org/mi/psicquic" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+<xs:schema elementFormDefault="qualified" targetNamespace="http://psi.hupo.org/mi/psicquic" version="1.0" xmlns:ns1="http://psi.hupo.org/mi/mif" xmlns:tns="http://psi.hupo.org/mi/psicquic" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:import namespace="http://psi.hupo.org/mi/mif" />
+<xs:element name="getByInteraction" type="tns:getByInteraction" />
+<xs:element name="getByInteractionList" type="tns:getByInteractionList" />
+<xs:element name="getByInteractionListResponse" type="tns:getByInteractionListResponse" />
+<xs:element name="getByInteractionResponse" type="tns:getByInteractionResponse" />
+<xs:element name="getByInteractor" type="tns:getByInteractor" />
+<xs:element name="getByInteractorList" type="tns:getByInteractorList" />
+<xs:element name="getByInteractorListReponse" type="tns:getByInteractorListResponse" />
+<xs:element name="getByInteractorResponse" type="tns:getByInteractorResponse" />
+<xs:element name="getByQuery" type="tns:getByQuery" />
+<xs:element name="getByQueryResponse" type="tns:getByQueryResponse" />
+<xs:element name="getProperties" type="tns:getProperties" />
+<xs:element name="getPropertiesResponse" type="tns:getPropertiesResponse" />
+<xs:element name="getProperty" type="tns:getProperty" />
+<xs:element name="getPropertyResponse" type="tns:getPropertyResponse" />
+<xs:element name="getSupportedDbAcs" type="tns:getSupportedDbAcs" />
+<xs:element name="getSupportedDbAcsResponse" type="tns:getSupportedDbAcsResponse" />
+<xs:element name="getSupportedReturnTypes" type="tns:getSupportedReturnTypes" />
+<xs:element name="getSupportedReturnTypesResponse" type="tns:getSupportedReturnTypesResponse" />
+<xs:element name="getVersion" type="tns:getVersion" />
+<xs:element name="getVersionResponse" type="tns:getVersionResponse" />
+<xs:element name="psicquicFault">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="code" type="xs:int" />
+<xs:element name="message" type="xs:string" />
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:complexType name="getByInteractor">
+<xs:sequence>
+<xs:element name="dbRef" type="tns:dbRef" />
+<xs:element name="infoRequest" type="tns:requestInfo" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="dbRef">
+<xs:sequence>
+<xs:element name="dbAc" nillable="true" type="xs:string" />
+<xs:element name="id" type="xs:string" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="requestInfo">
+<xs:sequence>
+<xs:element name="resultType" type="xs:string" />
+<xs:element default="0" name="firstResult" type="xs:int" />
+<xs:element default="50" name="blockSize" type="xs:int" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getByInteractorResponse">
+<xs:sequence>
+<xs:element name="queryResponse" type="tns:queryResponse" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="queryResponse">
+<xs:sequence>
+<xs:element name="resultSet" type="tns:resultSet" />
+<xs:element name="resultInfo" type="tns:resultInfo" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="resultSet">
+<xs:sequence>
+<xs:element minOccurs="0" name="entrySet" type="ns1:entrySet" />
+<xs:element minOccurs="0" name="mitab" type="xs:string" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="resultInfo">
+<xs:sequence>
+<xs:element name="firstResult" type="xs:int" />
+<xs:element name="totalResults" type="xs:int" />
+<xs:element name="resultType" type="xs:string" />
+<xs:element name="blockSize" type="xs:int" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getProperties">
+<xs:sequence />
+</xs:complexType>
+<xs:complexType name="getPropertiesResponse">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:property" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="property">
+<xs:sequence>
+<xs:element name="key" type="xs:string" />
+<xs:element name="value" type="xs:string" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getVersion">
+<xs:sequence />
+</xs:complexType>
+<xs:complexType name="getVersionResponse">
+<xs:sequence>
+<xs:element minOccurs="0" name="return" type="xs:string" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getByQuery">
+<xs:sequence>
+<xs:element name="query" type="xs:string" />
+<xs:element name="infoRequest" type="tns:requestInfo" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getByQueryResponse">
+<xs:sequence>
+<xs:element name="queryResponse" type="tns:queryResponse" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getProperty">
+<xs:sequence>
+<xs:element name="property" type="xs:string" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getPropertyResponse">
+<xs:sequence>
+<xs:element minOccurs="0" name="return" type="xs:string" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getSupportedReturnTypes">
+<xs:sequence />
+</xs:complexType>
+<xs:complexType name="getSupportedReturnTypesResponse">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="return" type="xs:string" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getByInteraction">
+<xs:sequence>
+<xs:element name="dbRef" type="tns:dbRef" />
+<xs:element name="infoRequest" type="tns:requestInfo" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getByInteractionResponse">
+<xs:sequence>
+<xs:element name="queryResponse" type="tns:queryResponse" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getByInteractorList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="dbRef" type="tns:dbRef" />
+<xs:element name="infoRequest" type="tns:requestInfo" />
+<xs:element name="operand" type="xs:string" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getByInteractorListResponse">
+<xs:sequence>
+<xs:element name="queryResponse" type="tns:queryResponse" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getSupportedDbAcs">
+<xs:sequence />
+</xs:complexType>
+<xs:complexType name="getSupportedDbAcsResponse">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="return" type="xs:string" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getByInteractionList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="dbRef" type="tns:dbRef" />
+<xs:element name="infoRequest" type="tns:requestInfo" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getByInteractionListResponse">
+<xs:sequence>
+<xs:element name="queryResponse" type="tns:queryResponse" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="supportedTypes">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="supportedType" type="xs:string" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="dbRefList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="dbRef" type="tns:dbRef" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="dbRefListRequest">
+<xs:sequence>
+<xs:element name="dbRefList" type="tns:dbRefList" />
+<xs:element name="resultType" type="xs:string" />
+<xs:element default="0" name="firstResult" type="xs:int" />
+<xs:element default="50" name="blockSize" type="xs:int" />
+</xs:sequence>
+</xs:complexType>
+</xs:schema>
+<xs:schema elementFormDefault="qualified" targetNamespace="http://psi.hupo.org/mi/mif" version="1.0" xmlns:tns="http://psi.hupo.org/mi/mif" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:element name="entrySet" type="tns:entrySet" />
+<xs:complexType name="entrySet">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="entry" type="tns:entry" />
+</xs:sequence>
+<xs:attribute name="level" type="xs:int" use="required" />
+<xs:attribute name="version" type="xs:int" use="required" />
+<xs:attribute name="minorVersion" type="xs:int" />
+</xs:complexType>
+<xs:complexType name="entry">
+<xs:sequence>
+<xs:element minOccurs="0" name="source" type="tns:source" />
+<xs:element minOccurs="0" name="availabilityList" type="tns:availabilityList" />
+<xs:element minOccurs="0" name="experimentList" type="tns:experimentDescriptionList" />
+<xs:element minOccurs="0" name="interactorList" type="tns:interactorList" />
+<xs:element name="interactionList" type="tns:interactionList" />
+<xs:element minOccurs="0" name="attributeList" type="tns:attributeList" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="source">
+<xs:sequence>
+<xs:element minOccurs="0" name="names" type="tns:names" />
+<xs:element minOccurs="0" name="bibref" type="tns:bibref" />
+<xs:element minOccurs="0" name="xref" type="tns:xref" />
+<xs:element minOccurs="0" name="attributeList" type="tns:attributeList" />
+</xs:sequence>
+<xs:attribute name="release" type="xs:string" />
+<xs:attribute name="releaseDate" type="xs:date" />
+</xs:complexType>
+<xs:complexType name="names">
+<xs:sequence>
+<xs:element minOccurs="0" name="shortLabel" type="xs:string" />
+<xs:element minOccurs="0" name="fullName" type="xs:string" />
+<xs:element maxOccurs="unbounded" minOccurs="0" name="alias" nillable="true" type="tns:alias" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="alias">
+<xs:simpleContent>
+<xs:extension base="xs:string">
+<xs:attribute name="typeAc" type="xs:string" />
+<xs:attribute name="type" type="xs:string" />
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+<xs:complexType name="bibref">
+<xs:sequence>
+<xs:element minOccurs="0" name="attributeList" type="tns:attributeList" />
+<xs:element minOccurs="0" name="xref" type="tns:xref" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="attributeList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="attribute" type="tns:attribute" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="attribute">
+<xs:simpleContent>
+<xs:extension base="xs:string">
+<xs:attribute name="name" type="xs:string" use="required" />
+<xs:attribute name="nameAc" type="xs:string" />
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+<xs:complexType name="xref">
+<xs:sequence>
+<xs:element name="primaryRef" type="tns:dbReference" />
+<xs:element maxOccurs="unbounded" minOccurs="0" name="secondaryRef" type="tns:dbReference" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="dbReference">
+<xs:sequence>
+<xs:element minOccurs="0" name="attributeList" type="tns:attributeList" />
+</xs:sequence>
+<xs:attribute name="db" type="xs:string" use="required" />
+<xs:attribute name="dbAc" type="xs:string" />
+<xs:attribute name="id" type="xs:string" use="required" />
+<xs:attribute name="secondary" type="xs:string" />
+<xs:attribute name="version" type="xs:string" />
+<xs:attribute name="refType" type="xs:string" />
+<xs:attribute name="refTypeAc" type="xs:string" />
+</xs:complexType>
+<xs:complexType name="availabilityList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="availability" type="tns:availability" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="availability">
+<xs:simpleContent>
+<xs:extension base="xs:string">
+<xs:attribute name="id" type="xs:int" use="required" />
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+<xs:complexType name="experimentDescriptionList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="experimentDescription" type="tns:experimentDescription" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="experimentDescription">
+<xs:sequence>
+<xs:element minOccurs="0" name="names" type="tns:names" />
+<xs:element name="bibref" type="tns:bibref" />
+<xs:element minOccurs="0" name="xref" type="tns:xref" />
+<xs:element minOccurs="0" name="hostOrganismList" type="tns:hostOrganismList" />
+<xs:element name="interactionDetectionMethod" type="tns:cvType" />
+<xs:element minOccurs="0" name="participantIdentificationMethod" type="tns:cvType" />
+<xs:element minOccurs="0" name="featureDetectionMethod" type="tns:cvType" />
+<xs:element minOccurs="0" name="confidenceList" type="tns:confidenceList" />
+<xs:element minOccurs="0" name="attributeList" type="tns:attributeList" />
+</xs:sequence>
+<xs:attribute name="id" type="xs:int" use="required" />
+</xs:complexType>
+<xs:complexType name="hostOrganismList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="hostOrganism" type="tns:hostOrganism" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="hostOrganism">
+<xs:complexContent>
+<xs:extension base="tns:bioSource">
+<xs:sequence>
+<xs:element minOccurs="0" name="experimentRefList" type="tns:experimentRefList" />
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="bioSource">
+<xs:sequence>
+<xs:element minOccurs="0" name="names" type="tns:names" />
+<xs:element minOccurs="0" name="cellType" type="tns:openCvType" />
+<xs:element minOccurs="0" name="compartment" type="tns:openCvType" />
+<xs:element minOccurs="0" name="tissue" type="tns:openCvType" />
+</xs:sequence>
+<xs:attribute name="ncbiTaxId" type="xs:int" use="required" />
+</xs:complexType>
+<xs:complexType name="experimentRefList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="experimentRef" type="xs:int" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="openCvType">
+<xs:sequence>
+<xs:element name="names" type="tns:names" />
+<xs:element minOccurs="0" name="xref" type="tns:xref" />
+<xs:element minOccurs="0" name="attributeList" type="tns:attributeList" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="cvType">
+<xs:sequence>
+<xs:element name="names" type="tns:names" />
+<xs:element name="xref" type="tns:xref" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="participantIdentificationMethod">
+<xs:complexContent>
+<xs:extension base="tns:cvType">
+<xs:sequence>
+<xs:element minOccurs="0" name="experimentRefList" type="tns:experimentRefList" />
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="experimentalRole">
+<xs:complexContent>
+<xs:extension base="tns:cvType">
+<xs:sequence>
+<xs:element minOccurs="0" name="experimentRefList" type="tns:experimentRefList" />
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="experimentalPreparation">
+<xs:complexContent>
+<xs:extension base="tns:cvType">
+<xs:sequence>
+<xs:element minOccurs="0" name="experimentRefList" type="tns:experimentRefList" />
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="confidenceList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="confidence" type="tns:confidence" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="confidence">
+<xs:complexContent>
+<xs:extension base="tns:confidenceBase">
+<xs:sequence>
+<xs:element minOccurs="0" name="experimentRefList" type="tns:experimentRefList" />
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="confidenceBase">
+<xs:sequence>
+<xs:element name="unit" type="tns:openCvType" />
+<xs:element name="value" type="xs:string" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="interactorList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="interactor" type="tns:interactor" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="interactor">
+<xs:sequence>
+<xs:element name="names" type="tns:names" />
+<xs:element minOccurs="0" name="xref" type="tns:xref" />
+<xs:element name="interactorType" type="tns:cvType" />
+<xs:element minOccurs="0" name="organism">
+<xs:complexType>
+<xs:complexContent>
+<xs:extension base="tns:bioSource">
+<xs:sequence />
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+</xs:element>
+<xs:element minOccurs="0" name="sequence" type="xs:string" />
+<xs:element minOccurs="0" name="attributeList" type="tns:attributeList" />
+</xs:sequence>
+<xs:attribute name="id" type="xs:int" use="required" />
+</xs:complexType>
+<xs:complexType name="interactionList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="interaction" type="tns:interaction" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="interaction">
+<xs:sequence>
+<xs:element minOccurs="0" name="names" type="tns:names" />
+<xs:element minOccurs="0" name="xref" type="tns:xref" />
+<xs:element minOccurs="0" name="availability" type="tns:availability" />
+<xs:element minOccurs="0" name="availabilityRef" type="xs:int" />
+<xs:element minOccurs="0" name="experimentList" type="tns:experimentList" />
+<xs:element name="participantList" type="tns:participantList" />
+<xs:element minOccurs="0" name="inferredInteractionList" type="tns:inferredInteractionList" />
+<xs:element maxOccurs="unbounded" minOccurs="0" name="interactionType" type="tns:cvType" />
+<xs:element minOccurs="0" name="modelled" type="xs:boolean" />
+<xs:element default="false" minOccurs="0" name="intraMolecular" type="xs:boolean" />
+<xs:element default="false" minOccurs="0" name="negative" type="xs:boolean" />
+<xs:element minOccurs="0" name="confidenceList" type="tns:confidenceList" />
+<xs:element minOccurs="0" name="parameterList" type="tns:parameterList" />
+<xs:element minOccurs="0" name="attributeList" type="tns:attributeList" />
+</xs:sequence>
+<xs:attribute name="imexId" type="xs:string" />
+<xs:attribute name="id" type="xs:int" use="required" />
+</xs:complexType>
+<xs:complexType name="experimentList">
+<xs:sequence>
+<xs:choice maxOccurs="unbounded" minOccurs="0">
+<xs:element name="experimentRef" type="xs:int" />
+<xs:element name="experimentDescription" type="tns:experimentDescription" />
+</xs:choice>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="participantList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="participant" type="tns:participant" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="participant">
+<xs:sequence>
+<xs:element minOccurs="0" name="names" type="tns:names" />
+<xs:element minOccurs="0" name="xref" type="tns:xref" />
+<xs:element minOccurs="0" name="interactionRef" type="xs:int" />
+<xs:element minOccurs="0" name="interactor" type="tns:interactor" />
+<xs:element minOccurs="0" name="interactorRef" type="xs:int" />
+<xs:element minOccurs="0" name="participantIdentificationMethodList" type="tns:participantIdentificationMethodList" />
+<xs:element minOccurs="0" name="biologicalRole" type="tns:cvType" />
+<xs:element minOccurs="0" name="experimentalRoleList" type="tns:experimentalRoleList" />
+<xs:element minOccurs="0" name="experimentalPreparationList" type="tns:experimentalPreparationList" />
+<xs:element minOccurs="0" name="experimentalInteractorList" type="tns:experimentalInteractorList" />
+<xs:element minOccurs="0" name="featureList" type="tns:featureList" />
+<xs:element minOccurs="0" name="hostOrganismList" type="tns:hostOrganismList" />
+<xs:element minOccurs="0" name="confidenceList" type="tns:confidenceList" />
+<xs:element minOccurs="0" name="parameterList" type="tns:parameterList" />
+<xs:element minOccurs="0" name="attributeList" type="tns:attributeList" />
+</xs:sequence>
+<xs:attribute name="id" type="xs:int" use="required" />
+</xs:complexType>
+<xs:complexType name="participantIdentificationMethodList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="participantIdentificationMethod" type="tns:participantIdentificationMethod" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="experimentalRoleList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="experimentalRole" type="tns:experimentalRole" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="experimentalPreparationList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="experimentalPreparation" type="tns:experimentalPreparation" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="experimentalInteractorList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="experimentalInteractor" type="tns:experimentalInteractor" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="experimentalInteractor">
+<xs:sequence>
+<xs:element minOccurs="0" name="interactor" type="tns:interactor" />
+<xs:element minOccurs="0" name="interactorRef" type="xs:int" />
+<xs:element minOccurs="0" name="experimentRefList" type="tns:experimentRefList" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="featureList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="feature" type="tns:feature" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="feature">
+<xs:sequence>
+<xs:element minOccurs="0" name="names" type="tns:names" />
+<xs:element minOccurs="0" name="xref" type="tns:xref" />
+<xs:element minOccurs="0" name="featureType" type="tns:cvType" />
+<xs:element minOccurs="0" name="featureDetectionMethod" type="tns:cvType" />
+<xs:element minOccurs="0" name="experimentRefList" type="tns:experimentRefList" />
+<xs:element name="featureRangeList">
+<xs:complexType>
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="featureRange" type="tns:baseLocation" />
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element minOccurs="0" name="attributeList" type="tns:attributeList" />
+</xs:sequence>
+<xs:attribute name="id" type="xs:int" use="required" />
+</xs:complexType>
+<xs:complexType name="baseLocation">
+<xs:sequence>
+<xs:element name="startStatus" type="tns:cvType" />
+<xs:element minOccurs="0" name="beginInterval" type="tns:interval" />
+<xs:element minOccurs="0" name="begin" type="tns:position" />
+<xs:element name="endStatus" type="tns:cvType" />
+<xs:element minOccurs="0" name="endInterval" type="tns:interval" />
+<xs:element minOccurs="0" name="end" type="tns:position" />
+<xs:element default="false" minOccurs="0" name="isLink" type="xs:boolean" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="interval">
+<xs:sequence />
+<xs:attribute name="begin" type="xs:unsignedLong" use="required" />
+<xs:attribute name="end" type="xs:unsignedLong" use="required" />
+</xs:complexType>
+<xs:complexType name="position">
+<xs:sequence />
+<xs:attribute name="position" type="xs:unsignedLong" use="required" />
+</xs:complexType>
+<xs:complexType name="parameterList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="parameter" type="tns:parameter" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="parameter">
+<xs:complexContent>
+<xs:extension base="tns:parameterBase">
+<xs:sequence>
+<xs:element name="experimentRef" type="xs:int" />
+</xs:sequence>
+<xs:attribute name="uncertainty" type="xs:decimal" />
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="parameterBase">
+<xs:sequence />
+<xs:attribute name="term" type="xs:string" use="required" />
+<xs:attribute name="termAc" type="xs:string" />
+<xs:attribute name="unit" type="xs:string" />
+<xs:attribute name="unitAc" type="xs:string" />
+<xs:attribute name="base" type="xs:short" />
+<xs:attribute name="exponent" type="xs:short" />
+<xs:attribute name="factor" type="xs:decimal" use="required" />
+</xs:complexType>
+<xs:complexType name="inferredInteractionList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="inferredInteraction" type="tns:inferredInteraction" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="inferredInteraction">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="participant" type="tns:inferredInteractionParticipant" />
+<xs:element minOccurs="0" name="experimentRefList" type="tns:experimentRefList" />
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="inferredInteractionParticipant">
+<xs:sequence>
+<xs:element minOccurs="0" name="participantFeatureRef" type="xs:int" />
+<xs:element minOccurs="0" name="participantRef" type="xs:int" />
+</xs:sequence>
+</xs:complexType>
+<xs:simpleType name="label">
+<xs:restriction base="xs:string" />
+</xs:simpleType>
+<xs:simpleType name="fullName">
+<xs:restriction base="xs:string" />
+</xs:simpleType>
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="getSupportedReturnTypes">
+    <wsdl:part element="tns:getSupportedReturnTypes" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getVersion">
+    <wsdl:part element="tns:getVersion" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="NotSupportedMethodException">
+    <wsdl:part element="tns:psicquicFault" name="NotSupportedMethodException">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getByInteractorListResponse">
+    <wsdl:part element="tns:getByInteractorListReponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getByInteractorResponse">
+    <wsdl:part element="tns:getByInteractorResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getByInteractor">
+    <wsdl:part element="tns:getByInteractor" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getByInteractionListResponse">
+    <wsdl:part element="tns:getByInteractionListResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getByInteractorList">
+    <wsdl:part element="tns:getByInteractorList" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getByInteractionResponse">
+    <wsdl:part element="tns:getByInteractionResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSupportedDbAcsResponse">
+    <wsdl:part element="tns:getSupportedDbAcsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="PsicquicServiceException">
+    <wsdl:part element="tns:psicquicFault" name="PsicquicServiceException">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getPropertiesResponse">
+    <wsdl:part element="tns:getPropertiesResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getVersionResponse">
+    <wsdl:part element="tns:getVersionResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSupportedReturnTypesResponse">
+    <wsdl:part element="tns:getSupportedReturnTypesResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getByQuery">
+    <wsdl:part element="tns:getByQuery" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getProperty">
+    <wsdl:part element="tns:getProperty" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getByInteraction">
+    <wsdl:part element="tns:getByInteraction" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="NotSupportedTypeException">
+    <wsdl:part element="tns:psicquicFault" name="NotSupportedTypeException">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getProperties">
+    <wsdl:part element="tns:getProperties" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getPropertyResponse">
+    <wsdl:part element="tns:getPropertyResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSupportedDbAcs">
+    <wsdl:part element="tns:getSupportedDbAcs" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getByQueryResponse">
+    <wsdl:part element="tns:getByQueryResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getByInteractionList">
+    <wsdl:part element="tns:getByInteractionList" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="psicquicService">
+    <wsdl:operation name="getByInteractor">
+      <wsdl:input message="tns:getByInteractor" name="getByInteractor">
+    </wsdl:input>
+      <wsdl:output message="tns:getByInteractorResponse" name="getByInteractorResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:NotSupportedMethodException" name="NotSupportedMethodException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:NotSupportedTypeException" name="NotSupportedTypeException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:PsicquicServiceException" name="PsicquicServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getProperties">
+      <wsdl:input message="tns:getProperties" name="getProperties">
+    </wsdl:input>
+      <wsdl:output message="tns:getPropertiesResponse" name="getPropertiesResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getVersion">
+      <wsdl:input message="tns:getVersion" name="getVersion">
+    </wsdl:input>
+      <wsdl:output message="tns:getVersionResponse" name="getVersionResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getByQuery">
+      <wsdl:input message="tns:getByQuery" name="getByQuery">
+    </wsdl:input>
+      <wsdl:output message="tns:getByQueryResponse" name="getByQueryResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:NotSupportedMethodException" name="NotSupportedMethodException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:NotSupportedTypeException" name="NotSupportedTypeException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:PsicquicServiceException" name="PsicquicServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getProperty">
+      <wsdl:input message="tns:getProperty" name="getProperty">
+    </wsdl:input>
+      <wsdl:output message="tns:getPropertyResponse" name="getPropertyResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSupportedReturnTypes">
+      <wsdl:input message="tns:getSupportedReturnTypes" name="getSupportedReturnTypes">
+    </wsdl:input>
+      <wsdl:output message="tns:getSupportedReturnTypesResponse" name="getSupportedReturnTypesResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getByInteraction">
+      <wsdl:input message="tns:getByInteraction" name="getByInteraction">
+    </wsdl:input>
+      <wsdl:output message="tns:getByInteractionResponse" name="getByInteractionResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:NotSupportedMethodException" name="NotSupportedMethodException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:NotSupportedTypeException" name="NotSupportedTypeException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:PsicquicServiceException" name="PsicquicServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getByInteractorList">
+      <wsdl:input message="tns:getByInteractorList" name="getByInteractorList">
+    </wsdl:input>
+      <wsdl:output message="tns:getByInteractorListResponse" name="getByInteractorListResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:NotSupportedMethodException" name="NotSupportedMethodException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:NotSupportedTypeException" name="NotSupportedTypeException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:PsicquicServiceException" name="PsicquicServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getSupportedDbAcs">
+      <wsdl:input message="tns:getSupportedDbAcs" name="getSupportedDbAcs">
+    </wsdl:input>
+      <wsdl:output message="tns:getSupportedDbAcsResponse" name="getSupportedDbAcsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getByInteractionList">
+      <wsdl:input message="tns:getByInteractionList" name="getByInteractionList">
+    </wsdl:input>
+      <wsdl:output message="tns:getByInteractionListResponse" name="getByInteractionListResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:NotSupportedMethodException" name="NotSupportedMethodException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:NotSupportedTypeException" name="NotSupportedTypeException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:PsicquicServiceException" name="PsicquicServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="PsicquicServiceSoapBinding" type="tns:psicquicService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="getByInteractor">
+      <soap:operation soapAction="getByInteractor" style="document" />
+      <wsdl:input name="getByInteractor">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getByInteractorResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="NotSupportedMethodException">
+        <soap:fault name="NotSupportedMethodException" use="literal" />
+      </wsdl:fault>
+      <wsdl:fault name="NotSupportedTypeException">
+        <soap:fault name="NotSupportedTypeException" use="literal" />
+      </wsdl:fault>
+      <wsdl:fault name="PsicquicServiceException">
+        <soap:fault name="PsicquicServiceException" use="literal" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getProperties">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="getProperties">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getPropertiesResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getByQuery">
+      <soap:operation soapAction="getByQuery" style="document" />
+      <wsdl:input name="getByQuery">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getByQueryResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="NotSupportedMethodException">
+        <soap:fault name="NotSupportedMethodException" use="literal" />
+      </wsdl:fault>
+      <wsdl:fault name="NotSupportedTypeException">
+        <soap:fault name="NotSupportedTypeException" use="literal" />
+      </wsdl:fault>
+      <wsdl:fault name="PsicquicServiceException">
+        <soap:fault name="PsicquicServiceException" use="literal" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getVersion">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="getVersion">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getVersionResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getProperty">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="getProperty">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getPropertyResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSupportedReturnTypes">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="getSupportedReturnTypes">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getSupportedReturnTypesResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getByInteraction">
+      <soap:operation soapAction="getByInteraction" style="document" />
+      <wsdl:input name="getByInteraction">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getByInteractionResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="NotSupportedMethodException">
+        <soap:fault name="NotSupportedMethodException" use="literal" />
+      </wsdl:fault>
+      <wsdl:fault name="NotSupportedTypeException">
+        <soap:fault name="NotSupportedTypeException" use="literal" />
+      </wsdl:fault>
+      <wsdl:fault name="PsicquicServiceException">
+        <soap:fault name="PsicquicServiceException" use="literal" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getByInteractorList">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="getByInteractorList">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getByInteractorListResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="NotSupportedMethodException">
+        <soap:fault name="NotSupportedMethodException" use="literal" />
+      </wsdl:fault>
+      <wsdl:fault name="NotSupportedTypeException">
+        <soap:fault name="NotSupportedTypeException" use="literal" />
+      </wsdl:fault>
+      <wsdl:fault name="PsicquicServiceException">
+        <soap:fault name="PsicquicServiceException" use="literal" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getSupportedDbAcs">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="getSupportedDbAcs">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getSupportedDbAcsResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getByInteractionList">
+      <soap:operation soapAction="getByInteractionList" style="document" />
+      <wsdl:input name="getByInteractionList">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getByInteractionListResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="NotSupportedMethodException">
+        <soap:fault name="NotSupportedMethodException" use="literal" />
+      </wsdl:fault>
+      <wsdl:fault name="NotSupportedTypeException">
+        <soap:fault name="NotSupportedTypeException" use="literal" />
+      </wsdl:fault>
+      <wsdl:fault name="PsicquicServiceException">
+        <soap:fault name="PsicquicServiceException" use="literal" />
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="PsicquicService">
+    <wsdl:port binding="tns:PsicquicServiceSoapBinding" name="IndexBasedPsicquicServicePort">
+      <soap:address location="http://www.jcvi.org/mpidb/servlet/webservices/psicquic" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<definitions name="GorIII_Service" 
+ targetNamespace="http://gbio.ibcp.fr:8090/GorIII_Service"  
+ xmlns:tns="http://gbio.ibcp.fr:8090/GorIII_Service"   
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+ xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <message name="submitGorIIIRequest">
+        <part name="Sequence" type="xsd:string"/>
+    </message>
+    <message name="submitGorIIIResponse">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    
+    <message name="checkStatusGorIIIRequest">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    <message name="checkStatusGorIIIResponse">
+        <part name="Status" type="xsd:string"/>
+    </message>
+    
+    <message name="getResultsGorIIIRequest">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    <message name="getResultsGorIIIResponse">
+        <part name="SecStructure" type="xsd:string"/>
+    </message>
+
+    <message name="cancelGorIIIRequest">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    <message name="cancelGorIIIResponse">
+        <part name="Status" type="xsd:string"/>
+    </message>
+
+    <portType name="GorIIIPortType">
+        <operation name="submitGorIII">
+            <documentation>Submit a sequence an get a jobID</documentation>
+            <input message="tns:submitGorIIIRequest"/>
+            <output message="tns:submitGorIIIResponse"/>
+        </operation>
+        <operation name="checkStatusGorIII">
+            <documentation>Submit a jobID and get the status</documentation>
+            <input message="tns:checkStatusGorIIIRequest"/>
+            <output message="tns:checkStatusGorIIIResponse"/>
+        </operation>
+        <operation name="getResultsGorIII">
+            <documentation>When job is finish, submit a jobid and get the results</documentation>
+            <input message="tns:getResultsGorIIIRequest"/>
+            <output message="tns:getResultsGorIIIResponse"/>
+        </operation>
+        <operation name="cancelGorIII">
+            <documentation>When some thing is wrong, cancel your job</documentation>
+            <input message="tns:cancelGorIIIRequest"/>
+            <output message="tns:cancelGorIIIResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="GorIIIBinding" type="tns:GorIIIPortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="submitGorIII">
+            <soap:operation
+             soapAction="urn:GorIIIWS.wsdl#submitGorIII"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:GorIII_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:GorIII_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="checkStatusGorIII">
+            <soap:operation
+             soapAction="urn:GorIIIWS.wsdl#checkStatusGorIII"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:GorIII_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:GorIII_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="getResultsGorIII">
+            <soap:operation
+             soapAction="urn:GorIIIWS.wsdl#getResultsGorIII"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:GorIII_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:GorIII_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="cancelGorIII">
+            <soap:operation
+             soapAction="urn:GorIIIWS.wsdl#cancelGorIII"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:GorIII_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:GorIII_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+    
+    <service name="GorIII_Service">
+        <documentation>GorIII @ IBCP (http://gbio-pbil.ibcp.fr)</documentation>
+        <port name="GorIIIPort" binding="tns:GorIIIBinding">
+            <soap:address location="http://gbio.ibcp.fr:8090/GorIII_Service"/>
+        </port>
+    </service>
+    
+</definitions>

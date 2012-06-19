@@ -1,0 +1,975 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" xmlns:intf="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.3
+Built on Oct 05, 2005 (05:23:37 EDT)-->
+ <wsdl:types>
+  <schema targetNamespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[][]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="addRdfFileResponse">
+
+      <wsdl:part name="addRdfFileReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addRdfStatementWithContextResponse">
+
+      <wsdl:part name="addRdfStatementWithContextReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="constructQueryResponse">
+
+      <wsdl:part name="constructQueryReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeRdfWithContextRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="repository" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="rdf_format" type="xsd:string"/>
+
+      <wsdl:part name="data_uri" type="xsd:string"/>
+
+      <wsdl:part name="data" type="xsd:string"/>
+
+      <wsdl:part name="context" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addRdfFileRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="repository" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="rdf_format" type="xsd:string"/>
+
+      <wsdl:part name="data_uri" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getRepositoriesResponse">
+
+      <wsdl:part name="getRepositoriesReturn" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="selectQueryResponse">
+
+      <wsdl:part name="selectQueryReturn" type="impl:ArrayOfArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addRdfRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="repository" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="rdf_format" type="xsd:string"/>
+
+      <wsdl:part name="data_uri" type="xsd:string"/>
+
+      <wsdl:part name="data" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeRdfWithContextResponse">
+
+      <wsdl:part name="removeRdfWithContextReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeRdfStatementWithContextRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="repository" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="subject" type="xsd:string"/>
+
+      <wsdl:part name="predicate" type="xsd:string"/>
+
+      <wsdl:part name="object" type="xsd:string"/>
+
+      <wsdl:part name="context" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getRepositoriesRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="read_write" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeRdfFileRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="repository" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="rdf_format" type="xsd:string"/>
+
+      <wsdl:part name="data_uri" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="extractRdfResponse">
+
+      <wsdl:part name="extractRdfReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeRdfStatementWithContextResponse">
+
+      <wsdl:part name="removeRdfStatementWithContextReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeRdfFileWithcontextResponse">
+
+      <wsdl:part name="removeRdfFileWithcontextReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addRdfFileWithContextRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="repository" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="rdf_format" type="xsd:string"/>
+
+      <wsdl:part name="data_uri" type="xsd:string"/>
+
+      <wsdl:part name="context" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="selectQuerySerializedResponse">
+
+      <wsdl:part name="selectQuerySerializedReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addRdfFileWithContextResponse">
+
+      <wsdl:part name="addRdfFileWithContextReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="selectQueryRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="repository" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="query_language" type="xsd:string"/>
+
+      <wsdl:part name="query" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addRdfWithContextRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="repository" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="rdf_format" type="xsd:string"/>
+
+      <wsdl:part name="data_uri" type="xsd:string"/>
+
+      <wsdl:part name="data" type="xsd:string"/>
+
+      <wsdl:part name="context" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="selectQuerySerializedRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="repository" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="query_language" type="xsd:string"/>
+
+      <wsdl:part name="select_output_format" type="xsd:string"/>
+
+      <wsdl:part name="query" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="extractRdfRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="repository" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="rdf_format" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeRdfFileWithcontextRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="repository" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="rdf_format" type="xsd:string"/>
+
+      <wsdl:part name="data_uri" type="xsd:string"/>
+
+      <wsdl:part name="context" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="clearResponse">
+
+      <wsdl:part name="clearReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeRdfResponse">
+
+      <wsdl:part name="removeRdfReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addRdfResponse">
+
+      <wsdl:part name="addRdfReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeRdfStatementResponse">
+
+      <wsdl:part name="removeRdfStatementReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addRdfWithContextResponse">
+
+      <wsdl:part name="addRdfWithContextReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getRepositoriesLabelRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="read_write" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getRepositoriesLabelResponse">
+
+      <wsdl:part name="getRepositoriesLabelReturn" type="impl:ArrayOfArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="clearRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="repository" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeRdfFileResponse">
+
+      <wsdl:part name="removeRdfFileReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addRdfStatementRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="repository" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="subject" type="xsd:string"/>
+
+      <wsdl:part name="predicate" type="xsd:string"/>
+
+      <wsdl:part name="object" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="constructQueryRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="repository" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="query_language" type="xsd:string"/>
+
+      <wsdl:part name="rdf_format" type="xsd:string"/>
+
+      <wsdl:part name="query" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeRdfStatementRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="repository" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="subject" type="xsd:string"/>
+
+      <wsdl:part name="predicate" type="xsd:string"/>
+
+      <wsdl:part name="object" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeRdfRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="repository" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="rdf_format" type="xsd:string"/>
+
+      <wsdl:part name="data_uri" type="xsd:string"/>
+
+      <wsdl:part name="data" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addRdfStatementWithContextRequest">
+
+      <wsdl:part name="server_url" type="xsd:string"/>
+
+      <wsdl:part name="repository" type="xsd:string"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="subject" type="xsd:string"/>
+
+      <wsdl:part name="predicate" type="xsd:string"/>
+
+      <wsdl:part name="object" type="xsd:string"/>
+
+      <wsdl:part name="context" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addRdfStatementResponse">
+
+      <wsdl:part name="addRdfStatementReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="RepositoryWS">
+
+      <wsdl:operation name="getRepositories" parameterOrder="server_url username password read_write">
+
+         <wsdl:input message="impl:getRepositoriesRequest" name="getRepositoriesRequest"/>
+
+         <wsdl:output message="impl:getRepositoriesResponse" name="getRepositoriesResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="selectQuery" parameterOrder="server_url repository username password query_language query">
+
+         <wsdl:input message="impl:selectQueryRequest" name="selectQueryRequest"/>
+
+         <wsdl:output message="impl:selectQueryResponse" name="selectQueryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addRdfFile" parameterOrder="server_url repository username password rdf_format data_uri">
+
+         <wsdl:input message="impl:addRdfFileRequest" name="addRdfFileRequest"/>
+
+         <wsdl:output message="impl:addRdfFileResponse" name="addRdfFileResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addRdfStatementWithContext" parameterOrder="server_url repository username password subject predicate object context">
+
+         <wsdl:input message="impl:addRdfStatementWithContextRequest" name="addRdfStatementWithContextRequest"/>
+
+         <wsdl:output message="impl:addRdfStatementWithContextResponse" name="addRdfStatementWithContextResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addRdfStatement" parameterOrder="server_url repository username password subject predicate object">
+
+         <wsdl:input message="impl:addRdfStatementRequest" name="addRdfStatementRequest"/>
+
+         <wsdl:output message="impl:addRdfStatementResponse" name="addRdfStatementResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeRdfFile" parameterOrder="server_url repository username password rdf_format data_uri">
+
+         <wsdl:input message="impl:removeRdfFileRequest" name="removeRdfFileRequest"/>
+
+         <wsdl:output message="impl:removeRdfFileResponse" name="removeRdfFileResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="extractRdf" parameterOrder="server_url repository username password rdf_format">
+
+         <wsdl:input message="impl:extractRdfRequest" name="extractRdfRequest"/>
+
+         <wsdl:output message="impl:extractRdfResponse" name="extractRdfResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="constructQuery" parameterOrder="server_url repository username password query_language rdf_format query">
+
+         <wsdl:input message="impl:constructQueryRequest" name="constructQueryRequest"/>
+
+         <wsdl:output message="impl:constructQueryResponse" name="constructQueryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeRdfStatementWithContext" parameterOrder="server_url repository username password subject predicate object context">
+
+         <wsdl:input message="impl:removeRdfStatementWithContextRequest" name="removeRdfStatementWithContextRequest"/>
+
+         <wsdl:output message="impl:removeRdfStatementWithContextResponse" name="removeRdfStatementWithContextResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeRdfStatement" parameterOrder="server_url repository username password subject predicate object">
+
+         <wsdl:input message="impl:removeRdfStatementRequest" name="removeRdfStatementRequest"/>
+
+         <wsdl:output message="impl:removeRdfStatementResponse" name="removeRdfStatementResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addRdf" parameterOrder="server_url repository username password rdf_format data_uri data">
+
+         <wsdl:input message="impl:addRdfRequest" name="addRdfRequest"/>
+
+         <wsdl:output message="impl:addRdfResponse" name="addRdfResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getRepositoriesLabel" parameterOrder="server_url username password read_write">
+
+         <wsdl:input message="impl:getRepositoriesLabelRequest" name="getRepositoriesLabelRequest"/>
+
+         <wsdl:output message="impl:getRepositoriesLabelResponse" name="getRepositoriesLabelResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeRdf" parameterOrder="server_url repository username password rdf_format data_uri data">
+
+         <wsdl:input message="impl:removeRdfRequest" name="removeRdfRequest"/>
+
+         <wsdl:output message="impl:removeRdfResponse" name="removeRdfResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="selectQuerySerialized" parameterOrder="server_url repository username password query_language select_output_format query">
+
+         <wsdl:input message="impl:selectQuerySerializedRequest" name="selectQuerySerializedRequest"/>
+
+         <wsdl:output message="impl:selectQuerySerializedResponse" name="selectQuerySerializedResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addRdfWithContext" parameterOrder="server_url repository username password rdf_format data_uri data context">
+
+         <wsdl:input message="impl:addRdfWithContextRequest" name="addRdfWithContextRequest"/>
+
+         <wsdl:output message="impl:addRdfWithContextResponse" name="addRdfWithContextResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addRdfFileWithContext" parameterOrder="server_url repository username password rdf_format data_uri context">
+
+         <wsdl:input message="impl:addRdfFileWithContextRequest" name="addRdfFileWithContextRequest"/>
+
+         <wsdl:output message="impl:addRdfFileWithContextResponse" name="addRdfFileWithContextResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeRdfWithContext" parameterOrder="server_url repository username password rdf_format data_uri data context">
+
+         <wsdl:input message="impl:removeRdfWithContextRequest" name="removeRdfWithContextRequest"/>
+
+         <wsdl:output message="impl:removeRdfWithContextResponse" name="removeRdfWithContextResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeRdfFileWithcontext" parameterOrder="server_url repository username password rdf_format data_uri context">
+
+         <wsdl:input message="impl:removeRdfFileWithcontextRequest" name="removeRdfFileWithcontextRequest"/>
+
+         <wsdl:output message="impl:removeRdfFileWithcontextResponse" name="removeRdfFileWithcontextResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="clear" parameterOrder="server_url repository username password">
+
+         <wsdl:input message="impl:clearRequest" name="clearRequest"/>
+
+         <wsdl:output message="impl:clearResponse" name="clearResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="RepositoryWSSoapBinding" type="impl:RepositoryWS">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="getRepositories">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getRepositoriesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getRepositoriesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="selectQuery">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="selectQueryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="selectQueryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addRdfFile">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addRdfFileRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addRdfFileResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addRdfStatementWithContext">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addRdfStatementWithContextRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addRdfStatementWithContextResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addRdfStatement">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addRdfStatementRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addRdfStatementResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeRdfFile">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="removeRdfFileRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="removeRdfFileResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="extractRdf">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="extractRdfRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="extractRdfResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="constructQuery">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="constructQueryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="constructQueryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeRdfStatementWithContext">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="removeRdfStatementWithContextRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="removeRdfStatementWithContextResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeRdfStatement">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="removeRdfStatementRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="removeRdfStatementResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addRdf">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addRdfRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addRdfResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getRepositoriesLabel">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getRepositoriesLabelRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getRepositoriesLabelResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeRdf">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="removeRdfRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="removeRdfResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="selectQuerySerialized">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="selectQuerySerializedRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="selectQuerySerializedResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addRdfWithContext">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addRdfWithContextRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addRdfWithContextResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addRdfFileWithContext">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addRdfFileWithContextRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addRdfFileWithContextResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeRdfWithContext">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="removeRdfWithContextRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="removeRdfWithContextResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeRdfFileWithcontext">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="removeRdfFileWithcontextRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="removeRdfFileWithcontextResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="clear">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="clearRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.metadata.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="clearResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="RepositoryWSService">
+
+      <wsdl:port binding="impl:RepositoryWSSoapBinding" name="RepositoryWS">
+
+         <wsdlsoap:address location="http://ws.adaptivedisclosure.org/axis/services/RepositoryWS"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

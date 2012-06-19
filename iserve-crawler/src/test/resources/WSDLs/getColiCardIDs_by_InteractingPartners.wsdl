@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="getColiCardIDs_by_InteractingPartnersInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="getColiCardIDs_by_InteractingPartnersOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="getColiCardIDs_by_InteractingPartnersPortType">
+          <wsdl:operation name="getColiCardIDs_by_InteractingPartners">
+                 <wsdl:input message="tns:getColiCardIDs_by_InteractingPartnersInput"/>
+                 <wsdl:output message="tns:getColiCardIDs_by_InteractingPartnersOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="getColiCardIDs_by_InteractingPartnersBinding" type="tns:getColiCardIDs_by_InteractingPartnersPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="getColiCardIDs_by_InteractingPartners"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#getColiCardIDs_by_InteractingPartners' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="getColiCardIDs_by_InteractingPartnersService">
+          <wsdl:documentation>Authority: ualberta.ca  -  Given a gene name, gets ColiCard identifiers for all other genes or gene products that interact with the gene. ColiCards are E.coli gene summary pages contained in the CCDB database.</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="getColiCardIDs_by_InteractingPartnersPort" binding="tns:getColiCardIDs_by_InteractingPartnersBinding">
+                 <wsdlsoap:address location="http://wishart.biology.ualberta.ca:8080/biomoby/services/getColiCardIDs_by_InteractingPartners"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

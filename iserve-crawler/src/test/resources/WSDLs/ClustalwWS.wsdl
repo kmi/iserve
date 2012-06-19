@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<definitions name="Clustalw_Service" 
+ targetNamespace="http://gbio.ibcp.fr:8090/Clustalw_Service"  
+ xmlns:tns="http://gbio.ibcp.fr:8090/Clustalw_Service"   
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+ xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <message name="submitClustalwRequest">
+        <part name="Sequences" type="xsd:string"/>
+    </message>
+    <message name="submitClustalwResponse">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    
+    <message name="checkStatusClustalwRequest">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    <message name="checkStatusClustalwResponse">
+        <part name="Status" type="xsd:string"/>
+    </message>
+    
+    <message name="getResultsClustalwRequest">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    <message name="getResultsClustalwResponse">
+        <part name="Alignement" type="xsd:string"/>
+        <part name="Logout" type="xsd:string"/>
+    </message>
+
+    <message name="cancelClustalwRequest">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    <message name="cancelClustalwResponse">
+        <part name="Status" type="xsd:string"/>
+    </message>
+
+    <portType name="ClustalwPortType">
+        <operation name="submitClustalw">
+            <documentation>Submit a sequence an get a jobID</documentation>
+            <input message="tns:submitClustalwRequest"/>
+            <output message="tns:submitClustalwResponse"/>
+        </operation>
+        <operation name="checkStatusClustalw">
+            <documentation>Submit a jobID and get the status</documentation>
+            <input message="tns:checkStatusClustalwRequest"/>
+            <output message="tns:checkStatusClustalwResponse"/>
+        </operation>
+        <operation name="getResultsClustalw">
+            <documentation>When job is finish, submit a jobid and get the results</documentation>
+            <input message="tns:getResultsClustalwRequest"/>
+            <output message="tns:getResultsClustalwResponse"/>
+        </operation>
+        <operation name="cancelClustalw">
+            <documentation>When some thing is wrong, cancel your job</documentation>
+            <input message="tns:cancelClustalwRequest"/>
+            <output message="tns:cancelClustalwResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="ClustalwBinding" type="tns:ClustalwPortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="submitClustalw">
+            <soap:operation
+             soapAction="urn:ClustalwWS.wsdl#submitClustalw"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:Clustalw_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:Clustalw_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="checkStatusClustalw">
+            <soap:operation
+             soapAction="urn:ClustalwWS.wsdl#checkStatusClustalw"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:Clustalw_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:Clustalw_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="getResultsClustalw">
+            <soap:operation
+             soapAction="urn:ClustalwWS.wsdl#getResultsClustalw"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:Clustalw_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:Clustalw_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="cancelClustalw">
+            <soap:operation
+             soapAction="urn:ClustalwWS.wsdl#cancelClustalw"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:Clustalw_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:Clustalw_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+    
+    <service name="Clustalw_Service">
+        <documentation>Clustalw @ IBCP (http://gbio-pbil.ibcp.fr)</documentation>
+        <port name="ClustalwPort" binding="tns:ClustalwBinding">
+            <soap:address location="http://gbio.ibcp.fr:8090/Clustalw_Service"/>
+        </port>
+    </service>
+    
+</definitions>

@@ -1,0 +1,275 @@
+<?xml version="1.0"?>
+<wsdl:definitions 
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+xmlns:tns="http://www.cbs.dtu.dk/ws/WSSIDDbase_1_0" 
+xmlns:siddbase="http://www.cbs.dtu.dk/ws/ws-siddbase" 
+xmlns:common="http://www.cbs.dtu.dk/ws/ws-common" 
+xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/" 
+xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+xmlns="http://schemas.xmlsoap.org/wsdl/" 
+targetNamespace="http://www.cbs.dtu.dk/ws/WSSIDDbase_1_0">
+
+	<wsdl:types>
+		<xsd:schema>
+			<!-- XSD -->
+			<xsd:import namespace="http://www.cbs.dtu.dk/ws/ws-siddbase" schemaLocation="ws_siddbase_1_0.xsd"/>
+			<!-- XSD -->
+			<xsd:import namespace="http://www.cbs.dtu.dk/ws/ws-common" schemaLocation="../common/ws_common_1_0b.xsd"/>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:types>
+		<schema targetNamespace="http://www.cbs.dtu.dk/ws/WSSIDDbase_1_0" 
+		xmlns="http://www.w3.org/2001/XMLSchema" 
+		xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+		xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+			<!-- repository -->
+			<xsd:element name="getSIDD" type="siddbase:getSIDD"/>
+			<xsd:element name="getSIDDResponse" type="siddbase:getSIDDResponse"/>
+
+			<!-- custom DNA part -->
+			<xsd:element name="runService" type="siddbase:runService"/>
+			<xsd:element name="runServiceResponse" type="common:runServiceResponse"/>
+			<xsd:element name="fetchResult" type="common:fetchResult"/>
+			<xsd:element name="fetchResultResponse" type="siddbase:fetchResultResponse"/>
+			<xsd:element name="pollQueue" type="common:pollQueue"/>
+			<xsd:element name="pollQueueResponse" type="common:pollQueueResponse"/>
+		</schema>
+	</wsdl:types>
+	<!-- repository -->
+	<message name="getSIDDRequest">
+		<part name="parameters" element="tns:getSIDD"/>
+	</message>
+	<message name="getSIDDResponse">
+		<part name="parameters" element="tns:getSIDDResponse"/>
+	</message>
+
+
+	<!-- custom DNA part -->
+	<message name="runServiceRequest">
+		<part name="parameters" element="tns:runService"/>
+	</message>
+	<message name="runServiceResponse">
+		<part name="parameters" element="tns:runServiceResponse"/>
+	</message>
+	<message name="fetchResultRequest">
+		<part name="parameters" element="tns:fetchResult"/>
+	</message>
+	<message name="fetchResultResponse">
+		<part name="parameters" element="tns:fetchResultResponse"/>
+	</message>
+	<message name="pollQueueRequest">
+		<part name="job" element="tns:pollQueue"/>
+	</message>
+	<message name="pollQueueResponse">
+		<part name="queueentry" element="tns:pollQueueResponse"/>
+	</message>
+
+
+	<!-- repository -->
+	<portType name="WSSIDDbase_1_0">
+		<operation name="getSIDD">
+			<input name="getSIDDRequest" message="tns:getSIDDRequest"/>
+			<output name="getSIDDResponse" message="tns:getSIDDResponse"/>
+		</operation>
+
+	<!-- custom DNA part -->
+		<operation name="runService">
+			<input name="runServiceRequest" message="tns:runServiceRequest"/>
+			<output name="runServiceResponse" message="tns:runServiceResponse"/>
+		</operation>
+		<operation name="pollQueue">
+			<input name="pollQueueRequest" message="tns:pollQueueRequest"/>
+			<output name="pollQueueResponse" message="tns:pollQueueResponse"/>
+		</operation>
+		<operation name="fetchResult">
+			<input name="fetchResultRequest" message="tns:fetchResultRequest"/>
+			<output name="fetchResultResponse" message="tns:fetchResultResponse"/>
+		</operation>
+	</portType>
+
+	<binding name="WSSIDDbase_1_0" type="tns:WSSIDDbase_1_0">
+		<soapenv:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="getSIDD">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSSIDDbase_1_0#getSIDD"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSSIDDbase_1_0"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSSIDDbase_1_0"/>
+			</output>
+		</operation>
+		<operation name="pollQueue">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSSIDDbase_1_0#pollQueue"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSSIDDbase_1_0"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSSIDDbase_1_0"/>
+			</output>
+		</operation>
+		
+		<operation name="runService">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSSIDDbase_1_0#runService"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSSIDDbase_1_0"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSSIDDbase_1_0"/>
+			</output>
+		</operation>
+		<operation name="fetchResult">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSSIDDbase_1_0#fetchResult"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSSIDDbase_1_0"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSSIDDbase_1_0"/>
+			</output>
+		</operation>
+
+	</binding>
+
+	<service name="WSSIDDbase_1_0">
+	<documentation> 
+  SIDDbase-WS is a SOAP based Web Service created in a collaboration between the
+  Comparative Microbial Genomics Group at CBS, The Technical University of Denmark and
+  Prof. Craig Benham's research group at the UC Davis Genome Center.  It provides
+  interoperable access to the SIDD software, and access to the repository of stored
+  results from calculations previously performed on complete bacterial genomes.
+
+  SIDD (Stress-induced DNA Duplex Destabilization) is the propensity for the DNA duplex to
+  be destabilized within genomic regions that are experiencing a superhelical stress. This
+  is a complex, interactive attribute of genomic DNA, that has been implicated in a wide
+  variety of regulatory processes. Different strategies are used to calculate SIDD
+  properties of short (i.e. &lt; ~10kb) regions (Bi C, Benham CJ., WebSIDD: A server for
+  predicting stress-induced duplex destabilized (SIDD) sites in superhelical DNA,
+  Bioinformatics, 2004 Jun 12;20(9):1477-9), and of long genomic sequences, up to complete
+  chromosomes (Benham CJ and Bi C, The Analysis of Stress-Induced Duplex Destabilization
+  in Long Genomic DNA Sequences, J. Comp. Biol. 11: 519-543, 2004).  The extent of
+  destabilization is given by sigma, the superhelix density.  For each base pair and each
+  sigma value two results are reported. These are the probability p(x) of base pair x
+  being open (i.e. separated) under the given conditions, and the increment G(x) of free
+  energy needed to insure that base pair x is always open then.
+
+  This service consist of two parts:
+
+  1. REPOSITORY A repository of pre-calculated SIDD values (for four different sigma
+  values -0.025, -0.035,-0.045,-0.055,-0.065). This repository is updated daily by
+  synchronizing prokaryotic genome sequences against NCBI Entrez Genome Projects
+  (http://www.ncbi.nlm.nih.gov/genomes/lproks.cgi). Any new or changed genomes will be
+  updated automatically every day. The DNA geometry (i.e., whether the chromosome is
+  circular or linear) is by default circular, which will be used except in the cases where
+  the GenBank record indicates a linear chromosome. This part of the service runs
+  synchronously, which means that the user will receive the output directly as a response
+  to a request message
+
+  2. CALCULATION SERVICE An SOAP compliant interface for making SIDD predictions. This
+  part of the service runs /a/synchronously, and is therefore split into three different operations
+  submit, poll, and fetch operations
+
+	REPOSITORY
+	1. getSIDD
+		Get the genomic sequence by specifying the GenBank accession number
+		Input: 
+					* 'accession'    - The Genbank accession number (e.g. AL111168) 
+					                   of the genome sequence you want to fetch from the
+					                   repository.
+					* 'sigma'        - The sigma value of the prediction (-0.025,-0.035,-0.045,-0.055,-0.065)
+					* 'energetics'   - Energetics used in the calculations. Only copolymeric is supported
+					                   by the repository (c)
+					* 'weight'       - The overlap/weighting scheme. Only 10 is supported by the repository (10)
+					* 'from'         - (optional) From (and including this) postion 
+					* 'to'           - (optional) To (and including this) postion
+					* 'Gformat'      - e.g. '%.2f'
+					* 'Pformat'      - e.g. '%.2e'
+					* 'format'       - Either 'string' or 'element' - determins if output should be 
+					                   provided as XML entities are comma separated strings. The latter
+					                   is much faster.
+		Output:
+					* 'accession'    - The ganbank accession of the record used.
+					* 'digest'       - The MD5 checksum of the entire genomic DNA sequence.
+					* 'from'         - From (and including this) postion.
+					* 'to'           - To (and including this) postion.
+					* 'total_length' - Total length of genome sequence.
+					* 'version'      - SIDD back-end program version. 
+					* 'method'       - The energetics method used.
+					* 'weight'       - The overlap/weighting scheme.
+					* 'sigma'        - The sigma value of the prediction.
+
+             The following two elements consists of a choice (depending on 
+             'format' specified in request)
+					* 'element'      
+					 *  'x'          - Absolute chromosomal position
+					 *  'nt'         - The nucleotide at position 'x'
+					 *  'P'          - The helix opening probability.
+					 *  'G'          - Free energy, G.
+					* 'string'      
+					 *  'P'          - Comma separated list of probabilities
+					 *  'G'          - Comma separated list of free energies
+
+
+	CALCULATION
+	2a. runService
+		Submit a custom DNA sequnce to the SIDD program
+		Input:
+					* 'sequencedata'
+ 					 * 'sequence'
+						* 'seq'        - The raw DNA sequence
+						* 'id'         - Any sequence identifier
+					* 'sigma'        - The sigma value of the prediction (e.g. -0.055)
+					* 'energetics'   - Either copolymeric (c) or nearest-neighbor energetics (n)
+					* 'weight'       - The overlap/weighting scheme. Only 10 is supported by the repository (10)
+					* 'Gformat'      - e.g. '%.2f'
+					* 'Pformat'      - e.g. '%.2e'
+          * 'format'       - Either 'string' or 'element' - determins if output should be 
+					                   provided as XML entities are comma separated strings. The latter
+					                   is much faster.		
+		Output:
+					* 'jobid'        - The 32 byte identification string of the job
+					* 'datetime'     - The last timepoint at which the status of the job has changed
+					* 'status'       - Possible values are QUEUED, ACTIVE, FINISHED, WAITING, REJECTED, 
+					                   UNKNOWN JOBID or QUEUE DOWN
+
+	2b. pollQueue
+	Once obtained from 'runService', a job identification can be used to poll the
+	status to see if the result is ready for download.
+
+		Input:
+					* 'jobid'        - The 32 byte identification string of the job
+		Output:
+					* 'jobid'        - The 32 byte identification string of the job
+					* 'datetime'     - The last timepoint at which the status of the job has changed
+					* 'status'       - Possible values are QUEUED, ACTIVE, FINISHED, WAITING, REJECTED, 
+					                   UNKNOWN JOBID or QUEUE DOWN
+
+	2c. fetchResult
+	Once the status is 'FINISHED' the results generated by the Web Service can be retrieved by
+	specifying the jobid;
+	
+		Input:  
+					* 'jobid'        - The 32 byte identification string of the job
+		Output:
+					* 'total_length' - Total length of genome sequence.
+					* 'version'      - SIDD back-end program version. 
+					* 'method'       - The energetics method used.
+					* 'weight'       - The overlap/weighting scheme.
+					* 'sigma'        - The sigma value of the prediction.
+
+             The following two elements consists of a choice (depending on 
+             'format' specified in request)
+					* 'element'      
+					 *  'x'          - Absolute chromosomal position
+					 *  'nt'         - The nucleotide at position 'x'
+					 *  'P'          - The helix opening probability.
+					 *  'G'          - Free energy, G.
+					* 'string'      
+					 *  'P'          - Comma separated list of probabilities
+					 *  'G'          - Comma separated list of free energies
+
+		For more information, please contact Peter F. Hallin: pfh@cbs.dtu.dk
+		</documentation>		<port name="WSSIDDbase_1_0" binding="tns:WSSIDDbase_1_0">
+			<soapenv:address location="http://ws.cbs.dtu.dk:80/cgi-bin/soap/ws/simple.cgi"/>
+		</port>
+	</service>
+
+</wsdl:definitions>

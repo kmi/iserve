@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="AffyArrayNormalization_submitInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="AffyArrayNormalization_submitOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="AffyArrayNormalization_submitPortType">
+          <wsdl:operation name="AffyArrayNormalization_submit">
+                 <wsdl:input message="tns:AffyArrayNormalization_submitInput"/>
+                 <wsdl:output message="tns:AffyArrayNormalization_submitOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="AffyArrayNormalization_submitBinding" type="tns:AffyArrayNormalization_submitPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="AffyArrayNormalization_submit"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#AffyArrayNormalization_submit' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="AffyArrayNormalization_submitService">
+          <wsdl:documentation>Authority: nugo-r.bioinformatics.nl  -  Asynchronous BioMOBY webservice for normalization of raw Affymetrix GeneChip data. This services requires as input a collection of 3 or more URLs to CEL files from the same experiment. URLs must be using the HTTP or HTTPS protocol. You will recieve a Job ID. Use this Job ID with the AffyArrayNormalization_poll service from the same service provider to check the status of your job. Use the URL in the output of this service to fetch the results.</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="AffyArrayNormalization_submitPort" binding="tns:AffyArrayNormalization_submitBinding">
+                 <wsdlsoap:address location="https://nugo-r.bioinformatics.nl/phenolink_nugo/biomoby/services/cgi-bin/LocalServices.cgi"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="ScreeningSearch"
+   targetNamespace="http://cheminfo.informatics.indiana.edu/ScreeningSearch"
+   xmlns="http://schemas.xmlsoap.org/wsdl/"
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+   xmlns:tns="http://cheminfo.informatics.indiana.edu/ScreeningSearch"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+   <message name="screeningsearchRequest">
+      <part name="cell" type="xsd:string"/>			
+   </message>
+      <message name="screeningsearchRequest">
+      <part name="lowergi50" type="xsd:float"/>			
+   </message>
+      <message name="screeningsearchRequest">
+      <part name="uppergi50" type="xsd:float"/>			
+   </message>
+   <message name="screeningsearchResponse">
+      <part name="screeningsearchreturn" type="xsd:string"/>
+   </message>
+
+   <portType name="screeningsearch_PortType">
+      <operation name="screeningsearch">
+         <input message="tns:screeningsearchRequest"/>
+         <output message="tns:screeningsearchResponse"/>
+      </operation>
+   </portType>
+   
+   <binding name="screeningsearch_Binding" type="tns:screeningsearch_PortType">
+      <soap:binding style="rpc" 
+         transport="http://schemas.xmlsoap.org/soap/http"/>
+      <operation name="screeningsearch">
+         <soap:operation soapAction="http://cheminfo.informatics.indiana.edu/ScreeningSearch#screeningsearch"/>
+         <input>
+            <soap:body 
+               encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+               namespace="http://cheminfo.informatics.indiana.edu/ScreeningSearch"
+               use="encoded"/>
+         </input>
+         <output>
+            <soap:body
+               encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+               namespace="http://cheminfo.informatics.indiana.edu/ScreeningSearch"
+               use="encoded"/>
+         </output>
+      </operation>
+   </binding>
+
+   <service name="screeningsearch_Service">
+      <documentation>This is PDB Ligand component</documentation>
+      <port binding="tns:screeningsearch_Binding" name="screeningsearch_Port">
+         <soap:address 
+            location="http://cheminfo.informatics.indiana.edu/cicc/cgi-bin/screeningsearch.cgi"/>
+      </port>
+   </service>
+</definitions>

@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="getSymbolInteractionsInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="getSymbolInteractionsOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="getSymbolInteractionsPortType">
+          <wsdl:operation name="getSymbolInteractions">
+                 <wsdl:input message="tns:getSymbolInteractionsInput"/>
+                 <wsdl:output message="tns:getSymbolInteractionsOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="getSymbolInteractionsBinding" type="tns:getSymbolInteractionsPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="getSymbolInteractions"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#getSymbolInteractions' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="getSymbolInteractionsService">
+          <wsdl:documentation>Authority: cnio.es  -  It returns all the sentences which show evidences of interactions between the iHOP gene or protein symbol related to the input and other iHOP symbols</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="getSymbolInteractionsPort" binding="tns:getSymbolInteractionsBinding">
+                 <wsdlsoap:address location="http://ubio.bioinfo.cnio.es/biotools/iHOP/cgi-bin/iHOPMOBY"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

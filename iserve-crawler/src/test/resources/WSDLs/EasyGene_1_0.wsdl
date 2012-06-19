@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.cbs.dtu.dk/ws/WSEasyGene_1_0" xmlns:common="http://www.cbs.dtu.dk/ws/ws-common" xmlns:easygene="http://www.cbs.dtu.dk/ws/ws-easygene" xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://www.cbs.dtu.dk/ws/WSEasyGene_1_0">
+	<wsdl:types>
+		<xsd:schema>
+			<!-- XSD -->
+			<xsd:import namespace="http://www.cbs.dtu.dk/ws/ws-common" schemaLocation="../common/ws_common_1_0.xsd"/>
+			<!-- XSD -->
+			<xsd:import namespace="http://www.cbs.dtu.dk/ws/ws-easygene" schemaLocation="ws_easygene_1_0.xsd"/>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:types>
+		<schema targetNamespace="http://www.cbs.dtu.dk/ws/WSEasyGene_1_0" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+			<xsd:element name="runService" type="easygene:runService"/>
+			<xsd:element name="runServiceResponse" type="common:runServiceResponse"/>
+			<xsd:element name="fetchResult" type="common:fetchResult"/>
+			<xsd:element name="fetchResultResponse" type="easygene:fetchResultResponse"/>
+			<xsd:element name="pollQueue" type="common:pollQueue"/>
+			<xsd:element name="pollQueueResponse" type="common:pollQueueResponse"/>
+		</schema>
+	</wsdl:types>
+	<message name="runServiceRequest">
+		<part name="parameters" element="tns:runService"/>
+	</message>
+	<message name="runServiceResponse">
+		<part name="parameters" element="tns:runServiceResponse"/>
+	</message>
+	<message name="fetchResultRequest">
+		<part name="parameters" element="tns:fetchResult"/>
+	</message>
+	<message name="fetchResultResponse">
+		<part name="parameters" element="tns:fetchResultResponse"/>
+	</message>
+	<message name="pollQueueRequest">
+		<part name="job" element="tns:pollQueue"/>
+	</message>
+	<message name="pollQueueResponse">
+		<part name="queueentry" element="tns:pollQueueResponse"/>
+	</message>
+	<portType name="WSEasyGene_1_0">
+		<operation name="runService">
+			<input name="runServiceRequest" message="tns:runServiceRequest"/>
+			<output name="runServiceResponse" message="tns:runServiceResponse"/>
+		</operation>
+		<operation name="pollQueue">
+			<input name="pollQueueRequest" message="tns:pollQueueRequest"/>
+			<output name="pollQueueResponse" message="tns:pollQueueResponse"/>
+		</operation>
+		<operation name="fetchResult">
+			<input name="fetchResultRequest" message="tns:fetchResultRequest"/>
+			<output name="fetchResultResponse" message="tns:fetchResultResponse"/>
+		</operation>
+	</portType>
+	<binding name="WSEasyGeneSoapBinding" type="tns:WSEasyGene_1_0">
+		<soapenv:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="pollQueue">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSEasyGene_1_0#pollQueue"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSEasyGene_1_0"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSEasyGene_1_0"/>
+			</output>
+		</operation>
+		<operation name="runService">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSEasyGene_1_0#runService"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSEasyGene_1_0"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSEasyGene_1_0"/>
+			</output>
+		</operation>
+		<operation name="fetchResult">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSEasyGene_1_0#fetchResult"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSEasyGene_1_0"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSEasyGene_1_0"/>
+			</output>
+		</operation>
+	</binding>
+	<service name="WSEasyGene_1_0">
+		<port name="WSEasyGene_1_0" binding="tns:WSEasyGeneSoapBinding">
+			<soapenv:address location="http://ws.cbs.dtu.dk:80/cgi-bin/soap/ws/server.cgi"/>
+		</port>
+		<documentation> 
+	The EasyGene 1.0 server produces a list of predicted genes given a sequence of prokaryotic 
+	DNA. Each prediction is attributed with a significance score (R-value) indicating how likely 
+	it is to be just a non-coding open reading frame rather than a real gene. The user needs 
+	only to specify the organism hosting the query sequence. Two more parameters (start codon 
+	leniency and R-value cutoff) have default values which may be altered if needed.
+
+		http://www.cbs.dtu.dk/services/EasyGene/
+
+	This service is fully asynchronous;  the usage is split into the following
+	three operations, which is usually executed in this order.
+	
+	Procedures and messages used are either common and shared among all the CBS
+	Web Services, or distinct to each individual Web Service. Marked [distinct] and
+	[common] respectively.
+
+	1. runService [distinct/common]
+		Submit the input parapeter(s) and sequence data and returns a job identifier
+
+		Input: [distinct]
+					* 'startCodonLeniency' - Start codon leniency, 0/1/2 (default 0)
+					* 'Rvalue' - R-value cutoff (default 2)
+					* 'logOdds' - LogOdds cutoff (default -10)
+					* 'model' - Organism abbreviation for model:
+					                aerpe: Aeropyrum pernix
+					                bacan: Bacillus anthracis
+					                bachd: Bacillus halodurans
+					                bacsu: Bacillus subtilis
+					                biflo: Bifidobacterium longum
+					                borbu: Borrelia burgdorferi 
+					                brume: Brucella melitensis
+					                brusu: Brucella suis
+					                camje: Campylobacter jejuni
+					                caucr: Caulobacter crescentus
+					                chltr: Chlamydia trachomatis 
+					                ecoli: Escherichia coli K-12
+					                haein: Haemophilus influenzae
+					                helpj: Helicobacter pylori J-99
+					                hybut: Hyperthermus butylicus
+					                lacla: Lactococcus lacti
+					                myctu: Mycobacterium tuberculosis
+					                mycge: Mycoplasma genitalium
+					                oceih: Oceanobacillus iheyensis
+					                ricpr: Rickettsia prowazekii
+					                salti: Salmonella typhi
+					                staan: Staphylococcus aureus
+					                sulac: Sulfolobus acidocaldarius
+					                sulso: Sulfolobus solfataricus
+					                sulto: Sulfolobus tokodaii
+					                thema: Thermotoga maritima
+					                vibrio: Vibrio cholerae
+					* 'sequences' - An array of sequence objects, containing the following elements:
+					 *  'ident' - The identifier of the sequence
+					 *  'seq' - The sequence specified as one continous string
+		Output: [common]
+					* 'jobid' - The 32 byte identification string of the job
+					* 'datetime' - The last timepoint at which the status of the job has changed
+					* 'status' - Possible values are QUEUED, ACTIVE, FINISHED, WAITING, REJECTED, 
+					  UNKNOWN JOBID or QUEUE DOWN
+		
+	2. pollQueue [common]
+	Once obtained from 'runService', a job identification can be used to poll the
+	status to see if the result is ready for download.
+
+		Input:   [common]
+					* 'jobid' - The 32 byte identification string of the job
+		Output:  [common]
+					* 'jobid' - The 32 byte identification string of the job
+					* 'datetime' - The last timepoint at which the status of the job has changed
+					* 'status' - Possible values are QUEUED, ACTIVE, FINISHED, WAITING, REJECTED, 
+					  UNKNOWN JOBID or QUEUE DOWN
+
+	3. fetchResult  [distinct/common]
+	Once the status is 'FINISHED' the results generated by the Web Service can be retrieved by
+	specifying the jobid;
+	
+		Input:   [common]
+					* 'jobid' - The 32 byte identification string of the job
+		Output:  [distinct]
+					*  'predictionTitle' - Short description of the generated output
+					*  'predictor' - Name and version of the program which generated the output
+					*  'reference' - Publication / reference of the method
+					*  'predictionDate' - Date at the time the when the prediction finished
+					*  'entries' - A collection of gene predictions containing the following information:
+					 *    'sequence' - The sequence name
+					 *    'feature' - Feature type (CDS)
+					 *    'begin' - Start position of the gene (integer)
+					 *    'end' - stop position of the gene (integer)
+					 *    'Rvalue' - R-value for the prediction
+					 *    'strand' - strand of the gene (+/-)
+					 *    'start' - Start codon
+					 *    'logOdds' - The log odds score
+					
+		</documentation>
+	</service>
+</wsdl:definitions>

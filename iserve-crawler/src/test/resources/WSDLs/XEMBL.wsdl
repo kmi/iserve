@@ -1,0 +1,53 @@
+<?xml version = "1.0"?>
+
+<definitions name="XEMBL"
+  targetNamespace="http://www.ebi.ac.uk/XEMBL"
+  xmlns:tns="http://www.ebi.ac.uk/XEMBL"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <documentation>Documentation of this Web Service, together with a sample client and links to Bsml (Labbook, Inc.) and AGAVE (DoubleTwist, Inc.) can be found at the European Bioinformatics Institute http://www.ebi.ac.uk/xembl/</documentation>
+  <message name="getNucSeqRequest" xmlns:tns="http://www.ebi.ac.uk/XEMBL">
+    <part name="format" type="xsd:string">
+      <documentation>Input parameter that indicates the result format that should be returned. Legit values: Bsml or sciobj. Defaults to Bsml if format not recognised.</documentation>
+    </part>
+    <part name="ids" type="xsd:string">
+      <documentation>A space delimited list of international Nucleotide Sequence accession numbers (IDs). For example: "HSERPG U83300 AC000057". Minimum number of IDs is 1.</documentation>
+    </part>
+  </message>
+  <message name="getNucSeqResponse">
+    <part name="result" type="xsd:string">
+      <documentation>An XML formatted result in either Bsml or AGAVE format.</documentation>
+    </part>
+  </message>
+  <portType name="XEMBLPortType">
+    <operation name="getNucSeq">
+      <documentation>Discontinued. Retrieve EMBL-Bank entries in Bsml or AGAVE format.</documentation>
+      <input message="tns:getNucSeqRequest" name="getNucSeqRequest"/>
+      <output message="tns:getNucSeqResponse" name="getNucSeqResponse" />
+    </operation>
+  </portType>
+  <binding name="XEMBLServiceBinding" type="tns:XEMBLPortType">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="getNucSeq">
+      <soap:operation soapAction="http://www.ebi.ac.uk/XEMBL#getNucSeq" />
+      <input>
+        <soap:body use="encoded" namespace="http://www.ebi.ac.uk/XEMBL"
+          encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </input>
+      <output>
+        <soap:body use="encoded" namespace="http://www.ebi.ac.uk/XEMBL"
+          encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </output>
+    </operation>
+  </binding>
+  <service name="XEMBLService">
+    <documentation>The XEMBL webservice was discontinued in October 2007. The WSDbfetch web service provides access to the current EMBL-Bank XML formats.
+
+Returns full information on EMBL Nucleotide Sequences formatted as Bsml XML or Agave XML. I.e. returns sequence itself, cross-references, taxonomy, literature, full feature information, etc.</documentation>
+    <port name="XEMBLPort" binding="tns:XEMBLServiceBinding">
+      <soap:address location="http://www.ebi.ac.uk:80/cgi-bin/xembl/XEMBL-SOAP.pl" />
+    </port>
+  </service>
+</definitions>

@@ -1,0 +1,1896 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://www.ebi.ac.uk/SBO/SBOQuery"
+	xmlns:apachesoap="http://xml.apache.org/xml-soap"
+	xmlns:impl="http://www.ebi.ac.uk/SBO/SBOQuery"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<!--
+		WSDL created by Apache Axis version: 1.3
+		Built on Oct 05, 2005 (05:23:37 EDT)
+		With some modifications done by Mélanie Courtot and Camille Laibe
+		(Tue 19 June 2007)
+	-->
+	
+	<wsdl:types>
+		<xsd:schema elementFormDefault="qualified"
+			targetNamespace="http://www.ebi.ac.uk/SBO/SBOQuery"
+			xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://castorExport.sbo.ebi.ac.uk"
+				schemaLocation="http://www.ebi.ac.uk/sbo/docs/sboxml_schema.xsd" />
+
+			<!-- beginning of Term definition -->
+			<complexType name="Def">
+				<sequence>
+					<element name="defstr" nillable="true" type="xsd:string" />
+					<element name="valid" type="xsd:boolean" />
+				</sequence>
+			</complexType>
+
+			<complexType name="Math">
+				<sequence>
+					<element name="anyObject" nillable="true" type="xsd:anyType" />
+					<element name="valid" type="xsd:boolean" />
+					<element name="xmlns" nillable="true"
+						type="xsd:string" />
+				</sequence>
+			</complexType>
+
+			<complexType name="Relationship">
+				<sequence>
+					<element name="to" nillable="true" type="xsd:string" />
+					<element name="type" nillable="true" type="xsd:string" />
+					<element name="valid" type="xsd:boolean" />
+				</sequence>
+			</complexType>
+
+			<complexType name="Synonym">
+				<sequence>
+					<element name="scope" nillable="true" type="xsd:string" />
+					<element name="synonym_text" nillable="true" type="xsd:string" />
+					<element name="valid" type="xsd:boolean" />
+				</sequence>
+			</complexType>
+
+			<complexType name="Term">
+				<sequence>
+					<element name="comment" nillable="true" type="xsd:string" />
+					<element name="def" nillable="true" type="impl:Def" />
+					<element name="id" nillable="true" type="xsd:string" />
+					<element maxOccurs="unbounded" name="is_a" nillable="true" type="xsd:string" />
+					<element name="is_aCount" type="xsd:int" />
+					<element name="is_obsolete" nillable="true" type="xsd:string" />
+					<element name="is_root" nillable="true" type="xsd:string" />
+					<element name="math" nillable="true" type="impl:Math" />
+					<element name="name" nillable="true" type="xsd:string" />
+					<element name="namespace" nillable="true" type="xsd:string" />
+					<element maxOccurs="unbounded" name="relationship" nillable="true" type="impl:Relationship" />
+					<element name="relationshipCount" type="xsd:int" />
+					<element maxOccurs="unbounded" name="synonym" nillable="true" type="impl:Synonym" />
+					<element name="synonymCount" type="xsd:int" />
+					<element name="valid" type="xsd:boolean" />
+				</sequence>
+			</complexType>
+			<!-- end of Term definition -->
+
+			<element name="sayHi">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="sayHiResponse">
+				<complexType>
+					<sequence>
+						<element name="sayHiReturn" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="getTermById">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:int" />
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="getTermByIdResponse">
+				<complexType>
+					<sequence>
+						<element name="getTermByIdReturn" type="impl:Term" />
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="searchPossibleCompletions">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="searchPossibleCompletionsResponse">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded" name="searchPossibleCompletionsReturn" type="impl:Term" />
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="getTree">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:int" />
+					</sequence>
+				</complexType>
+			</element>
+			
+			<element name="getTreeResponse">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded" name="getTreeReturn" type="impl:Term" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchTermSynonyms">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchTermSynonymsResponse">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded" name="searchTermSynonymsReturn" type="impl:Term" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchTermDetails">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchTermDetailsResponse">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded"
+							name="searchTermDetailsReturn" type="impl:Term" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchTermMath">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchTermMathResponse">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded"
+							name="searchTermMathReturn" type="impl:Term" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchTermName">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchTermNameResponse">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded"
+							name="searchTermNameReturn" type="impl:Term" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="getTermsByIds">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded" name="in0"
+							type="xsd:int" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="getTermsByIdsResponse">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded"
+							name="getTermsByIdsReturn" type="impl:Term" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="getTermByIdOWL">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:int" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="getTermByIdOWLResponse">
+				<complexType>
+					<sequence>
+						<element name="getTermByIdOWLReturn"
+							type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchPossibleCompletionsOWL">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchPossibleCompletionsOWLResponse">
+				<complexType>
+					<sequence>
+						<element
+							name="searchPossibleCompletionsOWLReturn" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="getTreeOWL">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:int" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="getTreeOWLResponse">
+				<complexType>
+					<sequence>
+						<element name="getTreeOWLReturn"
+							type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchTermSynonymsOWL">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchTermSynonymsOWLResponse">
+				<complexType>
+					<sequence>
+						<element name="searchTermSynonymsOWLReturn"
+							type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchTermDetailsOWL">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchTermDetailsOWLResponse">
+				<complexType>
+					<sequence>
+						<element name="searchTermDetailsOWLReturn"
+							type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchTermMathOWL">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchTermMathOWLResponse">
+				<complexType>
+					<sequence>
+						<element name="searchTermMathOWLReturn"
+							type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchTermNameOWL">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchTermNameOWLResponse">
+				<complexType>
+					<sequence>
+						<element name="searchTermNameOWLReturn"
+							type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="getTermsByIdsOWL">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded" name="in0"
+							type="xsd:int" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="getTermsByIdsOWLResponse">
+				<complexType>
+					<sequence>
+						<element name="getTermsByIdsOWLReturn"
+							type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchOWL">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchOWLResponse">
+				<complexType>
+					<sequence>
+						<element name="searchOWLReturn"
+							type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="getStringTermById">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:int" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="getStringTermByIdResponse">
+				<complexType>
+					<sequence>
+						<element name="getStringTermByIdReturn"
+							type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchStringPossibleCompletions">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchStringPossibleCompletionsResponse">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded"
+							name="searchStringPossibleCompletionsReturn" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="getStringTree">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:int" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="getStringTreeResponse">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded"
+							name="getStringTreeReturn" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchStringTermSynonyms">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchStringTermSynonymsResponse">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded"
+							name="searchStringTermSynonymsReturn" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchStringTermDetails">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchStringTermDetailsResponse">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded"
+							name="searchStringTermDetailsReturn" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchStringTermMath">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchStringTermMathResponse">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded"
+							name="searchStringTermMathReturn" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchStringTermName">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchStringTermNameResponse">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded"
+							name="searchStringTermNameReturn" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="getStringTermsByIds">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded" name="in0"
+							type="xsd:int" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="getStringTermsByIdsResponse">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded"
+							name="getStringTermsByIdsReturn" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchString">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchStringResponse">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded"
+							name="searchStringReturn" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="isDirectChildOf">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:int" />
+						<element name="in1" type="xsd:int" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="isDirectChildOfResponse">
+				<complexType>
+					<sequence>
+						<element name="isDirectChildOfReturn"
+							type="xsd:boolean" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="isChildOf">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:int" />
+						<element name="in1" type="xsd:int" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="isChildOfResponse">
+				<complexType>
+					<sequence>
+						<element name="isChildOfReturn"
+							type="xsd:boolean" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="isObsolete">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:int" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="isObsoleteResponse">
+				<complexType>
+					<sequence>
+						<element name="isObsoleteReturn"
+							type="xsd:boolean" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="search">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:string" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="searchResponse">
+				<complexType>
+					<sequence>
+						<element maxOccurs="unbounded"
+							name="searchReturn" type="impl:Term" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="isRoot">
+				<complexType>
+					<sequence>
+						<element name="in0" type="xsd:int" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="isRootResponse">
+				<complexType>
+					<sequence>
+						<element name="isRootReturn" type="xsd:boolean" />
+					</sequence>
+				</complexType>
+			</element>
+		</xsd:schema>
+	</wsdl:types>
+	
+	
+	<wsdl:message name="isDirectChildOfResponse">
+		<wsdl:part element="impl:isDirectChildOfResponse" name="parameters" />
+	</wsdl:message>
+
+	<wsdl:message name="getTreeOWLResponse">
+		<wsdl:part element="impl:getTreeOWLResponse" name="parameters" />
+	</wsdl:message>
+
+	<wsdl:message name="getTreeResponse">
+		<wsdl:part element="impl:getTreeResponse" name="parameters" />
+	</wsdl:message>
+
+	<wsdl:message name="searchStringTermMathResponse">
+		<wsdl:part element="impl:searchStringTermMathResponse" name="parameters" />
+	</wsdl:message>
+
+	<wsdl:message name="searchStringPossibleCompletionsResponse">
+
+		<wsdl:part
+			element="impl:searchStringPossibleCompletionsResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchPossibleCompletionsOWLRequest">
+
+		<wsdl:part element="impl:searchPossibleCompletionsOWL"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchTermMathResponse">
+
+		<wsdl:part element="impl:searchTermMathResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchStringTermDetailsResponse">
+
+		<wsdl:part element="impl:searchStringTermDetailsResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="isChildOfResponse">
+
+		<wsdl:part element="impl:isChildOfResponse" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="isObsoleteRequest">
+
+		<wsdl:part element="impl:isObsolete" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="getTermsByIdsRequest">
+
+		<wsdl:part element="impl:getTermsByIds" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="getStringTermByIdResponse">
+
+		<wsdl:part element="impl:getStringTermByIdResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchTermMathRequest">
+
+		<wsdl:part element="impl:searchTermMath" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="sayHiRequest">
+
+		<wsdl:part element="impl:sayHi" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchTermSynonymsOWLRequest">
+
+		<wsdl:part element="impl:searchTermSynonymsOWL"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="isDirectChildOfRequest">
+
+		<wsdl:part element="impl:isDirectChildOf" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchTermSynonymsResponse">
+
+		<wsdl:part element="impl:searchTermSynonymsResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="isChildOfRequest">
+
+		<wsdl:part element="impl:isChildOf" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="getTreeRequest">
+
+		<wsdl:part element="impl:getTree" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchStringTermNameResponse">
+
+		<wsdl:part element="impl:searchStringTermNameResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="getTermByIdOWLRequest">
+
+		<wsdl:part element="impl:getTermByIdOWL" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchPossibleCompletionsRequest">
+
+		<wsdl:part element="impl:searchPossibleCompletions"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchStringTermSynonymsRequest">
+
+		<wsdl:part element="impl:searchStringTermSynonyms"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchResponse">
+
+		<wsdl:part element="impl:searchResponse" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="isRootRequest">
+
+		<wsdl:part element="impl:isRoot" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchStringRequest">
+
+		<wsdl:part element="impl:searchString" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchTermNameRequest">
+
+		<wsdl:part element="impl:searchTermName" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="getStringTermByIdRequest">
+
+		<wsdl:part element="impl:getStringTermById" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchTermMathOWLResponse">
+
+		<wsdl:part element="impl:searchTermMathOWLResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchTermSynonymsRequest">
+
+		<wsdl:part element="impl:searchTermSynonyms" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchStringResponse">
+
+		<wsdl:part element="impl:searchStringResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="getTermByIdRequest">
+
+		<wsdl:part element="impl:getTermById" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchTermDetailsResponse">
+
+		<wsdl:part element="impl:searchTermDetailsResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchPossibleCompletionsResponse">
+
+		<wsdl:part element="impl:searchPossibleCompletionsResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchStringTermMathRequest">
+
+		<wsdl:part element="impl:searchStringTermMath"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchPossibleCompletionsOWLResponse">
+
+		<wsdl:part element="impl:searchPossibleCompletionsOWLResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchOWLResponse">
+
+		<wsdl:part element="impl:searchOWLResponse" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="getTermsByIdsOWLResponse">
+
+		<wsdl:part element="impl:getTermsByIdsOWLResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchTermDetailsOWLResponse">
+
+		<wsdl:part element="impl:searchTermDetailsOWLResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchRequest">
+
+		<wsdl:part element="impl:search" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchStringPossibleCompletionsRequest">
+
+		<wsdl:part element="impl:searchStringPossibleCompletions"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="getStringTermsByIdsResponse">
+
+		<wsdl:part element="impl:getStringTermsByIdsResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="sayHiResponse">
+
+		<wsdl:part element="impl:sayHiResponse" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchStringTermSynonymsResponse">
+
+		<wsdl:part element="impl:searchStringTermSynonymsResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="getTermsByIdsResponse">
+
+		<wsdl:part element="impl:getTermsByIdsResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="getTermsByIdsOWLRequest">
+
+		<wsdl:part element="impl:getTermsByIdsOWL" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="isRootResponse">
+
+		<wsdl:part element="impl:isRootResponse" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="getTreeOWLRequest">
+
+		<wsdl:part element="impl:getTreeOWL" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="getStringTermsByIdsRequest">
+
+		<wsdl:part element="impl:getStringTermsByIds" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchTermDetailsRequest">
+
+		<wsdl:part element="impl:searchTermDetails" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchStringTermNameRequest">
+
+		<wsdl:part element="impl:searchStringTermName"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="getStringTreeRequest">
+
+		<wsdl:part element="impl:getStringTree" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchTermMathOWLRequest">
+
+		<wsdl:part element="impl:searchTermMathOWL" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="getTermByIdOWLResponse">
+
+		<wsdl:part element="impl:getTermByIdOWLResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchTermNameResponse">
+
+		<wsdl:part element="impl:searchTermNameResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchTermDetailsOWLRequest">
+
+		<wsdl:part element="impl:searchTermDetailsOWL"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="getTermByIdResponse">
+
+		<wsdl:part element="impl:getTermByIdResponse" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="getStringTreeResponse">
+
+		<wsdl:part element="impl:getStringTreeResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchTermNameOWLResponse">
+
+		<wsdl:part element="impl:searchTermNameOWLResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchTermSynonymsOWLResponse">
+
+		<wsdl:part element="impl:searchTermSynonymsOWLResponse"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="isObsoleteResponse">
+
+		<wsdl:part element="impl:isObsoleteResponse" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchTermNameOWLRequest">
+
+		<wsdl:part element="impl:searchTermNameOWL" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchStringTermDetailsRequest">
+
+		<wsdl:part element="impl:searchStringTermDetails"
+			name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:message name="searchOWLRequest">
+
+		<wsdl:part element="impl:searchOWL" name="parameters" />
+
+	</wsdl:message>
+
+	<wsdl:portType name="SBOProvider">
+
+		<wsdl:operation name="sayHi">
+
+			<wsdl:input message="impl:sayHiRequest" name="sayHiRequest" />
+
+			<wsdl:output message="impl:sayHiResponse"
+				name="sayHiResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="getTermById">
+
+			<wsdl:input message="impl:getTermByIdRequest"
+				name="getTermByIdRequest" />
+
+			<wsdl:output message="impl:getTermByIdResponse"
+				name="getTermByIdResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchPossibleCompletions">
+
+			<wsdl:input message="impl:searchPossibleCompletionsRequest"
+				name="searchPossibleCompletionsRequest" />
+
+			<wsdl:output
+				message="impl:searchPossibleCompletionsResponse"
+				name="searchPossibleCompletionsResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="getTree">
+
+			<wsdl:input message="impl:getTreeRequest"
+				name="getTreeRequest" />
+
+			<wsdl:output message="impl:getTreeResponse"
+				name="getTreeResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchTermSynonyms">
+
+			<wsdl:input message="impl:searchTermSynonymsRequest"
+				name="searchTermSynonymsRequest" />
+
+			<wsdl:output message="impl:searchTermSynonymsResponse"
+				name="searchTermSynonymsResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchTermDetails">
+
+			<wsdl:input message="impl:searchTermDetailsRequest"
+				name="searchTermDetailsRequest" />
+
+			<wsdl:output message="impl:searchTermDetailsResponse"
+				name="searchTermDetailsResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchTermMath">
+
+			<wsdl:input message="impl:searchTermMathRequest"
+				name="searchTermMathRequest" />
+
+			<wsdl:output message="impl:searchTermMathResponse"
+				name="searchTermMathResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchTermName">
+
+			<wsdl:input message="impl:searchTermNameRequest"
+				name="searchTermNameRequest" />
+
+			<wsdl:output message="impl:searchTermNameResponse"
+				name="searchTermNameResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="getTermsByIds">
+
+			<wsdl:input message="impl:getTermsByIdsRequest"
+				name="getTermsByIdsRequest" />
+
+			<wsdl:output message="impl:getTermsByIdsResponse"
+				name="getTermsByIdsResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="getTermByIdOWL">
+
+			<wsdl:input message="impl:getTermByIdOWLRequest"
+				name="getTermByIdOWLRequest" />
+
+			<wsdl:output message="impl:getTermByIdOWLResponse"
+				name="getTermByIdOWLResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchPossibleCompletionsOWL">
+
+			<wsdl:input
+				message="impl:searchPossibleCompletionsOWLRequest"
+				name="searchPossibleCompletionsOWLRequest" />
+
+			<wsdl:output
+				message="impl:searchPossibleCompletionsOWLResponse"
+				name="searchPossibleCompletionsOWLResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="getTreeOWL">
+
+			<wsdl:input message="impl:getTreeOWLRequest"
+				name="getTreeOWLRequest" />
+
+			<wsdl:output message="impl:getTreeOWLResponse"
+				name="getTreeOWLResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchTermSynonymsOWL">
+
+			<wsdl:input message="impl:searchTermSynonymsOWLRequest"
+				name="searchTermSynonymsOWLRequest" />
+
+			<wsdl:output message="impl:searchTermSynonymsOWLResponse"
+				name="searchTermSynonymsOWLResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchTermDetailsOWL">
+
+			<wsdl:input message="impl:searchTermDetailsOWLRequest"
+				name="searchTermDetailsOWLRequest" />
+
+			<wsdl:output message="impl:searchTermDetailsOWLResponse"
+				name="searchTermDetailsOWLResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchTermMathOWL">
+
+			<wsdl:input message="impl:searchTermMathOWLRequest"
+				name="searchTermMathOWLRequest" />
+
+			<wsdl:output message="impl:searchTermMathOWLResponse"
+				name="searchTermMathOWLResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchTermNameOWL">
+
+			<wsdl:input message="impl:searchTermNameOWLRequest"
+				name="searchTermNameOWLRequest" />
+
+			<wsdl:output message="impl:searchTermNameOWLResponse"
+				name="searchTermNameOWLResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="getTermsByIdsOWL">
+
+			<wsdl:input message="impl:getTermsByIdsOWLRequest"
+				name="getTermsByIdsOWLRequest" />
+
+			<wsdl:output message="impl:getTermsByIdsOWLResponse"
+				name="getTermsByIdsOWLResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchOWL">
+
+			<wsdl:input message="impl:searchOWLRequest"
+				name="searchOWLRequest" />
+
+			<wsdl:output message="impl:searchOWLResponse"
+				name="searchOWLResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="getStringTermById">
+
+			<wsdl:input message="impl:getStringTermByIdRequest"
+				name="getStringTermByIdRequest" />
+
+			<wsdl:output message="impl:getStringTermByIdResponse"
+				name="getStringTermByIdResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchStringPossibleCompletions">
+
+			<wsdl:input
+				message="impl:searchStringPossibleCompletionsRequest"
+				name="searchStringPossibleCompletionsRequest" />
+
+			<wsdl:output
+				message="impl:searchStringPossibleCompletionsResponse"
+				name="searchStringPossibleCompletionsResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="getStringTree">
+
+			<wsdl:input message="impl:getStringTreeRequest"
+				name="getStringTreeRequest" />
+
+			<wsdl:output message="impl:getStringTreeResponse"
+				name="getStringTreeResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchStringTermSynonyms">
+
+			<wsdl:input message="impl:searchStringTermSynonymsRequest"
+				name="searchStringTermSynonymsRequest" />
+
+			<wsdl:output message="impl:searchStringTermSynonymsResponse"
+				name="searchStringTermSynonymsResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchStringTermDetails">
+
+			<wsdl:input message="impl:searchStringTermDetailsRequest"
+				name="searchStringTermDetailsRequest" />
+
+			<wsdl:output message="impl:searchStringTermDetailsResponse"
+				name="searchStringTermDetailsResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchStringTermMath">
+
+			<wsdl:input message="impl:searchStringTermMathRequest"
+				name="searchStringTermMathRequest" />
+
+			<wsdl:output message="impl:searchStringTermMathResponse"
+				name="searchStringTermMathResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchStringTermName">
+
+			<wsdl:input message="impl:searchStringTermNameRequest"
+				name="searchStringTermNameRequest" />
+
+			<wsdl:output message="impl:searchStringTermNameResponse"
+				name="searchStringTermNameResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="getStringTermsByIds">
+
+			<wsdl:input message="impl:getStringTermsByIdsRequest"
+				name="getStringTermsByIdsRequest" />
+
+			<wsdl:output message="impl:getStringTermsByIdsResponse"
+				name="getStringTermsByIdsResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchString">
+
+			<wsdl:input message="impl:searchStringRequest"
+				name="searchStringRequest" />
+
+			<wsdl:output message="impl:searchStringResponse"
+				name="searchStringResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="isDirectChildOf">
+
+			<wsdl:input message="impl:isDirectChildOfRequest"
+				name="isDirectChildOfRequest" />
+
+			<wsdl:output message="impl:isDirectChildOfResponse"
+				name="isDirectChildOfResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="isChildOf">
+
+			<wsdl:input message="impl:isChildOfRequest"
+				name="isChildOfRequest" />
+
+			<wsdl:output message="impl:isChildOfResponse"
+				name="isChildOfResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="isObsolete">
+
+			<wsdl:input message="impl:isObsoleteRequest"
+				name="isObsoleteRequest" />
+
+			<wsdl:output message="impl:isObsoleteResponse"
+				name="isObsoleteResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="search">
+
+			<wsdl:input message="impl:searchRequest"
+				name="searchRequest" />
+
+			<wsdl:output message="impl:searchResponse"
+				name="searchResponse" />
+
+		</wsdl:operation>
+
+		<wsdl:operation name="isRoot">
+
+			<wsdl:input message="impl:isRootRequest"
+				name="isRootRequest" />
+
+			<wsdl:output message="impl:isRootResponse"
+				name="isRootResponse" />
+
+		</wsdl:operation>
+
+	</wsdl:portType>
+
+	<wsdl:binding name="SBOQuerySoapBinding" type="impl:SBOProvider">
+
+		<wsdlsoap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+
+		<wsdl:operation name="sayHi">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="sayHiRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="sayHiResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="getTermById">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="getTermByIdRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="getTermByIdResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchPossibleCompletions">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="searchPossibleCompletionsRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="searchPossibleCompletionsResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="getTree">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="getTreeRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="getTreeResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchTermSynonyms">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="searchTermSynonymsRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="searchTermSynonymsResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchTermDetails">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="searchTermDetailsRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="searchTermDetailsResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchTermMath">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="searchTermMathRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="searchTermMathResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchTermName">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="searchTermNameRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="searchTermNameResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="getTermsByIds">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="getTermsByIdsRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="getTermsByIdsResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="getTermByIdOWL">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="getTermByIdOWLRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="getTermByIdOWLResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchPossibleCompletionsOWL">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="searchPossibleCompletionsOWLRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="searchPossibleCompletionsOWLResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="getTreeOWL">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="getTreeOWLRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="getTreeOWLResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchTermSynonymsOWL">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="searchTermSynonymsOWLRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="searchTermSynonymsOWLResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchTermDetailsOWL">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="searchTermDetailsOWLRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="searchTermDetailsOWLResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchTermMathOWL">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="searchTermMathOWLRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="searchTermMathOWLResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchTermNameOWL">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="searchTermNameOWLRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="searchTermNameOWLResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="getTermsByIdsOWL">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="getTermsByIdsOWLRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="getTermsByIdsOWLResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchOWL">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="searchOWLRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="searchOWLResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="getStringTermById">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="getStringTermByIdRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="getStringTermByIdResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchStringPossibleCompletions">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="searchStringPossibleCompletionsRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output
+				name="searchStringPossibleCompletionsResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="getStringTree">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="getStringTreeRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="getStringTreeResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchStringTermSynonyms">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="searchStringTermSynonymsRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="searchStringTermSynonymsResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchStringTermDetails">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="searchStringTermDetailsRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="searchStringTermDetailsResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchStringTermMath">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="searchStringTermMathRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="searchStringTermMathResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchStringTermName">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="searchStringTermNameRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="searchStringTermNameResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="getStringTermsByIds">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="getStringTermsByIdsRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="getStringTermsByIdsResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="searchString">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="searchStringRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="searchStringResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="isDirectChildOf">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="isDirectChildOfRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="isDirectChildOfResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="isChildOf">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="isChildOfRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="isChildOfResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="isObsolete">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="isObsoleteRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="isObsoleteResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="search">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="searchRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="searchResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+		<wsdl:operation name="isRoot">
+
+			<wsdlsoap:operation soapAction="" />
+
+			<wsdl:input name="isRootRequest">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:input>
+
+			<wsdl:output name="isRootResponse">
+
+				<wsdlsoap:body use="literal" />
+
+			</wsdl:output>
+
+		</wsdl:operation>
+
+	</wsdl:binding>
+
+	<wsdl:service name="SBOProviderService">
+
+		<wsdl:port binding="impl:SBOQuerySoapBinding" name="SBOQuery">
+
+			<wsdlsoap:address
+				location="http://www.ebi.ac.uk/compneur-srv/sbo-main/services/SBOQuery" />
+
+		</wsdl:port>
+
+	</wsdl:service>
+
+</wsdl:definitions>

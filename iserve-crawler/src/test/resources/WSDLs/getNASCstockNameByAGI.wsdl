@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="getNASCstockNameByAGIInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="getNASCstockNameByAGIOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="getNASCstockNameByAGIPortType">
+          <wsdl:operation name="getNASCstockNameByAGI">
+                 <wsdl:input message="tns:getNASCstockNameByAGIInput"/>
+                 <wsdl:output message="tns:getNASCstockNameByAGIOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="getNASCstockNameByAGIBinding" type="tns:getNASCstockNameByAGIPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="getNASCstockNameByAGI"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#getNASCstockNameByAGI' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="getNASCstockNameByAGIService">
+          <wsdl:documentation>Authority: arabidopsis.info  -  Retrieves the name of a stock for a given AGI locus code from the Nottingham Arabidopsis Stock Centre Germplasm database (http://arabidopsis.info). Example input: 'At1g19100'.</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="getNASCstockNameByAGIPort" binding="tns:getNASCstockNameByAGIBinding">
+                 <wsdlsoap:address location="http://arabidopsis.info/cgi-bin/moby_services/Services/germplasm_services/germplasm_services.cgi"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

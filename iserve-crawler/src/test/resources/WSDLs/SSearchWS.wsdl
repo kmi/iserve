@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<definitions name="SSearch_Service" 
+ targetNamespace="http://gbio.ibcp.fr:8090/SSearch_Service"  
+ xmlns:tns="http://gbio.ibcp.fr:8090/SSearch_Service"   
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+ xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <message name="submitSSearchRequest">
+        <part name="Sequence" type="xsd:string"/>
+        <part name="SeqDatabase" type="xsd:string"/>
+    </message>
+    <message name="submitSSearchResponse">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    
+    <message name="checkStatusSSearchRequest">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    <message name="checkStatusSSearchResponse">
+        <part name="Status" type="xsd:string"/>
+    </message>
+    
+    <message name="getResultsSSearchRequest">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    <message name="getResultsSSearchResponse">
+        <part name="SeqSimilar" type="xsd:string"/>
+        <part name="Logout" type="xsd:string"/>
+    </message>
+
+    <message name="cancelSSearchRequest">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    <message name="cancelSSearchResponse">
+        <part name="Status" type="xsd:string"/>
+    </message>
+
+    <portType name="SSearchPortType">
+        <operation name="submitSSearch">
+            <documentation>Submit a sequence an get a jobID</documentation>
+            <input message="tns:submitSSearchRequest"/>
+            <output message="tns:submitSSearchResponse"/>
+        </operation>
+        <operation name="checkStatusSSearch">
+            <documentation>Submit a jobID and get the status</documentation>
+            <input message="tns:checkStatusSSearchRequest"/>
+            <output message="tns:checkStatusSSearchResponse"/>
+        </operation>
+        <operation name="getResultsSSearch">
+            <documentation>When job is finish, submit a jobid and get the results</documentation>
+            <input message="tns:getResultsSSearchRequest"/>
+            <output message="tns:getResultsSSearchResponse"/>
+        </operation>
+        <operation name="cancelSSearch">
+            <documentation>When some thing is wrong, cancel your job</documentation>
+            <input message="tns:cancelSSearchRequest"/>
+            <output message="tns:cancelSSearchResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="SSearchBinding" type="tns:SSearchPortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="submitSSearch">
+            <soap:operation
+             soapAction="urn:SSearchWS.wsdl#submitSSearch"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:SSearch_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:SSearch_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="checkStatusSSearch">
+            <soap:operation
+             soapAction="urn:SSearchWS.wsdl#checkStatusSSearch"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:SSearch_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:SSearch_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="getResultsSSearch">
+            <soap:operation
+             soapAction="urn:SSearchWS.wsdl#getResultsSSearch"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:SSearch_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:SSearch_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="cancelSSearch">
+            <soap:operation
+             soapAction="urn:SSearchWS.wsdl#cancelSSearch"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:SSearch_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:SSearch_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+    
+    <service name="SSearch_Service">
+        <documentation>SSearch @ IBCP (http://gbio-pbil.ibcp.fr)</documentation>
+        <port name="SSearchPort" binding="tns:SSearchBinding">
+            <soap:address location="http://gbio.ibcp.fr:8090/SSearch_Service"/>
+        </port>
+    </service>
+    
+</definitions>

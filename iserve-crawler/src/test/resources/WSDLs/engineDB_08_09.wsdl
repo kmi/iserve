@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:http-conf="http://cxf.apache.org/transports/http/configuration"
+	xmlns:tns="http://funcnet.eu/FuncNet_1_0/"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="FuncNet-1.0"
+	targetNamespace="http://funcnet.eu/FuncNet_1_0/">	
+
+	<wsdl:types>
+	
+		<xsd:schema targetNamespace="http://funcnet.eu/FuncNet_1_0/">
+		
+			<xsd:complexType name="ProteinList">
+				<xsd:annotation>
+					<xsd:documentation>
+						A list of one or more UniProt primary accession numbers.
+					</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element name="p" type="xsd:string" minOccurs="1" maxOccurs="unbounded" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="PairwiseScore">
+				<xsd:annotation>
+					<xsd:documentation>
+						A 4-tuple containing the score results for a single pair of proteins.
+					</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element name="p1" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>
+								The query protein.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="p2" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>
+								The reference protein. Note: for predictors which produce a
+								symmetrical measure of similarity or relatedness between two
+								proteins, we would expect to see the same score and p-value
+								regardless of which way round the query and reference proteins
+								are.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="rs" type="xsd:double">
+						<xsd:annotation>
+							<xsd:documentation>
+								A numeric score produced by the predictor. FuncNet does not
+								enforce any constraints on the range or distribution of scores
+								produced by its predictors, so these scores are not comparable
+								between different predictors.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="pv" type="xsd:double">
+						<xsd:annotation>
+							<xsd:documentation>
+								A p-value representing the probability that any two randomly-
+								chosen proteins in this proteome would be given a rawScore
+								equal to or higher than the rawScore for this pair, by this
+								predictor. These probabilities are used by the integrator to
+								calculate an overall score between each protein pair from the
+								output of all the predictors.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			
+			<xsd:element name="ScorePairwiseRelations">
+				<xsd:annotation>
+					<xsd:documentation>
+						Input type for the ScorePairwiseRelations operation.
+					</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="proteins1" type="tns:ProteinList">
+							<xsd:annotation>
+								<xsd:documentation>
+									A list of query proteins (as UniProt primary accessions)
+									with unknown or partially-known function.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="proteins2" type="tns:ProteinList">
+							<xsd:annotation>
+								<xsd:documentation>
+									A list of reference proteins (as UniProt primary accessions)
+									which are known to be involved in a particular biological
+									phenomenon, structure, process etc.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			
+			<xsd:element name="ScorePairwiseRelationsResponse">
+				<xsd:annotation>
+					<xsd:documentation>
+						Output type for the ScorePairwiseRelations operation.
+					</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="s" type="tns:PairwiseScore" minOccurs="0" maxOccurs="unbounded">
+							<xsd:annotation>
+								<xsd:documentation>
+									A list of score profiles for pairs of proteins which have
+									been assigned a score by the predictor. The maximum number of
+									elements in this list is QxR where Q is the number of query
+									proteins and R is the number of reference proteins. The list
+									may be shorter as the predictor is not guaranteed to return
+									a score for every possible pair. 
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			
+		</xsd:schema>
+		
+	</wsdl:types>
+	
+	<wsdl:message name="ScorePairwiseRelationsRequest">
+		<wsdl:part element="tns:ScorePairwiseRelations" name="parameters" />
+	</wsdl:message>
+	
+	<wsdl:message name="ScorePairwiseRelationsResponse">
+		<wsdl:part element="tns:ScorePairwiseRelationsResponse" name="parameters" />
+	</wsdl:message>
+
+	<!-- Don't change anything above this line, except comments if necessary -->
+	
+	<!-- After this line, change "DummyPredictor" to the name of your predictor everywhere it occurs -->
+	<!-- Also update the URLs where required -->
+
+	<wsdl:portType name="engineDBPortType">
+		<wsdl:operation name="ScorePairwiseRelations">
+			<wsdl:documentation>
+				This method runs the prediction algorithm on two sets of proteins (identified
+				by UniProt primary accessions), one query set and one reference set. The
+				predictor performs a pairwise comparison between each query-reference pair. 
+			</wsdl:documentation>
+			<wsdl:input message="tns:ScorePairwiseRelationsRequest" />
+			<wsdl:output message="tns:ScorePairwiseRelationsResponse" />
+		</wsdl:operation>
+	</wsdl:portType>
+	
+	<wsdl:binding name="engineDBBinding" type="tns:engineDBPortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="ScorePairwiseRelations">
+			<soap:operation soapAction="http://funcnet.eu/engineDB/ScorePairwiseRelations" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	
+	<wsdl:service name="engineDBService">
+		<wsdl:port binding="tns:engineDBBinding" name="engineDBPort">
+			<soap:address location="http://spank.ba.itb.cnr.it/cgi-bin/engineDB_08_09.pl" />
+                        <http-conf:client ReceiveTimeout="0" />
+		</wsdl:port>
+	</wsdl:service>
+	
+</wsdl:definitions>

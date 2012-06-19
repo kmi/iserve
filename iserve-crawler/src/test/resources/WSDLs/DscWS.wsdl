@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<definitions name="Dsc_Service" 
+ targetNamespace="http://gbio.ibcp.fr:8090/Dsc_Service"  
+ xmlns:tns="http://gbio.ibcp.fr:8090/Dsc_Service"   
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+ xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <message name="submitDscRequest">
+        <part name="Sequences" type="xsd:string"/>
+    </message>
+    <message name="submitDscResponse">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    
+    <message name="checkStatusDscRequest">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    <message name="checkStatusDscResponse">
+        <part name="Status" type="xsd:string"/>
+    </message>
+    
+    <message name="getResultsDscRequest">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    <message name="getResultsDscResponse">
+        <part name="SecStructure" type="xsd:string"/>
+        <part name="Logout" type="xsd:string"/>
+    </message>
+
+    <message name="cancelDscRequest">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    <message name="cancelDscResponse">
+        <part name="Status" type="xsd:string"/>
+    </message>
+
+    <portType name="DscPortType">
+        <operation name="submitDsc">
+            <documentation>Submit a sequence an get a jobID</documentation>
+            <input message="tns:submitDscRequest"/>
+            <output message="tns:submitDscResponse"/>
+        </operation>
+        <operation name="checkStatusDsc">
+            <documentation>Submit a jobID and get the status</documentation>
+            <input message="tns:checkStatusDscRequest"/>
+            <output message="tns:checkStatusDscResponse"/>
+        </operation>
+        <operation name="getResultsDsc">
+            <documentation>When job is finish, submit a jobid and get the results</documentation>
+            <input message="tns:getResultsDscRequest"/>
+            <output message="tns:getResultsDscResponse"/>
+        </operation>
+        <operation name="cancelDsc">
+            <documentation>When some thing is wrong, cancel your job</documentation>
+            <input message="tns:cancelDscRequest"/>
+            <output message="tns:cancelDscResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="DscBinding" type="tns:DscPortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="submitDsc">
+            <soap:operation
+             soapAction="urn:DscWS.wsdl#submitDsc"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:Dsc_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:Dsc_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="checkStatusDsc">
+            <soap:operation
+             soapAction="urn:DscWS.wsdl#checkStatusDsc"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:Dsc_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:Dsc_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="getResultsDsc">
+            <soap:operation
+             soapAction="urn:DscWS.wsdl#getResultsDsc"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:Dsc_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:Dsc_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="cancelDsc">
+            <soap:operation
+             soapAction="urn:DscWS.wsdl#cancelDsc"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:Dsc_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:Dsc_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+    
+    <service name="Dsc_Service">
+        <documentation>Dsc @ IBCP (http://gbio-pbil.ibcp.fr)</documentation>
+        <port name="DscPort" binding="tns:DscBinding">
+            <soap:address location="http://gbio.ibcp.fr:8090/Dsc_Service"/>
+        </port>
+    </service>
+    
+</definitions>

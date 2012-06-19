@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="Locus2SpliceVariantsInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="Locus2SpliceVariantsOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="Locus2SpliceVariantsPortType">
+          <wsdl:operation name="Locus2SpliceVariants">
+                 <wsdl:input message="tns:Locus2SpliceVariantsInput"/>
+                 <wsdl:output message="tns:Locus2SpliceVariantsOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="Locus2SpliceVariantsBinding" type="tns:Locus2SpliceVariantsPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="Locus2SpliceVariants"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#Locus2SpliceVariants' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="Locus2SpliceVariantsService">
+          <wsdl:documentation>Authority: arabidopsis.org  -  gets a list of one or more splice variants for a submitted AGI locus code.  We define splice variants in a loose way to include the representative gene model at a given locus.  
+
+So for example, if the user submits AT1G01010, the list will include AT1G0101.1 (which is currently the only gene model at that locus).</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="Locus2SpliceVariantsPort" binding="tns:Locus2SpliceVariantsBinding">
+                 <wsdlsoap:address location="http://italy.stanford.edu:8090/tairservices/services/Locus2SpliceVariants"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

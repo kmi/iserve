@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="seqretDNARefFASTA2RAWInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="seqretDNARefFASTA2RAWOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="seqretDNARefFASTA2RAWPortType">
+          <wsdl:operation name="seqretDNARefFASTA2RAW">
+                 <wsdl:input message="tns:seqretDNARefFASTA2RAWInput"/>
+                 <wsdl:output message="tns:seqretDNARefFASTA2RAWOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="seqretDNARefFASTA2RAWBinding" type="tns:seqretDNARefFASTA2RAWPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="seqretDNARefFASTA2RAW"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#seqretDNARefFASTA2RAW' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="seqretDNARefFASTA2RAWService">
+          <wsdl:documentation>Authority: soaplab.icapture.ubc.ca  -  EMBOSS seqret program
+
+The sequence source is USA (Uniform Sequence Address).
+This means that you pass in a database name as the namespace
+and an entry from the db as the id, e.g. db = embl and id = X13776.
+The input format is fasta
+The output format is raw</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="seqretDNARefFASTA2RAWPort" binding="tns:seqretDNARefFASTA2RAWBinding">
+                 <wsdlsoap:address location="http://dev.biordf.net/mobyservices/services/seqretDNARefFASTA2RAW"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

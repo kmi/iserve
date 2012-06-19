@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://ws.adaptivedisclosure.org/axis/services/SearcherWS" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://ws.adaptivedisclosure.org/axis/services/SearcherWS" xmlns:intf="http://ws.adaptivedisclosure.org/axis/services/SearcherWS" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.3
+Built on Oct 05, 2005 (05:23:37 EDT)-->
+ <wsdl:types>
+  <schema targetNamespace="http://ws.adaptivedisclosure.org/axis/services/SearcherWS" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="searchMFqueryResponse">
+
+      <wsdl:part name="searchMFqueryReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="searchMFqueryRequest">
+
+      <wsdl:part name="index" type="xsd:string"/>
+
+      <wsdl:part name="queryString" type="xsd:string"/>
+
+      <wsdl:part name="maxHits" type="xsd:string"/>
+
+      <wsdl:part name="defaultField" type="impl:ArrayOf_xsd_string"/>
+
+      <wsdl:part name="operator" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="searchJasonRequest">
+
+      <wsdl:part name="index" type="xsd:string"/>
+
+      <wsdl:part name="queryString" type="xsd:string"/>
+
+      <wsdl:part name="startString" type="xsd:string"/>
+
+      <wsdl:part name="defaultField" type="xsd:string"/>
+
+      <wsdl:part name="countString" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="searchJasonResponse">
+
+      <wsdl:part name="searchJasonReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="searchRequest">
+
+      <wsdl:part name="index" type="xsd:string"/>
+
+      <wsdl:part name="queryString" type="xsd:string"/>
+
+      <wsdl:part name="maxHits" type="xsd:string"/>
+
+      <wsdl:part name="defaultField" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="searchResponse">
+
+      <wsdl:part name="searchReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="SearcherWS">
+
+      <wsdl:operation name="searchJason" parameterOrder="index queryString startString defaultField countString">
+
+         <wsdl:input message="impl:searchJasonRequest" name="searchJasonRequest"/>
+
+         <wsdl:output message="impl:searchJasonResponse" name="searchJasonResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="searchMFquery" parameterOrder="index queryString maxHits defaultField operator">
+
+         <wsdl:input message="impl:searchMFqueryRequest" name="searchMFqueryRequest"/>
+
+         <wsdl:output message="impl:searchMFqueryResponse" name="searchMFqueryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="search" parameterOrder="index queryString maxHits defaultField">
+
+         <wsdl:input message="impl:searchRequest" name="searchRequest"/>
+
+         <wsdl:output message="impl:searchResponse" name="searchResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="SearcherWSSoapBinding" type="impl:SearcherWS">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="searchJason">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="searchJasonRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://lucene.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="searchJasonResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/SearcherWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="searchMFquery">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="searchMFqueryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://lucene.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="searchMFqueryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/SearcherWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="search">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="searchRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://lucene.aid.vle.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="searchResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/SearcherWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="SearcherWSService">
+
+      <wsdl:port binding="impl:SearcherWSSoapBinding" name="SearcherWS">
+
+         <wsdlsoap:address location="http://ws.adaptivedisclosure.org/axis/services/SearcherWS"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

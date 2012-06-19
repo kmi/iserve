@@ -1,0 +1,353 @@
+<wsdl:definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:BINDSOAP" xmlns:intf="urn:BINDSOAP" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:BINDSOAP">
+	<wsdl:types>
+		<schema targetNamespace="urn:BINDSOAP" xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+			<complexType name="BINDSOAPException">
+				<sequence>
+					<element name="message" type="xsd:string" nillable="true"/>
+				</sequence>
+			</complexType>
+			<complexType name="SearchResultBean">
+				<sequence>
+					<element name="totalRecordsFound" type="xsd:int"/>
+					<element name="records" type="xsd:string" nillable="true"/>
+					<element name="query" type="xsd:string" nillable="true"/>
+					<element name="returnType" type="xsd:string" nillable="true"/>
+				</sequence>
+			</complexType>
+			
+			<complexType name="BIVMolecule">
+				<sequence>
+					<element name="id" type="xsd:int"/>
+					<element name="idtype" type="xsd:string" nillable="true"/>
+					<element name="shortlabel" type="xsd:string" nillable="true"/>
+					<element name="taxname" type="xsd:string" nillable="true"/>
+					<element name="aliases" type="xsd:string" nillable="true"/>
+					<element name="redundant-ids" type="xsd:string" nillable="true"/>
+					<element name="smid-hits" type="xsd:int"/>
+				</sequence>
+			</complexType>
+			
+			<complexType name="BIVInteraction">
+				<sequence>
+					<element name="bid" type="xsd:int"/>
+					<element name="molA" type="impl:BIVMolecule" nillable="true"/>
+					<element name="molB" type="impl:BIVMolecule" nillable="true"/>
+				</sequence>
+			</complexType>
+			
+			<complexType name="BIVComplex">
+				<sequence>
+					<element name="bid" type="xsd:int"/>
+					<element name="spokeModel" type="xsd:boolean"/>
+					<element name="subunit" type="impl:BIVMolecule" maxOccurs="unbounded"/>
+				</sequence>
+			</complexType>
+			<complexType name="BIVRecord">
+				<choice>
+					<element name="interaction" type="impl:BIVInteraction" />
+					<element name="complex" type="impl:BIVComplex"/>
+				</choice>
+			</complexType>
+			<complexType name="ArrayOfBIVInteraction">
+				<complexContent>
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="impl:BIVInteraction[]" />
+					</restriction>
+				</complexContent>
+			</complexType>
+			<complexType name="ArrayOfBIVRecord">
+				<complexContent>
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="impl:BIVRecord[]" />
+					</restriction>
+				</complexContent>
+			</complexType>
+			<complexType name="ArrayOf_xsd_int">
+				<complexContent>
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:int[]" />
+					</restriction>
+				</complexContent>
+			</complexType>
+		</schema>
+	</wsdl:types>
+	<wsdl:message name="BINDSOAPException">
+		<wsdl:part name="BINDSOAPException" type="impl:BINDSOAPException"/>
+	</wsdl:message>
+	<wsdl:message name="isServiceAliveResponse">
+		<wsdl:part name="isServiceAliveReturn" type="xsd:boolean"/>
+	</wsdl:message>
+	<wsdl:message name="idSearchRequest">
+		<wsdl:part name="id" type="xsd:string"/>
+		<wsdl:part name="idType" type="xsd:string"/>
+		<wsdl:part name="returnType" type="xsd:string"/>
+	</wsdl:message>
+	<wsdl:message name="idSearchAttachmentRequest">
+		<wsdl:part name="id" type="xsd:string"/>
+		<wsdl:part name="idType" type="xsd:string"/>
+		<wsdl:part name="returnType" type="xsd:string"/>
+		<wsdl:part name="attachmentFormat" type="xsd:string"/>
+	</wsdl:message>
+	<wsdl:message name="textSearchRequest">
+		<wsdl:part name="luceneQuery" type="xsd:string"/>
+		<wsdl:part name="returnType" type="xsd:string"/>
+	</wsdl:message>
+	<wsdl:message name="textSearchAttachmentRequest">
+		<wsdl:part name="luceneQuery" type="xsd:string"/>
+		<wsdl:part name="returnType" type="xsd:string"/>
+		<wsdl:part name="attachmentFormat" type="xsd:string"/>
+	</wsdl:message>
+	<wsdl:message name="BIVGetInteractionRecordRequest">
+		<wsdl:part name="bid" type="xsd:int"/>
+	</wsdl:message>
+	<wsdl:message name="BIVGetInteractionRecordResponse">
+		<wsdl:part name="BIVInteraction" type="impl:BIVInteraction"/>
+	</wsdl:message>
+	<wsdl:message name="BIVGetComplexRecordRequest">
+		<wsdl:part name="bid" type="xsd:int"/>
+	</wsdl:message>
+	<wsdl:message name="BIVGetComplexRecordResponse">
+		<wsdl:part name="BIVComplex" type="impl:BIVComplex"/>
+	</wsdl:message>
+	<wsdl:message name="BIVGetNeighboursRequest">
+		<wsdl:part name="id" type="xsd:string"/>
+		<wsdl:part name="idType" type="xsd:string"/>
+	</wsdl:message>
+	<wsdl:message name="BIVGetNeighboursResponse">
+		<wsdl:part name="BIVInteraction" type="impl:ArrayOfBIVInteraction"/>
+	</wsdl:message>
+	<wsdl:message name="BIVGetRecordRequest">
+		<wsdl:part name="bid" type="xsd:int"/>
+	</wsdl:message>
+	<wsdl:message name="BIVGetRecordResponse">
+		<wsdl:part name="BIVRecord" type="impl:BIVRecord"/>
+	</wsdl:message>
+	<wsdl:message name="BIVGetRecordsRequest">
+		<wsdl:part name="ids" type="impl:ArrayOf_xsd_int"/>
+	</wsdl:message>
+	<wsdl:message name="BIVGetRecordsResponse">
+		<wsdl:part name="BIVRecords" type="impl:ArrayOfBIVRecord"/>
+	</wsdl:message>
+	<wsdl:message name="getResponse">
+		<wsdl:part name="searchResultBean" type="impl:SearchResultBean"/>
+	</wsdl:message>
+	<wsdl:message name="getVersionResponse">
+		<wsdl:part name="version" type="xsd:string"/>
+	</wsdl:message>
+	<wsdl:message name="emptyRequest"/>
+	<wsdl:portType name="BINDSOAPPort">
+		<wsdl:operation name="isServiceAlive" parameterOrder="">
+			<wsdl:input name="isServiceAliveRequest" message="impl:emptyRequest"/>
+			<wsdl:output name="isServiceAliveResponse" message="impl:isServiceAliveResponse"/>
+			<wsdl:fault name="BINDSOAPException" message="impl:BINDSOAPException"/>
+		</wsdl:operation>
+		<wsdl:operation name="getSoftwareVersion" parameterOrder="">
+			<wsdl:input name="getSoftwareVersionRequest" message="impl:emptyRequest"/>
+			<wsdl:output name="getSoftwareVersionResponse" message="impl:getVersionResponse"/>
+			<wsdl:fault name="BINDSOAPException" message="impl:BINDSOAPException"/>
+		</wsdl:operation>
+		<wsdl:operation name="getSpecVersion" parameterOrder="">
+			<wsdl:input name="getSpecVersionRequest" message="impl:emptyRequest"/>
+			<wsdl:output name="getSpecVersionResponse" message="impl:getVersionResponse"/>
+			<wsdl:fault name="BINDSOAPException" message="impl:BINDSOAPException"/>
+		</wsdl:operation>
+		<wsdl:operation name="idSearch" parameterOrder="id idType returnType">
+			<wsdl:input name="idSearchRequest" message="impl:idSearchRequest"/>
+			<wsdl:output name="idSearchResponse" message="impl:getResponse"/>
+			<wsdl:fault name="BINDSOAPException" message="impl:BINDSOAPException"/>
+		</wsdl:operation>
+		<wsdl:operation name="idSearchAttachment" parameterOrder="id idType returnType attachmentFormat">
+			<wsdl:input name="idSearchAttachmentRequest" message="impl:idSearchAttachmentRequest"/>
+			<wsdl:output name="idSearchAttachmentResponse" message="impl:getResponse"/>
+			<wsdl:fault name="BINDSOAPException" message="impl:BINDSOAPException"/>
+		</wsdl:operation>
+		<wsdl:operation name="textSearch" parameterOrder="luceneQuery returnType">
+			<wsdl:input name="textSearchRequest" message="impl:textSearchRequest"/>
+			<wsdl:output name="textSearchResponse" message="impl:getResponse"/>
+			<wsdl:fault name="BINDSOAPException" message="impl:BINDSOAPException"/>
+		</wsdl:operation>
+		<wsdl:operation name="textSearchAttachment" parameterOrder="luceneQuery returnType attachmentFormat">
+			<wsdl:input name="textSearchAttachmentRequest" message="impl:textSearchAttachmentRequest"/>
+			<wsdl:output name="textSearchAttachmentResponse" message="impl:getResponse"/>
+			<wsdl:fault name="BINDSOAPException" message="impl:BINDSOAPException"/>
+		</wsdl:operation>
+		<wsdl:operation name="BIVGetInteractionRecord" parameterOrder="bid">
+			<wsdl:input name="BIVGetInteractionRecordRequest" message="impl:BIVGetInteractionRecordRequest"/>
+			<wsdl:output name="BIVGetInteractionRecordResponse" message="impl:BIVGetInteractionRecordResponse"/>
+			<wsdl:fault name="BINDSOAPException" message="impl:BINDSOAPException"/>
+		</wsdl:operation>
+		<wsdl:operation name="BIVGetComplexRecord" parameterOrder="bid">
+			<wsdl:input name="BIVGetComplexRecordRequest" message="impl:BIVGetComplexRecordRequest"/>
+			<wsdl:output name="BIVGetComplexRecordResponse" message="impl:BIVGetComplexRecordResponse"/>
+			<wsdl:fault name="BINDSOAPException" message="impl:BINDSOAPException"/>
+		</wsdl:operation>
+		<wsdl:operation name="BIVGetNeighbours" parameterOrder="id idType">
+			<wsdl:input name="BIVGetNeighboursRequest" message="impl:BIVGetNeighboursRequest"/>
+			<wsdl:output name="BIVGetNeighboursResponse" message="impl:BIVGetNeighboursResponse"/>
+			<wsdl:fault name="BINDSOAPException" message="impl:BINDSOAPException"/>
+		</wsdl:operation>
+		<wsdl:operation name="BIVGetRecord" parameterOrder="bid">
+			<wsdl:input name="BIVGetRecordRequest" message="impl:BIVGetRecordRequest"/>
+			<wsdl:output name="BIVGetRecordResponse" message="impl:BIVGetRecordResponse"/>
+			<wsdl:fault name="BINDSOAPException" message="impl:BINDSOAPException"/>
+		</wsdl:operation>
+		<wsdl:operation name="BIVGetRecords" parameterOrder="ids">
+			<wsdl:input name="BIVGetRecordsRequest" message="impl:BIVGetRecordsRequest"/>
+			<wsdl:output name="BIVGetRecordsResponse" message="impl:BIVGetRecordsResponse"/>
+			<wsdl:fault name="BINDSOAPException" message="impl:BINDSOAPException"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="BINDSOAPBinding" type="impl:BINDSOAPPort">
+		<wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="isServiceAlive">
+			<wsdlsoap:operation soapAction="urn:#isServiceAlive"/>
+			<wsdl:input>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:input>			
+			<wsdl:output>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:output>
+			<wsdl:fault name="BINDSOAPException">
+				<wsdlsoap:fault name="BINDSOAPException" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="getSoftwareVersion">
+			<wsdlsoap:operation soapAction="urn:#getSoftwareVersion"/>
+			<wsdl:input>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:input>
+			<wsdl:output>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:output>
+			<wsdl:fault name="BINDSOAPException">
+				<wsdlsoap:fault name="BINDSOAPException" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="getSpecVersion">
+			<wsdlsoap:operation soapAction="urn:#getSpecVersion"/>
+			<wsdl:input>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:input>
+			<wsdl:output>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:output>
+			<wsdl:fault name="BINDSOAPException">
+				<wsdlsoap:fault name="BINDSOAPException" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="idSearch">
+			<wsdlsoap:operation soapAction="urn:#idSearch"/>
+			<wsdl:input>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:input>
+			<wsdl:output>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:output>
+			<wsdl:fault name="BINDSOAPException">
+				<wsdlsoap:fault name="BINDSOAPException" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="idSearchAttachment">
+			<wsdlsoap:operation soapAction="urn:#idSearchAttachment"/>
+			<wsdl:input>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:input>
+			<wsdl:output>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:output>
+			<wsdl:fault name="BINDSOAPException">
+				<wsdlsoap:fault name="BINDSOAPException" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="textSearch">
+			<wsdlsoap:operation soapAction="urn:#textSearch"/>
+			<wsdl:input>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:input>
+			<wsdl:output>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:output>
+			<wsdl:fault name="BINDSOAPException">
+				<wsdlsoap:fault name="BINDSOAPException" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="textSearchAttachment">
+			<wsdlsoap:operation soapAction="urn:#textSearchAttachment"/>
+			<wsdl:input>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:input>
+			<wsdl:output>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:output>
+			<wsdl:fault name="BINDSOAPException">
+				<wsdlsoap:fault name="BINDSOAPException" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="BIVGetInteractionRecord">
+			<wsdlsoap:operation soapAction="urn:#BIVGetInteractionRecord"/>
+			<wsdl:input>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:input>
+			<wsdl:output>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:output>
+			<wsdl:fault name="BINDSOAPException">
+				<wsdlsoap:fault name="BINDSOAPException" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="BIVGetComplexRecord">
+			<wsdlsoap:operation soapAction="urn:#BIVGetComplexRecord"/>
+			<wsdl:input>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:input>
+			<wsdl:output>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:output>
+			<wsdl:fault name="BINDSOAPException">
+				<wsdlsoap:fault name="BINDSOAPException" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="BIVGetNeighbours">
+			<wsdlsoap:operation soapAction="urn:#BIVGetNeighbours"/>
+			<wsdl:input>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:input>
+			<wsdl:output>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:output>
+			<wsdl:fault name="BINDSOAPException">
+				<wsdlsoap:fault name="BINDSOAPException" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="BIVGetRecord">
+			<wsdlsoap:operation soapAction="urn:#BIVGetRecord"/>
+			<wsdl:input>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:input>
+			<wsdl:output>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:output>
+			<wsdl:fault name="BINDSOAPException">
+				<wsdlsoap:fault name="BINDSOAPException" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="BIVGetRecords">
+			<wsdlsoap:operation soapAction="urn:#BIVGetRecords"/>
+			<wsdl:input>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:input>
+			<wsdl:output>
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:output>
+			<wsdl:fault name="BINDSOAPException">
+				<wsdlsoap:fault name="BINDSOAPException" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:BINDSOAP"/>
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="BINDService">
+		<wsdl:port name="BINDSOAP" binding="impl:BINDSOAPBinding">
+			<wsdlsoap:address location="http://soap.bind.ca/services/BINDSOAP"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

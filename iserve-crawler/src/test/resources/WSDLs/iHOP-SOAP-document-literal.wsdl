@@ -1,0 +1,1754 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+	$Id: iHOP-SOAP-document-literal.wsdl 1810 2011-02-28 15:41:56Z jmfernandez $
+	The information in this file was obtained from the iHOP server
+	developed and created by Robert Hoffmann. iHOP - Information Hyperlinked over Proteins
+	is licensed under a Creative Commons Attribution 2.5 License (http://creativecommons.org/licenses/by/2.5/).
+	
+	The information in this file was obtained using the iHOP web services
+	developed and created by José María Fernández González, CNIO.
+
+	The iHOP server is accessible at http://www.ihop-net.org/
+	
+	The iHOP web services documentation and specifications
+	are accessible at http://www.ihop-net.org/UniPub/iHOP/webservices/
+
+	Please cite the use of this data and webservices in your works as
+	- "A Gene Network for Navigating the Literature. Hoffmann, R., Valencia, A. Nature Genetics 36, 664 (2004)"
+	- "iHOP web services. Fernández, JM., Hoffmann, R., Valencia, A. Nucleic Acid Res. Web Server Issue (2007)"
+	- "iHOP - http://www.ihop-net.org/"
+	- "iHOP web services - http://www.ihop-net.org/UniPub/iHOP/webservices/"
+
+	Electronic services, which are based on this data, must provide
+	credit and links to the iHOP server (http://www.ihop-net.org) visible
+	to all users whenever iHOP data is displayed in its original or a derivate form.
+
+	Electronic services, which are based on these web services, must also provide
+	credit and links to the iHOP web services (http://www.ihop-net.org/UniPub/iHOP/webservices)
+	visible to all users whenever iHOP data from these services is displayed
+	in its original or a derivate form.
+
+	Technical information:
+	
+	The data provided here is itself a derivate of original iHOP data.
+	The web service XML schema and generators were created by
+	José María Fernández González and were partially funded by
+	the ORIEL project (IST-2001-32688) and ENFIN Network of Excellence
+	(LSHG-CT-2005-518254).
+	
+	Acknowledgments:
+	iHOP server and end user interface are supported and provided by
+	cBio@MSKCC (Computational Biological Center at Memorial Sloan-Kettering Cancer Center).
+	Without their continuous support, iHOP web services could not be working just now!
+	
+	Also, iHOP web services server and developers site are supported and provided by
+	CNIO (Centro Nacional de Investigaciones Oncológicas, Spanish National Cancer
+	Research Center) groups SCompBio (Structural and Computational Biology) and UBio
+	(Bioinformatics Unit).
+-->
+
+
+<definitions
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml http://ws.bioinfo.cnio.es/iHOP/iHOP-XML.xsd"
+	name='iHOP_SOAP_document-literal-1.2'
+	targetNamespace='http://www.pdg.cnb.uam.es/UniPub/iHOP/xml'
+	xmlns:tns='http://www.pdg.cnb.uam.es/UniPub/iHOP/xml'
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+ 	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns="http://schemas.xmlsoap.org/wsdl/">
+	<documentation><![CDATA[iHOP SOAP services, described in WSDL
+It uses XML export schema designed for ORIEL
+Funded by ORIEL project (IST-2001-32688)]]></documentation>
+	
+	<!-- imports -->
+	<import namespace="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml" location="http://ws.bioinfo.cnio.es/iHOP/iHOP-XML.xsd" />
+	
+	<!-- Type declaration, although most of the work was done in iHOP-XML.xsd -->
+	<types>
+		<xsd:schema targetNamespace='http://www.pdg.cnb.uam.es/UniPub/iHOP/xml' elementFormDefault="qualified">
+			<xsd:include schemaLocation="http://ws.bioinfo.cnio.es/iHOP/iHOP-XML.xsd" />
+			<xsd:complexType name='iHOPabstractSOAPContainer'>
+				<xsd:sequence>
+					<xsd:element name="result">
+						<xsd:complexType>
+							<xsd:choice>
+								<xsd:element ref='tns:iHOPabstract'/>
+								<xsd:element ref='tns:iHOPSOAPNotFound' />
+							</xsd:choice>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name='iHOPrelatedSymbolsSOAPContainer'>
+				<xsd:sequence>
+					<xsd:element name="result">
+						<xsd:complexType>
+							<xsd:choice>
+								<xsd:element ref='tns:iHOPrelatedSymbols'/>
+								<xsd:element ref='tns:iHOPSOAPNotFound' />
+							</xsd:choice>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name='iHOPguessedSymbolIdSOAPContainer'>
+				<xsd:sequence>
+					<xsd:element name="result">
+						<xsd:complexType>
+							<xsd:choice>
+								<xsd:element ref='tns:iHOPguessedSymbolId'/>
+								<xsd:element ref='tns:iHOPSOAPNotFound' />
+							</xsd:choice>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name='iHOPdefinitionListSOAPContainer'>
+				<xsd:sequence>
+					<xsd:element name="result">
+						<xsd:complexType>
+							<xsd:choice>
+								<xsd:element ref='tns:iHOPdefinitionList'/>
+								<xsd:element ref='tns:iHOPSOAPNotFound' />
+							</xsd:choice>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name='iHOPsymbolInfoSOAPContainer'>
+				<xsd:sequence>
+					<xsd:element name="result">
+						<xsd:complexType>
+							<xsd:choice>
+								<xsd:element ref='tns:iHOPsymbolInfo'/>
+								<xsd:element ref='tns:iHOPSOAPNotFound' />
+							</xsd:choice>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name='iHOPinteractionListSOAPContainer'>
+				<xsd:sequence>
+					<xsd:element name="result">
+						<xsd:complexType>
+							<xsd:choice>
+								<xsd:element ref='tns:iHOPinteractionList'/>
+								<xsd:element ref='tns:iHOPSOAPNotFound' />
+							</xsd:choice>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name='iHOPLatestSentencesSOAPContainer'>
+				<xsd:sequence>
+					<xsd:element name="result">
+						<xsd:complexType>
+							<xsd:choice>
+								<xsd:element ref='tns:iHOPLatestSentences'/>
+								<xsd:element ref='tns:iHOPSOAPNotFound' />
+							</xsd:choice>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			
+			<!-- Input message for getPubMedFromPMID -->
+			<xsd:element name='getPubMedFromPMID'>
+				<xsd:annotation>
+					<xsd:documentation>Input message for getPubMedFromPMID</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence minOccurs="1" maxOccurs="1">
+						<xsd:element name='pmid' type='xsd:int'>
+							<xsd:annotation>
+								<xsd:documentation>The PMID to use as input</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			
+			<!-- Input message for getPubMedFromIHOP -->
+			<xsd:element name='getPubMedFromIHOP'>
+				<xsd:annotation>
+					<xsd:documentation>Input message for getPubMedFromIHOP</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence minOccurs="1" maxOccurs="1">
+						<xsd:element name='ihoppmid' type='xsd:int'>
+							<xsd:annotation>
+								<xsd:documentation>The iHOP-PMID id to use as input</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			
+			<!-- Complex type shared by getPubMedFromPMID and getPubMedFromIHOP answers -->
+			<xsd:complexType name="getPubMedResponseCT">
+				<xsd:annotation>
+					<xsd:documentation>Complex type shared by getPubMedFromPMID and getPubMedFromIHOP answers</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence minOccurs="1" maxOccurs="1">
+					<xsd:element name="result" type="tns:iHOPabstractSOAPContainer">
+						<xsd:annotation>
+							<xsd:documentation>Output parameter which contains a enriched abstract</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			
+			<!-- Output message for getPubMedFromPMID -->
+			<xsd:element name="getPubMedFromPMIDResponse" type='tns:getPubMedResponseCT'>
+				<xsd:annotation>
+					<xsd:documentation>Output message for getPubMedFromPMID</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Output message for getPubMedFromIHOP -->
+			<xsd:element name="getPubMedFromIHOPResponse" type='tns:getPubMedResponseCT'>
+				<xsd:annotation>
+					<xsd:documentation>Output message for getPubMedFromIHOP</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Common elements used by some requests -->
+			
+			<!-- Input parameter that indicates the query (a piece of gene symbol, a UniProt gene name, etc...) -->
+			<xsd:element name="input" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Input parameter that indicates the query (a piece of gene symbol, a UniProt gene name, etc...)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- This parameter is an NCBI TaxID, and it restricts the search to the organism it represents -->
+			<xsd:element name="taxid" type="xsd:int">
+				<xsd:annotation>
+					<xsd:documentation>This parameter is an NCBI TaxID, and it restricts the search to the organism it represents</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Complex type shared by getRelatedSymbols and guessSymbolIdFromSymbolText inputs -->
+			<xsd:complexType name='getRelatedSymbolsCT'>
+				<xsd:annotation>
+					<xsd:documentation></xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element ref="tns:input"/>
+				</xsd:sequence>
+			</xsd:complexType>
+			
+			<!-- Complex type shared by getRelatedSymbolsWithTaxId and guessSymbolIdFromSymbolTextAndTaxId inputs -->
+			<xsd:complexType name='getRelatedSymbolsWithTaxIdCT'>
+				<xsd:sequence>
+					<xsd:element ref="tns:input"/>
+					<xsd:element ref="tns:taxid"/>
+				</xsd:sequence>
+			</xsd:complexType>
+			
+			<!-- Complex types shared by many service inputs -->
+			<xsd:complexType name="referenceRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Complex type shared by many service inputs</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element name="reference" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>Input parameter that indicates the query (biological database reference)</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			
+			<xsd:complexType name="referenceAndNamespaceRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Complex type shared by many service inputs</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element name="reference" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>Input parameter that indicates the query (biological database reference)</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="namespace" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>Input parameter that indicates the query namespace (biological database, see http://www.ihop-net.org/UniPub/iHOP/info/dev/in.html)</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			
+			<xsd:element name="symbol" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Input parameter which should be a canonical symbol name</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:complexType name="symbolRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Complex type shared by many service inputs</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element ref="tns:symbol" />
+				</xsd:sequence>
+			</xsd:complexType>
+			
+			<xsd:complexType name="symbolAndTaxIdRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Complex type shared by many service inputs</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element ref="tns:symbol" />
+					<xsd:element ref="tns:taxid" />
+				</xsd:sequence>
+			</xsd:complexType>
+			
+			<xsd:complexType name="iHOPRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Complex type shared by many service inputs</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element name="ihopid" type="xsd:int">
+						<xsd:annotation>
+							<xsd:documentation>Input parameter which is an iHOP symbol id</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			
+			<!-- Input message for getRelatedSymbols -->
+			<xsd:element name="getRelatedSymbols" type='tns:getRelatedSymbolsCT'>
+				<xsd:annotation>
+					<xsd:documentation>Input message for getRelatedSymbols</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getRelatedSymbolsWithTaxId -->
+			<xsd:element name="getRelatedSymbolsWithTaxId" type="tns:getRelatedSymbolsWithTaxIdCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getRelatedSymbolsWithTaxId</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getSymbolsFromReference -->
+			<xsd:element name="getSymbolsFromReference" type="tns:referenceRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getSymbolsFromReference</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getSymbolsFromReferenceAndNamespace -->
+			<xsd:element name="getSymbolsFromReferenceAndNamespace" type="tns:referenceAndNamespaceRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getSymbolsFromReferenceAndNamespace</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for guessSymbolIdFromSymbolText -->
+			<xsd:element name="guessSymbolIdFromSymbolText" type='tns:getRelatedSymbolsCT'>
+				<xsd:annotation>
+					<xsd:documentation>Input message for guessSymbolIdFromSymbolText</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for guessSymbolIdFromSymbolTextAndTaxId -->
+			<xsd:element name="guessSymbolIdFromSymbolTextAndTaxId" type="tns:getRelatedSymbolsWithTaxIdCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for guessSymbolIdFromSymbolTextAndTaxId</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for guessSymbolIdFromReference -->
+			<xsd:element name="guessSymbolIdFromReference" type="tns:referenceRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for guessSymbolIdFromReference</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for guessSymbolIdFromReferenceAndNamespace -->
+			<xsd:element name="guessSymbolIdFromReferenceAndNamespace" type="tns:referenceAndNamespaceRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for guessSymbolIdFromReferenceAndNamespace</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Output message for getRelatedSymbols -->
+			<xsd:element name='getRelatedSymbolsResponse' type='tns:iHOPrelatedSymbolsSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Output message for getRelatedSymbols</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Output message for getRelatedSymbolsWithTaxId -->
+			<xsd:element name='getRelatedSymbolsWithTaxIdResponse' type='tns:iHOPrelatedSymbolsSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Output message for getRelatedSymbolsWithTaxId</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Output message for getSymbolsFromReference -->
+			<xsd:element name='getSymbolsFromReferenceResponse' type='tns:iHOPrelatedSymbolsSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Output message for getSymbolsFromReference</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Output message for getSymbolsFromReferenceAndNamespace -->
+			<xsd:element name='getSymbolsFromReferenceAndNamespaceResponse' type='tns:iHOPrelatedSymbolsSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Output message for getSymbolsFromReferenceAndNamespace</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Output message for guessSymbolIdFromSymbolText -->
+			<xsd:element name='guessSymbolIdFromSymbolTextResponse' type='tns:iHOPguessedSymbolIdSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Output message for guessSymbolIdFromSymbolText</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Output message for guessSymbolIdFromSymbolTextWithTaxId -->
+			<xsd:element name='guessSymbolIdFromSymbolTextAndTaxIdResponse' type='tns:iHOPguessedSymbolIdSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Output message for guessSymbolIdFromSymbolTextAndTaxId</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Output message for guessSymbolIdFromReference -->
+			<xsd:element name='guessSymbolIdFromReferenceResponse' type='tns:iHOPguessedSymbolIdSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Output message for guessSymbolIdFromReference</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Output message for guessSymbolIdFromReferenceAndNamespace -->
+			<xsd:element name='guessSymbolIdFromReferenceAndNamespaceResponse' type='tns:iHOPguessedSymbolIdSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Output message for guessSymbolIdFromReferenceAndNamespace</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			
+			<!-- getSymbolInfo -->
+			
+			<!-- Input message for getSymbolInfoFromSymbol -->
+			<xsd:element name="getSymbolInfoFromSymbol" type="tns:symbolRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getSymbolInfoFromSymbol</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getSymbolInfoFromSymbolAndTaxId -->
+			<xsd:element name="getSymbolInfoFromSymbolAndTaxId" type="tns:symbolAndTaxIdRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getSymbolInfoFromSymbolAndTaxId</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getSymbolInfoFromReference -->
+			<xsd:element name="getSymbolInfoFromReference" type="tns:referenceRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getSymbolInfoFromReference</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getSymbolInfoFromReferenceAndNamespace -->
+			<xsd:element name="getSymbolInfoFromReferenceAndNamespace" type="tns:referenceAndNamespaceRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getSymbolInfoFromReferenceAndNamespace</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getSymbolInfoFromIHOP -->
+			<xsd:element name="getSymbolInfoFromIHOP" type="tns:iHOPRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getSymbolInfoFromIHOP</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getSymbolInfoFromSymbol -->
+			<xsd:element name="getSymbolInfoFromSymbolResponse" type='tns:iHOPinteractionListSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getSymbolInfoFromSymbol</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getSymbolInfoFromSymbolAndTaxId -->
+			<xsd:element name="getSymbolInfoFromSymbolAndTaxIdResponse" type='tns:iHOPinteractionListSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getSymbolInfoFromSymbolAndTaxId</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getSymbolInfoFromReference -->
+			<xsd:element name="getSymbolInfoFromReferenceResponse" type='tns:iHOPinteractionListSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getSymbolInfoFromReference</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getSymbolInfoFromReferenceAndNamespace -->
+			<xsd:element name="getSymbolInfoFromReferenceAndNamespaceResponse" type='tns:iHOPinteractionListSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getSymbolInfoFromReferenceAndNamespace</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getSymbolInfoFromIHOP -->
+			<xsd:element name="getSymbolInfoFromIHOPResponse" type='tns:iHOPinteractionListSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getSymbolInfoFromIHOP</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- getSymbolDefinitions -->
+			
+			<!-- Input message for getSymbolDefinitionsFromSymbol -->
+			<xsd:element name="getSymbolDefinitionsFromSymbol" type="tns:symbolRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getSymbolDefinitionsFromSymbol</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getSymbolDefinitionsFromSymbolAndTaxId -->
+			<xsd:element name="getSymbolDefinitionsFromSymbolAndTaxId" type="tns:symbolAndTaxIdRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getSymbolDefinitionsFromSymbolAndTaxId</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getSymbolDefinitionsFromReference -->
+			<xsd:element name="getSymbolDefinitionsFromReference" type="tns:referenceRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getSymbolDefinitionsFromReference</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getSymbolDefinitionsFromReferenceAndNamespace -->
+			<xsd:element name="getSymbolDefinitionsFromReferenceAndNamespace" type="tns:referenceAndNamespaceRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getSymbolDefinitionsFromReferenceAndNamespace</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getSymbolDefinitionsFromIHOP -->
+			<xsd:element name="getSymbolDefinitionsFromIHOP" type="tns:iHOPRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getSymbolDefinitionsFromIHOP</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getSymbolDefinitionsFromSymbol -->
+			<xsd:element name="getSymbolDefinitionsFromSymbolResponse" type='tns:iHOPinteractionListSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getSymbolDefinitionsFromSymbol</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getSymbolDefinitionsFromSymbolAndTaxId -->
+			<xsd:element name="getSymbolDefinitionsFromSymbolAndTaxIdResponse" type='tns:iHOPinteractionListSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getSymbolDefinitionsFromSymbolAndTaxId</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getSymbolDefinitionsFromReference -->
+			<xsd:element name="getSymbolDefinitionsFromReferenceResponse" type='tns:iHOPinteractionListSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getSymbolDefinitionsFromReference</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getSymbolDefinitionsFromReferenceAndNamespace -->
+			<xsd:element name="getSymbolDefinitionsFromReferenceAndNamespaceResponse" type='tns:iHOPinteractionListSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getSymbolDefinitionsFromReferenceAndNamespace</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getSymbolDefinitionsFromIHOP -->
+			<xsd:element name="getSymbolDefinitionsFromIHOPResponse" type='tns:iHOPinteractionListSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getSymbolDefinitionsFromIHOP</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- getSymbolInteractions -->
+			
+			<!-- Input message for getSymbolInteractionsFromSymbol -->
+			<xsd:element name="getSymbolInteractionsFromSymbol" type="tns:symbolRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getSymbolInteractionsFromSymbol</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getSymbolInteractionsFromSymbolAndTaxId -->
+			<xsd:element name="getSymbolInteractionsFromSymbolAndTaxId" type="tns:symbolAndTaxIdRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getSymbolInteractionsFromSymbolAndTaxId</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getSymbolInteractionsFromReference -->
+			<xsd:element name="getSymbolInteractionsFromReference" type="tns:referenceRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getSymbolInteractionsFromReference</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getSymbolInteractionsFromReferenceAndNamespace -->
+			<xsd:element name="getSymbolInteractionsFromReferenceAndNamespace" type="tns:referenceAndNamespaceRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getSymbolInteractionsFromReferenceAndNamespace</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getSymbolInteractionsFromIHOP -->
+			<xsd:element name="getSymbolInteractionsFromIHOP" type="tns:iHOPRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getSymbolInteractionsFromIHOP</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getSymbolInteractionsFromSymbol -->
+			<xsd:element name="getSymbolInteractionsFromSymbolResponse" type='tns:iHOPinteractionListSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getSymbolInteractionsFromSymbol</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getSymbolInteractionsFromSymbolAndTaxId -->
+			<xsd:element name="getSymbolInteractionsFromSymbolAndTaxIdResponse" type='tns:iHOPinteractionListSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getSymbolInteractionsFromSymbolAndTaxId</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getSymbolInteractionsFromReference -->
+			<xsd:element name="getSymbolInteractionsFromReferenceResponse" type='tns:iHOPinteractionListSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getSymbolInteractionsFromReference</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getSymbolInteractionsFromReferenceAndNamespace -->
+			<xsd:element name="getSymbolInteractionsFromReferenceAndNamespaceResponse" type='tns:iHOPinteractionListSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getSymbolInteractionsFromReferenceAndNamespace</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getSymbolInteractionsFromIHOP -->
+			<xsd:element name="getSymbolInteractionsFromIHOPResponse" type='tns:iHOPinteractionListSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getSymbolInteractionsFromIHOP</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- getLatestSymbolInformation -->
+			
+			<!-- Input message for getLatestSymbolInformationFromSymbol -->
+			<xsd:element name="getLatestSymbolInformationFromSymbol" type="tns:symbolRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getLatestSymbolInformationFromSymbol</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getLatestSymbolInformationFromSymbolAndTaxId -->
+			<xsd:element name="getLatestSymbolInformationFromSymbolAndTaxId" type="tns:symbolAndTaxIdRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getLatestSymbolInformationFromSymbolAndTaxId</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getLatestSymbolInformationFromReference -->
+			<xsd:element name="getLatestSymbolInformationFromReference" type="tns:referenceRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getLatestSymbolInformationFromReference</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getLatestSymbolInformationFromReferenceAndNamespace -->
+			<xsd:element name="getLatestSymbolInformationFromReferenceAndNamespace" type="tns:referenceAndNamespaceRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getLatestSymbolInformationFromReferenceAndNamespace</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Input message for getLatestSymbolInformationFromIHOP -->
+			<xsd:element name="getLatestSymbolInformationFromIHOP" type="tns:iHOPRequestCT">
+				<xsd:annotation>
+					<xsd:documentation>Input message for getLatestSymbolInformationFromIHOP</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getLatestSymbolInformationFromSymbol -->
+			<xsd:element name="getLatestSymbolInformationFromSymbolResponse" type='tns:iHOPLatestSentencesSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getLatestSymbolInformationFromSymbol</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getLatestSymbolInformationFromSymbolAndTaxId -->
+			<xsd:element name="getLatestSymbolInformationFromSymbolAndTaxIdResponse" type='tns:iHOPLatestSentencesSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getLatestSymbolInformationFromSymbolAndTaxId</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getLatestSymbolInformationFromReference -->
+			<xsd:element name="getLatestSymbolInformationFromReferenceResponse" type='tns:iHOPLatestSentencesSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getLatestSymbolInformationFromReference</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getLatestSymbolInformationFromReferenceAndNamespace -->
+			<xsd:element name="getLatestSymbolInformationFromReferenceAndNamespaceResponse" type='tns:iHOPLatestSentencesSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getLatestSymbolInformationFromReferenceAndNamespace</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<!-- Ouput message for getLatestSymbolInformationFromIHOP -->
+			<xsd:element name="getLatestSymbolInformationFromIHOPResponse" type='tns:iHOPLatestSentencesSOAPContainer'>
+				<xsd:annotation>
+					<xsd:documentation>Ouput message for getLatestSymbolInformationFromIHOP</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:schema>
+	</types>
+	
+	<!-- Now, the message definitions! -->
+	
+	<!-- getPubMed -->
+	<message name='getPubMedFromPMIDRequest'>
+		<!--
+		<part name='pmid' type='xsd:positiveInteger'>
+		-->
+		<part name='pmid' element='tns:getPubMedFromPMID'>
+			<documentation>Input parameter that indicates a PMID (PubMed identifier)</documentation>
+		</part>
+	</message>
+	
+	<message name='getPubMedFromPMIDResponse'>
+		<part name='result' element='tns:getPubMedFromPMIDResponse'>
+			<documentation>Output parameter which contains a enriched abstract</documentation>
+		</part>
+	</message>
+	
+	<message name='getPubMedFromIHOPRequest'>
+		<!--
+		<part name='ihoppmid' type='xsd:positiveInteger'>
+		-->
+		<part name='ihoppmid' element='tns:getPubMedFromIHOP'>
+			<documentation>Input parameter that indicates an iHOP publication id</documentation>
+		</part>
+	</message>
+	
+	<message name='getPubMedFromIHOPResponse'>
+		<part name='result' element='tns:getPubMedFromIHOPResponse'>
+			<documentation>Output parameter which contains a enriched abstract</documentation>
+		</part>
+	</message>
+	
+	<!-- getRelatedSymbols -->
+	<!--
+		Input messages reused by guessSymbolIdFromSymbolText
+	-->
+	<message name='getRelatedSymbolsRequest'>
+		<part name='input' element='tns:getRelatedSymbols'>
+			<documentation>Input parameter that indicates the query (a piece of gene symbol, a UniProt gene name, etc...)</documentation>
+		</part>
+	</message>
+	
+	<message name='getRelatedSymbolsResponse'>
+		<part name='result' element='tns:getRelatedSymbolsResponse'>
+			<documentation>Output parameter which contains the possible iHOP symbols by similarity search</documentation>
+		</part>
+	</message>
+	
+	<message name='getRelatedSymbolsWithTaxIdRequest'>
+		<part name='input' element='tns:getRelatedSymbolsWithTaxId'>
+			<documentation>Input parameter that indicates the query (a piece of gene symbol, a UniProt gene name, etc...) plus an NCBI TaxID, and it restricts the search to the organism it represents</documentation>
+		</part>
+	</message>
+	
+	<message name='getRelatedSymbolsWithTaxIdResponse'>
+		<part name='result' element='tns:getRelatedSymbolsWithTaxIdResponse'>
+			<documentation>Output parameter which contains the possible iHOP symbols by similarity search</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolsFromReferenceRequest'>
+		<part name='result' element='tns:getSymbolsFromReference'>
+			<documentation>Input parameter that indicates the query (biological database reference)</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolsFromReferenceResponse'>
+		<part name='result' element='tns:getSymbolsFromReferenceResponse'>
+			<documentation>Output parameter which contains the possible iHOP symbols by similarity search</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolsFromReferenceAndNamespaceRequest'>
+		<part name='result' element='tns:getSymbolsFromReferenceAndNamespace'>
+			<documentation>Input parameter that indicates the query (biological database reference)</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolsFromReferenceAndNamespaceResponse'>
+		<part name='result' element='tns:getSymbolsFromReferenceAndNamespaceResponse'>
+			<documentation>Output parameter which contains the possible iHOP symbols by similarity search</documentation>
+		</part>
+	</message>
+	
+	<!-- guessSymbolIdFromSymbolText -->
+	<message name='guessSymbolIdFromSymbolTextRequest'>
+		<part name='input' element='tns:guessSymbolIdFromSymbolText'>
+			<documentation>Input parameter that indicates the query (a piece of gene symbol, a UniProt gene name, etc...)</documentation>
+		</part>
+	</message>
+	
+	<message name='guessSymbolIdFromSymbolTextResponse'>
+		<part name='result' element='tns:guessSymbolIdFromSymbolTextResponse'>
+			<documentation>Output parameter which contains the nearest iHOP symbol ID by similarity search</documentation>
+		</part>
+	</message>
+	
+	<!-- guessSymbolIdFromSymbolTextWithTaxId -->
+	<message name='guessSymbolIdFromSymbolTextAndTaxIdRequest'>
+		<part name='input' element='tns:guessSymbolIdFromSymbolTextAndTaxId'>
+			<documentation>Input parameter that indicates the query (a piece of gene symbol, a UniProt gene name, etc...)</documentation>
+		</part>
+	</message>
+	
+	<message name='guessSymbolIdFromSymbolTextAndTaxIdResponse'>
+		<part name='result' element='tns:guessSymbolIdFromSymbolTextAndTaxIdResponse'>
+			<documentation>Output parameter which contains the nearest iHOP symbol ID by similarity search</documentation>
+		</part>
+	</message>
+	
+	<!-- guessSymbolIdFromReference -->
+	<message name='guessSymbolIdFromReferenceRequest'>
+		<part name='result' element='tns:guessSymbolIdFromReference'>
+			<documentation>Input parameter that indicates the query (biological database reference)</documentation>
+		</part>
+	</message>
+	
+	<message name='guessSymbolIdFromReferenceResponse'>
+		<part name='result' element='tns:guessSymbolIdFromReferenceResponse'>
+			<documentation>Output parameter which contains the nearest iHOP symbol ID by similarity search</documentation>
+		</part>
+	</message>
+	
+	<!-- guessSymbolIdFromReferenceAndNamespace -->
+	<message name='guessSymbolIdFromReferenceAndNamespaceRequest'>
+		<part name='result' element='tns:guessSymbolIdFromReferenceAndNamespace'>
+			<documentation>Input parameter that indicates the query (biological database reference)</documentation>
+		</part>
+	</message>
+	
+	<message name='guessSymbolIdFromReferenceAndNamespaceResponse'>
+		<part name='result' element='tns:guessSymbolIdFromReferenceAndNamespaceResponse'>
+			<documentation>Output parameter which contains the nearest iHOP symbol ID by similarity search</documentation>
+		</part>
+	</message>
+	
+	<!-- getSymbolDefinitions -->
+	<message name='getSymbolDefinitionsFromSymbolRequest'>
+		<part name='symbol' element='tns:getSymbolDefinitionsFromSymbol'>
+			<documentation>Input parameter which should be a canonical symbol name</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolDefinitionsFromSymbolResponse'>
+		<part name='result' element='tns:getSymbolDefinitionsFromSymbolResponse'>
+			<documentation>Output parameter which contains the definitions that iHOP has used to caracterize a gene symbol</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolDefinitionsFromSymbolAndTaxIdRequest'>
+		<!--
+			<part name='symbol' type='xsd:string'>
+			<documentation>Input parameter which should be a canonical symbol name</documentation>
+			</part>
+			<!- -
+			<part name='taxid' type='xsd:positiveInteger'>
+			- ->
+			<part name='taxid' type='xsd:int'>
+			<documentation>Input parameter which is an NCBI TaxId</documentation>
+			</part>
+		-->
+		<part name='symbolTaxid' element='tns:getSymbolDefinitionsFromSymbolAndTaxId'>
+			<documentation>Input parameters which should be a canonical symbol name and an NCBI TaxId</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolDefinitionsFromSymbolAndTaxIdResponse'>
+		<part name='result' element='tns:getSymbolDefinitionsFromSymbolAndTaxIdResponse'>
+			<documentation>Output parameter which contains the definitions that iHOP has used to caracterize a gene symbol</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolDefinitionsFromReferenceRequest'>
+		<part name='reference' element='tns:getSymbolDefinitionsFromReference'>
+			<documentation>Input parameter that indicates the query (biological database reference)</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolDefinitionsFromReferenceResponse'>
+		<part name='result' element='tns:getSymbolDefinitionsFromReferenceResponse'>
+			<documentation>Output parameter which contains the definitions that iHOP has used to caracterize a gene symbol</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolDefinitionsFromReferenceAndNamespaceRequest'>
+		<part name='reference' element='tns:getSymbolDefinitionsFromReferenceAndNamespace'>
+			<documentation>Input parameter that indicates the query (biological database reference)</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolDefinitionsFromReferenceAndNamespaceResponse'>
+		<part name='result' element='tns:getSymbolDefinitionsFromReferenceAndNamespaceResponse'>
+			<documentation>Output parameter which contains the definitions that iHOP has used to caracterize a gene symbol</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolDefinitionsFromIHOPRequest'>
+		<!--
+			<part name='ihopid' type='xsd:positiveInteger'>
+		-->
+		<part name='ihopid' element='tns:getSymbolDefinitionsFromIHOP'>
+			<documentation>Input parameter which is an iHOP symbol id</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolDefinitionsFromIHOPResponse'>
+		<part name='result' element='tns:getSymbolDefinitionsFromIHOPResponse'>
+			<documentation>Output parameter which contains the definitions that iHOP has used to caracterize a gene symbol</documentation>
+		</part>
+	</message>
+	
+	<!-- getSymbolInfo -->
+	<message name='getSymbolInfoFromSymbolRequest'>
+		<part name='symbol' element='tns:getSymbolInfoFromSymbol'>
+			<documentation>Input parameter which should be a canonical symbol name</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolInfoFromSymbolResponse'>
+		<part name='result' element='tns:getSymbolInfoFromSymbolResponse'>
+			<documentation>Output parameter which contains the known information about the input gene symbol</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolInfoFromSymbolAndTaxIdRequest'>
+		<!--
+			<part name='symbol' type='xsd:string'>
+			<documentation>Input parameter which should be a canonical symbol name</documentation>
+			</part>
+			<!- -
+			<part name='taxid' type='xsd:positiveInteger'>
+			- ->
+			<part name='taxid' type='xsd:int'>
+			<documentation>Input parameter which is an NCBI TaxId</documentation>
+			</part>
+		-->
+		<part name='symbolTaxid' element='tns:getSymbolInfoFromSymbolAndTaxId'>
+			<documentation>Input parameters which should be a canonical symbol name and an NCBI TaxId</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolInfoFromSymbolAndTaxIdResponse'>
+		<part name='result' element='tns:getSymbolInfoFromSymbolAndTaxIdResponse'>
+			<documentation>Output parameter which contains the known information about the input gene symbol</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolInfoFromReferenceRequest'>
+		<part name='reference' element='tns:getSymbolInfoFromReference'>
+			<documentation>Input parameter that indicates the query (biological database reference)</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolInfoFromReferenceResponse'>
+		<part name='result' element='tns:getSymbolInfoFromReferenceResponse'>
+			<documentation>Output parameter which contains the known information about the input gene symbol</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolInfoFromReferenceAndNamespaceRequest'>
+		<part name='reference' element='tns:getSymbolInfoFromReferenceAndNamespace'>
+			<documentation>Input parameter that indicates the query (biological database reference)</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolInfoFromReferenceAndNamespaceResponse'>
+		<part name='result' element='tns:getSymbolInfoFromReferenceAndNamespaceResponse'>
+			<documentation>Output parameter which contains the known information about the input gene symbol</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolInfoFromIHOPRequest'>
+		<!--
+			<part name='ihopid' type='xsd:positiveInteger'>
+		-->
+		<part name='ihopid' element='tns:getSymbolInfoFromIHOP'>
+			<documentation>Input parameter which is an iHOP symbol id</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolInfoFromIHOPResponse'>
+		<part name='result' element='tns:getSymbolInfoFromIHOPResponse'>
+			<documentation>Output parameter which contains the known information about the input gene symbol</documentation>
+		</part>
+	</message>
+	
+	<!-- getSymbolInteractions -->
+	<message name='getSymbolInteractionsFromSymbolRequest'>
+		<part name='symbol' element='tns:getSymbolInteractionsFromSymbol'>
+			<documentation>Input parameter which should be a canonical symbol name</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolInteractionsFromSymbolResponse'>
+		<part name='result' element='tns:getSymbolInteractionsFromSymbolResponse'>
+			<documentation>Output parameter which contains the identified interaction evidences between a given gene symbol and other ones</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolInteractionsFromSymbolAndTaxIdRequest'>
+		<!--
+			<part name='symbol' type='xsd:string'>
+			<documentation>Input parameter which should be a canonical symbol name</documentation>
+			</part>
+			<!- -
+			<part name='taxid' type='xsd:positiveInteger'>
+			- ->
+			<part name='taxid' type='xsd:int'>
+			<documentation>Input parameter which is an NCBI TaxId</documentation>
+			</part>
+		-->
+		<part name='symbolTaxid' element='tns:getSymbolInteractionsFromSymbolAndTaxId'>
+			<documentation>Input parameters which should be a canonical symbol name and an NCBI TaxId</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolInteractionsFromSymbolAndTaxIdResponse'>
+		<part name='result' element='tns:getSymbolInteractionsFromSymbolAndTaxIdResponse'>
+			<documentation>Output parameter which contains the identified interaction evidences between a given gene symbol and other ones</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolInteractionsFromReferenceRequest'>
+		<part name='reference' element='tns:getSymbolInteractionsFromReference'>
+			<documentation>Input parameter that indicates the query (biological database reference)</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolInteractionsFromReferenceResponse'>
+		<part name='result' element='tns:getSymbolInteractionsFromReferenceResponse'>
+			<documentation>Output parameter which contains the identified interaction evidences between a given gene symbol and other ones</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolInteractionsFromReferenceAndNamespaceRequest'>
+		<part name='reference' element='tns:getSymbolInteractionsFromReferenceAndNamespace'>
+			<documentation>Input parameter that indicates the query (biological database reference)</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolInteractionsFromReferenceAndNamespaceResponse'>
+		<part name='result' element='tns:getSymbolInteractionsFromReferenceAndNamespaceResponse'>
+			<documentation>Output parameter which contains the identified interaction evidences between a given gene symbol and other ones</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolInteractionsFromIHOPRequest'>
+		<!--
+			<part name='ihopid' type='xsd:positiveInteger'>
+		-->
+		<part name='ihopid' element='tns:getSymbolInteractionsFromIHOP'>
+			<documentation>Input parameter which is an iHOP symbol id</documentation>
+		</part>
+	</message>
+	
+	<message name='getSymbolInteractionsFromIHOPResponse'>
+		<part name='result' element='tns:getSymbolInteractionsFromIHOPResponse'>
+			<documentation>Output parameter which contains the identified interaction evidences between a given gene symbol and other ones</documentation>
+		</part>
+	</message>
+	
+	<!-- getLatestSymbolInformation -->
+	<message name='getLatestSymbolInformationFromSymbolRequest'>
+		<part name='symbol' element='tns:getLatestSymbolInformationFromSymbol'>
+			<documentation>Input parameter which should be a canonical symbol name</documentation>
+		</part>
+	</message>
+	
+	<message name='getLatestSymbolInformationFromSymbolResponse'>
+		<part name='result' element='tns:getLatestSymbolInformationFromSymbolResponse'>
+			<documentation>Output parameter which contains the latest evidences between a given gene symbol and other ones</documentation>
+		</part>
+	</message>
+	
+	<message name='getLatestSymbolInformationFromSymbolAndTaxIdRequest'>
+		<!--
+			<part name='symbol' type='xsd:string'>
+			<documentation>Input parameter which should be a canonical symbol name</documentation>
+			</part>
+			<!- -
+			<part name='taxid' type='xsd:positiveInteger'>
+			- ->
+			<part name='taxid' type='xsd:int'>
+			<documentation>Input parameter which is an NCBI TaxId</documentation>
+			</part>
+		-->
+		<part name='symbolTaxid' element='tns:getLatestSymbolInformationFromSymbolAndTaxId'>
+			<documentation>Input parameters which should be a canonical symbol name and an NCBI TaxId</documentation>
+		</part>
+	</message>
+	
+	<message name='getLatestSymbolInformationFromSymbolAndTaxIdResponse'>
+		<part name='result' element='tns:getLatestSymbolInformationFromSymbolAndTaxIdResponse'>
+			<documentation>Output parameter which contains the latest evidences between a given gene symbol and other ones</documentation>
+		</part>
+	</message>
+	
+	<message name='getLatestSymbolInformationFromReferenceRequest'>
+		<part name='reference' element='tns:getLatestSymbolInformationFromReference'>
+			<documentation>Input parameter that indicates the query (biological database reference)</documentation>
+		</part>
+	</message>
+	
+	<message name='getLatestSymbolInformationFromReferenceResponse'>
+		<part name='result' element='tns:getLatestSymbolInformationFromReferenceResponse'>
+			<documentation>Output parameter which contains the latest evidences between a given gene symbol and other ones</documentation>
+		</part>
+	</message>
+	
+	<message name='getLatestSymbolInformationFromReferenceAndNamespaceRequest'>
+		<part name='reference' element='tns:getLatestSymbolInformationFromReferenceAndNamespace'>
+			<documentation>Input parameter that indicates the query (biological database reference)</documentation>
+		</part>
+	</message>
+	
+	<message name='getLatestSymbolInformationFromReferenceAndNamespaceResponse'>
+		<part name='result' element='tns:getLatestSymbolInformationFromReferenceAndNamespaceResponse'>
+			<documentation>Output parameter which contains the latest evidences between a given gene symbol and other ones</documentation>
+		</part>
+	</message>
+	
+	<message name='getLatestSymbolInformationFromIHOPRequest'>
+		<!--
+			<part name='ihopid' type='xsd:positiveInteger'>
+		-->
+		<part name='ihopid' element='tns:getLatestSymbolInformationFromIHOP'>
+			<documentation>Input parameter which is an iHOP symbol id</documentation>
+		</part>
+	</message>
+	
+	<message name='getLatestSymbolInformationFromIHOPResponse'>
+		<part name='result' element='tns:getLatestSymbolInformationFromIHOPResponse'>
+			<documentation>Output parameter which contains the latest evidences between a given gene symbol and other ones</documentation>
+		</part>
+	</message>
+	
+	<!-- Now, the portTypes -->
+	<portType name='iHOP_SOAP_PortType'>
+		<!-- getPubMed -->
+		<operation name='getPubMedFromPMID'>
+			<documentation>It takes a PMID, and it returns the associated abstract if it exist and it is inside iHOP.</documentation>
+			<input message='tns:getPubMedFromPMIDRequest' />
+			<output message='tns:getPubMedFromPMIDResponse' />
+		</operation>
+		
+		<operation name='getPubMedFromIHOP'>
+			<documentation>It takes an iHOP publication id, and it returns the associated abstract if it exist and it is inside iHOP.</documentation>
+			<input message='tns:getPubMedFromIHOPRequest' />
+			<output message='tns:getPubMedFromIHOPResponse' />
+		</operation>
+		
+		<!-- getRelatedSymbols -->
+		<operation name='getRelatedSymbols'>
+			<documentation>It takes a putative gene symbol as input. It returns a XML with the list of iHOP symbols which could best fit with the input.</documentation>
+			<input message='tns:getRelatedSymbolsRequest' />
+			<output message='tns:getRelatedSymbolsResponse' />
+		</operation>
+		
+		<operation name='getRelatedSymbolsWithTaxId'>
+			<documentation>It takes a putative gene symbol and an NCBI Tax ID as input. It returns a XML with the list of iHOP symbols which could best fit with the input and are attached to the organism specified.</documentation>
+			<input message='tns:getRelatedSymbolsWithTaxIdRequest' />
+			<output message='tns:getRelatedSymbolsWithTaxIdResponse' />
+		</operation>
+		
+		<!-- getSymbolsFromReference -->
+		<operation name='getSymbolsFromReference'>
+			<documentation>It takes a biological database reference as input. It returns a XML with the list of iHOP symbols which could best fit with the input.</documentation>
+			<input message='tns:getSymbolsFromReferenceRequest' />
+			<output message='tns:getSymbolsFromReferenceResponse' />
+		</operation>
+		
+		<!-- getSymbolsFromReferenceAndNamespace -->
+		<operation name='getSymbolsFromReferenceAndNamespace'>
+			<documentation>It takes a biological database reference as input. It returns a XML with the list of iHOP symbols which could best fit with the input.</documentation>
+			<input message='tns:getSymbolsFromReferenceAndNamespaceRequest' />
+			<output message='tns:getSymbolsFromReferenceAndNamespaceResponse' />
+		</operation>
+		
+		<!-- guessSymbolIdFromSymbolText -->
+		<operation name='guessSymbolIdFromSymbolText'>
+			<documentation>It takes a putative gene symbol as input. It guess the iHOP Id which best matches with the input.</documentation>
+			<input message='tns:guessSymbolIdFromSymbolTextRequest' />
+			<output message='tns:guessSymbolIdFromSymbolTextResponse' />
+		</operation>
+		
+		<operation name='guessSymbolIdFromSymbolTextAndTaxId'>
+			<documentation>It takes a putative gene symbol and an NCBI Tax ID as input. It guess the iHOP Id which best matches with the input.</documentation>
+			<input message='tns:guessSymbolIdFromSymbolTextAndTaxIdRequest' />
+			<output message='tns:guessSymbolIdFromSymbolTextAndTaxIdResponse' />
+		</operation>
+		
+		<!-- guessSymbolIdFromReference -->
+		<operation name='guessSymbolIdFromReference'>
+			<documentation>It takes a biological database reference as input. It guess the iHOP Id which best matches with the input.</documentation>
+			<input message='tns:guessSymbolIdFromReferenceRequest' />
+			<output message='tns:guessSymbolIdFromReferenceResponse' />
+		</operation>
+		
+		<!-- guessSymbolIdFromReference -->
+		<operation name='guessSymbolIdFromReferenceAndNamespace'>
+			<documentation>It takes a biological database reference as input. It guess the iHOP Id which best matches with the input.</documentation>
+			<input message='tns:guessSymbolIdFromReferenceAndNamespaceRequest' />
+			<output message='tns:guessSymbolIdFromReferenceAndNamespaceResponse' />
+		</operation>
+		
+		<!-- getSymbolDefinitions -->
+		<operation name='getSymbolDefinitionsFromSymbol'>
+			<documentation>It takes a gene symbol, and it returns
+the definitions iHOP used to model this gene symbol. Input gene symbol
+is matched against the list of related iHOP gene symbols, taking the
+first one which is equal.</documentation>
+			<input message='tns:getSymbolDefinitionsFromSymbolRequest' />
+			<output message='tns:getSymbolDefinitionsFromSymbolResponse' />
+		</operation>
+		
+		<operation name='getSymbolDefinitionsFromSymbolAndTaxId'>
+			<documentation>It takes a gene symbol and an NCBI TaxID, and it returns
+the definitions iHOP used to model this gene symbol. Input gene symbol
+is matched against the list of related iHOP gene symbols, taking the
+first one which is equal.</documentation>
+			<input message='tns:getSymbolDefinitionsFromSymbolAndTaxIdRequest' />
+			<output message='tns:getSymbolDefinitionsFromSymbolAndTaxIdResponse' />
+		</operation>
+		
+		<operation name='getSymbolDefinitionsFromReference'>
+			<documentation>It takes a biological database reference, and it returns
+the definitions iHOP used to model this gene symbol.</documentation>
+			<input message='tns:getSymbolDefinitionsFromReferenceRequest' />
+			<output message='tns:getSymbolDefinitionsFromReferenceResponse' />
+		</operation>
+		
+		<operation name='getSymbolDefinitionsFromReferenceAndNamespace'>
+			<documentation>It takes a biological database reference, and it returns
+the definitions iHOP used to model this gene symbol.</documentation>
+			<input message='tns:getSymbolDefinitionsFromReferenceAndNamespaceRequest' />
+			<output message='tns:getSymbolDefinitionsFromReferenceAndNamespaceResponse' />
+		</operation>
+		
+		<operation name='getSymbolDefinitionsFromIHOP'>
+			<documentation>It takes an iHOP gene symbol id, and it returns
+the definitions iHOP used to model this gene symbol.</documentation>
+			<input message='tns:getSymbolDefinitionsFromIHOPRequest' />
+			<output message='tns:getSymbolDefinitionsFromIHOPResponse' />
+		</operation>
+		
+		<!-- getSymbolInfo -->
+		<operation name='getSymbolInfoFromSymbol'>
+			<documentation>It takes a gene symbol, and it returns
+the information about it inside iHOP. Input gene symbol is matched
+against the list of related iHOP gene symbols, taking the first one
+which is equal.</documentation>
+			<input message='tns:getSymbolInfoFromSymbolRequest' />
+			<output message='tns:getSymbolInfoFromSymbolResponse' />
+		</operation>
+		
+		<operation name='getSymbolInfoFromSymbolAndTaxId'>
+			<documentation>It takes a gene symbol and an NCBI TaxID, and it returns
+the information about it inside iHOP. Input gene symbol is matched
+against the list of related iHOP gene symbols, taking the first one
+which is equal.</documentation>
+			<input message='tns:getSymbolInfoFromSymbolAndTaxIdRequest' />
+			<output message='tns:getSymbolInfoFromSymbolAndTaxIdResponse' />
+		</operation>
+		
+		<operation name='getSymbolInfoFromReference'>
+			<documentation>It takes a biological database reference, and it returns
+the information about it inside iHOP.</documentation>
+			<input message='tns:getSymbolInfoFromReferenceRequest' />
+			<output message='tns:getSymbolInfoFromReferenceResponse' />
+		</operation>
+		
+		<operation name='getSymbolInfoFromReferenceAndNamespace'>
+			<documentation>It takes a biological database reference, and it returns
+the information about it inside iHOP.</documentation>
+			<input message='tns:getSymbolInfoFromReferenceAndNamespaceRequest' />
+			<output message='tns:getSymbolInfoFromReferenceAndNamespaceResponse' />
+		</operation>
+		
+		<operation name='getSymbolInfoFromIHOP'>
+			<documentation>It takes an iHOP gene symbol id, and it returns
+the information about it inside iHOP.</documentation>
+			<input message='tns:getSymbolInfoFromIHOPRequest' />
+			<output message='tns:getSymbolInfoFromIHOPResponse' />
+		</operation>
+		
+		<!-- getSymbolInteractions -->
+		<operation name='getSymbolInteractionsFromSymbol'>
+			<documentation>It takes a gene symbol, and it returns
+the interactions of the symbol with other ones (in terms of experimental
+evidences and sentences). Input gene symbol is matched against the list
+of related iHOP gene symbols, taking the first one which is equal.</documentation>
+			<input message='tns:getSymbolInteractionsFromSymbolRequest' />
+			<output message='tns:getSymbolInteractionsFromSymbolResponse' />
+		</operation>
+		
+		<operation name='getSymbolInteractionsFromSymbolAndTaxId'>
+			<documentation>It takes a gene symbol and an NCBI Tax ID, and it returns
+the interactions of the symbol with other ones (in terms of experimental
+evidences and sentences). Input gene symbol is matched against the list
+of related iHOP gene symbols, taking the first one which is equal.</documentation>
+			<input message='tns:getSymbolInteractionsFromSymbolAndTaxIdRequest' />
+			<output message='tns:getSymbolInteractionsFromSymbolAndTaxIdResponse' />
+		</operation>
+		
+		<operation name='getSymbolInteractionsFromReference'>
+			<documentation>It takes a biological database reference, and it returns
+the interactions of the symbol with other ones (in terms of experimental
+evidences and sentences).</documentation>
+			<input message='tns:getSymbolInteractionsFromReferenceRequest' />
+			<output message='tns:getSymbolInteractionsFromReferenceResponse' />
+		</operation>
+		
+		<operation name='getSymbolInteractionsFromReferenceAndNamespace'>
+			<documentation>It takes a biological database reference, and it returns
+the interactions of the symbol with other ones (in terms of experimental
+evidences and sentences).</documentation>
+			<input message='tns:getSymbolInteractionsFromReferenceAndNamespaceRequest' />
+			<output message='tns:getSymbolInteractionsFromReferenceAndNamespaceResponse' />
+		</operation>
+		
+		<operation name='getSymbolInteractionsFromIHOP'>
+			<documentation>It takes an iHOP gene symbol id, and it returns
+the interactions of the symbol with other ones (in terms of experimental
+evidences and sentences).</documentation>
+			<input message='tns:getSymbolInteractionsFromIHOPRequest' />
+			<output message='tns:getSymbolInteractionsFromIHOPResponse' />
+		</operation>
+		
+		<!-- getLatestSymbolInformation -->
+		<operation name='getLatestSymbolInformationFromSymbol'>
+			<documentation>It takes a gene symbol, and it returns
+				the latest information about the symbol (in terms of experimental
+				evidences and sentences). Input gene symbol is matched against the list
+				of related iHOP gene symbols, taking the first one which is equal.</documentation>
+			<input message='tns:getLatestSymbolInformationFromSymbolRequest' />
+			<output message='tns:getLatestSymbolInformationFromSymbolResponse' />
+		</operation>
+		
+		<operation name='getLatestSymbolInformationFromSymbolAndTaxId'>
+			<documentation>It takes a gene symbol and an NCBI Tax ID, and it returns
+				the latest information about the symbol (in terms of experimental
+				evidences and sentences). Input gene symbol is matched against the list
+				of related iHOP gene symbols, taking the first one which is equal.</documentation>
+			<input message='tns:getLatestSymbolInformationFromSymbolAndTaxIdRequest' />
+			<output message='tns:getLatestSymbolInformationFromSymbolAndTaxIdResponse' />
+		</operation>
+		
+		<operation name='getLatestSymbolInformationFromReference'>
+			<documentation>It takes a biological database reference, and it returns
+				the latest information about the symbol (in terms of experimental
+				evidences and sentences).</documentation>
+			<input message='tns:getLatestSymbolInformationFromReferenceRequest' />
+			<output message='tns:getLatestSymbolInformationFromReferenceResponse' />
+		</operation>
+		
+		<operation name='getLatestSymbolInformationFromReferenceAndNamespace'>
+			<documentation>It takes a biological database reference, and it returns
+				the latest information about the symbol (in terms of experimental
+				evidences and sentences).</documentation>
+			<input message='tns:getLatestSymbolInformationFromReferenceAndNamespaceRequest' />
+			<output message='tns:getLatestSymbolInformationFromReferenceAndNamespaceResponse' />
+		</operation>
+		
+		<operation name='getLatestSymbolInformationFromIHOP'>
+			<documentation>It takes an iHOP gene symbol id, and it returns
+				the latest information about the symbol (in terms of experimental
+				evidences and sentences).</documentation>
+			<input message='tns:getLatestSymbolInformationFromIHOPRequest' />
+			<output message='tns:getLatestSymbolInformationFromIHOPResponse' />
+		</operation>
+	</portType>
+	
+	<!-- Now, the different bindings -->
+	<binding name='iHOP_SOAP_Binding' type='tns:iHOP_SOAP_PortType'>
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		
+		<!-- getPubMed -->
+		<operation name='getPubMedFromPMID'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getPubMedFromPMID" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='getPubMedFromIHOP'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getPubMedFromIHOP" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<!-- getRelatedSymbols -->
+		<operation name='getRelatedSymbols'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getRelatedSymbols" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='getRelatedSymbolsWithTaxId'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getRelatedSymbolsWithTaxId" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<!-- getSymbolsFromReference -->
+		<operation name='getSymbolsFromReference'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getSymbolsFromReference" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<!-- getSymbolsFromReferenceAndNamespace -->
+		<operation name='getSymbolsFromReferenceAndNamespace'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getSymbolsFromReferenceAndNamespace" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<!-- guessSymbolIdFromSymbolText -->
+		<operation name='guessSymbolIdFromSymbolText'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#guessSymbolIdFromSymbolText" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='guessSymbolIdFromSymbolTextAndTaxId'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#guessSymbolIdFromSymbolTextAndTaxId" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<!-- guessSymbolIdFromReference -->
+		<operation name='guessSymbolIdFromReference'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#guessSymbolIdFromReference" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<!-- guessSymbolIdFromReferenceAndNamespace -->
+		<operation name='guessSymbolIdFromReferenceAndNamespace'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#guessSymbolIdFromReferenceAndNamespace" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<!-- getSymbolDefinitions -->
+		<operation name='getSymbolDefinitionsFromSymbol'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getSymbolDefinitionsFromSymbol" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='getSymbolDefinitionsFromSymbolAndTaxId'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getSymbolDefinitionsFromSymbolAndTaxId" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='getSymbolDefinitionsFromReference'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getSymbolDefinitionsFromReference" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='getSymbolDefinitionsFromReferenceAndNamespace'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getSymbolDefinitionsFromReferenceAndNamespace" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='getSymbolDefinitionsFromIHOP'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getSymbolDefinitionsFromIHOP" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<!-- getSymbolInfo -->
+		<operation name='getSymbolInfoFromSymbol'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getSymbolInfoFromSymbol" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='getSymbolInfoFromSymbolAndTaxId'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getSymbolInfoFromSymbolAndTaxId" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='getSymbolInfoFromIHOP'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getSymbolInfoFromIHOP" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='getSymbolInfoFromReference'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getSymbolInfoFromReference" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='getSymbolInfoFromReferenceAndNamespace'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getSymbolInfoFromReferenceAndNamespace" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<!-- getSymbolInteractions -->
+		<operation name='getSymbolInteractionsFromSymbol'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getSymbolInteractionsFromSymbol" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='getSymbolInteractionsFromSymbolAndTaxId'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getSymbolInteractionsFromSymbolAndTaxId" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='getSymbolInteractionsFromIHOP'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getSymbolInteractionsFromIHOP" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='getSymbolInteractionsFromReference'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getSymbolInteractionsFromReference" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='getSymbolInteractionsFromReferenceAndNamespace'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getSymbolInteractionsFromReferenceAndNamespace" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<!-- getLatestSymbolInformation -->
+		<operation name='getLatestSymbolInformationFromSymbol'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getLatestSymbolInformationFromSymbol" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='getLatestSymbolInformationFromSymbolAndTaxId'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getLatestSymbolInformationFromSymbolAndTaxId" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='getLatestSymbolInformationFromIHOP'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getLatestSymbolInformationFromIHOP" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='getLatestSymbolInformationFromReference'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getLatestSymbolInformationFromReference" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+		
+		<operation name='getLatestSymbolInformationFromReferenceAndNamespace'>
+			<soap:operation soapAction="http://www.pdg.cnb.uam.es/UniPub/iHOP/xml#getLatestSymbolInformationFromReferenceAndNamespace" />
+			
+			<input>
+				<soap:body use='literal' />
+			</input>
+			<output>
+				<soap:body use='literal' />
+			</output>
+		</operation>
+	</binding>
+	
+	<!-- And at last, the services which use the bindings -->
+	<service name="iHOP_SOAP-document-literal">
+		<documentation><![CDATA[iHOP SOAP services
+It uses XML export schema designed for ORIEL
+Funded by ORIEL project (IST-2001-32688)]]></documentation>
+		<port name="iHOP_SOAP_Port" binding="tns:iHOP_SOAP_Binding">
+			<soap:address location="http://ws.bioinfo.cnio.es/iHOP/cgi-bin/iHOPSOAP" />
+		</port>
+	</service>
+</definitions>

@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="OligoAnnotationAnalyser_submitInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="OligoAnnotationAnalyser_submitOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="OligoAnnotationAnalyser_submitPortType">
+          <wsdl:operation name="OligoAnnotationAnalyser_submit">
+                 <wsdl:input message="tns:OligoAnnotationAnalyser_submitInput"/>
+                 <wsdl:output message="tns:OligoAnnotationAnalyser_submitOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="OligoAnnotationAnalyser_submitBinding" type="tns:OligoAnnotationAnalyser_submitPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="OligoAnnotationAnalyser_submit"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#OligoAnnotationAnalyser_submit' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="OligoAnnotationAnalyser_submitService">
+          <wsdl:documentation>Authority: www.bioinformatics.nl  -  Asynchronous BioMOBY web service that analyses merged BLAT/BLAST results for oligos aligned with the genome/transcriptome databases:
+	* Calculates whether a hit is capable of generating signal in an array expermiment based on criteria
+	  specified in an OligoQualityThresholds object. 
+	* Only hits capable of generating signal are retained. Other hits are dropped.
+	* Fetches cross references to entries in several databases and adds these as a CrossReference block:
+		* DNA Align Features, Protein Align Features and Xrefs from Ensembl that align with high identity to the 
+		  sequence region of the OligoHit are retrieved by default and added as expression_xref.
+		* Optionally GO terms linked to EntrezGene accessions or Ensembl genes can be retrieved 
+		  and added as annotation_xref.
+		* Optionally several types of homologs from several model species can be retrieved from Ensembl 
+		  and added as homology_xref.
+	* Checks for introns and merges hits if they were intron seperated. (Only for hits on the genome.)</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="OligoAnnotationAnalyser_submitPort" binding="tns:OligoAnnotationAnalyser_submitBinding">
+                 <wsdlsoap:address location="https://www.bioinformatics.nl/phenolink/biomoby/services/cgi-bin/LocalServices.cgi"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

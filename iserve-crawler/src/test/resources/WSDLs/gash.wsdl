@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+    targetNamespace="http://protein.osaka-u.ac.jp/pdbj/soap"
+    xmlns:impl="http://protein.osaka-u.ac.jp/pdbj/soap"
+    xmlns:intf="http://protein.osaka-u.ac.jp/pdbj/soap"
+    xmlns:apachesoap="http://xml.apache.org/xml-soap"
+    xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:tns1="http://protein.osaka-u.ac.jp/pdbj/soap"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns="http://schemas.xmlsoap.org/wsdl/">
+ <wsdl:types>
+  <schema
+      xmlns="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://protein.osaka-u.ac.jp/pdbj/soap">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="GashInput">
+    <sequence>
+     <element name="qchainId" nillable="true" type="xsd:string"/>
+     <element name="qpdbId" nillable="true" type="xsd:string"/>
+     <element name="rcut" type="xsd:float"/>
+     <element name="rmsd" type="xsd:float"/>
+     <element name="sfac" type="xsd:float"/>
+     <element name="tchainId" nillable="true" type="xsd:string"/>
+     <element name="tpdbId" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="Superposition">
+    <sequence>
+     <element name="equivalence" nillable="true" type="xsd:string"/>
+     <element name="minCaRmsd" type="xsd:float"/>
+     <element name="nerScore" type="xsd:int"/>
+     <element name="querySeq" nillable="true" type="xsd:string"/>
+     <element name="querySst" nillable="true" type="xsd:string"/>
+     <element name="queryTemplNAlign" type="xsd:int"/>
+     <element name="queryTemplRmsd" type="xsd:float"/>
+     <element name="rcut" type="xsd:int"/>
+     <element name="superpositionId" type="xsd:int"/>
+     <element name="templateSeq" nillable="true" type="xsd:string"/>
+     <element name="templateSst" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="GashResult">
+    <sequence>
+     <element name="message" nillable="true" type="xsd:string"/>
+     <element name="status" nillable="true" type="xsd:string"/>
+     <element name="superpositions" nillable="true" type="impl:ArrayOf_tns1_Superposition"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema
+      xmlns="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://protein.osaka-u.ac.jp/pdbj/soap">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_tns1_Superposition">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:Superposition[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="getresultResponse">
+
+      <wsdl:part name="getresultReturn" type="tns1:GashResult"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="gashsupRequest">
+
+      <wsdl:part name="in0" type="xsd:int"/>
+
+      <wsdl:part name="in1" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="gashsupResponse">
+
+      <wsdl:part name="gashsupReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getresultRequest">
+
+      <wsdl:part name="in0" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="requestResponse">
+
+      <wsdl:part name="requestReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="requestRequest">
+
+      <wsdl:part name="in0" type="tns1:GashInput"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="GashApi">
+
+      <wsdl:operation name="request" parameterOrder="in0">
+
+         <wsdl:input name="requestRequest" message="impl:requestRequest"/>
+
+         <wsdl:output name="requestResponse" message="impl:requestResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getresult" parameterOrder="in0">
+
+         <wsdl:input name="getresultRequest" message="impl:getresultRequest"/>
+
+         <wsdl:output name="getresultResponse" message="impl:getresultResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="gashsup" parameterOrder="in0 in1">
+
+         <wsdl:input name="gashsupRequest" message="impl:gashsupRequest"/>
+
+         <wsdl:output name="gashsupResponse" message="impl:gashsupResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="GashServiceSoapBinding" type="impl:GashApi">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="request">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="requestRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://protein.osaka-u.ac.jp/pdbj/soap"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="requestResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://protein.osaka-u.ac.jp/pdbj/soap"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getresult">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getresultRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://protein.osaka-u.ac.jp/pdbj/soap"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getresultResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://protein.osaka-u.ac.jp/pdbj/soap"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="gashsup">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="gashsupRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://protein.osaka-u.ac.jp/pdbj/soap"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="gashsupResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://protein.osaka-u.ac.jp/pdbj/soap"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="GashApiService">
+
+      <wsdl:port name="GashService" binding="impl:GashServiceSoapBinding">
+
+         <wsdlsoap:address location="http://pdbjs3.protein.osaka-u.ac.jp/gash/services/GashService"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

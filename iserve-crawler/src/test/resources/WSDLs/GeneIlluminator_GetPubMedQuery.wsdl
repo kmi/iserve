@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="GeneIlluminator_GetPubMedQueryInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="GeneIlluminator_GetPubMedQueryOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="GeneIlluminator_GetPubMedQueryPortType">
+          <wsdl:operation name="GeneIlluminator_GetPubMedQuery">
+                 <wsdl:input message="tns:GeneIlluminator_GetPubMedQueryInput"/>
+                 <wsdl:output message="tns:GeneIlluminator_GetPubMedQueryOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="GeneIlluminator_GetPubMedQueryBinding" type="tns:GeneIlluminator_GetPubMedQueryPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="GeneIlluminator_GetPubMedQuery"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#GeneIlluminator_GetPubMedQuery' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="GeneIlluminator_GetPubMedQueryService">
+          <wsdl:documentation>Authority: www.bioinformatics.nl  -  Synchronous BioMOBY service for gene symbol disambiguation. If a gene symbol is ambiguous this service uses GeneIlluminator to create clusters describing which different genes sharing the same symbol exist in different parts of the tree of life. It then assigns the gene input symbol for the given input organism to one of the clusters. Finally, using the cluster characteristics it creates a boolean PubMed query that could be used to unambiguously retrieve documents related to the gene from the cluster the input gene symbol was assigned to.</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="GeneIlluminator_GetPubMedQueryPort" binding="tns:GeneIlluminator_GetPubMedQueryBinding">
+                 <wsdlsoap:address location="https://www.bioinformatics.nl/phenolink/biomoby/services/cgi-bin/LocalServices.cgi"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

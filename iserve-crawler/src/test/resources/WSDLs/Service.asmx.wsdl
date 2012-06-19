@@ -1,0 +1,1076 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://bioinformatics.ua.pt/applications/gens" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://bioinformatics.ua.pt/applications/gens" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://bioinformatics.ua.pt/applications/gens">
+      <s:element name="GetOrganismByGene">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetOrganismByGeneResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetOrganismByGeneResult" type="tns:ArrayOfOrganism" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfOrganism">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Organism" nillable="true" type="tns:Organism" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Organism">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="TaxonomicId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrganismShortName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrganismName" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SearchOrganism">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchOrganismResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SearchOrganismResult" type="tns:ArrayOfOrganism" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ConvertIdentifier">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="taxID" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="alias" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="datatype" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ConvertIdentifierResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ConvertIdentifierResult" type="tns:ArrayOfIdentifier" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfIdentifier">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Identifier" nillable="true" type="tns:Identifier" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Identifier">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Alias" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DataTypeId" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ConvertIdentifier_KnownDT">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="taxID" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="alias" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="datatype_in" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="datatype_out" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ConvertIdentifier_KnownDTResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ConvertIdentifier_KnownDTResult" type="tns:ArrayOfIdentifier" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchProtein">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchProteinResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SearchProteinResult" type="tns:ArrayOfProtein" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfProtein">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Protein" nillable="true" type="tns:Protein" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Protein">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Alias" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SearchBioEntity">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchBioEntityResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SearchBioEntityResult" type="tns:ArrayOfBioEntity" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfBioEntity">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="BioEntity" nillable="true" type="tns:BioEntity" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="BioEntity">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Alias" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DataTypeId" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SearchProteinStartsWith">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchProteinStartsWithResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SearchProteinStartsWithResult" type="tns:ArrayOfProtein" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchProteinMatches">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchProteinMatchesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SearchProteinMatchesResult" type="tns:ArrayOfProtein" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ListDataTypes">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ListDataTypesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ListDataTypesResult" type="tns:ArrayOfDataType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfDataType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="DataType" nillable="true" type="tns:DataType" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DataType">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="DataTypeId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SearchBioEntityDescription">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchBioEntityDescriptionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SearchBioEntityDescriptionResult" type="tns:ArrayOfDataType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetProteinsInBioEntity">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetProteinsInBioEntityResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetProteinsInBioEntityResult" type="tns:ArrayOfIdentifier" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetBioEntitiesByProtein">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetBioEntitiesByProteinResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetBioEntitiesByProteinResult" type="tns:ArrayOfBioEntity" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ArrayOfOrganism" nillable="true" type="tns:ArrayOfOrganism" />
+      <s:element name="ArrayOfIdentifier" nillable="true" type="tns:ArrayOfIdentifier" />
+      <s:element name="ArrayOfProtein" nillable="true" type="tns:ArrayOfProtein" />
+      <s:element name="ArrayOfBioEntity" nillable="true" type="tns:ArrayOfBioEntity" />
+      <s:element name="ArrayOfDataType" nillable="true" type="tns:ArrayOfDataType" />
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetOrganismByGeneSoapIn">
+    <wsdl:part name="parameters" element="tns:GetOrganismByGene" />
+  </wsdl:message>
+  <wsdl:message name="GetOrganismByGeneSoapOut">
+    <wsdl:part name="parameters" element="tns:GetOrganismByGeneResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchOrganismSoapIn">
+    <wsdl:part name="parameters" element="tns:SearchOrganism" />
+  </wsdl:message>
+  <wsdl:message name="SearchOrganismSoapOut">
+    <wsdl:part name="parameters" element="tns:SearchOrganismResponse" />
+  </wsdl:message>
+  <wsdl:message name="ConvertIdentifierSoapIn">
+    <wsdl:part name="parameters" element="tns:ConvertIdentifier" />
+  </wsdl:message>
+  <wsdl:message name="ConvertIdentifierSoapOut">
+    <wsdl:part name="parameters" element="tns:ConvertIdentifierResponse" />
+  </wsdl:message>
+  <wsdl:message name="ConvertIdentifier_KnownDTSoapIn">
+    <wsdl:part name="parameters" element="tns:ConvertIdentifier_KnownDT" />
+  </wsdl:message>
+  <wsdl:message name="ConvertIdentifier_KnownDTSoapOut">
+    <wsdl:part name="parameters" element="tns:ConvertIdentifier_KnownDTResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchProteinSoapIn">
+    <wsdl:part name="parameters" element="tns:SearchProtein" />
+  </wsdl:message>
+  <wsdl:message name="SearchProteinSoapOut">
+    <wsdl:part name="parameters" element="tns:SearchProteinResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchBioEntitySoapIn">
+    <wsdl:part name="parameters" element="tns:SearchBioEntity" />
+  </wsdl:message>
+  <wsdl:message name="SearchBioEntitySoapOut">
+    <wsdl:part name="parameters" element="tns:SearchBioEntityResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchProteinStartsWithSoapIn">
+    <wsdl:part name="parameters" element="tns:SearchProteinStartsWith" />
+  </wsdl:message>
+  <wsdl:message name="SearchProteinStartsWithSoapOut">
+    <wsdl:part name="parameters" element="tns:SearchProteinStartsWithResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchProteinMatchesSoapIn">
+    <wsdl:part name="parameters" element="tns:SearchProteinMatches" />
+  </wsdl:message>
+  <wsdl:message name="SearchProteinMatchesSoapOut">
+    <wsdl:part name="parameters" element="tns:SearchProteinMatchesResponse" />
+  </wsdl:message>
+  <wsdl:message name="ListDataTypesSoapIn">
+    <wsdl:part name="parameters" element="tns:ListDataTypes" />
+  </wsdl:message>
+  <wsdl:message name="ListDataTypesSoapOut">
+    <wsdl:part name="parameters" element="tns:ListDataTypesResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchBioEntityDescriptionSoapIn">
+    <wsdl:part name="parameters" element="tns:SearchBioEntityDescription" />
+  </wsdl:message>
+  <wsdl:message name="SearchBioEntityDescriptionSoapOut">
+    <wsdl:part name="parameters" element="tns:SearchBioEntityDescriptionResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetProteinsInBioEntitySoapIn">
+    <wsdl:part name="parameters" element="tns:GetProteinsInBioEntity" />
+  </wsdl:message>
+  <wsdl:message name="GetProteinsInBioEntitySoapOut">
+    <wsdl:part name="parameters" element="tns:GetProteinsInBioEntityResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetBioEntitiesByProteinSoapIn">
+    <wsdl:part name="parameters" element="tns:GetBioEntitiesByProtein" />
+  </wsdl:message>
+  <wsdl:message name="GetBioEntitiesByProteinSoapOut">
+    <wsdl:part name="parameters" element="tns:GetBioEntitiesByProteinResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetOrganismByGeneHttpGetIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetOrganismByGeneHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfOrganism" />
+  </wsdl:message>
+  <wsdl:message name="SearchOrganismHttpGetIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SearchOrganismHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfOrganism" />
+  </wsdl:message>
+  <wsdl:message name="ConvertIdentifierHttpGetIn">
+    <wsdl:part name="taxID" type="s:string" />
+    <wsdl:part name="alias" type="s:string" />
+    <wsdl:part name="datatype" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ConvertIdentifierHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfIdentifier" />
+  </wsdl:message>
+  <wsdl:message name="ConvertIdentifier_KnownDTHttpGetIn">
+    <wsdl:part name="taxID" type="s:string" />
+    <wsdl:part name="alias" type="s:string" />
+    <wsdl:part name="datatype_in" type="s:string" />
+    <wsdl:part name="datatype_out" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ConvertIdentifier_KnownDTHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfIdentifier" />
+  </wsdl:message>
+  <wsdl:message name="SearchProteinHttpGetIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SearchProteinHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfProtein" />
+  </wsdl:message>
+  <wsdl:message name="SearchBioEntityHttpGetIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SearchBioEntityHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfBioEntity" />
+  </wsdl:message>
+  <wsdl:message name="SearchProteinStartsWithHttpGetIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SearchProteinStartsWithHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfProtein" />
+  </wsdl:message>
+  <wsdl:message name="SearchProteinMatchesHttpGetIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SearchProteinMatchesHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfProtein" />
+  </wsdl:message>
+  <wsdl:message name="ListDataTypesHttpGetIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ListDataTypesHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfDataType" />
+  </wsdl:message>
+  <wsdl:message name="SearchBioEntityDescriptionHttpGetIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SearchBioEntityDescriptionHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfDataType" />
+  </wsdl:message>
+  <wsdl:message name="GetProteinsInBioEntityHttpGetIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetProteinsInBioEntityHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfIdentifier" />
+  </wsdl:message>
+  <wsdl:message name="GetBioEntitiesByProteinHttpGetIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetBioEntitiesByProteinHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfBioEntity" />
+  </wsdl:message>
+  <wsdl:message name="GetOrganismByGeneHttpPostIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetOrganismByGeneHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfOrganism" />
+  </wsdl:message>
+  <wsdl:message name="SearchOrganismHttpPostIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SearchOrganismHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfOrganism" />
+  </wsdl:message>
+  <wsdl:message name="ConvertIdentifierHttpPostIn">
+    <wsdl:part name="taxID" type="s:string" />
+    <wsdl:part name="alias" type="s:string" />
+    <wsdl:part name="datatype" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ConvertIdentifierHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfIdentifier" />
+  </wsdl:message>
+  <wsdl:message name="ConvertIdentifier_KnownDTHttpPostIn">
+    <wsdl:part name="taxID" type="s:string" />
+    <wsdl:part name="alias" type="s:string" />
+    <wsdl:part name="datatype_in" type="s:string" />
+    <wsdl:part name="datatype_out" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ConvertIdentifier_KnownDTHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfIdentifier" />
+  </wsdl:message>
+  <wsdl:message name="SearchProteinHttpPostIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SearchProteinHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfProtein" />
+  </wsdl:message>
+  <wsdl:message name="SearchBioEntityHttpPostIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SearchBioEntityHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfBioEntity" />
+  </wsdl:message>
+  <wsdl:message name="SearchProteinStartsWithHttpPostIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SearchProteinStartsWithHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfProtein" />
+  </wsdl:message>
+  <wsdl:message name="SearchProteinMatchesHttpPostIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SearchProteinMatchesHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfProtein" />
+  </wsdl:message>
+  <wsdl:message name="ListDataTypesHttpPostIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="ListDataTypesHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfDataType" />
+  </wsdl:message>
+  <wsdl:message name="SearchBioEntityDescriptionHttpPostIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SearchBioEntityDescriptionHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfDataType" />
+  </wsdl:message>
+  <wsdl:message name="GetProteinsInBioEntityHttpPostIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetProteinsInBioEntityHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfIdentifier" />
+  </wsdl:message>
+  <wsdl:message name="GetBioEntitiesByProteinHttpPostIn">
+    <wsdl:part name="data" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetBioEntitiesByProteinHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfBioEntity" />
+  </wsdl:message>
+  <wsdl:portType name="ServiceSoap">
+    <wsdl:operation name="GetOrganismByGene">
+      <wsdl:input message="tns:GetOrganismByGeneSoapIn" />
+      <wsdl:output message="tns:GetOrganismByGeneSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchOrganism">
+      <wsdl:input message="tns:SearchOrganismSoapIn" />
+      <wsdl:output message="tns:SearchOrganismSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ConvertIdentifier">
+      <wsdl:input message="tns:ConvertIdentifierSoapIn" />
+      <wsdl:output message="tns:ConvertIdentifierSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ConvertIdentifier_KnownDT">
+      <wsdl:input message="tns:ConvertIdentifier_KnownDTSoapIn" />
+      <wsdl:output message="tns:ConvertIdentifier_KnownDTSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchProtein">
+      <wsdl:input message="tns:SearchProteinSoapIn" />
+      <wsdl:output message="tns:SearchProteinSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchBioEntity">
+      <wsdl:input message="tns:SearchBioEntitySoapIn" />
+      <wsdl:output message="tns:SearchBioEntitySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchProteinStartsWith">
+      <wsdl:input message="tns:SearchProteinStartsWithSoapIn" />
+      <wsdl:output message="tns:SearchProteinStartsWithSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchProteinMatches">
+      <wsdl:input message="tns:SearchProteinMatchesSoapIn" />
+      <wsdl:output message="tns:SearchProteinMatchesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ListDataTypes">
+      <wsdl:input message="tns:ListDataTypesSoapIn" />
+      <wsdl:output message="tns:ListDataTypesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchBioEntityDescription">
+      <wsdl:input message="tns:SearchBioEntityDescriptionSoapIn" />
+      <wsdl:output message="tns:SearchBioEntityDescriptionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProteinsInBioEntity">
+      <wsdl:input message="tns:GetProteinsInBioEntitySoapIn" />
+      <wsdl:output message="tns:GetProteinsInBioEntitySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBioEntitiesByProtein">
+      <wsdl:input message="tns:GetBioEntitiesByProteinSoapIn" />
+      <wsdl:output message="tns:GetBioEntitiesByProteinSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="ServiceHttpGet">
+    <wsdl:operation name="GetOrganismByGene">
+      <wsdl:input message="tns:GetOrganismByGeneHttpGetIn" />
+      <wsdl:output message="tns:GetOrganismByGeneHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchOrganism">
+      <wsdl:input message="tns:SearchOrganismHttpGetIn" />
+      <wsdl:output message="tns:SearchOrganismHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ConvertIdentifier">
+      <wsdl:input message="tns:ConvertIdentifierHttpGetIn" />
+      <wsdl:output message="tns:ConvertIdentifierHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ConvertIdentifier_KnownDT">
+      <wsdl:input message="tns:ConvertIdentifier_KnownDTHttpGetIn" />
+      <wsdl:output message="tns:ConvertIdentifier_KnownDTHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchProtein">
+      <wsdl:input message="tns:SearchProteinHttpGetIn" />
+      <wsdl:output message="tns:SearchProteinHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchBioEntity">
+      <wsdl:input message="tns:SearchBioEntityHttpGetIn" />
+      <wsdl:output message="tns:SearchBioEntityHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchProteinStartsWith">
+      <wsdl:input message="tns:SearchProteinStartsWithHttpGetIn" />
+      <wsdl:output message="tns:SearchProteinStartsWithHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchProteinMatches">
+      <wsdl:input message="tns:SearchProteinMatchesHttpGetIn" />
+      <wsdl:output message="tns:SearchProteinMatchesHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ListDataTypes">
+      <wsdl:input message="tns:ListDataTypesHttpGetIn" />
+      <wsdl:output message="tns:ListDataTypesHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchBioEntityDescription">
+      <wsdl:input message="tns:SearchBioEntityDescriptionHttpGetIn" />
+      <wsdl:output message="tns:SearchBioEntityDescriptionHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProteinsInBioEntity">
+      <wsdl:input message="tns:GetProteinsInBioEntityHttpGetIn" />
+      <wsdl:output message="tns:GetProteinsInBioEntityHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBioEntitiesByProtein">
+      <wsdl:input message="tns:GetBioEntitiesByProteinHttpGetIn" />
+      <wsdl:output message="tns:GetBioEntitiesByProteinHttpGetOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="ServiceHttpPost">
+    <wsdl:operation name="GetOrganismByGene">
+      <wsdl:input message="tns:GetOrganismByGeneHttpPostIn" />
+      <wsdl:output message="tns:GetOrganismByGeneHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchOrganism">
+      <wsdl:input message="tns:SearchOrganismHttpPostIn" />
+      <wsdl:output message="tns:SearchOrganismHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ConvertIdentifier">
+      <wsdl:input message="tns:ConvertIdentifierHttpPostIn" />
+      <wsdl:output message="tns:ConvertIdentifierHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ConvertIdentifier_KnownDT">
+      <wsdl:input message="tns:ConvertIdentifier_KnownDTHttpPostIn" />
+      <wsdl:output message="tns:ConvertIdentifier_KnownDTHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchProtein">
+      <wsdl:input message="tns:SearchProteinHttpPostIn" />
+      <wsdl:output message="tns:SearchProteinHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchBioEntity">
+      <wsdl:input message="tns:SearchBioEntityHttpPostIn" />
+      <wsdl:output message="tns:SearchBioEntityHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchProteinStartsWith">
+      <wsdl:input message="tns:SearchProteinStartsWithHttpPostIn" />
+      <wsdl:output message="tns:SearchProteinStartsWithHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchProteinMatches">
+      <wsdl:input message="tns:SearchProteinMatchesHttpPostIn" />
+      <wsdl:output message="tns:SearchProteinMatchesHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ListDataTypes">
+      <wsdl:input message="tns:ListDataTypesHttpPostIn" />
+      <wsdl:output message="tns:ListDataTypesHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchBioEntityDescription">
+      <wsdl:input message="tns:SearchBioEntityDescriptionHttpPostIn" />
+      <wsdl:output message="tns:SearchBioEntityDescriptionHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProteinsInBioEntity">
+      <wsdl:input message="tns:GetProteinsInBioEntityHttpPostIn" />
+      <wsdl:output message="tns:GetProteinsInBioEntityHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBioEntitiesByProtein">
+      <wsdl:input message="tns:GetBioEntitiesByProteinHttpPostIn" />
+      <wsdl:output message="tns:GetBioEntitiesByProteinHttpPostOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ServiceSoap" type="tns:ServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetOrganismByGene">
+      <soap:operation soapAction="http://bioinformatics.ua.pt/applications/gens/GetOrganismByGene" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchOrganism">
+      <soap:operation soapAction="http://bioinformatics.ua.pt/applications/gens/SearchOrganism" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConvertIdentifier">
+      <soap:operation soapAction="http://bioinformatics.ua.pt/applications/gens/ConvertIdentifier" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConvertIdentifier_KnownDT">
+      <soap:operation soapAction="http://bioinformatics.ua.pt/applications/gens/ConvertIdentifier_KnownDT" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchProtein">
+      <soap:operation soapAction="http://bioinformatics.ua.pt/applications/gens/SearchProtein" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchBioEntity">
+      <soap:operation soapAction="http://bioinformatics.ua.pt/applications/gens/SearchBioEntity" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchProteinStartsWith">
+      <soap:operation soapAction="http://bioinformatics.ua.pt/applications/gens/SearchProteinStartsWith" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchProteinMatches">
+      <soap:operation soapAction="http://bioinformatics.ua.pt/applications/gens/SearchProteinMatches" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListDataTypes">
+      <soap:operation soapAction="http://bioinformatics.ua.pt/applications/gens/ListDataTypes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchBioEntityDescription">
+      <soap:operation soapAction="http://bioinformatics.ua.pt/applications/gens/SearchBioEntityDescription" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProteinsInBioEntity">
+      <soap:operation soapAction="http://bioinformatics.ua.pt/applications/gens/GetProteinsInBioEntity" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBioEntitiesByProtein">
+      <soap:operation soapAction="http://bioinformatics.ua.pt/applications/gens/GetBioEntitiesByProtein" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServiceSoap12" type="tns:ServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetOrganismByGene">
+      <soap12:operation soapAction="http://bioinformatics.ua.pt/applications/gens/GetOrganismByGene" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchOrganism">
+      <soap12:operation soapAction="http://bioinformatics.ua.pt/applications/gens/SearchOrganism" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConvertIdentifier">
+      <soap12:operation soapAction="http://bioinformatics.ua.pt/applications/gens/ConvertIdentifier" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConvertIdentifier_KnownDT">
+      <soap12:operation soapAction="http://bioinformatics.ua.pt/applications/gens/ConvertIdentifier_KnownDT" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchProtein">
+      <soap12:operation soapAction="http://bioinformatics.ua.pt/applications/gens/SearchProtein" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchBioEntity">
+      <soap12:operation soapAction="http://bioinformatics.ua.pt/applications/gens/SearchBioEntity" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchProteinStartsWith">
+      <soap12:operation soapAction="http://bioinformatics.ua.pt/applications/gens/SearchProteinStartsWith" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchProteinMatches">
+      <soap12:operation soapAction="http://bioinformatics.ua.pt/applications/gens/SearchProteinMatches" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListDataTypes">
+      <soap12:operation soapAction="http://bioinformatics.ua.pt/applications/gens/ListDataTypes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchBioEntityDescription">
+      <soap12:operation soapAction="http://bioinformatics.ua.pt/applications/gens/SearchBioEntityDescription" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProteinsInBioEntity">
+      <soap12:operation soapAction="http://bioinformatics.ua.pt/applications/gens/GetProteinsInBioEntity" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBioEntitiesByProtein">
+      <soap12:operation soapAction="http://bioinformatics.ua.pt/applications/gens/GetBioEntitiesByProtein" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServiceHttpGet" type="tns:ServiceHttpGet">
+    <http:binding verb="GET" />
+    <wsdl:operation name="GetOrganismByGene">
+      <http:operation location="/GetOrganismByGene" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchOrganism">
+      <http:operation location="/SearchOrganism" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConvertIdentifier">
+      <http:operation location="/ConvertIdentifier" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConvertIdentifier_KnownDT">
+      <http:operation location="/ConvertIdentifier_KnownDT" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchProtein">
+      <http:operation location="/SearchProtein" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchBioEntity">
+      <http:operation location="/SearchBioEntity" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchProteinStartsWith">
+      <http:operation location="/SearchProteinStartsWith" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchProteinMatches">
+      <http:operation location="/SearchProteinMatches" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListDataTypes">
+      <http:operation location="/ListDataTypes" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchBioEntityDescription">
+      <http:operation location="/SearchBioEntityDescription" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProteinsInBioEntity">
+      <http:operation location="/GetProteinsInBioEntity" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBioEntitiesByProtein">
+      <http:operation location="/GetBioEntitiesByProtein" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServiceHttpPost" type="tns:ServiceHttpPost">
+    <http:binding verb="POST" />
+    <wsdl:operation name="GetOrganismByGene">
+      <http:operation location="/GetOrganismByGene" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchOrganism">
+      <http:operation location="/SearchOrganism" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConvertIdentifier">
+      <http:operation location="/ConvertIdentifier" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConvertIdentifier_KnownDT">
+      <http:operation location="/ConvertIdentifier_KnownDT" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchProtein">
+      <http:operation location="/SearchProtein" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchBioEntity">
+      <http:operation location="/SearchBioEntity" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchProteinStartsWith">
+      <http:operation location="/SearchProteinStartsWith" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchProteinMatches">
+      <http:operation location="/SearchProteinMatches" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListDataTypes">
+      <http:operation location="/ListDataTypes" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchBioEntityDescription">
+      <http:operation location="/SearchBioEntityDescription" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProteinsInBioEntity">
+      <http:operation location="/GetProteinsInBioEntity" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBioEntitiesByProtein">
+      <http:operation location="/GetBioEntitiesByProtein" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Service">
+    <wsdl:port name="ServiceSoap" binding="tns:ServiceSoap">
+      <soap:address location="http://bioinformatics.ua.pt:18080/gens/WS/Service.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ServiceSoap12" binding="tns:ServiceSoap12">
+      <soap12:address location="http://bioinformatics.ua.pt:18080/gens/WS/Service.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ServiceHttpGet" binding="tns:ServiceHttpGet">
+      <http:address location="http://bioinformatics.ua.pt:18080/gens/WS/Service.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ServiceHttpPost" binding="tns:ServiceHttpPost">
+      <http:address location="http://bioinformatics.ua.pt:18080/gens/WS/Service.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

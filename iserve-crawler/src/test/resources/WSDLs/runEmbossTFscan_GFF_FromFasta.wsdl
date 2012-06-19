@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="runEmbossTFscan_GFF_FromFastaInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="runEmbossTFscan_GFF_FromFastaOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="runEmbossTFscan_GFF_FromFastaPortType">
+          <wsdl:operation name="runEmbossTFscan_GFF_FromFasta">
+                 <wsdl:input message="tns:runEmbossTFscan_GFF_FromFastaInput"/>
+                 <wsdl:output message="tns:runEmbossTFscan_GFF_FromFastaOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="runEmbossTFscan_GFF_FromFastaBinding" type="tns:runEmbossTFscan_GFF_FromFastaPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="runEmbossTFscan_GFF_FromFasta"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#runEmbossTFscan_GFF_FromFasta' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="runEmbossTFscan_GFF_FromFastaService">
+          <wsdl:documentation>Authority: mmb.pcb.ub.es  -  Runs the command TFScan from the Emboss package, but returns the results in a GFF format. Refer to http://bioinfo.hku.hk/emboss/tfscan.html for more information</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="runEmbossTFscan_GFF_FromFastaPort" binding="tns:runEmbossTFscan_GFF_FromFastaBinding">
+                 <wsdlsoap:address location="http://mmb2.pcb.ub.es:8080/DNAStructureServices/runEmbossTFscan_GFF_FromFasta"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

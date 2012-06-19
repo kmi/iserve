@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="runDifferentialExpressionTestInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="runDifferentialExpressionTestOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="runDifferentialExpressionTestPortType">
+          <wsdl:operation name="runDifferentialExpressionTest">
+                 <wsdl:input message="tns:runDifferentialExpressionTestInput"/>
+                 <wsdl:output message="tns:runDifferentialExpressionTestOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="runDifferentialExpressionTestBinding" type="tns:runDifferentialExpressionTestPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="runDifferentialExpressionTest"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#runDifferentialExpressionTest' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="runDifferentialExpressionTestService">
+          <wsdl:documentation>Authority: bioinfo.cipf.es  -  This webservice allows users to analyze gene expression under different experimental conditions: differential expresssion between two conditions (t test), differential expression among more than two conditions (Anova test), differential expression related to a continuous variable (Regression, Pearson and Spearman correlations) and differential expression related to a survival time (Cox test)</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="runDifferentialExpressionTestPort" binding="tns:runDifferentialExpressionTestBinding">
+                 <wsdlsoap:address location="http://biomoby.bioinfo.cipf.es/cgi-bin/MobyServices.cgi"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

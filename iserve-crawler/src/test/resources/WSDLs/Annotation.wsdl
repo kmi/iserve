@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation" xmlns:intf="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="Annotation" xmlns:tns2="http://gc.broad.mit.edu" xmlns:tns3="http://lang.java" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema targetNamespace="http://xml.apache.org/xml-soap" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation"/>
+   <import namespace="Annotation"/>
+   <import namespace="http://lang.java"/>
+   <import namespace="http://gc.broad.mit.edu"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="mapItem">
+    <sequence>
+     <element name="key" nillable="true" type="xsd:anyType"/>
+     <element name="value" nillable="true" type="xsd:anyType"/>
+    </sequence>
+   </complexType>
+   <complexType name="Map">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="item" type="apachesoap:mapItem"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://xml.apache.org/xml-soap"/>
+   <import namespace="Annotation"/>
+   <import namespace="http://lang.java"/>
+   <import namespace="http://gc.broad.mit.edu"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_soapenc_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="soapenc:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfArrayOf_soapenc_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="soapenc:string[][]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns1_KeywordSearchResult">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:KeywordSearchResult[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="Annotation" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://xml.apache.org/xml-soap"/>
+   <import namespace="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation"/>
+   <import namespace="http://lang.java"/>
+   <import namespace="http://gc.broad.mit.edu"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="AnnotationResult">
+    <sequence>
+     <element maxOccurs="unbounded" name="column" nillable="true" type="impl:ArrayOf_soapenc_string"/>
+     <element name="columns" nillable="true" type="impl:ArrayOfArrayOf_soapenc_string"/>
+     <element name="id" nillable="true" type="soapenc:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="AnnotationResultArray">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:AnnotationResult[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="KeywordSearchResult">
+    <sequence>
+     <element name="accession" nillable="true" type="soapenc:string"/>
+     <element name="affyAnnotation" nillable="true" type="soapenc:string"/>
+     <element name="affyProbe" nillable="true" type="soapenc:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://gc.broad.mit.edu" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://xml.apache.org/xml-soap"/>
+   <import namespace="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation"/>
+   <import namespace="Annotation"/>
+   <import namespace="http://lang.java"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="OversizeQueryException">
+    <sequence>
+     <element name="cause" nillable="true" type="xsd:anyType"/>
+     <element name="message" nillable="true" type="soapenc:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="idsToProbesRequest">
+
+      <wsdl:part name="ids" type="impl:ArrayOf_soapenc_string"/>
+
+      <wsdl:part name="chipTypes" type="impl:ArrayOf_soapenc_string"/>
+
+      <wsdl:part name="exactMatchGenbank" type="xsd:boolean"/>
+
+      <wsdl:part name="matchUnigeneSameCluster" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="idsToProbesResponse">
+
+      <wsdl:part name="idsToProbesReturn" type="apachesoap:Map"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="pingRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="getDatabaseToFieldsMapRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="getChipTypesResponse">
+
+      <wsdl:part name="getChipTypesReturn" type="apachesoap:Map"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMaxBatchSizeResponse">
+
+      <wsdl:part name="getMaxBatchSizeReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getField2TableAndColumnMapResponse">
+
+      <wsdl:part name="getField2TableAndColumnMapReturn" type="apachesoap:Map"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getLinksResponse">
+
+      <wsdl:part name="getLinksReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="keywordsToProbesResponse">
+
+      <wsdl:part name="keywordsToProbesReturn" type="impl:ArrayOf_tns1_KeywordSearchResult"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getField2TableAndColumnMapRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="pingResponse">
+
+      <wsdl:part name="pingReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDatabasesWithDetailsResponse">
+
+      <wsdl:part name="getDatabasesWithDetailsReturn" type="apachesoap:Map"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="keywordsToProbesRequest">
+
+      <wsdl:part name="words" type="impl:ArrayOf_soapenc_string"/>
+
+      <wsdl:part name="kwSrc" type="impl:ArrayOf_soapenc_string"/>
+
+      <wsdl:part name="arrayTypeID" type="impl:ArrayOf_soapenc_string"/>
+
+      <wsdl:part name="allWords" type="xsd:boolean"/>
+
+      <wsdl:part name="queryOptionGB" type="xsd:boolean"/>
+
+      <wsdl:part name="queryOptionSC" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDatabasesWithDetailsRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="getLinksRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="getMaxBatchSizeRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="annotateProbesResponse">
+
+      <wsdl:part name="annotateProbesReturn" type="tns1:AnnotationResultArray"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDatabaseToFieldsMapResponse">
+
+      <wsdl:part name="getDatabaseToFieldsMapReturn" type="apachesoap:Map"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="OversizeQueryException">
+
+      <wsdl:part name="fault" type="tns2:OversizeQueryException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="annotateProbesRequest">
+
+      <wsdl:part name="probes" type="impl:ArrayOf_soapenc_string"/>
+
+      <wsdl:part name="queryFields" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getChipTypesRequest">
+
+   </wsdl:message>
+
+   <wsdl:portType name="AnnotationService">
+
+      <wsdl:operation name="ping">
+
+         <wsdl:input message="impl:pingRequest" name="pingRequest"/>
+
+         <wsdl:output message="impl:pingResponse" name="pingResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getMaxBatchSize">
+
+         <wsdl:input message="impl:getMaxBatchSizeRequest" name="getMaxBatchSizeRequest"/>
+
+         <wsdl:output message="impl:getMaxBatchSizeResponse" name="getMaxBatchSizeResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDatabaseToFieldsMap">
+
+         <wsdl:input message="impl:getDatabaseToFieldsMapRequest" name="getDatabaseToFieldsMapRequest"/>
+
+         <wsdl:output message="impl:getDatabaseToFieldsMapResponse" name="getDatabaseToFieldsMapResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getChipTypes">
+
+         <wsdl:input message="impl:getChipTypesRequest" name="getChipTypesRequest"/>
+
+         <wsdl:output message="impl:getChipTypesResponse" name="getChipTypesResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDatabasesWithDetails">
+
+         <wsdl:input message="impl:getDatabasesWithDetailsRequest" name="getDatabasesWithDetailsRequest"/>
+
+         <wsdl:output message="impl:getDatabasesWithDetailsResponse" name="getDatabasesWithDetailsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getLinks">
+
+         <wsdl:input message="impl:getLinksRequest" name="getLinksRequest"/>
+
+         <wsdl:output message="impl:getLinksResponse" name="getLinksResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getField2TableAndColumnMap">
+
+         <wsdl:input message="impl:getField2TableAndColumnMapRequest" name="getField2TableAndColumnMapRequest"/>
+
+         <wsdl:output message="impl:getField2TableAndColumnMapResponse" name="getField2TableAndColumnMapResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="annotateProbes" parameterOrder="probes queryFields">
+
+         <wsdl:input message="impl:annotateProbesRequest" name="annotateProbesRequest"/>
+
+         <wsdl:output message="impl:annotateProbesResponse" name="annotateProbesResponse"/>
+
+         <wsdl:fault message="impl:OversizeQueryException" name="OversizeQueryException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="idsToProbes" parameterOrder="ids chipTypes exactMatchGenbank matchUnigeneSameCluster">
+
+         <wsdl:input message="impl:idsToProbesRequest" name="idsToProbesRequest"/>
+
+         <wsdl:output message="impl:idsToProbesResponse" name="idsToProbesResponse"/>
+
+         <wsdl:fault message="impl:OversizeQueryException" name="OversizeQueryException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="keywordsToProbes" parameterOrder="words kwSrc arrayTypeID allWords queryOptionGB queryOptionSC">
+
+         <wsdl:input message="impl:keywordsToProbesRequest" name="keywordsToProbesRequest"/>
+
+         <wsdl:output message="impl:keywordsToProbesResponse" name="keywordsToProbesResponse"/>
+
+         <wsdl:fault message="impl:OversizeQueryException" name="OversizeQueryException"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="AnnotationSoapBinding" type="impl:AnnotationService">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="ping">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="pingRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://server.gc.broad.mit.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="pingResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getMaxBatchSize">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getMaxBatchSizeRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://server.gc.broad.mit.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getMaxBatchSizeResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDatabaseToFieldsMap">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getDatabaseToFieldsMapRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://server.gc.broad.mit.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getDatabaseToFieldsMapResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getChipTypes">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getChipTypesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://server.gc.broad.mit.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getChipTypesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDatabasesWithDetails">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getDatabasesWithDetailsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://server.gc.broad.mit.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getDatabasesWithDetailsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getLinks">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getLinksRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://server.gc.broad.mit.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getLinksResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getField2TableAndColumnMap">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getField2TableAndColumnMapRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://server.gc.broad.mit.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getField2TableAndColumnMapResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="annotateProbes">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="annotateProbesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://server.gc.broad.mit.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="annotateProbesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="OversizeQueryException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="OversizeQueryException" namespace="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="idsToProbes">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="idsToProbesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://server.gc.broad.mit.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="idsToProbesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="OversizeQueryException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="OversizeQueryException" namespace="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="keywordsToProbes">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="keywordsToProbesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://server.gc.broad.mit.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="keywordsToProbesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="OversizeQueryException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="OversizeQueryException" namespace="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="AnnotationServiceService">
+
+      <wsdl:port binding="impl:AnnotationSoapBinding" name="Annotation">
+
+         <wsdlsoap:address location="http://vgenecruiserprod.broadinstitute.org:8080/webservices/genecruiser/services/Annotation"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

@@ -1,0 +1,241 @@
+<?xml version="1.0"?>
+<wsdl:definitions 
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+ xmlns:tns="http://www.cbs.dtu.dk/ws/WSNetCTL_1_1" 
+ xmlns:common="http://www.cbs.dtu.dk/ws/ws-common" 
+ xmlns:netCTL="http://www.cbs.dtu.dk/ws/ws-netCTL" 
+ xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/" 
+ xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+ xmlns="http://schemas.xmlsoap.org/wsdl/" 
+ targetNamespace="http://www.cbs.dtu.dk/ws/WSNetCTL_1_1">
+
+	<wsdl:types>
+		<xsd:schema>
+			<!-- XSD -->
+			<xsd:import 
+			 namespace="http://www.cbs.dtu.dk/ws/ws-common" 
+			 schemaLocation="../common/ws_common_1_0.xsd"
+			 />
+			<!-- XSD -->
+			<xsd:import 
+			 namespace="http://www.cbs.dtu.dk/ws/ws-netCTL" 
+			 schemaLocation="ws_netCTL_1_1.xsd"
+			/>
+		</xsd:schema>
+	</wsdl:types>
+
+	<wsdl:types>
+		<schema targetNamespace="http://www.cbs.dtu.dk/ws/WSNetCTL_1_1"
+		 xmlns="http://www.w3.org/2001/XMLSchema"
+		 xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+		 xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+			<xsd:element name="runService" type="netCTL:runService"/>
+			<xsd:element name="runServiceResponse" type="common:runServiceResponse"/>
+			<xsd:element name="fetchResult" type="common:fetchResult"/>
+			<xsd:element name="pollQueue" type="common:pollQueue"/>
+			<xsd:element name="fetchResultResponse" type="netCTL:fetchResultResponse"/>
+			<xsd:element name="pollQueueResponse" type="common:pollQueueResponse"/>
+		</schema>
+	</wsdl:types>
+
+	<!-- ==================================================================== -->
+
+	<message name="runServiceRequest">
+		<part name="parameters" element="tns:runService"/>
+	</message>
+	<message name="runServiceResponse">
+		<part name="parameters" element="tns:runServiceResponse"/>
+	</message>
+	<message name="fetchResultRequest">
+		<part name="parameters" element="tns:fetchResult"/>
+	</message>
+	<message name="fetchResultResponse">
+		<part name="parameters" element="tns:fetchResultResponse"/>
+	</message>
+	<message name="pollQueueRequest">
+		<part name="job" element="tns:pollQueue"/>
+	</message>
+	<message name="pollQueueResponse">
+		<part name="queueentry" element="tns:pollQueueResponse"/>
+	</message>
+
+	<!-- ==================================================================== -->
+
+	<portType name="WSNetCTL_1_1">
+		<operation name="runService">
+			<input name="runServiceRequest" message="tns:runServiceRequest"/>
+			<output name="runServiceResponse" message="tns:runServiceResponse"/>
+		</operation>
+		<operation name="pollQueue">
+			<input name="pollQueueRequest" message="tns:pollQueueRequest"/>
+			<output name="pollQueueResponse" message="tns:pollQueueResponse"/>
+		</operation>
+		<operation name="fetchResult">
+			<input name="fetchResultRequest" message="tns:fetchResultRequest"/>
+			<output name="fetchResultResponse" message="tns:fetchResultResponse"/>
+		</operation>
+	</portType>
+
+	<!-- ==================================================================== -->
+
+	<binding name="WSNetCTL_1_1" type="tns:WSNetCTL_1_1">
+		<soapenv:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="pollQueue">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSNetCTL_1_1#pollQueue"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSNetCTL_1_1"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSNetCTL_1_1"/>
+			</output>
+		</operation>
+		<operation name="runService">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSNetCTL_1_1#runService"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSNetCTL_1_1"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSNetCTL_1_1"/>
+			</output>
+		</operation>
+		<operation name="fetchResult">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSNetCTL_1_1#fetchResult"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSNetCTL_1_1"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSNetCTL_1_1"/>
+			</output>
+		</operation>
+	</binding>
+
+	<!-- ==================================================================== -->
+
+	<service name="WSNetCTL_1_1">
+		<port name="WSNetCTL_1_1" binding="tns:WSNetCTL_1_1">
+			<soapenv:address location="http://ws.cbs.dtu.dk:80/cgi-bin/soap/ws/server.cgi"/>
+		</port>
+
+		<documentation>
+	
+		INTRODUCTION
+	
+		This Web Service implements NetCTL v. 1.1. It predicts CTL epitopes
+		in protein sequences integrating prediction of peptide MHC binding,
+		proteasomal C terminal cleavage and TAP transport efficiency. The
+		method is described in detail in the following article:
+
+		An integrative approach to CTL epitope prediction. A combined
+		algorithm integrating MHC-I binding, TAP transport efficiency,
+		and proteasomal cleavage predictions.
+		Larsen MV, Lundegaard C, Kasper Lamberth, Buus S. Brunak S,
+		Lund O, and Nielsen M.
+		European Journal of Immunology 35(8): 2295-303, 2005
+
+		Alongside this Web Service the NetCTL method is also implemented as
+		a traditional click-and-paste WWW server at:
+
+		  http://www.cbs.dtu.dk/services/NetCTL/
+	
+		NetCTL is also available as a stand-alone software package; write to
+		software@cbs.dtu.dk for details.
+		NetCTL is also available as a stand-alone software package to install
+		and run at the user's site, with the same functionality. For academic
+		users there is a download page at:
+
+		  http://www.cbs.dtu.dk/cgi-bin/nph-sw_request?netCTL
+
+		Other users are requested to write to software@cbs.dtu.dk for details.
+
+
+		WEB SERVICE OPERATION
+
+		This Web Service is fully asynchronous; the usage is split into the
+		following three operations:
+
+		1. runService    
+
+		Input:  The following parameters and data:
+
+		        * 'supertype' - HLA supertype
+		          10 HLA supertypes are available:
+		          A1, A2, A3, A24, B7, B8, B27, B44, B58 and B62;
+
+		        * 'wcle' - weight on C terminal cleavage
+		          The value 0.1 gives optimal predictive performance on the average.
+
+		        * 'wtap' - weight on TAP transport efficiency
+		          The value 0.05 gives optimal predictive performance on the average.
+
+		        * 'threshold' - threshold for epitope identification
+		          Peptides with a combined prediction score value greater than the
+		          threshold value are marked as potential epitopes. In a large scale
+		          benchmark identifying known CTL epitope in proteins the default
+		          value of 0.75 was found to correspond to a sensitivity of 0.65
+		          and a specificity 0.97. Note that the benchmark is highly
+		          unbalanced since only one peptide is identified as CTL epitope
+		          in each protein, and the number of negatives hence is orders of
+		          magnitude larger than the number of positives. This has important
+		          implications for the interpretation of the specificity values.
+
+		        * 'sort' - output sorting on score
+		          Possible values are 0 (sorting on the combined score), 1 (MHC),
+		          2 (Cle), 3 (TAP) and negative (no sorting)
+
+		        * 'sequences' - protein sequences, with unique identifiers 
+		          The sequence must be written using the one letter amino acid code:
+		          `acdefghiklmnpqrstvwy' or `ACDEFGHIKLMNPQRSTVWY'. Other letters
+		          will be converted to `X' and treated as unknown amino acids.
+		          Other symbols, such as whitespace and numbers, will be ignored.
+
+		Output: Unique job identifier
+
+		2. pollQueue
+
+		Input:  Unique job identifier
+
+		Output: 'jobstatus' - the status of the job
+		         Possible values are QUEUED, ACTIVE, FINISHED, WAITING, REJECTED,
+		         UNKNOWN JOBID or QUEUE DOWN
+
+
+		3. fetchResult
+	
+		Input:  Unique job identifier of a finished job
+
+		Output: 'output' - prediction results
+		        For each input residue a record is output consisting of the
+		        following fields:
+
+		        seqname        truncated to 12 characters in ver. 1.1a
+		        source         "netCTL-1.1" (fixed string)
+		        feature        "CTL" (fixed string)
+		        start,end      residue number (given twice)
+		        score          prediction score (combined)
+		        strand,frame   N/A
+		        comment        Text string consisting of:
+
+		                       * Predicted MHC binding affinity
+		                         The value is give as 1 - log50k(aff), where log50k
+		                         is the logaritm with base 50.000, and aff is the
+		                         affinity in nM units;
+		                       * Rescaled binding affinity
+		                         The predicted binding affinity is normalized by the
+		                         1% fractil
+		                       * C terminal cleavage affinity
+		                       * TAP transport efficiency
+
+		                       "-E" to indicate the identified MHC ligands (when
+		                        the combined score is greater than the threshold).
+
+
+		CONTACT
+
+		Questions concerning the scientific aspects of the NetCTL method should go
+		to Morten Nielsen, mniel@cbs.dtu.dk; technical question concerning the Web
+		Service should go to Peter Fischer Hallin, pfh@cbs.dtu.dk or Kristoffer
+		Rapacki, rapacki@cbs.dtu.dk.
+		</documentation>
+	</service>
+
+</wsdl:definitions>

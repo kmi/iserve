@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:axis2="http://ag.dbcls.jp" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:ns0="http://ag.dbcls.jp/xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://ag.dbcls.jp">
+    <wsdl:documentation>AgService</wsdl:documentation>
+    <wsdl:types>
+        <xs:schema xmlns:ns="http://ag.dbcls.jp/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://ag.dbcls.jp/xsd">
+            <xs:complexType name="Exception">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="Exception" nillable="true" type="xs:anyType"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="Exception">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="Exception" nillable="true" type="ns0:Exception"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getImage">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="prop" nillable="true" type="ns0:AgProp"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="organs" nillable="true" type="ns0:AgOrgan"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="AgProp">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="bgB" type="xs:int"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="bgColor" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="bgG" type="xs:int"/>
+                    <xs:element minOccurs="0" name="bgR" type="xs:int"/>
+                    <xs:element minOccurs="0" name="colorBarOn" type="xs:int"/>
+                    <xs:element minOccurs="0" name="scalarMax" type="xs:double"/>
+                    <xs:element minOccurs="0" name="scalarMin" type="xs:double"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="scalarRange" nillable="true" type="xs:double"/>
+                    <xs:element minOccurs="0" name="timeOutInSeconds" type="xs:long"/>
+                    <xs:element minOccurs="0" name="viewRotate" type="xs:double"/>
+                    <xs:element minOccurs="0" name="viewZoom" type="xs:double"/>
+                    <xs:element minOccurs="0" name="viewpoint" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="viewpointOffsetHorizontal" type="xs:double"/>
+                    <xs:element minOccurs="0" name="viewpointOffsetVertical" type="xs:double"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="winSize" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="winSizeX" type="xs:int"/>
+                    <xs:element minOccurs="0" name="winSizeY" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="AgOrgan">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="b" type="xs:double"/>
+                    <xs:element minOccurs="0" name="deleteOn" type="xs:int"/>
+                    <xs:element minOccurs="0" name="focusOn" type="xs:int"/>
+                    <xs:element minOccurs="0" name="g" type="xs:double"/>
+                    <xs:element minOccurs="0" name="id" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="name" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="opacity" type="xs:double"/>
+                    <xs:element minOccurs="0" name="r" type="xs:double"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="rGBA" nillable="true" type="xs:double"/>
+                    <xs:element minOccurs="0" name="representation" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="scalar" type="xs:double"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="getImageResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="main">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="args" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="pickingRequest"/>
+    <wsdl:message name="pickingResponse"/>
+    <wsdl:message name="mappingRequest"/>
+    <wsdl:message name="mappingResponse"/>
+    <wsdl:message name="getImageRequest">
+        <wsdl:part name="parameters" element="ns0:getImage"/>
+    </wsdl:message>
+    <wsdl:message name="getImageResponse">
+        <wsdl:part name="parameters" element="ns0:getImageResponse"/>
+    </wsdl:message>
+    <wsdl:message name="Exception">
+        <wsdl:part name="parameters" element="ns0:Exception"/>
+    </wsdl:message>
+    <wsdl:message name="mainRequest">
+        <wsdl:part name="parameters" element="ns0:main"/>
+    </wsdl:message>
+    <wsdl:message name="mainResponse"/>
+    <wsdl:portType name="AgServicePortType">
+        <wsdl:operation name="picking">
+            <wsdl:input message="axis2:pickingRequest" wsaw:Action="urn:picking"/>
+            <wsdl:output message="axis2:pickingResponse" wsaw:Action="urn:pickingResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="mapping">
+            <wsdl:input message="axis2:mappingRequest" wsaw:Action="urn:mapping"/>
+            <wsdl:output message="axis2:mappingResponse" wsaw:Action="urn:mappingResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getImage">
+            <wsdl:input message="axis2:getImageRequest" wsaw:Action="urn:getImage"/>
+            <wsdl:output message="axis2:getImageResponse" wsaw:Action="urn:getImageResponse"/>
+            <wsdl:fault message="axis2:Exception" name="Exception" wsaw:Action="urn:getImageException"/>
+        </wsdl:operation>
+        <wsdl:operation name="main">
+            <wsdl:input message="axis2:mainRequest" wsaw:Action="urn:main"/>
+            <wsdl:output message="axis2:mainResponse" wsaw:Action="urn:mainResponse"/>
+            <wsdl:fault message="axis2:Exception" name="Exception" wsaw:Action="urn:mainException"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="AgServiceSOAP11Binding" type="axis2:AgServicePortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="picking">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="mapping">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getImage">
+            <soap:operation soapAction="urn:getImage" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="Exception">
+                <soap:fault use="literal" name="Exception"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="main">
+            <soap:operation soapAction="urn:main" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="Exception">
+                <soap:fault use="literal" name="Exception"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="AgServiceSOAP12Binding" type="axis2:AgServicePortType">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="picking">
+            <soap12:operation soapAction="" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="mapping">
+            <soap12:operation soapAction="" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getImage">
+            <soap12:operation soapAction="urn:getImage" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="Exception">
+                <soap12:fault use="literal" name="Exception"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="main">
+            <soap12:operation soapAction="urn:main" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="Exception">
+                <soap12:fault use="literal" name="Exception"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="AgServiceHttpBinding" type="axis2:AgServicePortType">
+        <http:binding verb="POST"/>
+        <wsdl:operation name="picking">
+            <http:operation location="AgService/picking"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="picking"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="picking"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="mapping">
+            <http:operation location="AgService/mapping"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="mapping"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="mapping"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getImage">
+            <http:operation location="AgService/getImage"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="getImage"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="getImage"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="main">
+            <http:operation location="AgService/main"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="main"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="AgService">
+        <wsdl:port name="AgServiceSOAP11port_http" binding="axis2:AgServiceSOAP11Binding">
+            <soap:address location="http://lifesciencedb.jp:80/ag/services/AgService"/>
+        </wsdl:port>
+        <wsdl:port name="AgServiceSOAP12port_http" binding="axis2:AgServiceSOAP12Binding">
+            <soap12:address location="http://lifesciencedb.jp:80/ag/services/AgService"/>
+        </wsdl:port>
+        <wsdl:port name="AgServiceHttpport" binding="axis2:AgServiceHttpBinding">
+            <http:address location="http://lifesciencedb.jp:80/ag/services/AgService"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

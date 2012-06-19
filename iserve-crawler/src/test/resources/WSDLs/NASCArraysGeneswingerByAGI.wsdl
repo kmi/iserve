@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="NASCArraysGeneswingerByAGIInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="NASCArraysGeneswingerByAGIOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="NASCArraysGeneswingerByAGIPortType">
+          <wsdl:operation name="NASCArraysGeneswingerByAGI">
+                 <wsdl:input message="tns:NASCArraysGeneswingerByAGIInput"/>
+                 <wsdl:output message="tns:NASCArraysGeneswingerByAGIOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="NASCArraysGeneswingerByAGIBinding" type="tns:NASCArraysGeneswingerByAGIPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="NASCArraysGeneswingerByAGI"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#NASCArraysGeneswingerByAGI' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="NASCArraysGeneswingerByAGIService">
+          <wsdl:documentation>Authority: arabidopsis.info  -  Runs the NASCArrays analysis tool, GeneSwinger for a given AGI locus code. (http://affy.arabidopsis.info). This tool allows you to find interesting experiments for a gene. It shows you experiments where the gene you choose is highly variable, over all the experiments in the database. See the NASCArrays website for more details on what this does and how to use it (http://affymetrix.arabidopsis.info/internal/help/helpgeneswinger.html). Example input: At3g52590.</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="NASCArraysGeneswingerByAGIPort" binding="tns:NASCArraysGeneswingerByAGIBinding">
+                 <wsdlsoap:address location="http://arabidopsis.info/cgi-bin/moby_services/Services/microarray_services/array_services.cgi"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

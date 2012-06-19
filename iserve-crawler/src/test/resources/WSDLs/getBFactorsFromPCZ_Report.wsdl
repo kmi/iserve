@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="getBFactorsFromPCZ_ReportInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="getBFactorsFromPCZ_ReportOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="getBFactorsFromPCZ_ReportPortType">
+          <wsdl:operation name="getBFactorsFromPCZ_Report">
+                 <wsdl:input message="tns:getBFactorsFromPCZ_ReportInput"/>
+                 <wsdl:output message="tns:getBFactorsFromPCZ_ReportOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="getBFactorsFromPCZ_ReportBinding" type="tns:getBFactorsFromPCZ_ReportPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="getBFactorsFromPCZ_Report"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#getBFactorsFromPCZ_Report' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="getBFactorsFromPCZ_ReportService">
+          <wsdl:documentation>Authority: mmb.pcb.ub.es  -  Returns B-Factors from PCZ_Report, given a desired Principal Component (0 for ALL)</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="getBFactorsFromPCZ_ReportPort" binding="tns:getBFactorsFromPCZ_ReportBinding">
+                 <wsdlsoap:address location="http://inb.bsc.es/gn6/FromPCZ/getBFactorsFromPCZ_Report"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

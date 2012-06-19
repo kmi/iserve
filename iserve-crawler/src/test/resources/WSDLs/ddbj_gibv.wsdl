@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="TogowsDdbjGibv" xmlns:typens="http://togows.dbcls.jp/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://togows.dbcls.jp/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <message name="DdbjGibvGetFeatureInformation">
+    <part name="chid" type="xsd:string"/>
+    <part name="ftid" type="xsd:string"/>
+  </message>
+  <message name="DdbjGibvGetFeatureInformationResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="DdbjGibvGetFtIdList">
+    <part name="chid" type="xsd:string"/>
+  </message>
+  <message name="DdbjGibvGetFtIdListResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="DdbjGibvGetOrganismList">
+  </message>
+  <message name="DdbjGibvGetOrganismListResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="DdbjGibvSearchFeature">
+    <part name="keyword" type="xsd:string"/>
+    <part name="offset" type="xsd:string"/>
+    <part name="limit" type="xsd:string"/>
+  </message>
+  <message name="DdbjGibvSearchFeatureResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="DdbjGibvGetChIdList">
+  </message>
+  <message name="DdbjGibvGetChIdListResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="DdbjGibvSearchVirus">
+    <part name="keyword" type="xsd:string"/>
+    <part name="offset" type="xsd:string"/>
+    <part name="limit" type="xsd:string"/>
+  </message>
+  <message name="DdbjGibvSearchVirusResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="DdbjGibvGetChIdFromOrganismName">
+    <part name="orgName" type="xsd:string"/>
+  </message>
+  <message name="DdbjGibvGetChIdFromOrganismNameResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="DdbjGibvGetOrganismNameFromChid">
+    <part name="chid" type="xsd:string"/>
+  </message>
+  <message name="DdbjGibvGetOrganismNameFromChidResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <portType name="TogowsDdbjGibvPort">
+    <operation name="DdbjGibvGetFeatureInformation">
+      <input message="typens:DdbjGibvGetFeatureInformation"/>
+      <output message="typens:DdbjGibvGetFeatureInformationResponse"/>
+    </operation>
+    <operation name="DdbjGibvGetFtIdList">
+      <input message="typens:DdbjGibvGetFtIdList"/>
+      <output message="typens:DdbjGibvGetFtIdListResponse"/>
+    </operation>
+    <operation name="DdbjGibvGetOrganismList">
+      <input message="typens:DdbjGibvGetOrganismList"/>
+      <output message="typens:DdbjGibvGetOrganismListResponse"/>
+    </operation>
+    <operation name="DdbjGibvSearchFeature">
+      <input message="typens:DdbjGibvSearchFeature"/>
+      <output message="typens:DdbjGibvSearchFeatureResponse"/>
+    </operation>
+    <operation name="DdbjGibvGetChIdList">
+      <input message="typens:DdbjGibvGetChIdList"/>
+      <output message="typens:DdbjGibvGetChIdListResponse"/>
+    </operation>
+    <operation name="DdbjGibvSearchVirus">
+      <input message="typens:DdbjGibvSearchVirus"/>
+      <output message="typens:DdbjGibvSearchVirusResponse"/>
+    </operation>
+    <operation name="DdbjGibvGetChIdFromOrganismName">
+      <input message="typens:DdbjGibvGetChIdFromOrganismName"/>
+      <output message="typens:DdbjGibvGetChIdFromOrganismNameResponse"/>
+    </operation>
+    <operation name="DdbjGibvGetOrganismNameFromChid">
+      <input message="typens:DdbjGibvGetOrganismNameFromChid"/>
+      <output message="typens:DdbjGibvGetOrganismNameFromChidResponse"/>
+    </operation>
+  </portType>
+  <binding name="TogowsDdbjGibvBinding" type="typens:TogowsDdbjGibvPort">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc"/>
+    <operation name="DdbjGibvGetFeatureInformation">
+      <soap:operation soapAction="/ddbj_gibv/api/DdbjGibvGetFeatureInformation"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="DdbjGibvGetFtIdList">
+      <soap:operation soapAction="/ddbj_gibv/api/DdbjGibvGetFtIdList"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="DdbjGibvGetOrganismList">
+      <soap:operation soapAction="/ddbj_gibv/api/DdbjGibvGetOrganismList"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="DdbjGibvSearchFeature">
+      <soap:operation soapAction="/ddbj_gibv/api/DdbjGibvSearchFeature"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="DdbjGibvGetChIdList">
+      <soap:operation soapAction="/ddbj_gibv/api/DdbjGibvGetChIdList"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="DdbjGibvSearchVirus">
+      <soap:operation soapAction="/ddbj_gibv/api/DdbjGibvSearchVirus"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="DdbjGibvGetChIdFromOrganismName">
+      <soap:operation soapAction="/ddbj_gibv/api/DdbjGibvGetChIdFromOrganismName"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="DdbjGibvGetOrganismNameFromChid">
+      <soap:operation soapAction="/ddbj_gibv/api/DdbjGibvGetOrganismNameFromChid"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="TogowsDdbjGibvService">
+    <port name="TogowsDdbjGibvPort" binding="typens:TogowsDdbjGibvBinding">
+      <soap:address location="http://togows.dbcls.jp/ddbj_gibv/api"/>
+    </port>
+  </service>
+</definitions>

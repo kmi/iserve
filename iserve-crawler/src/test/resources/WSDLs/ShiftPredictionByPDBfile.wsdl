@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="ShiftPredictionByPDBfileInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="ShiftPredictionByPDBfileOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="ShiftPredictionByPDBfilePortType">
+          <wsdl:operation name="ShiftPredictionByPDBfile">
+                 <wsdl:input message="tns:ShiftPredictionByPDBfileInput"/>
+                 <wsdl:output message="tns:ShiftPredictionByPDBfileOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="ShiftPredictionByPDBfileBinding" type="tns:ShiftPredictionByPDBfilePortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="ShiftPredictionByPDBfile"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#ShiftPredictionByPDBfile' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="ShiftPredictionByPDBfileService">
+          <wsdl:documentation>Authority: ualberta.ca  -  predicts 1H, 13C, and 15N protein chemical shifts using the 3D structure (PDB coordinates) of the protein of interest. Uses the ShiftX v1.1 service.</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="ShiftPredictionByPDBfilePort" binding="tns:ShiftPredictionByPDBfileBinding">
+                 <wsdlsoap:address location="http://wishart.biology.ualberta.ca:8080/biomoby/services/ShiftPredictionByPDBfile"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

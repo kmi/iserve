@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="http://conscore.embl.de/webservice/stylesheets/WSDLDocumentation.xslt"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" 
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+             xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+             xmlns:common="http://www.embl.de/ws/ws-common"
+             xmlns:csparams="http://conscore.embl.de/ConScoreParameters" 
+             xmlns:cspred="http://conscore.embl.de/ConScorePrediction" 
+             xmlns:tns="http://conscore.embl.de/ConservationScorer" 
+             name="ConservationScorer" 
+             targetNamespace="http://conscore.embl.de/ConservationScorer">
+    <types>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+                   xmlns:common="http://www.embl.de/ws/ws-common"
+                   xmlns:csparams="http://conscore.embl.de/ConScoreParameters" 
+                   xmlns:cspred="http://conscore.embl.de/ConScorePrediction" 
+                   xmlns:tns="http://conscore.embl.de/ConservationScorer" 
+                   targetNamespace="http://conscore.embl.de/ConservationScorer">
+                     
+        <xs:import namespace="http://conscore.embl.de/ConScorePrediction" 
+                   schemaLocation="http://conscore.embl.de/webservice/schema/ConScorePrediction.xsd"/>
+                       
+        <xs:element name="RunJob">
+            <xs:complexType>
+                <xs:sequence>
+                  
+                    <xs:element name="identifier" type="xs:string" minOccurs = "1" maxOccurs="1"/>
+                    
+                    <!-- sequence must consist of upper-case characters. -->
+                    <xs:element name="querySequence" minOccurs = "1" maxOccurs="1">
+                    	<xs:simpleType>
+                    		<xs:restriction base="xs:string">
+                    			<xs:pattern value="([A-Z\s])*"/>
+                    		</xs:restriction>
+                    	</xs:simpleType>
+                    </xs:element>
+                    
+                    <xs:element name="scoringModel" minOccurs = "1" maxOccurs="1" default="continuous">
+                    	<xs:simpleType>
+                        	<xs:restriction base="xs:string">
+                            	<xs:enumeration value="continuous"/>
+                                <xs:enumeration value="discontinuous"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    
+                    <!-- max number of regular expressions is set to 5 -->
+                    <xs:element name="regularExpression" minOccurs = "0" maxOccurs="5" default="">
+                    	<xs:simpleType>
+                    		<xs:restriction base="xs:string">
+                    			<xs:pattern value="([ACDEFGHIKLMNPQRSTVWY0-9.,^$*+?|\[\]{}()\s])*"/>
+                    		</xs:restriction>
+                    	</xs:simpleType>
+                    </xs:element>
+                    
+                    <!-- max number of elm identifier names is set to 5 -->
+                    <xs:element name="elmIdentifierName" minOccurs = "0" maxOccurs="5" default="">
+                    	<xs:simpleType>
+                    		<xs:restriction base="xs:string">
+                    			<xs:pattern value="([A-Za-z0-9\-_])*"/>
+                    		</xs:restriction>
+                    	</xs:simpleType>
+                    </xs:element>
+                    
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+
+        <xs:element name="RunJobResponse">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name = "JobIdentifier" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+            
+        <xs:element name="GetStatus">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="JobIdentifier" type="xs:string"/>
+                </xs:sequence>
+           </xs:complexType>
+        </xs:element>
+        
+        <xs:element name="Status" type="xs:string"/>
+        <xs:element name="StatusDetails" type="xs:string"/>
+        
+        <xs:element name="GetStatusResponse">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element ref="tns:Status"/>
+                    <xs:element ref="tns:StatusDetails" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+            
+        <xs:element name="GetResult">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="JobIdentifier" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+            
+        <xs:element name="GetResultResponse">
+            <xs:complexType>
+                 <xs:sequence>
+                     <xs:element ref="cspred:ConScorePrediction" minOccurs="0" maxOccurs="1"/>
+                 </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+            
+        <xs:element name="FaultDescription" type="xs:string"/>
+        
+        <xs:element name="JobIdentifierFault">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element ref="tns:FaultDescription"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+        </xs:schema>
+    </types>
+    
+    <message name="RunJobMsg">
+        <part name="parameters" element="tns:RunJob"/>
+    </message>
+    
+    <message name="RunJobResponseMsg">
+        <part name="parameters" element="tns:RunJobResponse"/>
+    </message>
+    
+    <message name="GetStatusMsg">
+        <part name="parameters" element="tns:GetStatus"/>
+    </message>
+    
+    <message name="GetStatusResponseMsg">
+        <part name="parameters" element="tns:GetStatusResponse"/>
+    </message>
+    
+    <message name="GetResultMsg">
+        <part name="parameters" element="tns:GetResult"/>
+    </message>
+    
+    <message name="GetResultResponseMsg">
+        <part name="parameters" element="tns:GetResultResponse"/>
+    </message>
+    
+    <message name="JobIdentifierFaultMsg">
+        <part name="fault" element="tns:JobIdentifierFault"/>
+    </message>
+    
+    <portType name="ConservationScorer">
+    
+        <operation name="RunJob">
+            <documentation>This operation is the initial operation in a stateful interaction with the service.</documentation>
+            <input message="tns:RunJobMsg"/>
+            <output message="tns:RunJobResponseMsg"/>
+        </operation>
+        
+        <operation name="GetStatus">
+            <documentation>This operation returns the status of a job identified by it's job Identifier. A client should use this operation to determine when the results are available for a specific job identifier.</documentation>
+            <input message="tns:GetStatusMsg"/>
+            <output message="tns:GetStatusResponseMsg"/>
+            <fault name="JobIdentifierFault" message="tns:JobIdentifierFaultMsg"/>
+        </operation>
+        
+        <operation name="GetResult">
+            <documentation>This operation returns the resulting predictions for a particular job identifier.</documentation>
+            <input message="tns:GetResultMsg"/>
+            <output message="tns:GetResultResponseMsg"/>
+            <fault name="JobIdentifierFault" message="tns:JobIdentifierFaultMsg"/>
+        </operation>
+        
+    </portType>
+    
+    <binding name="ConservationScorerBinding" type="tns:ConservationScorer">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        
+        <operation name="RunJob">
+            <soap:operation soapAction="http://conscore.embl.de/ConservationScorer/RunJob"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        
+        <operation name="GetStatus">
+            <soap:operation soapAction="http://conscore.embl.de/ConservationScorer/GetStatus"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="JobIdentifierFault">
+                <soap:fault name="JobIdentifierFault" use="literal"/>
+            </fault>
+        </operation>
+        
+        <operation name="GetResult">
+            <soap:operation soapAction="http://conscore.embl.de/ConservationScorer/GetResult"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="JobIdentifierFault">
+                <soap:fault name="JobIdentifierFault" use="literal"/>
+            </fault>
+        </operation>
+    
+    </binding>
+    
+    <service name="ConservationScorer">
+        <documentation>This  WSDL file describe the Conservation Score Web Service. 
+	    It calculates the conservation of ELM matches in a set of homologous sequences.
+            <doc:ServiceDocumentation xmlns:doc="http://www.bccs.uib.no/ServiceDocumentation" 
+                                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                                      xsi:schemaLocation="http://www.bccs.uib.no/ServiceDocumentation http://conscore.embl.de/webservice/schema/ServiceDocumentation.xsd">
+            
+            <doc:Reference>A tree-based conservation scoring method for short linear motifs in multiple alignments of protein sequences. Claudia Chica, Alberto Labarga, Cathryn M Gould, Rodrigo Lopez and Toby J Gibson. BMC Bioinformatics. 2008 May 6; 9(1):229.</doc:Reference>
+            <doc:WebSite></doc:WebSite>
+            <doc:SampleClient>http://conscore.embl.de/webservice/clients/conScorer.txt</doc:SampleClient>
+            <doc:AdditionalInfo>
+                <doc:block>
+                    <doc:comment>The CS Web Service should also be accessible via a graphical interface using the Cinema software. Cinema is a tool for annotated multiple alignment visualisation that is being
+                                 developed in the context of the UTOPIA Toolset  
+                    </doc:comment>
+                    <doc:webLink>http://utopia.cs.manchester.ac.uk/</doc:webLink>    
+                </doc:block>
+                <doc:block>
+                    <doc:comment>Instructions for using UTOPIA-Cinema as a front end for the CS Web Service are
+                                 available at:  
+                    </doc:comment>
+                    <doc:webLink>http://utopia.cs.man.ac.uk/ELM-CS</doc:webLink>    
+                </doc:block>
+            </doc:AdditionalInfo>
+            
+            </doc:ServiceDocumentation>
+        </documentation>
+        
+        <port name="ConservationScorer" binding="tns:ConservationScorerBinding">
+            <soap:address location="http://luna.embl.de:8080/axis2/services/ConservationScorer"/>
+        </port>
+    </service>
+
+</definitions>

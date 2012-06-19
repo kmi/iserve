@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+    name="TaxonNameService"
+    targetNamespace="http://darwin.zoology.gla.ac.uk/~rpage/MyToL/www/soap/TaxonNameService.wsdl"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:tns="http://darwin.zoology.gla.ac.uk/~rpage/MyToL/www/soap/TaxonNameService.wsdl"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsd1="http://darwin.zoology.gla.ac.uk/~rpage/MyToL/www/soap/TaxonNameService.xsd1">
+    <types>
+        <xsd:schema
+            targetNamespace="http://darwin.zoology.gla.ac.uk/~rpage/MyToL/www/soap/TaxonNameService.xsd1"
+            xmlns="http://schemas.xmlsoap.org/wsdl/"
+            xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+            xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+            xmlns:tns="http://darwin.zoology.gla.ac.uk/~rpage/MyToL/www/soap/TaxonNameService.wsdl"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:xsd1="http://darwin.zoology.gla.ac.uk/~rpage/MyToL/www/soap/TaxonNameService.xsd1"> </xsd:schema>
+    </types>
+    <message name="getTaxidFromAccessionIn">
+        <part name="accession" type="xsd:string">
+            <documentation>GenBank accession number</documentation>
+        </part>
+    </message>
+    <message name="getTaxonIDIn">
+        <part name="tx_Name" type="xsd:string">
+            <documentation>The taxon name to look up, for example &quot;Diomedea&quot;.</documentation>
+        </part>
+    </message>
+    <message name="getTaxidFromAccessionOut">
+        <part name="Result" type="xsd:string">
+            <documentation>Taxid of organism from which sequence was obtained</documentation>
+        </part>
+    </message>
+    <message name="getTaxonIDOut">
+        <part name="Result" type="xsd:string">
+            <documentation>The indentifier number for the name, or &quot;0&quot; if name not found.</documentation>
+        </part>
+    </message>
+    <portType name="TaxonNameServicePortType">
+        <operation name="getTaxonID">
+            <input message="tns:getTaxonIDIn"/>
+            <output message="tns:getTaxonIDOut"/>
+        </operation>
+        <operation name="getTaxidFromAccession">
+            <input message="tns:getTaxidFromAccessionIn"/>
+            <output message="tns:getTaxidFromAccessionOut"/>
+        </operation>
+    </portType>
+    <binding name="TaxonNameServiceBinding" type="tns:TaxonNameServicePortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="getTaxonID">
+            <documentation>Get the ID of the taxon name</documentation>
+            <soap:operation soapAction="getTaxonID"/>
+            <input>
+                <soap:body
+                    encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                    namespace="http://darwin.zoology.gla.ac.uk/~rpage/MyToL/www/soap/TaxonNameService/binding"
+                    use="encoded"/>
+            </input>
+            <output>
+                <soap:body
+                    encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                    namespace="http://darwin.zoology.gla.ac.uk/~rpage/MyToL/www/soap/TaxonNameService/binding"
+                    use="encoded"/>
+            </output>
+        </operation>
+        <operation name="getTaxidFromAccession">
+            <documentation>Given a GenBank accession number, return the NCBI taxid number of organism from which sequence was obtained</documentation>
+            <soap:operation soapAction="getTaxidFromAccession"/>
+            <input>
+                <soap:body
+                    encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                    namespace="http://darwin.zoology.gla.ac.uk/~rpage/MyToL/www/soap/TaxonNameService/binding"
+                    use="encoded"/>
+            </input>
+            <output>
+                <soap:body
+                    encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                    namespace="http://darwin.zoology.gla.ac.uk/~rpage/MyToL/www/soap/TaxonNameService/binding"
+                    use="encoded"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="TaxonNameService">
+        <documentation>Returns information on a taxonomic name</documentation>
+        <port binding="tns:TaxonNameServiceBinding" name="TaxonNameServicePort">
+            <soap:address
+                location="http://darwin.zoology.gla.ac.uk/~rpage/MyToL/www/soap/TaxonNameService.php"/>
+        </port>
+    </service>
+</definitions>

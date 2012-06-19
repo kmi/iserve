@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<definitions name="Simpa96_Service" 
+ targetNamespace="http://gbio.ibcp.fr:8090/Simpa96_Service"  
+ xmlns:tns="http://gbio.ibcp.fr:8090/Simpa96_Service"   
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+ xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <message name="submitSimpa96Request">
+        <part name="Sequences" type="xsd:string"/>
+    </message>
+    <message name="submitSimpa96Response">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    
+    <message name="checkStatusSimpa96Request">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    <message name="checkStatusSimpa96Response">
+        <part name="Status" type="xsd:string"/>
+    </message>
+    
+    <message name="getResultsSimpa96Request">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    <message name="getResultsSimpa96Response">
+        <part name="SecStructure" type="xsd:string"/>
+        <part name="Logout" type="xsd:string"/>
+    </message>
+    
+    <message name="cancelSimpa96Request">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    <message name="cancelSimpa96Response">
+        <part name="Status" type="xsd:string"/>
+    </message>    
+
+    <portType name="Simpa96PortType">
+        <operation name="submitSimpa96">
+            <documentation>Submit a sequence an get a jobID</documentation>
+            <input message="tns:submitSimpa96Request"/>
+            <output message="tns:submitSimpa96Response"/>
+        </operation>
+        <operation name="checkStatusSimpa96">
+            <documentation>Submit a jobID and get the status</documentation>
+            <input message="tns:checkStatusSimpa96Request"/>
+            <output message="tns:checkStatusSimpa96Response"/>
+        </operation>
+        <operation name="getResultsSimpa96">
+            <documentation>When job is finish, submit a jobid and get the results</documentation>
+            <input message="tns:getResultsSimpa96Request"/>
+            <output message="tns:getResultsSimpa96Response"/>
+        </operation>
+        <operation name="cancelSimpa96">
+            <documentation>When some thing is wrong, cancel your job</documentation>
+            <input message="tns:cancelSimpa96Request"/>
+            <output message="tns:cancelSimpa96Response"/>
+        </operation>
+    </portType>
+
+    <binding name="Simpa96Binding" type="tns:Simpa96PortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="submitSimpa96">
+            <soap:operation
+             soapAction="urn:Simpa96WS.wsdl#submitSimpa96"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:Simpa96_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:Simpa96_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="checkStatusSimpa96">
+            <soap:operation
+             soapAction="urn:Simpa96WS.wsdl#checkStatusSimpa96"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:Simpa96_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:Simpa96_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="getResultsSimpa96">
+            <soap:operation
+             soapAction="urn:Simpa96WS.wsdl#getResultsSimpa96"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:Simpa96_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:Simpa96_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="cancelSimpa96">
+            <soap:operation
+             soapAction="urn:Simpa96WS.wsdl#cancelSimpa96"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:Simpa96_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:Simpa96_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+    
+    <service name="Simpa96_Service">
+        <documentation>Simpa96 @ IBCP (http://gbio-pbil.ibcp.fr)</documentation>
+        <port name="Simpa96Port" binding="tns:Simpa96Binding">
+            <soap:address location="http://gbio.ibcp.fr:8090/Simpa96_Service"/>
+        </port>
+    </service>
+    
+</definitions>

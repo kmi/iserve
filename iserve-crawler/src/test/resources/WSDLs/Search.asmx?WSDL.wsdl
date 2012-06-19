@@ -1,0 +1,1803 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.chemspider.com/" xmlns:s1="http://www.chemspider.com/AbstractTypes" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://www.chemspider.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">&lt;h3&gt;Please send all feedback to development-at-chemspider-dot-com&lt;/h3&gt;&lt;i&gt;NOTE: Some operations require a "Security Token". To obtain a token please complete the &lt;a href="/Register.aspx"&gt;registration&lt;/a&gt; process. Security Token is listed at &lt;a href="/UserProfile.aspx"&gt;Profile&lt;/a&gt; page.&lt;/i&gt;</wsdl:documentation>
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.chemspider.com/">
+      <s:element name="SimpleSearch2IdList">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="query" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SimpleSearch2IdListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SimpleSearch2IdListResult" type="tns:ArrayOfInt" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfInt">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="int" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetRecordImage">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRecordImageResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRecordImageResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRecordDetails">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRecordDetailsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRecordDetailsResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfAnyType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="anyType" nillable="true" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SimpleSearch">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="query" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SimpleSearchResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SimpleSearchResult" type="tns:ArrayOfInt" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AsyncSimpleSearch">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="query" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AsyncSimpleSearchResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AsyncSimpleSearchResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="StructureSearch">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="options" type="tns:ExactStructureSearchOptions" />
+            <s:element minOccurs="0" maxOccurs="1" name="commonOptions" type="tns:CommonSearchOptions" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ExactStructureSearchOptions">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:StructureSearchOptions">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="MatchType" type="tns:EMatchType" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="StructureSearchOptions">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:SearchOptions">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Molecule" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="SearchOptions" abstract="true" />
+      <s:complexType name="CommonSearchOptions">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:SearchOptions">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="Complexity" type="tns:EComplexity" />
+              <s:element minOccurs="1" maxOccurs="1" name="Isotopic" type="tns:EIsotopic" />
+              <s:element minOccurs="1" maxOccurs="1" name="HasSpectra" type="s:boolean" />
+              <s:element minOccurs="1" maxOccurs="1" name="HasPatents" type="s:boolean" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:simpleType name="EComplexity">
+        <s:restriction base="s:string">
+          <s:enumeration value="Any" />
+          <s:enumeration value="Single" />
+          <s:enumeration value="Multi" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="EIsotopic">
+        <s:restriction base="s:string">
+          <s:enumeration value="Any" />
+          <s:enumeration value="Labeled" />
+          <s:enumeration value="NotLabeled" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="EMatchType">
+        <s:restriction base="s:string">
+          <s:enumeration value="ExactMatch" />
+          <s:enumeration value="AllTautomers" />
+          <s:enumeration value="SameSkeletonIncludingH" />
+          <s:enumeration value="SameSkeletonExcludingH" />
+          <s:enumeration value="AllIsomers" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="StructureSearchResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="StructureSearchResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SubstructureSearch">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="options" type="tns:SubstructureSearchOptions" />
+            <s:element minOccurs="0" maxOccurs="1" name="commonOptions" type="tns:CommonSearchOptions" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="SubstructureSearchOptions">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:StructureSearchOptions">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="MatchTautomers" type="s:boolean" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="SubstructureSearchResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SubstructureSearchResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SimilaritySearch">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="options" type="tns:SimilaritySearchOptions" />
+            <s:element minOccurs="0" maxOccurs="1" name="commonOptions" type="tns:CommonSearchOptions" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="SimilaritySearchOptions">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:StructureSearchOptions">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="SimilarityType" type="tns:ESimilarityType" />
+              <s:element minOccurs="1" maxOccurs="1" name="Threshold" type="s:float" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:simpleType name="ESimilarityType">
+        <s:restriction base="s:string">
+          <s:enumeration value="Tanimoto" />
+          <s:enumeration value="Tversky" />
+          <s:enumeration value="Euclidian" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="SimilaritySearchResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SimilaritySearchResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="IntrinsicPropertiesSearch">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="options" type="tns:IntrinsicPropertiesSearchOptions" />
+            <s:element minOccurs="0" maxOccurs="1" name="commonOptions" type="tns:CommonSearchOptions" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="IntrinsicPropertiesSearchOptions">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:SearchOptions">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="EmpiricalFormula" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="MolWeightMin" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="MolWeightMax" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="NominalMassMin" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="NominalMassMax" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="AverageMassMin" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="AverageMassMax" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="MonoisotopicMassMin" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="MonoisotopicMassMax" nillable="true" type="s:double" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="IntrinsicPropertiesSearchResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="IntrinsicPropertiesSearchResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ElementsSearch">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="options" type="tns:ElementsSearchOptions" />
+            <s:element minOccurs="0" maxOccurs="1" name="commonOptions" type="tns:CommonSearchOptions" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ElementsSearchOptions">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:SearchOptions">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="IncludeAll" type="s:boolean" />
+              <s:element minOccurs="0" maxOccurs="1" name="IncludeElements" type="tns:ArrayOfString" />
+              <s:element minOccurs="0" maxOccurs="1" name="ExcludeElements" type="tns:ArrayOfString" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ElementsSearchResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ElementsSearchResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PredictedPropertiesSearch">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="options" type="tns:PredictedPropertiesSearchOptions" />
+            <s:element minOccurs="0" maxOccurs="1" name="commonOptions" type="tns:CommonSearchOptions" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="PredictedPropertiesSearchOptions">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:SearchOptions">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="LogPMax" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="LogPMin" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="LogD55Max" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="LogD55Min" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="LogD74Max" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="LogD74Min" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="RuleOf5Max" nillable="true" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="RuleOf5Min" nillable="true" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="HAcceptorsMax" nillable="true" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="HAcceptorsMin" nillable="true" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="HDonorsMax" nillable="true" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="HDonorsMin" nillable="true" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="FreelyRotatableBondsMax" nillable="true" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="FreelyRotatableBondsMin" nillable="true" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="PolarSurfaceAreaMax" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="PolarSurfaceAreaMin" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="MolarVolumeMax" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="MolarVolumeMin" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="RefractiveIndexMax" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="RefractiveIndexMin" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="BoilingPointMax" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="BoilingPointMin" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="FlashPointMax" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="FlashPointMin" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="DensityMax" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="DensityMin" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="SurfaceTensionMax" nillable="true" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="SurfaceTensionMin" nillable="true" type="s:double" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="PredictedPropertiesSearchResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="PredictedPropertiesSearchResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="LassoSearch">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="options" type="tns:LassoSearchOptions" />
+            <s:element minOccurs="0" maxOccurs="1" name="commonOptions" type="tns:CommonSearchOptions" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="LassoSearchOptions">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:SearchOptions">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="ThresholdMin" type="s:double" />
+              <s:element minOccurs="0" maxOccurs="1" name="FamilyMin" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="ThresholdMax" type="s:double" />
+              <s:element minOccurs="0" maxOccurs="1" name="FamilyMax" type="tns:ArrayOfString" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="LassoSearchResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="LassoSearchResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAsyncSearchStatus">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="rid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAsyncSearchStatusResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetAsyncSearchStatusResult" type="tns:ERequestStatus" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:simpleType name="ERequestStatus">
+        <s:restriction base="s:string">
+          <s:enumeration value="Unknown" />
+          <s:enumeration value="Created" />
+          <s:enumeration value="Scheduled" />
+          <s:enumeration value="Processing" />
+          <s:enumeration value="Suspended" />
+          <s:enumeration value="PartialResultReady" />
+          <s:enumeration value="ResultReady" />
+          <s:enumeration value="Failed" />
+          <s:enumeration value="TooManyRecords" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="GetAsyncSearchResult">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="rid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAsyncSearchResultResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAsyncSearchResultResult" type="tns:ArrayOfInt" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAsyncSearchResultPart">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="rid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="start" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="count" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAsyncSearchResultPartResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAsyncSearchResultPartResult" type="tns:ArrayOfInt" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCompoundThumbnail">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCompoundThumbnailResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetCompoundThumbnailResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCompoundInfo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="CSID" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="CompoundInfo">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="CSID" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="InChI" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="InChIKey" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SMILES" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetCompoundInfoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetCompoundInfoResult" type="tns:CompoundInfo" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Mol2CSID">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="mol" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="options" type="tns:ExactSearchOptions" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:simpleType name="ExactSearchOptions">
+        <s:restriction base="s:string">
+          <s:enumeration value="eExactMatch" />
+          <s:enumeration value="eAllTautomers" />
+          <s:enumeration value="eSameSkeletonAndH" />
+          <s:enumeration value="eSameSkeleton" />
+          <s:enumeration value="eAllIsomers" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="Mol2CSIDResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Mol2CSIDResult" type="tns:ArrayOfInt" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="MolAndDS2CSID">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="mol" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="options" type="tns:ExactSearchOptions" />
+            <s:element minOccurs="0" maxOccurs="1" name="datasources" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="MolAndDS2CSIDResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="MolAndDS2CSIDResult" type="tns:ArrayOfInt" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CSID2ExtRefs">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="CSID" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="datasources" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ExtRef">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="CSID" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="ds_name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ds_url" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ext_id" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ext_url" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfExtRef">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ExtRef" type="tns:ExtRef" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="CSID2ExtRefsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CSID2ExtRefsResult" type="tns:ArrayOfExtRef" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDataSliceCompounds">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDataSliceCompoundsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetDataSliceCompoundsResult" type="tns:ArrayOfInt" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ArrayOfInt" nillable="true" type="tns:ArrayOfInt" />
+      <s:element name="base64Binary" nillable="true" type="s:base64Binary" />
+      <s:element name="ArrayOfAnyType" nillable="true" type="tns:ArrayOfAnyType" />
+      <s:element name="string" nillable="true" type="s:string" />
+      <s:element name="ERequestStatus" type="tns:ERequestStatus" />
+      <s:element name="CompoundInfo" type="tns:CompoundInfo" />
+      <s:element name="ArrayOfExtRef" nillable="true" type="tns:ArrayOfExtRef" />
+    </s:schema>
+    <s:schema targetNamespace="http://www.chemspider.com/AbstractTypes">
+      <s:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      <s:complexType name="StringArray">
+        <s:complexContent mixed="false">
+          <s:restriction base="soapenc:Array">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="unbounded" name="String" type="s:string" />
+            </s:sequence>
+          </s:restriction>
+        </s:complexContent>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="SimpleSearch2IdListSoapIn">
+    <wsdl:part name="parameters" element="tns:SimpleSearch2IdList" />
+  </wsdl:message>
+  <wsdl:message name="SimpleSearch2IdListSoapOut">
+    <wsdl:part name="parameters" element="tns:SimpleSearch2IdListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordImageSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRecordImage" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordImageSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRecordImageResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordDetailsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRecordDetails" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordDetailsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRecordDetailsResponse" />
+  </wsdl:message>
+  <wsdl:message name="SimpleSearchSoapIn">
+    <wsdl:part name="parameters" element="tns:SimpleSearch" />
+  </wsdl:message>
+  <wsdl:message name="SimpleSearchSoapOut">
+    <wsdl:part name="parameters" element="tns:SimpleSearchResponse" />
+  </wsdl:message>
+  <wsdl:message name="AsyncSimpleSearchSoapIn">
+    <wsdl:part name="parameters" element="tns:AsyncSimpleSearch" />
+  </wsdl:message>
+  <wsdl:message name="AsyncSimpleSearchSoapOut">
+    <wsdl:part name="parameters" element="tns:AsyncSimpleSearchResponse" />
+  </wsdl:message>
+  <wsdl:message name="StructureSearchSoapIn">
+    <wsdl:part name="parameters" element="tns:StructureSearch" />
+  </wsdl:message>
+  <wsdl:message name="StructureSearchSoapOut">
+    <wsdl:part name="parameters" element="tns:StructureSearchResponse" />
+  </wsdl:message>
+  <wsdl:message name="SubstructureSearchSoapIn">
+    <wsdl:part name="parameters" element="tns:SubstructureSearch" />
+  </wsdl:message>
+  <wsdl:message name="SubstructureSearchSoapOut">
+    <wsdl:part name="parameters" element="tns:SubstructureSearchResponse" />
+  </wsdl:message>
+  <wsdl:message name="SimilaritySearchSoapIn">
+    <wsdl:part name="parameters" element="tns:SimilaritySearch" />
+  </wsdl:message>
+  <wsdl:message name="SimilaritySearchSoapOut">
+    <wsdl:part name="parameters" element="tns:SimilaritySearchResponse" />
+  </wsdl:message>
+  <wsdl:message name="IntrinsicPropertiesSearchSoapIn">
+    <wsdl:part name="parameters" element="tns:IntrinsicPropertiesSearch" />
+  </wsdl:message>
+  <wsdl:message name="IntrinsicPropertiesSearchSoapOut">
+    <wsdl:part name="parameters" element="tns:IntrinsicPropertiesSearchResponse" />
+  </wsdl:message>
+  <wsdl:message name="ElementsSearchSoapIn">
+    <wsdl:part name="parameters" element="tns:ElementsSearch" />
+  </wsdl:message>
+  <wsdl:message name="ElementsSearchSoapOut">
+    <wsdl:part name="parameters" element="tns:ElementsSearchResponse" />
+  </wsdl:message>
+  <wsdl:message name="PredictedPropertiesSearchSoapIn">
+    <wsdl:part name="parameters" element="tns:PredictedPropertiesSearch" />
+  </wsdl:message>
+  <wsdl:message name="PredictedPropertiesSearchSoapOut">
+    <wsdl:part name="parameters" element="tns:PredictedPropertiesSearchResponse" />
+  </wsdl:message>
+  <wsdl:message name="LassoSearchSoapIn">
+    <wsdl:part name="parameters" element="tns:LassoSearch" />
+  </wsdl:message>
+  <wsdl:message name="LassoSearchSoapOut">
+    <wsdl:part name="parameters" element="tns:LassoSearchResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAsyncSearchStatusSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAsyncSearchStatus" />
+  </wsdl:message>
+  <wsdl:message name="GetAsyncSearchStatusSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAsyncSearchStatusResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAsyncSearchResultSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAsyncSearchResult" />
+  </wsdl:message>
+  <wsdl:message name="GetAsyncSearchResultSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAsyncSearchResultResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAsyncSearchResultPartSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAsyncSearchResultPart" />
+  </wsdl:message>
+  <wsdl:message name="GetAsyncSearchResultPartSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAsyncSearchResultPartResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCompoundThumbnailSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCompoundThumbnail" />
+  </wsdl:message>
+  <wsdl:message name="GetCompoundThumbnailSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCompoundThumbnailResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCompoundInfoSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCompoundInfo" />
+  </wsdl:message>
+  <wsdl:message name="GetCompoundInfoSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCompoundInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="Mol2CSIDSoapIn">
+    <wsdl:part name="parameters" element="tns:Mol2CSID" />
+  </wsdl:message>
+  <wsdl:message name="Mol2CSIDSoapOut">
+    <wsdl:part name="parameters" element="tns:Mol2CSIDResponse" />
+  </wsdl:message>
+  <wsdl:message name="MolAndDS2CSIDSoapIn">
+    <wsdl:part name="parameters" element="tns:MolAndDS2CSID" />
+  </wsdl:message>
+  <wsdl:message name="MolAndDS2CSIDSoapOut">
+    <wsdl:part name="parameters" element="tns:MolAndDS2CSIDResponse" />
+  </wsdl:message>
+  <wsdl:message name="CSID2ExtRefsSoapIn">
+    <wsdl:part name="parameters" element="tns:CSID2ExtRefs" />
+  </wsdl:message>
+  <wsdl:message name="CSID2ExtRefsSoapOut">
+    <wsdl:part name="parameters" element="tns:CSID2ExtRefsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetDataSliceCompoundsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetDataSliceCompounds" />
+  </wsdl:message>
+  <wsdl:message name="GetDataSliceCompoundsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetDataSliceCompoundsResponse" />
+  </wsdl:message>
+  <wsdl:message name="SimpleSearch2IdListHttpGetIn">
+    <wsdl:part name="query" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SimpleSearch2IdListHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfInt" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordImageHttpGetIn">
+    <wsdl:part name="id" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordImageHttpGetOut">
+    <wsdl:part name="Body" element="tns:base64Binary" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordDetailsHttpGetIn">
+    <wsdl:part name="id" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordDetailsHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfAnyType" />
+  </wsdl:message>
+  <wsdl:message name="SimpleSearchHttpGetIn">
+    <wsdl:part name="query" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SimpleSearchHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfInt" />
+  </wsdl:message>
+  <wsdl:message name="AsyncSimpleSearchHttpGetIn">
+    <wsdl:part name="query" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="AsyncSimpleSearchHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="GetAsyncSearchStatusHttpGetIn">
+    <wsdl:part name="rid" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetAsyncSearchStatusHttpGetOut">
+    <wsdl:part name="Body" element="tns:ERequestStatus" />
+  </wsdl:message>
+  <wsdl:message name="GetAsyncSearchResultHttpGetIn">
+    <wsdl:part name="rid" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetAsyncSearchResultHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfInt" />
+  </wsdl:message>
+  <wsdl:message name="GetAsyncSearchResultPartHttpGetIn">
+    <wsdl:part name="rid" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+    <wsdl:part name="start" type="s:string" />
+    <wsdl:part name="count" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetAsyncSearchResultPartHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfInt" />
+  </wsdl:message>
+  <wsdl:message name="GetCompoundThumbnailHttpGetIn">
+    <wsdl:part name="id" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetCompoundThumbnailHttpGetOut">
+    <wsdl:part name="Body" element="tns:base64Binary" />
+  </wsdl:message>
+  <wsdl:message name="GetCompoundInfoHttpGetIn">
+    <wsdl:part name="CSID" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetCompoundInfoHttpGetOut">
+    <wsdl:part name="Body" element="tns:CompoundInfo" />
+  </wsdl:message>
+  <wsdl:message name="Mol2CSIDHttpGetIn">
+    <wsdl:part name="mol" type="s:string" />
+    <wsdl:part name="options" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="Mol2CSIDHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfInt" />
+  </wsdl:message>
+  <wsdl:message name="MolAndDS2CSIDHttpGetIn">
+    <wsdl:part name="mol" type="s:string" />
+    <wsdl:part name="options" type="s:string" />
+    <wsdl:part name="datasources" type="s1:StringArray" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="MolAndDS2CSIDHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfInt" />
+  </wsdl:message>
+  <wsdl:message name="CSID2ExtRefsHttpGetIn">
+    <wsdl:part name="CSID" type="s:string" />
+    <wsdl:part name="datasources" type="s1:StringArray" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="CSID2ExtRefsHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfExtRef" />
+  </wsdl:message>
+  <wsdl:message name="GetDataSliceCompoundsHttpGetIn">
+    <wsdl:part name="name" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetDataSliceCompoundsHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfInt" />
+  </wsdl:message>
+  <wsdl:message name="SimpleSearch2IdListHttpPostIn">
+    <wsdl:part name="query" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SimpleSearch2IdListHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfInt" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordImageHttpPostIn">
+    <wsdl:part name="id" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordImageHttpPostOut">
+    <wsdl:part name="Body" element="tns:base64Binary" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordDetailsHttpPostIn">
+    <wsdl:part name="id" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordDetailsHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfAnyType" />
+  </wsdl:message>
+  <wsdl:message name="SimpleSearchHttpPostIn">
+    <wsdl:part name="query" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SimpleSearchHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfInt" />
+  </wsdl:message>
+  <wsdl:message name="AsyncSimpleSearchHttpPostIn">
+    <wsdl:part name="query" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="AsyncSimpleSearchHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="GetAsyncSearchStatusHttpPostIn">
+    <wsdl:part name="rid" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetAsyncSearchStatusHttpPostOut">
+    <wsdl:part name="Body" element="tns:ERequestStatus" />
+  </wsdl:message>
+  <wsdl:message name="GetAsyncSearchResultHttpPostIn">
+    <wsdl:part name="rid" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetAsyncSearchResultHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfInt" />
+  </wsdl:message>
+  <wsdl:message name="GetAsyncSearchResultPartHttpPostIn">
+    <wsdl:part name="rid" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+    <wsdl:part name="start" type="s:string" />
+    <wsdl:part name="count" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetAsyncSearchResultPartHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfInt" />
+  </wsdl:message>
+  <wsdl:message name="GetCompoundThumbnailHttpPostIn">
+    <wsdl:part name="id" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetCompoundThumbnailHttpPostOut">
+    <wsdl:part name="Body" element="tns:base64Binary" />
+  </wsdl:message>
+  <wsdl:message name="GetCompoundInfoHttpPostIn">
+    <wsdl:part name="CSID" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetCompoundInfoHttpPostOut">
+    <wsdl:part name="Body" element="tns:CompoundInfo" />
+  </wsdl:message>
+  <wsdl:message name="Mol2CSIDHttpPostIn">
+    <wsdl:part name="mol" type="s:string" />
+    <wsdl:part name="options" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="Mol2CSIDHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfInt" />
+  </wsdl:message>
+  <wsdl:message name="MolAndDS2CSIDHttpPostIn">
+    <wsdl:part name="mol" type="s:string" />
+    <wsdl:part name="options" type="s:string" />
+    <wsdl:part name="datasources" type="s1:StringArray" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="MolAndDS2CSIDHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfInt" />
+  </wsdl:message>
+  <wsdl:message name="CSID2ExtRefsHttpPostIn">
+    <wsdl:part name="CSID" type="s:string" />
+    <wsdl:part name="datasources" type="s1:StringArray" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="CSID2ExtRefsHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfExtRef" />
+  </wsdl:message>
+  <wsdl:message name="GetDataSliceCompoundsHttpPostIn">
+    <wsdl:part name="name" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetDataSliceCompoundsHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfInt" />
+  </wsdl:message>
+  <wsdl:portType name="SearchSoap">
+    <wsdl:operation name="SimpleSearch2IdList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search by Name, SMILES, InChI, InChIKey, etc. Return a list of found IDs (first 100). &lt;span style="color: red; font-weight: bold;"&gt;This operation is deprecated and will be removed soon - use SimpleSearch instead.&lt;/span&gt;</wsdl:documentation>
+      <wsdl:input message="tns:SimpleSearch2IdListSoapIn" />
+      <wsdl:output message="tns:SimpleSearch2IdListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordImage">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get structure image in PNG format. &lt;span style="color: red; font-weight: bold;"&gt;This operation is deprecated and will be removed soon - use GetCompoundThumbnail instead.&lt;/span&gt;</wsdl:documentation>
+      <wsdl:input message="tns:GetRecordImageSoapIn" />
+      <wsdl:output message="tns:GetRecordImageSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordDetails">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get record details: CSID, InChIKey, InChI, SMILES. &lt;span style="color: red; font-weight: bold;"&gt;This operation is deprecated and will be removed soon - use GetCompoundInfo instead.&lt;/span&gt;</wsdl:documentation>
+      <wsdl:input message="tns:GetRecordDetailsSoapIn" />
+      <wsdl:output message="tns:GetRecordDetailsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SimpleSearch">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search by Name, SMILES, InChI, InChIKey, etc. Returns a list of found CSIDs (first 100 - please use AsyncSimpleSearch instead if you like to get the full list). Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:SimpleSearchSoapIn" />
+      <wsdl:output message="tns:SimpleSearchSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AsyncSimpleSearch">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search by Name, SMILES, InChI, InChIKey, etc. Returns transaction ID which can be used to access search status and result. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:AsyncSimpleSearchSoapIn" />
+      <wsdl:output message="tns:AsyncSimpleSearchSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="StructureSearch">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search by SMILES or MOL. Returns transaction ID which can be used to access search status and result. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:StructureSearchSoapIn" />
+      <wsdl:output message="tns:StructureSearchSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SubstructureSearch">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search by SMILES or MOL. Returns transaction ID which can be used to access search status and result. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:SubstructureSearchSoapIn" />
+      <wsdl:output message="tns:SubstructureSearchSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SimilaritySearch">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search by SMILES or MOL. Valid values of the Threshold parameter are between 0 and 100. Returns transaction ID which can be used to access search status and result. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:SimilaritySearchSoapIn" />
+      <wsdl:output message="tns:SimilaritySearchSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="IntrinsicPropertiesSearch">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search by intrinsic properties. Returns transaction ID which can be used to access search status and result. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:IntrinsicPropertiesSearchSoapIn" />
+      <wsdl:output message="tns:IntrinsicPropertiesSearchSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ElementsSearch">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search by chemical elements. Returns transaction ID which can be used to access search status and result. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:ElementsSearchSoapIn" />
+      <wsdl:output message="tns:ElementsSearchSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PredictedPropertiesSearch">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search by predicted properties. Returns transaction ID which can be used to access search status and result. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:PredictedPropertiesSearchSoapIn" />
+      <wsdl:output message="tns:PredictedPropertiesSearchSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="LassoSearch">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search by LASSO. Input values for FamilyMin and FamilyMax should correspond to the short name of the relevant enzyme e.g. ACE (see http://www.chemspider.com/FullSearch.aspx for other values). Valid thresholdMin and thresholdMax should be between 0 and 0.99. Returns transaction ID which can be used to access search status and result. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:LassoSearchSoapIn" />
+      <wsdl:output message="tns:LassoSearchSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchStatus">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Query asynchronous operation status. Requires transaction ID returned by Asynch&lt;SOMETHING&gt;Search operation. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetAsyncSearchStatusSoapIn" />
+      <wsdl:output message="tns:GetAsyncSearchStatusSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchResult">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the list of CSIDs found by Asynch&lt;SOMETHING&gt;Search operation. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetAsyncSearchResultSoapIn" />
+      <wsdl:output message="tns:GetAsyncSearchResultSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchResultPart">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Return a slice of the list of CSIDs found by Asynch&lt;SOMETHING&gt;Search operation. Returns full list if start = 0 and count = -1. If (start + count) &gt; (# of results) all results starting at start position are returned. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetAsyncSearchResultPartSoapIn" />
+      <wsdl:output message="tns:GetAsyncSearchResultPartSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundThumbnail">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get compound thumbnail in PNG format. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetCompoundThumbnailSoapIn" />
+      <wsdl:output message="tns:GetCompoundThumbnailSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundInfo">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get record details (CSID, StdInChIKey, StdInChI, SMILES) by CSID. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetCompoundInfoSoapIn" />
+      <wsdl:output message="tns:GetCompoundInfoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Mol2CSID">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search for structure that matches provided MOL within the range specified by options. Returns found CSID list. Security token with Service Subscriber role is required. The search converts the Mol to an InChI and the options parameter allows different layers of the InChI to be searched for against ChemSpider InChIs. For example: eSameSkeleton searches on the connection layer alone (not the h layer - just the connectivity of the rest of the molecule); eAllTautomers searches on everything but the fixed-hydrogen layer; eAllIsomers searches on the molecular formula expression at the beginning of the InChI.</wsdl:documentation>
+      <wsdl:input message="tns:Mol2CSIDSoapIn" />
+      <wsdl:output message="tns:Mol2CSIDSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="MolAndDS2CSID">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search for structure that matches provided MOL within the range specified by options and within the specified list of datasources. Returns found CSID list. Security token with Service Subscriber role is required. The search converts the Mol to an InChI and the options parameter allows different layers of the InChI to be searched for against ChemSpider InChIs. For example: eSameSkeleton searches on the connection layer alone (not the h layer - just the connectivity of the rest of the molecule); eAllTautomers searches on everything but the fixed-hydrogen layer; eAllIsomers searches on the molecular formula expression at the beginning of the InChI.</wsdl:documentation>
+      <wsdl:input message="tns:MolAndDS2CSIDSoapIn" />
+      <wsdl:output message="tns:MolAndDS2CSIDSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CSID2ExtRefs">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Return a list of external references (data sources). Security token with Service Subscriber role is required.</wsdl:documentation>
+      <wsdl:input message="tns:CSID2ExtRefsSoapIn" />
+      <wsdl:output message="tns:CSID2ExtRefsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDataSliceCompounds">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get list of compounds IDs related to the specified Data Slice. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetDataSliceCompoundsSoapIn" />
+      <wsdl:output message="tns:GetDataSliceCompoundsSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="SearchHttpGet">
+    <wsdl:operation name="SimpleSearch2IdList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search by Name, SMILES, InChI, InChIKey, etc. Return a list of found IDs (first 100). &lt;span style="color: red; font-weight: bold;"&gt;This operation is deprecated and will be removed soon - use SimpleSearch instead.&lt;/span&gt;</wsdl:documentation>
+      <wsdl:input message="tns:SimpleSearch2IdListHttpGetIn" />
+      <wsdl:output message="tns:SimpleSearch2IdListHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordImage">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get structure image in PNG format. &lt;span style="color: red; font-weight: bold;"&gt;This operation is deprecated and will be removed soon - use GetCompoundThumbnail instead.&lt;/span&gt;</wsdl:documentation>
+      <wsdl:input message="tns:GetRecordImageHttpGetIn" />
+      <wsdl:output message="tns:GetRecordImageHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordDetails">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get record details: CSID, InChIKey, InChI, SMILES. &lt;span style="color: red; font-weight: bold;"&gt;This operation is deprecated and will be removed soon - use GetCompoundInfo instead.&lt;/span&gt;</wsdl:documentation>
+      <wsdl:input message="tns:GetRecordDetailsHttpGetIn" />
+      <wsdl:output message="tns:GetRecordDetailsHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SimpleSearch">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search by Name, SMILES, InChI, InChIKey, etc. Returns a list of found CSIDs (first 100 - please use AsyncSimpleSearch instead if you like to get the full list). Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:SimpleSearchHttpGetIn" />
+      <wsdl:output message="tns:SimpleSearchHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AsyncSimpleSearch">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search by Name, SMILES, InChI, InChIKey, etc. Returns transaction ID which can be used to access search status and result. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:AsyncSimpleSearchHttpGetIn" />
+      <wsdl:output message="tns:AsyncSimpleSearchHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchStatus">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Query asynchronous operation status. Requires transaction ID returned by Asynch&lt;SOMETHING&gt;Search operation. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetAsyncSearchStatusHttpGetIn" />
+      <wsdl:output message="tns:GetAsyncSearchStatusHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchResult">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the list of CSIDs found by Asynch&lt;SOMETHING&gt;Search operation. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetAsyncSearchResultHttpGetIn" />
+      <wsdl:output message="tns:GetAsyncSearchResultHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchResultPart">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Return a slice of the list of CSIDs found by Asynch&lt;SOMETHING&gt;Search operation. Returns full list if start = 0 and count = -1. If (start + count) &gt; (# of results) all results starting at start position are returned. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetAsyncSearchResultPartHttpGetIn" />
+      <wsdl:output message="tns:GetAsyncSearchResultPartHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundThumbnail">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get compound thumbnail in PNG format. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetCompoundThumbnailHttpGetIn" />
+      <wsdl:output message="tns:GetCompoundThumbnailHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundInfo">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get record details (CSID, StdInChIKey, StdInChI, SMILES) by CSID. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetCompoundInfoHttpGetIn" />
+      <wsdl:output message="tns:GetCompoundInfoHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Mol2CSID">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search for structure that matches provided MOL within the range specified by options. Returns found CSID list. Security token with Service Subscriber role is required. The search converts the Mol to an InChI and the options parameter allows different layers of the InChI to be searched for against ChemSpider InChIs. For example: eSameSkeleton searches on the connection layer alone (not the h layer - just the connectivity of the rest of the molecule); eAllTautomers searches on everything but the fixed-hydrogen layer; eAllIsomers searches on the molecular formula expression at the beginning of the InChI.</wsdl:documentation>
+      <wsdl:input message="tns:Mol2CSIDHttpGetIn" />
+      <wsdl:output message="tns:Mol2CSIDHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="MolAndDS2CSID">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search for structure that matches provided MOL within the range specified by options and within the specified list of datasources. Returns found CSID list. Security token with Service Subscriber role is required. The search converts the Mol to an InChI and the options parameter allows different layers of the InChI to be searched for against ChemSpider InChIs. For example: eSameSkeleton searches on the connection layer alone (not the h layer - just the connectivity of the rest of the molecule); eAllTautomers searches on everything but the fixed-hydrogen layer; eAllIsomers searches on the molecular formula expression at the beginning of the InChI.</wsdl:documentation>
+      <wsdl:input message="tns:MolAndDS2CSIDHttpGetIn" />
+      <wsdl:output message="tns:MolAndDS2CSIDHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CSID2ExtRefs">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Return a list of external references (data sources). Security token with Service Subscriber role is required.</wsdl:documentation>
+      <wsdl:input message="tns:CSID2ExtRefsHttpGetIn" />
+      <wsdl:output message="tns:CSID2ExtRefsHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDataSliceCompounds">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get list of compounds IDs related to the specified Data Slice. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetDataSliceCompoundsHttpGetIn" />
+      <wsdl:output message="tns:GetDataSliceCompoundsHttpGetOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="SearchHttpPost">
+    <wsdl:operation name="SimpleSearch2IdList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search by Name, SMILES, InChI, InChIKey, etc. Return a list of found IDs (first 100). &lt;span style="color: red; font-weight: bold;"&gt;This operation is deprecated and will be removed soon - use SimpleSearch instead.&lt;/span&gt;</wsdl:documentation>
+      <wsdl:input message="tns:SimpleSearch2IdListHttpPostIn" />
+      <wsdl:output message="tns:SimpleSearch2IdListHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordImage">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get structure image in PNG format. &lt;span style="color: red; font-weight: bold;"&gt;This operation is deprecated and will be removed soon - use GetCompoundThumbnail instead.&lt;/span&gt;</wsdl:documentation>
+      <wsdl:input message="tns:GetRecordImageHttpPostIn" />
+      <wsdl:output message="tns:GetRecordImageHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordDetails">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get record details: CSID, InChIKey, InChI, SMILES. &lt;span style="color: red; font-weight: bold;"&gt;This operation is deprecated and will be removed soon - use GetCompoundInfo instead.&lt;/span&gt;</wsdl:documentation>
+      <wsdl:input message="tns:GetRecordDetailsHttpPostIn" />
+      <wsdl:output message="tns:GetRecordDetailsHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SimpleSearch">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search by Name, SMILES, InChI, InChIKey, etc. Returns a list of found CSIDs (first 100 - please use AsyncSimpleSearch instead if you like to get the full list). Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:SimpleSearchHttpPostIn" />
+      <wsdl:output message="tns:SimpleSearchHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AsyncSimpleSearch">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search by Name, SMILES, InChI, InChIKey, etc. Returns transaction ID which can be used to access search status and result. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:AsyncSimpleSearchHttpPostIn" />
+      <wsdl:output message="tns:AsyncSimpleSearchHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchStatus">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Query asynchronous operation status. Requires transaction ID returned by Asynch&lt;SOMETHING&gt;Search operation. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetAsyncSearchStatusHttpPostIn" />
+      <wsdl:output message="tns:GetAsyncSearchStatusHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchResult">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the list of CSIDs found by Asynch&lt;SOMETHING&gt;Search operation. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetAsyncSearchResultHttpPostIn" />
+      <wsdl:output message="tns:GetAsyncSearchResultHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchResultPart">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Return a slice of the list of CSIDs found by Asynch&lt;SOMETHING&gt;Search operation. Returns full list if start = 0 and count = -1. If (start + count) &gt; (# of results) all results starting at start position are returned. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetAsyncSearchResultPartHttpPostIn" />
+      <wsdl:output message="tns:GetAsyncSearchResultPartHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundThumbnail">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get compound thumbnail in PNG format. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetCompoundThumbnailHttpPostIn" />
+      <wsdl:output message="tns:GetCompoundThumbnailHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundInfo">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get record details (CSID, StdInChIKey, StdInChI, SMILES) by CSID. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetCompoundInfoHttpPostIn" />
+      <wsdl:output message="tns:GetCompoundInfoHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Mol2CSID">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search for structure that matches provided MOL within the range specified by options. Returns found CSID list. Security token with Service Subscriber role is required. The search converts the Mol to an InChI and the options parameter allows different layers of the InChI to be searched for against ChemSpider InChIs. For example: eSameSkeleton searches on the connection layer alone (not the h layer - just the connectivity of the rest of the molecule); eAllTautomers searches on everything but the fixed-hydrogen layer; eAllIsomers searches on the molecular formula expression at the beginning of the InChI.</wsdl:documentation>
+      <wsdl:input message="tns:Mol2CSIDHttpPostIn" />
+      <wsdl:output message="tns:Mol2CSIDHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="MolAndDS2CSID">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search for structure that matches provided MOL within the range specified by options and within the specified list of datasources. Returns found CSID list. Security token with Service Subscriber role is required. The search converts the Mol to an InChI and the options parameter allows different layers of the InChI to be searched for against ChemSpider InChIs. For example: eSameSkeleton searches on the connection layer alone (not the h layer - just the connectivity of the rest of the molecule); eAllTautomers searches on everything but the fixed-hydrogen layer; eAllIsomers searches on the molecular formula expression at the beginning of the InChI.</wsdl:documentation>
+      <wsdl:input message="tns:MolAndDS2CSIDHttpPostIn" />
+      <wsdl:output message="tns:MolAndDS2CSIDHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CSID2ExtRefs">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Return a list of external references (data sources). Security token with Service Subscriber role is required.</wsdl:documentation>
+      <wsdl:input message="tns:CSID2ExtRefsHttpPostIn" />
+      <wsdl:output message="tns:CSID2ExtRefsHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDataSliceCompounds">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get list of compounds IDs related to the specified Data Slice. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetDataSliceCompoundsHttpPostIn" />
+      <wsdl:output message="tns:GetDataSliceCompoundsHttpPostOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="SearchSoap" type="tns:SearchSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SimpleSearch2IdList">
+      <soap:operation soapAction="http://www.chemspider.com/SimpleSearch2IdList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordImage">
+      <soap:operation soapAction="http://www.chemspider.com/GetRecordImage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordDetails">
+      <soap:operation soapAction="http://www.chemspider.com/GetRecordDetails" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SimpleSearch">
+      <soap:operation soapAction="http://www.chemspider.com/SimpleSearch" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AsyncSimpleSearch">
+      <soap:operation soapAction="http://www.chemspider.com/AsyncSimpleSearch" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="StructureSearch">
+      <soap:operation soapAction="http://www.chemspider.com/StructureSearch" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SubstructureSearch">
+      <soap:operation soapAction="http://www.chemspider.com/SubstructureSearch" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SimilaritySearch">
+      <soap:operation soapAction="http://www.chemspider.com/SimilaritySearch" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="IntrinsicPropertiesSearch">
+      <soap:operation soapAction="http://www.chemspider.com/IntrinsicPropertiesSearch" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ElementsSearch">
+      <soap:operation soapAction="http://www.chemspider.com/ElementsSearch" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PredictedPropertiesSearch">
+      <soap:operation soapAction="http://www.chemspider.com/PredictedPropertiesSearch" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LassoSearch">
+      <soap:operation soapAction="http://www.chemspider.com/LassoSearch" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchStatus">
+      <soap:operation soapAction="http://www.chemspider.com/GetAsyncSearchStatus" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchResult">
+      <soap:operation soapAction="http://www.chemspider.com/GetAsyncSearchResult" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchResultPart">
+      <soap:operation soapAction="http://www.chemspider.com/GetAsyncSearchResultPart" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundThumbnail">
+      <soap:operation soapAction="http://www.chemspider.com/GetCompoundThumbnail" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundInfo">
+      <soap:operation soapAction="http://www.chemspider.com/GetCompoundInfo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Mol2CSID">
+      <soap:operation soapAction="http://www.chemspider.com/Mol2CSID" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MolAndDS2CSID">
+      <soap:operation soapAction="http://www.chemspider.com/MolAndDS2CSID" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CSID2ExtRefs">
+      <soap:operation soapAction="http://www.chemspider.com/CSID2ExtRefs" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDataSliceCompounds">
+      <soap:operation soapAction="http://www.chemspider.com/GetDataSliceCompounds" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="SearchSoap12" type="tns:SearchSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SimpleSearch2IdList">
+      <soap12:operation soapAction="http://www.chemspider.com/SimpleSearch2IdList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordImage">
+      <soap12:operation soapAction="http://www.chemspider.com/GetRecordImage" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordDetails">
+      <soap12:operation soapAction="http://www.chemspider.com/GetRecordDetails" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SimpleSearch">
+      <soap12:operation soapAction="http://www.chemspider.com/SimpleSearch" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AsyncSimpleSearch">
+      <soap12:operation soapAction="http://www.chemspider.com/AsyncSimpleSearch" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="StructureSearch">
+      <soap12:operation soapAction="http://www.chemspider.com/StructureSearch" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SubstructureSearch">
+      <soap12:operation soapAction="http://www.chemspider.com/SubstructureSearch" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SimilaritySearch">
+      <soap12:operation soapAction="http://www.chemspider.com/SimilaritySearch" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="IntrinsicPropertiesSearch">
+      <soap12:operation soapAction="http://www.chemspider.com/IntrinsicPropertiesSearch" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ElementsSearch">
+      <soap12:operation soapAction="http://www.chemspider.com/ElementsSearch" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PredictedPropertiesSearch">
+      <soap12:operation soapAction="http://www.chemspider.com/PredictedPropertiesSearch" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LassoSearch">
+      <soap12:operation soapAction="http://www.chemspider.com/LassoSearch" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchStatus">
+      <soap12:operation soapAction="http://www.chemspider.com/GetAsyncSearchStatus" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchResult">
+      <soap12:operation soapAction="http://www.chemspider.com/GetAsyncSearchResult" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchResultPart">
+      <soap12:operation soapAction="http://www.chemspider.com/GetAsyncSearchResultPart" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundThumbnail">
+      <soap12:operation soapAction="http://www.chemspider.com/GetCompoundThumbnail" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundInfo">
+      <soap12:operation soapAction="http://www.chemspider.com/GetCompoundInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Mol2CSID">
+      <soap12:operation soapAction="http://www.chemspider.com/Mol2CSID" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MolAndDS2CSID">
+      <soap12:operation soapAction="http://www.chemspider.com/MolAndDS2CSID" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CSID2ExtRefs">
+      <soap12:operation soapAction="http://www.chemspider.com/CSID2ExtRefs" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDataSliceCompounds">
+      <soap12:operation soapAction="http://www.chemspider.com/GetDataSliceCompounds" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="SearchHttpGet" type="tns:SearchHttpGet">
+    <http:binding verb="GET" />
+    <wsdl:operation name="SimpleSearch2IdList">
+      <http:operation location="/SimpleSearch2IdList" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordImage">
+      <http:operation location="/GetRecordImage" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordDetails">
+      <http:operation location="/GetRecordDetails" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SimpleSearch">
+      <http:operation location="/SimpleSearch" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AsyncSimpleSearch">
+      <http:operation location="/AsyncSimpleSearch" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchStatus">
+      <http:operation location="/GetAsyncSearchStatus" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchResult">
+      <http:operation location="/GetAsyncSearchResult" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchResultPart">
+      <http:operation location="/GetAsyncSearchResultPart" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundThumbnail">
+      <http:operation location="/GetCompoundThumbnail" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundInfo">
+      <http:operation location="/GetCompoundInfo" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Mol2CSID">
+      <http:operation location="/Mol2CSID" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MolAndDS2CSID">
+      <http:operation location="/MolAndDS2CSID" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CSID2ExtRefs">
+      <http:operation location="/CSID2ExtRefs" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDataSliceCompounds">
+      <http:operation location="/GetDataSliceCompounds" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="SearchHttpPost" type="tns:SearchHttpPost">
+    <http:binding verb="POST" />
+    <wsdl:operation name="SimpleSearch2IdList">
+      <http:operation location="/SimpleSearch2IdList" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordImage">
+      <http:operation location="/GetRecordImage" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordDetails">
+      <http:operation location="/GetRecordDetails" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SimpleSearch">
+      <http:operation location="/SimpleSearch" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AsyncSimpleSearch">
+      <http:operation location="/AsyncSimpleSearch" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchStatus">
+      <http:operation location="/GetAsyncSearchStatus" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchResult">
+      <http:operation location="/GetAsyncSearchResult" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAsyncSearchResultPart">
+      <http:operation location="/GetAsyncSearchResultPart" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundThumbnail">
+      <http:operation location="/GetCompoundThumbnail" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompoundInfo">
+      <http:operation location="/GetCompoundInfo" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Mol2CSID">
+      <http:operation location="/Mol2CSID" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MolAndDS2CSID">
+      <http:operation location="/MolAndDS2CSID" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CSID2ExtRefs">
+      <http:operation location="/CSID2ExtRefs" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDataSliceCompounds">
+      <http:operation location="/GetDataSliceCompounds" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Search">
+    <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">&lt;h3&gt;Please send all feedback to development-at-chemspider-dot-com&lt;/h3&gt;&lt;i&gt;NOTE: Some operations require a "Security Token". To obtain a token please complete the &lt;a href="/Register.aspx"&gt;registration&lt;/a&gt; process. Security Token is listed at &lt;a href="/UserProfile.aspx"&gt;Profile&lt;/a&gt; page.&lt;/i&gt;</wsdl:documentation>
+    <wsdl:port name="SearchSoap" binding="tns:SearchSoap">
+      <soap:address location="http://www.chemspider.com/Search.asmx" />
+    </wsdl:port>
+    <wsdl:port name="SearchSoap12" binding="tns:SearchSoap12">
+      <soap12:address location="http://www.chemspider.com/Search.asmx" />
+    </wsdl:port>
+    <wsdl:port name="SearchHttpGet" binding="tns:SearchHttpGet">
+      <http:address location="http://www.chemspider.com/Search.asmx" />
+    </wsdl:port>
+    <wsdl:port name="SearchHttpPost" binding="tns:SearchHttpPost">
+      <http:address location="http://www.chemspider.com/Search.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

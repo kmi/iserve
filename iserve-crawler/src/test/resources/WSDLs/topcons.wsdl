@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="topcons"
+             targetNamespace="http://wsdl.sbc.su.se/topcons"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:tns="http://wsdl.sbc.su.se/topcons"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:ns="http://schemas.xmlsoap.org/wsdl/">
+  <documentation>
+TOPCONS membrane protein topology predictor
+Given the amino acid sequence of a putative alpha-helical membrane protein, TOPCONS predicts the topology of the protein, i.e. a specification of the membrane spanning segments and their IN/OUT orientation relative to the membrane. The prediction is a consensus from five different topology prediction algorithms: SCAMPI (single sequence mode), SCAMPI (multiple sequence mode), PRODIV-TMHMM, PRO-TMHMM and OCTOPUS. These five predictions are used as input to the TOPCONS hidden Markov model (HMM), which gives a consensus prediction for the protein, together with a reliability score based on the agreement of the included methods across the sequence. In addition, ZPRED is used to predict the Z-coordinate (i.e. the distance to the membrane center) of each amino acid, and the ΔG-scale is used to predict the free energy of membrane insertion for a window of 21 amino acids centered around each position in the sequence. For an explanation of the methods included in the server, see the corresponding links in the left hand menu. 
+
+Note that the server does not predict cleavable signal peptides, which are easily confused with TM segments. If signal peptides are likely to be present in the input data, a separate signal peptide predictor such as SignalP should first be applied and predicted signal peptides cleaved off before submitting the sequence to TOPCONS. </documentation>
+
+  <types>
+    <xsd:schema elementFormDefault="qualified"
+      targetNamespace="http://wsdl.sbc.su.se/topcons">
+
+      <xsd:element name="runTopconsDefault">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="sequence" type="xsd:string">
+              <xsd:annotation>
+                <documentation>Amino acid sequence in FASTA format as a string.</documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      
+      <xsd:element name="runTopconsDefaultResponse">
+        <xsd:complexType>
+          <xsd:all>
+            <xsd:element name="topology_prediction" type="xsd:string" />
+          </xsd:all>
+        </xsd:complexType>
+      </xsd:element>
+
+</xsd:schema>
+</types>
+
+<message name="runTopconsDefaultRequestMsg">
+	<part name="inputWrapper"  element="tns:runTopconsDefault" />
+</message>
+
+<message name="runTopconsDefaultResponseMsg">
+ 	<part name="outputWrapper" element="tns:runTopconsDefaultResponse" />
+ </message>
+
+<portType name="topconsPortType">
+    	<operation name="runTopconsDefault">
+	<documentation>Predicts the topology of the membrane topology</documentation>
+      	<input message ="tns:runTopconsDefaultRequestMsg" />
+      	<output message="tns:runTopconsDefaultResponseMsg" />
+    	</operation>
+</portType>
+
+ <binding name="topconsBinding" type="tns:topconsPortType">
+	<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+ 
+    	<operation name="runTopconsDefault">
+      	<soap:operation soapAction="http://wsdl.sbc.su.se/topcons/runTopconsDefault" />
+      	<input>
+        	<soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" use="literal"/>
+      	</input>
+      	<output>	
+        	<soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" use="literal"/>
+      	</output>
+    	</operation>
+  </binding>
+
+  <service name="Topcons">
+    <port binding="tns:topconsBinding" name="topconsPort">
+      <soap:address location="http://wsdl.sbc.su.se/cgi-bin/topcons.cgi" />
+    </port>
+  </service>
+</definitions>

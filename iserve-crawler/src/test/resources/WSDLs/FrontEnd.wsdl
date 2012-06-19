@@ -1,0 +1,659 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions name="FuncNet-1.3" targetNamespace="http://funcnet.eu/FuncNet_1_3/" xmlns:fun="http://funcnet.eu/FuncNet_1_3/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+<schema targetNamespace="http://funcnet.eu/FuncNet_1_3/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:fun="http://funcnet.eu/FuncNet_1_3/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+			<complexType name="ProteinList">
+				<annotation>
+					<documentation>
+						A list of one or more UniProt primary accession numbers.
+					</documentation>
+				</annotation>
+				<sequence>
+					<element maxOccurs="unbounded" minOccurs="1" name="p" type="string" />
+				</sequence>
+			</complexType>
+
+			<complexType name="PredictorList">
+				<annotation>
+					<documentation>
+						A list of one or more predictors to submit a query to (identified by their
+						unprefixed service names from their own wsdl:service
+						elements).
+					</documentation>
+				</annotation>
+				<sequence>
+					<element maxOccurs="unbounded" minOccurs="1" name="predictor" type="string" />
+				</sequence>
+			</complexType>
+
+			<complexType name="PredictorStatus">
+				<annotation>
+					<documentation>
+						A pair of strings giving (1) the name of a predictor and
+						(2) the status of that predictor with regard to a recently
+						completed query.
+						Status can be COMPLETE (finished with no errors),
+						TIMEOUT (request to predictor timed out), WORKING (query
+						is currently in progress, optionally
+						followed by a string
+						describing the progress so far), or ERROR followed by a
+						string describing the error itself. Also includes an index
+						number i so
+						that predictions can be matched up with predictors
+						if complete score profiles are requested.
+					</documentation>
+				</annotation>
+				<sequence>
+					<element name="predictor" type="string" />
+					<element name="status" type="string" />
+				</sequence>
+				<attribute name="i" type="int" />
+			</complexType>
+
+			<complexType name="PredictorScore">
+				<annotation>
+					<documentation>
+						A raw-score/p-value pair reflecting
+						how closely related these two
+						proteins are, according to one
+						specific predictor. The p-value
+						represents the probability that any
+						randomly-chosen protein in this
+						proteome would be given an rs score
+						equal to or higher than the rs for
+						this one,
+						by the same predictor. The
+						index number i can be used to
+						unambiguously relate a prediction to
+						specific predictor, if your client
+						does not retain
+						information about
+						the order the elements appear in the
+						message (see the definition for the
+						PredictorStatus type).
+					</documentation>
+				</annotation>
+				<sequence>
+					<element name="rs" type="double" />
+					<element name="pv" type="double" />
+				</sequence>
+				<attribute name="i" type="int" />
+			</complexType>
+
+			<complexType name="JobLocator">
+				<annotation>
+					<documentation>
+						A jobID and the email address that was used when submitting
+						the job. Both must be supplied when requesting the status
+						or results of
+						a job, or cancelling a job.
+					</documentation>
+				</annotation>
+				<sequence>
+					<element name="jobID" type="string" />
+					<element name="emailAddress" type="string" />
+				</sequence>
+			</complexType>
+
+			<complexType name="PairwiseScore">
+				<annotation>
+					<documentation>
+						A 4-tuple containing the score results for a single pair of proteins.
+					</documentation>
+				</annotation>
+				<sequence>
+					<element name="p1" type="string">
+						<annotation>
+							<documentation>
+								The query protein.
+							</documentation>
+						</annotation>
+					</element>
+					<element name="p2" type="string">
+						<annotation>
+							<documentation>
+								The reference protein.
+							</documentation>
+						</annotation>
+					</element>
+					<element name="rs" type="double">
+						<annotation>
+							<documentation>
+								A numeric score produced by running the p-values produced by
+								the individual predictors through Fisher's Unweighted Method.
+							</documentation>
+						</annotation>
+					</element>
+					<element name="pv" type="double">
+						<annotation>
+							<documentation>
+								A p-value representing the probability that any two randomly-
+								chosen proteins in this proteome would be given an rs score
+								equal to
+								or higher than the rs for this pair, by the
+								same process.
+							</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</complexType>
+
+			<complexType name="SetwiseScore">
+				<annotation>
+					<documentation>
+						An element containing the score results for a single protein against
+						the whole reference set, along with the 'optimal score
+						profile' (best
+						prediction from each predictor) on which this overall score was based.
+					</documentation>
+				</annotation>
+				<sequence>
+					<element name="p1" type="string">
+						<annotation>
+							<documentation>
+								The query protein.
+							</documentation>
+						</annotation>
+					</element>
+					<element name="rs" type="double">
+						<annotation>
+							<documentation>
+								A numeric score reflecting how closely related this protein is
+								to the biological function embodied by the reference set.
+							</documentation>
+						</annotation>
+					</element>
+					<element name="pv" type="double">
+						<annotation>
+							<documentation>
+								A p-value representing the probability that any randomly-
+								chosen protein in this proteome would be given an rs score
+								equal to or
+								higher than the rs for this one, by the
+								same process. N.B. This is an ESTIMATE which is likely to
+								be inaccurate since it assumes independence
+								between the
+								predictors.
+							</documentation>
+						</annotation>
+					</element>
+					<sequence maxOccurs="unbounded" minOccurs="1">
+						<element name="pr" type="fun:PredictorScore" />
+					</sequence>
+				</sequence>
+			</complexType>
+
+			<complexType name="ScoreProfile">
+				<annotation>
+					<documentation>
+						A list of scores and p-values for a pair of
+						proteins across a number of predictors, along
+						with an overall score and p-value.
+					</documentation>
+				</annotation>
+				<sequence>
+					<element name="p1" type="string">
+						<annotation>
+							<documentation>
+								The query protein.
+							</documentation>
+						</annotation>
+					</element>
+					<element name="p2" type="string">
+						<annotation>
+							<documentation>
+								The reference protein.
+							</documentation>
+						</annotation>
+					</element>
+					<element name="rs" type="double">
+						<annotation>
+							<documentation>
+								A numeric score produced by running the p-values produced by
+								the individual predictors through Fisher's Unweighted Method.
+							</documentation>
+						</annotation>
+					</element>
+					<element name="pv" type="double">
+						<annotation>
+							<documentation>
+								A p-value representing the probability that any two randomly-
+								chosen proteins in this proteome would be given an rs score
+								equal to
+								or higher than the rs for this pair, by the
+								same process.
+							</documentation>
+						</annotation>
+					</element>
+					<sequence maxOccurs="unbounded" minOccurs="1">
+						<element name="pr" type="fun:PredictorScore" />
+					</sequence>
+				</sequence>
+			</complexType>
+
+			<element name="SubmitTwoProteinSets">
+				<annotation>
+					<documentation>
+						Use SubmitTwoProteinSets to request a comparison of two sets of
+						proteins. You must supply an email address in order to retrieve
+						the
+						results later. If enableEmailNotify is set to true, you will
+						receive an email notifying you when the job has completed.
+						Otherwise you will need to
+						keep calling the MonitorJob operation.
+						NB Your email address will be logged and used to contact you in
+						case of any problems, changes to the
+						service etc. We will not pass
+						it on to any third parties.
+					</documentation>
+				</annotation>
+				<complexType>
+					<sequence>
+						<element maxOccurs="1" minOccurs="0" name="predictors" type="fun:PredictorList" />
+						<element name="queryProteins" type="fun:ProteinList" />
+						<element name="refProteins" type="fun:ProteinList" />
+						<element name="emailAddress" type="string" />
+						<element name="enableEmailNotify" type="boolean" />
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="SubmitTwoProteinSetsResponse">
+				<annotation>
+					<documentation>
+						After submitting a job you will immediately receive a unique,
+						randomly-generated jobID. You will need to supply this (along
+						with
+						your email address) in order to monitor, cancel or retrieve
+						the results of a job.
+					</documentation>
+				</annotation>
+				<complexType>
+					<sequence>
+						<element name="jobID" type="string" />
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="MonitorJob">
+				<annotation>
+					<documentation>
+						Use MonitorJob to check on the status of a job you've submitted,
+						by supplying the jobID and your email address.
+					</documentation>
+				</annotation>
+				<complexType>
+					<sequence>
+						<element name="jobLocator" type="fun:JobLocator" />
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="MonitorJobResponse">
+				<annotation>
+					<documentation>
+						The status code can be COMPLETE (job finished with no errors), WORKING
+						(job is currently in progress, optionally followed by a
+						string
+						describing the progress so far), CANCELLED (cancelled by user using
+						CancelJob), FAILURE (job failed to start, followed by a string
+						describing the details of the error), EXPIRED (the job was cleaned off
+						the server after a pre-defined period of time had elapsed since
+						completion
+						-- 24 hours?) or UNKNOWN (an unrecognized jobID was supplied).
+						NB A COMPLETE job is not necessarily error-free; this just means that
+						all
+						predictors have finished executing, successfully or not. Use one
+						of the Retrieve operations to get the individual results by predictor.
+					</documentation>
+				</annotation>
+				<complexType>
+					<sequence>
+						<element name="status" type="string" />
+						<element maxOccurs="unbounded" minOccurs="0" name="predictorStatus" type="fun:PredictorStatus" />
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="CancelJob">
+				<annotation>
+					<documentation>
+						Use CancelJob to completely abort a job you've submitted,
+						by supplying the jobID and your email address. All temporary
+						files etc. on
+						the server will be deleted, and no results will
+						be obtainable for this job.
+					</documentation>
+				</annotation>
+				<complexType>
+					<sequence>
+						<element name="jobLocator" type="fun:JobLocator" />
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="CancelJobResponse">
+				<annotation>
+					<documentation>
+						The status code can only be CANCELLED (if the job aborted cleanly)
+						or ERROR followed by a string describing the error itself (if
+						an
+						error occurred during the cancellation process).
+					</documentation>
+				</annotation>
+				<complexType>
+					<sequence>
+						<element name="status" type="string" />
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="RetrievePairwiseScores">
+				<annotation>
+					<documentation>
+						Use RetrievePairwiseScores to retrieve the results of a job you've submitted,
+						in the form of a list of query protein/reference
+						protein score pairs. You
+						must supply both the jobID and your email address.
+					</documentation>
+				</annotation>
+				<complexType>
+					<sequence>
+						<element name="jobLocator" type="fun:JobLocator" />
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="RetrievePairwiseScoresResponse">
+				<annotation>
+					<documentation>
+						The output of RetrievePairwiseScores contains a human-readable comments
+						field (remember to inspect this, or log it, in case it
+						contains important
+						information), a list of predictor status codes, and a list of scores.
+						If this is called before the job is complete, the list of
+						scores will be
+						empty.
+					</documentation>
+				</annotation>
+				<complexType>
+					<sequence>
+						<element maxOccurs="1" minOccurs="0" name="comments" type="string" />
+						<element maxOccurs="unbounded" minOccurs="1" name="predictorStatus" type="fun:PredictorStatus" />
+						<element maxOccurs="unbounded" minOccurs="0" name="s" type="fun:PairwiseScore" />
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="RetrieveSetwiseScores">
+				<annotation>
+					<documentation>
+						Use RetrieveSetwiseScores to retrieve the results of a job you've submitted,
+						in the form of a score for each query protein vs. the
+						reference set. You
+						must supply both the jobID and your email address.
+					</documentation>
+				</annotation>
+				<complexType>
+					<sequence>
+						<element name="jobLocator" type="fun:JobLocator" />
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="RetrieveSetwiseScoresResponse">
+				<annotation>
+					<documentation>
+						The output of RetrieveSetwiseScores contains a human-readable comments
+						field (remember to inspect this, or log it, in case it
+						contains important
+						information), a list of predictor status codes, and a list of scores.
+						If this is called before the job is complete, the list of
+						scores will be
+						empty.
+					</documentation>
+				</annotation>
+				<complexType>
+					<sequence>
+						<element maxOccurs="1" minOccurs="0" name="comments" type="string" />
+						<element maxOccurs="unbounded" minOccurs="1" name="predictorStatus" type="fun:PredictorStatus" />
+						<element maxOccurs="unbounded" minOccurs="0" name="s" type="fun:SetwiseScore" />
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="RetrieveCompleteScores">
+				<annotation>
+					<documentation>
+						Use RetrieveCompleteScores to retrieve the results of a job you've submitted,
+						in the form of a complete score profile for each
+						query protein/reference protein
+						pair across all the predictors, along with an overall score for each pair.
+					</documentation>
+				</annotation>
+				<complexType>
+					<sequence>
+						<element name="jobLocator" type="fun:JobLocator" />
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="RetrieveCompleteScoresResponse">
+				<annotation>
+					<documentation>
+						The output of RetrieveCompleteScores contains a human-readable comments
+						field (remember to inspect this, or log it, in case it
+						contains important
+						information), a list of predictors and status codes, and a list of score profiles.
+						The scores in the score profile occur in the
+						same order as the predictors in
+						the status list. If this is called before the job is complete, or there was
+						a problem with one or more predictors,
+						the score profiles will be incomplete.
+						Any missing scores (for whatever reason) will be set to null.
+					</documentation>
+				</annotation>
+				<complexType>
+					<sequence>
+						<element maxOccurs="1" minOccurs="0" name="comments" type="string" />
+						<element maxOccurs="unbounded" minOccurs="1" name="predictorStatus" type="fun:PredictorStatus" />
+						<element maxOccurs="unbounded" minOccurs="0" name="s" type="fun:ScoreProfile" />
+					</sequence>
+				</complexType>
+			</element>
+
+			<element name="GetRegisteredPredictors">
+				<annotation>
+					<documentation>
+						Request a list of the known prediction services within FuncNet.
+					</documentation>
+				</annotation>
+			</element>
+
+			<element name="GetRegisteredPredictorsResponse">
+				<annotation>
+					<documentation>
+						A list of the known prediction services within FuncNet.
+					</documentation>
+				</annotation>
+				<complexType>
+					<sequence>
+						<element name="predictors" type="fun:PredictorList" />
+					</sequence>
+				</complexType>
+			</element>
+
+		</schema>
+  </wsdl:types>
+  <wsdl:message name="SubmitTwoProteinSetsRequest">
+    <wsdl:part element="fun:SubmitTwoProteinSets" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="MonitorJobResponse">
+    <wsdl:part element="fun:MonitorJobResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetRegisteredPredictorsResponse">
+    <wsdl:part element="fun:GetRegisteredPredictorsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="RetrieveSetwiseScoresResponse">
+    <wsdl:part element="fun:RetrieveSetwiseScoresResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="RetrieveCompleteScoresResponse">
+    <wsdl:part element="fun:RetrieveCompleteScoresResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetRegisteredPredictorsRequest">
+    <wsdl:part element="fun:GetRegisteredPredictors" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="RetrieveCompleteScoresRequest">
+    <wsdl:part element="fun:RetrieveCompleteScores" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="MonitorJobRequest">
+    <wsdl:part element="fun:MonitorJob" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="RetrievePairwiseScoresRequest">
+    <wsdl:part element="fun:RetrievePairwiseScores" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SubmitTwoProteinSetsResponse">
+    <wsdl:part element="fun:SubmitTwoProteinSetsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="CancelJobRequest">
+    <wsdl:part element="fun:CancelJob" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="CancelJobResponse">
+    <wsdl:part element="fun:CancelJobResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="RetrieveSetwiseScoresRequest">
+    <wsdl:part element="fun:RetrieveSetwiseScores" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="RetrievePairwiseScoresResponse">
+    <wsdl:part element="fun:RetrievePairwiseScoresResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="FrontEndPortType">
+    <wsdl:operation name="SubmitTwoProteinSets">
+      <wsdl:input message="fun:SubmitTwoProteinSetsRequest">
+    </wsdl:input>
+      <wsdl:output message="fun:SubmitTwoProteinSetsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MonitorJob">
+      <wsdl:input message="fun:MonitorJobRequest">
+    </wsdl:input>
+      <wsdl:output message="fun:MonitorJobResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CancelJob">
+      <wsdl:input message="fun:CancelJobRequest">
+    </wsdl:input>
+      <wsdl:output message="fun:CancelJobResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RetrievePairwiseScores">
+      <wsdl:input message="fun:RetrievePairwiseScoresRequest">
+    </wsdl:input>
+      <wsdl:output message="fun:RetrievePairwiseScoresResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveSetwiseScores">
+      <wsdl:input message="fun:RetrieveSetwiseScoresRequest">
+    </wsdl:input>
+      <wsdl:output message="fun:RetrieveSetwiseScoresResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveCompleteScores">
+      <wsdl:input message="fun:RetrieveCompleteScoresRequest">
+    </wsdl:input>
+      <wsdl:output message="fun:RetrieveCompleteScoresResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRegisteredPredictors">
+      <wsdl:input message="fun:GetRegisteredPredictorsRequest">
+    </wsdl:input>
+      <wsdl:output message="fun:GetRegisteredPredictorsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="FrontEndBinding" type="fun:FrontEndPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SubmitTwoProteinSets">
+      <soap:operation soapAction="http://funcnet.eu/FuncNet_1_3/FrontEnd/SubmitTwoProteinSets" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MonitorJob">
+      <soap:operation soapAction="http://funcnet.eu/FuncNet_1_3/FrontEnd/MonitorJob" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CancelJob">
+      <soap:operation soapAction="http://funcnet.eu/FuncNet_1_3/FrontEnd/CancelJob" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RetrievePairwiseScores">
+      <soap:operation soapAction="http://funcnet.eu/FuncNet_1_3/FrontEnd/RetrievePairwiseScores" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveSetwiseScores">
+      <soap:operation soapAction="http://funcnet.eu/FuncNet_1_3/FrontEnd/RetrieveSetwiseScores" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveCompleteScores">
+      <soap:operation soapAction="http://funcnet.eu/FuncNet_1_3/FrontEnd/RetrieveCompleteScores" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRegisteredPredictors">
+      <soap:operation soapAction="http://funcnet.eu/FuncNet_1_3/FrontEnd/GetRegisteredPredictors" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="FrontEndService">
+    <wsdl:port binding="fun:FrontEndBinding" name="FrontEndPort">
+      <soap:address location="http://funcnet.eu/frontend-war/services/FrontEndService" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

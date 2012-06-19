@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="seqretDNARefSTRIDER2FASTAInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="seqretDNARefSTRIDER2FASTAOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="seqretDNARefSTRIDER2FASTAPortType">
+          <wsdl:operation name="seqretDNARefSTRIDER2FASTA">
+                 <wsdl:input message="tns:seqretDNARefSTRIDER2FASTAInput"/>
+                 <wsdl:output message="tns:seqretDNARefSTRIDER2FASTAOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="seqretDNARefSTRIDER2FASTABinding" type="tns:seqretDNARefSTRIDER2FASTAPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="seqretDNARefSTRIDER2FASTA"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#seqretDNARefSTRIDER2FASTA' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="seqretDNARefSTRIDER2FASTAService">
+          <wsdl:documentation>Authority: soaplab.icapture.ubc.ca  -  EMBOSS seqret program
+
+The sequence source is USA (Uniform Sequence Address).
+This means that you pass in a database name as the namespace
+and an entry from the db as the id, e.g. db = embl and id = X13776.
+The input format is strider
+The output format is fasta</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="seqretDNARefSTRIDER2FASTAPort" binding="tns:seqretDNARefSTRIDER2FASTABinding">
+                 <wsdlsoap:address location="http://dev.biordf.net/mobyservices/services/seqretDNARefSTRIDER2FASTA"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

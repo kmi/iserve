@@ -1,0 +1,272 @@
+<?xml version="1.0"?>
+<definitions
+	name="MySOAP"
+	targetNamespace="urn:MySOAP/SubLoc"
+	xmlns:extends="urn:MySOAP/SubLoc" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+	xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" 
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+  <types>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:MySOAP/SubLoc">
+    <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+     <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/"/>
+
+    <xsd:complexType name="Struct">
+      <xsd:all>
+        <xsd:element name="ID"      type="xsd:string"/>
+        <xsd:element name="LC"      type="xsd:string"/>
+	<xsd:element name="CX"	    type="xsd:string"/>
+	<xsd:element name="SQ"      type="xsd:string"/>
+	<xsd:element name="OS"      type="xsd:string"/>
+	<xsd:element name="DE"      type="xsd:string"/>
+      </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType name="PredictStruct">
+      <xsd:all>
+        <xsd:element name="Seq"      type="xsd:string"/>
+        <xsd:element name="Prediction"      type="xsd:string"/>
+	<xsd:element name="RI"	    type="xsd:string"/>
+	<xsd:element name="ExpectAcc"      type="xsd:string"/>
+      </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType name="PsortStruct">
+      <xsd:all>
+        <xsd:element name="Prediction"      type="xsd:string"/>
+	<xsd:element name="Detail"      type="xsd:string"/>
+      </xsd:all>
+    </xsd:complexType>
+
+
+    <xsd:complexType name="StructArray">
+      <xsd:complexContent>
+        <xsd:restriction base="soap-enc:Array">
+           <xsd:attribute ref="soap-enc:arrayType" wsdl:arrayType="extends:Struct[]"/>
+        </xsd:restriction>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+
+    <xsd:complexType name="BlastResult">
+      <xsd:all>
+        <xsd:element name="plain"   type="xsd:string"/>
+	<xsd:element name="parsed"	type="xsd:string"/>
+      </xsd:all>
+    </xsd:complexType>
+
+    </xsd:schema>
+  </types>
+<!--for id_search-->
+  <message name="id_searchRequest">
+    <part name="param1" type="xsd:string" />
+    <part name="param2" type="xsd:string" />
+  </message>
+  <message name="id_searchResponse">
+    <part name="return"    type="extends:StructArray"  xmlns:extends="urn:MySOAP/SubLoc"/>
+  </message>
+
+ <!-- for name_search-->
+  <message name="name_searchRequest">
+    <part name="param1" type="xsd:string"/>
+  </message>
+  <message name="name_searchResponse">
+    <part name="return"  type="extends:StructArray"  xmlns:extends="urn:MySOAP/SubLoc"/>
+  </message>
+
+  <message name="eu_predictRequest">
+    <part name="param1" type="xsd:string"/>
+  </message>
+  <message name="eu_predictResponse">
+    <part name="return"  type="extends:PredictStruct"  xmlns:extends="urn:MySOAP/SubLoc"/>
+  </message>
+
+ <message name="pro_predictRequest">
+    <part name="param1" type="xsd:string"/>
+  </message>
+  <message name="pro_predictResponse">
+    <part name="return"  type="extends:PredictStruct"  xmlns:extends="urn:MySOAP/SubLoc"/>
+  </message>
+
+ <message name="psort_predictRequest">
+    <part name="param1" type="xsd:string"/>
+  </message>
+  <message name="psort_predictResponse">
+    <part name="return"  type="extends:PsortStruct"  xmlns:extends="urn:MySOAP/SubLoc"/>
+  </message>
+ <!-- for blast_search-->
+  <message name="blast_searchRequest">
+    <part name="param1" type="xsd:string"/>
+    <part name="param2" type="xsd:string"/>
+    <part name="param3" type="xsd:string"/>
+    <part name="param4" type="xsd:string"/>
+  </message>
+  <message name="blast_searchResponse">
+    <part name="return"  type="extends:BlastResult"  xmlns:extends="urn:MySOAP/SubLoc"/>
+  </message>
+ <!-- for feed_entry-->
+  <message name="feed_entryRequest">
+    <part name="param1" type="xsd:string"/>
+    <part name="param2" type="xsd:string"/>
+    <part name="param3" type="xsd:string"/>
+    <part name="param4" type="xsd:string"/>
+    <part name="param5" type="xsd:string"/>
+    <part name="param6" type="xsd:string"/>
+  </message>
+  <message name="feed_entryResponse">
+    <part name="return"  type="xsd:string"/>
+  </message>
+
+  <portType name="API">
+
+    <operation name="id_search">
+      <input message="extends:id_searchRequest" />
+      <output message="extends:id_searchResponse" />
+    </operation>
+	
+    <operation name="name_search">
+       <input message="extends:name_searchRequest"/>
+       <output message="extends:name_searchResponse"/>
+    </operation>
+    <operation name="blast_search">
+       <input message="extends:blast_searchRequest"/>
+       <output message="extends:blast_searchResponse"/>
+    </operation>
+    <operation name="pro_predict">
+       <input message="extends:pro_predictRequest"/>
+       <output message="extends:pro_predictResponse"/>
+    </operation>
+    <operation name="eu_predict">
+       <input message="extends:eu_predictRequest"/>
+       <output message="extends:eu_predictResponse"/>
+    </operation>
+    <operation name="psort_predict">
+       <input message="extends:psort_predictRequest"/>
+       <output message="extends:psort_predictResponse"/>
+    </operation>
+    <operation name="feed_entry">
+       <input message="extends:feed_entryRequest"/>
+       <output message="extends:feed_entryResponse"/>
+    </operation>
+
+  </portType>
+
+  <binding name="SOAPBinding" type="extends:API">
+    <soap:binding style="rpc"
+                  transport="http://schemas.xmlsoap.org/soap/http"/>
+
+    <operation name="id_search">
+      <soap:operation soapAction="urn:MySOAP/SubLoc#id_search"/>
+      <input>
+        <soap:body use="encoded"
+                   namespace="urn:MySOAP/SubLoc"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+
+      <output>
+        <soap:body use="encoded"
+                   namespace="urn:MySOAP/SubLoc"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+
+   <operation name="name_search">
+      <soap:operation soapAction="urn:MySOAP/SubLoc#name_search"/>
+      <input>
+        <soap:body use="encoded"
+                   namespace="urn:MySOAP/SubLoc"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+
+      <output>
+        <soap:body use="encoded"
+                   namespace="urn:MySOAP/SubLoc"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+
+    <operation name="blast_search">
+      <soap:operation soapAction="urn:MySOAP/SubLoc#blast_search"/>
+      <input>
+        <soap:body use="encoded"
+                   namespace="urn:MySOAP/SubLoc"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+
+      <output>
+        <soap:body use="encoded"
+                   namespace="urn:MySOAP/SubLoc"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+
+    <operation name="pro_predict">
+      <soap:operation soapAction="urn:MySOAP/SubLoc#pro_predict"/>
+      <input>
+        <soap:body use="encoded"
+                   namespace="urn:MySOAP/SubLoc"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+
+      <output>
+        <soap:body use="encoded"
+                   namespace="urn:MySOAP/SubLoc"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+
+    <operation name="eu_predict">
+      <soap:operation soapAction="urn:MySOAP/SubLoc#eu_predict"/>
+      <input>
+        <soap:body use="encoded"
+                   namespace="urn:MySOAP/SubLoc"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+
+      <output>
+        <soap:body use="encoded"
+                   namespace="urn:MySOAP/SubLoc"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+
+    <operation name="psort_predict">
+      <soap:operation soapAction="urn:MySOAP/SubLoc#psort_predict"/>
+      <input>
+        <soap:body use="encoded"
+                   namespace="urn:MySOAP/SubLoc"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+
+      <output>
+        <soap:body use="encoded"
+                   namespace="urn:MySOAP/SubLoc"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+
+    <operation name="feed_entry">
+      <soap:operation soapAction="urn:MySOAP/SubLoc#feed_entry"/>
+      <input>
+        <soap:body use="encoded"
+                   namespace="urn:MySOAP/SubLoc"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+
+      <output>
+        <soap:body use="encoded"
+                   namespace="urn:MySOAP/SubLoc"
+                   encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+
+  </binding>
+
+  <service name="SOAPService">
+    <port name="API" binding="extends:SOAPBinding">
+      <soap:address location="http://www.bioinfo.tsinghua.edu.cn/~tigerchen/cgi-bin/MySOAP/subloc_soap.pl/"/>
+    </port>
+  </service>
+
+</definitions>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<wsdl:definitions targetNamespace="urn:motifsampler" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:impl="urn:motifsampler-impl" xmlns:intf="urn:motifsampler" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <wsdl:message name="runRequest">
+    <wsdl:part name="fasta" type="SOAP-ENC:string">
+      <documentation>Input string that contains a valid fasta file of nucleotide sequences.</documentation>
+    </wsdl:part>
+    <wsdl:part name="bg" type="SOAP-ENC:string">
+      <documentation>Input parameter to specify the background to use. Use getParams or getBgIds to obtain the identifiers of 
+                     the background files maintained on the server or enter your own stringified background file.</documentation>
+    </wsdl:part>
+    <wsdl:part name="strand" type="xsd:int">
+      <documentation>Parameter specifies which strand to use. For input strands set 0, to include inverse strand use 1.
+                     Default is 1, i.e. both strands included in the analysis.</documentation>
+    </wsdl:part>
+    <wsdl:part name="prior" type="xsd:double">
+      <documentation>Input parameter to specify the prior to use to search for motifs (establishes the quality of the scan).</documentation>
+    </wsdl:part>
+    <wsdl:part name="mnt" type="xsd:int">
+      <documentation>Parameter specifies the number of different motifs to search for. Default is 4.</documentation>
+    </wsdl:part>
+    <wsdl:part name="length" type="xsd:int">
+      <documentation>Parameter sets the length of the motifs to search for. Default is 8.</documentation>
+    </wsdl:part>
+    <wsdl:part name="overlap" type="xsd:int">
+      <documentation>Parameter sets the allowed overlap between found motifs. Default is 1.</documentation>
+    </wsdl:part>
+    <wsdl:part name="runs" type="xsd:int">
+      <documentation>Parameter sets the number of times the program should be repeated. Default 1.</documentation>
+    </wsdl:part>
+  </wsdl:message>
+  
+  <wsdl:message name="getParamsRequest"/>
+  
+  <wsdl:message name="getBgIdsRequest"/>
+
+  
+  <wsdl:message name="runResponse">
+      <wsdl:part name="return" type="SOAP-ENC:string"/>
+  </wsdl:message>
+  
+  <wsdl:message name="getParamsResponse">
+     <wsdl:part name="return" type="SOAP-ENC:string"/>
+  </wsdl:message>
+  
+  <wsdl:message name="getBgIdsResponse">
+      <wsdl:part name="return" type="SOAP-ENC:string"/>
+  </wsdl:message>
+  
+  
+  <wsdl:message name="Exception"/>
+
+
+  <wsdl:portType name="MotifSamplerService">
+    <wsdl:operation name="run" parameterOrder="fasta bg strand prior mnr length overlap runs">
+      <wsdl:input message="intf:runRequest"/>
+      <wsdl:output message="intf:runResponse"/>
+    </wsdl:operation>
+
+    <wsdl:operation name="getParams">
+      <wsdl:input message="intf:getParamsRequest"/>
+      <wsdl:output message="intf:getParamsResponse"/>
+      <wsdl:fault message="intf:Exception" name="Exception"/>
+    </wsdl:operation>
+
+    <wsdl:operation name="getBgIds">
+      <wsdl:input message="intf:getBgIdsRequest"/>
+      <wsdl:output message="intf:getBgIdsResponse"/>
+      <wsdl:fault message="intf:Exception" name="Exception"/>
+    </wsdl:operation>
+  </wsdl:portType>
+
+   
+  <wsdl:binding name="MotifSamplerSoapBinding" type="intf:MotifSamplerService">
+    <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+    <wsdl:operation name="run">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input>
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="run" use="encoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:motifsampler" use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getParams">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input>
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="getParams" use="encoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:motifsampler" use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getBgIds">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input>
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="getBgIds" use="encoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:motifsampler" use="encoded"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+
+  
+  <wsdl:service name="MotifSamplerService">
+    <wsdl:port binding="intf:MotifSamplerSoapBinding" name="MotifSampler">
+      <wsdlsoap:address location="http://www.esat.kuleuven.ac.be/inclusive/MotifSampler"/>
+    </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>

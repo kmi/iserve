@@ -1,0 +1,201 @@
+<?xml version="1.0"?>
+<wsdl:definitions 
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+xmlns:tns="http://www.cbs.dtu.dk/ws/WSNetOGlyc_3_1d" 
+xmlns:netOglyc="http://www.cbs.dtu.dk/ws/ws-netOglyc" 
+xmlns:common="http://www.cbs.dtu.dk/ws/ws-common" 
+xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/" 
+xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+xmlns="http://schemas.xmlsoap.org/wsdl/" 
+targetNamespace="http://www.cbs.dtu.dk/ws/WSNetOGlyc_3_1d">
+
+	<wsdl:types>
+		<xsd:schema>
+			<!-- XSD -->
+			<xsd:import namespace="http://www.cbs.dtu.dk/ws/ws-netOglyc" schemaLocation="ws_netOglyc_3_1d.xsd"/>
+			<!-- XSD -->
+			<xsd:import namespace="http://www.cbs.dtu.dk/ws/ws-common" schemaLocation="../common/ws_common_1_0b.xsd"/>
+		</xsd:schema>
+		<schema targetNamespace="http://www.cbs.dtu.dk/ws/WSNetOGlyc_3_1d" 
+		xmlns="http://www.w3.org/2001/XMLSchema" 
+		xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+		xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+			<xsd:element name="runService" type="netOglyc:runService"/>
+			<xsd:element name="runServiceResponse" type="common:runServiceResponse"/>
+			<xsd:element name="fetchResult" type="common:fetchResult"/>
+			<xsd:element name="fetchResultResponse" type="netOglyc:fetchResultResponse"/>
+			<xsd:element name="pollQueue" type="common:pollQueue"/>
+			<xsd:element name="pollQueueResponse" type="common:pollQueueResponse"/>
+		</schema>
+	</wsdl:types>
+
+	<!-- ==================================================================== -->
+
+	<message name="runServiceRequest">
+		<part name="parameters" element="tns:runService"/>
+	</message>
+	<message name="runServiceResponse">
+		<part name="parameters" element="tns:runServiceResponse"/>
+	</message>
+	<message name="fetchResultRequest">
+		<part name="parameters" element="tns:fetchResult"/>
+	</message>
+	<message name="fetchResultResponse">
+		<part name="parameters" element="tns:fetchResultResponse"/>
+	</message>
+	<message name="pollQueueRequest">
+		<part name="job" element="tns:pollQueue"/>
+	</message>
+	<message name="pollQueueResponse">
+		<part name="queueentry" element="tns:pollQueueResponse"/>
+	</message>
+
+	<!-- ==================================================================== -->
+
+	<portType name="WSNetOGlyc_3_1d">
+		<operation name="runService">
+			<input name="runServiceRequest" message="tns:runServiceRequest"/>
+			<output name="runServiceResponse" message="tns:runServiceResponse"/>
+		</operation>
+		<operation name="pollQueue">
+			<input name="pollQueueRequest" message="tns:pollQueueRequest"/>
+			<output name="pollQueueResponse" message="tns:pollQueueResponse"/>
+		</operation>
+		<operation name="fetchResult">
+			<input name="fetchResultRequest" message="tns:fetchResultRequest"/>
+			<output name="fetchResultResponse" message="tns:fetchResultResponse"/>
+		</operation>
+	</portType>
+
+	<!-- ==================================================================== -->
+
+	<binding name="WSNetOGlyc_3_1d" type="tns:WSNetOGlyc_3_1d">
+		<soapenv:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="pollQueue">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSNetOGlyc_3_1d#pollQueue"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSNetOGlyc_3_1d"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSNetOGlyc_3_1d"/>
+			</output>
+		</operation>
+		<operation name="runService">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSNetOGlyc_3_1d#runService"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSNetOGlyc_3_1d"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSNetOGlyc_3_1d"/>
+			</output>
+		</operation>
+		<operation name="fetchResult">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSNetOGlyc_3_1d#fetchResult"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSNetOGlyc_3_1d"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSNetOGlyc_3_1d"/>
+			</output>
+		</operation>
+	</binding>
+
+	<!-- ==================================================================== -->
+
+	<service name="WSNetOGlyc_3_1d">
+		<documentation>
+			INTRODUCTION
+
+			This Web Service implements NetOGlyc 3.1d. It predicts mucin type GalNAc
+			O-glycosylation sites in mammalian proteins. The method is described in
+			detail in the following article:
+
+			"Prediction, conservation analysis and structural characterization
+			of mammalian mucin-type O-glycosylation sites".
+			K. Julenius, A. Moelgaard, R. Gupta and S. Brunak.
+			Glycobiology, 15:153-164, 2005.
+
+			Alongside this Web Service the NetOGlyc method is also implemented as
+			a traditional paste-and-click WWW server at:
+
+			    http://www.cbs.dtu.dk/services/NetOGlyc
+
+			The traditional server offers more detailed output (graphics), extended
+			functionality  and comprehensive documentation. It is suitable for close
+			investigation of few proteins; this service is recommended for high
+			throughput projects.
+
+			NetOglyc is also available as a stand-alone software package to install
+			and run at the user's site, with the same functionality. For academic
+			users there is a download page at:
+
+			    http://www.cbs.dtu.dk/cgi-bin/nph-sw_request?netOglyc
+
+			Other users are requested to write to software@cbs.dtu.dk for details.
+
+
+			WEB SERVICE OPERATION
+
+			This Web Service is fully asynchronous; the usage is split into the
+			following three operations:
+
+			1. runService    
+
+			   Input:  An object of the type 'sequencedata' (see the complete definition
+			           in http://www.cbs.dtu.dk/ws/common/ws_common_1_0b.xsd) holding
+			           protein sequences with mandatory unique identifiers. Each
+			           'sequence' is a pair of 'id' (identifier) and 'seq' (sequence
+			           itself). The sequences must be written in one letter amino acid
+			           code: `acdefghiklmnpqrstvwy' or `ACDEFGHIKLMNPQRSTVWY'. Other
+			           letters will be converted to `X' and treated as unknown amino
+			           acids. Other symbols, such as whitespace and numbers, will be
+			           ignored. 
+
+			   Output: Unique job identifier
+
+			2. pollQueue
+
+			   Input:  Unique job identifier
+
+			   Output: 'jobstatus' - the status of the job
+			           Possible values are QUEUED, ACTIVE, FINISHED, WAITING,
+			           REJECTED, UNKNOWN JOBID or QUEUE DOWN
+
+			3. fetchResult
+
+			   Input:  Unique job identifier of a FINISHED job
+
+			   Output: An object of the type 'anndata' (see the complete definition
+			           in http://www.cbs.dtu.dk/ws/common/ws_common_1_0b.xsd) holding
+			           the predition results. 'annsource' states the 'method' (in
+			           this case always 'netOglyc') and 'version' (in this case 3.1b).
+			           The objects of the type 'annrecord' hold the predictions for
+			           a given residue in a given sequence, the fields are:
+
+			           feature       - always "O-glyc";
+			           pos           - sequence residue;
+			           score         - G-score: general prediction score;
+			           score         - I-score: isolated site prediction score
+			                           (threonine residues only);
+			           comment       - appears only when the residue is predicted as
+			                           glycosylated, contains the letter 'T' or 'S'.
+
+			           A residue is predicted as glycosylated when the G-score for
+			           that residue is &gt;0.5. For threonines an additional score is
+			           used: if the G-score is &lt;0.5 but the I-score &gt;0.5 and there
+			           are no predicted neighbouring sites (distance &lt;10 residues)
+			           the residue is also predicted as glycosylated.
+
+
+			CONTACT
+
+			Questions concerning the scientific aspects of the NetPhos method should
+			go to Ramneek Gupta, ramneek@cbs.dtu.dk; technical questions concerning
+			the Web Service should go to Peter Fischer Hallin, pfh@cbs.dtu.dk or
+			Kristoffer Rapacki, rapacki@cbs.dtu.dk.
+		</documentation>
+		<port name="WSNetOGlyc_3_1d" binding="tns:WSNetOGlyc_3_1d">
+			<soapenv:address location="http://ws.cbs.dtu.dk:80/cgi-bin/soap/ws/simple.cgi"/>
+		</port>
+	</service>
+</wsdl:definitions>

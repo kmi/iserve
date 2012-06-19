@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="fromFASTAToAminoAcidSequenceCollectionInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="fromFASTAToAminoAcidSequenceCollectionOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="fromFASTAToAminoAcidSequenceCollectionPortType">
+          <wsdl:operation name="fromFASTAToAminoAcidSequenceCollection">
+                 <wsdl:input message="tns:fromFASTAToAminoAcidSequenceCollectionInput"/>
+                 <wsdl:output message="tns:fromFASTAToAminoAcidSequenceCollectionOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="fromFASTAToAminoAcidSequenceCollectionBinding" type="tns:fromFASTAToAminoAcidSequenceCollectionPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="fromFASTAToAminoAcidSequenceCollection"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#fromFASTAToAminoAcidSequenceCollection' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="fromFASTAToAminoAcidSequenceCollectionService">
+          <wsdl:documentation>Authority: genome.imim.es  -  Converts aminoacid FASTA sequences into a collection of aminoacid sequences</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="fromFASTAToAminoAcidSequenceCollectionPort" binding="tns:fromFASTAToAminoAcidSequenceCollectionBinding">
+                 <wsdlsoap:address location="http://genome.imim.es/cgi-bin/moby/MobyServices.cgi"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

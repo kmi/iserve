@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://ws.adaptivedisclosure.org/axis/services/IndexWS" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://ws.adaptivedisclosure.org/axis/services/IndexWS" xmlns:intf="http://ws.adaptivedisclosure.org/axis/services/IndexWS" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.3
+Built on Oct 05, 2005 (05:23:37 EDT)-->
+
+   <wsdl:message name="indexFromSRBResponse">
+
+      <wsdl:part name="indexFromSRBReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="indexFromSRBRequest">
+
+      <wsdl:part name="userName" type="xsd:string"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+      <wsdl:part name="fromPath" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addToIndexRequest">
+
+      <wsdl:part name="filedata" type="xsd:string"/>
+
+      <wsdl:part name="filename" type="xsd:string"/>
+
+      <wsdl:part name="indexName" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="indexFromRemoteRequest">
+
+      <wsdl:part name="config" type="xsd:string"/>
+
+      <wsdl:part name="data" type="xsd:string"/>
+
+      <wsdl:part name="extension" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="streamContentRequest">
+
+      <wsdl:part name="streamingConfig" type="xsd:string"/>
+
+      <wsdl:part name="indexConfig" type="xsd:string"/>
+
+      <wsdl:part name="dir" type="xsd:string"/>
+
+      <wsdl:part name="endPoint" type="xsd:string"/>
+
+      <wsdl:part name="method" type="xsd:int"/>
+
+      <wsdl:part name="generateContent" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="indexWithSOAPResponse">
+
+      <wsdl:part name="indexWithSOAPReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="indexWithTCPRequest">
+
+      <wsdl:part name="streamingConfig" type="xsd:string"/>
+
+      <wsdl:part name="extension" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="indexWithSwAResponse">
+
+      <wsdl:part name="indexWithSwAReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="indexWithSwARequest">
+
+      <wsdl:part name="indexConfig" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="indexFromRemoteResponse">
+
+      <wsdl:part name="indexFromRemoteReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addToIndexResponse">
+
+      <wsdl:part name="addToIndexReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="streamContentResponse">
+
+      <wsdl:part name="streamContentReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="indexWithSOAPRequest">
+
+      <wsdl:part name="streamingConfig" type="xsd:string"/>
+
+      <wsdl:part name="content" type="xsd:string"/>
+
+      <wsdl:part name="fileName" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="indexWithTCPResponse">
+
+      <wsdl:part name="indexWithTCPReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addToIndexWithConfigRequest">
+
+      <wsdl:part name="filedata" type="xsd:string"/>
+
+      <wsdl:part name="filename" type="xsd:string"/>
+
+      <wsdl:part name="indexName" type="xsd:string"/>
+
+      <wsdl:part name="config" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addToIndexWithConfigResponse">
+
+      <wsdl:part name="addToIndexWithConfigReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="Indexer">
+
+      <wsdl:operation name="indexFromRemote" parameterOrder="config data extension">
+
+   <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+Use this method to add a single document to an index. Config holds the configfile contents,    </wsdl:documentation>
+
+         <wsdl:input message="impl:indexFromRemoteRequest" name="indexFromRemoteRequest"/>
+
+         <wsdl:output message="impl:indexFromRemoteResponse" name="indexFromRemoteResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="indexFromSRB" parameterOrder="userName password fromPath">
+
+   <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+Use this method to index a folder that is stored on SRB   </wsdl:documentation>
+
+         <wsdl:input message="impl:indexFromSRBRequest" name="indexFromSRBRequest"/>
+
+         <wsdl:output message="impl:indexFromSRBResponse" name="indexFromSRBResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addToIndex" parameterOrder="filedata filename indexName">
+
+   <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+Use this method to add a single file to a named index using a default config   </wsdl:documentation>
+
+         <wsdl:input message="impl:addToIndexRequest" name="addToIndexRequest"/>
+
+         <wsdl:output message="impl:addToIndexResponse" name="addToIndexResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addToIndexWithConfig" parameterOrder="filedata filename indexName config">
+
+   <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+Use this method to add a single file to a named index using a specified config. The indexName in the argument will override that in the configfile   </wsdl:documentation>
+
+         <wsdl:input message="impl:addToIndexWithConfigRequest" name="addToIndexWithConfigRequest"/>
+
+         <wsdl:output message="impl:addToIndexWithConfigResponse" name="addToIndexWithConfigResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="streamContent" parameterOrder="streamingConfig indexConfig dir endPoint method generateContent">
+
+   <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+Extracts content from a PDF file, and strams it in the service listening at endPoint. The argument method takes values 100:SWA, 200:SOAP, 500:TCP   </wsdl:documentation>
+
+         <wsdl:input message="impl:streamContentRequest" name="streamContentRequest"/>
+
+         <wsdl:output message="impl:streamContentResponse" name="streamContentResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="indexWithTCP" parameterOrder="streamingConfig extension">
+
+   <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+Index file(s) from a TCP stream into an index on the server using settings included in the beginning of the stream   </wsdl:documentation>
+
+         <wsdl:input message="impl:indexWithTCPRequest" name="indexWithTCPRequest"/>
+
+         <wsdl:output message="impl:indexWithTCPResponse" name="indexWithTCPResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="indexWithSOAP" parameterOrder="streamingConfig content fileName">
+
+   <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+Index file(s) from a SOAP message. You may call this method with an existing file name in the index, if you want to append content   </wsdl:documentation>
+
+         <wsdl:input message="impl:indexWithSOAPRequest" name="indexWithSOAPRequest"/>
+
+         <wsdl:output message="impl:indexWithSOAPResponse" name="indexWithSOAPResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="indexWithSwA" parameterOrder="indexConfig">
+
+   <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+Index file(s) from a SOAP message. You may call this method with an existing file name in the index, if you want to append content   </wsdl:documentation>
+
+         <wsdl:input message="impl:indexWithSwARequest" name="indexWithSwARequest"/>
+
+         <wsdl:output message="impl:indexWithSwAResponse" name="indexWithSwAResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="IndexWSSoapBinding" type="impl:Indexer">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="indexFromRemote">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="indexFromRemoteRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/IndexWS" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="indexFromRemoteResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/IndexWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="indexFromSRB">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="indexFromSRBRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/IndexWS" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="indexFromSRBResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/IndexWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addToIndex">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addToIndexRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/IndexWS" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addToIndexResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/IndexWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addToIndexWithConfig">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addToIndexWithConfigRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/IndexWS" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addToIndexWithConfigResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/IndexWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="streamContent">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="streamContentRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/IndexWS" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="streamContentResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/IndexWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="indexWithTCP">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="indexWithTCPRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/IndexWS" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="indexWithTCPResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/IndexWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="indexWithSOAP">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="indexWithSOAPRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/IndexWS" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="indexWithSOAPResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/IndexWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="indexWithSwA">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="indexWithSwARequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/IndexWS" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="indexWithSwAResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws.adaptivedisclosure.org/axis/services/IndexWS" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="IndexerService">
+
+  <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+Service for indexing things. An example configfile can be found here: http://staff.science.uva.nl/~emeij/indexconfig.xml  </wsdl:documentation>
+
+      <wsdl:port binding="impl:IndexWSSoapBinding" name="IndexWS">
+
+         <wsdlsoap:address location="http://ws.adaptivedisclosure.org/axis/services/IndexWS"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

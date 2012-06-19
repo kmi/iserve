@@ -1,0 +1,293 @@
+<?xml version="1.0"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.cbs.dtu.dk/ws/WSEasyGene_1_2" xmlns:common="http://www.cbs.dtu.dk/ws/ws-common" xmlns:easygene="http://www.cbs.dtu.dk/ws/ws-easygene" xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://www.cbs.dtu.dk/ws/WSEasyGene_1_2">
+	<wsdl:types>
+		<xsd:schema>
+			<!-- XSD -->
+			<xsd:import namespace="http://www.cbs.dtu.dk/ws/ws-common" schemaLocation="../common/ws_common_1_0b.xsd"/>
+			<!-- XSD -->
+			<xsd:import namespace="http://www.cbs.dtu.dk/ws/ws-easygene" schemaLocation="ws_easygene_1_2.xsd"/>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:types>
+		<schema targetNamespace="http://www.cbs.dtu.dk/ws/WSEasyGene_1_2" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+			<xsd:element name="runService" type="easygene:runService"/>
+			<xsd:element name="runServiceResponse" type="common:runServiceResponse"/>
+			<xsd:element name="fetchResult" type="common:fetchResult"/>
+			<xsd:element name="fetchResultResponse" type="easygene:fetchResultResponse"/>
+			<xsd:element name="pollQueue" type="common:pollQueue"/>
+			<xsd:element name="pollQueueResponse" type="common:pollQueueResponse"/>
+		</schema>
+	</wsdl:types>
+	<message name="runServiceRequest">
+		<part name="parameters" element="tns:runService"/>
+	</message>
+	<message name="runServiceResponse">
+		<part name="parameters" element="tns:runServiceResponse"/>
+	</message>
+	<message name="fetchResultRequest">
+		<part name="parameters" element="tns:fetchResult"/>
+	</message>
+	<message name="fetchResultResponse">
+		<part name="parameters" element="tns:fetchResultResponse"/>
+	</message>
+	<message name="pollQueueRequest">
+		<part name="job" element="tns:pollQueue"/>
+	</message>
+	<message name="pollQueueResponse">
+		<part name="queueentry" element="tns:pollQueueResponse"/>
+	</message>
+	<portType name="WSEasyGene_1_2">
+		<operation name="runService">
+			<input name="runServiceRequest" message="tns:runServiceRequest"/>
+			<output name="runServiceResponse" message="tns:runServiceResponse"/>
+		</operation>
+		<operation name="pollQueue">
+			<input name="pollQueueRequest" message="tns:pollQueueRequest"/>
+			<output name="pollQueueResponse" message="tns:pollQueueResponse"/>
+		</operation>
+		<operation name="fetchResult">
+			<input name="fetchResultRequest" message="tns:fetchResultRequest"/>
+			<output name="fetchResultResponse" message="tns:fetchResultResponse"/>
+		</operation>
+	</portType>
+	<binding name="WSEasyGene_1_2" type="tns:WSEasyGene_1_2">
+		<soapenv:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="pollQueue">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSEasyGene_1_2#pollQueue"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSEasyGene_1_2"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSEasyGene_1_2"/>
+			</output>
+		</operation>
+		<operation name="runService">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSEasyGene_1_2#runService"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSEasyGene_1_2"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSEasyGene_1_2"/>
+			</output>
+		</operation>
+		<operation name="fetchResult">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSEasyGene_1_2#fetchResult"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSEasyGene_1_2"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSEasyGene_1_2"/>
+			</output>
+		</operation>
+	</binding>
+	<service name="WSEasyGene_1_2">
+		<documentation> 
+	The EasyGene 1.0 server produces a list of predicted genes given a sequence of prokaryotic 
+	DNA. Each prediction is attributed with a significance score (R-value) indicating how likely 
+	it is to be just a non-coding open reading frame rather than a real gene. The user needs 
+	only to specify the organism hosting the query sequence. Two more parameters (start codon 
+	leniency and R-value cutoff) have default values which may be altered if needed.
+
+		http://www.cbs.dtu.dk/services/EasyGene/
+
+	This service is fully asynchronous;  the usage is split into the following
+	three operations, which is usually executed in this order.
+	
+	Procedures and messages used are either common and shared among all the CBS
+	Web Services, or distinct to each individual Web Service. Marked [distinct] and
+	[common] respectively.
+
+	1. runService [distinct/common]
+		Submit the input parapeter(s) and sequence data and returns a job identifier
+
+		Input: [distinct]
+					* 'Rvalue' - R-value cutoff (default 2)
+					* 'model' - Organism abbreviation for model:
+								AP02	Aeropyrum pernix 
+								ATW03	Agrobacterium tumefaciens str. C58
+								AA02	Aquifex aeolicus 
+								AF02	Archaeoglobus fulgidus DSM 4304 
+								BAA03	Bacillus anthracis str. Ames 
+								BCE03	Bacillus cereus ATCC 10987 
+								BH03	Bacillus halodurans 
+								BS03	Bacillus subtilis 
+								BT02	Bacteroides thetaiotaomicron VPI-5482 
+								BBA01	Bdellovibrio bacteriovorus 
+								BL03	Bifidobacterium longum NCC2705 
+								BBR02	Bordetella bronchiseptica 
+								BPA02	Bordetella parapertussis 
+								BPE02	Bordetella pertussis 
+								BJ02	Bradyrhizobium japonicum 
+								BM02	Brucella melitensis
+								BSU03	Brucella suis 1330
+								BAS02	Buchnera aphidicola
+								CJ02	Campylobacter jejuni 
+								CF02	Candidatus Blochmannia floridanus 
+								CC02	Caulobacter crescentus CB15 
+								CM02	Chlamydia muridarum  
+								CPN03	Chlamydia pneumoniae AR39 
+								CT02	Chlamydia trachomatis 
+								CCA02	Chlamydophila caviae GPIC    
+								CTE02	Chlorobium tepidum TLS 
+								CV02	Chromobacterium violaceum ATCC 12472  
+								CA02	Clostridium acetobutylicum ATCC824  
+								CP02	Clostridium perfringens 
+								CTEE02	Clostridium tetani E88 
+								CDI01	Corynebacterium diphtheriae 
+								CEF01	Corynebacterium efficiens YS-314 
+								CG03	Corynebacterium glutamicum ATCC 13032 
+								CB02	Coxiella burnetii RSA 493 
+								DR02	Deinococcus radiodurans
+								EF02	Enterococcus faecalis V583 
+								ECC02	Escherichia coli CFT073 
+								EC03	Escherichia coli K12 
+								ECE03	Escherichia coli O157:H7 EDL933 
+								ECO02	Escherichia coli O157:H7  
+								FN02	Fusobacterium nucleatum subsp. nucleatum ATCC 2558... 
+								GS01	Geobacter sulfurreducens PCA 
+								GV01	Gloeobacter violaceus 
+								HD02	Haemophilus ducreyi 35000HP 
+								HI02	Haemophilus influenzae Rd 
+								HM01	Haloarcula marismortui ATCC 43049
+								HS02	Halobacterium sp. NRC-1 
+								HW01	Haloquadratum walsbyi DSM 16790  
+								HP02	Helicobacter pylori 26695 
+								HPJ02	Helicobacter pylori str. J99 
+								LJ01	Lactobacillus johnsonii NCC 533 
+								LP02	Lactobacillus plantarum WCFS1 
+								LL02	Lactococcus lactis subsp. lactis 
+								LIN02	Leptospira interrogans serovar lai str. 56601 
+								LI02	Listeria innocua Clip11262 
+								LM02	Listeria monocytogenes EGD 
+								MLO03	Mesorhizobium loti 
+								MET02	Methanobacterium thermoautotrophicum str. Delta H 
+								MBU01	Methanococcoides burtonii DSM 6242 
+								MJ02	Methanococcus jannaschii 
+								MM01	Methanococcus maripaludis S2 
+								MK02	Methanopyrus kandleri AV19 
+								MTE01	Methanosaeta thermophila PT 
+								MA02	Methanosarcina acetivorans str. C2A 
+								MBA01	Methanosarcina barkeri str. fusaro
+								MM02	Methanosarcina mazei Goe1 
+								MST01	Methanosphaera stadtmanae DSM 3091 
+								MHU01	Methanospirillum hungatei JF-1 
+								MAP01	Mycobacterium avium subsp. paratuberculosis str. k... 
+								MB02	Mycobacterium bovis subsp. bovis AF2122/97 
+								MT03	Mycobacterium tuberculosis CDC1551 
+								MTH03	Mycobacterium tuberculosis H23Rv 
+								NEQ01	Nanoarchaeum equitans Kin4-M 
+								NP01	Natronomonas pharaonis DSM 2160 
+								NMA02	Neisseria meningitidis serogroup A Z2491 
+								NM02	Neisseria meningitidis serogroup B MC58 
+								NE02	Nitrosomonas europaea 
+								NO02	Nostoc sp. PCC 7120 
+								OI02	Oceanobacillus iheyensis HTE831 
+								OYP01	Onion yellows phytoplasma 
+								PM02	Pasteurella multocida 
+								PL01	Photorhabdus luminescens subsp. laumondii TTO1 
+								PT01	Picrophilus torridus DSM 9790 
+								PI02	Pirellula sp 
+								PG02	Porphyromonas gingivalis W83 
+								PMMI02	Prochlorococcus marinus str. MIT 9313 
+								PMA02	Prochlorococcus marinus subsp marinus CCMP1375 
+								PMM02	Prochlorococcus marinus subsp. pastoris str. CCMP1... 
+								PA02	Pseudomonas aeruginosa PA01 
+								PS02	Pseudomonas syringae pv. tomato str. DC3000 
+								PAE02	Pyrobaculum aerophilum 
+								PRI01	Pyrobaculum islandicum DSM 4184 
+								PAB02	Pyrococcus abyssi 
+								PF02	Pyrococcus furiosus DSM 3638 
+								PH02	Pyrococcus horikoshii 
+								RS02	Ralstonia solanacearum
+								RPA01	Rhodopseudomonas palustris CGA009 
+								RC02	Rickettsia conorii Malish 7 
+								RP02	Rickettsia prowazekii Madrid E 
+								SE02	Salmonella enterica subsp. enterica serovar Typhi ... 
+								STT02	Salmonella enterica subsp. enterica serovar Typhi ... 
+								STY02	Salmonella typhimurium LT2 
+								SO02	Shewanella oneidensis MR-1 
+								SM02	Sinorhizobium meliloti 1021 
+								SAM03	Staphylococcus aureus MU50  
+								SA02	Staphylococcus aureus subsp aureus N315 
+								SEA02	Staphylococcus epidermidis ATCC 12228 
+								SAG02	Streptococcus agalactiae 2603V/R 
+								SAN02	Streptococcus agalactiae NEM316 
+								SMU02	Streptococcus mutans UA159 
+								SP02	Streptococcus pneumoniae
+								SPY02	Streptococcus pyogenes 
+								SAV03	Streptomyces avermitilis MA-4680 
+								SC02	Streptomyces coelicolor A3(2) 
+								UC01	Sulfolobus acidocaldarius DSM 639 
+								SS02	Sulfolobus solfataricus 
+								ST02	Sulfolobus tokodaii 
+								SSW02	Synechococcus sp. WH 8102 
+								SPC02	Synechocystis sp. PCC 6803 
+								TT02	Thermoanaerobacter tengcongensis strain MB4T 
+								TK01	Thermococcus kodakarensis KOD1  
+								THP01	Thermofilum pendens Hrk 5 
+								TA02	Thermoplasma acidophilum 
+								TV02	Thermoplasma volcanium 
+								TE02	Thermosynechococcus elongatus BP-1 
+								TM02	Thermotoga maritima 
+								TD01	Treponema denticola ATCC 35405 
+								TP02	Treponema pallidum 
+								TW02	Tropheryma whipplei Twist 
+								VC02	Vibrio cholerae 
+								VP02	Vibrio parahaemolyticus RIMD 2210633
+								VV02	Vibrio vulnificus
+								WB02	Wigglesworthia glossinidia endosymbiont of Glossin... 
+								WDM01	Wolbachia endosymbiont of Drosophila melanogaster 
+								XA02	Xanthomonas axonopodis pv. citri str. 306 
+								XC02	Xanthomonas campestris pv. campestris str. ATCC 33... 
+								XF02	Xylella fastidiosa
+								YP02	Yersinia pestis
+					* 'sequencedata' [STANDARD SEQUENCE DATA TYPE]
+						* 'sequence' - An array of sequence objects, containing the following elements:
+							* 'id' - The identifier of the sequence
+							* 'comment' - optiona
+							* 'seq' - The sequence specified as one continous string
+		Output: [STANDARD ANNOTATION TYPE]
+					* 'jobid' - The 32 byte identification string of the job
+					* 'datetime' - The last timepoint at which the status of the job has changed
+					* 'status' - Possible values are QUEUED, ACTIVE, FINISHED, WAITING, REJECTED, 
+					  UNKNOWN JOBID or QUEUE DOWN
+		
+	2. pollQueue [common]
+	Once obtained from 'runService', a job identification can be used to poll the
+	status to see if the result is ready for download.
+
+		Input:   [common]
+					* 'jobid' - The 32 byte identification string of the job
+		Output:  [common]
+					* 'jobid' - The 32 byte identification string of the job
+					* 'datetime' - The last timepoint at which the status of the job has changed
+					* 'status' - Possible values are QUEUED, ACTIVE, FINISHED, WAITING, REJECTED, 
+					  UNKNOWN JOBID or QUEUE DOWN
+
+	3. fetchResult  [distinct/common]
+	Once the status is 'FINISHED' the results generated by the Web Service can be retrieved by
+	specifying the jobid;
+	
+		Input:   [common]
+					* 'jobid' - The 32 byte identification string of the job
+		Output:  [distinct]
+					*  'predictionTitle' - Short description of the generated output
+					*  'predictor' - Name and version of the program which generated the output
+					*  'reference' - Publication / reference of the method
+					*  'predictionDate' - Date at the time the when the prediction finished
+					*  'entries' - A collection of gene predictions containing the following information:
+					 *    'sequence' - The sequence name
+					 *    'feature' - Feature type (CDS)
+					 *    'begin' - Start position of the gene (integer)
+					 *    'end' - stop position of the gene (integer)
+					 *    'Rvalue' - R-value for the prediction
+					 *    'strand' - strand of the gene (+/-)
+					 *    'start' - Start codon
+					 *    'logOdds' - The log odds score
+					
+		</documentation>
+		<port name="WSEasyGene_1_2" binding="tns:WSEasyGene_1_2">
+			<soapenv:address location="http://ws.cbs.dtu.dk:80/cgi-bin/soap/ws/quasi.cgi"/>
+		</port>
+	</service>
+</wsdl:definitions>

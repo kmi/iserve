@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="OligoQualityAnalyser_pollInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="OligoQualityAnalyser_pollOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="OligoQualityAnalyser_pollPortType">
+          <wsdl:operation name="OligoQualityAnalyser_poll">
+                 <wsdl:input message="tns:OligoQualityAnalyser_pollInput"/>
+                 <wsdl:output message="tns:OligoQualityAnalyser_pollOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="OligoQualityAnalyser_pollBinding" type="tns:OligoQualityAnalyser_pollPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="OligoQualityAnalyser_poll"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#OligoQualityAnalyser_poll' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="OligoQualityAnalyser_pollService">
+          <wsdl:documentation>Authority: www.bioinformatics.nl  -  Checks the status of an asynchronous OligoQualityAnalyser_submit job.</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="OligoQualityAnalyser_pollPort" binding="tns:OligoQualityAnalyser_pollBinding">
+                 <wsdlsoap:address location="https://www.bioinformatics.nl/phenolink/biomoby/services/cgi-bin/LocalServices.cgi"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

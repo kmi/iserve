@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="runFlexibilityPhysicalPropertiesInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="runFlexibilityPhysicalPropertiesOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="runFlexibilityPhysicalPropertiesPortType">
+          <wsdl:operation name="runFlexibilityPhysicalProperties">
+                 <wsdl:input message="tns:runFlexibilityPhysicalPropertiesInput"/>
+                 <wsdl:output message="tns:runFlexibilityPhysicalPropertiesOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="runFlexibilityPhysicalPropertiesBinding" type="tns:runFlexibilityPhysicalPropertiesPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="runFlexibilityPhysicalProperties"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#runFlexibilityPhysicalProperties' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="runFlexibilityPhysicalPropertiesService">
+          <wsdl:documentation>Authority: mmb.pcb.ub.es  -  This web service that runs the following physical properties for a given dna sequence: Bendability, Bending stiffness, Nucleosome preference, Protein deformation. It returns a collection of WIG files (in a text_plain format), one for each property. See http://mmb2.pcb.ub.es:8080/PhysicalProperties/runFlexibilityPhysicalProperties.html for more info</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="runFlexibilityPhysicalPropertiesPort" binding="tns:runFlexibilityPhysicalPropertiesBinding">
+                 <wsdlsoap:address location="http://mmb2.pcb.ub.es:8080/PhysicalProperties/runFlexibilityPhysicalProperties"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

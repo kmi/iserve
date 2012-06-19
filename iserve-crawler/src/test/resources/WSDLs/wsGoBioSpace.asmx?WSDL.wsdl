@@ -1,0 +1,1043 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:s3="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/AbstractTypes" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/" xmlns:s1="http://microsoft.com/wsdl/types/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:s2="http://www.mpimp-golm.mpg.de/GoBioSpace/v01/Synonym" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+            These web services provide access to methods for searching the &lt;a href="/GoBioSpace.aspx"&gt;GoBioSpace&lt;/a&gt; database which is part of the Golm Metabolome Database (GMD, &lt;a href="http://gmd.mpimp-golm.mpg.de/"&gt;http://gmd.mpimp-golm.mpg.de/&lt;/a&gt;).
+            Please send all feedback to &lt;a href="mailto:hummel@mpimp-golm.mpg.de"&gt;hummel@mpimp-golm.mpg.de&lt;/a&gt;</wsdl:documentation>
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/">
+      <s:import namespace="http://microsoft.com/wsdl/types/" />
+      <s:import namespace="http://www.mpimp-golm.mpg.de/GoBioSpace/v01/Synonym" />
+      <s:element name="GetDepositors">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetDepositorsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetDepositorsResult" type="tns:ArrayOfDepositor" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfDepositor">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Depositor" nillable="true" type="tns:Depositor" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Depositor">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+        </s:sequence>
+        <s:attribute name="ID" type="s:short" use="required" />
+      </s:complexType>
+      <s:element name="GetProperties">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetPropertiesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPropertiesResult" type="tns:ArrayOfProperty" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfProperty">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Property" nillable="true" type="tns:Property" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Property">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="URL" type="s:string" />
+        </s:sequence>
+        <s:attribute name="ID" type="s:unsignedByte" use="required" />
+      </s:complexType>
+      <s:element name="GetAdducts">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetAdductsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAdductsResult" type="tns:ArrayOfAdduct" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfAdduct">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Adduct" nillable="true" type="tns:Adduct" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Adduct">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Code" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="MonomerCharge" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="Correction" type="s:float" />
+        </s:sequence>
+        <s:attribute name="ID" type="s:unsignedByte" use="required" />
+      </s:complexType>
+      <s:element name="CreateSession">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DepositorIds" type="tns:ArrayOfShort" />
+            <s:element minOccurs="0" maxOccurs="1" name="AdductIds" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfShort">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="short" type="s:short" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="CreateSessionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="CreateSessionResult" type="s1:guid" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PurgeSession">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SessionID" type="s1:guid" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PurgeSessionResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="SearchMass12C">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SessionID" type="s1:guid" />
+            <s:element minOccurs="1" maxOccurs="1" name="mass" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="tolerance" type="s:float" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchMass12CResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SearchMass12CResult" type="tns:ArrayOfMassSearchHit" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfMassSearchHit">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="MassSearchHit" nillable="true" type="tns:MassSearchHit" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="MassSearchHit">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:AdductHit">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="fID" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="formula" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="AdductHit">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="adduct" type="s:unsignedByte" />
+          <s:element minOccurs="1" maxOccurs="1" name="monoisotopic_mass" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="diff" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="mass_ppm_error" type="s:float" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SearchMass12C_Bulk">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SessionID" type="s1:guid" />
+            <s:element minOccurs="0" maxOccurs="1" name="masses" type="tns:ArrayOfFloat" />
+            <s:element minOccurs="1" maxOccurs="1" name="tolerance" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="toleranceSelector" type="tns:ToleranceType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfFloat">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="float" type="s:float" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="ToleranceType">
+        <s:restriction base="s:string">
+          <s:enumeration value="ppm" />
+          <s:enumeration value="absolute" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="SearchMass12C_BulkResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SearchMass12C_BulkResult" type="tns:ArrayOfArrayOfMassSearchHit" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfArrayOfMassSearchHit">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ArrayOfMassSearchHit" nillable="true" type="tns:ArrayOfMassSearchHit" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SearchMass13C">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SessionID" type="s1:guid" />
+            <s:element minOccurs="1" maxOccurs="1" name="mass" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="tolerance" type="s:float" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchMass13CResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SearchMass13CResult" type="tns:ArrayOfMassSearchHit" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchMass15N">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SessionID" type="s1:guid" />
+            <s:element minOccurs="1" maxOccurs="1" name="mass" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="tolerance" type="s:float" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchMass15NResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SearchMass15NResult" type="tns:ArrayOfMassSearchHit" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchMass34S">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SessionID" type="s1:guid" />
+            <s:element minOccurs="1" maxOccurs="1" name="mass" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="tolerance" type="s:float" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchMass34SResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SearchMass34SResult" type="tns:ArrayOfMassSearchHit" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSynonyms">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SessionID" type="s1:guid" />
+            <s:element minOccurs="1" maxOccurs="1" name="FormulaID" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSynonymsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetSynonymsResult" type="tns:ArrayOfSynonym" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfSynonym">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Synonym" nillable="true" type="s2:Synonym" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetMonoisotopicWeight">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Formula" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetMonoisotopicWeightResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetMonoisotopicWeightResult" type="s:double" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetMolecularWeight">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Formula" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetMolecularWeightResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetMolecularWeightResult" type="s:double" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetFormulaID">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Formula" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetFormulaIDResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetFormulaIDResult" nillable="true" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Depositors" nillable="true" type="tns:ArrayOfDepositor" />
+      <s:element name="Properties" nillable="true" type="tns:ArrayOfProperty" />
+      <s:element name="Adducts" nillable="true" type="tns:ArrayOfAdduct" />
+      <s:element name="guid" type="s1:guid" />
+      <s:element name="double" type="s:double" />
+      <s:element name="int" nillable="true" type="s:int" />
+    </s:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://microsoft.com/wsdl/types/">
+      <s:simpleType name="guid">
+        <s:restriction base="s:string">
+          <s:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" />
+        </s:restriction>
+      </s:simpleType>
+    </s:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.mpimp-golm.mpg.de/GoBioSpace/v01/Synonym">
+      <s:complexType name="Synonym">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="value" type="s:string" />
+        </s:sequence>
+        <s:attribute name="ID" type="s:int" use="required" />
+        <s:attribute name="FormulaID" type="s:int" use="required" />
+        <s:attribute name="PropertyID" type="s:unsignedByte" use="required" />
+        <s:attribute name="DepositorID" type="s:short" use="required" />
+        <s:attribute name="DepositorsPrimaryKey" type="s:string" />
+      </s:complexType>
+    </s:schema>
+    <s:schema targetNamespace="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/AbstractTypes">
+      <s:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      <s:complexType name="StringArray">
+        <s:complexContent mixed="false">
+          <s:restriction base="soapenc:Array">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="unbounded" name="String" type="s:string" />
+            </s:sequence>
+          </s:restriction>
+        </s:complexContent>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetDepositorsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetDepositors" />
+  </wsdl:message>
+  <wsdl:message name="GetDepositorsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetDepositorsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPropertiesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetProperties" />
+  </wsdl:message>
+  <wsdl:message name="GetPropertiesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPropertiesResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAdductsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAdducts" />
+  </wsdl:message>
+  <wsdl:message name="GetAdductsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAdductsResponse" />
+  </wsdl:message>
+  <wsdl:message name="CreateSessionSoapIn">
+    <wsdl:part name="parameters" element="tns:CreateSession" />
+  </wsdl:message>
+  <wsdl:message name="CreateSessionSoapOut">
+    <wsdl:part name="parameters" element="tns:CreateSessionResponse" />
+  </wsdl:message>
+  <wsdl:message name="PurgeSessionSoapIn">
+    <wsdl:part name="parameters" element="tns:PurgeSession" />
+  </wsdl:message>
+  <wsdl:message name="PurgeSessionSoapOut">
+    <wsdl:part name="parameters" element="tns:PurgeSessionResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchMass12CSoapIn">
+    <wsdl:part name="parameters" element="tns:SearchMass12C" />
+  </wsdl:message>
+  <wsdl:message name="SearchMass12CSoapOut">
+    <wsdl:part name="parameters" element="tns:SearchMass12CResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchMass12C_BulkSoapIn">
+    <wsdl:part name="parameters" element="tns:SearchMass12C_Bulk" />
+  </wsdl:message>
+  <wsdl:message name="SearchMass12C_BulkSoapOut">
+    <wsdl:part name="parameters" element="tns:SearchMass12C_BulkResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchMass13CSoapIn">
+    <wsdl:part name="parameters" element="tns:SearchMass13C" />
+  </wsdl:message>
+  <wsdl:message name="SearchMass13CSoapOut">
+    <wsdl:part name="parameters" element="tns:SearchMass13CResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchMass15NSoapIn">
+    <wsdl:part name="parameters" element="tns:SearchMass15N" />
+  </wsdl:message>
+  <wsdl:message name="SearchMass15NSoapOut">
+    <wsdl:part name="parameters" element="tns:SearchMass15NResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchMass34SSoapIn">
+    <wsdl:part name="parameters" element="tns:SearchMass34S" />
+  </wsdl:message>
+  <wsdl:message name="SearchMass34SSoapOut">
+    <wsdl:part name="parameters" element="tns:SearchMass34SResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSynonymsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSynonyms" />
+  </wsdl:message>
+  <wsdl:message name="GetSynonymsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSynonymsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetMonoisotopicWeightSoapIn">
+    <wsdl:part name="parameters" element="tns:GetMonoisotopicWeight" />
+  </wsdl:message>
+  <wsdl:message name="GetMonoisotopicWeightSoapOut">
+    <wsdl:part name="parameters" element="tns:GetMonoisotopicWeightResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetMolecularWeightSoapIn">
+    <wsdl:part name="parameters" element="tns:GetMolecularWeight" />
+  </wsdl:message>
+  <wsdl:message name="GetMolecularWeightSoapOut">
+    <wsdl:part name="parameters" element="tns:GetMolecularWeightResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetFormulaIDSoapIn">
+    <wsdl:part name="parameters" element="tns:GetFormulaID" />
+  </wsdl:message>
+  <wsdl:message name="GetFormulaIDSoapOut">
+    <wsdl:part name="parameters" element="tns:GetFormulaIDResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetDepositorsHttpGetIn" />
+  <wsdl:message name="GetDepositorsHttpGetOut">
+    <wsdl:part name="Body" element="tns:Depositors" />
+  </wsdl:message>
+  <wsdl:message name="GetPropertiesHttpGetIn" />
+  <wsdl:message name="GetPropertiesHttpGetOut">
+    <wsdl:part name="Body" element="tns:Properties" />
+  </wsdl:message>
+  <wsdl:message name="GetAdductsHttpGetIn" />
+  <wsdl:message name="GetAdductsHttpGetOut">
+    <wsdl:part name="Body" element="tns:Adducts" />
+  </wsdl:message>
+  <wsdl:message name="CreateSessionHttpGetIn">
+    <wsdl:part name="DepositorIds" type="s3:StringArray" />
+    <wsdl:part name="AdductIds" type="s3:StringArray" />
+  </wsdl:message>
+  <wsdl:message name="CreateSessionHttpGetOut">
+    <wsdl:part name="Body" element="tns:guid" />
+  </wsdl:message>
+  <wsdl:message name="GetMonoisotopicWeightHttpGetIn">
+    <wsdl:part name="Formula" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetMonoisotopicWeightHttpGetOut">
+    <wsdl:part name="Body" element="tns:double" />
+  </wsdl:message>
+  <wsdl:message name="GetMolecularWeightHttpGetIn">
+    <wsdl:part name="Formula" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetMolecularWeightHttpGetOut">
+    <wsdl:part name="Body" element="tns:double" />
+  </wsdl:message>
+  <wsdl:message name="GetFormulaIDHttpGetIn">
+    <wsdl:part name="Formula" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetFormulaIDHttpGetOut">
+    <wsdl:part name="Body" element="tns:int" />
+  </wsdl:message>
+  <wsdl:message name="GetDepositorsHttpPostIn" />
+  <wsdl:message name="GetDepositorsHttpPostOut">
+    <wsdl:part name="Body" element="tns:Depositors" />
+  </wsdl:message>
+  <wsdl:message name="GetPropertiesHttpPostIn" />
+  <wsdl:message name="GetPropertiesHttpPostOut">
+    <wsdl:part name="Body" element="tns:Properties" />
+  </wsdl:message>
+  <wsdl:message name="GetAdductsHttpPostIn" />
+  <wsdl:message name="GetAdductsHttpPostOut">
+    <wsdl:part name="Body" element="tns:Adducts" />
+  </wsdl:message>
+  <wsdl:message name="CreateSessionHttpPostIn">
+    <wsdl:part name="DepositorIds" type="s3:StringArray" />
+    <wsdl:part name="AdductIds" type="s3:StringArray" />
+  </wsdl:message>
+  <wsdl:message name="CreateSessionHttpPostOut">
+    <wsdl:part name="Body" element="tns:guid" />
+  </wsdl:message>
+  <wsdl:message name="GetMonoisotopicWeightHttpPostIn">
+    <wsdl:part name="Formula" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetMonoisotopicWeightHttpPostOut">
+    <wsdl:part name="Body" element="tns:double" />
+  </wsdl:message>
+  <wsdl:message name="GetMolecularWeightHttpPostIn">
+    <wsdl:part name="Formula" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetMolecularWeightHttpPostOut">
+    <wsdl:part name="Body" element="tns:double" />
+  </wsdl:message>
+  <wsdl:message name="GetFormulaIDHttpPostIn">
+    <wsdl:part name="Formula" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetFormulaIDHttpPostOut">
+    <wsdl:part name="Body" element="tns:int" />
+  </wsdl:message>
+  <wsdl:portType name="wsGoBioSpaceSoap">
+    <wsdl:operation name="GetDepositors">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve all depositors.</wsdl:documentation>
+      <wsdl:input message="tns:GetDepositorsSoapIn" />
+      <wsdl:output message="tns:GetDepositorsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProperties">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve all properties.</wsdl:documentation>
+      <wsdl:input message="tns:GetPropertiesSoapIn" />
+      <wsdl:output message="tns:GetPropertiesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAdducts">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve all adducts.</wsdl:documentation>
+      <wsdl:input message="tns:GetAdductsSoapIn" />
+      <wsdl:output message="tns:GetAdductsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateSession">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Create a new session based on given depositor and adduct IDs. The returned identifier for the session must be subsequently used in each search and is valid for 24 hours befor all settings are removed from the database.
+                            The session identifier '00000000-0000-0000-0000-000000000000' indicates an error during data processing.</wsdl:documentation>
+      <wsdl:input message="tns:CreateSessionSoapIn" />
+      <wsdl:output message="tns:CreateSessionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PurgeSession">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Remove a session from the database if not needed any more (good practise). Otherwise, sessions will be automatically removed 24 hours after creation.</wsdl:documentation>
+      <wsdl:input message="tns:PurgeSessionSoapIn" />
+      <wsdl:output message="tns:PurgeSessionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchMass12C">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search a single mass against GoBioSpace where all masses are calculated for &lt;b&gt;none isotopically labeled&lt;/b&gt; sum formula.</wsdl:documentation>
+      <wsdl:input message="tns:SearchMass12CSoapIn" />
+      <wsdl:output message="tns:SearchMass12CSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchMass12C_Bulk">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search an array of masses against GoBioSpace. The result is an array of MassSearchHits where the i-th MassSearchHit result in the returned array corrresponds to the i-th mass in the input array.&lt;br /&gt; 
+                            The toleranceSelector specifies the kind of tolerance (ppm or absolute) used in the search. In case of an absolute tolerance, the tolerance value is used for all masses. In contrast to the absolute tolerance, the ppm tolerance is specific for each single mass. Here, each single mass is divided by 1,000,000 and multiplied by the tolerance value to obtain the actual mass deviation tolerated in the search.</wsdl:documentation>
+      <wsdl:input message="tns:SearchMass12C_BulkSoapIn" />
+      <wsdl:output message="tns:SearchMass12C_BulkSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchMass13C">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search a single mass against GoBioSpace where all masses are calculated for fully &lt;b&gt;&lt;sup&gt;13&lt;/sup&gt;C&lt;/b&gt; isotopic labeled sum formula.</wsdl:documentation>
+      <wsdl:input message="tns:SearchMass13CSoapIn" />
+      <wsdl:output message="tns:SearchMass13CSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchMass15N">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search a single mass against GoBioSpace where all masses are calculated for fully &lt;b&gt;&lt;sup&gt;15&lt;/sup&gt;N&lt;/b&gt; isotopic labeled sum formula.</wsdl:documentation>
+      <wsdl:input message="tns:SearchMass15NSoapIn" />
+      <wsdl:output message="tns:SearchMass15NSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchMass34S">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search a single mass against GoBioSpace where all masses are calculated for fully &lt;b&gt;&lt;sup&gt;34&lt;/sup&gt;S&lt;/b&gt; isotopic labeled sum formula.</wsdl:documentation>
+      <wsdl:input message="tns:SearchMass34SSoapIn" />
+      <wsdl:output message="tns:SearchMass34SSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSynonyms">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns all synonyms for a given formula and a set of depositors (specified in the session before).</wsdl:documentation>
+      <wsdl:input message="tns:GetSynonymsSoapIn" />
+      <wsdl:output message="tns:GetSynonymsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMonoisotopicWeight">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the monoisotopic weight of a given '&lt;b&gt;sum formula&lt;/b&gt;'.</wsdl:documentation>
+      <wsdl:input message="tns:GetMonoisotopicWeightSoapIn" />
+      <wsdl:output message="tns:GetMonoisotopicWeightSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMolecularWeight">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the molecular weight of a given '&lt;b&gt;sum formula&lt;/b&gt;'.</wsdl:documentation>
+      <wsdl:input message="tns:GetMolecularWeightSoapIn" />
+      <wsdl:output message="tns:GetMolecularWeightSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFormulaID">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the GoBioSpace ID for a given '&lt;b&gt;sum formula&lt;/b&gt;' in &lt;a href="http://en.wikipedia.org/wiki/Hill_system"&gt;Hill notation&lt;/a&gt;.</wsdl:documentation>
+      <wsdl:input message="tns:GetFormulaIDSoapIn" />
+      <wsdl:output message="tns:GetFormulaIDSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="wsGoBioSpaceHttpGet">
+    <wsdl:operation name="GetDepositors">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve all depositors.</wsdl:documentation>
+      <wsdl:input message="tns:GetDepositorsHttpGetIn" />
+      <wsdl:output message="tns:GetDepositorsHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProperties">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve all properties.</wsdl:documentation>
+      <wsdl:input message="tns:GetPropertiesHttpGetIn" />
+      <wsdl:output message="tns:GetPropertiesHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAdducts">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve all adducts.</wsdl:documentation>
+      <wsdl:input message="tns:GetAdductsHttpGetIn" />
+      <wsdl:output message="tns:GetAdductsHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateSession">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Create a new session based on given depositor and adduct IDs. The returned identifier for the session must be subsequently used in each search and is valid for 24 hours befor all settings are removed from the database.
+                            The session identifier '00000000-0000-0000-0000-000000000000' indicates an error during data processing.</wsdl:documentation>
+      <wsdl:input message="tns:CreateSessionHttpGetIn" />
+      <wsdl:output message="tns:CreateSessionHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMonoisotopicWeight">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the monoisotopic weight of a given '&lt;b&gt;sum formula&lt;/b&gt;'.</wsdl:documentation>
+      <wsdl:input message="tns:GetMonoisotopicWeightHttpGetIn" />
+      <wsdl:output message="tns:GetMonoisotopicWeightHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMolecularWeight">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the molecular weight of a given '&lt;b&gt;sum formula&lt;/b&gt;'.</wsdl:documentation>
+      <wsdl:input message="tns:GetMolecularWeightHttpGetIn" />
+      <wsdl:output message="tns:GetMolecularWeightHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFormulaID">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the GoBioSpace ID for a given '&lt;b&gt;sum formula&lt;/b&gt;' in &lt;a href="http://en.wikipedia.org/wiki/Hill_system"&gt;Hill notation&lt;/a&gt;.</wsdl:documentation>
+      <wsdl:input message="tns:GetFormulaIDHttpGetIn" />
+      <wsdl:output message="tns:GetFormulaIDHttpGetOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="wsGoBioSpaceHttpPost">
+    <wsdl:operation name="GetDepositors">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve all depositors.</wsdl:documentation>
+      <wsdl:input message="tns:GetDepositorsHttpPostIn" />
+      <wsdl:output message="tns:GetDepositorsHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProperties">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve all properties.</wsdl:documentation>
+      <wsdl:input message="tns:GetPropertiesHttpPostIn" />
+      <wsdl:output message="tns:GetPropertiesHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAdducts">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve all adducts.</wsdl:documentation>
+      <wsdl:input message="tns:GetAdductsHttpPostIn" />
+      <wsdl:output message="tns:GetAdductsHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateSession">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Create a new session based on given depositor and adduct IDs. The returned identifier for the session must be subsequently used in each search and is valid for 24 hours befor all settings are removed from the database.
+                            The session identifier '00000000-0000-0000-0000-000000000000' indicates an error during data processing.</wsdl:documentation>
+      <wsdl:input message="tns:CreateSessionHttpPostIn" />
+      <wsdl:output message="tns:CreateSessionHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMonoisotopicWeight">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the monoisotopic weight of a given '&lt;b&gt;sum formula&lt;/b&gt;'.</wsdl:documentation>
+      <wsdl:input message="tns:GetMonoisotopicWeightHttpPostIn" />
+      <wsdl:output message="tns:GetMonoisotopicWeightHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMolecularWeight">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the molecular weight of a given '&lt;b&gt;sum formula&lt;/b&gt;'.</wsdl:documentation>
+      <wsdl:input message="tns:GetMolecularWeightHttpPostIn" />
+      <wsdl:output message="tns:GetMolecularWeightHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFormulaID">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the GoBioSpace ID for a given '&lt;b&gt;sum formula&lt;/b&gt;' in &lt;a href="http://en.wikipedia.org/wiki/Hill_system"&gt;Hill notation&lt;/a&gt;.</wsdl:documentation>
+      <wsdl:input message="tns:GetFormulaIDHttpPostIn" />
+      <wsdl:output message="tns:GetFormulaIDHttpPostOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="wsGoBioSpaceSoap" type="tns:wsGoBioSpaceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetDepositors">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/GetDepositors" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProperties">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/GetProperties" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAdducts">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/GetAdducts" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateSession">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/CreateSession" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PurgeSession">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/PurgeSession" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchMass12C">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/SearchMass12C" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchMass12C_Bulk">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/SearchMass12C_Bulk" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchMass13C">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/SearchMass13C" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchMass15N">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/SearchMass15N" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchMass34S">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/SearchMass34S" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSynonyms">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/GetSynonyms" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMonoisotopicWeight">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/GetMonoisotopicWeight" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMolecularWeight">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/GetMolecularWeight" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFormulaID">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/GetFormulaID" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="wsGoBioSpaceSoap12" type="tns:wsGoBioSpaceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetDepositors">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/GetDepositors" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProperties">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/GetProperties" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAdducts">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/GetAdducts" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateSession">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/CreateSession" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PurgeSession">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/PurgeSession" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchMass12C">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/SearchMass12C" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchMass12C_Bulk">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/SearchMass12C_Bulk" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchMass13C">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/SearchMass13C" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchMass15N">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/SearchMass15N" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchMass34S">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/SearchMass34S" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSynonyms">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/GetSynonyms" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMonoisotopicWeight">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/GetMonoisotopicWeight" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMolecularWeight">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/GetMolecularWeight" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFormulaID">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx/GetFormulaID" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="wsGoBioSpaceHttpGet" type="tns:wsGoBioSpaceHttpGet">
+    <http:binding verb="GET" />
+    <wsdl:operation name="GetDepositors">
+      <http:operation location="/GetDepositors" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProperties">
+      <http:operation location="/GetProperties" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAdducts">
+      <http:operation location="/GetAdducts" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateSession">
+      <http:operation location="/CreateSession" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMonoisotopicWeight">
+      <http:operation location="/GetMonoisotopicWeight" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMolecularWeight">
+      <http:operation location="/GetMolecularWeight" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFormulaID">
+      <http:operation location="/GetFormulaID" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="wsGoBioSpaceHttpPost" type="tns:wsGoBioSpaceHttpPost">
+    <http:binding verb="POST" />
+    <wsdl:operation name="GetDepositors">
+      <http:operation location="/GetDepositors" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProperties">
+      <http:operation location="/GetProperties" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAdducts">
+      <http:operation location="/GetAdducts" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateSession">
+      <http:operation location="/CreateSession" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMonoisotopicWeight">
+      <http:operation location="/GetMonoisotopicWeight" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMolecularWeight">
+      <http:operation location="/GetMolecularWeight" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFormulaID">
+      <http:operation location="/GetFormulaID" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="wsGoBioSpace">
+    <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+            These web services provide access to methods for searching the &lt;a href="/GoBioSpace.aspx"&gt;GoBioSpace&lt;/a&gt; database which is part of the Golm Metabolome Database (GMD, &lt;a href="http://gmd.mpimp-golm.mpg.de/"&gt;http://gmd.mpimp-golm.mpg.de/&lt;/a&gt;).
+            Please send all feedback to &lt;a href="mailto:hummel@mpimp-golm.mpg.de"&gt;hummel@mpimp-golm.mpg.de&lt;/a&gt;</wsdl:documentation>
+    <wsdl:port name="wsGoBioSpaceSoap" binding="tns:wsGoBioSpaceSoap">
+      <soap:address location="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx" />
+    </wsdl:port>
+    <wsdl:port name="wsGoBioSpaceSoap12" binding="tns:wsGoBioSpaceSoap12">
+      <soap12:address location="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx" />
+    </wsdl:port>
+    <wsdl:port name="wsGoBioSpaceHttpGet" binding="tns:wsGoBioSpaceHttpGet">
+      <http:address location="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx" />
+    </wsdl:port>
+    <wsdl:port name="wsGoBioSpaceHttpPost" binding="tns:wsGoBioSpaceHttpPost">
+      <http:address location="http://gmd.mpimp-golm.mpg.de/webservices/wsGoBioSpace.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

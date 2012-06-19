@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="pdb"
+             targetNamespace="http://wsdl.sbc.su.se/pdb"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:tns="http://wsdl.sbc.su.se/pdb"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:ns="http://schemas.xmlsoap.org/wsdl/">
+  <documentation> The ProteinALIGNment (Pdb) programs are a set of programs
+  for sequence searches. They can perform standard dynamic programming,
+  heuristic fasta like searches and profile-profile alignments. Unfortunately
+  the package is not very well documented, but is all available for free under
+  a GPL like license. Pdb can be used for many type of alignment problems,
+  it is certainly not always the fastest of all programs but it is very
+  flexible. This webservice can 1. Align two sequences with default values 2) Align two sequences with nonDefault parameters 3) Align two sequences and include their secondary structure information 4) Align a sequence and a structure and get the alignment and a CA-pdb-file 5) Align a sequence and a profile 6) Align two profiles. </documentation>
+
+  <types>
+    <xsd:schema elementFormDefault="qualified"
+      targetNamespace="http://wsdl.sbc.su.se/pdb">
+
+       <xsd:element name="runPdb">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="pdb1"      type="xsd:string" />
+            <xsd:element name="pdb2"      type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="runPdbResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="pdb_out" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+</xsd:schema>
+</types>
+
+<message name="runPdbRequestMsg">
+	<part name="inputWrapper"  element="tns:runPdb" />
+</message>
+
+<message name="runPdbResponseMsg">
+ 	<part name="outputWrapper" element="tns:runPdbResponse" />
+</message>
+
+<portType name="pdbPortType">
+
+     	<operation name="runPdb">
+	<documentation> Renumber Pdb files.
+	</documentation>
+	<input message ="tns:runPdbRequestMsg" />
+ 	<output message="tns:runPdbResponseMsg" />
+    	</operation>
+
+</portType>
+
+ <binding name="pdbBinding" type="tns:pdbPortType">
+	<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+ 
+       <operation name="runPdb">
+          <soap:operation soapAction="http://wsdl.sbc.su.se/pdb/runPdb" />
+      	<input>
+        	<soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" use="literal"/>
+      	</input>
+      	<output>	
+        	<soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" use="literal"/>
+      	</output>
+    	</operation>
+  </binding>
+
+  <service name="Pdb">
+    <port binding="tns:pdbBinding" name="pdbPort">
+      <soap:address location="http://wsdl.sbc.su.se/cgi-bin/pdb.cgi" />
+    </port>
+  </service>
+</definitions>

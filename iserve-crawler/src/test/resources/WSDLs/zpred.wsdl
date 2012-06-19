@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="prodivtmhmmDefinitions"
+             targetNamespace="http://wsdl.sbc.su.se/zpred"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:tns="http://wsdl.sbc.su.se/zpred"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:ns="http://schemas.xmlsoap.org/wsdl/">
+  <documentation>zpred
+MOTIVATION: Prediction methods are of great importance for membrane proteins as experimental information is harder to obtain than for globular proteins. As more membrane protein structures are solved it is clear that topology information only provides a simplified picture of a membrane protein. Here, we describe a novel challenge for the prediction of alpha-helical membrane proteins: to predict the distance between a residue and the center of the membrane, a measure we define as the Z-coordinate. Even though the traditional way of depicting membrane protein topology is useful, it is advantageous to have a measure that is based on a more "physical" property such as the Z-coordinate, since it implicitly contains information about re-entrant helices, interfacial helices, the tilt of a transmembrane helix and loop lengths.
+RESULTS: We show that the Z-coordinate can be predicted using either artificial neural networks, hidden Markov models or combinations of both. The best method, ZPRED, uses the output from a hidden Markov model together with a neural network. The average error of ZPRED is 2.55A and 68.6% of the residues are predicted within 3A of the target Z-coordinate in the 5-25A region. ZPRED is also able to predict the maximum protrusion of a loop to within 3A for 78% of the loops in the dataset.
+AVAILABILITY: Supplementary information and training data is available at http://www.sbc.su.se/~erikgr/</documentation>
+
+  <types>
+    <xsd:schema elementFormDefault="qualified"
+                targetNamespace="http://wsdl.sbc.su.se/zpred">
+      <xsd:element name="runZpredDefault">
+        <xsd:complexType>
+          <xsd:all>
+            <xsd:element name="sequence" type="xsd:string">
+              <annotation>
+                <documentation>Content of FASTA file as string.</documentation>
+              </annotation>
+            </xsd:element>
+          </xsd:all>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="runZpredDefaultResponse">
+        <annotation>
+          <documentation>Text file (string) with Zpred output.</documentation>
+        </annotation>
+
+        <xsd:complexType>
+          <xsd:all>
+            <xsd:element name="zpred_result" type="xsd:string" />
+          </xsd:all>
+        </xsd:complexType>
+      </xsd:element>
+
+    </xsd:schema>
+  </types>
+
+  <message name="ZpredDefaultRequestMsg">
+    <part element="tns:runZpredDefault" name="inputWrapper" />
+  </message>
+
+  <message name="ZpredDefaultResponseMsg">
+    <part element="tns:runZpredDefaultResponse" name="outputWrapper" />
+  </message>
+
+  <portType name="zpredPortType">
+    <operation name="runZpredDefault">
+      <documentation>Run Zpred with default parameters.</documentation>
+
+      <input message="tns:ZpredDefaultRequestMsg" />
+
+      <output message="tns:ZpredDefaultResponseMsg" />
+    </operation>
+
+  </portType>
+
+  <binding name="zpredBinding" type="tns:zpredPortType">
+    <soap:binding style="document"
+                  transport="http://schemas.xmlsoap.org/soap/http" />
+
+    <operation name="runZpredDefault">
+      <soap:operation soapAction="http://wsdl.sbc.su.se/zpred/runZpredDefault" />
+
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="literal" />
+      </input>
+
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="literal" />
+      </output>
+    </operation>
+
+  </binding>
+
+  <service name="zpredService">
+    <port binding="tns:zpredBinding" name="zpredPort">
+      <soap:address location="http://wsdl.sbc.su.se/cgi-bin/zpred.cgi" />
+    </port>
+  </service>
+</definitions>

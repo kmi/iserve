@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<definitions
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+ xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" 
+ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:dime="http://schemas.xmlsoap.org/ws/2002/04/dime/wsdl/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+ xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+ xmlns:content="http://schemas.xmlsoap.org/ws/2002/04/content-type/" 
+ xmlns:ref="http://schemas.xmlsoap.org/ws/2002/04/reference/" 
+ xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" 
+ xmlns:tns="http://bio2rdf.org/SOAP/services.wsdl"
+ targetNamespace="http://bio2rdf.org/SOAP/services.wsdl"
+ name="SOAP" xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+	<types>
+	</types>
+	<message name="LinksRequest">
+		<part name="bmuri" type="xsd:string" />
+	</message>
+	<message name="LinksResponse">
+		<part name="CallReturn" type="xsd:string" />
+
+	</message>
+	<message name="DescribeRequest">
+		<part name="bmuri" type="xsd:string" />
+	</message>
+	<message name="DescribeResponse">
+		<part name="CallReturn" type="xsd:string" />
+	</message>
+	<message name="ConstructRequest">
+		<part name="sparql_construct_query" type="xsd:string" />
+
+	</message>
+	<message name="ConstructResponse">
+		<part name="CallReturn" type="xsd:string" />
+	</message>
+	<message name="SearchRequest">
+		<part name="query" type="xsd:string" />
+	</message>
+	<message name="SearchResponse">
+		<part name="CallReturn" type="xsd:string" />
+
+	</message>
+	<message name="Select_tabRequest">
+		<part name="sparql_select_query" type="xsd:string" />
+	</message>
+	<message name="Select_tabResponse">
+		<part name="CallReturn" type="xsd:string" />
+	</message>
+	<portType name="SOAPPortType">
+		<operation name="Links" parameterOrder="bmuri">
+
+			<input message="tns:LinksRequest" />
+			<output message="tns:LinksResponse" />
+		</operation>
+		<operation name="Describe" parameterOrder="bmuri">
+			<input message="tns:DescribeRequest" />
+			<output message="tns:DescribeResponse" />
+		</operation>
+		<operation name="Construct" parameterOrder="sparql_construct_query">
+			<input message="tns:ConstructRequest" />
+
+			<output message="tns:ConstructResponse" />
+		</operation>
+		<operation name="Search" parameterOrder="query">
+			<input message="tns:SearchRequest" />
+			<output message="tns:SearchResponse" />
+		</operation>
+		<operation name="Select_tab" parameterOrder="sparql_select_query">
+			<input message="tns:Select_tabRequest" />
+			<output message="tns:Select_tabResponse" />
+
+		</operation>
+	</portType>
+	<binding name="SOAPBinding" type="tns:SOAPPortType">
+		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="Links">
+			<documentation>Links to a topic from a specific Bio2RDF network SPARQL endpoint, returns NTRIPLES.&#13;</documentation>
+			<soap:operation soapAction="http://openlinksw.com/virtuoso/soap/schema#Links" />
+			<input>
+
+				<soap:body use="encoded" namespace="http://openlinksw.com/virtuoso/soap/schema" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://openlinksw.com/virtuoso/soap/schema" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="Describe">
+			<documentation>Describe a topic from the Bio2RDF network, returns NTRIPLES.&#13;</documentation>
+
+			<soap:operation soapAction="http://openlinksw.com/virtuoso/soap/schema#Describe" />
+			<input>
+				<soap:body use="encoded" namespace="http://openlinksw.com/virtuoso/soap/schema" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://openlinksw.com/virtuoso/soap/schema" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="Construct">
+
+			<documentation>Execute the SPARQL construct query, returns NTRIPLES.&#13;</documentation>
+			<soap:operation soapAction="http://openlinksw.com/virtuoso/soap/schema#Construct" />
+			<input>
+				<soap:body use="encoded" namespace="http://openlinksw.com/virtuoso/soap/schema" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://openlinksw.com/virtuoso/soap/schema" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+
+		</operation>
+		<operation name="Search">
+			<documentation>Full text search in a specific Bio2RDF network SPARQL endpoint, returns NTRIPLES.&#13;</documentation>
+			<soap:operation soapAction="http://openlinksw.com/virtuoso/soap/schema#Search" />
+			<input>
+				<soap:body use="encoded" namespace="http://openlinksw.com/virtuoso/soap/schema" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+
+				<soap:body use="encoded" namespace="http://openlinksw.com/virtuoso/soap/schema" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="Select_tab">
+			<documentation>Execute the SPARQL select query, returns tabulated results.&#13;</documentation>
+			<soap:operation soapAction="http://openlinksw.com/virtuoso/soap/schema#Select_tab" />
+			<input>
+				<soap:body use="encoded" namespace="http://openlinksw.com/virtuoso/soap/schema" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://openlinksw.com/virtuoso/soap/schema" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+	</binding>
+	<service name="Bio2RDF OMIM SPARQL endpoint">
+		<documentation>Bio2RDF SOAP services for OMIM SPARQL endpoint</documentation>
+
+		<port name="SOAPPort" binding="tns:SOAPBinding">
+			<soap:address location="http://quebec.omim.bio2rdf.org/SOAP" />
+		</port>
+	</service>
+</definitions>
+

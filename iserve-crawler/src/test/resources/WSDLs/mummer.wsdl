@@ -1,0 +1,1188 @@
+<?xml version="1.0" encoding="iso-8859-1"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Virginia Bioinformatics Institute - Home</title>
+<meta name="description" content="Virginia Bioinformatics Institue - leader in bioinformatics research and development" />
+<meta name="keywords" content="Virginia Bioinformatics Institute at Virginia Tech" />
+<meta name="Generator" content="Joomla! - Copyright (C) 2005 - 2006 Open Source Matters. All rights reserved." />
+<!--meta name="robots" content="index, follow" /-->
+<base href="http://www.vbi.vt.edu/" />
+	<link rel="shortcut icon" href="http://www.vbi.vt.edu//themes/third_party/vbi_themes/images/favicon.ico" />
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="http://www.vbi.vt.edu/themes/third_party/vbi_themes/css/mod_events_cal.css" rel="stylesheet" type="text/css"/>
+<link href="http://www.vbi.vt.edu/themes/third_party/vbi_themes/css/mod_events_latest.css" rel="stylesheet" type="text/css"/>
+<!--link href="https://www.vbi.vt.edu/templates/vbi/css/csspile.css" rel="stylesheet" type="text/css"/-->
+<link href="http://www.vbi.vt.edu/themes/third_party/vbi_themes/vbi_css/csspile.css" rel="stylesheet" type="text/css"/>
+<link href="http://www.vbi.vt.edu/feed" rel="alternate" type="application/rss+xml" title="Virginia Bioinformatics Institute"/>
+
+<!--link rel="stylesheet" type="text/css" href="http://www.vbi.vt.edu/js_flashrotator/swfobject/xfade2.css" /-->
+<!--script type="text/javascript" src="http://www.vbi.vt.edu/js_flashrotator/swfobject/xfade2.js"></script-->
+
+<!--script src="http://maps.google.com/maps?file=api&v=2&sensor=false&key=ABQIAAAANuC3JH0wyt9kKr0l9tyEaBRqMJMhv2GJ7Q80HgL19bgVdg3GbhSNrAOcoWvVDxR9ZNgmUP7JRVHazw" type="text/javascript"></script-->  
+
+
+<meta name="verify-v1" content="XgEKk6P3NWAjjWBlvlXWjLuBg6T89W+qn3DhlJ3MB2s=" />
+
+
+</head>
+ <body>
+   <div id="debug"><!--will close in later-->
+      <div align="center" class="header-container">
+		<div class="header-wrap">
+			<div id="meta-date">
+				<div id="meta-top">&copy; 2000 - 2012 Virginia Bioinformatics Institute </div>
+				<div id="current-date"> Wednesday, 29 February 2012 </div>
+			</div>
+
+			<!-- address top end -->
+			<!-- logo-topmenu start -->
+
+			<div align="center">
+				<div id="logo-topmenu">
+					<table border="0" cellpadding="0" cellspacing="0" width="100%" >
+						<tr>
+							<td valign="top" width="50%">
+								<div id="logo">
+								<a href="/"><img src="/themes/third_party/vbi_themes/images/vbi-logo.png" width="350" height="27"
+								border="0" alt="Virginia Bioinformatics Institute at Virginia Tech" /></a>
+								</div>
+							</td>
+							<td valign="bottom" width="50%">
+								<div id="search-field">
+								
+								
+								<form method="post" action="http://www.vbi.vt.edu/"  >
+<div class='hiddenFields'>
+<input type="hidden" name="ACT" value="6" />
+<input type="hidden" name="XID" value="a9b74299c2775bd475e9dca6627c62e83324d9df" />
+<input type="hidden" name="RES" value="" />
+<input type="hidden" name="meta" value="YTo5OntzOjY6InN0YXR1cyI7czowOiIiO3M6NzoiY2hhbm5lbCI7czowOiIiO3M6ODoiY2F0ZWdvcnkiO3M6MDoiIjtzOjk6InNlYXJjaF9pbiI7czoxMDoiZXZlcnl3aGVyZSI7czo1OiJ3aGVyZSI7czozOiJhbGwiO3M6MTI6InNob3dfZXhwaXJlZCI7czowOiIiO3M6MTk6InNob3dfZnV0dXJlX2VudHJpZXMiO2I6MDtzOjExOiJyZXN1bHRfcGFnZSI7czoxNDoic2VhcmNoL3Jlc3VsdHMiO3M6MTU6Im5vX3Jlc3VsdHNfcGFnZSI7czoxNzoic2VhcmNoL25vX3Jlc3VsdHMiO31lMGJmN2ViOGY5Yzk0Y2E4YmZkY2UwZDU3YzM1YWMxYg==" />
+<input type="hidden" name="site_id" value="1" />
+</div>
+
+
+									<div class="search">
+										<!--p><label for="keywords">Search:</label><br /-->
+											<input type="text" name="keywords" id="keywords" value="" maxlength="20"  size="30" 
+											onblur="if(this.value=='') this.value='Search...';" onfocus="if(this.value=='Search...') this.value='';" size="18" maxlength="100" />
+										<!--input type="image" class="searchButton" src="http://ee-dev.vbi.vt.edu/themes/cp_themes/default/images/search_button.gif"-->
+										<!--/p-->
+<p>
+											
+</p>											
+
+											<!--p></p-->
+									</div>
+									<a href="http://www.vbi.vt.edu/search">Advanced Search</a>
+								</form>
+									
+								<!--
+									<exp:search:simple_form channel="about_vbi" no_result_page="search/no_results" result_page="search/index" search_in="everywhere">
+										<div class="search">
+										<input name="keywords" id="keywords" maxlength="20" alt="search" class="inputbox" type="text" size="30" />	
+										
+										<input type="submit" value="Search" />	
+										</div>
+									</exp:search:simple_form>	-->
+									<!--a href="https://www.vbi.vt.edu/search" target="_blank">Advanced Search</a-->
+								</div>
+							</td>
+						</tr>
+					</table>
+					<div class="topmenu-container">
+						<div class="topmenu">
+							<div class="topmenu-buttons">
+								<ul id="mainlevel_hdrone">
+									<li><a href="http://insider.vbi.vt.edu/" target="_blank" class="mainlevel_hdrone" >Intranet</a></li>
+									
+									<!--li><a href="/staff_directory/" class="mainlevel_hdrone" >Staff Directory</a></li-->
+									<li><a href="http://www.vbi.vt.edu/staff_directory/" class="mainlevel_hdrone" >Staff Directory</a></li>
+									
+									<li><a href="http://www.vbi.vt.edu/business_dev" class="mainlevel_hdrone" >Business Development</a></li>
+
+									<li><a href="http://www.vbi.vt.edu/giving_to_vbi" class="mainlevel_hdrone" >Giving to VBI</a></li>
+
+									<li><a href="http://www.vbi.vt.edu/marketing_and_communications/annual_reports" class="mainlevel_hdrone" >Annual Report</a></li>
+
+									<!--<li><a href="http://www.vbi.vt.edu/test1/main_bdev" class="mainlevel_hdrone" >Business Development</a></li>
+									<li><a href="http://www.vbi.vt.edu/test1/main_gtv" class="mainlevel_hdrone" >Giving to VBI</a></li>-->
+								</ul> 
+							</div>
+							<div class="topmenu-socbkmrks">
+								<a href="http://www.facebook.com/pages/Virginia-Bioinformatics-Institute-at-Virginia-Tech/101544186596871" target="_blank">
+									<img src="http://www.vbi.vt.edu/themes/third_party/vbi_themes/images/icon-25x25-facebook.png"
+										alt="Follow us on Twitter" border="0" />
+								</a>
+								<a href="http://twitter.com/vbiatvt" target="_blank">
+									<img src="http://www.vbi.vt.edu/themes/third_party/vbi_themes/images/icon-25x25-twitter.png"
+										alt="Follow us on Twitter" border="0" />
+								</a>
+								<a href="http://www.youtube.com/user/VBIatVT/" target="_blank">
+									<img src="http://www.vbi.vt.edu/themes/third_party/vbi_themes/images/icon-25x25-youtube.png"
+										alt="Follow us on Twitter" border="0" />
+								</a>
+								<a href="/feed" target="_blank">
+										<img src="/themes/third_party/vbi_themes/images/icon-25x25-rss.png"
+											alt="VBI RSS Feed" border="0" />
+								</a>
+							</div>
+
+						</div>
+					</div>
+					<div style="clear:both;">
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+  
+     <div align="center"><!-- close later-->
+       <div class="body-wrap"><!--cloase later-->
+			<!-- placement for mod-tools mod-progs mod-extres and flash image start -->
+		<!--script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script-->
+		<script type="text/javascript" src="http://www.vbi.vt.edu/themes/javascript/compressed/jquery/jquery-1.6.4.js"></script>
+<!--script type="text/javascript" src="http://www.linein.org/examples/jquery.innerfade.js"></script-->											
+								
+										
+	<script type="text/javascript">
+										
+$(document).ready(function($) {
+
+$.fn.innerfade = function(options) {
+
+	this.each(function(){ 	
+		
+		var settings = {
+			animationtype: 'fade',
+			speed: 'normal',
+			timeout: 2000,
+			type: 'sequence',
+			containerheight: 'auto',
+			runningclass: 'innerfade'
+		};
+		
+		if(options)
+			$.extend(settings, options);
+		
+		var elements = $(this).children();
+	
+		if (elements.length > 1) {
+		
+			$(this).css('position', 'relative');
+	
+			$(this).css('height', settings.containerheight);
+			$(this).addClass(settings.runningclass);
+			
+			for ( var i = 0; i < elements.length; i++ ) {
+				$(elements[i]).css('z-index', String(elements.length-i)).css('position', 'absolute');
+				$(elements[i]).hide();
+			};
+		
+			if ( settings.type == 'sequence' ) {
+				setTimeout(function(){
+					$.innerfade.next(elements, settings, 1, 0);
+				}, settings.timeout);
+				$(elements[0]).show();
+			} else if ( settings.type == 'random' ) {
+				setTimeout(function(){
+					do { current = Math.floor ( Math.random ( ) * ( elements.length ) ); } while ( current == 0 )
+					$.innerfade.next(elements, settings, current, 0);
+				}, settings.timeout);
+				$(elements[0]).show();
+			}	else {
+				alert('type must either be \'sequence\' or \'random\'');
+			}
+			
+		}
+		
+	});
+};
+
+
+$.innerfade = function() {}
+$.innerfade.next = function (elements, settings, current, last) {
+
+	if ( settings.animationtype == 'slide' ) {
+		$(elements[last]).slideUp(settings.speed, $(elements[current]).slideDown(settings.speed));
+	} else if ( settings.animationtype == 'fade' ) {
+		$(elements[last]).fadeOut(settings.speed);
+		$(elements[current]).fadeIn(settings.speed);
+	} else {
+		alert('animationtype must either be \'slide\' or \'fade\'');
+	};
+	
+	if ( settings.type == 'sequence' ) {
+		if ( ( current + 1 ) < elements.length ) {
+			current = current + 1;
+			last = current - 1;
+		} else {
+			current = 0;
+			last = elements.length - 1;
+		};
+	}	else if ( settings.type == 'random' ) {
+		last = current;
+		while (	current == last ) {
+			current = Math.floor ( Math.random ( ) * ( elements.length ) );
+		};
+	}	else {
+		alert('type must either be \'sequence\' or \'random\'');
+	};
+	setTimeout((function(){$.innerfade.next(elements, settings, current, last);}), settings.timeout);
+};
+})(jQuery);
+</script>										
+										
+<script type="text/javascript">
+										
+										
+$(document).ready(function() { 
+	$('#image_rotate').innerfade({ 
+		speed: 'slow', 
+		timeout: 4000, 
+		type: 'sequence', 
+		containerheight: '220px'
+	});
+	
+
+	
+});
+</script>						
+
+		
+		
+			<div align="center" id="tools-wrap">
+				<div class="tools-container">
+					<!-- start Resources  -->
+					<div class="tools">
+						<h1>VBI Resources / Tools </h1>
+						<ul style="height:145px">
+							
+							
+						
+							<li style="padding-bottom:4px">
+								<a target="_blank" href="http://www.copasi.org/tiki-index.php">
+								COPASI 
+								</a>
+							</li>
+							
+							
+						
+							<li style="padding-bottom:4px">
+								<a target="_blank" href="https://cratis.vbi.vt.edu/">
+								Cratis
+								</a>
+							</li>
+							
+							
+						
+							<li style="padding-bottom:4px">
+								<a target="_blank" href="http://spore.vbi.vt.edu/dejavu/">
+								Deja Vu
+								</a>
+							</li>
+							
+							
+						
+							<li style="padding-bottom:4px">
+								<a target="_blank" href="http://www.etblast.org/">
+								eTBLAST
+								</a>
+							</li>
+							
+							
+						
+							<li style="padding-bottom:4px">
+								<a target="_blank" href="http://www.genocad.org/genocad/ ">
+								GenoCAD
+								</a>
+							</li>
+							
+							
+						
+							<li style="padding-bottom:4px">
+								<a target="_blank" href="http://www.modelingimmunity.org">
+								MIEP
+								</a>
+							</li>
+							
+							
+						
+							<li style="padding-bottom:4px">
+								<a target="_blank" href="http://sysgensim.sourceforge.net/">
+								SysGenSIM
+								</a>
+							</li>
+							
+						</ul>
+						<p><a href="/resources_and_tools">more...</a></p>
+
+					</div>
+					<div class="progs">
+						<h1>VBI Research Divisions</h1>
+						<ul style="height:145px">
+						<li style="padding-bottom:4px"><a target='_blank' href='http://ndssl.vbi.vt.edu/'>ACDIL</a></li><li style="padding-bottom:4px"><a target='_blank' href='http://www.vbi.vt.edu/research_divisions#Biosystems'>BioSystems</a></li><li style="padding-bottom:4px"><a target='_blank' href='http://www.vbi.vt.edu/research_divisions#Cyberinfrastructure'>Cyberinfrastructure Division</a></li><li style="padding-bottom:4px"><a target='_blank' href='http://www.vbi.vt.edu/research_divisions#MIS'>Medical Informatics and Systems</a></li>
+						
+						</ul>
+						<p  style="margin-bottom: 20px;"><a href="http://www.vbi.vt.edu/vbi_research_divisions">more...</a></p>
+					</div>
+
+					<div class="externals">
+						<h1>VBI Web Sites </h1>
+						<ul style="height:145px">
+							
+						
+							<li style="padding-bottom:4px"><a target="_blank" href="http://influenza.vbi.vt.edu/">
+							Influenza
+							
+							</a></li>
+							
+						
+							<li style="padding-bottom:4px"><a target="_blank" href="http://kidstechuniversity.vbi.vt.edu/">
+							Kids&#8217; Tech University
+							
+							</a></li>
+							
+						
+							<li style="padding-bottom:4px"><a target="_blank" href="http://microbiologyreu-ret.vbi.vt.edu/">
+							REU Site: Microbiology in the Post Genome Era
+							
+							</a></li>
+							
+						
+							<li style="padding-bottom:4px"><a target="_blank" href="http://biomath.vbi.vt.edu/">
+							REU Site: Modeling and Simulation in Systems Biology&#8230;...
+							
+							</a></li>
+							
+						
+							<li style="padding-bottom:4px"><a target="_blank" href="http://www.vbi.vt.edu/anniversary">
+							Ten-year Anniversary
+							
+							</a></li>
+							
+																					
+						</ul>
+						<p><a href="http://www.vbi.vt.edu/vbi_web_site">more...</a></p>
+					</div>
+
+					<!-- end Resources  -->
+					<!-- start Feature Flash module -->
+					<div class="feature-mod">
+						<div class="module_pubrel-feature">
+							<div>
+								<div>
+									<div>
+										<!--script type="text/javascript"--><!--
+											google_ad_client = "pub-3630357118127212";
+											google_ad_width = 412;
+											google_ad_height = 200;
+											google_ad_format = "412x200_as";
+											google_ad_type = "text_image";
+											//2007-11-02: Cross Fader Redux
+											google_ad_channel = "8024417278";
+											//-->
+										<!--/script-->
+
+										
+										
+										<style type="text/css">
+											a.picture:visited {color:transparent;}
+										
+										</style>
+
+										
+										<div style="width:412px;height:200px;margin:0px auto;text-align:center;">
+										
+										<!---->
+											<div id="image_rotate" style="list-style:none; height:200px; margin-top:-2px">
+											 
+												
+												
+													<a href='http://ndssl.vbi.vt.edu/index.php' class="picture" style="text-decoration: none">
+														<table width="412px">
+														
+															<tr>
+																
+																<td >
+																	<img src="http://www.vbi.vt.edu/images/uploads/features/ModelingMillionsFeature.jpg" width="280" height="200 alt="FEATURE" border="0" style="float: left;"/>
+																</td>
+																<td>
+																	<div style="margin-top:-15px; margin-left:-2px">
+																	
+																		<div style="background-image:url('http://www.vbi.vt.edu/images/content/channel/feature/text_background.jpg'); height: 162px;color: white;  width:125px; padding-left:1px;padding-bottom:1px;">
+																		
+																		<p style="padding-left:6px"><br/><strong>FEATURE</strong></p>
+																			<p style="margin-left:10px;font-size:12px;">Modeling millions of people to improve the study of disease</p>
+																		</div>
+																		<div style=" border: 0.5px solid transparent;"></div>
+																		<div style="background-image:url('http://www.vbi.vt.edu/images/content/channel/feature/text_background.jpg'); height: 35px; color: white; padding-right:6px"><br/><strong>&nbsp;&nbsp;&nbsp;&nbsp;read more</strong></div>
+																	</div>
+																</td>
+															</tr>
+															
+														</table>
+													</a>
+												
+												
+													<a href='http://www.vbi.vt.edu/core_laboratory_facility' class="picture" style="text-decoration: none">
+														<table width="412px">
+														
+															<tr>
+																
+																<td >
+																	<img src="http://www.vbi.vt.edu/images/uploads/features/CoresServicesFeature.jpg" width="280" height="200 alt="FEATURE" border="0" style="float: left;"/>
+																</td>
+																<td>
+																	<div style="margin-top:-15px; margin-left:-2px">
+																	
+																		<div style="background-image:url('http://www.vbi.vt.edu/images/content/channel/feature/text_background.jpg'); height: 162px;color: white;  width:125px; padding-left:1px;padding-bottom:1px;">
+																		
+																		<p style="padding-left:6px"><br/><strong>FEATURE</strong></p>
+																			<p style="margin-left:10px;font-size:12px;">VBI Core Facilities: Offering a cohesive and comprehensive range of services</p>
+																		</div>
+																		<div style=" border: 0.5px solid transparent;"></div>
+																		<div style="background-image:url('http://www.vbi.vt.edu/images/content/channel/feature/text_background.jpg'); height: 35px; color: white; padding-right:6px"><br/><strong>&nbsp;&nbsp;&nbsp;&nbsp;read more</strong></div>
+																	</div>
+																</td>
+															</tr>
+															
+														</table>
+													</a>
+												
+												
+													<a href='http://www.vbi.vt.edu/education_and_outreach' class="picture" style="text-decoration: none">
+														<table width="412px">
+														
+															<tr>
+																
+																<td >
+																	<img src="http://www.vbi.vt.edu/images/uploads/features/EOStudentScienceFeature.jpg" width="280" height="200 alt="FEATURE" border="0" style="float: left;"/>
+																</td>
+																<td>
+																	<div style="margin-top:-15px; margin-left:-2px">
+																	
+																		<div style="background-image:url('http://www.vbi.vt.edu/images/content/channel/feature/text_background.jpg'); height: 162px;color: white;  width:125px; padding-left:1px;padding-bottom:1px;">
+																		
+																		<p style="padding-left:6px"><br/><strong>FEATURE</strong></p>
+																			<p style="margin-left:10px;font-size:12px;">Cultivating students’ interest in science</p>
+																		</div>
+																		<div style=" border: 0.5px solid transparent;"></div>
+																		<div style="background-image:url('http://www.vbi.vt.edu/images/content/channel/feature/text_background.jpg'); height: 35px; color: white; padding-right:6px"><br/><strong>&nbsp;&nbsp;&nbsp;&nbsp;read more</strong></div>
+																	</div>
+																</td>
+															</tr>
+															
+														</table>
+													</a>
+												
+												
+													<a href='http://www.vbi.vt.edu/marketing_and_communications/spotlight_view/beyond_textbook_solutions_how_creativity_inspires_discovery_at_vbi' class="picture" style="text-decoration: none">
+														<table width="412px">
+														
+															<tr>
+																
+																<td >
+																	<img src="http://www.vbi.vt.edu/images/content/channel/feature/awakho.jpg" width="280" height="200 alt="FEATURE" border="0" style="float: left;"/>
+																</td>
+																<td>
+																	<div style="margin-top:-15px; margin-left:-2px">
+																	
+																		<div style="background-image:url('http://www.vbi.vt.edu/images/content/channel/feature/text_background.jpg'); height: 162px;color: white;  width:125px; padding-left:1px;padding-bottom:1px;">
+																		
+																		<p style="padding-left:6px"><br/><strong>FEATURE</strong></p>
+																			<p style="margin-left:10px;font-size:12px;">The Awakho Award has met with success at VBI.</p>
+																		</div>
+																		<div style=" border: 0.5px solid transparent;"></div>
+																		<div style="background-image:url('http://www.vbi.vt.edu/images/content/channel/feature/text_background.jpg'); height: 35px; color: white; padding-right:6px"><br/><strong>&nbsp;&nbsp;&nbsp;&nbsp;read more</strong></div>
+																	</div>
+																</td>
+															</tr>
+															
+														</table>
+													</a>
+												
+												
+													<a href='http://www.vbi.vt.edu/marketing_and_communications/spotlight_view/scientists_uncover_the_secrets_of_a_pathogen_evolutionary_arms_race' class="picture" style="text-decoration: none">
+														<table width="412px">
+														
+															<tr>
+																
+																<td >
+																	<img src="http://www.vbi.vt.edu/images/content/channel/feature/EvolutionaryArmsRaceFeature.jpg" width="280" height="200 alt="FEATURE" border="0" style="float: left;"/>
+																</td>
+																<td>
+																	<div style="margin-top:-15px; margin-left:-2px">
+																	
+																		<div style="background-image:url('http://www.vbi.vt.edu/images/content/channel/feature/text_background.jpg'); height: 162px;color: white;  width:125px; padding-left:1px;padding-bottom:1px;">
+																		
+																		<p style="padding-left:6px"><br/><strong>FEATURE</strong></p>
+																			<p style="margin-left:10px;font-size:12px;">Scientists uncover the secrets of a pathogen evolutionary arms race</p>
+																		</div>
+																		<div style=" border: 0.5px solid transparent;"></div>
+																		<div style="background-image:url('http://www.vbi.vt.edu/images/content/channel/feature/text_background.jpg'); height: 35px; color: white; padding-right:6px"><br/><strong>&nbsp;&nbsp;&nbsp;&nbsp;read more</strong></div>
+																	</div>
+																</td>
+															</tr>
+															
+														</table>
+													</a>
+												
+												
+													<a href='http://www.vbi.vt.edu/marketing_and_communications/spotlight_view/kids_tech_university_helps_shape_the_future_of_science' class="picture" style="text-decoration: none">
+														<table width="412px">
+														
+															<tr>
+																
+																<td >
+																	<img src="http://www.vbi.vt.edu/images/content/channel/feature/kid_tech.jpg" width="280" height="200 alt="FEATURE" border="0" style="float: left;"/>
+																</td>
+																<td>
+																	<div style="margin-top:-15px; margin-left:-2px">
+																	
+																		<div style="background-image:url('http://www.vbi.vt.edu/images/content/channel/feature/text_background.jpg'); height: 162px;color: white;  width:125px; padding-left:1px;padding-bottom:1px;">
+																		
+																		<p style="padding-left:6px"><br/><strong>FEATURE</strong></p>
+																			<p style="margin-left:10px;font-size:12px;">Kids’ Tech University helps shape the future of science</p>
+																		</div>
+																		<div style=" border: 0.5px solid transparent;"></div>
+																		<div style="background-image:url('http://www.vbi.vt.edu/images/content/channel/feature/text_background.jpg'); height: 35px; color: white; padding-right:6px"><br/><strong>&nbsp;&nbsp;&nbsp;&nbsp;read more</strong></div>
+																	</div>
+																</td>
+															</tr>
+															
+														</table>
+													</a>
+												
+												
+													<a href='http://www.vbi.vt.edu/marketing_and_communications/spotlight_view/letter_from_the_director' class="picture" style="text-decoration: none">
+														<table width="412px">
+														
+															<tr>
+																
+																<td >
+																	<img src="http://www.vbi.vt.edu/images/content/channel/feature/letter.jpg" width="280" height="200 alt="NEWS" border="0" style="float: left;"/>
+																</td>
+																<td>
+																	<div style="margin-top:-15px; margin-left:-2px">
+																	
+																		<div style="background-image:url('http://www.vbi.vt.edu/images/content/channel/feature/text_background.jpg'); height: 162px;color: white;  width:125px; padding-left:1px;padding-bottom:1px;">
+																		
+																		<p style="padding-left:6px"><br/><strong>NEWS</strong></p>
+																			<p style="margin-left:10px;font-size:12px;">Letter from the Director</p>
+																		</div>
+																		<div style=" border: 0.5px solid transparent;"></div>
+																		<div style="background-image:url('http://www.vbi.vt.edu/images/content/channel/feature/text_background.jpg'); height: 35px; color: white; padding-right:6px"><br/><strong>&nbsp;&nbsp;&nbsp;&nbsp;read more</strong></div>
+																	</div>
+																</td>
+															</tr>
+															
+														</table>
+													</a>
+												
+												
+											</div>
+											
+											
+											
+											
+											
+											<!---->
+											
+											
+										</div>									
+										
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>	
+					<!-- end Feature Flash module -->
+
+					<div style="clear:both;"></div>
+
+				</div>
+			</div>
+			<!-- end placement for mod-tools mod-progs mod-extres and flash image -->
+			<!-- start header image for sub-pages -->
+
+			<div align="center">
+			</div>
+
+			<!-- end header image for sub-pages -->
+			<!-- start pathway breadcrumbs display -->
+
+			<div id="pathway">
+				<span class="pathway">Home </span>
+			</div>
+
+			<!-- pathway breadcrumbs display end -->
+		
+
+	<table id="content-wrap" cellspacing="0" cellpadding="0">
+	  <tr>
+           <td>
+<!--begin the left navigation-->
+<!-- main contents left navigation pane -->
+<div id="cw-left">
+	<div id="left">
+
+	     		<div class="moduletable">
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">
+				<!--tr align="left"><td><a href="home/" class="mainlevel" id="active_menu">Home</a></td></tr-->
+				<tr align="left"><td><a href="http://www.vbi.vt.edu/" class="mainlevel">Home</a></td></tr>
+				<tr align="left">
+					<td><a href="http://www.vbi.vt.edu/faculty" class="mainlevel" >FACULTY</a>
+						
+					</td>
+				</tr>
+				<tr align="left">
+					<td><a href="http://www.vbi.vt.edu/research_divisions/" class="mainlevel" >Research Divisions</a>
+
+						<!-- removed 2011.10.20
+						
+						-->
+					</td>
+				</tr>
+				<tr align="left"><td><a href="http://www.vbi.vt.edu/resources_and_tools" class="mainlevel" >Resources and Tools</a></td></tr>
+				<tr align="left">
+					<td><a href="http://www.vbi.vt.edu/about_vbi/" class="mainlevel" >About VBI</a>
+						
+					</td>
+				</tr>
+				<tr align="left">
+					<td><a href="http://www.vbi.vt.edu/core_laboratory_facility/" class="mainlevel" >Laboratory Core</a>
+						
+					</td>
+				</tr>
+				<tr align="left"><td><a href="http://www.vbi.vt.edu/core_computational_facility/" class="mainlevel" >Computational Core</a></td></tr>
+				<tr align="left"><td><a href="http://www.vbi.vt.edu/high_performance_computing/" class="mainlevel" >High Performance Computing</a></td></tr><!--add by july 28, 2011-->
+				<tr align="left"><td><a href="http://www.vbi.vt.edu/data_analysis_core/" class="mainlevel" >Data Analysis Core</a></td></tr>
+				<tr align="left">
+					<td><a href="http://www.vbi.vt.edu/environmental_core/" class="mainlevel" >Environmental Core</a>
+						
+					</td>
+				</tr>
+				<tr align="left"><td><a href="http://www.vbi.vt.edu/national_capital_region/" class="mainlevel" >National Capital Region</a></td></tr>
+				<tr align="left"><td><a href="http://www.vbi.vt.edu/employment/" class="mainlevel" >Employment</a></td></tr>
+				<tr align="left">
+					<td><a href="http://www.vbi.vt.edu/marketing_and_communications/" class="mainlevel" >Marketing and Communications</a>
+						
+					</td>
+				</tr>
+				<tr align="left">
+					<td><a href="http://www.vbi.vt.edu/education_and_outreach/" class="mainlevel" >Education and Outreach</a>
+						
+					</td>
+				</tr>
+
+<!-- not used from 2011-07-12
+				<tr align="left">
+					<td><a href="http://www.vbi.vt.edu/other_resources/" class="mainlevel" >Internal Resources</a>
+						
+					</td>
+				</tr>
+-->
+
+				<tr align="left"><td><a href="http://www.vbi.vt.edu/external_resources/" class="mainlevel" >External Resources</a></td></tr>
+			</table>
+		</div>
+	
+		
+		
+			<div style=" background: none repeat scroll 0 0 transparent;  border-bottom: 1px solid #EBEBEB;"></div>
+				<div class="image_frontpage"> 
+					<a href='http://www.vt.edu/' target="_blank">
+					<img src="http://www.vbi.vt.edu/images/content/channel/side_bar_images/icon-169x59-virginiatech.png"
+					alt="Virginia Tech" title="Virginia Tech" border="0" /></a>
+				</div>
+		
+		
+			<div style=" background: none repeat scroll 0 0 transparent;  border-bottom: 1px solid #EBEBEB;"></div>
+				<div class="image_frontpage"> 
+					<a href='http://ktu-k12.vbi.vt.edu/' target="_blank">
+					<img src="http://www.vbi.vt.edu/images/content/channel/side_bar_images/logo-kids-tech-university.jpg"
+					alt="Kids&#8217; Tech University" title="Kids&#8217; Tech University" border="0" /></a>
+				</div>
+		
+		
+			<div style=" background: none repeat scroll 0 0 transparent;  border-bottom: 1px solid #EBEBEB;"></div>
+				<div class="image_frontpage"> 
+					<a href='http://ktu-k12.vbi.vt.edu/' target="_blank">
+					<img src="http://www.vbi.vt.edu/images/content/channel/side_bar_images/umbrella-link3.jpg"
+					alt="Kids&#8217; Tech University Umbralle" title="Kids&#8217; Tech University Umbralle" border="0" /></a>
+				</div>
+		
+
+	
+		
+	<!--	
+		<div class="image_frontpage"> 
+			<a href="http://www.vt.edu" target="_blank">
+				<img src="http://www.vbi.vt.edu/themes/third_party/vbi_themes/images/icon-169x59-virginiatech.png"
+					alt="Virginia Tech" title="Virginia Tech" border="0" /></a>
+		</div>
+
+		<div class="image_frontpage">
+			<a href="http://ktu-k12.vbi.vt.edu/" target="_blank">
+				<img src="http://www.vbi.vt.edu/themes/third_party/vbi_themes/images/logo-kids-tech-university.jpg"
+				alt="Kids' Tech University" border="0" /></a>
+		</div>			
+
+		<br/>
+		<div style=" background: none repeat scroll 0 0 transparent;    border-bottom: 1px solid #EBEBEB;"></div>
+		<div class="image_frontpage">
+			<a href="http://ktu-k12.vbi.vt.edu/" target="_blank">
+				<img src="http://www.vbi.vt.edu/themes/third_party/vbi_themes/images/umbrella-link3.jpg"
+				alt="Kids' Tech University" border="0" /></a>
+		</div>
+		
+		-->
+
+		<!--add the Open House image and link-->
+		<!--br/>
+		<div style=" background: none repeat scroll 0 0 transparent;    border-bottom: 1px solid #EBEBEB;"></div>
+		<div class="image_frontpage"><br/>
+			<a href="http://univrelations.unirel.vt.edu/openhouse/" target="_blank">
+				<img src="http://www.vbi.vt.edu/themes/third_party/vbi_themes/images/L_2011-open-house-icon.png"
+				alt="Open House border="0" /></a>
+		</div-->
+		
+
+	</div>
+</div>
+<!--end of left navigation-->
+<!-- main contents right pane including center content --><!--will be main body wrap head-->
+		 <div id="cw-right">
+		    <div class="moduletable">
+			<div align="center">
+			  <img src="http://www.vbi.vt.edu/themes/third_party/vbi_themes/images/dailypix/dailypix-impact-the-future.jpg" border="0" width="705" height="200" alt="dailypix-image-02-10years.jpg" /><br />
+			</div>
+		    </div>
+		    <div id="mainbody-wrap">
+				<table class="mb" cellpadding="0" cellspacing="0">
+					<tr valign="top">
+					<!-- Main Content Column One -->
+						<td class="mbtd-one">
+								<div class="componentheading_frontpage">News and Announcements</div>
+	<table class="blog_frontpage" cellpadding="0" cellspacing="0">
+		<tr>
+			<td valign="top">
+				<!--end of main body wrsp head-->
+				<!--begin to the list of the publication release-->
+				<table width="100%"  cellpadding="0" cellspacing="0">
+														
+					<tr>
+						<td valign="top" width="100%">	
+							
+							<table class="contentpaneopen_frontpage"><!--get the lastest 1 press releases-->
+							
+								<tr>
+									<td class="contentheading_frontpage" width="100%">
+									  
+											<a href="http://www.vbi.vt.edu/marketing_and_communications/press_releases_view/genetic_rosetta_stone_unveiled_in_nature" class="contentpagetitle_frontpage">
+												Genetic Rosetta Stone unveiled in Nature
+											</a>
+										
+									</td>
+								</tr>
+							
+							 
+							
+								<tr>
+									<td>
+										<span>
+											<a href="http://www.vbi.vt.edu/marketing_and_communications/">Marketing and Communications</a> - </span>
+										<span>
+											<a href="http://www.vbi.vt.edu/marketing_and_communications/press_releases /">Press Releases </a>			</span>
+									</td>
+								</tr>
+								<tr>
+									<td valign="top" colspan="2" class="createdate">
+										2012, Feb. 08	
+									</td>
+								</tr>
+								<tr>
+									<td valign="top" colspan="2">
+										<p>
+											<p>
+	BLACKSBURG, Va., Feb 8, 2012 --&nbsp; Scientists have developed a new community resource that may act as a Rosetta Stone for revealing the genetic basis of traits and disease.<img alt="" src="http://www.vbi.vt.edu/images/content/channel/press_releases/drosophila-dgrp(1).png" style="width: 150px; height: 153px; float: right;" /></p>
+
+										</p>
+									</td>
+
+								</tr>
+								<tr>
+									<td align="left" colspan="2">
+										<a href="http://www.vbi.vt.edu/marketing_and_communications/press_releases_view/genetic_rosetta_stone_unveiled_in_nature" class="readon_frontpage">
+											read more &raquo;
+										</a>
+										</td>
+								</tr>
+							</table> <!--end of the table of class="contentpaneopen_frontpage"-->
+							
+							<span class="article_separator_frontpage">&nbsp;</span>
+							
+						</td>						
+					</tr>
+							
+					
+				</table><!--end of the list of the publication release table-->
+			</td><!--end of td of valign="top"-->
+		</tr>
+											
+	</table><!--end of table of first "blog_frontpage"-->
+	<div class="more-news">
+		<h1>Recent News | <a class="more-news" href="marketing_and_communications/press_releases/">Complete List</a></h1>
+		<ul class="latestnews-more-news">
+			
+			<li class="latestnews-more-news">
+				<!--a href="http://www.vbi.vt.edu/marketing_and_communications/press_releases/mikael_rem_to_speak_about_ventac_partners" class="latestnews-more-news"-->
+				<a href="http://www.vbi.vt.edu/marketing_and_communications/press_releases_view/mikael_rem_to_speak_about_ventac_partners" class="latestnews-more-news">
+
+					Mikael Ørem to speak about Ventac Partners
+				</a>
+			</li>
+			
+			<li class="latestnews-more-news">
+				<!--a href="http://www.vbi.vt.edu/marketing_and_communications/press_releases/scientific_plagiarism_a_growing_problem_in_an_era_of_shrinking_research_fun" class="latestnews-more-news"-->
+				<a href="http://www.vbi.vt.edu/marketing_and_communications/press_releases_view/scientific_plagiarism_a_growing_problem_in_an_era_of_shrinking_research_fun" class="latestnews-more-news">
+
+					Scientific plagiarism: a growing problem in an era of shrinking research funding
+				</a>
+			</li>
+			
+			<li class="latestnews-more-news">
+				<!--a href="http://www.vbi.vt.edu/marketing_and_communications/press_releases/education_outreach_officer_guest_expert_on_kidtalk" class="latestnews-more-news"-->
+				<a href="http://www.vbi.vt.edu/marketing_and_communications/press_releases_view/education_outreach_officer_guest_expert_on_kidtalk" class="latestnews-more-news">
+
+					Education &amp; Outreach Officer guest expert on KidTalk
+				</a>
+			</li>
+			
+			<li class="latestnews-more-news">
+				<!--a href="http://www.vbi.vt.edu/marketing_and_communications/press_releases/vbi_welcomes_new_board_members" class="latestnews-more-news"-->
+				<a href="http://www.vbi.vt.edu/marketing_and_communications/press_releases_view/vbi_welcomes_new_board_members" class="latestnews-more-news">
+
+					VBI welcomes new board members
+				</a>
+			</li>
+			
+			<li class="latestnews-more-news">
+				<!--a href="http://www.vbi.vt.edu/marketing_and_communications/press_releases/center_for_modeling_immunity_to_enteric_pathogens_galvanized_for_next_phase" class="latestnews-more-news"-->
+				<a href="http://www.vbi.vt.edu/marketing_and_communications/press_releases_view/center_for_modeling_immunity_to_enteric_pathogens_galvanized_for_next_phase" class="latestnews-more-news">
+
+					Center for Modeling Immunity to Enteric Pathogens galvanized for next phase of research
+				</a>
+			</li>
+			
+		</ul>  
+	</div><!--end of class="more-news-->
+
+									
+
+						</td><!--end of class="mbtd-one"--><!--end of main Content Column One-->
+						<!-- Main Content Column Two -->
+						<td class="mbtd-two">
+																	<div class="res-highlight">
+											<div class="moduletable_res-hilite">
+												<h3>Research Highlight</h3>
+												 
+												
+												<table class="contentpaneopen">
+													<tr>
+														<td class="contentheading" width="100%">
+															David Mittelman, Ph.D.
+														</td>
+													</tr>
+												</table>
+			
+												<table class="contentpaneopen">
+													<tr>
+														<td valign="top" colspan="2">
+															<p>
+																<img src="http://www.vbi.vt.edu/images/content/channel/research_highlight/mittelman-david-20110427-11-rh.jpg" border="0" alt="David Mittelman, Ph.D." hspace="5" vspace="5" align="right" /> 
+																<p>
+	David Mittelman, Ph.D., is an associate professor at VBI and the Department of Biological Sciences. He leads a team in the Medical Informatics and Systems Division investigating how the human genome changes over time. His lab develops assays and technologies that exploit these processes of change for basic research and therapeutic benefit. Recently a co-recipient of the prestigious NVIDIA Foundation&rsquo;s Compute the Cure award, Professor Mittelman is also developing a genome analysis framework for detecting genome changes.</p>
+
+															</p>
+															<ul>
+																																
+																																	<li><a href="/faculty/personal/David_Mittelman">Personal page</a></li>
+																																
+																																	<li><a href="/faculty/personal_publication/David_Mittelman">Publications</a></li>
+																																
+																																	<li><a href="/faculty/group_overview/Mittelman_Research_Group">Research Group</a></li>
+																															</ul>
+														</td>
+
+													</tr>
+												</table>
+												
+												<!--span class="article_separator">&nbsp;</span-->
+
+											</div><!---end of div class="moduletable_res-hilite"-->
+											
+										</div><!--end of class="res-highlight"-->
+
+
+
+
+ 					   					<div class="upcoming-events" style="margin-top:5px">
+											<h1>Upcoming Events</h1>
+											<div class="moduletable_upcoming-events">
+												<table class="mod_events_latest_table" width="100%" border="0" cellspacing="0" cellpadding="5px" align="center">
+													
+													
+													 
+													<tr>
+													
+													<!--td class="mod_events_latest_first"-->
+													<td>
+													 
+														<span class="mod_events_latest_date">Thu, Mar 01, 4:00pm</span> 
+														- <span class="mod_events_latest_date">5:00pm </span><br>
+														<span class="mod_events_latest_content">
+															<a href="http://www.vbi.vt.edu/upcoming_events/upcoming_events_view/gbcb_seminar_computational_discovery_of_common_immunomodulators_in_fungal_i">
+																GBCB Seminar: Computational discovery of common immunomodulators in fungal infections: Towards ...			
+															</a>
+														</span>
+														
+														
+																										
+													</td>
+													
+													</tr>
+													
+													
+													 
+													<tr>
+													
+													<!--td class="mod_events_latest_first"-->
+													<td>
+													 
+														<span class="mod_events_latest_date">Fri, Mar 02, 12:20pm</span> 
+														- <span class="mod_events_latest_date">1:20pm </span><br>
+														<span class="mod_events_latest_content">
+															<a href="http://www.vbi.vt.edu/upcoming_events/upcoming_events_view/vtlss_series_protein_acetylation_in_bactera">
+																VTLSS Series: Protein acetylation in bactera			
+															</a>
+														</span>
+														
+														
+																										
+													</td>
+													
+													</tr>
+													
+													
+													 
+													<tr>
+													
+													<!--td class="mod_events_latest_first"-->
+													<td>
+													 
+														<span class="mod_events_latest_date">Fri, Mar 09, 12:20pm</span> 
+														- <span class="mod_events_latest_date">1:20pm </span><br>
+														<span class="mod_events_latest_content">
+															<a href="http://www.vbi.vt.edu/upcoming_events/upcoming_events_view/vtlss_series_unraveling_type_iv_pili_using_x_ray_crystallography">
+																VTLSS Series: (Un)raveling Type IV Pili using x-ray crystallography			
+															</a>
+														</span>
+														
+														
+																										
+													</td>
+													
+													</tr>
+													
+													
+													 
+													<tr>
+													
+													<!--td class="mod_events_latest_first"-->
+													<td>
+													 
+														<span class="mod_events_latest_date">Thu, Mar 15, 4:00pm</span> 
+														- <span class="mod_events_latest_date">5:00pm </span><br>
+														<span class="mod_events_latest_content">
+															<a href="http://www.vbi.vt.edu/upcoming_events/upcoming_events_view/gbcb_seminar_dynamics_of_autophagic_response_in_single_cancer_cells_mathema">
+																GBCB Seminar: Dynamics of autophagic response in single cancer cells: Mathematical modeling and ...			
+															</a>
+														</span>
+														
+														
+																										
+													</td>
+													
+													</tr>
+													
+													
+													 
+													<tr>
+													
+													<!--td class="mod_events_latest_first"-->
+													<td>
+													 
+														<span class="mod_events_latest_date">Fri, Mar 16, 12:20pm</span> 
+														- <span class="mod_events_latest_date">1:20pm </span><br>
+														<span class="mod_events_latest_content">
+															<a href="http://www.vbi.vt.edu/upcoming_events/upcoming_events_view/vtlss_series_to_gibberellins_and_beyond_diterpenoids_in_plants_and_pathogen">
+																VTLSS Series: To Gibberellins and beyond! Diterpenoids in plants and pathogens			
+															</a>
+														</span>
+														
+														
+																										
+													</td>
+													
+													</tr>
+													
+													
+													
+													
+													<tr>
+														<td>												
+														<a class="readon_frontpage" href="/upcoming_events/index">read more &raquo;</a>
+														</td>
+													</tr>
+													
+												</table><!--end of the table of class="mod_events_latest_table"-->
+											</div><!--end of div class="moduletable_upcoming-events"-->
+											<br />
+
+											<!--a class="calendar" href="/calendar">Full Calendar</a-->
+										</div><!--end of div class="upcoming-events"-->
+					
+																		
+								<!--
+	
+										<div class="highlight-banner">
+											<a href="http://influenza.vbi.vt.edu/" target="_blank">
+												<img src="/themes/third_party/vbi_themes/images/highlight-banner-influenza.jpg"
+													alt="Putting Breaks on Pandemic Influenza" border="0" />
+											</a>
+										</div>
+								-->	
+						</td><!--end of Main Content Column Two-->
+							<!-- Main Content Column Three -->
+					</tr>
+
+					<tr>
+						<td colspan="1">
+							<img src="http://www.vbi.vt.edu/themes/third_party/vbi_themes/images/spacer.png"
+							alt="" title="spacer" border="0" height="2" width="100"/><br />
+						</td>
+					</tr>
+
+					<tr valign="top">
+					</tr>
+					<tr>
+						<td colspan="1">
+							<img src="http://www.vbi.vt.edu/themes/third_party/vbi_themes/images/spacer.png"
+								alt="" title="spacer" border="0" height="2" width="100"/><br />
+						</td>
+					</tr>
+                  </table>
+        	</div>
+          </div>
+        </td>
+     </tr>
+    <tr>
+      <td>
+		<div class="showcase-cores">
+			
+			<!-- removed 2011-07-11
+<div class="showcase-cores">
+	<a href="/core_laboratory_facility"><img src="http://www.vbi.vt.edu/themes/third_party/vbi_themes/images/showcase-clf.jpg" alt="Core Laboratory Facility" border="1" /></a>
+	<a href="/core_computational_facility"><img src="http://www.vbi.vt.edu/themes/third_party/vbi_themes/images/showcase-ccf.jpg" alt="Core Computational Facility" border="1" /></a>
+	<a href="/data_analysis_core"><img src="http://www.vbi.vt.edu/themes/third_party/vbi_themes/images/showcase-newsletter.jpg" alt="Data Analysis Core" border="1" /></a>
+	<a href="/marketing_and_communications/annual_reports"><img src="http://www.vbi.vt.edu/themes/third_party/vbi_themes/images/showcase-annual-report.jpg" alt="VBI Annual Report" border="1" /></a>
+</div>
+-->
+			</div>
+		</td>
+	</tr>
+	</table>
+ </div>
+</div>
+
+<div align="center" class="footer-container">
+	<div id="footer-wrap">
+		<div id="footer_navigation">
+			<div class="footernav_outer">
+				<div class="footernav_inner">
+				<div class="footernav_buttons">
+					<ul id="mainlevel_footer">
+						<li><a href="http://www.vbi.vt.edu/system" class="mainlevel_footer" >Admin Login</a></li>
+				   </ul>
+					<ul id="mainlevel_footer">
+						<li><a href="http://www.vbi.vt.edu/directions" class="mainlevel_footer" >Directions</a></li>
+						<li><a href="http://www.vbi.vt.edu/privacy_statement" class="mainlevel_footer" >Privacy Statement</a></li>
+						<li><a href="http://www.vbi.vt.edu/terms_of_use" class="mainlevel_footer" >Terms of Use</a></li>
+						<!--li><a href="http://www.vbi.vt.edu/sitemap" class="mainlevel_footer" >Sitemap</a></li-->
+						<li><a href="http://www.vbi.vt.edu/contact" class="mainlevel_footer" >Contact</a></li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+
+		<!-- footer navigation menu end -->
+		<!-- address bottom start -->
+
+		<div align="center">	
+			<div id="meta-bottom">
+				<!-- &copy; 2000 - 2011 Virginia Bioinformatics Institute<br /-->
+				&copy; 2000 - 2012 Virginia Bioinformatics Institute<br />
+				
+				
+				Washington Street, MC 0477; Virginia Tech, Blacksburg, VA 24061<br />
+
+				tel: (540) 231-2100; fax: (540) 231-2606 
+			</div>
+		</div>
+
+		<!-- address bottom end -->
+		<!-- analytics -->
+
+		<div align="center">
+			<div id="analytics">
+				<script type="text/javascript">
+					var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+					document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+				</script>
+				<script type="text/javascript">
+					var pageTracker = _gat._getTracker("UA-3937045-2");
+					pageTracker._initData();
+					pageTracker._trackPageview();
+				</script>
+
+				<!--
+				<script type="text/javascript">
+					sc_project=3642287; 
+					sc_invisible=1; 
+					sc_partition=43; 
+					sc_security="a03a0f37"; 
+				</script>
+				<script type="text/javascript" src="http://www.statcounter.com/counter/counter_xhtml.js"></script>
+					<noscript>
+					<div class="statcounter">
+						<a class="statcounter" href="http://www.statcounter.com/free_hit_counter.html">
+						<img class="statcounter" src="http://c44.statcounter.com/3642287/0/a03a0f37/1/" alt="free web page hit counter" /></a>
+					</div>
+					</noscript>
+				-->
+
+				</div>
+			</div>
+
+	</div>
+</div>
+
+
+  </div>
+</body>
+

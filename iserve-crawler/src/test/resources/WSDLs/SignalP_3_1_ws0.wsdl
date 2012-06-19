@@ -1,0 +1,256 @@
+<?xml version="1.0"?>
+<wsdl:definitions 
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+ xmlns:tns="http://www.cbs.dtu.dk/ws/WSSignalP_3_1_ws0" 
+ xmlns:common="http://www.cbs.dtu.dk/ws/ws-common" 
+ xmlns:signalp="http://www.cbs.dtu.dk/ws/ws-signalp" 
+ xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/" 
+ xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+ xmlns="http://schemas.xmlsoap.org/wsdl/" 
+ targetNamespace="http://www.cbs.dtu.dk/ws/WSSignalP_3_1_ws0">
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://www.cbs.dtu.dk/ws/WSSignalP_3_1_ws0">
+			<!-- XSD -->
+			<xsd:import 
+			 namespace="http://www.cbs.dtu.dk/ws/ws-common" 
+			 schemaLocation="../common/ws_common_1_0b.xsd"
+			 />
+			<!-- XSD -->
+			<xsd:import 
+			 namespace="http://www.cbs.dtu.dk/ws/ws-signalp" 
+			 schemaLocation="ws_signalp_3_1_ws0.xsd"
+			/>
+		</xsd:schema>
+		<schema targetNamespace="http://www.cbs.dtu.dk/ws/WSSignalP_3_1_ws0" 
+		 xmlns="http://www.w3.org/2001/XMLSchema" 
+		 xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+		 xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+			<xsd:element name="runService" type="signalp:runService"/>
+			<xsd:element name="runServiceResponse" type="common:runServiceResponse"/>
+			<xsd:element name="fetchResult" type="common:fetchResult"/>
+			<xsd:element name="fetchResultResponse" type="signalp:fetchResultResponse"/>
+			<xsd:element name="pollQueue" type="common:pollQueue"/>
+			<xsd:element name="pollQueueResponse" type="common:pollQueueResponse"/>
+		</schema>
+	</wsdl:types>
+
+	<!-- ==================================================================== -->
+
+	<message name="runServiceRequest">
+		<part name="parameters" element="tns:runService"/>
+	</message>
+	<message name="runServiceResponse">
+		<part name="parameters" element="tns:runServiceResponse"/>
+	</message>
+
+	<message name="fetchResultRequest">
+		<part name="parameters" element="tns:fetchResult"/>
+	</message>
+	<message name="fetchResultResponse">
+		<part name="parameters" element="tns:fetchResultResponse"/>
+	</message>
+
+	<message name="pollQueueRequest">
+		<part name="job" element="tns:pollQueue"/>
+	</message>
+	<message name="pollQueueResponse">
+		<part name="queueentry" element="tns:pollQueueResponse"/>
+	</message>
+
+	<!-- ==================================================================== -->
+
+	<portType name="WSSignalP_3_1_ws0">
+		<operation name="runService">
+			<input name="runServiceRequest" message="tns:runServiceRequest"/>
+			<output name="runServiceResponse" message="tns:runServiceResponse"/>
+		</operation>
+		<operation name="pollQueue">
+			<input name="pollQueueRequest" message="tns:pollQueueRequest"/>
+			<output name="pollQueueResponse" message="tns:pollQueueResponse"/>
+		</operation>
+		<operation name="fetchResult">
+			<input name="fetchResultRequest" message="tns:fetchResultRequest"/>
+			<output name="fetchResultResponse" message="tns:fetchResultResponse"/>
+		</operation>
+	</portType>
+
+	<!-- ==================================================================== -->
+
+	<binding name="WSSignalP_3_1_ws0" type="tns:WSSignalP_3_1_ws0">
+		<soapenv:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="pollQueue">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSSignalP_3_1_ws0#pollQueue"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSSignalP_3_1_ws0"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSSignalP_3_1_ws0"/>
+			</output>
+		</operation>
+		<operation name="runService">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSSignalP_3_1_ws0#runService"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSSignalP_3_1_ws0"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSSignalP_3_1_ws0"/>
+			</output>
+		</operation>
+		<operation name="fetchResult">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSSignalP_3_1_ws0#fetchResult"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSSignalP_3_1_ws0"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSSignalP_3_1_ws0"/>
+			</output>
+		</operation>
+	</binding>
+	
+       	<!-- ==================================================================== -->
+
+	<service name="WSSignalP_3_1_ws0">
+		<documentation>
+		INTRODUCTION
+
+		This Web Service implements SignalP v. 3.1. It predicts	the presence and
+		location of signal peptide cleavage sites in amino acid sequences from
+		different organisms: Gram-positive prokaryotes, Gram-negative prokaryotes,
+		and eukaryotes. The method incorporates a prediction of cleavage sites
+		and a signal peptide/non-signal peptide prediction based on a combination
+		of several artificial neural networks and hidden Markov models. The method
+		is described in detail in the following article:
+
+		Improved prediction of signal peptides: SignalP 3.0.
+		J D Bendtsen, H Nielsen, G v Heijne and S Brunak.
+		J. Mol. Biol., 340:783-795, 2004.
+
+		The difference between v. 3.0 and this version is only technical; the
+		predictions are the same.
+
+		Alongside this Web Service the SignalP method is also implemented as
+		a traditional click-and-paste WWW server at:
+
+		  http://www.cbs.dtu.dk/services/SignalP/
+
+		The traditional server offers more detailed output (graphics), extended
+		functionality	and comprehensive documentation. It is suitable for close
+		investigation of few proteins; this service is recommended for high
+		throughput projects.
+
+		SignalP is also available as a stand-alone software package to install
+		and run at the user's site, with the same functionality. For academic
+		users there is a download page at:
+
+		  http://www.cbs.dtu.dk/cgi-bin/nph-sw_request?signalp
+
+		Other users are requested to write to software@cbs.dtu.dk for details.
+
+
+		WEB SERVICE OPERATION
+
+		This Web Service is fully asynchronous; the usage is split into the
+		following three operations:
+
+		1. runService    
+
+		Input:  The following parameters and data:
+
+		        * 'organism' - organism type of the input sequences (mandatory)
+		            "euk"     eukaryotes
+		            "gram-"   Gram-negative prokaryotes
+		            "gram+"   Gram-positive prokaryotes
+
+		        * 'method' - prediction method (optional)
+		            "nn"      neural network only
+		            "hmm"     hidden Markov models only
+		            "nn+hmm"  both methods (default)
+
+		        * 'thnn' - threshold for yes/no decision by neural nets (optional)
+		            The threshhold setting affects the 'comment' field in the
+		            output (see below): if the neural net score is higher than
+		            the selected threshold the comment will be "Y", else "N".
+		            The default thresholds are 0.43 for "euk", 0.45 for "gram+"
+		            and 0.44 for "gram-"; the defaults have been shown to give
+		            the highest correlation coefficient on test data.
+		            Note: 'thnn' does not affect the signalp-hmm prediction output.
+
+		        * 'sequencedata'   [containing multiple 'sequence' element]
+		          * 'sequence'
+		            * 'id'         Unique identifier for the sequence
+		            * 'comment'    Optional comment
+		            * 'seq'        Protein sequences, with unique identifiers (mandatory) 
+		                           The sequences must be written using the one letter amino acid
+		                           code: `acdefghiklmnpqrstvwy' or `ACDEFGHIKLMNPQRSTVWY'. Other
+		                           letters will be converted to `X' and treated as unknown amino
+		                           acids. Other symbols, such as whitespace and numbers, will be
+		                           ignored. All the input sequences are truncated to 70 aa from
+		                           the N-terminal. Currently, at most 2,000 sequences are allowed
+		                           per submission.
+
+		Output: Unique job identifier
+
+		2. pollQueue
+
+		Input:  Unique job identifier
+
+		Output: 'jobstatus' - the status of the job
+		            Possible values are QUEUED, ACTIVE, FINISHED, WAITING,
+		            REJECTED, UNKNOWN JOBID or QUEUE DOWN
+
+		3. fetchResult
+
+		Input :  Unique job identifier of a FINISHED job
+
+		Output: 
+		        * 'annsource'
+		            'method'      : SignalP (options ...)
+		            'version'     : 3.1 ws0
+
+		        * 'ann'             (array of annotations - one element per input sequence)
+		            'sequence'      (standard sequence object)
+		             'id'        : Sequence identifier
+		             'comment'   : Sequence comment
+		             'seq'       : Sequence
+		           'annrecords'    (array of predicted features for this sequence)
+		             'annrecord'   (annotation record)
+		             'feature    : either 'signal-nn' or 'signal-hmm'
+		             'range'
+		               'begin'   : 1
+		               'end'     : End postion of signal
+		             'score'
+		               'key'     : Either nn_score or hmm_score
+		               'value    : Prediction score:
+	 	                           For "signalp-3.1-nn" D score, for "signalp-3.1-hmm"
+ 		                           the signal peptide branch probability (see the
+ 		                           article)
+		             'comment     : Answer: For "signalp-3.1-nn" the answer is "Y" (yes) and "N"
+ 		                           (no) depending on the selected threshold. 
+		                           For "signalp-3.1-hmm" the answer is "S" f or signal
+		                           peptide, "A" for signal anchor ("euk" only) and "Q"
+		                           for none of the above.
+
+		KNOWN BUGS
+
+		2007-01-30    Error handling: some error messages may be non-informative;
+		              fix in progress;
+
+		2007-01-29    The server side may time out processing large submission;
+		              temporary fix: submit not more than 2,000 sequences at a
+		              time; permanent fix in progress.
+
+
+		CONTACT
+
+		Questions concerning the scientific aspects of the SignalP method should
+		go to Henrik Nielsen, hnielsen@cbs.dtu.dk; technical questions concerning
+		the Web Service should go to Peter Fischer Hallin, pfh@cbs.dtu.dk or
+		Kristoffer Rapacki, rapacki@cbs.dtu.dk.
+	</documentation>
+	
+    <port name="WSSignalP_3_1_ws0" binding="tns:WSSignalP_3_1_ws0">
+		  <soapenv:address location="http://ws.cbs.dtu.dk:80/cgi-bin/soap/ws/quasi.cgi?log"/>
+		</port>
+   </service>
+
+</wsdl:definitions>

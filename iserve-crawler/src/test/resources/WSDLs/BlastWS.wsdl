@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<definitions name="Blast_Service" 
+ targetNamespace="http://gbio.ibcp.fr:8090/Blast_Service"  
+ xmlns:tns="http://gbio.ibcp.fr:8090/Blast_Service"   
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+ xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <message name="submitBlastRequest">
+        <part name="Sequence" type="xsd:string"/>
+        <part name="SeqDatabase" type="xsd:string"/>
+    </message>
+    <message name="submitBlastResponse">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    
+    <message name="checkStatusBlastRequest">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    <message name="checkStatusBlastResponse">
+        <part name="Status" type="xsd:string"/>
+    </message>
+    
+    <message name="getResultsBlastRequest">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    <message name="getResultsBlastResponse">
+        <part name="SeqSimilar" type="xsd:string"/>
+        <part name="Logout" type="xsd:string"/>
+    </message>
+    
+    <message name="cancelBlastRequest">
+        <part name="JobId" type="xsd:string"/>
+    </message>
+    <message name="cancelBlastResponse">
+        <part name="Status" type="xsd:string"/>
+    </message>
+
+    <portType name="BlastPortType">
+        <operation name="submitBlast">
+            <documentation>Submit a sequence an get a jobID</documentation>
+            <input message="tns:submitBlastRequest"/>
+            <output message="tns:submitBlastResponse"/>
+        </operation>
+        <operation name="checkStatusBlast">
+            <documentation>Submit a jobID and get the status</documentation>
+            <input message="tns:checkStatusBlastRequest"/>
+            <output message="tns:checkStatusBlastResponse"/>
+        </operation>
+        <operation name="getResultsBlast">
+            <documentation>When job is finish, submit a jobid and get the results</documentation>
+            <input message="tns:getResultsBlastRequest"/>
+            <output message="tns:getResultsBlastResponse"/>
+        </operation>
+        <operation name="cancelResultsBlast">
+            <documentation>When some thing is wrong, cancel your job</documentation>
+            <input message="tns:cancelBlastRequest"/>
+            <output message="tns:cancelBlastResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="BlastBinding" type="tns:BlastPortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="submitBlast">
+            <soap:operation
+             soapAction="urn:BlastWS.wsdl#submitBlast"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:Blast_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:Blast_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="checkStatusBlast">
+            <soap:operation
+             soapAction="urn:BlastWS.wsdl#checkStatusBlast"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:Blast_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:Blast_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="getResultsBlast">
+            <soap:operation
+             soapAction="urn:BlastWS.wsdl#getResultsBlast"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:Blast_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:Blast_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="cancelResultsBlast">
+            <soap:operation
+             soapAction="urn:BlastWS.wsdl#cancelResultsBlast"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:Blast_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:Blast_Service" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+    
+    <service name="Blast_Service">
+        <documentation>Blast @ IBCP (http://gbio-pbil.ibcp.fr)</documentation>
+        <port name="BlastPort" binding="tns:BlastBinding">
+            <soap:address location="http://gbio.ibcp.fr:8090/Blast_Service"/>
+        </port>
+    </service>
+    
+</definitions>

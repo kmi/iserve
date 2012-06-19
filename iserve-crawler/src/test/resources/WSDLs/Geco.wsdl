@@ -1,0 +1,353 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions name="FuncNet-1.0" targetNamespace="http://funcnet.eu/FuncNet_1_0/" xmlns:http-conf="http://cxf.apache.org/transports/http/configuration" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://funcnet.eu/FuncNet_1_0/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+<xsd:schema targetNamespace="http://funcnet.eu/FuncNet_1_0/" xmlns:http-conf="http://cxf.apache.org/transports/http/configuration" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://funcnet.eu/FuncNet_1_0/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+		
+			<xsd:complexType name="ProteinList">
+				<xsd:annotation>
+					<xsd:documentation>
+						A list of one or more UniProt primary accession numbers.
+					</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element maxOccurs="unbounded" minOccurs="1" name="p" type="xsd:string" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="PairwiseScore">
+				<xsd:annotation>
+					<xsd:documentation>
+						A 4-tuple containing the score results for a single pair of proteins.
+					</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element name="p1" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>
+								The query protein.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="p2" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>
+								The reference protein. Note: for predictors which produce a
+								symmetrical measure of similarity or relatedness between two
+								proteins, we would expect to see the same score and p-value
+								regardless of which way round the query and reference proteins
+								are.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="rs" type="xsd:double">
+						<xsd:annotation>
+							<xsd:documentation>
+								A numeric score produced by the predictor. FuncNet does not
+								enforce any constraints on the range or distribution of scores
+								produced by its predictors, so these scores are not comparable
+								between different predictors.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="pv" type="xsd:double">
+						<xsd:annotation>
+							<xsd:documentation>
+								A p-value representing the probability that any two randomly-
+								chosen proteins in this proteome would be given a rawScore
+								equal to or higher than the rawScore for this pair, by this
+								predictor. These probabilities are used by the integrator to
+								calculate an overall score between each protein pair from the
+								output of all the predictors.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			
+			<xsd:element name="ScorePairwiseRelations">
+				<xsd:annotation>
+					<xsd:documentation>
+						Input type for the ScorePairwiseRelations operation.
+					</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="proteins1" type="tns:ProteinList">
+							<xsd:annotation>
+								<xsd:documentation>
+									A list of query proteins (as UniProt primary accessions)
+									with unknown or partially-known function.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="proteins2" type="tns:ProteinList">
+							<xsd:annotation>
+								<xsd:documentation>
+									A list of reference proteins (as UniProt primary accessions)
+									which are known to be involved in a particular biological
+									phenomenon, structure, process etc.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			
+			<xsd:element name="ScorePairwiseRelationsResponse">
+				<xsd:annotation>
+					<xsd:documentation>
+						Output type for the ScorePairwiseRelations operation.
+					</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element maxOccurs="unbounded" minOccurs="0" name="s" type="tns:PairwiseScore">
+							<xsd:annotation>
+								<xsd:documentation>
+									A list of score profiles for pairs of proteins which have
+									been assigned a score by the predictor. The maximum number of
+									elements in this list is QxR where Q is the number of query
+									proteins and R is the number of reference proteins. The list
+									may be shorter as the predictor is not guaranteed to return
+									a score for every possible pair. 
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			
+		</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ScorePairwiseRelationsResponse">
+    <wsdl:part element="tns:ScorePairwiseRelationsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ScorePairwiseRelationsRequest">
+    <wsdl:part element="tns:ScorePairwiseRelations" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="GossCcPortType">
+    <wsdl:operation name="ScorePairwiseRelations">
+<wsdl:documentation>
+				This method runs the GOSS-CC prediction algorithm on two sets of proteins (identified
+				by UniProt primary accessions), one query set and one reference set. The
+				predictor performs a pairwise comparison between each query-reference pair. 
+			</wsdl:documentation>
+      <wsdl:input message="tns:ScorePairwiseRelationsRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:ScorePairwiseRelationsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="GecoPortType">
+    <wsdl:operation name="ScorePairwiseRelations">
+<wsdl:documentation>
+				This method runs the GECO prediction algorithm on two sets of proteins (identified
+				by UniProt primary accessions), one query set and one reference set. The
+				predictor performs a pairwise comparison between each query-reference pair. 
+			</wsdl:documentation>
+      <wsdl:input message="tns:ScorePairwiseRelationsRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:ScorePairwiseRelationsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="CodaCathPortType">
+    <wsdl:operation name="ScorePairwiseRelations">
+<wsdl:documentation>
+				This method runs the CODA-CATH prediction algorithm on two sets of proteins (identified
+				by UniProt primary accessions), one query set and one reference set. The
+				predictor performs a pairwise comparison between each query-reference pair. 
+			</wsdl:documentation>
+      <wsdl:input message="tns:ScorePairwiseRelationsRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:ScorePairwiseRelationsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="HippiPortType">
+    <wsdl:operation name="ScorePairwiseRelations">
+<wsdl:documentation>
+				This method runs the hiPPI prediction algorithm on two sets of proteins (identified
+				by UniProt primary accessions), one query set and one reference set. The
+				predictor performs a pairwise comparison between each query-reference pair. 
+			</wsdl:documentation>
+      <wsdl:input message="tns:ScorePairwiseRelationsRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:ScorePairwiseRelationsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="GossMfPortType">
+    <wsdl:operation name="ScorePairwiseRelations">
+<wsdl:documentation>
+				This method runs the GOSS-MF prediction algorithm on two sets of proteins (identified
+				by UniProt primary accessions), one query set and one reference set. The
+				predictor performs a pairwise comparison between each query-reference pair. 
+			</wsdl:documentation>
+      <wsdl:input message="tns:ScorePairwiseRelationsRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:ScorePairwiseRelationsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="CodaPfamPortType">
+    <wsdl:operation name="ScorePairwiseRelations">
+<wsdl:documentation>
+				This method runs the CODA-PFAM prediction algorithm on two sets of proteins (identified
+				by UniProt primary accessions), one query set and one reference set. The
+				predictor performs a pairwise comparison between each query-reference pair. 
+			</wsdl:documentation>
+      <wsdl:input message="tns:ScorePairwiseRelationsRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:ScorePairwiseRelationsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="GossBpPortType">
+    <wsdl:operation name="ScorePairwiseRelations">
+<wsdl:documentation>
+				This method runs the GOSS-BP prediction algorithm on two sets of proteins (identified
+				by UniProt primary accessions), one query set and one reference set. The
+				predictor performs a pairwise comparison between each query-reference pair. 
+			</wsdl:documentation>
+      <wsdl:input message="tns:ScorePairwiseRelationsRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:ScorePairwiseRelationsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="GossBpBinding" type="tns:GossBpPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ScorePairwiseRelations">
+      <soap:operation soapAction="http://funcnet.eu/GossBp/ScorePairwiseRelations" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="CodaCathBinding" type="tns:CodaCathPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ScorePairwiseRelations">
+      <soap:operation soapAction="http://funcnet.eu/CodaCath/ScorePairwiseRelations" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="HippiBinding" type="tns:HippiPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ScorePairwiseRelations">
+      <soap:operation soapAction="http://funcnet.eu/Hippi/ScorePairwiseRelations" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="GossCcBinding" type="tns:GossCcPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ScorePairwiseRelations">
+      <soap:operation soapAction="http://funcnet.eu/GossCc/ScorePairwiseRelations" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="GossMfBinding" type="tns:GossMfPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ScorePairwiseRelations">
+      <soap:operation soapAction="http://funcnet.eu/GossMf/ScorePairwiseRelations" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="CodaPfamBinding" type="tns:CodaPfamPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ScorePairwiseRelations">
+      <soap:operation soapAction="http://funcnet.eu/CodaPfam/ScorePairwiseRelations" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="GecoBinding" type="tns:GecoPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ScorePairwiseRelations">
+      <soap:operation soapAction="http://funcnet.eu/Geco/ScorePairwiseRelations" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="GossMfService">
+    <wsdl:port binding="tns:GossMfBinding" name="GossMfPort">
+      <soap:address location="http://funcnet.eu/BioMiner-war/services/GossMfService" />
+      <http-conf:client ReceiveTimeout="0" />
+      <http-conf:client ConnectionTimeout="0" />
+    </wsdl:port>
+  </wsdl:service>
+  <wsdl:service name="GossBpService">
+    <wsdl:port binding="tns:GossBpBinding" name="GossBpPort">
+      <soap:address location="http://funcnet.eu/BioMiner-war/services/GossBpService" />
+      <http-conf:client ReceiveTimeout="0" />
+      <http-conf:client ConnectionTimeout="0" />
+    </wsdl:port>
+  </wsdl:service>
+  <wsdl:service name="GecoService">
+    <wsdl:port binding="tns:GecoBinding" name="GecoPort">
+      <soap:address location="http://funcnet.eu/BioMiner-war/services/GecoService" />
+      <http-conf:client ReceiveTimeout="0" />
+      <http-conf:client ConnectionTimeout="0" />
+    </wsdl:port>
+  </wsdl:service>
+  <wsdl:service name="CodaPfamService">
+    <wsdl:port binding="tns:CodaPfamBinding" name="CodaPfamPort">
+      <soap:address location="http://funcnet.eu/BioMiner-war/services/CodaPfamService" />
+      <http-conf:client ReceiveTimeout="0" />
+      <http-conf:client ConnectionTimeout="0" />
+    </wsdl:port>
+  </wsdl:service>
+  <wsdl:service name="HippiService">
+    <wsdl:port binding="tns:HippiBinding" name="HippiPort">
+      <soap:address location="http://funcnet.eu/BioMiner-war/services/HippiService" />
+      <http-conf:client ReceiveTimeout="0" />
+      <http-conf:client ConnectionTimeout="0" />
+    </wsdl:port>
+  </wsdl:service>
+  <wsdl:service name="CodaCathService">
+    <wsdl:port binding="tns:CodaCathBinding" name="CodaCathPort">
+      <soap:address location="http://funcnet.eu/BioMiner-war/services/CodaCathService" />
+      <http-conf:client ReceiveTimeout="0" />
+      <http-conf:client ConnectionTimeout="0" />
+    </wsdl:port>
+  </wsdl:service>
+  <wsdl:service name="GossCcService">
+    <wsdl:port binding="tns:GossCcBinding" name="GossCcPort">
+      <soap:address location="http://funcnet.eu/BioMiner-war/services/GossCcService" />
+      <http-conf:client ReceiveTimeout="0" />
+      <http-conf:client ConnectionTimeout="0" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

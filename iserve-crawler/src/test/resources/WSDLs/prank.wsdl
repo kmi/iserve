@@ -1,0 +1,746 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+	name="prank"
+	targetNamespace="http://soap.jdispatcher.ebi.ac.uk"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://soap.jdispatcher.ebi.ac.uk"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<wsdl:documentation>PRANK is a probabilistic multiple alignment program for DNA, codon and amino-acid sequences. It&apos;s based on a novel algorithm that treats insertions correctly and avoids over-estimation of the number of deletion events. In addition, PRANK borrows ideas from maximum likelihood methods used in phylogenetics and correctly takes into account the evolutionary distances between sequences. Lastly, PRANK allows for defining a potential structure for sequences to be aligned and then, simultaneously with the alignment, predicts the locations of structural units in the sequences.</wsdl:documentation>
+	<wsdl:types>
+		<xsd:schema xmlns="http://soap.jdispatcher.ebi.ac.uk"
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			attributeFormDefault="unqualified" elementFormDefault="unqualified"
+			targetNamespace="http://soap.jdispatcher.ebi.ac.uk">
+
+			<xsd:complexType name="InputParameters">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Input parameters for the tool</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="sequence"
+						nillable="true" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Sequence [A free text (raw) list of sequences is simply a block of characters representing several DNA/RNA or Protein sequences. A sequence must be in FASTA format. Partially formatted sequences are not accepted. Adding a return to the end of the sequence may help certain applications understand the input. Note that directly using data from word processors may yield unpredictable results as hidden/control characters may be present.]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="data_file"
+						nillable="true" type="xsd:base64Binary">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">File upload [A file containing valid sequences in FASTA format can be used as input for the sequence similarity search. Word processors files may yield unpredictable results as hidden/control characters may be present in the files. It is best to save files with the Unix format option to avoid hidden Windows characters.]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="tree_file"
+						nillable="true" type="xsd:base64Binary">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Tree File [Tree file in Newick Binary Format.]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="do_njtree"
+						nillable="true" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Do NJ tree [compute guide tree from input alignment]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="do_clustalw_tree"
+						nillable="true" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Do Clustalw Tree [compute guide tree using Clustalw2]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="model_file"
+						nillable="true" type="xsd:base64Binary">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Model File [Structure Model File.]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="output_format"
+						nillable="true" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Output Format [Format for output alignment file]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="trust_insertions"
+						nillable="true" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Trust insertions [Trust inferred insertions and do not allow their later matching]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="show_insertions_with_dots"
+						nillable="true" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Show insertions with dots [Show gaps created by insertions as dots, deletions as dashes]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="use_log_space"
+						nillable="true" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Use log space [Use log space for probabilities; slower but necessary for large numbers of sequences]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="use_codon_model"
+						nillable="true" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Use codon model [Use codon substutition model for alignment; requires DNA, multiples of three in length]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="translate_DNA"
+						nillable="true" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Translate DNA [Translate DNA sequences to proteins and backtranslate results]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="mt_translate_DNA"
+						nillable="true" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">MT Translate DNA [Translate DNA sequences to mt proteins, align and backtranslate results]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="gap_rate"
+						nillable="true" type="xsd:float">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Gap Opening Rate [Gap Opening Rate]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="gap_extension"
+						nillable="true" type="xsd:float">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Gap Extension Probability [Gap Extension Probability]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="tn93_kappa"
+						nillable="true" type="xsd:float">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Kappa [Parameter kappa for Tamura-Nei DNA substitution model]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="tn93_rho"
+						nillable="true" type="xsd:float">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Rho [Parameter rho for Tamura-Nei DNA substitution model]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="guide_pairwise_distance"
+						nillable="true" type="xsd:float">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Guide Pairwise Distance [Fixed pairwise distance used for generating scoring matrix in guide tree computation]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="max_pairwise_distance"
+						nillable="true" type="xsd:float">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Max Pairwise Distance [Maximum pairwise distance allowed in progressive steps of multiple alignment; allows making matching more stringent or flexible]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="branch_length_scaling"
+						nillable="true" type="xsd:float">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Branch length scaling [Factor for scaling all branch lengths]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="branch_length_fixed"
+						nillable="true" type="xsd:float">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Branch length fixed [Fixed value for all branch lengths]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="branch_length_maximum"
+						nillable="true" type="xsd:float">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Branch length maximum [Upper limit for branch lengths]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="use_real_branch_lengths"
+						nillable="true" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Use real branch length [Use real branch lengths; using this can be harmful as scoring matrices became flat for large distances; rather use max_pairwise_distance]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="do_no_posterior"
+						nillable="true" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">No posterior [Do not compute posterior probability; much faster if those not needed]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="run_once"
+						nillable="true" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Run once [Do not iterate alignment]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="run_twice"
+						nillable="true" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Run twice [Iterate alignment]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="penalise_terminal_gaps"
+						nillable="true" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Penalise terminal gaps [Penalise terminal gaps as any other gap]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="do_posterior_only"
+						nillable="true" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Do posterior only [Compute posterior probabilities for given *aligned* sequences; may be unstable but useful]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="use_chaos_anchors"
+						nillable="true" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Use chaos anchors [Use chaos anchors to massively speed up alignments; DNA only]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="minimum_anchor_distance"
+						nillable="true" type="xsd:int">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Minimum anchor distance [Minimum chaos anchor distance]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="maximum_anchor_distance"
+						nillable="true" type="xsd:int">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Maximum anchor distance [Maximum chaos anchor distance]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="skip_anchor_distance"
+						nillable="true" type="xsd:int">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Chaos anchor skip distance [Chaos anchor skip distance]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="drop_anchor_distance"
+						nillable="true" type="xsd:int">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Chaos anchor drop distance [Chaos anchor drop distance]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="output_ancestors"
+						nillable="true" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Output ancestors [Output ancestral sequences and probability profiles; note additional files]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="noise_level"
+						nillable="true" type="xsd:int">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Noise level [Noise level; progress and debugging information]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="stay_quiet"
+						nillable="true" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Stay quiet [Stay quiet; disable all progress information]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0"
+						maxOccurs="1" name="random_seed"
+						nillable="true" type="xsd:int">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">Random seed [Set seed for random number generator; not recommended]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="ArrayOfString">
+				<xsd:sequence>
+					<xsd:element maxOccurs="unbounded" minOccurs="0" name="string" nillable="true" type="xsd:string"/>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="wsResultTypes">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">List of renderers available to output the result of the job</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element maxOccurs="unbounded" minOccurs="0" name="type" type="wsResultType"/>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="wsResultType">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Details about a renderer used to output the result of the job</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element maxOccurs="1" minOccurs="0" nillable="true" name="description" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">A short description of the renderer</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element maxOccurs="1" minOccurs="1" nillable="false" name="fileSuffix" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">A suggested file suffix to be used when saving the data formatted by the renderer</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element maxOccurs="1" minOccurs="1" nillable="false" name="identifier" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The renderer identifier to be used when invoking the getResult() method</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element maxOccurs="1" minOccurs="0" nillable="true" name="label" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">A more appropriate name for the renderer (more meaningful than the identifier)</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element maxOccurs="1" minOccurs="1" nillable="false" name="mediaType" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The media type (MIME) of the renderer's output</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="wsRawOutputParameters">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">A set of parameters passed to a renderer when formatting the data</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element maxOccurs="unbounded" minOccurs="1" name="parameter" type="wsRawOutputParameter" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="wsRawOutputParameter">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">A parameter used by the renderer</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element maxOccurs="1" minOccurs="1" name="name" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The name of the parameter</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>					
+					<xsd:element maxOccurs="1" minOccurs="1" name="value" type="ArrayOfString">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The parameter value as an array of String</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="wsParameters">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">List the names of the tool parameters</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element maxOccurs="unbounded" minOccurs="0" name="id" type="xsd:string" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="wsParameterDetails">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">Details about a tool parameter</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element minOccurs="0" name="name" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The name of the parameter</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="description" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">A short description of the parameter</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="1" maxOccurs="1" name="type" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The type of the parameter</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="values" type="tns:wsParameterValues">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The list of values available for this parameter</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="wsParameterValues">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The list of parameter values</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element maxOccurs="unbounded" minOccurs="0" name="value" type="tns:wsParameterValue" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="wsParameterValue">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">The details about a parameter values</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element minOccurs="0" maxOccurs="1" name="label" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">A meaningful label for the parameter value</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="1" maxOccurs="1" name="value" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">The real value</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="defaultValue" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">A flag indicating whether this value is a default value or not</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" maxOccurs="1" name="properties" type="tns:wsProperties">
+						<xsd:annotation>
+							<xsd:documentation xml:lang="en">A set of additional properties associated with the parameter value</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="wsProperties">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">A set of properties</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element maxOccurs="unbounded" minOccurs="0" name="property" type="tns:wsProperty" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="wsProperty">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="en">A key/value pair association of information</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="1" name="key" type="xsd:string" />
+					<xsd:element minOccurs="1" maxOccurs="1" name="value" type="xsd:string" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:element name="run">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element maxOccurs="1" minOccurs="1"
+							name="email" nillable="false" type="xsd:string">
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">User email address</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element maxOccurs="1" minOccurs="0"
+							name="title" nillable="true" type="xsd:string">
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">A title to identify the analysis job</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element maxOccurs="1" minOccurs="1"
+							name="parameters" nillable="false" type="InputParameters">
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">The list of parameters to be used for launching the analysis</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="runResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element maxOccurs="1" minOccurs="1"
+							name="jobId" nillable="false"
+							type="xsd:string">
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">A unique identifier for the analysis job</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="getStatus">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element maxOccurs="1" minOccurs="1"
+							name="jobId" nillable="false" type="xsd:string">
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">An identifier for the job to check</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="getStatusResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element maxOccurs="1" minOccurs="1"
+							name="status" nillable="false"
+							type="xsd:string">
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">The status of the job (FINISHED, ERROR, RUNNING, NOT_FOUND or FAILURE)</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="getResultTypes">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element maxOccurs="1" minOccurs="1"
+							name="jobId" nillable="false" type="xsd:string">
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">An identifier for the job to check</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="getResultTypesResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element maxOccurs="1" minOccurs="1"
+							name="resultTypes"
+							type="wsResultTypes">
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">The list of renderers available</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="getResult">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element maxOccurs="1" minOccurs="1"
+							name="jobId" nillable="false" type="xsd:string">
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">An identifier for the job to check</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element maxOccurs="1" minOccurs="1"
+							name="type" nillable="false" type="xsd:string">
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">The renderer to be used to format the output</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element maxOccurs="1" minOccurs="0"
+							name="parameters" nillable="true" type="wsRawOutputParameters">
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">A list of parameters to be passed on to the renderer</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="getResultResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element maxOccurs="1" minOccurs="1"
+							name="output" nillable="true"
+							type="xsd:base64Binary">
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">Base64 encoded data corresponding to the output of the job formatted by the renderer</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="getParameterDetails">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element minOccurs="1" maxOccurs="1" name="parameterId" type="xsd:string">
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">The identifier for the parameter</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="getParameterDetailsResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element minOccurs="0" name="parameterDetails" type="tns:wsParameterDetails">
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">The parameter details</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="getParameters">
+				<xsd:complexType />
+			</xsd:element>
+			<xsd:element name="getParametersResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element minOccurs="1" maxOccurs="1" name="parameters" type="tns:wsParameters">
+							<xsd:annotation>
+								<xsd:documentation xml:lang="en">The list of parameter available for this tool</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:schema>
+	</wsdl:types>
+
+
+	<wsdl:message name="runResponse">
+		<wsdl:part name="parameters" element="tns:runResponse"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="runRequest">
+		<wsdl:part name="parameters" element="tns:run"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getStatusResponse">
+		<wsdl:part name="parameters" element="tns:getStatusResponse"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getStatusRequest">
+		<wsdl:part name="parameters" element="tns:getStatus"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getResultTypesResponse">
+		<wsdl:part name="parameters" element="tns:getResultTypesResponse"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getResultTypesRequest">
+		<wsdl:part name="parameters" element="tns:getResultTypes"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getResultResponse">
+		<wsdl:part name="parameters" element="tns:getResultResponse"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getResultRequest">
+		<wsdl:part name="parameters" element="tns:getResult"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getParameterDetailsResponse">
+		<wsdl:part element="tns:getParameterDetailsResponse" name="parameters"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getParameterDetailsRequest">
+		<wsdl:part element="tns:getParameterDetails" name="parameters"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getParametersResponse">
+		<wsdl:part element="tns:getParametersResponse" name="parameters"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getParametersRequest">
+		<wsdl:part element="tns:getParameters" name="parameters"></wsdl:part>
+	</wsdl:message>
+
+	<wsdl:portType name="JDispatcherService">
+		<wsdl:operation name="run">
+			<wsdl:documentation>Submit an analysis job</wsdl:documentation>
+			<wsdl:input name="runRequest" message="tns:runRequest"></wsdl:input>
+			<wsdl:output name="runResponse" message="tns:runResponse"></wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getStatus">
+			<wsdl:documentation>Get the status of a submitted job</wsdl:documentation>
+			<wsdl:input name="getStatusRequest" message="tns:getStatusRequest"></wsdl:input>
+			<wsdl:output name="getStatusResponse" message="tns:getStatusResponse"></wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getResultTypes">
+			<wsdl:documentation>Get the list of renderers available to output a job result (i.e. the list of available output types)</wsdl:documentation>
+			<wsdl:input name="getResultTypesRequest" message="tns:getResultTypesRequest"></wsdl:input>
+			<wsdl:output name="getResultTypesResponse" message="tns:getResultTypesResponse"></wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getResult">
+			<wsdl:documentation>Get a job result formatted using a particular renderer</wsdl:documentation>
+			<wsdl:input name="getResultRequest" message="tns:getResultRequest"></wsdl:input>
+			<wsdl:output name="getResultResponse" message="tns:getResultResponse"></wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getParameters">
+			<wsdl:documentation>List the names of the parameters available before submission</wsdl:documentation>
+			<wsdl:input message="tns:getParametersRequest" name="getParametersRequest"></wsdl:input>
+			<wsdl:output message="tns:getParametersResponse" name="getParametersResponse"></wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getParameterDetails">
+			<wsdl:documentation>Get some details about a parameter (e.g. name, description, values, etc.)</wsdl:documentation>
+			<wsdl:input message="tns:getParameterDetailsRequest" name="getParameterDetailsRequest"></wsdl:input>
+			<wsdl:output message="tns:getParameterDetailsResponse" name="getParameterDetailsResponse"></wsdl:output>
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<wsdl:binding name="JDispatcherServiceHttpBinding"
+		type="tns:JDispatcherService">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="run">
+			<wsdl:documentation>Submit an analysis job</wsdl:documentation>
+			<soap:operation soapAction="urn:Run" />
+			<wsdl:input name="runRequest">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="runResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getStatus">
+			<wsdl:documentation>Get the status of a submitted job</wsdl:documentation>
+			<soap:operation soapAction="urn:GetStatus" />
+			<wsdl:input name="getStatusRequest">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="getStatusResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getResultTypes">
+			<wsdl:documentation>Get the list of renderers available to output a job result (i.e. the list of available output types)</wsdl:documentation>
+			<soap:operation soapAction="urn:GetResultTypes" />
+			<wsdl:input name="getResultTypesRequest">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="getResultTypesResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getResult">
+			<wsdl:documentation>Get a job result formatted using a particular renderer</wsdl:documentation>
+			<soap:operation soapAction="urn:GetResult" />
+			<wsdl:input name="getResultRequest">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="getResultResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getParameters">
+			<wsdl:documentation>List the names of the parameters available before submission</wsdl:documentation>
+			<soap:operation soapAction="urn:GetParameters" />
+			<wsdl:input name="getParametersRequest">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="getParametersResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getParameterDetails">
+			<wsdl:documentation>Get some details about a parameter (e.g. name, description, values, etc.)</wsdl:documentation>
+			<soap:operation soapAction="urn:GetParameterDetails" />
+			<wsdl:input name="getParameterDetailsRequest">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="getParameterDetailsResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+
+	<wsdl:service name="JDispatcherService">
+		<wsdl:port name="JDispatcherServiceHttpPort"
+			binding="tns:JDispatcherServiceHttpBinding">
+			<soap:address
+				location="http://www.ebi.ac.uk/Tools/services/soap/prank" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

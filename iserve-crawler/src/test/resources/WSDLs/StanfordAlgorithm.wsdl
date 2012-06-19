@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm" xmlns:intf="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema targetNamespace="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfArrayOfArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[][][]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="processSequencesInFasta_REGARequest">
+
+      <wsdl:part name="key" type="xsd:string"/>
+
+      <wsdl:part name="reportTypeInt" type="xsd:int"/>
+
+      <wsdl:part name="sequencesInFasta" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processSequencesInFasta_ANRSRequest">
+
+      <wsdl:part name="key" type="xsd:string"/>
+
+      <wsdl:part name="reportTypeInt" type="xsd:int"/>
+
+      <wsdl:part name="sequencesInFasta" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processSequencesRequest">
+
+      <wsdl:part name="key" type="xsd:string"/>
+
+      <wsdl:part name="reportTypeInt" type="xsd:int"/>
+
+      <wsdl:part name="sequence" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processSequenceRequest">
+
+      <wsdl:part name="key" type="xsd:string"/>
+
+      <wsdl:part name="sequence" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processSequencesResponse1">
+
+      <wsdl:part name="processSequencesReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processMutationListsRequest">
+
+      <wsdl:part name="key" type="xsd:string"/>
+
+      <wsdl:part name="reportTypeInt" type="xsd:int"/>
+
+      <wsdl:part name="mutationsList" type="impl:ArrayOfArrayOfArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processSequencesInFasta_HIVDBRequest">
+
+      <wsdl:part name="key" type="xsd:string"/>
+
+      <wsdl:part name="reportTypeInt" type="xsd:int"/>
+
+      <wsdl:part name="sequencesInFasta" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processSequencesStringRequest">
+
+      <wsdl:part name="key" type="xsd:string"/>
+
+      <wsdl:part name="reportTypeInt" type="xsd:int"/>
+
+      <wsdl:part name="sequences" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processMutationLists_HIVDBRequest">
+
+      <wsdl:part name="key" type="xsd:string"/>
+
+      <wsdl:part name="reportTypeInt" type="xsd:int"/>
+
+      <wsdl:part name="mutationsList" type="impl:ArrayOfArrayOfArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processMutationLists_USERResponse">
+
+      <wsdl:part name="processMutationLists_USERReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processMutationLists_REGARequest">
+
+      <wsdl:part name="key" type="xsd:string"/>
+
+      <wsdl:part name="reportTypeInt" type="xsd:int"/>
+
+      <wsdl:part name="mutationsList" type="impl:ArrayOfArrayOfArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processSequencesInFasta_REGAResponse">
+
+      <wsdl:part name="processSequencesInFasta_REGAReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processMutationListsResponse">
+
+      <wsdl:part name="processMutationListsReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processSequencesInFastaRequest">
+
+      <wsdl:part name="key" type="xsd:string"/>
+
+      <wsdl:part name="reportTypeInt" type="xsd:int"/>
+
+      <wsdl:part name="sequencesInFasta" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processMutationLists_USERRequest">
+
+      <wsdl:part name="key" type="xsd:string"/>
+
+      <wsdl:part name="reportTypeInt" type="xsd:int"/>
+
+      <wsdl:part name="mutationsList" type="impl:ArrayOfArrayOfArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processMutationLists_ANRSResponse">
+
+      <wsdl:part name="processMutationLists_ANRSReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processSequencesResponse">
+
+      <wsdl:part name="processSequencesReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processSequencesRequest1">
+
+      <wsdl:part name="key" type="xsd:string"/>
+
+      <wsdl:part name="inAlgorithmInterface" type="xsd:int"/>
+
+      <wsdl:part name="algorithm" type="xsd:int"/>
+
+      <wsdl:part name="userSubmittedAlgorithm" type="xsd:string"/>
+
+      <wsdl:part name="reportOptions" type="xsd:string"/>
+
+      <wsdl:part name="methodName" type="xsd:string"/>
+
+      <wsdl:part name="reportName" type="xsd:string"/>
+
+      <wsdl:part name="reportDate" type="xsd:string"/>
+
+      <wsdl:part name="inputData" type="xsd:anyType"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processSequencesInFasta_HIVDBResponse">
+
+      <wsdl:part name="processSequencesInFasta_HIVDBReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processSequencesInFasta_USERRequest">
+
+      <wsdl:part name="key" type="xsd:string"/>
+
+      <wsdl:part name="reportTypeInt" type="xsd:int"/>
+
+      <wsdl:part name="sequencesInFasta" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processMutationLists_ANRSRequest">
+
+      <wsdl:part name="key" type="xsd:string"/>
+
+      <wsdl:part name="reportTypeInt" type="xsd:int"/>
+
+      <wsdl:part name="mutationsList" type="impl:ArrayOfArrayOfArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processSequenceResponse">
+
+      <wsdl:part name="processSequenceReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processMutationLists_HIVDBResponse">
+
+      <wsdl:part name="processMutationLists_HIVDBReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processSequencesInFasta_ANRSResponse">
+
+      <wsdl:part name="processSequencesInFasta_ANRSReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processSequencesInFasta_USERResponse">
+
+      <wsdl:part name="processSequencesInFasta_USERReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processSequencesStringResponse">
+
+      <wsdl:part name="processSequencesStringReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processSequencesInFastaResponse">
+
+      <wsdl:part name="processSequencesInFastaReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="processMutationLists_REGAResponse">
+
+      <wsdl:part name="processMutationLists_REGAReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="StanfordAlgorithm">
+
+      <wsdl:operation name="processSequence" parameterOrder="key sequence">
+
+         <wsdl:input message="impl:processSequenceRequest" name="processSequenceRequest"/>
+
+         <wsdl:output message="impl:processSequenceResponse" name="processSequenceResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processSequences" parameterOrder="key reportTypeInt sequence">
+
+         <wsdl:input message="impl:processSequencesRequest" name="processSequencesRequest"/>
+
+         <wsdl:output message="impl:processSequencesResponse" name="processSequencesResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processSequences" parameterOrder="key inAlgorithmInterface algorithm userSubmittedAlgorithm reportOptions methodName reportName reportDate inputData">
+
+         <wsdl:input message="impl:processSequencesRequest1" name="processSequencesRequest1"/>
+
+         <wsdl:output message="impl:processSequencesResponse1" name="processSequencesResponse1"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processSequencesInFasta" parameterOrder="key reportTypeInt sequencesInFasta">
+
+         <wsdl:input message="impl:processSequencesInFastaRequest" name="processSequencesInFastaRequest"/>
+
+         <wsdl:output message="impl:processSequencesInFastaResponse" name="processSequencesInFastaResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processSequencesString" parameterOrder="key reportTypeInt sequences">
+
+         <wsdl:input message="impl:processSequencesStringRequest" name="processSequencesStringRequest"/>
+
+         <wsdl:output message="impl:processSequencesStringResponse" name="processSequencesStringResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processMutationLists" parameterOrder="key reportTypeInt mutationsList">
+
+         <wsdl:input message="impl:processMutationListsRequest" name="processMutationListsRequest"/>
+
+         <wsdl:output message="impl:processMutationListsResponse" name="processMutationListsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processSequencesInFasta_ANRS" parameterOrder="key reportTypeInt sequencesInFasta">
+
+         <wsdl:input message="impl:processSequencesInFasta_ANRSRequest" name="processSequencesInFasta_ANRSRequest"/>
+
+         <wsdl:output message="impl:processSequencesInFasta_ANRSResponse" name="processSequencesInFasta_ANRSResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processMutationLists_ANRS" parameterOrder="key reportTypeInt mutationsList">
+
+         <wsdl:input message="impl:processMutationLists_ANRSRequest" name="processMutationLists_ANRSRequest"/>
+
+         <wsdl:output message="impl:processMutationLists_ANRSResponse" name="processMutationLists_ANRSResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processMutationLists_REGA" parameterOrder="key reportTypeInt mutationsList">
+
+         <wsdl:input message="impl:processMutationLists_REGARequest" name="processMutationLists_REGARequest"/>
+
+         <wsdl:output message="impl:processMutationLists_REGAResponse" name="processMutationLists_REGAResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processSequencesInFasta_REGA" parameterOrder="key reportTypeInt sequencesInFasta">
+
+         <wsdl:input message="impl:processSequencesInFasta_REGARequest" name="processSequencesInFasta_REGARequest"/>
+
+         <wsdl:output message="impl:processSequencesInFasta_REGAResponse" name="processSequencesInFasta_REGAResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processSequencesInFasta_HIVDB" parameterOrder="key reportTypeInt sequencesInFasta">
+
+         <wsdl:input message="impl:processSequencesInFasta_HIVDBRequest" name="processSequencesInFasta_HIVDBRequest"/>
+
+         <wsdl:output message="impl:processSequencesInFasta_HIVDBResponse" name="processSequencesInFasta_HIVDBResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processMutationLists_HIVDB" parameterOrder="key reportTypeInt mutationsList">
+
+         <wsdl:input message="impl:processMutationLists_HIVDBRequest" name="processMutationLists_HIVDBRequest"/>
+
+         <wsdl:output message="impl:processMutationLists_HIVDBResponse" name="processMutationLists_HIVDBResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processMutationLists_USER" parameterOrder="key reportTypeInt mutationsList">
+
+         <wsdl:input message="impl:processMutationLists_USERRequest" name="processMutationLists_USERRequest"/>
+
+         <wsdl:output message="impl:processMutationLists_USERResponse" name="processMutationLists_USERResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processSequencesInFasta_USER" parameterOrder="key reportTypeInt sequencesInFasta">
+
+         <wsdl:input message="impl:processSequencesInFasta_USERRequest" name="processSequencesInFasta_USERRequest"/>
+
+         <wsdl:output message="impl:processSequencesInFasta_USERResponse" name="processSequencesInFasta_USERResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="StanfordAlgorithmSoapBinding" type="impl:StanfordAlgorithm">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="processSequence">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="processSequenceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservices.hiv.stanford.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="processSequenceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processSequences">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="processSequencesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservices.hiv.stanford.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="processSequencesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processSequences">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="processSequencesRequest1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservices.hiv.stanford.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="processSequencesResponse1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processSequencesInFasta">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="processSequencesInFastaRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservices.hiv.stanford.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="processSequencesInFastaResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processSequencesString">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="processSequencesStringRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservices.hiv.stanford.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="processSequencesStringResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processMutationLists">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="processMutationListsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservices.hiv.stanford.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="processMutationListsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processSequencesInFasta_ANRS">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="processSequencesInFasta_ANRSRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservices.hiv.stanford.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="processSequencesInFasta_ANRSResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processMutationLists_ANRS">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="processMutationLists_ANRSRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservices.hiv.stanford.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="processMutationLists_ANRSResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processMutationLists_REGA">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="processMutationLists_REGARequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservices.hiv.stanford.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="processMutationLists_REGAResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processSequencesInFasta_REGA">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="processSequencesInFasta_REGARequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservices.hiv.stanford.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="processSequencesInFasta_REGAResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processSequencesInFasta_HIVDB">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="processSequencesInFasta_HIVDBRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservices.hiv.stanford.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="processSequencesInFasta_HIVDBResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processMutationLists_HIVDB">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="processMutationLists_HIVDBRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservices.hiv.stanford.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="processMutationLists_HIVDBResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processMutationLists_USER">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="processMutationLists_USERRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservices.hiv.stanford.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="processMutationLists_USERResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="processSequencesInFasta_USER">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="processSequencesInFasta_USERRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservices.hiv.stanford.edu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="processSequencesInFasta_USERResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="StanfordAlgorithmService">
+
+      <wsdl:port binding="impl:StanfordAlgorithmSoapBinding" name="StanfordAlgorithm">
+
+         <wsdlsoap:address location="http://db-webservices.stanford.edu:5440/axis/services/StanfordAlgorithm"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="getRNACardIDs_by_Calculated_MolecularWeightInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="getRNACardIDs_by_Calculated_MolecularWeightOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="getRNACardIDs_by_Calculated_MolecularWeightPortType">
+          <wsdl:operation name="getRNACardIDs_by_Calculated_MolecularWeight">
+                 <wsdl:input message="tns:getRNACardIDs_by_Calculated_MolecularWeightInput"/>
+                 <wsdl:output message="tns:getRNACardIDs_by_Calculated_MolecularWeightOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="getRNACardIDs_by_Calculated_MolecularWeightBinding" type="tns:getRNACardIDs_by_Calculated_MolecularWeightPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="getRNACardIDs_by_Calculated_MolecularWeight"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#getRNACardIDs_by_Calculated_MolecularWeight' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="getRNACardIDs_by_Calculated_MolecularWeightService">
+          <wsdl:documentation>Authority: ualberta.ca  -  Given a range of molecular weights, gets RNACard identifiers for RNA molecules whose molecular weights have been calculated to be within such a range.  RNACards are RNA molecule summary pages contained in the CCRD database.</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="getRNACardIDs_by_Calculated_MolecularWeightPort" binding="tns:getRNACardIDs_by_Calculated_MolecularWeightBinding">
+                 <wsdlsoap:address location="http://wishart.biology.ualberta.ca:8080/biomoby/services/getRNACardIDs_by_Calculated_MolecularWeight"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

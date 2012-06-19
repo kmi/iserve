@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Revision: $Id: WSPhobius.wsdl,v 1.6 2011/09/20 08:33:32 hpm Exp $ -->
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.ebi.ac.uk/WSPhobius" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" name="WSPhobius" targetNamespace="http://www.ebi.ac.uk/WSPhobius">
+  <types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://www.ebi.ac.uk/WSPhobius">
+      <xsd:complexType name="inputParams">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="en">Input parameters for tool.See http://www.ebi.ac.uk/Tools/webservices/services/phobius#inputparams for details</xsd:documentation>
+        </xsd:annotation>
+        <xsd:all>
+          <xsd:element name="outputformat" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">Output format: short, long, raw or grp</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="email" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">User email address</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="async" type="xsd:boolean">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">Asynchronous submission.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="data">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="en">Input data for tool. See http://www.ebi.ac.uk/Tools/webservices/services/phobius#data for details</xsd:documentation>
+        </xsd:annotation>
+        <xsd:all>
+          <xsd:element name="type" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">Input data type</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="content" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="en">Input data content of query sequences. See http://www.ebi.ac.uk/Tools/webservices/services/phobius#data for details</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="ArrayOf_xsd_string">
+        <xsd:complexContent>
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="WSArrayofFile">
+        <xsd:complexContent>
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="tns:WSFile[]"/>
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="WSArrayofData">
+        <xsd:complexContent>
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="tns:data[]"/>
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="WSFile">
+        <xsd:all>
+          <xsd:element name="type" type="xsd:string"/>
+          <xsd:element name="ext" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+    </schema>
+  </types>
+  <message name="statusRequest">
+    <part name="jobid" type="xsd:string"/>
+  </message>
+  <message name="statusResponse">
+    <part name="status" type="xsd:string"/>
+  </message>
+  <message name="resultsRequest">
+    <part name="jobid" type="xsd:string">
+</part>
+  </message>
+  <message name="resultsResponse">
+    <part name="results" type="tns:WSArrayofFile"/>
+  </message>
+  <message name="pollRequest">
+    <part name="jobid" type="xsd:string"/>
+    <part name="type" type="xsd:string"/>
+  </message>
+  <message name="pollResponse">
+    <part name="output" type="xsd:base64Binary"/>
+  </message>
+  <message name="runPhobiusRequest">
+    <part name="params" type="tns:inputParams"/>
+    <part name="content" type="tns:WSArrayofData"/>
+  </message>
+  <message name="runPhobiusResponse">
+    <part name="jobid" type="xsd:string"/>
+  </message>
+  <portType name="WSPhobius">
+    <operation name="runPhobius" parameterOrder="params content">
+      <documentation>Submit a Phobius analysis job
+(see http://www.ebi.ac.uk/Tools/webservices/services/phobius#runphobius_params_content) </documentation>
+      <input name="runPhobiusRequest" message="tns:runPhobiusRequest"/>
+      <output name="runPhobiusResponse" message="tns:runPhobiusResponse"/>
+    </operation>
+    <operation name="checkStatus" parameterOrder="jobid">
+      <documentation>Get the status of a submited job
+(see http://www.ebi.ac.uk/Tools/webservices/services/phobius#checkstatus_jobid)</documentation>
+      <input name="statusRequest" message="tns:statusRequest"/>
+      <output name="statusResponse" message="tns:statusResponse"/>
+    </operation>
+    <operation name="poll" parameterOrder="jobid type">
+      <documentation>Wait until the job has finished and get the specified type of result data.
+(see http://www.ebi.ac.uk/Tools/webservices/services/phobius#poll_jobid_type)</documentation>
+      <input name="pollRequest" message="tns:pollRequest"/>
+      <output name="pollResponse" message="tns:pollResponse"/>
+    </operation>
+    <operation name="getResults" parameterOrder="jobid">
+      <documentation>Get the available result types for a completed job
+(see http://www.ebi.ac.uk/Tools/webservices/services/phobius#getresults_jobid)</documentation>
+      <input name="resultsRequest" message="tns:resultsRequest"/>
+      <output name="resultsResponse" message="tns:resultsResponse"/>
+    </operation>
+  </portType>
+  <binding name="WSPhobiusSoapBinding" type="tns:WSPhobius">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="poll">
+      <soap:operation soapAction="http://www.ebi.ac.uk/WSPhobius#poll"/>
+      <input name="pollRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ebi.ac.uk/WSPhobius" use="encoded"/>
+      </input>
+      <output name="pollResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ebi.ac.uk/WSPhobius" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="runPhobius">
+      <soap:operation soapAction="http://www.ebi.ac.uk/WSPhobius#runPhobius"/>
+      <input name="runPhobiusRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ebi.ac.uk/WSPhobius" use="encoded"/>
+      </input>
+      <output name="runPhobiusResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ebi.ac.uk/WSPhobius" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="checkStatus">
+      <soap:operation soapAction="http://www.ebi.ac.uk/WSPhobius#checkStatus"/>
+      <input name="statusRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ebi.ac.uk/WSPhobius" use="encoded"/>
+      </input>
+      <output name="statusResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ebi.ac.uk/WSPhobius" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="getResults">
+      <soap:operation soapAction="http://www.ebi.ac.uk/WSPhobius#getResults"/>
+      <input name="resultsRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ebi.ac.uk/WSPhobius" use="encoded"/>
+      </input>
+      <output name="resultsResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ebi.ac.uk/WSPhobius" use="encoded"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="WSPhobiusService">
+  <documentation>Phobius: prediction of transmembrane topology and signal peptides from the amino acid sequence of a protein.
+
+Note: this RPC/encoded SOAP service was decommissioned on Tuesday 20th September 2011, see http://www.ebi.ac.uk/Tools/webservices/services/phobius for details of alternative REST and document/literal SOAP services.
+</documentation>
+    <port name="WSPhobius" binding="tns:WSPhobiusSoapBinding">
+      <soap:address location="http://www.ebi.ac.uk/Tools/es/ws-servers/WSPhobius"/>
+    </port>
+  </service>
+</definitions>

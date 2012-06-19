@@ -1,0 +1,305 @@
+<?xml version="1.0"?>
+<wsdl:definitions 
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+ xmlns:tns="http://www.cbs.dtu.dk/ws/WSBLASTatlas_1_0_ws2" 
+ xmlns:blastatlas="http://www.cbs.dtu.dk/ws/ws-blastatlas" 
+ xmlns:common="http://www.cbs.dtu.dk/ws/ws-common" 
+ xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/" 
+ xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+ xmlns="http://schemas.xmlsoap.org/wsdl/" 
+ targetNamespace="http://www.cbs.dtu.dk/ws/WSBLASTatlas_1_0_ws2">
+
+  <wsdl:types>
+    <xsd:schema>
+      <!-- XSD -->
+      <xsd:import namespace="http://www.cbs.dtu.dk/ws/ws-blastatlas" schemaLocation="ws_blastatlas_1_0_ws2.xsd"/>
+      <!-- XSD -->
+      <xsd:import namespace="http://www.cbs.dtu.dk/ws/ws-common" schemaLocation="../common/ws_common_1_0b.xsd"/>
+    </xsd:schema>
+    <schema targetNamespace="http://www.cbs.dtu.dk/ws/WSBLASTatlas_1_0_ws2" xmlns="http://www.w3.org/2001/XMLSchema"  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+
+      <xsd:element name="runAtlas" type="blastatlas:runAtlas"/>
+      <xsd:element name="runAtlasResponse" type="common:pollQueueResponse"/>
+
+      <xsd:element name="fetchAtlasResult" type="common:pollQueue"/>
+      <xsd:element name="fetchAtlasResultResponse" type="blastatlas:fetchAtlasResultResponse"/>
+
+      <xsd:element name="pollQueue" type="common:pollQueue"/>
+      <xsd:element name="pollQueueResponse" type="common:pollQueueResponse"/>
+
+    </schema>
+  </wsdl:types>
+
+  <message name="runAtlasRequest">
+    <part name="parameters" element="tns:runAtlas"/>
+  </message>
+  <message name="runAtlasResponse">
+    <part name="parameters" element="tns:runAtlasResponse"/>
+  </message>
+  <message name="fetchAtlasResultRequest">
+    <part name="parameters" element="tns:fetchAtlasResult"/>
+  </message>
+  <message name="fetchAtlasResultResponse">
+    <part name="parameters" element="tns:fetchAtlasResultResponse"/>
+  </message>
+  <message name="pollQueueRequest">
+    <part name="job" element="tns:pollQueue"/>
+  </message>
+  <message name="pollQueueResponse">
+    <part name="queueentry" element="tns:pollQueueResponse"/>
+  </message>
+
+<portType name="WSBLASTatlas_1_0_ws2">
+
+    <operation name="pollQueue">
+      <input name="pollQueueRequest" message="tns:pollQueueRequest"/>
+      <output name="pollQueueResponse" message="tns:pollQueueResponse"/>
+    </operation>
+
+    <operation name="runAtlas">
+      <input name="runAtlasRequest" message="tns:runAtlasRequest"/>
+      <output name="runAtlasResponse" message="tns:runAtlasResponse"/>
+    </operation>
+
+    <operation name="fetchAtlasResult">
+      <input name="fetchAtlasResultRequest" message="tns:fetchAtlasResultRequest"/>
+      <output name="fetchAtlasResultResponse" message="tns:fetchAtlasResultResponse"/>
+    </operation>
+  </portType>
+
+  <binding name="WSBLASTatlas_1_0_ws2" type="tns:WSBLASTatlas_1_0_ws2">
+    <soapenv:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+    <operation name="pollQueue">
+      <soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSBLASTatlas_1_0_ws2#pollQueue"/>
+      <input>
+        <soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSBLASTatlas_1_0_ws2"/>
+      </input>
+      <output>
+        <soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSBLASTatlas_1_0_ws2"/>
+      </output>
+    </operation>
+    <operation name="runAtlas">
+      <soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSBLASTatlas_1_0_ws2#runAtlas"/>
+      <input>
+        <soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSBLASTatlas_1_0_ws2"/>
+      </input>
+      <output>
+        <soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSBLASTatlas_1_0_ws2"/>
+      </output>
+    </operation>
+
+    <operation name="fetchAtlasResult">
+      <soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSBLASTatlas_1_0_ws2#fetchAtlasResult"/>
+      <input>
+        <soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSBLASTatlas_1_0_ws2"/>
+      </input>
+      <output>
+        <soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSBLASTatlas_1_0_ws2"/>
+      </output>
+    </operation>
+  </binding>
+
+  <service name="WSBLASTatlas_1_0_ws2">
+  <documentation>
+
+    This service creates maps of genome homology of a list of sequences against a reference
+    genome using either blastp, blastn, tblastn, or blastx. 
+
+    The resolution is per-residue or per nucleotide depending on the regime of the blast
+    search: For each annotation in the reference genome, the best hit in the database 
+    genome is found using one of the above algorithms. Each matching or mismatching 
+    residue/nucleotide of the best hit (based on BLAST score) is then mapped back to the 
+    genome sequence, using the coordinates provided in the annotations.
+
+    In the following, 'database' refers to the sequences being searched whereas
+    'reference' refers to the genome on to which the search is mapped. A map will always
+    have the same length as the reference genome on to which the search is mapped.
+
+    For DNA blast, there will be a 1:1 map of alignment:genome, and values can attain either 
+    0 (gap/mismatch) or 1 (match). For protein searches, there will be a 1:3 map of alignment:genome. 
+    For a given amino acid match, all three bases in the genome that encodes this residue, will
+    attain the value '1'. For conservative mismatches all three positions will attain the
+    value of 0.5, whereas gaps and non-conservative matches will attain the value '0'. The
+    different methods require different input, as described in the table below:
+
+    +--------------+-----------------------------------------------+--------------+---------------+
+    | program      | Task                                          | Reference    |   Database    |   
+    +--------------+-----------------------------------------------+--------------+---------------+
+    |  blastp      | Search proteins of the reference genome       | proteins     | proteome      |
+    |              | against proteins of a different genome.       |              |               |
+    +--------------+-----------------------------------------------+--------------+---------------+
+    |  blastn      | Search orfs of the reference genome with      | orfs or      | genome or orfs|
+    |              | either a genomic sequence or orfs of a        | coordinates  |               | 
+    |              | different genome.                             |              |               |
+    +--------------+-----------------------------------------------+--------------+---------------+
+    |  blastx      | Search translated orfs of the reference       | orfs or      | proteome      |
+    |              | genome with protein sequences of a .          | coordinates  |               |               
+    |              | different genome                              |              |               |
+    +--------------+-----------------------------------------------+--------------+---------------+
+    |  tblastn     | Search proteins of the reference genome       | proteins     | genome or orfs|
+    |              | against translated orfs, a translated         |              |               |
+    |              | genome.                                       |              |               |
+    +--------------+-----------------------------------------------+--------------+---------------+
+
+    The result of the service is a PDF and a PostScript document containing the BLASTatlas
+
+
+   1. runBLASTatlas
+       This operation reads in a reference genome and its annotation together with a
+       number of databases to search again. A standard BLASTatlas is constructed, returned
+       as a PostScript files. This is here you want to get started!
+
+    INPUT
+      |- main             : Main title of the atlas
+      |- sub              : Sub title of the atlas
+      |- stamp            : Type of atlas, printed on lower right corner
+      |+ window             (optional) The window boundaries when zooming  
+      ||- begin           : Begin of zoom window
+      |.- end             : End of zoom window 
+      |                  
+      |- modus            : 'circle' or 'linear': Defines show the lanes should be printed
+      |+ ann'               (optional, array) This element is used to label annotations individually 
+      ||                    on the perimeter/top of the atlas. Be aware, that the 
+      ||                    annotation must be present in the 'atlasannotations' 
+      ||                    section (see below), in order for the coordinates to 
+      ||                    be known to GeneWiz (see the provided Perl example)
+      ||- type            : Feature type, e.g. tRNA, rRNA, CDS, misc etc. 
+      ||- label           : Label, must be the same as given in 'atlasannotations' 
+      |.- dir             : Either 'pos' or 'neg'
+      |
+      |- DNAproperties      (optional, array) These elements allows a list of DNA properties (like 
+      |                     Intrinsic Curvature, Stacking Energy etc.) to be added to the lower/inner
+      |                     part of the atlas. Please refer to the XSD to see which properties are 
+      |                     supported, or see the Genome Atlas documentation for details on these 
+      |                     properties: http://www.cbs.dtu.dk/ws/GenomeAtlas
+      |
+      |+ customMap          (optional, array) This element allows you to add a custom 
+      ||                    map, a list of floating point numbers, separated by comma.
+      ||                    Tools like SIDDbase (http://www.cbs.dtu.dk/ws/SIDDbase) returns 
+      ||                    calculations in this format, and can be easily inserted to the atlas.
+      ||                    Each of the custom lanes submitted will be printed between the
+      ||                    DNAproperties (innermost/bottom) and the BLASTlanes (outermost/top) 
+      ||- boxfilter       : (optional) The smoothing of the data
+      ||- legend          : Legend text for this lane
+      ||                      (there is a choice between 'byrange' and 'byaverage')
+      ||+ byrange
+      |||- bottom         : Lower boundary of the color range
+      ||.- top            : Upper boundary of the color range
+      ||+ byaverage
+      ||.- stddev         : Color range will go this many standard deviations around
+      ||                    the average
+      |.+ color
+      | |+ from             Lower color of range
+      | ||- r             : Red component
+      | ||- g             : Green component
+      | |.- b             : Blue component
+      | |+ to               Upper color of range
+      | ||- r             : Red component
+      | ||- g             : Green component
+      | |.- b             : Blue component
+      | .+ via            : (optional), mid part of the color range
+      |  |- r             : Red component
+      |  |- g             : Green component
+      |  .- b             : Blue component
+      |  
+      |+ reference          (contains information about the reference genome, its annotations etc.)         
+      ||- genome          : Contains the genome sequence of the reference genome as one continuos string
+      ||+ atlasfeature      (These elements define the genome annotations that will be printed on the atlas)
+      ||.+ feature          (array)
+      || |- type          : Either CDS, rRNA, tRNA
+      || |- begin         : Start position of annotations
+      || |- end           : Stop position of annotation
+      || |- dir           : Strand ('-' or '+' )
+      || .- label         : Label of the annotation. This is mostly relevant when annotations
+      ||                    are marked with the optional 'ann' element, mentioned above. 
+      ||
+      ||+ blastfeature    : This is the annotation of the reference genome, used in the blast 
+      | |                   search to construct the homology map 
+      | .+ feature          (array)
+      |  |- proteins      : The translation of the DNA region. Mandatory if lanes
+      |  |                  are included using programs blastp or tblastn.
+      |  |- orfs          : The protein coding sequences. Optional (but prioritized) when lanes
+      |  |                  are present using blastn or blastx. If 'orfs' are left out, the region will be extracted
+      |  |                  from the genome sequence. 
+      |  |- begin         : Start of the protein coding region   
+      |  |- end           : Stop of the protein coding region   
+      |  .- dir           : Translation direction (+,-)    
+      |
+      | 
+      .+ db                 (array) Each element corresponds to a genome/proteme to be included as a lane.
+       |- legend          : Lane legend
+       |- program         : Either 'blastp', 'blastn','tblastn', or 'blastx'
+       |+ color
+       ||+ from             (Lower color of range)
+       |||- r             : Red component
+       |||- g             : Green component
+       ||.- b             : Blue component
+       ||
+       ||+ to'              (Upper color of range)
+       |||- r'            : Red component
+       |||- g'            : Green component
+       ||.- b'            : Blue component
+       ||
+       |.+ via'            (optional), mid part of the color range
+       | |- r             : Red component
+       | |- g             : Green component
+       | .- b             : Blue component
+       |+ byrange           (Ranges is fixed ...)
+       ||- bottom         : Lower boundary of the color range
+       |.- top            : Upper boundary of the color range
+       |
+       |+ byaverage         (Range is dynamic ...)
+       |.- stddev         : Color range will go this many standard deviations around
+       |                    the average
+       |
+       |                    (there is an option of the next two elements 'orfs' and 'proteins' at this level)
+       |- orfs            : (array) ORFs to be searched (required for blastn or tblastn)
+       .- proteins        : (array) Protein sequences to be searched (required for blastp or blastx)
+
+
+    OUTPUT
+
+      |- jobid            : The 32 byte identification string of the job
+      |- datetime         : The last timepoint at which the status of the job has changed
+      |- status           : Possible values are QUEUED, ACTIVE, FINISHED, WAITING, REJECTED, 
+      |                     UNKNOWN JOBID or QUEUE DOWN
+      .- expire           : Amount of hours since your job will expire
+
+    
+  2. pollQueue
+
+    INPUT
+      .- jobid           : The 32 byte identification string of the job
+
+    OUTPUT
+      | jobid            : The 32 byte identification string of the job
+      | datetime         : The last timepoint at which the status of the job has changed
+      | status           : Possible values are QUEUED, ACTIVE, FINISHED, WAITING, REJECTED, 
+      |                     UNKNOWN JOBID or QUEUE DOWN
+      . expire           : Amount of hours since your job will expire
+
+  3. fetchAtlasResult
+
+    INTPUT
+      .- jobid           : The 32 byte identification string of the job
+
+    OUTPUT
+      |+ pdf
+      ||- comment         : 'Genewiz output'
+      ||- encoding        : 'base54'    
+      ||- MIMEtype        : 'application/pdf'
+      |.- content         : The encoded document
+      |
+      .+ ps
+       |- comment         : 'Genewiz output'
+       |- encoding        : 'base54'    
+       |- MIMEtype        : 'application/ps'
+       .- content         : The encoded document
+
+</documentation>
+    <port name="WSBLASTatlas_1_0_ws2" binding="tns:WSBLASTatlas_1_0_ws2">
+      <soapenv:address location="http://ws.cbs.dtu.dk:80/cgi-bin/soap/ws/quasi.cgi"/>
+    </port>
+  </service>
+</wsdl:definitions>

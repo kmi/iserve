@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="getAffyProbesetIdsForAgiLocusCodeInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="getAffyProbesetIdsForAgiLocusCodeOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="getAffyProbesetIdsForAgiLocusCodePortType">
+          <wsdl:operation name="getAffyProbesetIdsForAgiLocusCode">
+                 <wsdl:input message="tns:getAffyProbesetIdsForAgiLocusCodeInput"/>
+                 <wsdl:output message="tns:getAffyProbesetIdsForAgiLocusCodeOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="getAffyProbesetIdsForAgiLocusCodeBinding" type="tns:getAffyProbesetIdsForAgiLocusCodePortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="getAffyProbesetIdsForAgiLocusCode"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#getAffyProbesetIdsForAgiLocusCode' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="getAffyProbesetIdsForAgiLocusCodeService">
+          <wsdl:documentation>Authority: ssg.uab.edu  -  Retrieve inputted affy probesetids for AGI Locus codes.</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="getAffyProbesetIdsForAgiLocusCodePort" binding="tns:getAffyProbesetIdsForAgiLocusCodeBinding">
+                 <wsdlsoap:address location="http://138.26.144.5:8080/axis/services/getAffyProbesetIdsForAgiLocusCode"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="FredDocking"
+   targetNamespace="http://cheminfo.informatics.indiana.edu/FredDocking"
+   xmlns="http://schemas.xmlsoap.org/wsdl/"
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+   xmlns:tns="http://cheminfo.informatics.indiana.edu/FredDocking"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+   <message name="dockingRequest">
+      <part name="protein" type="xsd:string"/>			
+      <part name="ligand" type="xsd:string"/>
+      <part name="box" type="xsd:string"/>
+   </message>
+   <message name="dockingResponse">
+      <part name="dockingscore" type="xsd:string"/>
+   </message>
+
+   <portType name="docking_PortType">
+      <operation name="docking">
+         <input message="tns:dockingRequest"/>
+         <output message="tns:dockingResponse"/>
+      </operation>
+   </portType>
+   
+   <binding name="docking_Binding" type="tns:docking_PortType">
+      <soap:binding style="rpc" 
+         transport="http://schemas.xmlsoap.org/soap/http"/>
+      <operation name="docking">
+         <soap:operation soapAction="http://cheminfo.informatics.indiana.edu/FredDocking#docking"/>
+         <input>
+            <soap:body 
+               encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+               namespace="http://cheminfo.informatics.indiana.edu/FredDocking"
+               use="encoded"/>
+         </input>
+         <output>
+            <soap:body
+               encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+               namespace="http://cheminfo.informatics.indiana.edu/FredDocking"
+               use="encoded"/>
+         </output>
+      </operation>
+   </binding>
+
+   <service name="docking_Service">
+      <documentation>This is the docking component for the intelligent drug discovery web service 
+                     developed at Dr. Wild's research group at Indiana University</documentation>
+      <port binding="tns:docking_Binding" name="docking_Port">
+         <soap:address 
+            location="http://cheminfo.informatics.indiana.edu/cicc/cgi-bin/freddocking.cgi"/>
+      </port>
+   </service>
+</definitions>

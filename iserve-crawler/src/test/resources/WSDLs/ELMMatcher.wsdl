@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="http://api.bioinfo.no/stylesheets/WSDLDocumentation.xslt"?>
+<!-- edited with XMLSpy v2007 (http://www.altova.com) by Jan Christian Bryne (University of Bergen) -->
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://elm.eu.org/ELMMatcher" xmlns:ns="http://elm.eu.org/ELM" name="ELMMatcher" targetNamespace="http://elm.eu.org/ELMMatcher">
+	<types>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://elm.eu.org/ELMMatcher" xmlns:ns="http://elm.eu.org/ELM" xmlns:ns1="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://elm.eu.org/ELMMatcher" elementFormDefault="qualified">
+			<xs:import namespace="http://elm.eu.org/ELM" schemaLocation="http://api.bioinfo.no/schema/ELM.xsd"/>
+			<xs:element name="ELMMatch">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Start" type="xs:int"/>
+						<xs:element name="End" type="xs:int"/>
+						<xs:element ref="ns:ELM"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="runELMMatcher">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="QuerySequence" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="runELMMatcherResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="tns:ELMMatch" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:schema>
+	</types>
+	<message name="runELMMatcherMsg">
+		<part name="parameters" element="tns:runELMMatcher"/>
+	</message>
+	<message name="runELMMatcherResponseMsg">
+		<part name="parameters" element="tns:runELMMatcherResponse"/>
+	</message>
+	<portType name="ELMMatcher">
+		<operation name="runELMMatcher">
+			<documentation>This operation runs the basic matcher of ELMs against the query sequence.</documentation>
+			<input message="tns:runELMMatcherMsg"/>
+			<output message="tns:runELMMatcherResponseMsg"/>
+		</operation>
+	</portType>
+	<binding name="ELMMatcher" type="tns:ELMMatcher">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="runELMMatcher">
+			<soap:operation soapAction="http://elm.eu.org/ELMMatcher/runELMMatcher"/>
+			<input>
+				<soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+	</binding>
+	<service name="ELMMatcher">
+		<documentation>This service performs the basic mapping of ELM motifs to a query sequence. The service returns all matching ELMs to a query sequence. Note that this is not a complete prediction of functional site. Extensive filtering of the resulting list of ELMs will be necessary.
+		<doc:ServiceDocumentation xmlns:doc="http://www.bccs.uib.no/ServiceDocumentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.bccs.uib.no/ServiceDocumentation http://api.bioinfo.no/schema/ServiceDocumentation.xsd">
+				<doc:Reference>ELM server: a new resource for investigating short functional sites in modular eukaryotic proteins.
+	Puntervoll, P., Linding, R., Gemnd, C., Chabanis-Davidson, S., Mattingsdal, M., Cameron, S., Martin, D. M. A., Ausiello, G., Brannetti, B., Costantini, A., 
+	Ferr, F., Maselli, V., Via, A., Cesareni, G., Diella, F., Superti-Furga, G., Wyrwicz, L., Ramu, C., McGuigan, C., Gudavalli, R., Letunic, I., Bork, P.,
+	Rychlewski, L., Kster, B., Helmer-Citterich, M., Hunter, W. N., Aasland, R., Gibson, T. J. (2003). Nucleic Acids Res., 31: 3625-3630.</doc:Reference>
+				<doc:WebSite>http://elm.eu.org</doc:WebSite>
+			</doc:ServiceDocumentation>
+		</documentation>
+		<port name="ELMMatcher" binding="tns:ELMMatcher">
+			<soap:address location="http://api.bioinfo.no/services/ELMMatcher"/>
+		</port>
+	</service>
+</definitions>

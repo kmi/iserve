@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="SMART" targetNamespace="http://smart.embl.de/webservice/SMART.wsdl"
+    xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:tns="http://smart.embl.de/webservice/SMART.wsdl" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <types>
+        <xs:schema targetNamespace="http://smart.embl.de/webservice/SMART.wsdl"
+            xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <xs:element name="proteinFeatures">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="protein_id" type="xsd:string"/>
+                        <xs:element name="protein_length" type="xsd:int"/>
+                        <xs:element name="feature" maxOccurs="unbounded" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="name" type="xsd:string"/>
+                                    <xs:element name="type">
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:enumeration value="SMART"/>
+                                                <xs:enumeration value="PFAM"/>
+                                                <xs:enumeration value="INTRINSIC"/>
+                                            </xs:restriction>
+                                        </xs:simpleType>
+                                    </xs:element>
+                                    <xs:element name="e_value" type="xsd:float"/>
+                                    <xs:element name="start" type="xsd:int"/>
+                                    <xs:element name="end" type="xsd:int"/>
+                                    <xs:element name="catalytic_activity" minOccurs="0">
+                                        <xs:annotation>
+                                            <xs:documentation>SMART can predict possible catalytic
+                                                inactivity, based on the presence of essential amino
+                                                acids at specific positions in the alignment. If any
+                                                of the required amino acids are missing, the domain
+                                                is marked as 'inactive'. Check the annotation page
+                                                for details. Only returned for features with
+                                                type 'SMART'. </xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                        <xs:restriction base="xs:string">
+                                                <xs:enumeration value="active_or_no_data"/>
+                                                <xs:enumeration value="inactive"/>
+                                            </xs:restriction>
+                                        </xs:simpleType>
+                                    </xs:element>
+                                    <xs:element name="SMARTannotation" type="xsd:anyURI" minOccurs="0">
+                                        <xs:annotation>
+                                            <xs:documentation>HTTP link to the SMART domain
+                                                annotation page. Only returned for features with
+                                                type 'SMART'.</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="protein_schematic" type="xsd:anyURI" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>HTTP link which can be used to generate the SMART
+                                    protein schematic in PNG format.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name = "input_protein">
+            <xs:complexType>
+                <xs:annotation>
+                    <xs:documentation> User can submit either a protein sequence or Uniprot/Ensembl
+                        identifier. If both a sequence and an ID are supplied, ID will be used. Only
+                        sequences that are present in the SMART database will be accepted
+                        (Uniprot100 and Ensembl proteomes).</xs:documentation>
+                </xs:annotation>
+                <xs:all>
+                <xs:element name="protein_sequence" type="xsd:string" minOccurs="0"/>
+                <xs:element name="protein_ID" type="xsd:string" minOccurs="0"/>
+                </xs:all>
+            </xs:complexType>
+            </xs:element>
+            <xs:element name="SMARTFault">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="faultcode" type="xsd:int"/>
+						<xs:element name="faultstring" type="xsd:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+        </xs:schema>
+    </types>
+    <message name="SMARTRequest">
+        <part name="SMARTAnalysis" element="tns:input_protein"/>
+    </message>
+    <message name="SMARTResponse">
+        <part name="SMARTResult" element="tns:proteinFeatures"/>
+    </message>
+    <message name="SMARTFaultMsg">
+		<part name="fault" element="tns:SMARTFault"/>
+	</message>
+    <portType name="SMART">
+        <operation name="doSMART">
+            <input message="tns:SMARTRequest"/>
+            <output message="tns:SMARTResponse"/>
+            <fault name="SMARTFault" message="tns:SMARTFaultMsg"/>
+        </operation>
+    </portType>
+    <binding name="SMART_service" type="tns:SMART">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="doSMART">
+        	<soap:operation soapAction="http://smart.embl.de/webservice/doSMART"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="SMARTFault">
+				<soap:fault name="SMARTFault" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</fault>
+        </operation>
+    </binding>
+    <service name="SMART">
+        <documentation>SMART webservice</documentation>
+        <port binding="tns:SMART_service" name="SMART">
+            <soap:address location="http://smart.embl.de/webservice/handler.cgi"/>
+        </port>
+    </service>
+</definitions>

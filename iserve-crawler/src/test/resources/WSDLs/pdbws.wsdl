@@ -1,0 +1,1755 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="webservices.pdb.org" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="webservices.pdb.org" xmlns:intf="webservices.pdb.org" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema targetNamespace="webservices.pdb.org" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_int">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:int[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="AtomCoords">
+    <sequence>
+     <element name="adp_type" nillable="true" type="soapenc:string"/>
+     <element name="aniso_B11" nillable="true" type="soapenc:float"/>
+     <element name="aniso_B11_esd" nillable="true" type="soapenc:float"/>
+     <element name="aniso_B12" nillable="true" type="soapenc:float"/>
+     <element name="aniso_B12_esd" nillable="true" type="soapenc:float"/>
+     <element name="aniso_B13" nillable="true" type="soapenc:float"/>
+     <element name="aniso_B13_esd" nillable="true" type="soapenc:float"/>
+     <element name="aniso_B22" nillable="true" type="soapenc:float"/>
+     <element name="aniso_B22_esd" nillable="true" type="soapenc:float"/>
+     <element name="aniso_B23" nillable="true" type="soapenc:float"/>
+     <element name="aniso_B23_esd" nillable="true" type="soapenc:float"/>
+     <element name="aniso_B33" nillable="true" type="soapenc:float"/>
+     <element name="aniso_B33_esd" nillable="true" type="soapenc:float"/>
+     <element name="aniso_U11" nillable="true" type="soapenc:float"/>
+     <element name="aniso_U11_esd" nillable="true" type="soapenc:float"/>
+     <element name="aniso_U12" nillable="true" type="soapenc:float"/>
+     <element name="aniso_U12_esd" nillable="true" type="soapenc:float"/>
+     <element name="aniso_U13" nillable="true" type="soapenc:float"/>
+     <element name="aniso_U13_esd" nillable="true" type="soapenc:float"/>
+     <element name="aniso_U22" nillable="true" type="soapenc:float"/>
+     <element name="aniso_U22_esd" nillable="true" type="soapenc:float"/>
+     <element name="aniso_U23" nillable="true" type="soapenc:float"/>
+     <element name="aniso_U23_esd" nillable="true" type="soapenc:float"/>
+     <element name="aniso_U33" nillable="true" type="soapenc:float"/>
+     <element name="aniso_U33_esd" nillable="true" type="soapenc:float"/>
+     <element name="aniso_ratio" nillable="true" type="soapenc:float"/>
+     <element name="attached_hydrogens" nillable="true" type="soapenc:int"/>
+     <element name="auth_asym_id" nillable="true" type="soapenc:string"/>
+     <element name="auth_atom_id" nillable="true" type="soapenc:string"/>
+     <element name="auth_comp_id" nillable="true" type="soapenc:string"/>
+     <element name="auth_seq_id" nillable="true" type="soapenc:string"/>
+     <element name="b_equiv_geom_mean" nillable="true" type="soapenc:float"/>
+     <element name="b_equiv_geom_mean_esd" nillable="true" type="soapenc:float"/>
+     <element name="b_iso_or_equiv" nillable="true" type="soapenc:float"/>
+     <element name="b_iso_or_equiv_esd" nillable="true" type="soapenc:float"/>
+     <element name="calc_attached_atom" nillable="true" type="soapenc:string"/>
+     <element name="calc_flag" nillable="true" type="soapenc:string"/>
+     <element name="cartn_x" nillable="true" type="soapenc:float"/>
+     <element name="cartn_x_esd" nillable="true" type="soapenc:float"/>
+     <element name="cartn_y" nillable="true" type="soapenc:float"/>
+     <element name="cartn_y_esd" nillable="true" type="soapenc:float"/>
+     <element name="cartn_z" nillable="true" type="soapenc:float"/>
+     <element name="cartn_z_esd" nillable="true" type="soapenc:float"/>
+     <element name="chemical_conn_number" nillable="true" type="soapenc:int"/>
+     <element name="constraints" nillable="true" type="soapenc:string"/>
+     <element name="details" nillable="true" type="soapenc:string"/>
+     <element name="disorder_assembly" nillable="true" type="soapenc:string"/>
+     <element name="disorder_group" nillable="true" type="soapenc:string"/>
+     <element name="footnote_id" nillable="true" type="soapenc:string"/>
+     <element name="fract_x" nillable="true" type="soapenc:float"/>
+     <element name="fract_x_esd" nillable="true" type="soapenc:float"/>
+     <element name="fract_y" nillable="true" type="soapenc:float"/>
+     <element name="fract_y_esd" nillable="true" type="soapenc:float"/>
+     <element name="fract_z" nillable="true" type="soapenc:float"/>
+     <element name="fract_z_esd" nillable="true" type="soapenc:float"/>
+     <element name="group_PDB" nillable="true" type="soapenc:string"/>
+     <element name="id_" nillable="true" type="soapenc:string"/>
+     <element name="label_alt_id" nillable="true" type="soapenc:string"/>
+     <element name="label_asym_id" nillable="true" type="soapenc:string"/>
+     <element name="label_atom_id" nillable="true" type="soapenc:string"/>
+     <element name="label_comp_id" nillable="true" type="soapenc:string"/>
+     <element name="label_entity_id" nillable="true" type="soapenc:string"/>
+     <element name="label_seq_id" nillable="true" type="soapenc:int"/>
+     <element name="occupancy" nillable="true" type="soapenc:float"/>
+     <element name="occupancy_esd" nillable="true" type="soapenc:float"/>
+     <element name="pdbx_PDB_atom_name" nillable="true" type="soapenc:string"/>
+     <element name="pdbx_PDB_ins_code" nillable="true" type="soapenc:string"/>
+     <element name="pdbx_PDB_model_num" nillable="true" type="soapenc:string"/>
+     <element name="pdbx_PDB_residue_name" nillable="true" type="soapenc:string"/>
+     <element name="pdbx_PDB_residue_no" nillable="true" type="soapenc:string"/>
+     <element name="pdbx_PDB_strand_id" nillable="true" type="soapenc:string"/>
+     <element name="pdbx_auth_alt_id" nillable="true" type="soapenc:string"/>
+     <element name="pdbx_auth_atom_name" nillable="true" type="soapenc:string"/>
+     <element name="refinement_flags" nillable="true" type="soapenc:string"/>
+     <element name="refinement_flags_adp" nillable="true" type="soapenc:string"/>
+     <element name="refinement_flags_occupancy" nillable="true" type="soapenc:string"/>
+     <element name="refinement_flags_posn" nillable="true" type="soapenc:string"/>
+     <element name="restraints" nillable="true" type="soapenc:string"/>
+     <element name="symmetry_multiplicity" nillable="true" type="soapenc:int"/>
+     <element name="thermal_displace_type" nillable="true" type="soapenc:string"/>
+     <element name="type_symbol" nillable="true" type="soapenc:string"/>
+     <element name="u_equiv_geom_mean" nillable="true" type="soapenc:float"/>
+     <element name="u_equiv_geom_mean_esd" nillable="true" type="soapenc:float"/>
+     <element name="u_iso_or_equiv" nillable="true" type="soapenc:float"/>
+     <element name="u_iso_or_equiv_esd" nillable="true" type="soapenc:float"/>
+     <element name="wyckoff_symbol" nillable="true" type="soapenc:string"/>
+     <element name="obj_id" nillable="true" type="soapenc:long"/>
+    </sequence>
+   </complexType>
+   <complexType name="Atom_siteWS">
+    <complexContent>
+     <extension base="impl:AtomCoords">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfAtom_siteWS">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="impl:Atom_siteWS[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_soapenc_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="SnpInfo">
+    <sequence>
+     <element name="chainId" nillable="true" type="soapenc:string"/>
+     <element name="contigResidue" nillable="true" type="soapenc:string"/>
+     <element name="flgIdentical" nillable="true" type="soapenc:int"/>
+     <element name="masterResidue" nillable="true" type="soapenc:string"/>
+     <element name="omimId" nillable="true" type="soapenc:int"/>
+     <element name="snpId" nillable="true" type="soapenc:string"/>
+     <element name="snpType" nillable="true" type="soapenc:string"/>
+     <element name="structAaPos" nillable="true" type="soapenc:int"/>
+     <element name="structId" nillable="true" type="soapenc:string"/>
+     <element name="structResidue" nillable="true" type="soapenc:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfSnpInfo">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="impl:SnpInfo[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="DomainFragmentWS">
+    <sequence>
+     <element name="cifChainId" nillable="true" type="soapenc:string"/>
+     <element name="cifEnd" nillable="true" type="soapenc:int"/>
+     <element name="cifStart" nillable="true" type="soapenc:int"/>
+     <element name="domainFragmentNumber" nillable="true" type="soapenc:int"/>
+     <element name="methodChainId" nillable="true" type="soapenc:string"/>
+     <element name="methodDomainId" nillable="true" type="soapenc:string"/>
+     <element name="methodDomainName" nillable="true" type="soapenc:string"/>
+     <element name="methodEnd" nillable="true" type="soapenc:string"/>
+     <element name="methodStart" nillable="true" type="soapenc:string"/>
+     <element name="pdbId" nillable="true" type="soapenc:string"/>
+     <element name="predictionMethod" nillable="true" type="soapenc:string"/>
+     <element name="predictionMethodVersion" nillable="true" type="soapenc:string"/>
+     <element name="methodVersion" nillable="true" type="soapenc:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfDomainFragmentWS">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="impl:DomainFragmentWS[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="getPubmedIdForAllStructuresRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="pubmedAbstractQueryRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSwissProtIdsResponse">
+
+      <wsdl:part name="getSwissProtIdsReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getIdStatusResponse">
+
+      <wsdl:part name="getIdStatusReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getCurrentPdbIdsResponse">
+
+      <wsdl:part name="getCurrentPdbIdsReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="keywordQueryRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="xsd:boolean"/>
+
+      <wsdl:part name="in2" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getCifChainLengthResponse">
+
+      <wsdl:part name="getCifChainLengthReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPrimaryCitationTitleResponse">
+
+      <wsdl:part name="getPrimaryCitationTitleReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDisorderRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAtomSiteRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSnpInfoRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getReleaseDatesResponse">
+
+      <wsdl:part name="getReleaseDatesReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getCifChainsResponse">
+
+      <wsdl:part name="getCifChainsReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="fastaStructureIdQueryRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="xsd:double"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getChainsRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getKabschSanderResponse">
+
+      <wsdl:part name="getKabschSanderReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="fastaStructureIdQueryResponse">
+
+      <wsdl:part name="fastaStructureIdQueryReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getCifResidueResponse">
+
+      <wsdl:part name="getCifResidueReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="blastStructureIdQueryXmlResponse">
+
+      <wsdl:part name="blastStructureIdQueryXmlReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="blastQueryXmlRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="xsd:double"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="isStructureIdObsoleteRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAtomSiteResponse">
+
+      <wsdl:part name="getAtomSiteReturn" type="impl:Atom_siteWS"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDomainFragmentsRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSpaceGroupForStructureResponse">
+
+      <wsdl:part name="getSpaceGroupForStructureReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSwissProtIdsRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="getChainLengthRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSpaceGroupForStructureRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="blastStructureIdQueryXmlRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="xsd:double"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPdbChainRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="runXmlQueryResponse">
+
+      <wsdl:part name="runXmlQueryReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="blastPDBResponse">
+
+      <wsdl:part name="blastPDBReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPubmedIdForAllStructuresResponse">
+
+      <wsdl:part name="getPubmedIdForAllStructuresReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getIdStatusRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="blastQueryXmlResponse">
+
+      <wsdl:part name="blastQueryXmlReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="blastPDBRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="xsd:double"/>
+
+      <wsdl:part name="in3" type="soapenc:string"/>
+
+      <wsdl:part name="in4" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPrimaryCitationTitleRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getEcNumsForStructuresRequest">
+
+      <wsdl:part name="in0" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="blastPDBRequest1">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="xsd:double"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
+
+      <wsdl:part name="in3" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSnpsRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="getReleaseDatesRequest">
+
+      <wsdl:part name="in0" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getObsoletePdbIdsRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="getSnpInfoResponse">
+
+      <wsdl:part name="getSnpInfoReturn" type="impl:ArrayOfSnpInfo"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPubmedIdForStructureResponse">
+
+      <wsdl:part name="getPubmedIdForStructureReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getEntitiesRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDisorderResponse">
+
+      <wsdl:part name="getDisorderReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStructureGenomicsPdbIdsRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="keywordQueryResponse">
+
+      <wsdl:part name="keywordQueryReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSequenceForStructureAndChainResponse">
+
+      <wsdl:part name="getSequenceForStructureAndChainReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getCurrentPdbIdsRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="getPubmedIdForStructureRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getCifChainRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="pubmedAbstractQueryResponse">
+
+      <wsdl:part name="pubmedAbstractQueryReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSnpsResponse">
+
+      <wsdl:part name="getSnpsReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getObsoletePdbIdsResponse">
+
+      <wsdl:part name="getObsoletePdbIdsReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getCifChainLengthRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="isStructureIdObsoleteResponse">
+
+      <wsdl:part name="isStructureIdObsoleteReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSequenceForStructureAndChainRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDbRefIdsRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getEcNumsForStructuresResponse">
+
+      <wsdl:part name="getEcNumsForStructuresReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getCifChainResponse">
+
+      <wsdl:part name="getCifChainReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStructureGenomicsPdbIdsResponse">
+
+      <wsdl:part name="getStructureGenomicsPdbIdsReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getGenomeDetailsRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="fastaQueryResponse">
+
+      <wsdl:part name="fastaQueryReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getCifResidueRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getGenomeDetailsResponse">
+
+      <wsdl:part name="getGenomeDetailsReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getEcNumsRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="getCifChainsRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getChainLengthResponse">
+
+      <wsdl:part name="getChainLengthReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDbRefIdsResponse">
+
+      <wsdl:part name="getDbRefIdsReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getChainsResponse">
+
+      <wsdl:part name="getChainsReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPdbChainResponse">
+
+      <wsdl:part name="getPdbChainReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getKabschSanderRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="blastPDBResponse1">
+
+      <wsdl:part name="blastPDBReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getEcNumsResponse">
+
+      <wsdl:part name="getEcNumsReturn" type="impl:ArrayOf_soapenc_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDomainFragmentsResponse">
+
+      <wsdl:part name="getDomainFragmentsReturn" type="impl:ArrayOfDomainFragmentWS"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="fastaQueryRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="xsd:double"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="runXmlQueryRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getEntitiesResponse">
+
+      <wsdl:part name="getEntitiesReturn" type="impl:ArrayOf_xsd_int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAtomSitesRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAtomSitesResponse">
+
+      <wsdl:part name="getAtomSitesReturn" type="impl:ArrayOfAtom_siteWS"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="PdbWebService">
+
+      <wsdl:operation name="getEntities" parameterOrder="in0">
+
+         <wsdl:input message="impl:getEntitiesRequest" name="getEntitiesRequest"/>
+
+         <wsdl:output message="impl:getEntitiesResponse" name="getEntitiesResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="blastPDB" parameterOrder="in0 in1 in2 in3 in4">
+
+         <wsdl:input message="impl:blastPDBRequest" name="blastPDBRequest"/>
+
+         <wsdl:output message="impl:blastPDBResponse" name="blastPDBResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="blastPDB" parameterOrder="in0 in1 in2 in3">
+
+         <wsdl:input message="impl:blastPDBRequest1" name="blastPDBRequest1"/>
+
+         <wsdl:output message="impl:blastPDBResponse1" name="blastPDBResponse1"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getIdStatus" parameterOrder="in0">
+
+         <wsdl:input message="impl:getIdStatusRequest" name="getIdStatusRequest"/>
+
+         <wsdl:output message="impl:getIdStatusResponse" name="getIdStatusResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAtomSite" parameterOrder="in0">
+
+         <wsdl:input message="impl:getAtomSiteRequest" name="getAtomSiteRequest"/>
+
+         <wsdl:output message="impl:getAtomSiteResponse" name="getAtomSiteResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAtomSites" parameterOrder="in0">
+
+         <wsdl:input message="impl:getAtomSitesRequest" name="getAtomSitesRequest"/>
+
+         <wsdl:output message="impl:getAtomSitesResponse" name="getAtomSitesResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="fastaStructureIdQuery" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:fastaStructureIdQueryRequest" name="fastaStructureIdQueryRequest"/>
+
+         <wsdl:output message="impl:fastaStructureIdQueryResponse" name="fastaStructureIdQueryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="fastaQuery" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:fastaQueryRequest" name="fastaQueryRequest"/>
+
+         <wsdl:output message="impl:fastaQueryResponse" name="fastaQueryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="keywordQuery" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:keywordQueryRequest" name="keywordQueryRequest"/>
+
+         <wsdl:output message="impl:keywordQueryResponse" name="keywordQueryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="pubmedAbstractQuery" parameterOrder="in0">
+
+         <wsdl:input message="impl:pubmedAbstractQueryRequest" name="pubmedAbstractQueryRequest"/>
+
+         <wsdl:output message="impl:pubmedAbstractQueryResponse" name="pubmedAbstractQueryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSpaceGroupForStructure" parameterOrder="in0">
+
+         <wsdl:input message="impl:getSpaceGroupForStructureRequest" name="getSpaceGroupForStructureRequest"/>
+
+         <wsdl:output message="impl:getSpaceGroupForStructureResponse" name="getSpaceGroupForStructureResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPubmedIdForAllStructures">
+
+         <wsdl:input message="impl:getPubmedIdForAllStructuresRequest" name="getPubmedIdForAllStructuresRequest"/>
+
+         <wsdl:output message="impl:getPubmedIdForAllStructuresResponse" name="getPubmedIdForAllStructuresResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStructureGenomicsPdbIds">
+
+         <wsdl:input message="impl:getStructureGenomicsPdbIdsRequest" name="getStructureGenomicsPdbIdsRequest"/>
+
+         <wsdl:output message="impl:getStructureGenomicsPdbIdsResponse" name="getStructureGenomicsPdbIdsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSwissProtIds">
+
+         <wsdl:input message="impl:getSwissProtIdsRequest" name="getSwissProtIdsRequest"/>
+
+         <wsdl:output message="impl:getSwissProtIdsResponse" name="getSwissProtIdsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getGenomeDetails">
+
+         <wsdl:input message="impl:getGenomeDetailsRequest" name="getGenomeDetailsRequest"/>
+
+         <wsdl:output message="impl:getGenomeDetailsResponse" name="getGenomeDetailsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPubmedIdForStructure" parameterOrder="in0">
+
+         <wsdl:input message="impl:getPubmedIdForStructureRequest" name="getPubmedIdForStructureRequest"/>
+
+         <wsdl:output message="impl:getPubmedIdForStructureResponse" name="getPubmedIdForStructureResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSequenceForStructureAndChain" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:getSequenceForStructureAndChainRequest" name="getSequenceForStructureAndChainRequest"/>
+
+         <wsdl:output message="impl:getSequenceForStructureAndChainResponse" name="getSequenceForStructureAndChainResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPrimaryCitationTitle" parameterOrder="in0">
+
+         <wsdl:input message="impl:getPrimaryCitationTitleRequest" name="getPrimaryCitationTitleRequest"/>
+
+         <wsdl:output message="impl:getPrimaryCitationTitleResponse" name="getPrimaryCitationTitleResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="isStructureIdObsolete" parameterOrder="in0">
+
+         <wsdl:input message="impl:isStructureIdObsoleteRequest" name="isStructureIdObsoleteRequest"/>
+
+         <wsdl:output message="impl:isStructureIdObsoleteResponse" name="isStructureIdObsoleteResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSnpInfo" parameterOrder="in0">
+
+         <wsdl:input message="impl:getSnpInfoRequest" name="getSnpInfoRequest"/>
+
+         <wsdl:output message="impl:getSnpInfoResponse" name="getSnpInfoResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSnps">
+
+         <wsdl:input message="impl:getSnpsRequest" name="getSnpsRequest"/>
+
+         <wsdl:output message="impl:getSnpsResponse" name="getSnpsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getReleaseDates" parameterOrder="in0">
+
+         <wsdl:input message="impl:getReleaseDatesRequest" name="getReleaseDatesRequest"/>
+
+         <wsdl:output message="impl:getReleaseDatesResponse" name="getReleaseDatesResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getEcNumsForStructures" parameterOrder="in0">
+
+         <wsdl:input message="impl:getEcNumsForStructuresRequest" name="getEcNumsForStructuresRequest"/>
+
+         <wsdl:output message="impl:getEcNumsForStructuresResponse" name="getEcNumsForStructuresResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getEcNums">
+
+         <wsdl:input message="impl:getEcNumsRequest" name="getEcNumsRequest"/>
+
+         <wsdl:output message="impl:getEcNumsResponse" name="getEcNumsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCifChain" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:getCifChainRequest" name="getCifChainRequest"/>
+
+         <wsdl:output message="impl:getCifChainResponse" name="getCifChainResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCifResidue" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:getCifResidueRequest" name="getCifResidueRequest"/>
+
+         <wsdl:output message="impl:getCifResidueResponse" name="getCifResidueResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getChains" parameterOrder="in0">
+
+         <wsdl:input message="impl:getChainsRequest" name="getChainsRequest"/>
+
+         <wsdl:output message="impl:getChainsResponse" name="getChainsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCifChains" parameterOrder="in0">
+
+         <wsdl:input message="impl:getCifChainsRequest" name="getCifChainsRequest"/>
+
+         <wsdl:output message="impl:getCifChainsResponse" name="getCifChainsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getChainLength" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:getChainLengthRequest" name="getChainLengthRequest"/>
+
+         <wsdl:output message="impl:getChainLengthResponse" name="getChainLengthResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCifChainLength" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:getCifChainLengthRequest" name="getCifChainLengthRequest"/>
+
+         <wsdl:output message="impl:getCifChainLengthResponse" name="getCifChainLengthResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getKabschSander" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:getKabschSanderRequest" name="getKabschSanderRequest"/>
+
+         <wsdl:output message="impl:getKabschSanderResponse" name="getKabschSanderResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDisorder" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:getDisorderRequest" name="getDisorderRequest"/>
+
+         <wsdl:output message="impl:getDisorderResponse" name="getDisorderResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDbRefIds" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:getDbRefIdsRequest" name="getDbRefIdsRequest"/>
+
+         <wsdl:output message="impl:getDbRefIdsResponse" name="getDbRefIdsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPdbChain" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:getPdbChainRequest" name="getPdbChainRequest"/>
+
+         <wsdl:output message="impl:getPdbChainResponse" name="getPdbChainResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="runXmlQuery" parameterOrder="in0">
+
+         <wsdl:input message="impl:runXmlQueryRequest" name="runXmlQueryRequest"/>
+
+         <wsdl:output message="impl:runXmlQueryResponse" name="runXmlQueryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCurrentPdbIds">
+
+         <wsdl:input message="impl:getCurrentPdbIdsRequest" name="getCurrentPdbIdsRequest"/>
+
+         <wsdl:output message="impl:getCurrentPdbIdsResponse" name="getCurrentPdbIdsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getObsoletePdbIds">
+
+         <wsdl:input message="impl:getObsoletePdbIdsRequest" name="getObsoletePdbIdsRequest"/>
+
+         <wsdl:output message="impl:getObsoletePdbIdsResponse" name="getObsoletePdbIdsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDomainFragments" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:getDomainFragmentsRequest" name="getDomainFragmentsRequest"/>
+
+         <wsdl:output message="impl:getDomainFragmentsResponse" name="getDomainFragmentsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="blastQueryXml" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:blastQueryXmlRequest" name="blastQueryXmlRequest"/>
+
+         <wsdl:output message="impl:blastQueryXmlResponse" name="blastQueryXmlResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="blastStructureIdQueryXml" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:blastStructureIdQueryXmlRequest" name="blastStructureIdQueryXmlRequest"/>
+
+         <wsdl:output message="impl:blastStructureIdQueryXmlResponse" name="blastStructureIdQueryXmlResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="pdbwsSoapBinding" type="impl:PdbWebService">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="getEntities">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getEntitiesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getEntitiesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="blastPDB">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="blastPDBRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="blastPDBResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="blastPDB">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="blastPDBRequest1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="blastPDBResponse1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getIdStatus">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getIdStatusRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getIdStatusResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAtomSite">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getAtomSiteRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getAtomSiteResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAtomSites">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getAtomSitesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getAtomSitesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="fastaStructureIdQuery">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="fastaStructureIdQueryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="fastaStructureIdQueryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="fastaQuery">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="fastaQueryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="fastaQueryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="keywordQuery">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="keywordQueryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="keywordQueryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="pubmedAbstractQuery">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="pubmedAbstractQueryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="pubmedAbstractQueryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSpaceGroupForStructure">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getSpaceGroupForStructureRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getSpaceGroupForStructureResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPubmedIdForAllStructures">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getPubmedIdForAllStructuresRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getPubmedIdForAllStructuresResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStructureGenomicsPdbIds">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getStructureGenomicsPdbIdsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getStructureGenomicsPdbIdsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSwissProtIds">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getSwissProtIdsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getSwissProtIdsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getGenomeDetails">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getGenomeDetailsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getGenomeDetailsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPubmedIdForStructure">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getPubmedIdForStructureRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getPubmedIdForStructureResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSequenceForStructureAndChain">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getSequenceForStructureAndChainRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getSequenceForStructureAndChainResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPrimaryCitationTitle">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getPrimaryCitationTitleRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getPrimaryCitationTitleResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="isStructureIdObsolete">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="isStructureIdObsoleteRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="isStructureIdObsoleteResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSnpInfo">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getSnpInfoRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getSnpInfoResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSnps">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getSnpsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getSnpsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getReleaseDates">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getReleaseDatesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getReleaseDatesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getEcNumsForStructures">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getEcNumsForStructuresRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getEcNumsForStructuresResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getEcNums">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getEcNumsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getEcNumsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCifChain">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getCifChainRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getCifChainResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCifResidue">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getCifResidueRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getCifResidueResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getChains">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getChainsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getChainsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCifChains">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getCifChainsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getCifChainsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getChainLength">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getChainLengthRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getChainLengthResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCifChainLength">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getCifChainLengthRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getCifChainLengthResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getKabschSander">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getKabschSanderRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getKabschSanderResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDisorder">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getDisorderRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getDisorderResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDbRefIds">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getDbRefIdsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getDbRefIdsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPdbChain">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getPdbChainRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getPdbChainResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="runXmlQuery">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="runXmlQueryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="runXmlQueryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCurrentPdbIds">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getCurrentPdbIdsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getCurrentPdbIdsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getObsoletePdbIds">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getObsoletePdbIdsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getObsoletePdbIdsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDomainFragments">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getDomainFragmentsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getDomainFragmentsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="blastQueryXml">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="blastQueryXmlRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="blastQueryXmlResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="blastStructureIdQueryXml">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="blastStructureIdQueryXmlRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="blastStructureIdQueryXmlResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="webservices.pdb.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="PdbWebServiceService">
+
+      <wsdl:port binding="impl:pdbwsSoapBinding" name="pdbws">
+
+         <wsdlsoap:address location="http://www.pdb.org/pdb/services/pdbws"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

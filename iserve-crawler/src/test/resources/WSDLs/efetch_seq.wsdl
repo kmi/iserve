@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<wsdl:definitions 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+    xmlns:s0="http://www.ncbi.nlm.nih.gov/soap/eutils/" 
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+    xmlns="http://schemas.xmlsoap.org/wsdl/" 
+    targetNamespace="http://www.ncbi.nlm.nih.gov/soap/eutils/"
+    xmlns:nsef="http://www.ncbi.nlm.nih.gov/soap/eutils/efetch_seq" 
+>
+<!--    version="2.0" -->
+
+    <types>
+        <xs:schema>
+            <xs:import namespace="http://www.ncbi.nlm.nih.gov/soap/eutils/efetch_seq" schemaLocation="efetch_db_seq.xsd"/>
+        </xs:schema>
+    </types>
+
+
+    <message name="eFetchRequest_m">
+        <part name="inpp" element="nsef:eFetchRequest"/>
+    </message>
+    <message name="eFetchResponse_m">
+        <part name="outp" element="nsef:eFetchResult"/>
+    </message>
+
+    <portType name="eUtilsServiceSoap">
+        <operation name="run_eFetch">
+            <input message="s0:eFetchRequest_m"/>
+            <output message="s0:eFetchResponse_m"/>
+        </operation>
+    </portType>
+
+    <binding name="eUtilsServiceSoap" type="s0:eUtilsServiceSoap">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="run_eFetch">
+            <soap:operation soapAction="efetch" style="document"/>
+            <input>
+                <soap:body use="literal"  />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+    </binding>
+
+    <service name="eFetchSequenceService">
+        <port name="eUtilsServiceSoap" binding="s0:eUtilsServiceSoap">
+            <soap:address location="http://eutils.ncbi.nlm.nih.gov/soap/v2.0/soap_adapter_2_0.cgi"/>
+        </port>
+    </service>
+    
+</wsdl:definitions>

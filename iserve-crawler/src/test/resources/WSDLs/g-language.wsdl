@@ -1,0 +1,2595 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+   name="GLANG"
+   targetNamespace="http://soap.g-language.org/GLANG"
+   xmlns:tns="http://soap.g-language.org/GLANG"
+   xmlns="http://schemas.xmlsoap.org/wsdl/"
+   xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+   xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" >
+
+  <types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://soap.g-language.org/GLANG"
+      xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+      xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+
+      <xsd:complexType name="arrayIn">
+        <xsd:complexContent>
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string"/>
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+
+     <xsd:complexType name="Definition">
+        <xsd:all>
+          <xsd:element name="entry" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="arrayOut">
+        <xsd:complexContent>
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string"/>
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+
+      <xsd:complexType name="codon_mvaInputParams">
+        <xsd:all>
+          <xsd:element name="parameter" type="xsd:int"/>
+          <xsd:element name="naxis" type="xsd:int"/>
+          <xsd:element name="translate" type="xsd:int"/>
+          <xsd:element name="data" type="xsd:int"/>
+          <xsd:element name="method" type="xsd:string"/>
+          <xsd:element name="output" type="xsd:string"/>
+          <xsd:element name="del_key" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="P2InputParams">
+        <xsd:all>
+          <xsd:element name="output" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="w_valueInputParams">
+        <xsd:all>
+          <xsd:element name="include" type="xsd:string"/>
+          <xsd:element name="output" type="xsd:string"/>
+          <xsd:element name="exclude" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="find_ori_terInputParams">
+        <xsd:all>
+          <xsd:element name="window" type="xsd:int" />
+          <xsd:element name="purine" type="xsd:int" />
+          <xsd:element name="filter" type="xsd:int" />
+          <xsd:element name="keto"   type="xsd:int" />
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="consensus_zInputParams">
+        <xsd:all>
+          <xsd:element name="high"   type="xsd:int"    />
+          <xsd:element name="low"    type="xsd:double" />
+          <xsd:element name="output" type="xsd:string" />
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="genome_mapInputParams">
+        <xsd:all>
+          <xsd:element name="window" type="xsd:int"/>
+          <xsd:element name="name" type="xsd:int"/>
+          <xsd:element name="output" type="xsd:string"/>
+          <xsd:element name="amp" type="xsd:double"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="rep_ori_terInputParams">
+        <xsd:all>
+          <xsd:element name="oriloc"        type="boolean" />
+          <xsd:element name="gcskew"        type="boolean" />
+          <xsd:element name="dif-threshold" type="int"     />
+          <xsd:element name="dbonly"        type="boolean" />
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="DoubleHelixInputParams">
+        <xsd:all>
+          <xsd:element name="speed" type="xsd:double"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="plasmid_mapInputParams">
+        <xsd:all>
+          <xsd:element name="ptt" type="xsd:string"/>
+          <xsd:element name="cgi" type="xsd:int"/>
+          <xsd:element name="output" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="base_entropyInputParams">
+        <xsd:all>
+          <xsd:element name="upstream" type="xsd:int"/>
+          <xsd:element name="position" type="xsd:string"/>
+          <xsd:element name="downstream" type="xsd:int"/>
+          <xsd:element name="output" type="xsd:string"/>
+          <xsd:element name="PatLength" type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="nucleotide_periodicityInputParams">
+        <xsd:all>
+          <xsd:element name="window" type="xsd:int"/>
+          <xsd:element name="nucleotide" type="xsd:string"/>
+          <xsd:element name="output" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="to_fastaInputParams">
+        <xsd:all>
+          <xsd:element name="length" type="xsd:int"/>
+          <xsd:element name="name" type="xsd:string"/>
+          <xsd:element name="output" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="find_difInputParams">
+        <xsd:all>
+          <xsd:element name="type" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="cbiInputParams">
+        <xsd:all>
+          <xsd:element name="translate" type="xsd:int"/>
+          <xsd:element name="id" type="xsd:string"/>
+          <xsd:element name="del_key" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="genes_from_oriInputParams">
+        <xsd:all>
+          <xsd:element name="window" type="xsd:int"/>
+          <xsd:element name="purine" type="xsd:int"/>
+          <xsd:element name="output" type="xsd:string"/>
+          <xsd:element name="keto" type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="geneskewInputParams">
+        <xsd:all>
+          <xsd:element name="window"     type="xsd:int"/>
+          <xsd:element name="slide"      type="xsd:int"/>
+          <xsd:element name="cumulative" type="xsd:int"/>
+          <xsd:element name="base"       type="xsd:string"/>
+          <xsd:element name="gc3"        type="xsd:int"/>
+          <xsd:element name="output"     type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="corInputParams">
+        <xsd:all>
+          <xsd:element name="sorted" type="xsd:int"/>
+          <xsd:element name="method" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="delta_gcskewInputParams">
+        <xsd:all>
+          <xsd:element name="method" type="xsd:string"/>
+          <xsd:element name="at"     type="xsd:int"/>
+          <xsd:element name="purine" type="xsd:int"/>
+          <xsd:element name="keto"   type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="molecular_weightInputParams">
+        <xsd:all>
+          <xsd:element name="strand" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="circular_mapInputParams">
+        <xsd:all>
+          <xsd:element name="gmap" type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="gcskewInputParams">
+        <xsd:all>
+          <xsd:element name="window" type="xsd:int"/>
+          <xsd:element name="slide" type="xsd:int"/>
+          <xsd:element name="cumulative" type="xsd:int"/>
+          <xsd:element name="at" type="xsd:int"/>
+          <xsd:element name="purine" type="xsd:int"/>
+          <xsd:element name="keto" type="xsd:int"/>
+          <xsd:element name="output" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="genome_map3InputParams">
+        <xsd:all>
+          <xsd:element name="width" type="xsd:int"/>
+          <xsd:element name="datafilename" type="xsd:string"/>
+          <xsd:element name="gmap" type="xsd:int"/>
+          <xsd:element name="output" type="xsd:string"/>
+          <xsd:element name="height" type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="signatureInputParams">
+        <xsd:all>
+          <xsd:element name="wordlength" type="xsd:int"/>
+          <xsd:element name="output" type="xsd:string"/>
+          <xsd:element name="start" type="xsd:int"/>
+          <xsd:element name="end" type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="togoWSInputParams">
+        <xsd:all>
+          <xsd:element name="search" type="xsd:string"/>
+          <xsd:element name="db" type="xsd:string"/>
+          <xsd:element name="format" type="xsd:string"/>
+          <xsd:element name="field" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="base_information_contentInputParams">
+        <xsd:all>
+          <xsd:element name="upstream" type="xsd:int"/>
+          <xsd:element name="position" type="xsd:string"/>
+          <xsd:element name="downstream" type="xsd:int"/>
+          <xsd:element name="output" type="xsd:string"/>
+          <xsd:element name="PatLength" type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="dnawalkInputParams">
+        <xsd:all>
+          <xsd:element name="gmap" type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="find_terInputParams">
+        <xsd:all>
+          <xsd:element name="-type" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="shuffleseqInputParams">
+        <xsd:all>
+          <xsd:element name="k" type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="phxInputParams">
+        <xsd:all>
+          <xsd:element name="usage" type="xsd:string"/>
+          <xsd:element name="translate" type="xsd:int"/>
+          <xsd:element name="output" type="xsd:string"/>
+          <xsd:element name="del_key" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="oligomer_searchInputParams">
+        <xsd:all>
+          <xsd:element name="return" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="find_patternInputParams">
+        <xsd:all>
+          <xsd:element name="output" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="gcwinInputParams">
+        <xsd:all>
+          <xsd:element name="window" type="xsd:int"/>
+          <xsd:element name="at" type="xsd:int"/>
+          <xsd:element name="purine" type="xsd:int"/>
+          <xsd:element name="application" type="xsd:string"/>
+          <xsd:element name="output" type="xsd:string"/>
+          <xsd:element name="keto" type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="icdiInputParams">
+        <xsd:all>
+          <xsd:element name="translate" type="xsd:int"/>
+          <xsd:element name="id" type="xsd:string"/>
+          <xsd:element name="del_key" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="encInputParams">
+        <xsd:all>
+          <xsd:element name="translate" type="xsd:int"/>
+          <xsd:element name="id" type="xsd:string"/>
+          <xsd:element name="del_key" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="oligomer_counterInputParams">
+        <xsd:all>
+          <xsd:element name="window" type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="fopInputParams">
+        <xsd:all>
+          <xsd:element name="translate" type="xsd:int"/>
+          <xsd:element name="output" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="buiInputParams">
+        <xsd:all>
+          <xsd:element name="translate" type="xsd:int"/>
+          <xsd:element name="position" type="xsd:string"/>
+          <xsd:element name="id" type="xsd:string"/>
+          <xsd:element name="output" type="xsd:string"/>
+          <xsd:element name="del_key" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="dist_in_ccInputParams">
+        <xsd:all>
+          <xsd:element name="window" type="xsd:int"/>
+          <xsd:element name="purine" type="xsd:int"/>
+          <xsd:element name="output" type="xsd:string"/>
+          <xsd:element name="keto" type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="codon_usageInputParams">
+        <xsd:all>
+          <xsd:element name="version" type="xsd:int"/>
+          <xsd:element name="CDSid" type="xsd:string"/>
+          <xsd:element name="output" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="find_dnaAboxInputParams">
+        <xsd:all>
+          <xsd:element name="output" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="ttestInputParams">
+        <xsd:all>
+          <xsd:element name="paired" type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="seq2pngInputParams">
+        <xsd:all>
+          <xsd:element name="width" type="xsd:int"/>
+          <xsd:element name="window" type="xsd:int"/>
+          <xsd:element name="output" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="amino_counterInputParams">
+        <xsd:all>
+          <xsd:element name="CDSid" type="xsd:string"/>
+          <xsd:element name="output" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="aauiInputParams">
+        <xsd:all>
+          <xsd:element name="id" type="xsd:string"/>
+          <xsd:element name="output" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="codon_compilerInputParams">
+        <xsd:all>
+          <xsd:element name="translate" type="xsd:int"/>
+          <xsd:element name="id" type="xsd:string"/>
+          <xsd:element name="data" type="xsd:int"/>
+          <xsd:element name="output" type="xsd:string"/>
+          <xsd:element name="del_key" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="over_lapping_finderInputParams">
+        <xsd:all>
+          <xsd:element name="output" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="find_iteronInputParams">
+        <xsd:all>
+          <xsd:element name="output" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="EwInputParams">
+        <xsd:all>
+          <xsd:element name="translate" type="xsd:int"/>
+          <xsd:element name="output" type="xsd:string"/>
+          <xsd:element name="del_key" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="codon_counterInputParams">
+        <xsd:all>
+          <xsd:element name="CDSid" type="xsd:string"/>
+          <xsd:element name="output" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="view_cdsInputParams">
+        <xsd:all>
+          <xsd:element name="length" type="xsd:int"/>
+          <xsd:element name="gap" type="xsd:int"/>
+          <xsd:element name="application" type="xsd:string"/>
+          <xsd:element name="output" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="base_relative_entropyInputParams">
+        <xsd:all>
+          <xsd:element name="upstream" type="xsd:int"/>
+          <xsd:element name="position" type="xsd:string"/>
+          <xsd:element name="downstream" type="xsd:int"/>
+          <xsd:element name="output" type="xsd:string"/>
+          <xsd:element name="PatLength" type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="palindromeInputParams">
+        <xsd:all>
+          <xsd:element name="gtmatch" type="xsd:int"/>
+          <xsd:element name="output" type="xsd:string"/>
+          <xsd:element name="loop" type="xsd:int"/>
+          <xsd:element name="shortest" type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="genomicskewInputParams">
+        <xsd:all>
+          <xsd:element name="divide" type="xsd:int"    />
+          <xsd:element name="at"     type="xsd:int"    />
+          <xsd:element name="output" type="xsd:string" />
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="query_strandInputParams">
+        <xsd:all>
+          <xsd:element name="direction" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="gcsiInputParams">
+        <xsd:all>
+          <xsd:element name="p" type="xsd:int"/>
+          <xsd:element name="window" type="xsd:int"/>
+          <xsd:element name="version" type="xsd:int"/>
+          <xsd:element name="purine" type="xsd:int"/>
+          <xsd:element name="at" type="xsd:int"/>
+          <xsd:element name="keto" type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="filter_cds_by_atgInputParams">
+        <xsd:all>
+          <xsd:element name="upstream" type="xsd:int"/>
+          <xsd:element name="codon" type="xsd:string"/>
+          <xsd:element name="downstream" type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="caiInputParams">
+        <xsd:all>
+          <xsd:element name="w_output" type="xsd:string"/>
+          <xsd:element name="translate" type="xsd:int"/>
+          <xsd:element name="output" type="xsd:string"/>
+          <xsd:element name="w_filename" type="xsd:string"/>
+          <xsd:element name="w_absent" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="dinucInputParams">
+        <xsd:all>
+          <xsd:element name="position" type="xsd:string"/>
+          <xsd:element name="id" type="xsd:string"/>
+          <xsd:element name="output" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+
+      <xsd:complexType name="cgrInputParams">
+        <xsd:all>
+          <xsd:element name="width" type="xsd:int"/>
+          <xsd:element name="level" type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+
+    </schema>
+  </types>
+
+
+  <message name="codon_mvaRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:codon_mvaInputParams" />
+  </message>
+  <message name="codon_mvaResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="P2Request">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:P2InputParams" />
+  </message>
+  <message name="P2Response">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="w_valueRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:w_valueInputParams" />
+  </message>
+  <message name="w_valueResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="splitprintseqRequest">
+    <part name="sequence" type="xsd:string" />
+  </message>
+  <message name="splitprintseqResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="medianRequest">
+    <part name="array" type="tns:arrayIn" />
+  </message>
+  <message name="medianResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="find_ori_terRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:find_ori_terInputParams" />
+  </message>
+  <message name="find_ori_terResponse">
+    <part name="result" type="tns:arrayOut" />
+  </message>
+
+  <message name="plasmid_mapRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:plasmid_mapInputParams" />
+  </message>
+  <message name="plasmid_mapResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="sumRequest">
+    <part name="array" type="tns:arrayIn" />
+  </message>
+  <message name="sumResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="nucleotide_periodicityRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:nucleotide_periodicityInputParams" />
+  </message>
+  <message name="nucleotide_periodicityResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="varianceRequest">
+    <part name="array" type="tns:arrayIn" />
+  </message>
+  <message name="varianceResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="amino_infoRequest">
+    <part name="sequence" type="xsd:string" />
+  </message>
+  <message name="amino_infoResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="helpRequest">
+    <part name="keywords" type="xsd:string" />
+  </message>
+  <message name="helpResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="hydropathyRequest">
+    <part name="sequence" type="xsd:string" />
+  </message>
+  <message name="hydropathyResponse">
+    <part name="result" type="xsd:float" />
+  </message>
+
+  <message name="circular_mapRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:circular_mapInputParams" />
+  </message>
+  <message name="circular_mapResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="translateRequest">
+    <part name="sequence" type="xsd:string" />
+  </message>
+  <message name="translateResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="togoWSRequest">
+    <part name="query" type="xsd:string" />
+    <part name="params" type="tns:togoWSInputParams" />
+  </message>
+  <message name="togoWSResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="phxRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:phxInputParams" />
+  </message>
+  <message name="phxResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="icdiRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:icdiInputParams" />
+  </message>
+  <message name="icdiResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="encRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:encInputParams" />
+  </message>
+  <message name="encResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="fopRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:fopInputParams" />
+  </message>
+  <message name="fopResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="buiRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:buiInputParams" />
+  </message>
+  <message name="buiResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="dist_in_ccRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="position1" type="xsd:int" />
+    <part name="position2" type="xsd:int" />
+    <part name="params" type="tns:dist_in_ccInputParams" />
+  </message>
+  <message name="dist_in_ccResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="find_dnaAboxRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:find_dnaAboxInputParams" />
+  </message>
+  <message name="find_dnaAboxResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="ttestRequest">
+    <part name="array1" type="tns:arrayIn" />
+    <part name="array2" type="tns:arrayIn" />
+    <part name="params" type="tns:ttestInputParams" />
+  </message>
+  <message name="ttestResponse">
+    <part name="result" type="tns:arrayOut" />
+  </message>
+
+  <message name="seq2pngRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:seq2pngInputParams" />
+  </message>
+  <message name="seq2pngResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="amino_counterRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:amino_counterInputParams" />
+  </message>
+  <message name="amino_counterResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="aauiRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:aauiInputParams" />
+  </message>
+  <message name="aauiResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="codon_compilerRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:codon_compilerInputParams" />
+  </message>
+  <message name="codon_compilerResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="over_lapping_finderRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:over_lapping_finderInputParams" />
+  </message>
+  <message name="over_lapping_finderResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="EwRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:EwInputParams" />
+  </message>
+  <message name="EwResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="view_cdsRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:view_cdsInputParams" />
+  </message>
+  <message name="view_cdsResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="base_relative_entropyRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:base_relative_entropyInputParams" />
+  </message>
+  <message name="base_relative_entropyResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="genomicskewRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:genomicskewInputParams" />
+  </message>
+  <message name="genomicskewResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="query_strandRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="position" type="xsd:string" />
+    <part name="params" type="tns:query_strandInputParams" />
+  </message>
+  <message name="query_strandResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="filter_cds_by_atgRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:filter_cds_by_atgInputParams" />
+  </message>
+  <message name="filter_cds_by_atgResponse">
+    <part name="result" type="tns:arrayOut" />
+  </message>
+
+  <message name="gcsiRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:gcsiInputParams" />
+  </message>
+  <message name="gcsiResponse">
+    <part name="result" type="tns:arrayOut" />
+  </message>
+
+  <message name="caiRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:caiInputParams" />
+  </message>
+  <message name="caiResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="maxdexRequest">
+    <part name="array" type="tns:arrayIn" />
+  </message>
+  <message name="maxdexResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="query_armRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="position" type="xsd:int" />
+  </message>
+  <message name="query_armResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="maxRequest">
+    <part name="array" type="tns:arrayIn" />
+  </message>
+  <message name="maxResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="peptide_massRequest">
+    <part name="sequence" type="xsd:string" />
+  </message>
+  <message name="peptide_massResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="mindexRequest">
+    <part name="array" type="tns:arrayIn" />
+  </message>
+  <message name="mindexResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="rep_ori_terRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:rep_ori_terInputParams" />
+  </message>
+  <message name="rep_ori_terResponse">
+    <part name="result" type="tns:arrayOut" />
+  </message>
+
+  <message name="longest_ORFRequest">
+    <part name="sequence" type="xsd:string" />
+  </message>
+  <message name="longest_ORFResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="genome_mapRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:genome_mapInputParams" />
+  </message>
+  <message name="genome_mapResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="consensus_zRequest">
+    <part name="array_seq" type="tns:arrayIn" />
+    <part name="params" type="tns:consensus_zInputParams" />
+  </message>
+  <message name="consensus_zResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="DoubleHelixRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:DoubleHelixInputParams" />
+  </message>
+  <message name="DoubleHelixResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="calc_pIRequest">
+    <part name="sequence" type="xsd:string" />
+  </message>
+  <message name="calc_pIResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="base_entropyRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:base_entropyInputParams" />
+  </message>
+  <message name="base_entropyResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="to_fastaRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:to_fastaInputParams" />
+  </message>
+  <message name="to_fastaResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="find_difRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:find_difInputParams" />
+  </message>
+  <message name="find_difResponse">
+    <part name="result" type="tns:arrayOut" />
+  </message>
+
+  <message name="standard_deviationRequest">
+    <part name="array" type="tns:arrayIn" />
+  </message>
+  <message name="standard_deviationResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="genes_from_oriRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="direction" type="xsd:string" />
+    <part name="params" type="tns:genes_from_oriInputParams" />
+  </message>
+  <message name="genes_from_oriResponse">
+    <part name="result" type="tns:arrayOut" />
+  </message>
+
+  <message name="geneskewRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:geneskewInputParams" />
+  </message>
+  <message name="geneskewResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="cbiRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:cbiInputParams" />
+  </message>
+  <message name="cbiResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="delta_encRequest">
+    <part name="sequence" type="xsd:string" />
+  </message>
+  <message name="delta_encResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="delta_gcskewRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:delta_gcskewInputParams" />
+  </message>
+  <message name="delta_gcskewResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="molecular_weightRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:molecular_weightInputParams" />
+  </message>
+  <message name="molecular_weightResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="corRequest">
+    <part name="array1" type="tns:arrayIn" />
+    <part name="array2" type="tns:arrayIn" />
+    <part name="params" type="tns:corInputParams" />
+  </message>
+  <message name="corResponse">
+    <part name="result" type="tns:arrayOut" />
+  </message>
+
+  <message name="cumulativeRequest">
+    <part name="array" type="tns:arrayIn" />
+  </message>
+  <message name="cumulativeResponse">
+    <part name="result" type="tns:arrayOut" />
+  </message>
+
+  <message name="seqinfoRequest">
+    <part name="sequence" type="xsd:string" />
+  </message>
+  <message name="seqinfoResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="genome_map3Request">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:genome_map3InputParams" />
+  </message>
+  <message name="genome_map3Response">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="gcskewRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:gcskewInputParams" />
+  </message>
+  <message name="gcskewResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="signatureRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:signatureInputParams" />
+  </message>
+  <message name="signatureResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="shuffleseqRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:shuffleseqInputParams" />
+  </message>
+  <message name="shuffleseqResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="find_terRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:find_terInputParams" />
+  </message>
+  <message name="find_terResponse">
+    <part name="result" type="tns:arrayOut" />
+  </message>
+
+  <message name="dnawalkRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:dnawalkInputParams" />
+  </message>
+  <message name="dnawalkResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="base_information_contentRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:base_information_contentInputParams" />
+  </message>
+  <message name="base_information_contentResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="oligomer_searchRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="oligomer" type="xsd:string" />
+    <part name="params" type="tns:oligomer_searchInputParams" />
+  </message>
+  <message name="oligomer_searchResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="find_patternRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="pattern" type="xsd:string" />
+    <part name="params" type="tns:find_patternInputParams" />
+  </message>
+  <message name="find_patternResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="gcwinRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:gcwinInputParams" />
+  </message>
+  <message name="gcwinResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="oligomer_counterRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="oligomer" type="xsd:string" />
+    <part name="params" type="tns:oligomer_counterInputParams" />
+  </message>
+  <message name="oligomer_counterResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="codon_usageRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:codon_usageInputParams" />
+  </message>
+  <message name="codon_usageResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="minRequest">
+    <part name="array" type="tns:arrayIn" />
+  </message>
+  <message name="minResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="find_iteronRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:find_iteronInputParams" />
+  </message>
+  <message name="find_iteronResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="complementRequest">
+    <part name="sequence" type="xsd:string" />
+  </message>
+  <message name="complementResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="meanRequest">
+    <part name="array" type="tns:arrayIn" />
+  </message>
+  <message name="meanResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="codon_counterRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:codon_counterInputParams" />
+  </message>
+  <message name="codon_counterResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="entrezRequest">
+    <part name="database" type="xsd:string" />
+    <part name="query" type="xsd:string" />
+  </message>
+  <message name="entrezResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="palindromeRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:palindromeInputParams" />
+  </message>
+  <message name="palindromeResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="least_squares_fitRequest">
+    <part name="array" type="tns:arrayIn" />
+  </message>
+  <message name="least_squares_fitResponse">
+    <part name="result" type="tns:arrayOut" />
+  </message>
+
+  <message name="dinucRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:dinucInputParams" />
+  </message>
+  <message name="dinucResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <message name="cgrRequest">
+    <part name="sequence" type="xsd:string" />
+    <part name="params" type="tns:cgrInputParams" />
+  </message>
+  <message name="cgrResponse">
+    <part name="result" type="xsd:string" />
+  </message>
+
+  <portType name="GLANG">
+    <operation name="codon_mva" parameterOrder="sequence params">
+      <input  name="codon_mvaRequest"  message="tns:codon_mvaRequest" />
+      <output name="codon_mvaResponse" message="tns:codon_mvaResponse" />
+    </operation>
+
+    <operation name="P2" parameterOrder="sequence params">
+      <input  name="P2Request"  message="tns:P2Request" />
+      <output name="P2Response" message="tns:P2Response" />
+    </operation>
+
+    <operation name="w_value" parameterOrder="sequence params">
+      <input  name="w_valueRequest"  message="tns:w_valueRequest" />
+      <output name="w_valueResponse" message="tns:w_valueResponse" />
+    </operation>
+
+    <operation name="splitprintseq" parameterOrder="sequence ">
+      <input  name="splitprintseqRequest"  message="tns:splitprintseqRequest" />
+      <output name="splitprintseqResponse" message="tns:splitprintseqResponse" />
+    </operation>
+
+    <operation name="median" parameterOrder="array">
+      <input  name="medianRequest"  message="tns:medianRequest" />
+      <output name="medianResponse" message="tns:medianResponse" />
+    </operation>
+
+    <operation name="find_ori_ter" parameterOrder="sequence params">
+      <input  name="find_ori_terRequest"  message="tns:find_ori_terRequest" />
+      <output name="find_ori_terResponse" message="tns:find_ori_terResponse" />
+    </operation>
+
+    <operation name="plasmid_map" parameterOrder="sequence params">
+      <input  name="plasmid_mapRequest"  message="tns:plasmid_mapRequest" />
+      <output name="plasmid_mapResponse" message="tns:plasmid_mapResponse" />
+    </operation>
+
+    <operation name="sum" parameterOrder="array">
+      <input  name="sumRequest"  message="tns:sumRequest" />
+      <output name="sumResponse" message="tns:sumResponse" />
+    </operation>
+
+    <operation name="nucleotide_periodicity" parameterOrder="sequence params">
+      <input  name="nucleotide_periodicityRequest"  message="tns:nucleotide_periodicityRequest" />
+      <output name="nucleotide_periodicityResponse" message="tns:nucleotide_periodicityResponse" />
+    </operation>
+
+    <operation name="variance" parameterOrder="array">
+      <input  name="varianceRequest"  message="tns:varianceRequest" />
+      <output name="varianceResponse" message="tns:varianceResponse" />
+    </operation>
+
+    <operation name="amino_info" parameterOrder="sequence ">
+      <input  name="amino_infoRequest"  message="tns:amino_infoRequest" />
+      <output name="amino_infoResponse" message="tns:amino_infoResponse" />
+    </operation>
+
+    <operation name="circular_map" parameterOrder="sequence params">
+      <input  name="circular_mapRequest"  message="tns:circular_mapRequest" />
+      <output name="circular_mapResponse" message="tns:circular_mapResponse" />
+    </operation>
+
+    <operation name="translate" parameterOrder="sequence ">
+      <input  name="translateRequest"  message="tns:translateRequest" />
+      <output name="translateResponse" message="tns:translateResponse" />
+    </operation>
+
+    <operation name="togoWS" parameterOrder="query params">
+      <input  name="togoWSRequest"  message="tns:togoWSRequest" />
+      <output name="togoWSResponse" message="tns:togoWSResponse" />
+    </operation>
+
+    <operation name="phx" parameterOrder="sequence params">
+      <input  name="phxRequest"  message="tns:phxRequest" />
+      <output name="phxResponse" message="tns:phxResponse" />
+    </operation>
+
+    <operation name="icdi" parameterOrder="sequence params">
+      <input  name="icdiRequest"  message="tns:icdiRequest" />
+      <output name="icdiResponse" message="tns:icdiResponse" />
+    </operation>
+
+    <operation name="enc" parameterOrder="sequence params">
+      <input  name="encRequest"  message="tns:encRequest" />
+      <output name="encResponse" message="tns:encResponse" />
+    </operation>
+
+    <operation name="fop" parameterOrder="sequence params">
+      <input  name="fopRequest"  message="tns:fopRequest" />
+      <output name="fopResponse" message="tns:fopResponse" />
+    </operation>
+
+    <operation name="bui" parameterOrder="sequence params">
+      <input  name="buiRequest"  message="tns:buiRequest" />
+      <output name="buiResponse" message="tns:buiResponse" />
+    </operation>
+
+    <operation name="dist_in_cc" parameterOrder="sequence position1 position2 params">
+      <input  name="dist_in_ccRequest"  message="tns:dist_in_ccRequest" />
+      <output name="dist_in_ccResponse" message="tns:dist_in_ccResponse" />
+    </operation>
+
+    <operation name="find_dnaAbox" parameterOrder="sequence params">
+      <input  name="find_dnaAboxRequest"  message="tns:find_dnaAboxRequest" />
+      <output name="find_dnaAboxResponse" message="tns:find_dnaAboxResponse" />
+    </operation>
+
+    <operation name="ttest" parameterOrder="array1 array2 params">
+      <input  name="ttestRequest"  message="tns:ttestRequest" />
+      <output name="ttestResponse" message="tns:ttestResponse" />
+    </operation>
+
+    <operation name="seq2png" parameterOrder="sequence params">
+      <input  name="seq2pngRequest"  message="tns:seq2pngRequest" />
+      <output name="seq2pngResponse" message="tns:seq2pngResponse" />
+    </operation>
+
+    <operation name="amino_counter" parameterOrder="sequence params">
+      <input  name="amino_counterRequest"  message="tns:amino_counterRequest" />
+      <output name="amino_counterResponse" message="tns:amino_counterResponse" />
+    </operation>
+
+    <operation name="aaui" parameterOrder="sequence params">
+      <input  name="aauiRequest"  message="tns:aauiRequest" />
+      <output name="aauiResponse" message="tns:aauiResponse" />
+    </operation>
+
+    <operation name="codon_compiler" parameterOrder="sequence params">
+      <input  name="codon_compilerRequest"  message="tns:codon_compilerRequest" />
+      <output name="codon_compilerResponse" message="tns:codon_compilerResponse" />
+    </operation>
+
+    <operation name="over_lapping_finder" parameterOrder="sequence params">
+      <input  name="over_lapping_finderRequest"  message="tns:over_lapping_finderRequest" />
+      <output name="over_lapping_finderResponse" message="tns:over_lapping_finderResponse" />
+    </operation>
+
+    <operation name="Ew" parameterOrder="sequence params">
+      <input  name="EwRequest"  message="tns:EwRequest" />
+      <output name="EwResponse" message="tns:EwResponse" />
+    </operation>
+
+    <operation name="view_cds" parameterOrder="sequence params">
+      <input  name="view_cdsRequest"  message="tns:view_cdsRequest" />
+      <output name="view_cdsResponse" message="tns:view_cdsResponse" />
+    </operation>
+
+    <operation name="base_relative_entropy" parameterOrder="sequence params">
+      <input  name="base_relative_entropyRequest"  message="tns:base_relative_entropyRequest" />
+      <output name="base_relative_entropyResponse" message="tns:base_relative_entropyResponse" />
+    </operation>
+
+    <operation name="genomicskew" parameterOrder="sequence params">
+      <input  name="genomicskewRequest"  message="tns:genomicskewRequest" />
+      <output name="genomicskewResponse" message="tns:genomicskewResponse" />
+    </operation>
+
+    <operation name="query_strand" parameterOrder="sequence position params">
+      <input  name="query_strandRequest"  message="tns:query_strandRequest" />
+      <output name="query_strandResponse" message="tns:query_strandResponse" />
+    </operation>
+
+    <operation name="filter_cds_by_atg" parameterOrder="sequence params">
+      <input  name="filter_cds_by_atgRequest"  message="tns:filter_cds_by_atgRequest" />
+      <output name="filter_cds_by_atgResponse" message="tns:filter_cds_by_atgResponse" />
+    </operation>
+
+    <operation name="gcsi" parameterOrder="sequence params">
+      <input  name="gcsiRequest"  message="tns:gcsiRequest" />
+      <output name="gcsiResponse" message="tns:gcsiResponse" />
+    </operation>
+
+    <operation name="cai" parameterOrder="sequence params">
+      <input  name="caiRequest"  message="tns:caiRequest" />
+      <output name="caiResponse" message="tns:caiResponse" />
+    </operation>
+
+    <operation name="maxdex" parameterOrder="array">
+      <input  name="maxdexRequest"  message="tns:maxdexRequest" />
+      <output name="maxdexResponse" message="tns:maxdexResponse" />
+    </operation>
+
+    <operation name="query_arm" parameterOrder="sequence position">
+      <input  name="query_armRequest"  message="tns:query_armRequest" />
+      <output name="query_armResponse" message="tns:query_armResponse" />
+    </operation>
+
+    <operation name="max" parameterOrder="array">
+      <input  name="maxRequest"  message="tns:maxRequest" />
+      <output name="maxResponse" message="tns:maxResponse" />
+    </operation>
+
+    <operation name="peptide_mass" parameterOrder="sequence ">
+      <input  name="peptide_massRequest"  message="tns:peptide_massRequest" />
+      <output name="peptide_massResponse" message="tns:peptide_massResponse" />
+    </operation>
+
+    <operation name="mindex" parameterOrder="array">
+      <input  name="mindexRequest"  message="tns:mindexRequest" />
+      <output name="mindexResponse" message="tns:mindexResponse" />
+    </operation>
+
+    <operation name="rep_ori_ter" parameterOrder="sequence params">
+      <input  name="rep_ori_terRequest"  message="tns:rep_ori_terRequest" />
+      <output name="rep_ori_terResponse" message="tns:rep_ori_terResponse" />
+    </operation>
+
+    <operation name="longest_ORF" parameterOrder="sequence ">
+      <input  name="longest_ORFRequest"  message="tns:longest_ORFRequest" />
+      <output name="longest_ORFResponse" message="tns:longest_ORFResponse" />
+    </operation>
+
+    <operation name="genome_map" parameterOrder="sequence params">
+      <input  name="genome_mapRequest"  message="tns:genome_mapRequest" />
+      <output name="genome_mapResponse" message="tns:genome_mapResponse" />
+    </operation>
+
+    <operation name="consensus_z" parameterOrder="array_seq params">
+      <input  name="consensus_zRequest"  message="tns:consensus_zRequest" />
+      <output name="consensus_zResponse" message="tns:consensus_zResponse" />
+    </operation>
+
+    <operation name="DoubleHelix" parameterOrder="sequence params">
+      <input  name="DoubleHelixRequest"  message="tns:DoubleHelixRequest" />
+      <output name="DoubleHelixResponse" message="tns:DoubleHelixResponse" />
+    </operation>
+
+    <operation name="calc_pI" parameterOrder="sequence ">
+      <input  name="calc_pIRequest"  message="tns:calc_pIRequest" />
+      <output name="calc_pIResponse" message="tns:calc_pIResponse" />
+    </operation>
+
+    <operation name="base_entropy" parameterOrder="sequence params">
+      <input  name="base_entropyRequest"  message="tns:base_entropyRequest" />
+      <output name="base_entropyResponse" message="tns:base_entropyResponse" />
+    </operation>
+
+    <operation name="to_fasta" parameterOrder="sequence params">
+      <input  name="to_fastaRequest"  message="tns:to_fastaRequest" />
+      <output name="to_fastaResponse" message="tns:to_fastaResponse" />
+    </operation>
+
+    <operation name="find_dif" parameterOrder="sequence params">
+      <input  name="find_difRequest"  message="tns:find_difRequest" />
+      <output name="find_difResponse" message="tns:find_difResponse" />
+    </operation>
+
+    <operation name="standard_deviation" parameterOrder="array">
+      <input  name="standard_deviationRequest"  message="tns:standard_deviationRequest" />
+      <output name="standard_deviationResponse" message="tns:standard_deviationResponse" />
+    </operation>
+
+    <operation name="genes_from_ori" parameterOrder="sequence direction params">
+      <input  name="genes_from_oriRequest"  message="tns:genes_from_oriRequest" />
+      <output name="genes_from_oriResponse" message="tns:genes_from_oriResponse" />
+    </operation>
+
+    <operation name="geneskew" parameterOrder="sequence params">
+      <input  name="geneskewRequest"  message="tns:geneskewRequest" />
+      <output name="geneskewResponse" message="tns:geneskewResponse" />
+    </operation>
+
+    <operation name="cbi" parameterOrder="sequence params">
+      <input  name="cbiRequest"  message="tns:cbiRequest" />
+      <output name="cbiResponse" message="tns:cbiResponse" />
+    </operation>
+
+    <operation name="cor" parameterOrder="array1 array2 params">
+      <input  name="corRequest"  message="tns:corRequest" />
+      <output name="corResponse" message="tns:corResponse" />
+    </operation>
+
+    <operation name="cumulative" parameterOrder="array">
+      <input  name="cumulativeRequest"  message="tns:cumulativeRequest" />
+      <output name="cumulativeResponse" message="tns:cumulativeResponse" />
+    </operation>
+
+    <operation name="delta_enc" parameterOrder="sequence">
+      <input  name="delta_encRequest"  message="tns:delta_encRequest" />
+      <output name="delta_encResponse" message="tns:delta_encResponse" />
+    </operation>
+
+    <operation name="delta_gcskew" parameterOrder="sequence params">
+      <input  name="delta_gcskewRequest"  message="tns:delta_gcskewRequest" />
+      <output name="delta_gcskewResponse" message="tns:delta_gcskewResponse" />
+    </operation>
+
+    <operation name="molecular_weight" parameterOrder="sequence params">
+      <input  name="molecular_weightRequest"  message="tns:molecular_weightRequest" />
+      <output name="molecular_weightResponse" message="tns:molecular_weightResponse" />
+    </operation>
+
+    <operation name="seqinfo" parameterOrder="sequence ">
+      <input  name="seqinfoRequest"  message="tns:seqinfoRequest" />
+      <output name="seqinfoResponse" message="tns:seqinfoResponse" />
+    </operation>
+
+    <operation name="genome_map3" parameterOrder="sequence params">
+      <input  name="genome_map3Request"  message="tns:genome_map3Request" />
+      <output name="genome_map3Response" message="tns:genome_map3Response" />
+    </operation>
+
+    <operation name="gcskew" parameterOrder="sequence params">
+      <input  name="gcskewRequest"  message="tns:gcskewRequest" />
+      <output name="gcskewResponse" message="tns:gcskewResponse" />
+    </operation>
+
+    <operation name="signature" parameterOrder="sequence params">
+      <input  name="signatureRequest"  message="tns:signatureRequest" />
+      <output name="signatureResponse" message="tns:signatureResponse" />
+    </operation>
+
+    <operation name="shuffleseq" parameterOrder="sequence params">
+      <input  name="shuffleseqRequest"  message="tns:shuffleseqRequest" />
+      <output name="shuffleseqResponse" message="tns:shuffleseqResponse" />
+    </operation>
+
+    <operation name="find_ter" parameterOrder="sequence params">
+      <input  name="find_terRequest"  message="tns:find_terRequest" />
+      <output name="find_terResponse" message="tns:find_terResponse" />
+    </operation>
+
+    <operation name="dnawalk" parameterOrder="sequence params">
+      <input  name="dnawalkRequest"  message="tns:dnawalkRequest" />
+      <output name="dnawalkResponse" message="tns:dnawalkResponse" />
+    </operation>
+
+    <operation name="base_information_content" parameterOrder="sequence params">
+      <input  name="base_information_contentRequest"  message="tns:base_information_contentRequest" />
+      <output name="base_information_contentResponse" message="tns:base_information_contentResponse" />
+    </operation>
+
+    <operation name="oligomer_search" parameterOrder="sequence oligomer params">
+      <input  name="oligomer_searchRequest"  message="tns:oligomer_searchRequest" />
+      <output name="oligomer_searchResponse" message="tns:oligomer_searchResponse" />
+    </operation>
+
+    <operation name="find_pattern" parameterOrder="sequence pattern params">
+      <input  name="find_patternRequest"  message="tns:find_patternRequest" />
+      <output name="find_patternResponse" message="tns:find_patternResponse" />
+    </operation>
+
+    <operation name="gcwin" parameterOrder="sequence params">
+      <input  name="gcwinRequest"  message="tns:gcwinRequest" />
+      <output name="gcwinResponse" message="tns:gcwinResponse" />
+    </operation>
+
+    <operation name="oligomer_counter" parameterOrder="sequence oligomer params">
+      <input  name="oligomer_counterRequest"  message="tns:oligomer_counterRequest" />
+      <output name="oligomer_counterResponse" message="tns:oligomer_counterResponse" />
+    </operation>
+
+    <operation name="codon_usage" parameterOrder="sequence params">
+      <input  name="codon_usageRequest"  message="tns:codon_usageRequest" />
+      <output name="codon_usageResponse" message="tns:codon_usageResponse" />
+    </operation>
+
+    <operation name="min" parameterOrder="array">
+      <input  name="minRequest"  message="tns:minRequest" />
+      <output name="minResponse" message="tns:minResponse" />
+    </operation>
+
+    <operation name="find_iteron" parameterOrder="sequence params">
+      <input  name="find_iteronRequest"  message="tns:find_iteronRequest" />
+      <output name="find_iteronResponse" message="tns:find_iteronResponse" />
+    </operation>
+
+    <operation name="complement" parameterOrder="sequence ">
+      <input  name="complementRequest"  message="tns:complementRequest" />
+      <output name="complementResponse" message="tns:complementResponse" />
+    </operation>
+
+    <operation name="mean" parameterOrder="array">
+      <input  name="meanRequest"  message="tns:meanRequest" />
+      <output name="meanResponse" message="tns:meanResponse" />
+    </operation>
+
+    <operation name="codon_counter" parameterOrder="sequence params">
+      <input  name="codon_counterRequest"  message="tns:codon_counterRequest" />
+      <output name="codon_counterResponse" message="tns:codon_counterResponse" />
+    </operation>
+
+    <operation name="entrez" parameterOrder="database query">
+      <input  name="entrezRequest"  message="tns:entrezRequest" />
+      <output name="entrezResponse" message="tns:entrezResponse" />
+    </operation>
+
+    <operation name="palindrome" parameterOrder="sequence params">
+      <input  name="palindromeRequest"  message="tns:palindromeRequest" />
+      <output name="palindromeResponse" message="tns:palindromeResponse" />
+    </operation>
+
+    <operation name="least_squares_fit" parameterOrder="array">
+      <input  name="least_squares_fitRequest"  message="tns:least_squares_fitRequest" />
+      <output name="least_squares_fitResponse" message="tns:least_squares_fitResponse" />
+    </operation>
+
+    <operation name="dinuc" parameterOrder="sequence params">
+      <input  name="dinucRequest"  message="tns:dinucRequest" />
+      <output name="dinucResponse" message="tns:dinucResponse" />
+    </operation>
+
+    <operation name="cgr" parameterOrder="sequence params">
+      <input  name="cgrRequest"  message="tns:cgrRequest" />
+      <output name="cgrResponse" message="tns:cgrResponse" />
+    </operation>
+
+    <operation name="help" parameterOrder="keywords">
+      <input  name="helpRequest"  message="tns:helpRequest" />
+      <output name="helpResponse" message="tns:helpResponse" />
+    </operation>
+
+    <operation name="hydropathy" parameterOrder="sequence">
+      <input  name="hydropathyRequest"  message="tns:hydropathyRequest" />
+      <output name="hydropathyResponse" message="tns:hydropathyResponse" />
+    </operation>
+
+  </portType>
+
+  <binding name="GLANGSoapBinding" type="tns:GLANG">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc" />
+    <operation name="codon_mva">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#codon_mva" />
+      <input name="codon_mvaRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="codon_mvaResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="P2">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#P2" />
+      <input name="P2Request">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="P2Response">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="w_value">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#w_value" />
+      <input name="w_valueRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="w_valueResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="splitprintseq">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#splitprintseq" />
+      <input name="splitprintseqRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="splitprintseqResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="median">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#median" />
+      <input name="medianRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="medianResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="find_ori_ter">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#find_ori_ter" />
+      <input name="find_ori_terRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="find_ori_terResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="plasmid_map">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#plasmid_map" />
+      <input name="plasmid_mapRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="plasmid_mapResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="sum">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#sum" />
+      <input name="sumRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="sumResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="nucleotide_periodicity">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#nucleotide_periodicity" />
+      <input name="nucleotide_periodicityRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="nucleotide_periodicityResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="variance">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#variance" />
+      <input name="varianceRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="varianceResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="amino_info">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#amino_info" />
+      <input name="amino_infoRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="amino_infoResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="circular_map">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#circular_map" />
+      <input name="circular_mapRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="circular_mapResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="togoWS">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#togoWS" />
+      <input name="togoWSRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="togoWSResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="translate">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#translate" />
+      <input name="translateRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="translateResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="phx">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#phx" />
+      <input name="phxRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="phxResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="icdi">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#icdi" />
+      <input name="icdiRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="icdiResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="enc">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#enc" />
+      <input name="encRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="encResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="fop">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#fop" />
+      <input name="fopRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="fopResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="bui">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#bui" />
+      <input name="buiRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="buiResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="dist_in_cc">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#dist_in_cc" />
+      <input name="dist_in_ccRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="dist_in_ccResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="find_dnaAbox">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#find_dnaAbox" />
+      <input name="find_dnaAboxRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="find_dnaAboxResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="ttest">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#ttest" />
+      <input name="ttestRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="ttestResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="seq2png">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#seq2png" />
+      <input name="seq2pngRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="seq2pngResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="amino_counter">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#amino_counter" />
+      <input name="amino_counterRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="amino_counterResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="aaui">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#aaui" />
+      <input name="aauiRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="aauiResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="codon_compiler">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#codon_compiler" />
+      <input name="codon_compilerRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="codon_compilerResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="over_lapping_finder">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#over_lapping_finder" />
+      <input name="over_lapping_finderRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="over_lapping_finderResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="Ew">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#Ew" />
+      <input name="EwRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="EwResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="base_relative_entropy">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#base_relative_entropy" />
+      <input name="base_relative_entropyRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="base_relative_entropyResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="view_cds">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#view_cds" />
+      <input name="view_cdsRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="view_cdsResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="query_strand">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#query_strand" />
+      <input name="query_strandRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="query_strandResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="genomicskew">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#genomicskew" />
+      <input name="genomicskewRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="genomicskewResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="filter_cds_by_atg">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#filter_cds_by_atg" />
+      <input name="filter_cds_by_atgRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="filter_cds_by_atgResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="gcsi">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#gcsi" />
+      <input name="gcsiRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="gcsiResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="cai">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#cai" />
+      <input name="caiRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="caiResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="maxdex">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#maxdex" />
+      <input name="maxdexRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="maxdexResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="max">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#max" />
+      <input name="maxRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="maxResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="query_arm">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#query_arm" />
+      <input name="query_armRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="query_armResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="mindex">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#mindex" />
+      <input name="mindexRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="mindexResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="peptide_mass">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#peptide_mass" />
+      <input name="peptide_massRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="peptide_massResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="consensus_z">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#consensus_z" />
+      <input name="consensus_zRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="consensus_zResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="genome_map">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#genome_map" />
+      <input name="genome_mapRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="genome_mapResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="longest_ORF">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#longest_ORF" />
+      <input name="longest_ORFRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="longest_ORFResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="rep_ori_ter">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#rep_ori_ter" />
+      <input name="rep_ori_terRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="rep_ori_terResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="calc_pI">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#calc_pI" />
+      <input name="calc_pIRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="calc_pIResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="DoubleHelix">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#DoubleHelix" />
+      <input name="DoubleHelixRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="DoubleHelixResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="base_entropy">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#base_entropy" />
+      <input name="base_entropyRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="base_entropyResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="to_fasta">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#to_fasta" />
+      <input name="to_fastaRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="to_fastaResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="find_dif">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#find_dif" />
+      <input name="find_difRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="find_difResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="cbi">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#cbi" />
+      <input name="cbiRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="cbiResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="genes_from_ori">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#genes_from_ori" />
+      <input name="genes_from_oriRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="genes_from_oriResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="geneskew">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#geneskew" />
+      <input name="geneskewRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="geneskewResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="standard_deviation">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#standard_deviation" />
+      <input name="standard_deviationRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="standard_deviationResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="cor">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#cor" />
+      <input name="corRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="corResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="cumulative">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#cumulative" />
+      <input name="cumulativeRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="cumulativeResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="delta_enc">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#delta_enc" />
+      <input name="delta_encRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="delta_encResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="delta_gcskew">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#delta_gcskew" />
+      <input name="delta_gcskewRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="delta_gcskewResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="molecular_weight">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#molecular_weight" />
+      <input name="molecular_weightRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="molecular_weightResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="gcskew">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#gcskew" />
+      <input name="gcskewRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="gcskewResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="genome_map3">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#genome_map3" />
+      <input name="genome_map3Request">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="genome_map3Response">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="seqinfo">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#seqinfo" />
+      <input name="seqinfoRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="seqinfoResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="signature">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#signature" />
+      <input name="signatureRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="signatureResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="base_information_content">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#base_information_content" />
+      <input name="base_information_contentRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="base_information_contentResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="dnawalk">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#dnawalk" />
+      <input name="dnawalkRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="dnawalkResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="find_ter">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#find_ter" />
+      <input name="find_terRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="find_terResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="shuffleseq">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#shuffleseq" />
+      <input name="shuffleseqRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="shuffleseqResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="oligomer_search">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#oligomer_search" />
+      <input name="oligomer_searchRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="oligomer_searchResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="find_pattern">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#find_pattern" />
+      <input name="find_patternRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="find_patternResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="gcwin">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#gcwin" />
+      <input name="gcwinRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="gcwinResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="oligomer_counter">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#oligomer_counter" />
+      <input name="oligomer_counterRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="oligomer_counterResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="codon_usage">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#codon_usage" />
+      <input name="codon_usageRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="codon_usageResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="min">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#min" />
+      <input name="minRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="minResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="find_iteron">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#find_iteron" />
+      <input name="find_iteronRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="find_iteronResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="complement">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#complement" />
+      <input name="complementRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="complementResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="mean">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#mean" />
+      <input name="meanRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="meanResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="codon_counter">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#codon_counter" />
+      <input name="codon_counterRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="codon_counterResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="entrez">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#entrez" />
+      <input name="entrezRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="entrezResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="palindrome">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#palindrome" />
+      <input name="palindromeRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="palindromeResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="least_squares_fit">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#least_squares_fit" />
+      <input name="least_squares_fitRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="least_squares_fitResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="dinuc">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#dinuc" />
+      <input name="dinucRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="dinucResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="cgr">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#cgr" />
+      <input name="cgrRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="cgrResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="help">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#help" />
+      <input name="helpRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="helpResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+    <operation name="hydropathy">
+      <soap:operation soapAction="http://soap.g-language.org/GLANG#hydropathy" />
+      <input name="hydropathyRequest">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </input>
+      <output name="hydropathyResponse">
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                   use="encoded" namespace="http://soap.g-language.org/GLANG" />
+      </output>
+    </operation>
+
+  </binding>
+
+  <service name="GLANGSoapService">
+    <port name="GLANG" binding="tns:GLANGSoapBinding">
+      <soap:address location="http://soap.g-language.org/WS/g-language.cgi" />
+    </port>
+  </service>
+
+</definitions>

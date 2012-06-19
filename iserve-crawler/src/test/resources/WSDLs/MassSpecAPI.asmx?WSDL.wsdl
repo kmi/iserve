@@ -1,0 +1,954 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.chemspider.com/" xmlns:s1="http://www.chemspider.com/AbstractTypes" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://www.chemspider.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">&lt;h3&gt;Please send all feedback to development-at-chemspider-dot-com&lt;/h3&gt;&lt;i&gt;NOTE: Some operations require a "Security Token". To obtain a token please complete the &lt;a href="/Register.aspx"&gt;registration&lt;/a&gt; process. Security Token is listed at &lt;a href="/UserProfile.aspx"&gt;Profile&lt;/a&gt; page.&lt;/i&gt;</wsdl:documentation>
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.chemspider.com/">
+      <s:element name="GetDatabases">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetDatabasesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetDatabasesResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SearchByMass">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="mass" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="range" type="s:double" />
+            <s:element minOccurs="0" maxOccurs="1" name="dbs" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchByMassResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SearchByMassResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchByMass2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="mass" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="range" type="s:double" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchByMass2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SearchByMass2Result" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchByFormula">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="formula" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dbs" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchByFormulaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SearchByFormulaResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchByFormula2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="formula" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchByFormula2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SearchByFormula2Result" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRecordMol">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="csid" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="calc3d" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRecordMolResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRecordMolResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCompressedRecordsSdf">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="rid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="eComp" type="tns:ECompression" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:simpleType name="ECompression">
+        <s:restriction base="s:string">
+          <s:enumeration value="eGzip" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="GetCompressedRecordsSdfResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetCompressedRecordsSdfResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRecordsSdf">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="rid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRecordsSdfResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRecordsSdfResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetExtendedCompoundInfo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="CSID" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetExtendedCompoundInfoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetExtendedCompoundInfoResult" type="tns:ExtendedCompoundInfo" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ExtendedCompoundInfo">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="CSID" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="MF" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SMILES" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="InChI" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="InChIKey" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="AverageMass" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="MolecularWeight" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="MonoisotopicMass" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="NominalMass" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="ALogP" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="XLogP" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="CommonName" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetExtendedCompoundInfoArray">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CSIDs" type="tns:ArrayOfInt" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfInt">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="int" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetExtendedCompoundInfoArrayResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetExtendedCompoundInfoArrayResult" type="tns:ArrayOfExtendedCompoundInfo" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfExtendedCompoundInfo">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ExtendedCompoundInfo" type="tns:ExtendedCompoundInfo" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SearchByMassAsync">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="mass" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="range" type="s:double" />
+            <s:element minOccurs="0" maxOccurs="1" name="dbs" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchByMassAsyncResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SearchByMassAsyncResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchByFormulaAsync">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="formula" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dbs" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchByFormulaAsyncResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SearchByFormulaAsyncResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ArrayOfString" nillable="true" type="tns:ArrayOfString" />
+      <s:element name="string" nillable="true" type="s:string" />
+      <s:element name="base64Binary" nillable="true" type="s:base64Binary" />
+      <s:element name="ExtendedCompoundInfo" type="tns:ExtendedCompoundInfo" />
+      <s:element name="ArrayOfExtendedCompoundInfo" nillable="true" type="tns:ArrayOfExtendedCompoundInfo" />
+    </s:schema>
+    <s:schema targetNamespace="http://www.chemspider.com/AbstractTypes">
+      <s:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      <s:complexType name="StringArray">
+        <s:complexContent mixed="false">
+          <s:restriction base="soapenc:Array">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="unbounded" name="String" type="s:string" />
+            </s:sequence>
+          </s:restriction>
+        </s:complexContent>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetDatabasesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetDatabases" />
+  </wsdl:message>
+  <wsdl:message name="GetDatabasesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetDatabasesResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchByMassSoapIn">
+    <wsdl:part name="parameters" element="tns:SearchByMass" />
+  </wsdl:message>
+  <wsdl:message name="SearchByMassSoapOut">
+    <wsdl:part name="parameters" element="tns:SearchByMassResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchByMass2SoapIn">
+    <wsdl:part name="parameters" element="tns:SearchByMass2" />
+  </wsdl:message>
+  <wsdl:message name="SearchByMass2SoapOut">
+    <wsdl:part name="parameters" element="tns:SearchByMass2Response" />
+  </wsdl:message>
+  <wsdl:message name="SearchByFormulaSoapIn">
+    <wsdl:part name="parameters" element="tns:SearchByFormula" />
+  </wsdl:message>
+  <wsdl:message name="SearchByFormulaSoapOut">
+    <wsdl:part name="parameters" element="tns:SearchByFormulaResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchByFormula2SoapIn">
+    <wsdl:part name="parameters" element="tns:SearchByFormula2" />
+  </wsdl:message>
+  <wsdl:message name="SearchByFormula2SoapOut">
+    <wsdl:part name="parameters" element="tns:SearchByFormula2Response" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordMolSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRecordMol" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordMolSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRecordMolResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCompressedRecordsSdfSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCompressedRecordsSdf" />
+  </wsdl:message>
+  <wsdl:message name="GetCompressedRecordsSdfSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCompressedRecordsSdfResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordsSdfSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRecordsSdf" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordsSdfSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRecordsSdfResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetExtendedCompoundInfoSoapIn">
+    <wsdl:part name="parameters" element="tns:GetExtendedCompoundInfo" />
+  </wsdl:message>
+  <wsdl:message name="GetExtendedCompoundInfoSoapOut">
+    <wsdl:part name="parameters" element="tns:GetExtendedCompoundInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetExtendedCompoundInfoArraySoapIn">
+    <wsdl:part name="parameters" element="tns:GetExtendedCompoundInfoArray" />
+  </wsdl:message>
+  <wsdl:message name="GetExtendedCompoundInfoArraySoapOut">
+    <wsdl:part name="parameters" element="tns:GetExtendedCompoundInfoArrayResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchByMassAsyncSoapIn">
+    <wsdl:part name="parameters" element="tns:SearchByMassAsync" />
+  </wsdl:message>
+  <wsdl:message name="SearchByMassAsyncSoapOut">
+    <wsdl:part name="parameters" element="tns:SearchByMassAsyncResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchByFormulaAsyncSoapIn">
+    <wsdl:part name="parameters" element="tns:SearchByFormulaAsync" />
+  </wsdl:message>
+  <wsdl:message name="SearchByFormulaAsyncSoapOut">
+    <wsdl:part name="parameters" element="tns:SearchByFormulaAsyncResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetDatabasesHttpGetIn" />
+  <wsdl:message name="GetDatabasesHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfString" />
+  </wsdl:message>
+  <wsdl:message name="SearchByMass2HttpGetIn">
+    <wsdl:part name="mass" type="s:string" />
+    <wsdl:part name="range" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SearchByMass2HttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfString" />
+  </wsdl:message>
+  <wsdl:message name="SearchByFormula2HttpGetIn">
+    <wsdl:part name="formula" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SearchByFormula2HttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfString" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordMolHttpGetIn">
+    <wsdl:part name="csid" type="s:string" />
+    <wsdl:part name="calc3d" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordMolHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="GetCompressedRecordsSdfHttpGetIn">
+    <wsdl:part name="rid" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+    <wsdl:part name="eComp" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetCompressedRecordsSdfHttpGetOut">
+    <wsdl:part name="Body" element="tns:base64Binary" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordsSdfHttpGetIn">
+    <wsdl:part name="rid" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordsSdfHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="GetExtendedCompoundInfoHttpGetIn">
+    <wsdl:part name="CSID" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetExtendedCompoundInfoHttpGetOut">
+    <wsdl:part name="Body" element="tns:ExtendedCompoundInfo" />
+  </wsdl:message>
+  <wsdl:message name="GetExtendedCompoundInfoArrayHttpGetIn">
+    <wsdl:part name="CSIDs" type="s1:StringArray" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetExtendedCompoundInfoArrayHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfExtendedCompoundInfo" />
+  </wsdl:message>
+  <wsdl:message name="GetDatabasesHttpPostIn" />
+  <wsdl:message name="GetDatabasesHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfString" />
+  </wsdl:message>
+  <wsdl:message name="SearchByMass2HttpPostIn">
+    <wsdl:part name="mass" type="s:string" />
+    <wsdl:part name="range" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SearchByMass2HttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfString" />
+  </wsdl:message>
+  <wsdl:message name="SearchByFormula2HttpPostIn">
+    <wsdl:part name="formula" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SearchByFormula2HttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfString" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordMolHttpPostIn">
+    <wsdl:part name="csid" type="s:string" />
+    <wsdl:part name="calc3d" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordMolHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="GetCompressedRecordsSdfHttpPostIn">
+    <wsdl:part name="rid" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+    <wsdl:part name="eComp" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetCompressedRecordsSdfHttpPostOut">
+    <wsdl:part name="Body" element="tns:base64Binary" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordsSdfHttpPostIn">
+    <wsdl:part name="rid" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordsSdfHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="GetExtendedCompoundInfoHttpPostIn">
+    <wsdl:part name="CSID" type="s:string" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetExtendedCompoundInfoHttpPostOut">
+    <wsdl:part name="Body" element="tns:ExtendedCompoundInfo" />
+  </wsdl:message>
+  <wsdl:message name="GetExtendedCompoundInfoArrayHttpPostIn">
+    <wsdl:part name="CSIDs" type="s1:StringArray" />
+    <wsdl:part name="token" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetExtendedCompoundInfoArrayHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfExtendedCompoundInfo" />
+  </wsdl:message>
+  <wsdl:portType name="MassSpecAPISoap">
+    <wsdl:operation name="GetDatabases">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get the list of datasources in ChemSpider.</wsdl:documentation>
+      <wsdl:input message="tns:GetDatabasesSoapIn" />
+      <wsdl:output message="tns:GetDatabasesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchByMass">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search ChemSpider by mass +/- range within specified datasources list. &lt;span style="color: red; font-weight: bold;"&gt;This operation is deprecated and will be removed soon - use SearchByMassAsync instead.&lt;/span&gt;</wsdl:documentation>
+      <wsdl:input message="tns:SearchByMassSoapIn" />
+      <wsdl:output message="tns:SearchByMassSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchByMass2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search ChemSpider by mass +/- range.</wsdl:documentation>
+      <wsdl:input message="tns:SearchByMass2SoapIn" />
+      <wsdl:output message="tns:SearchByMass2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchByFormula">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search ChemSpider by molecular formula within specified datasources list. &lt;span style="color: red; font-weight: bold;"&gt;This operation is deprecated and will be removed soon - use SearchByFormulaAsync instead.&lt;/span&gt;</wsdl:documentation>
+      <wsdl:input message="tns:SearchByFormulaSoapIn" />
+      <wsdl:output message="tns:SearchByFormulaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchByFormula2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search ChemSpider by molecular formula.</wsdl:documentation>
+      <wsdl:input message="tns:SearchByFormula2SoapIn" />
+      <wsdl:output message="tns:SearchByFormula2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordMol">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns ChemSpider record in MOL format or empty string in case of failure. cacl3d parameter specifies if 3D coordinates should be calculated before returning record data. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetRecordMolSoapIn" />
+      <wsdl:output message="tns:GetRecordMolSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCompressedRecordsSdf">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns gzip'ed SDF containing records found by asynchronous search operation. Security token with 'Service Subscriber' role is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetCompressedRecordsSdfSoapIn" />
+      <wsdl:output message="tns:GetCompressedRecordsSdfSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordsSdf">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Return SDF containing records found by asynchronous search operation. Security token with 'Service Subscriber' role is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetRecordsSdfSoapIn" />
+      <wsdl:output message="tns:GetRecordsSdfSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetExtendedCompoundInfo">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get extended record details by CSID. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetExtendedCompoundInfoSoapIn" />
+      <wsdl:output message="tns:GetExtendedCompoundInfoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetExtendedCompoundInfoArray">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get array of extended record details by an array of CSIDs. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetExtendedCompoundInfoArraySoapIn" />
+      <wsdl:output message="tns:GetExtendedCompoundInfoArraySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchByMassAsync">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search ChemSpider by mass +/- range within specified datasources list. Operation returns transaction ID which has to be used with &lt;a href='/Search.asmx?op=GetAsyncSearchStatus'&gt;GetAsyncSearchStatus()&lt;/a&gt; and &lt;a href='/Search.asmx?op=GetAsyncSearchResult'&gt;GetAsyncSearchResult()&lt;/a&gt; to retrieve results. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:SearchByMassAsyncSoapIn" />
+      <wsdl:output message="tns:SearchByMassAsyncSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchByFormulaAsync">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search ChemSpider by molecular formula within specified datasources list. Operation returns transaction ID which has to be used with &lt;a href='/Search.asmx?op=GetAsyncSearchStatus'&gt;GetAsyncSearchStatus()&lt;/a&gt; and &lt;a href='/Search.asmx?op=GetAsyncSearchResult'&gt;GetAsyncSearchResult()&lt;/a&gt; to retrieve results. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:SearchByFormulaAsyncSoapIn" />
+      <wsdl:output message="tns:SearchByFormulaAsyncSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="MassSpecAPIHttpGet">
+    <wsdl:operation name="GetDatabases">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get the list of datasources in ChemSpider.</wsdl:documentation>
+      <wsdl:input message="tns:GetDatabasesHttpGetIn" />
+      <wsdl:output message="tns:GetDatabasesHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchByMass2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search ChemSpider by mass +/- range.</wsdl:documentation>
+      <wsdl:input message="tns:SearchByMass2HttpGetIn" />
+      <wsdl:output message="tns:SearchByMass2HttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchByFormula2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search ChemSpider by molecular formula.</wsdl:documentation>
+      <wsdl:input message="tns:SearchByFormula2HttpGetIn" />
+      <wsdl:output message="tns:SearchByFormula2HttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordMol">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns ChemSpider record in MOL format or empty string in case of failure. cacl3d parameter specifies if 3D coordinates should be calculated before returning record data. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetRecordMolHttpGetIn" />
+      <wsdl:output message="tns:GetRecordMolHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCompressedRecordsSdf">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns gzip'ed SDF containing records found by asynchronous search operation. Security token with 'Service Subscriber' role is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetCompressedRecordsSdfHttpGetIn" />
+      <wsdl:output message="tns:GetCompressedRecordsSdfHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordsSdf">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Return SDF containing records found by asynchronous search operation. Security token with 'Service Subscriber' role is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetRecordsSdfHttpGetIn" />
+      <wsdl:output message="tns:GetRecordsSdfHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetExtendedCompoundInfo">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get extended record details by CSID. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetExtendedCompoundInfoHttpGetIn" />
+      <wsdl:output message="tns:GetExtendedCompoundInfoHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetExtendedCompoundInfoArray">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get array of extended record details by an array of CSIDs. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetExtendedCompoundInfoArrayHttpGetIn" />
+      <wsdl:output message="tns:GetExtendedCompoundInfoArrayHttpGetOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="MassSpecAPIHttpPost">
+    <wsdl:operation name="GetDatabases">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get the list of datasources in ChemSpider.</wsdl:documentation>
+      <wsdl:input message="tns:GetDatabasesHttpPostIn" />
+      <wsdl:output message="tns:GetDatabasesHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchByMass2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search ChemSpider by mass +/- range.</wsdl:documentation>
+      <wsdl:input message="tns:SearchByMass2HttpPostIn" />
+      <wsdl:output message="tns:SearchByMass2HttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchByFormula2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Search ChemSpider by molecular formula.</wsdl:documentation>
+      <wsdl:input message="tns:SearchByFormula2HttpPostIn" />
+      <wsdl:output message="tns:SearchByFormula2HttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordMol">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns ChemSpider record in MOL format or empty string in case of failure. cacl3d parameter specifies if 3D coordinates should be calculated before returning record data. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetRecordMolHttpPostIn" />
+      <wsdl:output message="tns:GetRecordMolHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCompressedRecordsSdf">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns gzip'ed SDF containing records found by asynchronous search operation. Security token with 'Service Subscriber' role is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetCompressedRecordsSdfHttpPostIn" />
+      <wsdl:output message="tns:GetCompressedRecordsSdfHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordsSdf">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Return SDF containing records found by asynchronous search operation. Security token with 'Service Subscriber' role is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetRecordsSdfHttpPostIn" />
+      <wsdl:output message="tns:GetRecordsSdfHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetExtendedCompoundInfo">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get extended record details by CSID. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetExtendedCompoundInfoHttpPostIn" />
+      <wsdl:output message="tns:GetExtendedCompoundInfoHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetExtendedCompoundInfoArray">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get array of extended record details by an array of CSIDs. Security token is required.</wsdl:documentation>
+      <wsdl:input message="tns:GetExtendedCompoundInfoArrayHttpPostIn" />
+      <wsdl:output message="tns:GetExtendedCompoundInfoArrayHttpPostOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="MassSpecAPISoap" type="tns:MassSpecAPISoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetDatabases">
+      <soap:operation soapAction="http://www.chemspider.com/GetDatabases" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchByMass">
+      <soap:operation soapAction="http://www.chemspider.com/SearchByMass" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchByMass2">
+      <soap:operation soapAction="http://www.chemspider.com/SearchByMass2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchByFormula">
+      <soap:operation soapAction="http://www.chemspider.com/SearchByFormula" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchByFormula2">
+      <soap:operation soapAction="http://www.chemspider.com/SearchByFormula2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordMol">
+      <soap:operation soapAction="http://www.chemspider.com/GetRecordMol" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompressedRecordsSdf">
+      <soap:operation soapAction="http://www.chemspider.com/GetCompressedRecordsSdf" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordsSdf">
+      <soap:operation soapAction="http://www.chemspider.com/GetRecordsSdf" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetExtendedCompoundInfo">
+      <soap:operation soapAction="http://www.chemspider.com/GetExtendedCompoundInfo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetExtendedCompoundInfoArray">
+      <soap:operation soapAction="http://www.chemspider.com/GetExtendedCompoundInfoArray" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchByMassAsync">
+      <soap:operation soapAction="http://www.chemspider.com/SearchByMassAsync" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchByFormulaAsync">
+      <soap:operation soapAction="http://www.chemspider.com/SearchByFormulaAsync" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="MassSpecAPISoap12" type="tns:MassSpecAPISoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetDatabases">
+      <soap12:operation soapAction="http://www.chemspider.com/GetDatabases" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchByMass">
+      <soap12:operation soapAction="http://www.chemspider.com/SearchByMass" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchByMass2">
+      <soap12:operation soapAction="http://www.chemspider.com/SearchByMass2" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchByFormula">
+      <soap12:operation soapAction="http://www.chemspider.com/SearchByFormula" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchByFormula2">
+      <soap12:operation soapAction="http://www.chemspider.com/SearchByFormula2" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordMol">
+      <soap12:operation soapAction="http://www.chemspider.com/GetRecordMol" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompressedRecordsSdf">
+      <soap12:operation soapAction="http://www.chemspider.com/GetCompressedRecordsSdf" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordsSdf">
+      <soap12:operation soapAction="http://www.chemspider.com/GetRecordsSdf" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetExtendedCompoundInfo">
+      <soap12:operation soapAction="http://www.chemspider.com/GetExtendedCompoundInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetExtendedCompoundInfoArray">
+      <soap12:operation soapAction="http://www.chemspider.com/GetExtendedCompoundInfoArray" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchByMassAsync">
+      <soap12:operation soapAction="http://www.chemspider.com/SearchByMassAsync" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchByFormulaAsync">
+      <soap12:operation soapAction="http://www.chemspider.com/SearchByFormulaAsync" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="MassSpecAPIHttpGet" type="tns:MassSpecAPIHttpGet">
+    <http:binding verb="GET" />
+    <wsdl:operation name="GetDatabases">
+      <http:operation location="/GetDatabases" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchByMass2">
+      <http:operation location="/SearchByMass2" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchByFormula2">
+      <http:operation location="/SearchByFormula2" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordMol">
+      <http:operation location="/GetRecordMol" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompressedRecordsSdf">
+      <http:operation location="/GetCompressedRecordsSdf" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordsSdf">
+      <http:operation location="/GetRecordsSdf" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetExtendedCompoundInfo">
+      <http:operation location="/GetExtendedCompoundInfo" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetExtendedCompoundInfoArray">
+      <http:operation location="/GetExtendedCompoundInfoArray" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="MassSpecAPIHttpPost" type="tns:MassSpecAPIHttpPost">
+    <http:binding verb="POST" />
+    <wsdl:operation name="GetDatabases">
+      <http:operation location="/GetDatabases" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchByMass2">
+      <http:operation location="/SearchByMass2" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchByFormula2">
+      <http:operation location="/SearchByFormula2" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordMol">
+      <http:operation location="/GetRecordMol" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompressedRecordsSdf">
+      <http:operation location="/GetCompressedRecordsSdf" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordsSdf">
+      <http:operation location="/GetRecordsSdf" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetExtendedCompoundInfo">
+      <http:operation location="/GetExtendedCompoundInfo" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetExtendedCompoundInfoArray">
+      <http:operation location="/GetExtendedCompoundInfoArray" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="MassSpecAPI">
+    <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">&lt;h3&gt;Please send all feedback to development-at-chemspider-dot-com&lt;/h3&gt;&lt;i&gt;NOTE: Some operations require a "Security Token". To obtain a token please complete the &lt;a href="/Register.aspx"&gt;registration&lt;/a&gt; process. Security Token is listed at &lt;a href="/UserProfile.aspx"&gt;Profile&lt;/a&gt; page.&lt;/i&gt;</wsdl:documentation>
+    <wsdl:port name="MassSpecAPISoap" binding="tns:MassSpecAPISoap">
+      <soap:address location="http://www.chemspider.com/MassSpecAPI.asmx" />
+    </wsdl:port>
+    <wsdl:port name="MassSpecAPISoap12" binding="tns:MassSpecAPISoap12">
+      <soap12:address location="http://www.chemspider.com/MassSpecAPI.asmx" />
+    </wsdl:port>
+    <wsdl:port name="MassSpecAPIHttpGet" binding="tns:MassSpecAPIHttpGet">
+      <http:address location="http://www.chemspider.com/MassSpecAPI.asmx" />
+    </wsdl:port>
+    <wsdl:port name="MassSpecAPIHttpPost" binding="tns:MassSpecAPIHttpPost">
+      <http:address location="http://www.chemspider.com/MassSpecAPI.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

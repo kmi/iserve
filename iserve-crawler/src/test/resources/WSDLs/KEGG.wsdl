@@ -1,0 +1,1579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="TogowsKegg" xmlns:typens="http://togows.dbcls.jp/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://togows.dbcls.jp/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://togows.dbcls.jp/soap/">
+      <xsd:complexType name="StringArray">
+        <xsd:complexContent>
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute wsdl:arrayType="xsd:string[]" ref="soapenc:arrayType"/>
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="PathwayElementArray">
+        <xsd:complexContent>
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute wsdl:arrayType="typens:PathwayElement[]" ref="soapenc:arrayType"/>
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="MotifResultArray">
+        <xsd:complexContent>
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute wsdl:arrayType="typens:MotifResult[]" ref="soapenc:arrayType"/>
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="Subtype">
+        <xsd:all>
+          <xsd:element name="element_id" type="xsd:int"/>
+          <xsd:element name="type" type="xsd:string"/>
+          <xsd:element name="relation" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="LinkdbRelationArray">
+        <xsd:complexContent>
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute wsdl:arrayType="typens:LinkdbRelation[]" ref="soapenc:arrayType"/>
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="MotifResult">
+        <xsd:all>
+          <xsd:element name="evalue" type="xsd:double"/>
+          <xsd:element name="definition" type="xsd:string"/>
+          <xsd:element name="motif_id" type="xsd:string"/>
+          <xsd:element name="start_position" type="xsd:int"/>
+          <xsd:element name="end_position" type="xsd:int"/>
+          <xsd:element name="genes_id" type="xsd:string"/>
+          <xsd:element name="score" type="xsd:double"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="LinkdbRelation">
+        <xsd:all>
+          <xsd:element name="entry_id1" type="xsd:string"/>
+          <xsd:element name="entry_id2" type="xsd:string"/>
+          <xsd:element name="type" type="xsd:string"/>
+          <xsd:element name="path" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="PathwayElementRelationArray">
+        <xsd:complexContent>
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute wsdl:arrayType="typens:PathwayElementRelation[]" ref="soapenc:arrayType"/>
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="SsdbRelation">
+        <xsd:all>
+          <xsd:element name="definition2" type="xsd:string"/>
+          <xsd:element name="genes_id1" type="xsd:string"/>
+          <xsd:element name="start_position2" type="xsd:int"/>
+          <xsd:element name="overlap" type="xsd:int"/>
+          <xsd:element name="genes_id2" type="xsd:string"/>
+          <xsd:element name="length1" type="xsd:int"/>
+          <xsd:element name="end_position2" type="xsd:int"/>
+          <xsd:element name="length2" type="xsd:int"/>
+          <xsd:element name="sw_score" type="xsd:int"/>
+          <xsd:element name="best_flag_1to2" type="xsd:boolean"/>
+          <xsd:element name="bit_score" type="xsd:double"/>
+          <xsd:element name="best_flag_2to1" type="xsd:boolean"/>
+          <xsd:element name="identity" type="xsd:double"/>
+          <xsd:element name="start_position1" type="xsd:int"/>
+          <xsd:element name="definition1" type="xsd:string"/>
+          <xsd:element name="end_position1" type="xsd:int"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="PathwayElement">
+        <xsd:all>
+          <xsd:element name="element_id" type="xsd:int"/>
+          <xsd:element name="components" type="typens:IntegerArray"/>
+          <xsd:element name="names" type="typens:StringArray"/>
+          <xsd:element name="type" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="DefinitionArray">
+        <xsd:complexContent>
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute wsdl:arrayType="typens:Definition[]" ref="soapenc:arrayType"/>
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="IntegerArray">
+        <xsd:complexContent>
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute wsdl:arrayType="xsd:int[]" ref="soapenc:arrayType"/>
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="StructureAlignmentArray">
+        <xsd:complexContent>
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute wsdl:arrayType="typens:StructureAlignment[]" ref="soapenc:arrayType"/>
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="PathwayElementRelation">
+        <xsd:all>
+          <xsd:element name="element_id1" type="xsd:int"/>
+          <xsd:element name="element_id2" type="xsd:int"/>
+          <xsd:element name="subtypes" type="typens:SubtypeArray"/>
+          <xsd:element name="type" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="StructureAlignment">
+        <xsd:all>
+          <xsd:element name="target_id" type="xsd:string"/>
+          <xsd:element name="query_nodes" type="typens:IntegerArray"/>
+          <xsd:element name="target_nodes" type="typens:IntegerArray"/>
+          <xsd:element name="score" type="xsd:double"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="SsdbRelationArray">
+        <xsd:complexContent>
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute wsdl:arrayType="typens:SsdbRelation[]" ref="soapenc:arrayType"/>
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="Definition">
+        <xsd:all>
+          <xsd:element name="definition" type="xsd:string"/>
+          <xsd:element name="entry_id" type="xsd:string"/>
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="SubtypeArray">
+        <xsd:complexContent>
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute wsdl:arrayType="typens:Subtype[]" ref="soapenc:arrayType"/>
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+    </xsd:schema>
+  </types>
+  <message name="KeggGetEnzymesByPathway">
+    <part name="pathway_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetEnzymesByPathwayResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggSearchGlycansByComposition">
+    <part name="composition" type="xsd:string"/>
+  </message>
+  <message name="KeggSearchGlycansByCompositionResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggBget">
+    <part name="str" type="xsd:string"/>
+  </message>
+  <message name="KeggBgetResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="KeggConvertMolToKcf">
+    <part name="mol_text" type="xsd:string"/>
+  </message>
+  <message name="KeggConvertMolToKcfResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="KeggSearchCompoundsByMass">
+    <part name="mass" type="xsd:double"/>
+    <part name="range" type="xsd:double"/>
+  </message>
+  <message name="KeggSearchCompoundsByMassResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggSearchDrugsByComposition">
+    <part name="composition" type="xsd:string"/>
+  </message>
+  <message name="KeggSearchDrugsByCompositionResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetBestBestNeighborsByGene">
+    <part name="genes_id" type="xsd:string"/>
+    <part name="offset" type="xsd:int"/>
+    <part name="limit" type="xsd:int"/>
+  </message>
+  <message name="KeggGetBestBestNeighborsByGeneResponse">
+    <part name="return" type="typens:SsdbRelationArray"/>
+  </message>
+  <message name="KeggGetGlycansByPathway">
+    <part name="pathway_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetGlycansByPathwayResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetPathwaysByGenes">
+    <part name="genes_id_list" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetPathwaysByGenesResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetPathwaysByGlycans">
+    <part name="glycan_id_list" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetPathwaysByGlycansResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggBtit">
+    <part name="str" type="xsd:string"/>
+  </message>
+  <message name="KeggBtitResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="KeggGetReactionsByEnzyme">
+    <part name="enzyme_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetReactionsByEnzymeResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetParalogsByGene">
+    <part name="genes_id" type="xsd:string"/>
+    <part name="offset" type="xsd:int"/>
+    <part name="limit" type="xsd:int"/>
+  </message>
+  <message name="KeggGetParalogsByGeneResponse">
+    <part name="return" type="typens:SsdbRelationArray"/>
+  </message>
+  <message name="KeggGetEnzymesByCompound">
+    <part name="compound_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetEnzymesByCompoundResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetElementRelationsByPathway">
+    <part name="pathway_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetElementRelationsByPathwayResponse">
+    <part name="return" type="typens:PathwayElementRelationArray"/>
+  </message>
+  <message name="KeggGetEnzymesByGene">
+    <part name="genes_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetEnzymesByGeneResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggSearchDrugsBySubcomp">
+    <part name="mol" type="xsd:string"/>
+    <part name="offset" type="xsd:int"/>
+    <part name="limit" type="xsd:int"/>
+  </message>
+  <message name="KeggSearchDrugsBySubcompResponse">
+    <part name="return" type="typens:StructureAlignmentArray"/>
+  </message>
+  <message name="KeggGetHtmlOfMarkedPathwayByObjects">
+    <part name="pathway_id" type="xsd:string"/>
+    <part name="object_id_list" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetHtmlOfMarkedPathwayByObjectsResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="KeggGetReactionsByCompound">
+    <part name="compound_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetReactionsByCompoundResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggListPathways">
+    <part name="organism" type="xsd:string"/>
+  </message>
+  <message name="KeggListPathwaysResponse">
+    <part name="return" type="typens:DefinitionArray"/>
+  </message>
+  <message name="KeggGetGenesByKoClass">
+    <part name="class_id" type="xsd:string"/>
+    <part name="organism" type="xsd:string"/>
+    <part name="offset" type="xsd:int"/>
+    <part name="limit" type="xsd:int"/>
+  </message>
+  <message name="KeggGetGenesByKoClassResponse">
+    <part name="return" type="typens:DefinitionArray"/>
+  </message>
+  <message name="KeggGetLinkedPathways">
+    <part name="pathway_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetLinkedPathwaysResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetGlycansByReaction">
+    <part name="reaction_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetGlycansByReactionResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggMarkPathwayByObjects">
+    <part name="pathway_id" type="xsd:string"/>
+    <part name="object_id_list" type="typens:StringArray"/>
+  </message>
+  <message name="KeggMarkPathwayByObjectsResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="KeggGetNumberOfGenesByOrganism">
+    <part name="organism" type="xsd:string"/>
+  </message>
+  <message name="KeggGetNumberOfGenesByOrganismResponse">
+    <part name="return" type="xsd:int"/>
+  </message>
+  <message name="KeggSearchCompoundsByName">
+    <part name="name" type="xsd:string"/>
+  </message>
+  <message name="KeggSearchCompoundsByNameResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetKoByKoClass">
+    <part name="class_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetKoByKoClassResponse">
+    <part name="return" type="typens:DefinitionArray"/>
+  </message>
+  <message name="KeggGetLinkdbBetweenDatabases">
+    <part name="from_db" type="xsd:string"/>
+    <part name="to_db" type="xsd:string"/>
+    <part name="offset" type="xsd:int"/>
+    <part name="limit" type="xsd:int"/>
+  </message>
+  <message name="KeggGetLinkdbBetweenDatabasesResponse">
+    <part name="return" type="typens:LinkdbRelationArray"/>
+  </message>
+  <message name="KeggGetLinkdbByEntry">
+    <part name="entry_id" type="xsd:string"/>
+    <part name="db" type="xsd:string"/>
+    <part name="offset" type="xsd:int"/>
+    <part name="limit" type="xsd:int"/>
+  </message>
+  <message name="KeggGetLinkdbByEntryResponse">
+    <part name="return" type="typens:LinkdbRelationArray"/>
+  </message>
+  <message name="KeggGetKosByPathway">
+    <part name="pathway_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetKosByPathwayResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetDrugsByPathway">
+    <part name="pathway_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetDrugsByPathwayResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetGenesByMotifs">
+    <part name="motif_id_list" type="typens:StringArray"/>
+    <part name="offset" type="xsd:int"/>
+    <part name="limit" type="xsd:int"/>
+  </message>
+  <message name="KeggGetGenesByMotifsResponse">
+    <part name="return" type="typens:DefinitionArray"/>
+  </message>
+  <message name="KeggGetGlycansByEnzyme">
+    <part name="enzyme_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetGlycansByEnzymeResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetGenesByPathway">
+    <part name="pathway_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetGenesByPathwayResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggSearchGlycansByMass">
+    <part name="mass" type="xsd:double"/>
+    <part name="range" type="xsd:double"/>
+  </message>
+  <message name="KeggSearchGlycansByMassResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggBinfo">
+    <part name="db" type="xsd:string"/>
+  </message>
+  <message name="KeggBinfoResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="KeggSearchDrugsByName">
+    <part name="name" type="xsd:string"/>
+  </message>
+  <message name="KeggSearchDrugsByNameResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggSearchCompoundsByComposition">
+    <part name="composition" type="xsd:string"/>
+  </message>
+  <message name="KeggSearchCompoundsByCompositionResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggListDatabases">
+  </message>
+  <message name="KeggListDatabasesResponse">
+    <part name="return" type="typens:DefinitionArray"/>
+  </message>
+  <message name="KeggGetPathwaysByEnzymes">
+    <part name="enzyme_id_list" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetPathwaysByEnzymesResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetCompoundsByPathway">
+    <part name="pathway_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetCompoundsByPathwayResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggBfind">
+    <part name="str" type="xsd:string"/>
+  </message>
+  <message name="KeggBfindResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="KeggGetReactionsByPathway">
+    <part name="pathway_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetReactionsByPathwayResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggSearchCompoundsBySubcomp">
+    <part name="mol" type="xsd:string"/>
+    <part name="offset" type="xsd:int"/>
+    <part name="limit" type="xsd:int"/>
+  </message>
+  <message name="KeggSearchCompoundsBySubcompResponse">
+    <part name="return" type="typens:StructureAlignmentArray"/>
+  </message>
+  <message name="KeggSearchDrugsByMass">
+    <part name="mass" type="xsd:double"/>
+    <part name="range" type="xsd:double"/>
+  </message>
+  <message name="KeggSearchDrugsByMassResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetReverseBestNeighborsByGene">
+    <part name="genes_id" type="xsd:string"/>
+    <part name="offset" type="xsd:int"/>
+    <part name="limit" type="xsd:int"/>
+  </message>
+  <message name="KeggGetReverseBestNeighborsByGeneResponse">
+    <part name="return" type="typens:SsdbRelationArray"/>
+  </message>
+  <message name="KeggGetEnzymesByGlycan">
+    <part name="glycan_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetEnzymesByGlycanResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetCompoundsByReaction">
+    <part name="reaction_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetCompoundsByReactionResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetBestNeighborsByGene">
+    <part name="genes_id" type="xsd:string"/>
+    <part name="offset" type="xsd:int"/>
+    <part name="limit" type="xsd:int"/>
+  </message>
+  <message name="KeggGetBestNeighborsByGeneResponse">
+    <part name="return" type="typens:SsdbRelationArray"/>
+  </message>
+  <message name="KeggColorPathwayByObjects">
+    <part name="pathway_id" type="xsd:string"/>
+    <part name="object_id_list" type="typens:StringArray"/>
+    <part name="fg_color_list" type="typens:StringArray"/>
+    <part name="bg_color_list" type="typens:StringArray"/>
+  </message>
+  <message name="KeggColorPathwayByObjectsResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="KeggListOrganisms">
+  </message>
+  <message name="KeggListOrganismsResponse">
+    <part name="return" type="typens:DefinitionArray"/>
+  </message>
+  <message name="KeggBconv">
+    <part name="str" type="xsd:string"/>
+  </message>
+  <message name="KeggBconvResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="KeggGetHtmlOfColoredPathwayByElements">
+    <part name="pathway_id" type="xsd:string"/>
+    <part name="element_list" type="typens:IntegerArray"/>
+    <part name="fg_color_list" type="typens:StringArray"/>
+    <part name="bg_color_list" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetHtmlOfColoredPathwayByElementsResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="KeggGetGenesByOrganism">
+    <part name="organism" type="xsd:string"/>
+    <part name="offset" type="xsd:int"/>
+    <part name="limit" type="xsd:int"/>
+  </message>
+  <message name="KeggGetGenesByOrganismResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetKoByGene">
+    <part name="genes_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetKoByGeneResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggColorPathwayByElements">
+    <part name="pathway_id" type="xsd:string"/>
+    <part name="element_list" type="typens:IntegerArray"/>
+    <part name="fg_color_list" type="typens:StringArray"/>
+    <part name="bg_color_list" type="typens:StringArray"/>
+  </message>
+  <message name="KeggColorPathwayByElementsResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="KeggGetEnzymesByReaction">
+    <part name="reaction_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetEnzymesByReactionResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetReferencesByPathway">
+    <part name="pathway_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetReferencesByPathwayResponse">
+    <part name="return" type="typens:IntegerArray"/>
+  </message>
+  <message name="KeggGetMotifsByGene">
+    <part name="genes_id" type="xsd:string"/>
+    <part name="db" type="xsd:string"/>
+  </message>
+  <message name="KeggGetMotifsByGeneResponse">
+    <part name="return" type="typens:MotifResultArray"/>
+  </message>
+  <message name="KeggGetPathwaysByCompounds">
+    <part name="compound_id_list" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetPathwaysByCompoundsResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggListKoClasses">
+    <part name="class_id" type="xsd:string"/>
+  </message>
+  <message name="KeggListKoClassesResponse">
+    <part name="return" type="typens:DefinitionArray"/>
+  </message>
+  <message name="KeggGetElementsByPathway">
+    <part name="pathway_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetElementsByPathwayResponse">
+    <part name="return" type="typens:PathwayElementArray"/>
+  </message>
+  <message name="KeggGetGenesByEnzyme">
+    <part name="enzyme_id" type="xsd:string"/>
+    <part name="organism" type="xsd:string"/>
+  </message>
+  <message name="KeggGetGenesByEnzymeResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetCompoundsByEnzyme">
+    <part name="enzyme_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetCompoundsByEnzymeResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetHtmlOfColoredPathwayByObjects">
+    <part name="pathway_id" type="xsd:string"/>
+    <part name="object_id_list" type="typens:StringArray"/>
+    <part name="fg_color_list" type="typens:StringArray"/>
+    <part name="bg_color_list" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetHtmlOfColoredPathwayByObjectsResponse">
+    <part name="return" type="xsd:string"/>
+  </message>
+  <message name="KeggSearchGlycansByName">
+    <part name="name" type="xsd:string"/>
+  </message>
+  <message name="KeggSearchGlycansByNameResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetGenesByKo">
+    <part name="ko_id" type="xsd:string"/>
+    <part name="organism" type="xsd:string"/>
+  </message>
+  <message name="KeggGetGenesByKoResponse">
+    <part name="return" type="typens:DefinitionArray"/>
+  </message>
+  <message name="KeggGetPathwaysByReactions">
+    <part name="reaction_id_list" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetPathwaysByReactionsResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetReactionsByGlycan">
+    <part name="glycan_id" type="xsd:string"/>
+  </message>
+  <message name="KeggGetReactionsByGlycanResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetPathwaysByDrugs">
+    <part name="drug_id_list" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetPathwaysByDrugsResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggGetPathwaysByKos">
+    <part name="kos_id_list" type="typens:StringArray"/>
+    <part name="organism" type="xsd:string"/>
+  </message>
+  <message name="KeggGetPathwaysByKosResponse">
+    <part name="return" type="typens:StringArray"/>
+  </message>
+  <message name="KeggSearchGlycansByKcam">
+    <part name="kcf" type="xsd:string"/>
+    <part name="program" type="xsd:string"/>
+    <part name="option" type="xsd:string"/>
+    <part name="offset" type="xsd:int"/>
+    <part name="limit" type="xsd:int"/>
+  </message>
+  <message name="KeggSearchGlycansByKcamResponse">
+    <part name="return" type="typens:StructureAlignmentArray"/>
+  </message>
+  <portType name="TogowsKeggPort">
+    <operation name="KeggGetEnzymesByPathway">
+      <input message="typens:KeggGetEnzymesByPathway"/>
+      <output message="typens:KeggGetEnzymesByPathwayResponse"/>
+    </operation>
+    <operation name="KeggSearchGlycansByComposition">
+      <input message="typens:KeggSearchGlycansByComposition"/>
+      <output message="typens:KeggSearchGlycansByCompositionResponse"/>
+    </operation>
+    <operation name="KeggBget">
+      <input message="typens:KeggBget"/>
+      <output message="typens:KeggBgetResponse"/>
+    </operation>
+    <operation name="KeggConvertMolToKcf">
+      <input message="typens:KeggConvertMolToKcf"/>
+      <output message="typens:KeggConvertMolToKcfResponse"/>
+    </operation>
+    <operation name="KeggSearchCompoundsByMass">
+      <input message="typens:KeggSearchCompoundsByMass"/>
+      <output message="typens:KeggSearchCompoundsByMassResponse"/>
+    </operation>
+    <operation name="KeggSearchDrugsByComposition">
+      <input message="typens:KeggSearchDrugsByComposition"/>
+      <output message="typens:KeggSearchDrugsByCompositionResponse"/>
+    </operation>
+    <operation name="KeggGetBestBestNeighborsByGene">
+      <input message="typens:KeggGetBestBestNeighborsByGene"/>
+      <output message="typens:KeggGetBestBestNeighborsByGeneResponse"/>
+    </operation>
+    <operation name="KeggGetGlycansByPathway">
+      <input message="typens:KeggGetGlycansByPathway"/>
+      <output message="typens:KeggGetGlycansByPathwayResponse"/>
+    </operation>
+    <operation name="KeggGetPathwaysByGenes">
+      <input message="typens:KeggGetPathwaysByGenes"/>
+      <output message="typens:KeggGetPathwaysByGenesResponse"/>
+    </operation>
+    <operation name="KeggGetPathwaysByGlycans">
+      <input message="typens:KeggGetPathwaysByGlycans"/>
+      <output message="typens:KeggGetPathwaysByGlycansResponse"/>
+    </operation>
+    <operation name="KeggBtit">
+      <input message="typens:KeggBtit"/>
+      <output message="typens:KeggBtitResponse"/>
+    </operation>
+    <operation name="KeggGetReactionsByEnzyme">
+      <input message="typens:KeggGetReactionsByEnzyme"/>
+      <output message="typens:KeggGetReactionsByEnzymeResponse"/>
+    </operation>
+    <operation name="KeggGetParalogsByGene">
+      <input message="typens:KeggGetParalogsByGene"/>
+      <output message="typens:KeggGetParalogsByGeneResponse"/>
+    </operation>
+    <operation name="KeggGetEnzymesByCompound">
+      <input message="typens:KeggGetEnzymesByCompound"/>
+      <output message="typens:KeggGetEnzymesByCompoundResponse"/>
+    </operation>
+    <operation name="KeggGetElementRelationsByPathway">
+      <input message="typens:KeggGetElementRelationsByPathway"/>
+      <output message="typens:KeggGetElementRelationsByPathwayResponse"/>
+    </operation>
+    <operation name="KeggGetEnzymesByGene">
+      <input message="typens:KeggGetEnzymesByGene"/>
+      <output message="typens:KeggGetEnzymesByGeneResponse"/>
+    </operation>
+    <operation name="KeggSearchDrugsBySubcomp">
+      <input message="typens:KeggSearchDrugsBySubcomp"/>
+      <output message="typens:KeggSearchDrugsBySubcompResponse"/>
+    </operation>
+    <operation name="KeggGetHtmlOfMarkedPathwayByObjects">
+      <input message="typens:KeggGetHtmlOfMarkedPathwayByObjects"/>
+      <output message="typens:KeggGetHtmlOfMarkedPathwayByObjectsResponse"/>
+    </operation>
+    <operation name="KeggGetReactionsByCompound">
+      <input message="typens:KeggGetReactionsByCompound"/>
+      <output message="typens:KeggGetReactionsByCompoundResponse"/>
+    </operation>
+    <operation name="KeggListPathways">
+      <input message="typens:KeggListPathways"/>
+      <output message="typens:KeggListPathwaysResponse"/>
+    </operation>
+    <operation name="KeggGetGenesByKoClass">
+      <input message="typens:KeggGetGenesByKoClass"/>
+      <output message="typens:KeggGetGenesByKoClassResponse"/>
+    </operation>
+    <operation name="KeggGetLinkedPathways">
+      <input message="typens:KeggGetLinkedPathways"/>
+      <output message="typens:KeggGetLinkedPathwaysResponse"/>
+    </operation>
+    <operation name="KeggGetGlycansByReaction">
+      <input message="typens:KeggGetGlycansByReaction"/>
+      <output message="typens:KeggGetGlycansByReactionResponse"/>
+    </operation>
+    <operation name="KeggMarkPathwayByObjects">
+      <input message="typens:KeggMarkPathwayByObjects"/>
+      <output message="typens:KeggMarkPathwayByObjectsResponse"/>
+    </operation>
+    <operation name="KeggGetNumberOfGenesByOrganism">
+      <input message="typens:KeggGetNumberOfGenesByOrganism"/>
+      <output message="typens:KeggGetNumberOfGenesByOrganismResponse"/>
+    </operation>
+    <operation name="KeggSearchCompoundsByName">
+      <input message="typens:KeggSearchCompoundsByName"/>
+      <output message="typens:KeggSearchCompoundsByNameResponse"/>
+    </operation>
+    <operation name="KeggGetKoByKoClass">
+      <input message="typens:KeggGetKoByKoClass"/>
+      <output message="typens:KeggGetKoByKoClassResponse"/>
+    </operation>
+    <operation name="KeggGetLinkdbBetweenDatabases">
+      <input message="typens:KeggGetLinkdbBetweenDatabases"/>
+      <output message="typens:KeggGetLinkdbBetweenDatabasesResponse"/>
+    </operation>
+    <operation name="KeggGetLinkdbByEntry">
+      <input message="typens:KeggGetLinkdbByEntry"/>
+      <output message="typens:KeggGetLinkdbByEntryResponse"/>
+    </operation>
+    <operation name="KeggGetKosByPathway">
+      <input message="typens:KeggGetKosByPathway"/>
+      <output message="typens:KeggGetKosByPathwayResponse"/>
+    </operation>
+    <operation name="KeggGetDrugsByPathway">
+      <input message="typens:KeggGetDrugsByPathway"/>
+      <output message="typens:KeggGetDrugsByPathwayResponse"/>
+    </operation>
+    <operation name="KeggGetGenesByMotifs">
+      <input message="typens:KeggGetGenesByMotifs"/>
+      <output message="typens:KeggGetGenesByMotifsResponse"/>
+    </operation>
+    <operation name="KeggGetGlycansByEnzyme">
+      <input message="typens:KeggGetGlycansByEnzyme"/>
+      <output message="typens:KeggGetGlycansByEnzymeResponse"/>
+    </operation>
+    <operation name="KeggGetGenesByPathway">
+      <input message="typens:KeggGetGenesByPathway"/>
+      <output message="typens:KeggGetGenesByPathwayResponse"/>
+    </operation>
+    <operation name="KeggSearchGlycansByMass">
+      <input message="typens:KeggSearchGlycansByMass"/>
+      <output message="typens:KeggSearchGlycansByMassResponse"/>
+    </operation>
+    <operation name="KeggBinfo">
+      <input message="typens:KeggBinfo"/>
+      <output message="typens:KeggBinfoResponse"/>
+    </operation>
+    <operation name="KeggSearchDrugsByName">
+      <input message="typens:KeggSearchDrugsByName"/>
+      <output message="typens:KeggSearchDrugsByNameResponse"/>
+    </operation>
+    <operation name="KeggSearchCompoundsByComposition">
+      <input message="typens:KeggSearchCompoundsByComposition"/>
+      <output message="typens:KeggSearchCompoundsByCompositionResponse"/>
+    </operation>
+    <operation name="KeggListDatabases">
+      <input message="typens:KeggListDatabases"/>
+      <output message="typens:KeggListDatabasesResponse"/>
+    </operation>
+    <operation name="KeggGetPathwaysByEnzymes">
+      <input message="typens:KeggGetPathwaysByEnzymes"/>
+      <output message="typens:KeggGetPathwaysByEnzymesResponse"/>
+    </operation>
+    <operation name="KeggGetCompoundsByPathway">
+      <input message="typens:KeggGetCompoundsByPathway"/>
+      <output message="typens:KeggGetCompoundsByPathwayResponse"/>
+    </operation>
+    <operation name="KeggBfind">
+      <input message="typens:KeggBfind"/>
+      <output message="typens:KeggBfindResponse"/>
+    </operation>
+    <operation name="KeggGetReactionsByPathway">
+      <input message="typens:KeggGetReactionsByPathway"/>
+      <output message="typens:KeggGetReactionsByPathwayResponse"/>
+    </operation>
+    <operation name="KeggSearchCompoundsBySubcomp">
+      <input message="typens:KeggSearchCompoundsBySubcomp"/>
+      <output message="typens:KeggSearchCompoundsBySubcompResponse"/>
+    </operation>
+    <operation name="KeggSearchDrugsByMass">
+      <input message="typens:KeggSearchDrugsByMass"/>
+      <output message="typens:KeggSearchDrugsByMassResponse"/>
+    </operation>
+    <operation name="KeggGetReverseBestNeighborsByGene">
+      <input message="typens:KeggGetReverseBestNeighborsByGene"/>
+      <output message="typens:KeggGetReverseBestNeighborsByGeneResponse"/>
+    </operation>
+    <operation name="KeggGetEnzymesByGlycan">
+      <input message="typens:KeggGetEnzymesByGlycan"/>
+      <output message="typens:KeggGetEnzymesByGlycanResponse"/>
+    </operation>
+    <operation name="KeggGetCompoundsByReaction">
+      <input message="typens:KeggGetCompoundsByReaction"/>
+      <output message="typens:KeggGetCompoundsByReactionResponse"/>
+    </operation>
+    <operation name="KeggGetBestNeighborsByGene">
+      <input message="typens:KeggGetBestNeighborsByGene"/>
+      <output message="typens:KeggGetBestNeighborsByGeneResponse"/>
+    </operation>
+    <operation name="KeggColorPathwayByObjects">
+      <input message="typens:KeggColorPathwayByObjects"/>
+      <output message="typens:KeggColorPathwayByObjectsResponse"/>
+    </operation>
+    <operation name="KeggListOrganisms">
+      <input message="typens:KeggListOrganisms"/>
+      <output message="typens:KeggListOrganismsResponse"/>
+    </operation>
+    <operation name="KeggBconv">
+      <input message="typens:KeggBconv"/>
+      <output message="typens:KeggBconvResponse"/>
+    </operation>
+    <operation name="KeggGetHtmlOfColoredPathwayByElements">
+      <input message="typens:KeggGetHtmlOfColoredPathwayByElements"/>
+      <output message="typens:KeggGetHtmlOfColoredPathwayByElementsResponse"/>
+    </operation>
+    <operation name="KeggGetGenesByOrganism">
+      <input message="typens:KeggGetGenesByOrganism"/>
+      <output message="typens:KeggGetGenesByOrganismResponse"/>
+    </operation>
+    <operation name="KeggGetKoByGene">
+      <input message="typens:KeggGetKoByGene"/>
+      <output message="typens:KeggGetKoByGeneResponse"/>
+    </operation>
+    <operation name="KeggColorPathwayByElements">
+      <input message="typens:KeggColorPathwayByElements"/>
+      <output message="typens:KeggColorPathwayByElementsResponse"/>
+    </operation>
+    <operation name="KeggGetEnzymesByReaction">
+      <input message="typens:KeggGetEnzymesByReaction"/>
+      <output message="typens:KeggGetEnzymesByReactionResponse"/>
+    </operation>
+    <operation name="KeggGetReferencesByPathway">
+      <input message="typens:KeggGetReferencesByPathway"/>
+      <output message="typens:KeggGetReferencesByPathwayResponse"/>
+    </operation>
+    <operation name="KeggGetMotifsByGene">
+      <input message="typens:KeggGetMotifsByGene"/>
+      <output message="typens:KeggGetMotifsByGeneResponse"/>
+    </operation>
+    <operation name="KeggGetPathwaysByCompounds">
+      <input message="typens:KeggGetPathwaysByCompounds"/>
+      <output message="typens:KeggGetPathwaysByCompoundsResponse"/>
+    </operation>
+    <operation name="KeggListKoClasses">
+      <input message="typens:KeggListKoClasses"/>
+      <output message="typens:KeggListKoClassesResponse"/>
+    </operation>
+    <operation name="KeggGetElementsByPathway">
+      <input message="typens:KeggGetElementsByPathway"/>
+      <output message="typens:KeggGetElementsByPathwayResponse"/>
+    </operation>
+    <operation name="KeggGetGenesByEnzyme">
+      <input message="typens:KeggGetGenesByEnzyme"/>
+      <output message="typens:KeggGetGenesByEnzymeResponse"/>
+    </operation>
+    <operation name="KeggGetCompoundsByEnzyme">
+      <input message="typens:KeggGetCompoundsByEnzyme"/>
+      <output message="typens:KeggGetCompoundsByEnzymeResponse"/>
+    </operation>
+    <operation name="KeggGetHtmlOfColoredPathwayByObjects">
+      <input message="typens:KeggGetHtmlOfColoredPathwayByObjects"/>
+      <output message="typens:KeggGetHtmlOfColoredPathwayByObjectsResponse"/>
+    </operation>
+    <operation name="KeggSearchGlycansByName">
+      <input message="typens:KeggSearchGlycansByName"/>
+      <output message="typens:KeggSearchGlycansByNameResponse"/>
+    </operation>
+    <operation name="KeggGetGenesByKo">
+      <input message="typens:KeggGetGenesByKo"/>
+      <output message="typens:KeggGetGenesByKoResponse"/>
+    </operation>
+    <operation name="KeggGetPathwaysByReactions">
+      <input message="typens:KeggGetPathwaysByReactions"/>
+      <output message="typens:KeggGetPathwaysByReactionsResponse"/>
+    </operation>
+    <operation name="KeggGetReactionsByGlycan">
+      <input message="typens:KeggGetReactionsByGlycan"/>
+      <output message="typens:KeggGetReactionsByGlycanResponse"/>
+    </operation>
+    <operation name="KeggGetPathwaysByDrugs">
+      <input message="typens:KeggGetPathwaysByDrugs"/>
+      <output message="typens:KeggGetPathwaysByDrugsResponse"/>
+    </operation>
+    <operation name="KeggGetPathwaysByKos">
+      <input message="typens:KeggGetPathwaysByKos"/>
+      <output message="typens:KeggGetPathwaysByKosResponse"/>
+    </operation>
+    <operation name="KeggSearchGlycansByKcam">
+      <input message="typens:KeggSearchGlycansByKcam"/>
+      <output message="typens:KeggSearchGlycansByKcamResponse"/>
+    </operation>
+  </portType>
+  <binding name="TogowsKeggBinding" type="typens:TogowsKeggPort">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc"/>
+    <operation name="KeggGetEnzymesByPathway">
+      <soap:operation soapAction="/kegg/api/KeggGetEnzymesByPathway"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggSearchGlycansByComposition">
+      <soap:operation soapAction="/kegg/api/KeggSearchGlycansByComposition"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggBget">
+      <soap:operation soapAction="/kegg/api/KeggBget"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggConvertMolToKcf">
+      <soap:operation soapAction="/kegg/api/KeggConvertMolToKcf"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggSearchCompoundsByMass">
+      <soap:operation soapAction="/kegg/api/KeggSearchCompoundsByMass"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggSearchDrugsByComposition">
+      <soap:operation soapAction="/kegg/api/KeggSearchDrugsByComposition"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetBestBestNeighborsByGene">
+      <soap:operation soapAction="/kegg/api/KeggGetBestBestNeighborsByGene"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetGlycansByPathway">
+      <soap:operation soapAction="/kegg/api/KeggGetGlycansByPathway"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetPathwaysByGenes">
+      <soap:operation soapAction="/kegg/api/KeggGetPathwaysByGenes"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetPathwaysByGlycans">
+      <soap:operation soapAction="/kegg/api/KeggGetPathwaysByGlycans"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggBtit">
+      <soap:operation soapAction="/kegg/api/KeggBtit"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetReactionsByEnzyme">
+      <soap:operation soapAction="/kegg/api/KeggGetReactionsByEnzyme"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetParalogsByGene">
+      <soap:operation soapAction="/kegg/api/KeggGetParalogsByGene"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetEnzymesByCompound">
+      <soap:operation soapAction="/kegg/api/KeggGetEnzymesByCompound"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetElementRelationsByPathway">
+      <soap:operation soapAction="/kegg/api/KeggGetElementRelationsByPathway"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetEnzymesByGene">
+      <soap:operation soapAction="/kegg/api/KeggGetEnzymesByGene"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggSearchDrugsBySubcomp">
+      <soap:operation soapAction="/kegg/api/KeggSearchDrugsBySubcomp"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetHtmlOfMarkedPathwayByObjects">
+      <soap:operation soapAction="/kegg/api/KeggGetHtmlOfMarkedPathwayByObjects"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetReactionsByCompound">
+      <soap:operation soapAction="/kegg/api/KeggGetReactionsByCompound"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggListPathways">
+      <soap:operation soapAction="/kegg/api/KeggListPathways"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetGenesByKoClass">
+      <soap:operation soapAction="/kegg/api/KeggGetGenesByKoClass"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetLinkedPathways">
+      <soap:operation soapAction="/kegg/api/KeggGetLinkedPathways"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetGlycansByReaction">
+      <soap:operation soapAction="/kegg/api/KeggGetGlycansByReaction"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggMarkPathwayByObjects">
+      <soap:operation soapAction="/kegg/api/KeggMarkPathwayByObjects"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetNumberOfGenesByOrganism">
+      <soap:operation soapAction="/kegg/api/KeggGetNumberOfGenesByOrganism"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggSearchCompoundsByName">
+      <soap:operation soapAction="/kegg/api/KeggSearchCompoundsByName"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetKoByKoClass">
+      <soap:operation soapAction="/kegg/api/KeggGetKoByKoClass"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetLinkdbBetweenDatabases">
+      <soap:operation soapAction="/kegg/api/KeggGetLinkdbBetweenDatabases"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetLinkdbByEntry">
+      <soap:operation soapAction="/kegg/api/KeggGetLinkdbByEntry"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetKosByPathway">
+      <soap:operation soapAction="/kegg/api/KeggGetKosByPathway"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetDrugsByPathway">
+      <soap:operation soapAction="/kegg/api/KeggGetDrugsByPathway"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetGenesByMotifs">
+      <soap:operation soapAction="/kegg/api/KeggGetGenesByMotifs"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetGlycansByEnzyme">
+      <soap:operation soapAction="/kegg/api/KeggGetGlycansByEnzyme"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetGenesByPathway">
+      <soap:operation soapAction="/kegg/api/KeggGetGenesByPathway"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggSearchGlycansByMass">
+      <soap:operation soapAction="/kegg/api/KeggSearchGlycansByMass"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggBinfo">
+      <soap:operation soapAction="/kegg/api/KeggBinfo"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggSearchDrugsByName">
+      <soap:operation soapAction="/kegg/api/KeggSearchDrugsByName"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggSearchCompoundsByComposition">
+      <soap:operation soapAction="/kegg/api/KeggSearchCompoundsByComposition"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggListDatabases">
+      <soap:operation soapAction="/kegg/api/KeggListDatabases"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetPathwaysByEnzymes">
+      <soap:operation soapAction="/kegg/api/KeggGetPathwaysByEnzymes"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetCompoundsByPathway">
+      <soap:operation soapAction="/kegg/api/KeggGetCompoundsByPathway"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggBfind">
+      <soap:operation soapAction="/kegg/api/KeggBfind"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetReactionsByPathway">
+      <soap:operation soapAction="/kegg/api/KeggGetReactionsByPathway"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggSearchCompoundsBySubcomp">
+      <soap:operation soapAction="/kegg/api/KeggSearchCompoundsBySubcomp"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggSearchDrugsByMass">
+      <soap:operation soapAction="/kegg/api/KeggSearchDrugsByMass"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetReverseBestNeighborsByGene">
+      <soap:operation soapAction="/kegg/api/KeggGetReverseBestNeighborsByGene"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetEnzymesByGlycan">
+      <soap:operation soapAction="/kegg/api/KeggGetEnzymesByGlycan"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetCompoundsByReaction">
+      <soap:operation soapAction="/kegg/api/KeggGetCompoundsByReaction"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetBestNeighborsByGene">
+      <soap:operation soapAction="/kegg/api/KeggGetBestNeighborsByGene"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggColorPathwayByObjects">
+      <soap:operation soapAction="/kegg/api/KeggColorPathwayByObjects"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggListOrganisms">
+      <soap:operation soapAction="/kegg/api/KeggListOrganisms"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggBconv">
+      <soap:operation soapAction="/kegg/api/KeggBconv"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetHtmlOfColoredPathwayByElements">
+      <soap:operation soapAction="/kegg/api/KeggGetHtmlOfColoredPathwayByElements"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetGenesByOrganism">
+      <soap:operation soapAction="/kegg/api/KeggGetGenesByOrganism"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetKoByGene">
+      <soap:operation soapAction="/kegg/api/KeggGetKoByGene"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggColorPathwayByElements">
+      <soap:operation soapAction="/kegg/api/KeggColorPathwayByElements"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetEnzymesByReaction">
+      <soap:operation soapAction="/kegg/api/KeggGetEnzymesByReaction"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetReferencesByPathway">
+      <soap:operation soapAction="/kegg/api/KeggGetReferencesByPathway"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetMotifsByGene">
+      <soap:operation soapAction="/kegg/api/KeggGetMotifsByGene"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetPathwaysByCompounds">
+      <soap:operation soapAction="/kegg/api/KeggGetPathwaysByCompounds"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggListKoClasses">
+      <soap:operation soapAction="/kegg/api/KeggListKoClasses"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetElementsByPathway">
+      <soap:operation soapAction="/kegg/api/KeggGetElementsByPathway"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetGenesByEnzyme">
+      <soap:operation soapAction="/kegg/api/KeggGetGenesByEnzyme"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetCompoundsByEnzyme">
+      <soap:operation soapAction="/kegg/api/KeggGetCompoundsByEnzyme"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetHtmlOfColoredPathwayByObjects">
+      <soap:operation soapAction="/kegg/api/KeggGetHtmlOfColoredPathwayByObjects"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggSearchGlycansByName">
+      <soap:operation soapAction="/kegg/api/KeggSearchGlycansByName"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetGenesByKo">
+      <soap:operation soapAction="/kegg/api/KeggGetGenesByKo"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetPathwaysByReactions">
+      <soap:operation soapAction="/kegg/api/KeggGetPathwaysByReactions"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetReactionsByGlycan">
+      <soap:operation soapAction="/kegg/api/KeggGetReactionsByGlycan"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetPathwaysByDrugs">
+      <soap:operation soapAction="/kegg/api/KeggGetPathwaysByDrugs"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggGetPathwaysByKos">
+      <soap:operation soapAction="/kegg/api/KeggGetPathwaysByKos"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="KeggSearchGlycansByKcam">
+      <soap:operation soapAction="/kegg/api/KeggSearchGlycansByKcam"/>
+      <input>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </input>
+      <output>
+        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://togows.dbcls.jp/soap/" use="encoded"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="TogowsKeggService">
+    <port name="TogowsKeggPort" binding="typens:TogowsKeggBinding">
+      <soap:address location="http://togows.dbcls.jp/kegg/api"/>
+    </port>
+  </service>
+</definitions>

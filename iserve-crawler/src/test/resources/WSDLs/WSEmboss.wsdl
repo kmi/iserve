@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Revision: $Id: WSEmboss.wsdl,v 1.2 2008/05/27 09:19:06 franckv Exp $ -->
+<definitions name="WSEmboss"
+ targetNamespace="http://www.ebi.ac.uk/WSEmboss"
+ xmlns="http://schemas.xmlsoap.org/wsdl/"
+ xmlns:tns="http://www.ebi.ac.uk/WSEmboss"
+ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"	
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+	
+ <documentation> 
+ Documentation for this service can be found at http://www.ebi.ac.uk/Tools/webservices
+ 
+ Revision:$Id
+ </documentation>
+	
+ <types>
+	<schema xmlns="http://www.w3.org/2001/XMLSchema"
+		targetNamespace="http://www.ebi.ac.uk/WSEmboss"
+		xmlns:tns="http://www.ebi.ac.uk/WSEmboss"
+		xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+
+<xsd:complexType name="inputParams">
+   <xsd:all>
+     <xsd:element name="email"  nillable="false" type="xsd:string"/>
+     <xsd:element name="tool"  nillable="false" type="xsd:string"/>
+     <xsd:element name="async"  nillable="true" type="xsd:boolean"/>
+     <xsd:element name="sequence" type="xsd:string" nillable="true"/>
+     <xsd:element name="asequence" type="xsd:string" nillable="true"/>
+     <xsd:element name="bsequence" type="xsd:string" nillable="true"/>
+     <xsd:element name="blocktype" type="xsd:string" nillable="true"/>
+     <xsd:element name="entry" type="xsd:string" nillable="true"/>
+     <xsd:element name="files" type="xsd:string" nillable="true"/>
+     <xsd:element name="vectorfile" type="xsd:string" nillable="true"/>
+     <xsd:element name="nummismatches" type="xsd:int" nillable="true"/>
+     <xsd:element name="program" type="xsd:string" nillable="true"/>
+     <xsd:element name="minlen" type="xsd:int" nillable="true"/>
+     <xsd:element name="saltconc" type="xsd:float" nillable="true"/>
+     <xsd:element name="primersfile" type="xsd:string" nillable="true"/>
+     <xsd:element name="target" type="xsd:string" nillable="true"/>
+     <xsd:element name="gaplimit" type="xsd:int" nillable="true"/>
+     <xsd:element name="wordsize" type="xsd:int" nillable="true"/>
+     <xsd:element name="shiftincrement" type="xsd:int" nillable="true"/>
+     <xsd:element name="count" type="xsd:int" nillable="true"/>
+     <xsd:element name="second" type="xsd:string" nillable="true"/>
+     <xsd:element name="btype" type="xsd:string" nillable="true"/>
+     <xsd:element name="name" type="xsd:string" nillable="true"/>
+     <xsd:element name="minpc" type="xsd:float" nillable="true"/>
+     <xsd:element name="match" type="xsd:int" nillable="true"/>
+     <xsd:element name="estsequence" type="xsd:string" nillable="true"/>
+     <xsd:element name="description" type="xsd:string" nillable="true"/>
+     <xsd:element name="winsize" type="xsd:int" nillable="true"/>
+     <xsd:element name="minpallen" type="xsd:int" nillable="true"/>
+     <xsd:element name="regions" type="xsd:string" nillable="true"/>
+     <xsd:element name="emin" type="xsd:int" nillable="true"/>
+     <xsd:element name="sitelen" type="xsd:int" nillable="true"/>
+     <xsd:element name="number" type="xsd:int" nillable="true"/>
+     <xsd:element name="threshold" type="xsd:int" nillable="true"/>
+     <xsd:element name="seqall" type="xsd:string" nillable="true"/>
+     <xsd:element name="range" type="xsd:string" nillable="true"/>
+     <xsd:element name="frames" type="xsd:string" nillable="true"/>
+     <xsd:element name="firstset" type="xsd:string" nillable="true"/>
+     <xsd:element name="genomesequence" type="xsd:string" nillable="true"/>
+     <xsd:element name="to" type="xsd:int" nillable="true" />
+     <xsd:element name="maxrange" type="xsd:int" nillable="true"/>
+     <xsd:element name="boutfeat" type="xsd:string" nillable="true"/>
+     <xsd:element name="from" type="xsd:int" nillable="true"/>
+     <xsd:element name="minrange" type="xsd:int" nillable="true"/>
+     <xsd:element name="pos" type="xsd:int" nillable="true"/>
+     <xsd:element name="overlap" type="xsd:boolean" nillable="true"/>
+     <xsd:element name="emax" type="xsd:int" nillable="true"/>
+     <xsd:element name="graphlb" type="xsd:string" nillable="true"/>
+     <xsd:element name="dnaconc" type="xsd:float" nillable="true"/>
+     <xsd:element name="secondset" type="xsd:string" nillable="true"/>
+     <xsd:element name="skip" type="xsd:int" nillable="true"/>
+     <xsd:element name="exclude" type="xsd:string" nillable="true"/>
+     <xsd:element name="gapopen" type="xsd:float" nillable="true"/>
+     <xsd:element name="motif" type="xsd:string" nillable="true"/>
+     <xsd:element name="search" type="xsd:string" nillable="true"/>
+     <xsd:element name="aoutfeat" type="xsd:string" nillable="true"/>
+     <xsd:element name="infile" type="xsd:string" nillable="true"/>
+     <xsd:element name="directory" type="xsd:string" nillable="true"/>
+     <xsd:element name="maxpallen" type="xsd:int" nillable="true"/>
+     <xsd:element name="orfml" type="xsd:int" nillable="true"/>
+     <xsd:element name="gap" type="xsd:int" nillable="true"/>
+     <xsd:element name="mismatch" type="xsd:int" nillable="true"/>
+     <xsd:element name="order" type="xsd:string" nillable="true"/>
+     <xsd:element name="posticks" type="xsd:string" nillable="true"/>
+     <xsd:element name="tolerance" type="xsd:float" nillable="true"/>
+     <xsd:element name="weight" type="xsd:int" nillable="true"/>
+     <xsd:element name="minrepeat" type="xsd:int" nillable="true"/>
+     <xsd:element name="minweight" type="xsd:float" nillable="true"/>
+     <xsd:element name="windowsize" type="xsd:int" nillable="true"/>
+     <xsd:element name="besthits" type="xsd:boolean" nillable="true"/>
+     <xsd:element name="maxrepeat" type="xsd:int" nillable="true"/>
+     <xsd:element name="word" type="xsd:int" nillable="true"/>
+     <xsd:element name="shift" type="xsd:int" nillable="true"/>
+     <xsd:element name="type" type="xsd:string" nillable="true"/>
+     <xsd:element name="graph" type="xsd:string" nillable="true"/>
+     <xsd:element name="window" type="xsd:int" nillable="true"/>
+     <xsd:element name="ruler" type="xsd:boolean" nillable="true"/>
+     <xsd:element name="enzymes" type="xsd:string" nillable="true"/>
+     <xsd:element name="enzyme" type="xsd:string" nillable="true"/>
+     <xsd:element name="compdatafile" type="xsd:string" nillable="true"/>
+     <xsd:element name="sequences" type="xsd:string" nillable="true"/>
+     <xsd:element name="gapextend" type="xsd:float" nillable="true"/>
+     <xsd:element name="posblocks" type="xsd:string" nillable="true"/>
+     <xsd:element name="letters" type="xsd:string" nillable="true"/>
+     <xsd:element name="first" type="xsd:string" nillable="true"/>
+     <xsd:element name="atype" type="xsd:string" nillable="true"/>
+     <xsd:element name="menu" type="xsd:string" nillable="true"/>
+     <xsd:element name="score" type="xsd:int" nillable="true"/>
+     <xsd:element name="mismatchpercent" type="xsd:int" nillable="true"/>
+     <xsd:element name="graphout" type="xsd:string" nillable="true"/>
+     <xsd:element name="pattern" type="xsd:string" nillable="true"/>
+     <xsd:element name="point" type="xsd:string" nillable="true"/>
+     <xsd:element name="format" type="xsd:string" nillable="true"/>
+     <xsd:element name="seqcomp" type="xsd:string" nillable="true"/>
+     <xsd:element name="block" type="xsd:string" nillable="true"/>
+     <xsd:element name="cfile" type="xsd:string" nillable="true"/>
+     <xsd:element name="minoe" type="xsd:float" nillable="true"/>
+  </xsd:all>
+</xsd:complexType>
+
+  <xsd:complexType name="data">
+   <xsd:all>
+    <xsd:element name="type" type="xsd:string"></xsd:element>
+    <xsd:element name="content" type="xsd:string"></xsd:element>
+   </xsd:all>
+  </xsd:complexType>
+
+ <xsd:complexType name="ArrayOf_xsd_string">
+   <xsd:complexContent>
+        <xsd:restriction base="soapenc:Array">
+           <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+        </xsd:restriction>
+      </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="WSArrayofFile">
+   <xsd:complexContent>
+        <xsd:restriction base="soapenc:Array">
+           <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="tns:WSFile[]"/>
+        </xsd:restriction>
+      </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="WSArrayofData">
+   <xsd:complexContent>
+        <xsd:restriction base="soapenc:Array">
+           <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="tns:data[]"/>
+        </xsd:restriction>
+      </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="WSFile">
+   <xsd:all>
+    <xsd:element name="type" type="xsd:string"/>
+    <xsd:element name="ext" type="xsd:string"/>
+   </xsd:all>
+  </xsd:complexType>
+
+ </schema>
+</types>
+
+<message name="infoRequest">
+ <part name="tool" type="xsd:string"/>
+</message>
+<message name="infoResponse">
+ <part name="info" type="xsd:base64Binary"/>
+</message>
+
+<message name="toolsRequest"/>
+<message name="toolsResponse">
+ <part name="results" type="tns:ArrayOf_xsd_string"/>
+</message>
+
+<message name="statusRequest">
+ <part name="jobid" type="xsd:string"/>
+  <documentation> poll takes the jobid returned by the service on an asynchronous job submission.</documentation>
+</message>
+<message name="statusResponse">
+ <part name="status" type="xsd:string"/>
+  <documentation> poll returns the status of the job or if the job is finished, the result </documentation>
+</message>
+<message name="resultsRequest">
+ <part name="jobid" type="xsd:string">
+  <documentation> poll takes the jobid returned by the service on an asynchronous job submission.</documentation>
+ </part>
+</message>
+<message name="resultsResponse">
+ <part name="results" type="tns:WSArrayofFile"/>
+ <documentation> poll returns the status of the job or if the job is finished, the result </documentation>
+</message>
+<message name="pollRequest">
+ <part name="jobid" type="xsd:string"/>
+ <part name="type" type="xsd:string"/>
+ <documentation> poll takes the jobid returned by the service on an asynchronous job submission.</documentation>
+</message>
+<message name="pollResponse">
+ <part name="output" type="xsd:base64Binary"/>	
+ <documentation> poll returns the status of the job or if the job is finished, the result </documentation>
+</message>
+
+<message name="runEmbossRequest">
+ <part name="params" type="tns:inputParams"/>
+ <part name="content" type="tns:WSArrayofData"/>
+ <documentation> </documentation> 
+</message>
+	
+<message name="runEmbossResponse">
+ <part name="jobid" type="xsd:string"/>
+</message>
+	
+<portType name="WSEmboss">
+	
+ <operation name="run" parameterOrder="params content">
+  <input name="runEmbossRequest" message="tns:runEmbossRequest"></input>
+  <output name="runEmbossResponse" message="tns:runEmbossResponse"></output>
+ </operation>
+
+ <operation name="getInfo" parameterOrder="tool">
+  <input name="infoRequest" message="tns:infoRequest"></input>
+  <output name="infoResponse"  message="tns:infoResponse"></output>
+ </operation>
+
+ <operation name="getTools">
+  <input name="toolsRequest" message="tns:toolsRequest"></input>
+  <output name="toolsResponse"  message="tns:toolsResponse"></output>
+ </operation>
+
+ <operation name="checkStatus" parameterOrder="jobid">
+  <input name="statusRequest" message="tns:statusRequest"></input>
+  <output name="statusResponse"  message="tns:statusResponse"></output>
+ </operation>
+
+ <operation name="poll" parameterOrder="jobid type">
+  <input name="pollRequest" message="tns:pollRequest"></input>
+  <output name="pollResponse"  message="tns:pollResponse"></output>
+ </operation>	
+
+ <operation name="getResults" parameterOrder="jobid">
+  <input name="resultsRequest" message="tns:resultsRequest"></input>
+  <output name="resultsResponse"  message="tns:resultsResponse"></output>
+ </operation>
+
+</portType>
+	
+<binding name="WSEmbossSoapBinding" type="tns:WSEmboss">
+<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+ 
+ <operation name="poll">
+ <soap:operation soapAction="http://www.ebi.ac.uk/WSEmboss#poll"/>
+  <input name="pollRequest">
+   <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+	      namespace="http://www.ebi.ac.uk/WSEmboss" use="encoded"/>
+  </input>
+  <output name="pollResponse">
+   <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+	      namespace="http://www.ebi.ac.uk/WSEmboss" use="encoded"/>
+  </output>
+ </operation>
+
+ <operation name="run">
+ <soap:operation soapAction="http://www.ebi.ac.uk/WSEmboss#run"/>
+  <input name="runEmbossRequest">
+   <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+	      namespace="http://www.ebi.ac.uk/WSEmboss" use="encoded"/>			
+  </input>
+  <output name="runEmbossResponse">
+   <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+	      namespace="http://www.ebi.ac.uk/WSEmboss" use="encoded"/>
+  </output>
+ </operation>
+ <operation name="checkStatus">
+ <soap:operation soapAction="http://www.ebi.ac.uk/WSEmboss#checkStatus"/>
+ <input name="statusRequest">
+   <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+	      namespace="http://www.ebi.ac.uk/WSEmboss" use="encoded"/>
+ </input>
+ <output name="statusResponse">
+   <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+	      namespace="http://www.ebi.ac.uk/WSEmboss" use="encoded"/>
+ </output>		</operation>
+
+<operation name="getInfo">
+ <soap:operation soapAction="http://www.ebi.ac.uk/WSEmboss#getInfo"/>
+ <input name="infoRequest">
+   <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+	      namespace="http://www.ebi.ac.uk/WSEmboss" use="encoded"/>
+ </input>
+ <output name="infoResponse">
+   <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+	      namespace="http://www.ebi.ac.uk/WSEmboss" use="encoded"/>
+ </output>		
+ </operation>
+<operation name="getTools">
+ <soap:operation soapAction="http://www.ebi.ac.uk/WSEmboss#getTools"/>
+ <input name="toolsRequest">
+   <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+	      namespace="http://www.ebi.ac.uk/WSEmboss" use="encoded"/>
+ </input>
+ <output name="toolsResponse">
+   <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+	      namespace="http://www.ebi.ac.uk/WSEmboss" use="encoded"/>
+ </output>		
+ </operation>
+ <operation name="getResults">
+ <soap:operation soapAction="http://www.ebi.ac.uk/WSEmboss#getResults"/>
+ <input name="resultsRequest">
+   <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+	      namespace="http://www.ebi.ac.uk/WSEmboss" use="encoded"/>
+ </input>
+ <output name="resultsResponse">
+   <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+	      namespace="http://www.ebi.ac.uk/WSEmboss" use="encoded"/>
+ </output>
+ </operation>
+</binding>
+	
+ <service name="WSEmbossService">
+  <port name="WSEmboss" binding="tns:WSEmbossSoapBinding">
+   <soap:address location="http://www.ebi.ac.uk/Tools/es/ws-servers/WSEmboss"/>
+  </port>
+</service>
+
+</definitions>

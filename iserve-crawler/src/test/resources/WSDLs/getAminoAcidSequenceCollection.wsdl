@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<wsdl:definitions name="MOBY_Central_Generated_WSDL"
+                targetNamespace="http://biomoby.org/Central.wsdl"
+                xmlns:tns="http://biomoby.org/Central.wsdl"
+                xmlns:xsd1="http://biomoby.org/CentralXSDs.xsd"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+                 
+  <wsdl:message name="getAminoAcidSequenceCollectionInput">
+          <wsdl:part name="data" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:message name="getAminoAcidSequenceCollectionOutput">
+          <wsdl:part name="body" type="xsd:string"/>
+  </wsdl:message>
+
+  <wsdl:portType name="getAminoAcidSequenceCollectionPortType">
+          <wsdl:operation name="getAminoAcidSequenceCollection">
+                 <wsdl:input message="tns:getAminoAcidSequenceCollectionInput"/>
+                 <wsdl:output message="tns:getAminoAcidSequenceCollectionOutput"/>
+          </wsdl:operation>
+  </wsdl:portType>
+                
+  <wsdl:binding name="getAminoAcidSequenceCollectionBinding" type="tns:getAminoAcidSequenceCollectionPortType">
+          <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+          <wsdl:operation name="getAminoAcidSequenceCollection"><!-- in essense, this is the name of the subroutine that is called -->
+                 <wsdlsoap:operation soapAction='http://biomoby.org/#getAminoAcidSequenceCollection' style='rpc'/>
+                 <wsdl:input>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:input>
+                 <wsdl:output>
+                         <wsdlsoap:body use="encoded" namespace="http://biomoby.org/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                 </wsdl:output>
+          </wsdl:operation>
+  </wsdl:binding>
+                
+  <wsdl:service name="getAminoAcidSequenceCollectionService">
+          <wsdl:documentation>Authority: www.bioinfo.uma.es  -  Retrieves an AminoAcidSequence collection from an Object (id=ID or AC / namespace=database) collection</wsdl:documentation>  <!-- service description goes here -->
+          <wsdl:port name="getAminoAcidSequenceCollectionPort" binding="tns:getAminoAcidSequenceCollectionBinding">
+                 <wsdlsoap:address location="http://chirimoyo.ac.uma.es/cgi-bin/services/MobyEd_dispatcher.cgi"/>    <!-- URL to service scriptname -->
+          </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
+
+

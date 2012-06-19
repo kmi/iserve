@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+
+<definitions name="TopcompDefinitions"
+             targetNamespace="http://wsdl.sbc.su.se/topcomp"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:tns="http://wsdl.sbc.su.se/topcomp"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:ns="http://schemas.xmlsoap.org/wsdl/">
+<documentation>
+</documentation>
+
+<types>                
+     <xsd:schema elementFormDefault="qualified"	
+		 targetNamespace="http://wsdl.sbc.su.se/topcomp">
+                 
+        <xsd:element name="runTopcomp">
+	 <xsd:complexType>                                       
+	   <xsd:all>                                         
+	     <xsd:element name="pdbid" type="xsd:string"/>
+	   </xsd:all>
+         </xsd:complexType>
+        </xsd:element>
+
+	<xsd:element name="runTopcompResponse">                                
+	 <xsd:complexType>                                       
+	   <xsd:all>                                          
+	    <xsd:element name="result" type="xsd:base64Binary"/>   
+	   </xsd:all>                                
+	  </xsd:complexType>
+	</xsd:element>
+
+   </xsd:schema>        
+
+</types>        
+
+<message name="runTopcompRequestMsg">                
+	<part name="parameters" element="tns:runTopcomp"/>
+</message>        
+
+<message name="runTopcompResponseMsg">                
+	<part name="parameters" element="tns:runTopcompResponse"/>        
+</message>        
+
+<portType name="topcompPortType">
+  <operation name="runTopcomp">                        
+	<documentation>
+	Requests data for a particular structure from the database
+	</documentation>                        
+
+	<input message="tns:runTopcompRequestMsg"/>                        
+	<output message="tns:runTopcompResponseMsg"/>                
+  </operation>               
+
+</portType>        
+
+<binding name="topcompBinding" type="tns:topcompPortType">                
+<soap:binding style="document" 
+              transport="http://schemas.xmlsoap.org/soap/http"/>               
+	
+	<operation name="runTopcomp">                        
+        <soap:operation soapAction="http://wsdl.sbc.su.se/topcomp/runTopcomp"/>     
+	<input>                              
+		<soap:body use="literal" 
+		 encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>   
+	</input>                        
+	<output>                               
+		<soap:body use="literal" 
+ 		 encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>   
+	</output>                
+	</operation>
+
+</binding>       
+
+<service name="Topcomp">                
+	<port binding="tns:topcompBinding" name="topcompPort">               
+        <soap:address location="http://wsdl.sbc.su.se/cgi-bin/topcomp.cgi"/> 
+	</port>        
+</service>
+
+</definitions>

@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx/" xmlns:s1="http://microsoft.com/wsdl/types/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+These web services provide access to methods for prediction of chemical sub-groups by means of user submitted mass spectra.
+Please send all feedback to &lt;a href="mailto:hummel@mpimp-golm.mpg.de"&gt;hummel@mpimp-golm.mpg.de&lt;/a&gt;</wsdl:documentation>
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx/">
+      <s:import namespace="http://microsoft.com/wsdl/types/" />
+      <s:element name="GetMiningModels">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetMiningModelsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetMiningModelsResult" type="tns:ArrayOfMiningModel" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfMiningModel">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="MiningModel" nillable="true" type="tns:MiningModel" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="MiningModel">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="MiningModelId" type="s1:guid" />
+          <s:element minOccurs="0" maxOccurs="1" name="MiningModelName" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="FunctionalGroup" type="tns:FunctionalGroups" />
+          <s:element minOccurs="0" maxOccurs="1" name="FunctionalGroupClearName" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="AlkaneRi4GcColumn" type="tns:AlkaneRetentionIndexGcColumnComposition" />
+          <s:element minOccurs="1" maxOccurs="1" name="DateMiningModelCreated" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="MiningModelDescription" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="TotalCases" nillable="true" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="FunctionalGroupPresentCases" nillable="true" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="FunctionalGroupAbsentCases" nillable="true" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="CrossValidationErrorRate" nillable="true" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="precision" nillable="true" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="recall" nillable="true" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="F_measure" nillable="true" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="MatthewsCorrelationCoefficient" nillable="true" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="COMPLEXITY_PENALTY" nillable="true" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="MAXIMUM_INPUT_ATTRIBUTES" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="MAXIMUM_OUTPUT_ATTRIBUTES" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="MINIMUM_SUPPORT" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="SCORE_METHOD" type="s:unsignedByte" />
+          <s:element minOccurs="1" maxOccurs="1" name="SPLIT_METHOD" type="s:unsignedByte" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="FunctionalGroups">
+        <s:restriction base="s:string">
+          <s:enumeration value="Fg_Alpha_Aminoacid" />
+          <s:enumeration value="Fg_Hydroxy" />
+          <s:enumeration value="Fg_Carboxylic_Acid" />
+          <s:enumeration value="Fg_Acetal" />
+          <s:enumeration value="Fg_Prim_Aliph_Amine" />
+          <s:enumeration value="Fg_Carboxylic_Acid_Deriv" />
+          <s:enumeration value="Fg_Heterocycle" />
+          <s:enumeration value="Fg_Alkene" />
+          <s:enumeration value="Fg_Aldehyde" />
+          <s:enumeration value="Fg_Amine" />
+          <s:enumeration value="Fg_Sec_Alcohol" />
+          <s:enumeration value="Fg_1_2_Diol" />
+          <s:enumeration value="Fg_Prim_Alcohol" />
+          <s:enumeration value="Fg_Carbonyl" />
+          <s:enumeration value="Fg_Prim_Amine" />
+          <s:enumeration value="Fg_Hemiacetal" />
+          <s:enumeration value="Fg_Alcohol" />
+          <s:enumeration value="Fg_Phenol" />
+          <s:enumeration value="Fg_Aromatic" />
+          <s:enumeration value="Fg_Carboxylic_Acid_Ester" />
+          <s:enumeration value="Fg_Phosphoric_Acid_Deriv" />
+          <s:enumeration value="Fg_alphaAminoAcid_1TMS" />
+          <s:enumeration value="Fg_alphaAminoAcid_2TMS" />
+          <s:enumeration value="Fg_alphaAminoAcid_3TMS" />
+          <s:enumeration value="Fg_Amine_0TMS" />
+          <s:enumeration value="Fg_Amine_1TMS" />
+          <s:enumeration value="Fg_Amine_2TMS" />
+          <s:enumeration value="Fg_Ketone" />
+          <s:enumeration value="Fg_Carboxylic_Acid_Amide" />
+          <s:enumeration value="Fg_1_2_Aminoalcohol" />
+          <s:enumeration value="Fg_Carboxylic_Acid_Sec_Amide" />
+          <s:enumeration value="Fg_Ether" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="AlkaneRetentionIndexGcColumnComposition">
+        <s:restriction base="s:string">
+          <s:enumeration value="none" />
+          <s:enumeration value="VAR5" />
+          <s:enumeration value="MDN35" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="GetMiningModelNodes">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="MiningModelId" type="s1:guid" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetMiningModelNodesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetMiningModelNodesResult" type="tns:ArrayOfMiningModelNode" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfMiningModelNode">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="MiningModelNode" nillable="true" type="tns:MiningModelNode" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="MiningModelNode">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="MODEL_CATALOG" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MODEL_NAME" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ATTRIBUTE_NAME" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NODE_NAME" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NODE_UNIQUE_NAME" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="NODE_TYPE" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="NODE_CAPTION" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="CHILDREN_CARDINALITY" type="s:unsignedInt" />
+          <s:element minOccurs="0" maxOccurs="1" name="PARENT_UNIQUE_NAME" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NODE_DESCRIPTION" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NODE_RULE" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MARGINAL_RULE" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="NODE_PROBABILITY" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="MARGINAL_PROBABILITY" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="NODE_SUPPORT" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="MSOLAP_NODE_SCORE" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="MSOLAP_NODE_SHORT_CAPTION" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NodeDistribution" type="tns:ArrayOfMiningModelNodeDistribution" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfMiningModelNodeDistribution">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="MiningModelNodeDistribution" nillable="true" type="tns:MiningModelNodeDistribution" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="MiningModelNodeDistribution">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ATTRIBUTE_NAME" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ATTRIBUTE_VALUE" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="PROBABILITY" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="SUPPORT" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="VARIANCE" type="s:double" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="PredictAll4AlkaneRiColumnTypeComposition">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Ri" type="s:float" />
+            <s:element minOccurs="0" maxOccurs="1" name="Spectrum" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="ColumnType" type="tns:AlkaneRetentionIndexGcColumnComposition" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PredictAll4AlkaneRiColumnTypeCompositionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="PredictAll4AlkaneRiColumnTypeCompositionResult" type="tns:ResultOfPrediction" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ResultOfPrediction">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Status" type="tns:Status" />
+          <s:element minOccurs="0" maxOccurs="1" name="Message" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Results" type="tns:Prediction" />
+          <s:element minOccurs="0" maxOccurs="1" name="ProcessingTime" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ElapsedTime" type="tns:TimeSpan" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="Status">
+        <s:restriction base="s:string">
+          <s:enumeration value="indefinite" />
+          <s:enumeration value="success" />
+          <s:enumeration value="failure" />
+          <s:enumeration value="exception" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="Prediction">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:MiningModel">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="PredictionGroupIsPresent" type="s:boolean" />
+              <s:element minOccurs="1" maxOccurs="1" name="Probability" type="s:float" />
+              <s:element minOccurs="1" maxOccurs="1" name="AdjustedProbability" type="s:float" />
+              <s:element minOccurs="1" maxOccurs="1" name="Support" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="NodeId" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="NodeDescription" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="TimeSpan" />
+      <s:element name="PredictSingle">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ri" type="s:float" />
+            <s:element minOccurs="0" maxOccurs="1" name="spectrum" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="MiningModelId" type="s1:guid" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PredictSingleResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="PredictSingleResult" type="tns:ResultOfPrediction" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PredictMany">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ri" type="s:float" />
+            <s:element minOccurs="0" maxOccurs="1" name="spectrum" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="MiningModelIds" type="tns:ArrayOfGuid" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfGuid">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="guid" type="s1:guid" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="PredictManyResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="PredictManyResult" type="tns:ResultOfPrediction" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DrillThrough">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="MiningModelName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="NodeID" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DrillThroughResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DrillThroughResult" type="tns:ArrayOfTrainingSetSpectrum" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfTrainingSetSpectrum">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="TrainingSetSpectrum" nillable="true" type="tns:TrainingSetSpectrum" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="TrainingSetSpectrum">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="spectrumId" type="s1:guid" />
+          <s:element minOccurs="1" maxOccurs="1" name="FunctinalGroupPresent" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ArrayOfMiningModel" nillable="true" type="tns:ArrayOfMiningModel" />
+      <s:element name="ResultOfPrediction" nillable="true" type="tns:ResultOfPrediction" />
+      <s:element name="ArrayOfTrainingSetSpectrum" nillable="true" type="tns:ArrayOfTrainingSetSpectrum" />
+    </s:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://microsoft.com/wsdl/types/">
+      <s:simpleType name="guid">
+        <s:restriction base="s:string">
+          <s:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" />
+        </s:restriction>
+      </s:simpleType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetMiningModelsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetMiningModels" />
+  </wsdl:message>
+  <wsdl:message name="GetMiningModelsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetMiningModelsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetMiningModelNodesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetMiningModelNodes" />
+  </wsdl:message>
+  <wsdl:message name="GetMiningModelNodesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetMiningModelNodesResponse" />
+  </wsdl:message>
+  <wsdl:message name="PredictAll4AlkaneRiColumnTypeCompositionSoapIn">
+    <wsdl:part name="parameters" element="tns:PredictAll4AlkaneRiColumnTypeComposition" />
+  </wsdl:message>
+  <wsdl:message name="PredictAll4AlkaneRiColumnTypeCompositionSoapOut">
+    <wsdl:part name="parameters" element="tns:PredictAll4AlkaneRiColumnTypeCompositionResponse" />
+  </wsdl:message>
+  <wsdl:message name="PredictSingleSoapIn">
+    <wsdl:part name="parameters" element="tns:PredictSingle" />
+  </wsdl:message>
+  <wsdl:message name="PredictSingleSoapOut">
+    <wsdl:part name="parameters" element="tns:PredictSingleResponse" />
+  </wsdl:message>
+  <wsdl:message name="PredictManySoapIn">
+    <wsdl:part name="parameters" element="tns:PredictMany" />
+  </wsdl:message>
+  <wsdl:message name="PredictManySoapOut">
+    <wsdl:part name="parameters" element="tns:PredictManyResponse" />
+  </wsdl:message>
+  <wsdl:message name="DrillThroughSoapIn">
+    <wsdl:part name="parameters" element="tns:DrillThrough" />
+  </wsdl:message>
+  <wsdl:message name="DrillThroughSoapOut">
+    <wsdl:part name="parameters" element="tns:DrillThroughResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetMiningModelsHttpGetIn" />
+  <wsdl:message name="GetMiningModelsHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfMiningModel" />
+  </wsdl:message>
+  <wsdl:message name="PredictAll4AlkaneRiColumnTypeCompositionHttpGetIn">
+    <wsdl:part name="Ri" type="s:string" />
+    <wsdl:part name="Spectrum" type="s:string" />
+    <wsdl:part name="ColumnType" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="PredictAll4AlkaneRiColumnTypeCompositionHttpGetOut">
+    <wsdl:part name="Body" element="tns:ResultOfPrediction" />
+  </wsdl:message>
+  <wsdl:message name="DrillThroughHttpGetIn">
+    <wsdl:part name="MiningModelName" type="s:string" />
+    <wsdl:part name="NodeID" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="DrillThroughHttpGetOut">
+    <wsdl:part name="Body" element="tns:ArrayOfTrainingSetSpectrum" />
+  </wsdl:message>
+  <wsdl:message name="GetMiningModelsHttpPostIn" />
+  <wsdl:message name="GetMiningModelsHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfMiningModel" />
+  </wsdl:message>
+  <wsdl:message name="PredictAll4AlkaneRiColumnTypeCompositionHttpPostIn">
+    <wsdl:part name="Ri" type="s:string" />
+    <wsdl:part name="Spectrum" type="s:string" />
+    <wsdl:part name="ColumnType" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="PredictAll4AlkaneRiColumnTypeCompositionHttpPostOut">
+    <wsdl:part name="Body" element="tns:ResultOfPrediction" />
+  </wsdl:message>
+  <wsdl:message name="DrillThroughHttpPostIn">
+    <wsdl:part name="MiningModelName" type="s:string" />
+    <wsdl:part name="NodeID" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="DrillThroughHttpPostOut">
+    <wsdl:part name="Body" element="tns:ArrayOfTrainingSetSpectrum" />
+  </wsdl:message>
+  <wsdl:portType name="wsPredictionSoap">
+    <wsdl:operation name="GetMiningModels">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">This service returns a list of all available MiningModels for the classification/prediction 
+                            with appropiate information regarding training set size and cross validation performance.
+                            This service is used to populate the GridView at the &lt;a href="/decisiontree.aspx"&gt;decisiontree.aspx&lt;/a&gt; page.</wsdl:documentation>
+      <wsdl:input message="tns:GetMiningModelsSoapIn" />
+      <wsdl:output message="tns:GetMiningModelsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMiningModelNodes">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">This service returns all nodes constituting the decision tree used in a particular mining model.
+                            &lt;strong&gt;id&lt;/strong&gt; reference the mining model.</wsdl:documentation>
+      <wsdl:input message="tns:GetMiningModelNodesSoapIn" />
+      <wsdl:output message="tns:GetMiningModelNodesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PredictAll4AlkaneRiColumnTypeComposition">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Predicts the presense of a set of functional groups by the means of
+                            an retention index &lt;strong&gt;ri&lt;/strong&gt;, an GC-EI mass spectrum &lt;strong&gt;spectrum&lt;/strong&gt; and an 
+                            ri system &lt;strong&gt;ColumnType&lt;/strong&gt; ('none' or 'VAR5' or 'MDN35').</wsdl:documentation>
+      <wsdl:input message="tns:PredictAll4AlkaneRiColumnTypeCompositionSoapIn" />
+      <wsdl:output message="tns:PredictAll4AlkaneRiColumnTypeCompositionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PredictSingle">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Predicts the presense of a set of functional groups by the means of
+                            an retention index based on the alkanes homolouges &lt;strong&gt;ri&lt;/strong&gt; and 
+                            an GC-EI mass spectrum &lt;strong&gt;spectrum&lt;/strong&gt; and an particular Mining Model (Decision Tree) &lt;strong&gt;MiningModelId&lt;/strong&gt;.</wsdl:documentation>
+      <wsdl:input message="tns:PredictSingleSoapIn" />
+      <wsdl:output message="tns:PredictSingleSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PredictMany">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Predicts the presense of a set of functional groups by the means of
+                            an retention index based on the alkanes homolouges &lt;strong&gt;ri&lt;/strong&gt; and 
+                            an GC-EI mass spectrum &lt;strong&gt;spectrum&lt;/strong&gt; and an collection (Array) of particular Mining Models (Decision Trees) &lt;strong&gt;MiningModelIds&lt;/strong&gt;.</wsdl:documentation>
+      <wsdl:input message="tns:PredictManySoapIn" />
+      <wsdl:output message="tns:PredictManySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DrillThrough">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns all training spectra IDs passing an particular &lt;strong&gt;NodeID&lt;/strong&gt; (i.e. '000000000020001') of a given Mining Model
+                                    identified by the name &lt;strong&gt;MiningModelName&lt;/strong&gt; (cf. &lt;a href="/decisiontree.aspx"&gt;decisiontree.aspx&lt;/a&gt;, i.e.'2009-02-03T165023_Fg_Alpha_Aminoacid_MDN35').</wsdl:documentation>
+      <wsdl:input message="tns:DrillThroughSoapIn" />
+      <wsdl:output message="tns:DrillThroughSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="wsPredictionHttpGet">
+    <wsdl:operation name="GetMiningModels">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">This service returns a list of all available MiningModels for the classification/prediction 
+                            with appropiate information regarding training set size and cross validation performance.
+                            This service is used to populate the GridView at the &lt;a href="/decisiontree.aspx"&gt;decisiontree.aspx&lt;/a&gt; page.</wsdl:documentation>
+      <wsdl:input message="tns:GetMiningModelsHttpGetIn" />
+      <wsdl:output message="tns:GetMiningModelsHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PredictAll4AlkaneRiColumnTypeComposition">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Predicts the presense of a set of functional groups by the means of
+                            an retention index &lt;strong&gt;ri&lt;/strong&gt;, an GC-EI mass spectrum &lt;strong&gt;spectrum&lt;/strong&gt; and an 
+                            ri system &lt;strong&gt;ColumnType&lt;/strong&gt; ('none' or 'VAR5' or 'MDN35').</wsdl:documentation>
+      <wsdl:input message="tns:PredictAll4AlkaneRiColumnTypeCompositionHttpGetIn" />
+      <wsdl:output message="tns:PredictAll4AlkaneRiColumnTypeCompositionHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DrillThrough">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns all training spectra IDs passing an particular &lt;strong&gt;NodeID&lt;/strong&gt; (i.e. '000000000020001') of a given Mining Model
+                                    identified by the name &lt;strong&gt;MiningModelName&lt;/strong&gt; (cf. &lt;a href="/decisiontree.aspx"&gt;decisiontree.aspx&lt;/a&gt;, i.e.'2009-02-03T165023_Fg_Alpha_Aminoacid_MDN35').</wsdl:documentation>
+      <wsdl:input message="tns:DrillThroughHttpGetIn" />
+      <wsdl:output message="tns:DrillThroughHttpGetOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="wsPredictionHttpPost">
+    <wsdl:operation name="GetMiningModels">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">This service returns a list of all available MiningModels for the classification/prediction 
+                            with appropiate information regarding training set size and cross validation performance.
+                            This service is used to populate the GridView at the &lt;a href="/decisiontree.aspx"&gt;decisiontree.aspx&lt;/a&gt; page.</wsdl:documentation>
+      <wsdl:input message="tns:GetMiningModelsHttpPostIn" />
+      <wsdl:output message="tns:GetMiningModelsHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PredictAll4AlkaneRiColumnTypeComposition">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Predicts the presense of a set of functional groups by the means of
+                            an retention index &lt;strong&gt;ri&lt;/strong&gt;, an GC-EI mass spectrum &lt;strong&gt;spectrum&lt;/strong&gt; and an 
+                            ri system &lt;strong&gt;ColumnType&lt;/strong&gt; ('none' or 'VAR5' or 'MDN35').</wsdl:documentation>
+      <wsdl:input message="tns:PredictAll4AlkaneRiColumnTypeCompositionHttpPostIn" />
+      <wsdl:output message="tns:PredictAll4AlkaneRiColumnTypeCompositionHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DrillThrough">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns all training spectra IDs passing an particular &lt;strong&gt;NodeID&lt;/strong&gt; (i.e. '000000000020001') of a given Mining Model
+                                    identified by the name &lt;strong&gt;MiningModelName&lt;/strong&gt; (cf. &lt;a href="/decisiontree.aspx"&gt;decisiontree.aspx&lt;/a&gt;, i.e.'2009-02-03T165023_Fg_Alpha_Aminoacid_MDN35').</wsdl:documentation>
+      <wsdl:input message="tns:DrillThroughHttpPostIn" />
+      <wsdl:output message="tns:DrillThroughHttpPostOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="wsPredictionSoap" type="tns:wsPredictionSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetMiningModels">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx/GetMiningModels" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMiningModelNodes">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx/GetMiningModelNodes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PredictAll4AlkaneRiColumnTypeComposition">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx/PredictAll4AlkaneRiColumnTypeComposition" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PredictSingle">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx/PredictSingle" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PredictMany">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx/PredictMany" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DrillThrough">
+      <soap:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx/DrillThrough" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="wsPredictionSoap12" type="tns:wsPredictionSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetMiningModels">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx/GetMiningModels" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMiningModelNodes">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx/GetMiningModelNodes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PredictAll4AlkaneRiColumnTypeComposition">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx/PredictAll4AlkaneRiColumnTypeComposition" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PredictSingle">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx/PredictSingle" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PredictMany">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx/PredictMany" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DrillThrough">
+      <soap12:operation soapAction="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx/DrillThrough" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="wsPredictionHttpGet" type="tns:wsPredictionHttpGet">
+    <http:binding verb="GET" />
+    <wsdl:operation name="GetMiningModels">
+      <http:operation location="/GetMiningModels" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PredictAll4AlkaneRiColumnTypeComposition">
+      <http:operation location="/PredictAll4AlkaneRiColumnTypeComposition" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DrillThrough">
+      <http:operation location="/DrillThrough" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="wsPredictionHttpPost" type="tns:wsPredictionHttpPost">
+    <http:binding verb="POST" />
+    <wsdl:operation name="GetMiningModels">
+      <http:operation location="/GetMiningModels" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PredictAll4AlkaneRiColumnTypeComposition">
+      <http:operation location="/PredictAll4AlkaneRiColumnTypeComposition" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DrillThrough">
+      <http:operation location="/DrillThrough" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="wsPrediction">
+    <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+These web services provide access to methods for prediction of chemical sub-groups by means of user submitted mass spectra.
+Please send all feedback to &lt;a href="mailto:hummel@mpimp-golm.mpg.de"&gt;hummel@mpimp-golm.mpg.de&lt;/a&gt;</wsdl:documentation>
+    <wsdl:port name="wsPredictionSoap" binding="tns:wsPredictionSoap">
+      <soap:address location="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx" />
+    </wsdl:port>
+    <wsdl:port name="wsPredictionSoap12" binding="tns:wsPredictionSoap12">
+      <soap12:address location="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx" />
+    </wsdl:port>
+    <wsdl:port name="wsPredictionHttpGet" binding="tns:wsPredictionHttpGet">
+      <http:address location="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx" />
+    </wsdl:port>
+    <wsdl:port name="wsPredictionHttpPost" binding="tns:wsPredictionHttpPost">
+      <http:address location="http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

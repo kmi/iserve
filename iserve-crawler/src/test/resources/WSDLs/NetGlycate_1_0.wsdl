@@ -1,0 +1,187 @@
+<?xml version="1.0"?>
+<wsdl:definitions 
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+xmlns:tns="http://www.cbs.dtu.dk/ws/WSNetGlycate_1_0" 
+xmlns:netglycate="http://www.cbs.dtu.dk/ws/ws-netglycate" 
+xmlns:common="http://www.cbs.dtu.dk/ws/ws-common" 
+xmlns:soapenv="http://schemas.xmlsoap.org/wsdl/soap/" 
+xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+xmlns="http://schemas.xmlsoap.org/wsdl/" 
+targetNamespace="http://www.cbs.dtu.dk/ws/WSNetGlycate_1_0">
+
+	<wsdl:types>
+		<xsd:schema>
+			<!-- XSD -->
+			<xsd:import namespace="http://www.cbs.dtu.dk/ws/ws-netglycate" schemaLocation="ws_netglycate_1_0.xsd"/>
+			<!-- XSD -->
+			<xsd:import namespace="http://www.cbs.dtu.dk/ws/ws-common" schemaLocation="../common/ws_common_1_0b.xsd"/>
+		</xsd:schema>
+		<schema targetNamespace="http://www.cbs.dtu.dk/ws/WSNetGlycate_1_0" 
+		xmlns="http://www.w3.org/2001/XMLSchema" 
+		xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+		xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+			<xsd:element name="runService" type="netglycate:runService"/>
+			<xsd:element name="runServiceResponse" type="common:runServiceResponse"/>
+			<xsd:element name="fetchResult" type="common:fetchResult"/>
+			<xsd:element name="fetchResultResponse" type="netglycate:fetchResultResponse"/>
+			<xsd:element name="pollQueue" type="common:pollQueue"/>
+			<xsd:element name="pollQueueResponse" type="common:pollQueueResponse"/>
+		</schema>
+	</wsdl:types>
+
+	<!-- ==================================================================== -->
+
+	<message name="runServiceRequest">
+		<part name="parameters" element="tns:runService"/>
+	</message>
+	<message name="runServiceResponse">
+		<part name="parameters" element="tns:runServiceResponse"/>
+	</message>
+	<message name="fetchResultRequest">
+		<part name="parameters" element="tns:fetchResult"/>
+	</message>
+	<message name="fetchResultResponse">
+		<part name="parameters" element="tns:fetchResultResponse"/>
+	</message>
+	<message name="pollQueueRequest">
+		<part name="job" element="tns:pollQueue"/>
+	</message>
+	<message name="pollQueueResponse">
+		<part name="queueentry" element="tns:pollQueueResponse"/>
+	</message>
+
+	<!-- ==================================================================== -->
+
+	<portType name="WSNetGlycate_1_0">
+		<operation name="runService">
+			<input name="runServiceRequest" message="tns:runServiceRequest"/>
+			<output name="runServiceResponse" message="tns:runServiceResponse"/>
+		</operation>
+		<operation name="pollQueue">
+			<input name="pollQueueRequest" message="tns:pollQueueRequest"/>
+			<output name="pollQueueResponse" message="tns:pollQueueResponse"/>
+		</operation>
+		<operation name="fetchResult">
+			<input name="fetchResultRequest" message="tns:fetchResultRequest"/>
+			<output name="fetchResultResponse" message="tns:fetchResultResponse"/>
+		</operation>
+	</portType>
+
+	<!-- ==================================================================== -->
+
+	<binding name="WSNetGlycate_1_0" type="tns:WSNetGlycate_1_0">
+		<soapenv:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="pollQueue">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSNetGlycate_1_0#pollQueue"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSNetGlycate_1_0"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSNetGlycate_1_0"/>
+			</output>
+		</operation>
+		<operation name="runService">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSNetGlycate_1_0#runService"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSNetGlycate_1_0"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSNetGlycate_1_0"/>
+			</output>
+		</operation>
+		<operation name="fetchResult">
+			<soapenv:operation soapAction="http://www.cbs.dtu.dk/ws/WSNetGlycate_1_0#fetchResult"/>
+			<input>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSNetGlycate_1_0"/>
+			</input>
+			<output>
+				<soapenv:body use="literal" namespace="http://www.cbs.dtu.dk/ws/WSNetGlycate_1_0"/>
+			</output>
+		</operation>
+	</binding>
+
+	<!-- ==================================================================== -->
+
+	<service name="WSNetGlycate_1_0">
+		<documentation>
+			INTRODUCTION
+
+			This Web Service implements NetGlycate 1.0. It predicts glycation of
+			Epsilon amino groups of lysines in mammalian proteins. The method
+			is described in detail in the following article:
+
+			Analysis and prediction of mammalian protein glycation.
+			Morten Bo Johansen, Lars Kiemer and Soren Brunak
+			Glycobiology, 16:844-853, 2006.
+
+			Alongside this Web Service the NetGlycate method is also implemented as
+			a traditional paste-and-click WWW server at:
+
+			    http://www.cbs.dtu.dk/services/NetGlycate/
+
+			The traditional server offers more detailed output (graphics), extended
+			functionality  and comprehensive documentation. It is suitable for close
+			investigation of few proteins; this service is recommended for high
+			throughput projects.
+
+
+			WEB SERVICE OPERATION
+
+			This Web Service is fully asynchronous; the usage is split into the
+			following three operations:
+
+			1. runService    
+
+			   Input:  An object of the type 'sequencedata' (see the complete definition
+			           in http://www.cbs.dtu.dk/ws/common/ws_common_1_0b.xsd) holding
+			           protein sequences with mandatory unique identifiers. Each
+			           'sequence' is a pair of 'id' (identifier) and 'seq' (sequence
+			           itself). The sequences must be written in one letter amino acid
+			           code: `acdefghiklmnpqrstvwy' or `ACDEFGHIKLMNPQRSTVWY'. Other
+			           letters will be converted to `X' and treated as unknown amino
+			           acids. Other symbols, such as whitespace and numbers, will be
+			           ignored. 
+
+			   Output: Unique job identifier
+
+			2. pollQueue
+
+			   Input:  Unique job identifier
+
+			   Output: 'jobstatus' - the status of the job
+			           Possible values are QUEUED, ACTIVE, FINISHED, WAITING,
+			           REJECTED, UNKNOWN JOBID or QUEUE DOWN
+
+			3. fetchResult
+
+			   Input:  Unique job identifier of a FINISHED job
+
+			   Output: An object of the type 'anndata' (see the complete definition
+			           in http://www.cbs.dtu.dk/ws/common/ws_common_1_0b.xsd) holding
+			           the predition results. 'annsource' states the 'method' (in
+			           this case always 'netglycate') and 'version' (in this case
+			           always 1.0). The objects of the type 'annrecord' hold the
+			           predictions for a given residue in a given sequence, the
+			           fields are:
+
+			           feature       - always 'glycate';
+			           pos           - sequence residue;
+			           score         - prediction score, if above 0 the residue
+			                           is a predicted glycation site, the higher
+			                           the score the more secure the prediction;
+			           comment       - appears only when the score is above 0,
+			                           contains the word 'YES'.
+
+
+			CONTACT
+
+			Questions concerning the scientific aspects of the NetGlycate method
+			should go to Morten Bo Johansen, mbj@cbs.dtu.dk; technical questions
+			concerning the Web Service should go to Peter Fischer Hallin,
+			pfh@cbs.dtu.dk or Kristoffer Rapacki, rapacki@cbs.dtu.dk.
+		</documentation>
+		<port name="WSNetGlycate_1_0" binding="tns:WSNetGlycate_1_0">
+			<soapenv:address location="http://ws.cbs.dtu.dk:80/cgi-bin/soap/ws/simple.cgi"/>
+		</port>
+	</service>
+</wsdl:definitions>
