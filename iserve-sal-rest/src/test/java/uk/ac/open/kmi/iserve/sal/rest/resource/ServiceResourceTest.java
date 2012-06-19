@@ -57,11 +57,12 @@ public class ServiceResourceTest {
 	"?modelref rdfs:subClassOf <http://www.service-finder.eu/ontologies/ServiceCategories#Category> . \n" +
 	"}\n";
 	
-	private static final String USER_NAME = "dong";
+	private static final String USER_NAME = "cpedrinaci";
 	
-	private static final String PASSWORD = "dong";
+	private static final String PASSWORD = "qwerty";
 
 	private static final String ISERVE_URL = "http://localhost:9080/iserve-sal-rest";
+//	private static final String ISERVE_URL = "http://iserve-dev.kmi.open.ac.uk/iserve";
 	
 	private IServeHttpClient iServeClient;
 	
@@ -258,7 +259,26 @@ public class ServiceResourceTest {
 	 */
 	@Test
 	public final void testDeleteService() {
-		fail("Not yet implemented"); // TODO
+		
+//		String serviceUrl = "http://iserve-dev.kmi.open.ac.uk/iserve/resource/services/c8009bd6-4005-4645-b70a-285e36cb7af1#findTrainStations";
+//		String serviceUrl = "http://iserve-dev.kmi.open.ac.uk/iserve/resource/services/d4e004c3-04e6-4d4b-b07f-43007e89610c#Nestoria";
+//		String serviceUrl = "http://iserve-dev.kmi.open.ac.uk/iserve/resource/services/9baa493f-53c9-47c5-82b2-b8742a75817b#TransportationGovUkService";
+//		String serviceUrl = "http://iserve-dev.kmi.open.ac.uk/iserve/resource/services/c4e16ab6-3bad-47bb-b613-90ef78232e31#NestoriaService";
+		String serviceUrl = "_:node4263";
+
+		String result;
+		try {
+			result = iServeClient.removeService(serviceUrl);
+			System.out.println("Result: " + result);
+		} catch (HttpException e) {
+			fail("There was an exception");
+			e.printStackTrace();
+		} catch (IOException e) {
+			fail("There was an exception");
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 }
