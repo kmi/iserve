@@ -40,14 +40,6 @@ public class ModelReferenceUtil {
 		this.connector = connector;
 	}
 
-	public void setProxy(String proxyHost, String proxyPort) {
-		if ( proxyHost != null && proxyPort != null ) {
-			Properties prop = System.getProperties();
-			prop.put("http.proxyHost", proxyHost);
-			prop.put("http.proxyPort", proxyPort);
-		}
-	}
-
 	public void inputModelReference(String modelrefUri) throws MalformedURLException, IOException {
 		String contextUri = URIUtil.getNameSpace(modelrefUri);
 		RepositoryModel model = connector.openRepositoryModel();

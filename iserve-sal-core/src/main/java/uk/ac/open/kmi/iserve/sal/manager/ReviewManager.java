@@ -1,5 +1,5 @@
 /*
-   Copyright ${year}  Knowledge Media Institute - The Open University
+   Copyright 2012  Knowledge Media Institute - The Open University
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -12,24 +12,46 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package uk.ac.open.kmi.iserve.sal.manager;
 
-public class ReviewManager {
+import java.net.URI;
+import java.util.List;
 
-	public ReviewManager() {
-	}
+/**
+ * Interface defining the CRUD methods that any Review Manager should provide
+ * Review Manager at the moment take care of Reviews, Comments, and Tags
+ * Eventually we may want to take Tagging away from this interface. 
+ * 
+ * TODO: Implement ratings, comments and tags properly not just Strings.
+ * TODO: Add methods for listing all the items by a user
+ */
+public interface ReviewManager {
 
-	public void rateService(String agentUri, String serviceUri, String rating) {
-		
-	}
+	// Create
+	public abstract boolean addRating(URI agentUri, URI serviceUri, String rating);
 
-	public void commentService(String agentUri, String serviceUri, String comment) {
-		
-	}
+	public abstract boolean addComment(URI agentUri, URI serviceUri, String comment);
 
-	public void tagService(String agentUri, String serviceUri, String tag) {
-		
-	}
+	public abstract boolean addTag(URI agentUri, URI serviceUri, String tag);
+	
+	// Read
+	public abstract List<String> getRatings(URI serviceUri);
+	
+	public abstract List<String> getComments(URI serviceUri);
+	
+	public abstract List<String> getTags(URI serviceUri);
+	
+	//Update (only seems to make sense for rating)
+	public abstract boolean updateRating(URI agentUri, URI serviceUri, String rating);
+	
+	// Delete
+	public abstract boolean deleteRating(URI agentUri, URI serviceUri);
+	
+	public abstract boolean deleteComment(URI agentUri, URI serviceUri);
+	
+	public abstract boolean deleteTag(URI agentUri, URI serviceUri, String tag);
+	
+	
 
 }

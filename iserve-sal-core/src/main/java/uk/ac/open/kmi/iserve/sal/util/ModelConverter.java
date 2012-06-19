@@ -6,15 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.ontoware.aifbcommons.collection.ClosableIterator;
+import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.Statement;
 import org.ontoware.rdf2go.model.node.Node;
 import org.ontoware.rdf2go.model.node.Variable;
 import org.ontoware.rdf2go.vocabulary.RDFS;
-import org.openrdf.rdf2go.RepositoryModel;
 
 import uk.ac.open.kmi.iserve.commons.vocabulary.DC;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.sal.model.common.URI;
 import uk.ac.open.kmi.iserve.sal.model.impl.MessageContentImpl;
 import uk.ac.open.kmi.iserve.sal.model.impl.MessagePartImpl;
 import uk.ac.open.kmi.iserve.sal.model.impl.ModelReferenceImpl;
@@ -23,7 +24,6 @@ import uk.ac.open.kmi.iserve.sal.model.impl.QueryResultImpl;
 import uk.ac.open.kmi.iserve.sal.model.impl.QueryRowImpl;
 import uk.ac.open.kmi.iserve.sal.model.impl.ServiceImpl;
 import uk.ac.open.kmi.iserve.sal.model.impl.URIImpl;
-import uk.ac.open.kmi.iserve.sal.model.common.URI;
 import uk.ac.open.kmi.iserve.sal.model.query.QueryResult;
 import uk.ac.open.kmi.iserve.sal.model.query.QueryRow;
 import uk.ac.open.kmi.iserve.sal.model.service.MessageContent;
@@ -34,7 +34,7 @@ import uk.ac.open.kmi.iserve.sal.model.service.Service;
 
 public class ModelConverter {
 
-	public static Service coverterService(URI serviceUri, RepositoryModel model) {
+	public static Service coverterService(URI serviceUri, Model model) {
 		Service result = new ServiceImpl(serviceUri);
 		org.ontoware.rdf2go.model.node.URI uri = convertUri(serviceUri);
 		result.setSources(getUriValues(uri, DC.source, model));
@@ -45,7 +45,7 @@ public class ModelConverter {
 		return result;
 	}
 
-	private static List<Operation> getOperations(org.ontoware.rdf2go.model.node.URI serviceUri, RepositoryModel model) {
+	private static List<Operation> getOperations(org.ontoware.rdf2go.model.node.URI serviceUri, Model model) {
 		List<Operation> result = new ArrayList<Operation>();
 		List<URI> operationUriList = getUriValues(serviceUri, MSM.hasOperation, model);
 		for ( URI operationUri : operationUriList ) {
@@ -64,7 +64,7 @@ public class ModelConverter {
 	}
 
 	private static List<MessageContent> getMessages(org.ontoware.rdf2go.model.node.URI operationUri,
-			org.ontoware.rdf2go.model.node.URI messageType, RepositoryModel model) {
+			org.ontoware.rdf2go.model.node.URI messageType, Model model) {
 		List<MessageContent> result = new ArrayList<MessageContent>();
 		List<URI> messageUriList = getUriValues(operationUri, messageType, model);
 		for ( URI messageUri : messageUriList ) {
@@ -80,7 +80,7 @@ public class ModelConverter {
 		return result;
 	}
 
-	private static List<MessagePart> getMessageParts(org.ontoware.rdf2go.model.node.URI messageUri, RepositoryModel model) {
+	private static List<MessagePart> getMessageParts(org.ontoware.rdf2go.model.node.URI messageUri, Model model) {
 		List<MessagePart> result = new ArrayList<MessagePart>();
 		List<URI> messagePartUriList = getUriValues(messageUri, MSM.hasPart, model);
 		for ( URI messagePartUri : messagePartUriList ) {
@@ -93,7 +93,7 @@ public class ModelConverter {
 		return result;
 	}
 
-	private static List<URI> getUriValues(org.ontoware.rdf2go.model.node.URI subjectUri, org.ontoware.rdf2go.model.node.URI propertyUri, RepositoryModel model) {
+	private static List<URI> getUriValues(org.ontoware.rdf2go.model.node.URI subjectUri, org.ontoware.rdf2go.model.node.URI propertyUri, Model model) {
 		List<URI> result = new ArrayList<URI>();
 		ClosableIterator<Statement> stmts = model.findStatements(subjectUri, propertyUri, Variable.ANY);
 		if ( stmts != null ) {
@@ -107,7 +107,7 @@ public class ModelConverter {
 		return result;
 	}
 
-	private static List<String> getStringValues(org.ontoware.rdf2go.model.node.URI subjectUri, org.ontoware.rdf2go.model.node.URI propertyUri, RepositoryModel model) {
+	private static List<String> getStringValues(org.ontoware.rdf2go.model.node.URI subjectUri, org.ontoware.rdf2go.model.node.URI propertyUri, Model model) {
 		List<String> result = new ArrayList<String>();
 		ClosableIterator<Statement> stmts = model.findStatements(subjectUri, propertyUri, Variable.ANY);
 		if ( stmts != null ) {
@@ -122,7 +122,7 @@ public class ModelConverter {
 		return result;
 	}
 
-	private static List<ModelReference> getModelReferenceValues(org.ontoware.rdf2go.model.node.URI subjectUri, RepositoryModel model) {
+	private static List<ModelReference> getModelReferenceValues(org.ontoware.rdf2go.model.node.URI subjectUri, Model model) {
 		List<ModelReference> result = new ArrayList<ModelReference>();
 		ClosableIterator<Statement> stmts = model.findStatements(subjectUri, MSM.modelReference, Variable.ANY);
 		if ( stmts != null ) {

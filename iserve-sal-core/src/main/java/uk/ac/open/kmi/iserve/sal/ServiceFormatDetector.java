@@ -40,10 +40,15 @@ public class ServiceFormatDetector {
 			} else {
 				return ServiceFormat.RDFXML;
 			}
-		} else if ( mediaType.contains("xml") ) {
+//		} else if ( mediaType.contains("xml") ) {
+//			return ServiceFormat.WSDL;
+//		}
+			// TODO: Remove this hack!
+		} else if ( mediaType.contains("xml") || mediaType.equalsIgnoreCase("text/plain") ) {
 			return ServiceFormat.WSDL;
 		}
 
+		//TODO: return the detected format instead
 		return ServiceFormat.UNSUPPORTED;
 	}
 
