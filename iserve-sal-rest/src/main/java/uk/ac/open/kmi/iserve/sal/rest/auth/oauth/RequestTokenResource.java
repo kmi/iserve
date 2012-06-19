@@ -13,8 +13,8 @@ import javax.ws.rs.core.Response.Status;
 
 import org.openrdf.repository.RepositoryException;
 
+import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 import uk.ac.open.kmi.iserve.sal.model.oauth.Consumer;
-import uk.ac.open.kmi.iserve.sal.rest.Factory;
 
 import com.sun.jersey.api.core.HttpContext;
 import com.sun.jersey.oauth.server.OAuthServerRequest;
@@ -26,11 +26,7 @@ import com.sun.jersey.oauth.signature.OAuthSignatureException;
 @Path("/request_token")
 public class RequestTokenResource {
 
-	private KeyManager keyManager;
-
-	public RequestTokenResource() throws RepositoryException, IOException {
-		keyManager = Factory.getInstance().createKeyManager();
-	}
+	public RequestTokenResource() throws RepositoryException, IOException { }
 
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
@@ -44,7 +40,7 @@ public class RequestTokenResource {
 
 		OAuthSecrets secrets = new OAuthSecrets();
 		// set secrets based on consumer key and/or token in parameters
-		Consumer consumer = keyManager.findConsumer(params.getConsumerKey());
+		Consumer consumer = ManagerSingleton.getInstance().findConsumer(params.getConsumerKey());
 		if ( consumer != null && consumer.getConsumerKey() != null && consumer.getConsumerSecret() != null ) {
 			secrets.setConsumerSecret(consumer.getConsumerSecret());
 		} else {
@@ -57,7 +53,7 @@ public class RequestTokenResource {
 		}
 		String consumer_key = params.getConsumerKey();
 		String[] requestToken = KeyGenerator.generateRequestToken(consumer_key);
-		keyManager.saveRequestToken(requestToken[0], requestToken[1], consumer_key);
+		ManagerSingleton.getInstance().saveRequestToken(requestToken[0], requestToken[1], consumer_key);
 		return Response.ok().entity("oauth_token=" + requestToken[0] + "&oauth_token_secret=" + requestToken[1]).build();
 	}
 

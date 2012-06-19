@@ -30,8 +30,8 @@ import org.openid4java.message.MessageException;
 import org.openid4java.message.ParameterList;
 import org.openrdf.repository.RepositoryException;
 
+import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 import uk.ac.open.kmi.iserve.sal.model.oauth.RequestToken;
-import uk.ac.open.kmi.iserve.sal.rest.Factory;
 
 @Path("/authorize")
 public class AuthorizeResource {
@@ -72,8 +72,6 @@ public class AuthorizeResource {
 		"</body>\n" +
 		"</html>";
 
-	private KeyManager keyManager;
-
 	private static ConsumerManager manager = null;
 
 	public AuthorizeResource() throws ConsumerException, RepositoryException, IOException {
@@ -81,7 +79,6 @@ public class AuthorizeResource {
 		if ( manager == null ) {
 			manager = new ConsumerManager();
 		}
-		keyManager = Factory.getInstance().createKeyManager();
 	}
 
 	@GET
@@ -115,7 +112,7 @@ public class AuthorizeResource {
             	HttpSession session = request.getSession();
     			session.setAttribute("logged-in", verified.toString());
     			session.removeAttribute("openid-disc");
-    			RequestToken requestToken = keyManager.findRequestToken(oauthToken);
+    			RequestToken requestToken = ManagerSingleton.getInstance().findRequestToken(oauthToken);
     			String entityString = authHtml.replaceAll("<<<customer_key>>>", requestToken.getConsumer().toString()).replaceAll("<<<openid>>>", verified.toString())
     					.replace("<<<oauth_token>>>", oauthToken);
             	return Response.ok().entity(entityString).build();
@@ -125,6 +122,7 @@ public class AuthorizeResource {
 		}
 	}
 
+	//TODO: Fix authentication here!
 	@POST
 	@Produces(MediaType.TEXT_HTML)
 	public Response login(@FormParam("oauth_token") String oauthToken,
@@ -136,7 +134,7 @@ public class AuthorizeResource {
 			if ( allowString != null && allowString.endsWith("Allow") ) {
 				// save the authorized oauth_token
 				// TODO: callback
-				keyManager.saveAuthorization(oauthToken, userSuppliedString, null);
+				ManagerSingleton.getInstance().saveAuthorization(oauthToken, userSuppliedString, null);
 				return Response.ok().entity("Go to Access Token").build();
 			} else if ( denyString != null && denyString.endsWith("Deny")) {
 				return Response.status(Status.BAD_REQUEST).entity("Denied by the user").build();				
