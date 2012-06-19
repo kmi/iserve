@@ -35,9 +35,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
-import javax.wsdl.WSDLException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
 
 import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.model.Syntax;
@@ -49,22 +46,19 @@ import org.openrdf.rdf2go.RepositoryModel;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 
-import com.sun.jersey.api.container.MappableContainerException;
-
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.io.URIUtil;
 import uk.ac.open.kmi.iserve.commons.vocabulary.LOG;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve.sal.config.SalConfig;
 import uk.ac.open.kmi.iserve.sal.exception.LogException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve.sal.manager.LogManager;
-import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
-import uk.ac.open.kmi.iserve.sal.rest.Factory;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 import uk.ac.open.kmi.iserve.sal.rest.auth.AuthenticationException;
 import uk.ac.open.kmi.iserve.sal.util.HtmlUtil;
 import uk.ac.open.kmi.iserve.sal.util.ModelReferenceUtil;
 import uk.ac.open.kmi.iserve.sal.util.XmlUtil;
+
+import com.sun.jersey.api.container.MappableContainerException;
 
 @Path("/services")
 public class ServiceResource {
@@ -89,13 +83,7 @@ public class ServiceResource {
 	 */
 	private static final String SERVICES_REL_PATH = "services";
 
-	private ServiceManager serviceManager;
-
-	private LogManager logManager;
-
 	private static Syntax xmlSyntax = new Syntax("xml", "text/xml", ".xml");
-
-	private SalConfig config;
 
 	@Context
 	UriInfo uriInfo;
@@ -103,10 +91,7 @@ public class ServiceResource {
 	@Context
 	SecurityContext security;
 
-	public ServiceResource() throws RepositoryException, TransformerConfigurationException, WSDLException, ParserConfigurationException, IOException {
-		serviceManager = Factory.getInstance().createServiceManager();
-		logManager = Factory.getInstance().createLogManager();
-		config = Factory.getInstance().getConfig();
+	public ServiceResource() {
 		Syntax.register(xmlSyntax);
 	}
 
@@ -165,6 +150,7 @@ public class ServiceResource {
 	@Produces({MediaType.TEXT_HTML})
 	public Response addService(String html, @HeaderParam("Content-Location") String locationUri,
 			@HeaderParam("Content-Type") String contentType) throws ServiceException, URISyntaxException, LogException {
+		
 		if ( security.getUserPrincipal() == null ) {
 			throw new MappableContainerException(
 					new AuthenticationException(
@@ -182,7 +168,7 @@ public class ServiceResource {
 			if ( (contentType != null) && ("".equalsIgnoreCase(contentType) == false) ) {
 				if ( contentType.equalsIgnoreCase(MediaType.TEXT_HTML) ) {
 					fileName = "service.html";
-				} else if ( contentType.equalsIgnoreCase(MediaType.TEXT_XML) &&
+				} else if ( contentType.equalsIgnoreCase(MediaType.TEXT_XML) ||
 						contentType.equalsIgnoreCase(MediaType.APPLICATION_XML) ) {
 					fileName = "service.xml";
 				} else if ( contentType.equalsIgnoreCase("application/rdf+xml") ) {
@@ -197,9 +183,10 @@ public class ServiceResource {
 				}
 			}
 		}
-		String uriString = serviceManager.addService(fileName, html, locationUri);
+		String uriString = ManagerSingleton.getInstance().addService(fileName, html, locationUri);
 //		String oauthConsumer = ((SecurityFilter.Authorizer) security).getOAuthConsumer();
-		logManager.log(userFoafId, LOG.ITEM_CREATION, uriString, new Date(), "REST");
+		// TODO: Push this down to the above method
+		ManagerSingleton.getInstance().log(userFoafId, LOG.ITEM_CREATION, uriString, new Date(), "REST");
 		String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
 			"  <body>\nA service is created at <a href='" + uriString + "'>" + uriString + "</a>\n  </body>\n</html>";
 		return Response.status(Status.CREATED).contentLocation(new URI(uriString)).entity(htmlString).build();
@@ -216,8 +203,9 @@ public class ServiceResource {
 		}
 
 		String userFoafId = security.getUserPrincipal().getName();
-		String uriString = serviceManager.deleteServiceById(id);
-		logManager.log(userFoafId, LOG.ITEM_DELETING, uriString, new Date(), "REST");
+		String uriString = ManagerSingleton.getInstance().deleteServiceById(id);
+		// TODO: Push this down to the above method
+		ManagerSingleton.getInstance().log(userFoafId, LOG.ITEM_DELETING, uriString, new Date(), "REST");
 		String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
 			"  <body>\nA service is removed from <a href='" + uriString + "'>" + uriString + "</a>\n  </body>\n</html>";
 		return htmlString;
@@ -234,12 +222,12 @@ public class ServiceResource {
 		} else if ( absolutePath.endsWith("page/services/") ) {
 			StringBuffer sb = new StringBuffer();
 			sb.append(HtmlUtil.LIST_HTML_PREFIX.replaceAll("<<<title>>>", "Service List"));
-			List<String> serviceList = serviceManager.listService();
+			List<String> serviceList = ManagerSingleton.getInstance().listService();
 			sb.append(HtmlUtil.uriListToTable(serviceList));
 			sb.append(HtmlUtil.LIST_HTML_SUFFIX);
 			return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
 		} else if ( absolutePath.endsWith("data/services/") ) {
-			RDFRepositoryConnector connector = serviceManager.getConnector();
+			RDFRepositoryConnector connector = ManagerSingleton.getInstance().getServicesRepositoryConnector();
 			String queryString = "SELECT ?service WHERE { ?service " + RDF.type.toSPARQL() + " " + MSM.Service.toSPARQL() + "}";
 			String result = connector.query(queryString);
 			return Response.ok(result, "application/sparql-results+xml").build();
@@ -258,12 +246,12 @@ public class ServiceResource {
 		} else if (absolutePath.endsWith("page/services/" + id + "/")) {
 			StringBuffer sb = new StringBuffer();
 			sb.append(HtmlUtil.LIST_HTML_PREFIX.replaceAll("<<<title>>>", "Service Description"));
-			Model model = serviceManager.getServiceAsModelById(id);
+			Model model = ManagerSingleton.getInstance().getServiceAsModelById(id);
 			sb.append(HtmlUtil.modelToTable(model, id));
 			sb.append(HtmlUtil.LIST_HTML_SUFFIX);
 			return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
 		} else if (absolutePath.endsWith("data/services/" + id + "/")) {
-			Model model = serviceManager.getServiceAsModelById(id);			
+			Model model = ManagerSingleton.getInstance().getServiceAsModelById(id);			
 			if ( syntax != null ) {
 				if ( syntax.equals(Syntax.Ntriples) ) {
 					String result = model.serialize(Syntax.Ntriples);
@@ -278,9 +266,8 @@ public class ServiceResource {
 					String result = model.serialize(Syntax.Trix);
 					return Response.ok(result, "application/rdf+xml").build();
 				} else if ( syntax.equals(xmlSyntax) ) {
-					RepositoryModel m = (RepositoryModel) serviceManager.getServiceAsModelById(id);
-					ModelReferenceUtil.getInstance().setRDFRepositoryConnector(serviceManager.getConnector());
-					ModelReferenceUtil.getInstance().setProxy(config.getProxyHostName(), config.getProxyPort());
+					RepositoryModel m = (RepositoryModel) ManagerSingleton.getInstance().getServiceAsModelById(id);
+					ModelReferenceUtil.getInstance().setRDFRepositoryConnector(ManagerSingleton.getInstance().getServicesRepositoryConnector());
 					String result = XmlUtil.serializeService(m);
 					return Response.ok(result, "text/xml").build();
 				}

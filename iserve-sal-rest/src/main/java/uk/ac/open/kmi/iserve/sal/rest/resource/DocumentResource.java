@@ -32,13 +32,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
 import org.openrdf.repository.RepositoryException;
-
-import com.sun.jersey.api.container.MappableContainerException;
 
 import uk.ac.open.kmi.iserve.commons.io.URIUtil;
 import uk.ac.open.kmi.iserve.commons.vocabulary.LOG;
@@ -46,16 +44,14 @@ import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 import uk.ac.open.kmi.iserve.sal.exception.LogException;
 import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
 import uk.ac.open.kmi.iserve.sal.manager.LogManager;
-import uk.ac.open.kmi.iserve.sal.rest.Factory;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 import uk.ac.open.kmi.iserve.sal.rest.auth.AuthenticationException;
 import uk.ac.open.kmi.iserve.sal.util.HtmlUtil;
 
+import com.sun.jersey.api.container.MappableContainerException;
+
 @Path("/documents")
 public class DocumentResource {
-
-	private DocumentManager documentManager;
-
-	private LogManager logManager;
 
 	@Context
 	UriInfo uriInfo;
@@ -63,10 +59,7 @@ public class DocumentResource {
 	@Context
 	SecurityContext security;
 
-	public DocumentResource() throws IOException, RepositoryException {
-		documentManager = Factory.getInstance().createDocumentManager();
-		logManager = Factory.getInstance().createLogManager();
-	}
+	public DocumentResource() throws IOException, RepositoryException { }
 
 	@GET
 	@Produces({MediaType.TEXT_HTML, MediaType.WILDCARD})
@@ -134,8 +127,9 @@ public class DocumentResource {
 				}
 			}
 		}
-		String uriString = documentManager.addDocument(fileName, serviceDescription);
-		logManager.log(userFoafId, LOG.ITEM_CREATION, uriString, new Date(), "REST");
+		String uriString = ManagerSingleton.getInstance().addDocument(fileName, serviceDescription);
+		// TODO: Push this down to the above method
+		ManagerSingleton.getInstance().log(userFoafId, LOG.ITEM_CREATION, uriString, new Date(), "REST");
 		String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
 			"  <body>\nA document is created at <a href='" + uriString + "'>" + uriString + "</a>\n  </body>\n</html>";
 		return Response.status(Status.CREATED).contentLocation(new URI(uriString)).entity(htmlString).build();
@@ -153,8 +147,9 @@ public class DocumentResource {
 
 		String userFoafId = security.getUserPrincipal().getName();
 
-		String uriString = documentManager.deleteDocumentById(id);
-		logManager.log(userFoafId, LOG.ITEM_DELETING, uriString, new Date(), "REST");
+		String uriString = ManagerSingleton.getInstance().deleteDocumentById(id);
+		// TODO: Push this down to the above method
+		ManagerSingleton.getInstance().log(userFoafId, LOG.ITEM_DELETING, uriString, new Date(), "REST");
 		String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
 			"  <body>\nA document is removed from <a href='" + uriString + "'>" + uriString + "</a>\n  </body>\n</html>";
 		return htmlString;
@@ -172,8 +167,9 @@ public class DocumentResource {
 
 		String userFoafId = security.getUserPrincipal().getName();
 
-		String uriString = documentManager.deleteDocumentById(id);
-		logManager.log(userFoafId, LOG.ITEM_DELETING, uriString, new Date(), "REST");
+		String uriString = ManagerSingleton.getInstance().deleteDocumentById(id);
+		// TODO: Push this down to the above method
+		ManagerSingleton.getInstance().log(userFoafId, LOG.ITEM_DELETING, uriString, new Date(), "REST");
 		String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
 			"  <body>\nA document is removed from <a href='" + uriString + "'>" + uriString + "</a>\n  </body>\n</html>";
 		return htmlString;
@@ -188,10 +184,10 @@ public class DocumentResource {
 			newPath += redirect + "/documents/" + id;
 			return Response.seeOther(new URI(newPath)).build();
 		} else if (absolutePath.endsWith("page/documents/" + id + "/")) {
-			String result = documentManager.getDocumentById(id);
+			String result = ManagerSingleton.getInstance().getDocumentById(id);
 			return Response.ok(result).build();
 		} else if (absolutePath.endsWith("data/documents/" + id + "/")) {
-			String result = documentManager.getDocumentById(id);
+			String result = ManagerSingleton.getInstance().getDocumentById(id);
 			return Response.ok(result).build();
 		}
 		if (absolutePath.endsWith("resource/documents/" + id + "/" + filename + "/")) {
@@ -199,10 +195,10 @@ public class DocumentResource {
 			newPath += redirect + "/documents/" + id + "/" + filename;
 			return Response.seeOther(new URI(newPath)).build();
 		} else if (absolutePath.endsWith("page/documents/" + id + "/" + filename + "/")) {
-			String result = documentManager.getDocumentById(id);
+			String result = ManagerSingleton.getInstance().getDocumentById(id);
 			return Response.ok(result).build();
 		} else if (absolutePath.endsWith("data/documents/" + id + "/" + filename + "/")) {
-			String result = documentManager.getDocumentById(id);
+			String result = ManagerSingleton.getInstance().getDocumentById(id);
 			return Response.ok(result).build();
 		}
 		return Response.status(Status.BAD_REQUEST).build();
@@ -219,7 +215,7 @@ public class DocumentResource {
 		} else if ( absolutePath.endsWith("page/documents/") ) {
 			StringBuffer sb = new StringBuffer();
 			sb.append(HtmlUtil.LIST_HTML_PREFIX.replaceAll("<<<title>>>", "Document List"));
-			List<String> serviceList = documentManager.listDocument();
+			List<String> serviceList = ManagerSingleton.getInstance().listDocument();
 			sb.append(HtmlUtil.uriListToTable(serviceList));
 			sb.append(HtmlUtil.LIST_HTML_SUFFIX);
 			return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
@@ -241,7 +237,7 @@ public class DocumentResource {
 
 			StringBuffer sb = new StringBuffer();
 			sb.append(header);
-			List<String> uriList = documentManager.listDocument();
+			List<String> uriList = ManagerSingleton.getInstance().listDocument();
 			for (String uri : uriList) {
 				sb.append(uriHeader + uri + uriTail);
 			}
