@@ -33,7 +33,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import javax.wsdl.WSDLException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 
@@ -47,9 +46,8 @@ import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.RDFSClassificationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.RDFSInputOutputDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.disco.util.DiscoveryUtil;
-import uk.ac.open.kmi.iserve.sal.config.SalConfig;
-import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 
 import com.sun.jersey.api.NotFoundException;
 
@@ -57,9 +55,6 @@ import com.sun.jersey.api.NotFoundException;
 public class OperationDiscoveryResource {
 	
 	private Map<String, IServiceDiscoveryPlugin> plugins;
-	private SalConfig config;
-	private RDFRepositoryConnector connector;
-	private ServiceManager serviceManager;
 	
 	/**
 	 * This plugin supports discovery over services and operations
@@ -67,16 +62,14 @@ public class OperationDiscoveryResource {
 	 */
 	private boolean operationDiscovery = false;
 	
-	public OperationDiscoveryResource() throws RepositoryException, 
-		TransformerConfigurationException, IOException, WSDLException, 
-		ParserConfigurationException {
-		init();
+	public OperationDiscoveryResource() throws RepositoryException, IOException {
+
 		plugins = new HashMap<String, IServiceDiscoveryPlugin>();
 
-		IServiceDiscoveryPlugin plugin = new RDFSInputOutputDiscoveryPlugin(connector, true);
+		IServiceDiscoveryPlugin plugin = new RDFSInputOutputDiscoveryPlugin(true);
 		plugins.put(plugin.getName(), plugin);
 
-		plugin = new RDFSClassificationDiscoveryPlugin(connector, true);
+		plugin = new RDFSClassificationDiscoveryPlugin(true);
 		plugins.put(plugin.getName(), plugin);
 	}
 
@@ -116,18 +109,4 @@ public class OperationDiscoveryResource {
 		
 		return Response.ok(feed).build();
 	}
-
-	private void init() throws IOException, RepositoryException, 
-		TransformerConfigurationException, WSDLException, 
-		ParserConfigurationException {
-		String baseDir = OperationDiscoveryResource.class.getResource("/").getPath();
-		baseDir = baseDir.replaceAll("%20", " ");
-
-		Properties prop = IOUtil.readProperties(new File(baseDir + "../config.properties"));
-		prop.setProperty(SalConfig.XSLT_PATH, baseDir + "../hrests.xslt");
-		config = new SalConfig(prop);
-		serviceManager = new ServiceManager(config);
-		connector = serviceManager.getConnector();
-	}
-
 }

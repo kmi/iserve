@@ -33,7 +33,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import javax.wsdl.WSDLException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 
@@ -42,15 +41,13 @@ import org.apache.abdera.model.Feed;
 import org.openrdf.repository.RepositoryException;
 
 import uk.ac.open.kmi.iserve.commons.io.IOUtil;
-import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.AllServicesPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.RDFSClassificationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.RDFSInputOutputDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.disco.util.DiscoveryUtil;
-import uk.ac.open.kmi.iserve.sal.config.SalConfig;
-import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 
 import com.sun.jersey.api.NotFoundException;
 
@@ -58,26 +55,20 @@ import com.sun.jersey.api.NotFoundException;
 public class ServiceDiscoveryResource {
 
 	private Map<String, IServiceDiscoveryPlugin> plugins;
-	private SalConfig config;
-	private RDFRepositoryConnector connector;
-	private ServiceManager serviceManager;
 
-	public ServiceDiscoveryResource() throws RepositoryException, 
-	TransformerConfigurationException, IOException, WSDLException, 
-	ParserConfigurationException {
-		init();
+	public ServiceDiscoveryResource() throws RepositoryException, IOException {
 		plugins = new HashMap<String, IServiceDiscoveryPlugin>();
 
-		IServiceDiscoveryPlugin plugin = new RDFSInputOutputDiscoveryPlugin(connector, false);
+		IServiceDiscoveryPlugin plugin = new RDFSInputOutputDiscoveryPlugin(false);
 		plugins.put(plugin.getName(), plugin);
 
 		//		plugin = new IMatcherDiscoveryPlugin(connector);
 		//		plugins.put(plugin.getName(), plugin);
 
-		plugin = new RDFSClassificationDiscoveryPlugin(connector, false);
+		plugin = new RDFSClassificationDiscoveryPlugin(false);
 		plugins.put(plugin.getName(), plugin);
 
-		plugin = new AllServicesPlugin(connector);
+		plugin = new AllServicesPlugin();
 		plugins.put(plugin.getName(), plugin);
 	}
 
@@ -119,16 +110,4 @@ public class ServiceDiscoveryResource {
 
 		return Response.ok(feed).build();
 	}
-
-	private void init() throws IOException, RepositoryException, TransformerConfigurationException, WSDLException, ParserConfigurationException {
-		String baseDir = ServiceDiscoveryResource.class.getResource("/").getPath();
-		baseDir = baseDir.replaceAll("%20", " ");
-
-		Properties prop = IOUtil.readProperties(new File(baseDir + "../config.properties"));
-		prop.setProperty(SalConfig.XSLT_PATH, baseDir + "../hrests.xslt");
-		config = new SalConfig(prop);
-		serviceManager = new ServiceManager(config);
-		connector = serviceManager.getConnector();
-	}
-
 }
