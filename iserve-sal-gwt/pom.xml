@@ -6,13 +6,13 @@
 	<parent>
 		<artifactId>iserve-parent</artifactId>
 		<groupId>uk.ac.open.kmi.iserve</groupId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.1-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>uk.ac.open.kmi.iserve.sal</groupId>
 	<artifactId>iserve-sal-gwt</artifactId>
 	<packaging>war</packaging>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.1.0-SNAPSHOT</version>
 	<name>iServe Browser based on GWT</name>
 
 	<developers>
@@ -95,7 +95,7 @@
 		<dependency>
 			<groupId>uk.ac.open.kmi.iserve.sal</groupId>
 			<artifactId>iserve-sal-core</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
