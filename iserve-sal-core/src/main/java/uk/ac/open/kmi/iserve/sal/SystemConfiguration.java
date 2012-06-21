@@ -12,16 +12,15 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package uk.ac.open.kmi.iserve.sal;
 
 import java.net.URL;
 
-import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.openrdf.repository.RepositoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Singleton with iServe's Configuration
@@ -30,6 +29,8 @@ import org.openrdf.repository.RepositoryException;
  */
 public class SystemConfiguration {
 
+	private static final Logger log = LoggerFactory.getLogger(SystemConfiguration.class);
+	
 	/**
 	 * 
 	 */
@@ -44,17 +45,17 @@ public class SystemConfiguration {
 	 * Default logs repository name
 	 */
 	private static final String DEFAULT_LOGS_REPO = "iserve-logs";
-	
+
 	/**
 	 * Default users repository
 	 */
 	private static final String DEFAULT_USERS_REPO = DEFAULT_LOGS_REPO;
-	
+
 	/**
 	 * Default Linked User Feedback URL
 	 */
 	private static final String DEFAULT_LUF_URL = "http://soa4all.isoco.net/luf";
-	
+
 	// Configuration properties
 	private static final String URI_PREFIX = "serverName";
 	private static final String DOC_FOLDER_PATH = "docFolder";
@@ -91,32 +92,34 @@ public class SystemConfiguration {
 	private String proxyPort;
 
 	private String corpusFile;
-	
+
 	private String docFolderPath;
-	
+
 	private String microWsmoXsltPath;
-	
-	public SystemConfiguration(String fileName) {
+
+	public SystemConfiguration(String configFileUrl) throws ConfigurationException {
 		PropertiesConfiguration config;
-		try {
-			config = new PropertiesConfiguration(fileName);
-			this.corpusFile = config.getString(CORPUS_FILE);
-			this.docFolderPath = config.getString(DOC_FOLDER_PATH);
-			this.logRepositoryName = config.getString(LOG_REPO_NAME, DEFAULT_LOGS_REPO);
-			this.logRepositoryUrl = config.getString(LOG_SERVER_URL);
-			this.lufUrl = config.getString(LUF_URL, DEFAULT_LUF_URL);
-			this.proxyHostName = config.getString(PROXY_HOST_NAME);
-			this.proxyPort = config.getString(PROXY_PORT);
-			this.dataRepositoryName = config.getString(REPO_NAME, DEFAULT_SERVICES_REPO);
-			this.dataRepositoryUrl = config.getString(REPO_SERVER_URL);
-			this.uriPrefix = config.getString(URI_PREFIX);
-			this.userRepositoryName = config.getString(USER_REPO_NAME, DEFAULT_USERS_REPO);
-			this.userRepositoryUrl = config.getString(USER_SERVER_URL);
-			this.microWsmoXsltPath = config.getString(XSLT_PATH, DEFAULT_XSLT_PATH);
-		} catch (ConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+		if (configFileUrl == null) {
+			throw new ConfigurationException("Unable to setup iServe. Configuration file is null.");
 		}
+		
+		log.info("Loading iServe configuration from " + configFileUrl);
+		
+		config = new PropertiesConfiguration(configFileUrl);
+		this.corpusFile = config.getString(CORPUS_FILE);
+		this.docFolderPath = config.getString(DOC_FOLDER_PATH);
+		this.logRepositoryName = config.getString(LOG_REPO_NAME, DEFAULT_LOGS_REPO);
+		this.logRepositoryUrl = config.getString(LOG_SERVER_URL);
+		this.lufUrl = config.getString(LUF_URL, DEFAULT_LUF_URL);
+		this.proxyHostName = config.getString(PROXY_HOST_NAME);
+		this.proxyPort = config.getString(PROXY_PORT);
+		this.dataRepositoryName = config.getString(REPO_NAME, DEFAULT_SERVICES_REPO);
+		this.dataRepositoryUrl = config.getString(REPO_SERVER_URL);
+		this.uriPrefix = config.getString(URI_PREFIX);
+		this.userRepositoryName = config.getString(USER_REPO_NAME, DEFAULT_USERS_REPO);
+		this.userRepositoryUrl = config.getString(USER_SERVER_URL);
+		this.microWsmoXsltPath = config.getString(XSLT_PATH, DEFAULT_XSLT_PATH);
 	}
 
 	/**

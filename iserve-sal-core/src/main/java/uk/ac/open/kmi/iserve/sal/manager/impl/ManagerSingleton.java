@@ -25,6 +25,7 @@ import java.util.Properties;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.model.Syntax;
 import org.openrdf.repository.RepositoryException;
@@ -85,7 +86,8 @@ public class ManagerSingleton implements iServeManager {
 	
 	private static ManagerSingleton _instance;
 	
-	private ManagerSingleton() throws RepositoryException {
+	private ManagerSingleton() throws RepositoryException, ConfigurationException {
+		
 		configuration = new SystemConfiguration(CONFIG_PROPERTIES_FILENAME);
 		docManager = new DocumentManagerFileSystem(configuration);
 		logManager = new LogManagerRdf(configuration);
@@ -115,6 +117,8 @@ public class ManagerSingleton implements iServeManager {
 			try {
 				_instance = new ManagerSingleton();
 			} catch (RepositoryException e) {
+				throw(new IllegalStateException("iServe's storage and access layer is not properly configured", e));
+			} catch (ConfigurationException e) {
 				throw(new IllegalStateException("iServe's storage and access layer is not properly configured", e));
 			}
 		}
