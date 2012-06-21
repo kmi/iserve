@@ -15,12 +15,10 @@
 */
 package uk.ac.open.kmi.iserve.discovery.engine;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.ws.rs.GET;
@@ -33,21 +31,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
 
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve.commons.io.IOUtil;
-import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.RDFSClassificationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.RDFSInputOutputDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
-import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 
 import com.sun.jersey.api.NotFoundException;
 
