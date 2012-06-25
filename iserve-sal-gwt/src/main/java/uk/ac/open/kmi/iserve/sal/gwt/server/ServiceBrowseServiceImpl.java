@@ -81,7 +81,7 @@ public class ServiceBrowseServiceImpl extends RemoteServiceServlet implements Se
 
 	public ServiceBrowseServiceImpl(iServeManager manager) {
 		this.manager = manager;
-		rootUri = "http://" + manager.getConfiguration().getUriPrefix();
+		rootUri = "http://" + manager.getConfiguration().getIserveUrl();
 	}
 
 	public PagingLoadResult<ServiceListModel> listServicesByQuery(String queryString, PagingLoadConfig config) throws BrowserException {

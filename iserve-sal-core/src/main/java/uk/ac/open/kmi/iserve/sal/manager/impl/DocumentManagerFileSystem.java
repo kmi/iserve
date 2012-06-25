@@ -49,13 +49,13 @@ public class DocumentManagerFileSystem implements DocumentManager {
 	@Override
 	public List<String> listDocument() {
 		List<String> result = new ArrayList<String>();
-		File wsdlFolder = new File(configuration.getDocFolderPath());
+		File wsdlFolder = new File(configuration.getDocumentsFolder());
 		File[] folderList = wsdlFolder.listFiles();
 		for ( int i = 0; i < folderList.length; i++ ) {
 			if ( folderList[i].isDirectory() == true ) {
 				String[] fileList = folderList[i].list();
 				if ( fileList.length > 0 ) {
-					String prefix = configuration.getUriPrefix() + MSM.DOCUMENT_INFIX;
+					String prefix = configuration.getIserveUrl() + MSM.DOCUMENT_INFIX;
 					result.add(prefix + folderList[i].getName() + "/" + fileList[0]);
 				}
 			}
@@ -69,7 +69,7 @@ public class DocumentManagerFileSystem implements DocumentManager {
 	@Override
 	public String addDocument(String fileName, String serviceDescription) throws DocumentException {
 		String uuid = generateUniqueId();
-		String folder = configuration.getDocFolderPath() + uuid; 
+		String folder = configuration.getDocumentsFolder() + uuid; 
 		String filePath = folder + "/" + fileName;
 		try {
 			FileUtil.createDirIfNotExists(new File(folder));
@@ -77,7 +77,7 @@ public class DocumentManagerFileSystem implements DocumentManager {
 		} catch (IOException e) {
 			throw new DocumentException(e);
 		}
-		return configuration.getUriPrefix() + MSM.DOCUMENT_INFIX + uuid + "/" + fileName;
+		return configuration.getIserveUrl() + MSM.DOCUMENT_INFIX + uuid + "/" + fileName;
 	}
 
 	/* (non-Javadoc)
@@ -86,9 +86,9 @@ public class DocumentManagerFileSystem implements DocumentManager {
 	@Override
 	public String deleteDocument(String documentUri) throws DocumentException {
 		// delete from hard disk
-		String prefix = configuration.getUriPrefix() + MSM.DOCUMENT_INFIX;
+		String prefix = configuration.getIserveUrl() + MSM.DOCUMENT_INFIX;
 		String relativePath = StringUtil.subStrings(documentUri, prefix);
-		String filePath = configuration.getDocFolderPath() + relativePath;
+		String filePath = configuration.getDocumentsFolder() + relativePath;
 
 		File file = new File(filePath);
 		File docFolder = new File(file.getParent());
@@ -103,11 +103,11 @@ public class DocumentManagerFileSystem implements DocumentManager {
 	@Override
 	public String deleteDocumentById(String documentId) throws DocumentException {
 		String result =  null;
-		File docFolder = new File(configuration.getDocFolderPath() + documentId);
+		File docFolder = new File(configuration.getDocumentsFolder() + documentId);
 		if ( docFolder.isDirectory() == true ) {
 			String[] files = docFolder.list();
 			if ( files.length > 0 ) {
-				result = configuration.getDocFolderPath() + documentId + "/" + files[0];
+				result = configuration.getDocumentsFolder() + documentId + "/" + files[0];
 			}
 		}
 		FileUtil.deltree(docFolder);
@@ -119,9 +119,9 @@ public class DocumentManagerFileSystem implements DocumentManager {
 	 */
 	@Override
 	public String getDocument(String documentUri) throws DocumentException {
-		String prefix = configuration.getUriPrefix() + MSM.DOCUMENT_INFIX;
+		String prefix = configuration.getIserveUrl() + MSM.DOCUMENT_INFIX;
 		String relativePath = StringUtil.subStrings(documentUri, prefix);
-		String filePath = configuration.getDocFolderPath() + relativePath;
+		String filePath = configuration.getDocumentsFolder() + relativePath;
 
 		File file = new File(filePath);
 		String result =  null;
@@ -139,7 +139,7 @@ public class DocumentManagerFileSystem implements DocumentManager {
 	@Override
 	public String getDocumentById(String documentId) throws DocumentException {
 		String result =  null;
-		File folder = new File(configuration.getDocFolderPath() + documentId);
+		File folder = new File(configuration.getDocumentsFolder() + documentId);
 		if ( folder.isDirectory() == true ) {
 			File[] files = folder.listFiles();
 			if ( files.length > 0 ) {

@@ -70,14 +70,18 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 		return "func-rdfs";
 	}
 
-	//FIXME: Replace with the actual version of the plugin
 	public String getDescription() {
-		return "iServe RDFS functional discovery API 2012/06/01";
+		return "iServe RDFS functional discovery plugin. Discovers services and " +
+				"operations based on their functional classification using " +
+				"subsumption reasoning as supported by the underlying RDF Store.";
 	}
-
-	//FIXME: Replace with the actual URL of the discovery endpoint for the plugin?
-	public String getUri() {
-		return "http://iserve.kmi.open.ac.uk/";
+	
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin#getVersion()
+	 */
+	@Override
+	public String getVersion() {
+		return "v1.1.2";
 	}
 
 	public String getFeedTitle() {

@@ -67,6 +67,32 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 	public String getName() {
 		return "io-rdfs";
 	}
+	
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin#getVersion()
+	 */
+	@Override
+	public String getVersion() {
+		return "v1.1.2";
+	}
+	
+	public String getDescription() {
+		return "iServe RDFS input/output discovery plugin. Discovers services and " +
+				"operations based on their inputs and outputs using subsumption " +
+				"reasoning as supported by the underlying RDF Store.";
+	}
+
+	public String getFeedTitle() {
+		String feedTitle;
+		feedTitle = "RDFS I/O discovery results: " + count ;
+		if (operationDiscovery) {
+			feedTitle += " operation(s) for " + feedSuffix;
+		}
+		else {
+			feedTitle += " service(s) for " + feedSuffix;
+		}
+		return feedTitle;
+	}
 
 	/* 
 	 * FIXME: This plugin should probably implement the Ranked Service interface
@@ -525,25 +551,6 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 		return query;
 	}
 
-	public String getDescription() {
-		return "iServe RDFS input/output discovery API 2012/06/01";
-	}
 
-	public String getUri() {
-		//FIXME: Replace with configuration parameter
-		return "http://iserve.kmi.open.ac.uk/";
-	}
-
-	public String getFeedTitle() {
-		String feedTitle;
-		feedTitle = "RDFS I/O discovery results: " + count ;
-		if (operationDiscovery) {
-			feedTitle += " operation(s) for " + feedSuffix;
-		}
-		else {
-			feedTitle += " service(s) for " + feedSuffix;
-		}
-		return feedTitle;
-	}
 
 }

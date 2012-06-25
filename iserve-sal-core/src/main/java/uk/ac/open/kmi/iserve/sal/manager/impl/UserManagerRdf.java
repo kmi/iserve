@@ -54,12 +54,13 @@ public class UserManagerRdf implements UserManager {
 	 * @throws RepositoryException
 	 */
 	protected UserManagerRdf(SystemConfiguration configuration) throws RepositoryException {
-		repoConnector = new RDFRepositoryConnector(configuration.getUserServerUrl(), configuration.getUserRepoName());
+		repoConnector = new RDFRepositoryConnector(configuration.getUserServerUrl().toString(), 
+				configuration.getUsersRepositoryName());
 		//TODO: This should be deployment independent
 		hasUserName = new org.ontoware.rdf2go.model.node.impl.URIImpl("http://" + 
-				configuration.getUriPrefix() + USER.HAS_USER_NAME);
+				configuration.getIserveUrl() + USER.HAS_USER_NAME);
 		hasPassword = new org.ontoware.rdf2go.model.node.impl.URIImpl("http://" + 
-				configuration.getUriPrefix() + USER.HAS_PASSWORD);
+				configuration.getIserveUrl() + USER.HAS_PASSWORD);
 	}
 
 	/* (non-Javadoc)

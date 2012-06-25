@@ -29,8 +29,8 @@ public class BaseSemanticManager {
 
 	protected BaseSemanticManager(SystemConfiguration configuration) throws RepositoryException {
 		this.configuration = configuration;
-		repoConnector = new RDFRepositoryConnector(configuration.getRepoServerUrl(), 
-				configuration.getRepoName());
+		repoConnector = new RDFRepositoryConnector(configuration.getServicesRepositoryUrl().toString(), 
+				configuration.getServicesRepositoryName());
 	}
 
 	protected Model getModel() {

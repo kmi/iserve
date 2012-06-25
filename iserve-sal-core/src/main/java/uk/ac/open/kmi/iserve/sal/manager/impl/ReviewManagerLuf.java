@@ -33,7 +33,7 @@ public class ReviewManagerLuf implements ReviewManager {
 	 */
 	protected ReviewManagerLuf(SystemConfiguration configuration) {
 		// initialize the connector to LUF
-		LufConnector lufConnector = new LufConnector(new URIImpl(configuration.getLufUrl()));
+		LufConnector lufConnector = new LufConnector(new URIImpl(configuration.getLufUrl().toString()));
 		if ( configuration.getProxyHostName() != null && configuration.getProxyHostName() != "" ||
 				configuration.getProxyPort() != null && configuration.getProxyPort() != "" ) {
 			lufConnector.setProxy(configuration.getProxyHostName(), Integer.valueOf(configuration.getProxyPort()));

@@ -61,7 +61,8 @@ public class LogManagerRdf implements LogManager {
 	 * @throws RepositoryException
 	 */
 	protected LogManagerRdf(SystemConfiguration configuration) throws RepositoryException {
-		repoConnector = new RDFRepositoryConnector(configuration.getLogServerUrl(), configuration.getLogRepoName());
+		repoConnector = new RDFRepositoryConnector(configuration.getLogServerUrl().toString(),
+				configuration.getLogsRepositoryName());
 	}
 
 	/* (non-Javadoc)

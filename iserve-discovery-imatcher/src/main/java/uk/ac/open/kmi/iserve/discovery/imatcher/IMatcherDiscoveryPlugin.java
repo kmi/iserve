@@ -95,7 +95,7 @@ public class IMatcherDiscoveryPlugin implements IServiceDiscoveryPlugin {
 		return "imatch";
 	}
 
-	public String getUri() {
+	public String getServiceRelativeUri() {
 		return "http://iserve.kmi.open.ac.uk/";
 	}
 

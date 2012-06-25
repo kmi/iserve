@@ -51,7 +51,7 @@ public class KeyManagerRdf implements KeyManager {
 		model.addStatement(consumerUri, OAUTH.consumer_key, consumerKey);
 
 		// create secret for consumer key
-		URI consumerSecretUri = new URIImpl("http://" + configuration.getUriPrefix() + "/secret/" + consumerKey);
+		URI consumerSecretUri = new URIImpl("http://" + configuration.getIserveUrl() + "/secret/" + consumerKey);
 //		URI consumerSecretUri = new URIImpl("http://iserve.kmi.open.ac.uk/secret/" + consumerKey);
 		model.addStatement(consumerSecretUri, RDF.type, OAUTH.Secret);
 		model.addStatement(consumerSecretUri, OAUTH.plaintext, consumerSecret);
@@ -209,13 +209,13 @@ public class KeyManagerRdf implements KeyManager {
 	}
 
 	private URI saveToken(RepositoryModel model, String tokenKey, String tokenSecret, URI type) {
-		URI tokenUri = new URIImpl("http://" + configuration.getUriPrefix() + "/token/" + tokenKey);
+		URI tokenUri = new URIImpl("http://" + configuration.getIserveUrl() + "/token/" + tokenKey);
 
 		model.addStatement(tokenUri, RDF.type, type);
 		model.addStatement(tokenUri, OAUTH.token_key, tokenKey);
 
 		// create secret for request token
-		URI tokenSecretUri = new URIImpl("http://" + configuration.getUriPrefix() + "/secret/" + tokenKey);
+		URI tokenSecretUri = new URIImpl("http://" + configuration.getIserveUrl() + "/secret/" + tokenKey);
 		model.addStatement(tokenSecretUri, RDF.type, OAUTH.Secret);
 		model.addStatement(tokenSecretUri, OAUTH.plaintext, tokenSecret);
 		model.addStatement(tokenUri, OAUTH.token_secret, tokenSecretUri);

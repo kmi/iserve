@@ -77,7 +77,8 @@ public class ServiceManagerRdf implements ServiceManager {
 	 */
 	protected ServiceManagerRdf(SystemConfiguration configuration) throws RepositoryException {
 		this.configuration = configuration;
-		repoConnector = new RDFRepositoryConnector(configuration.getRepoServerUrl(), configuration.getRepoName());		
+		repoConnector = new RDFRepositoryConnector(configuration.getServicesRepositoryUrl().toString(),
+				configuration.getServicesRepositoryName());		
 	}
 
 	/* (non-Javadoc)
@@ -146,8 +147,8 @@ public class ServiceManagerRdf implements ServiceManager {
 		}
 		
 		String uuid = generateUniqueId();
-		String documentBaseURI = configuration.getUriPrefix() + MSM.DOCUMENT_INFIX + uuid + "/";
-		String serviceBaseURI = configuration.getUriPrefix() + MSM.SERVICE_INFIX + uuid;
+		String documentBaseURI = configuration.getIserveUrl() + MSM.DOCUMENT_INFIX + uuid + "/";
+		String serviceBaseURI = configuration.getIserveUrl() + MSM.SERVICE_INFIX + uuid;
 		String newServiceUri = null;
 		
 		// save RDF to OWLim
@@ -185,8 +186,8 @@ public class ServiceManagerRdf implements ServiceManager {
 		if ( sourceUri == null || sourceUri.equalsIgnoreCase("") ) {
 			// save file to disk
 			try {
-				FileUtil.createDirIfNotExists(new File(configuration.getDocFolderPath() + uuid + "/" ));
-				IOUtil.writeString(msmServiceDescriptionStream.toString(), new File(configuration.getDocFolderPath() + uuid + "/" + fileName));
+				FileUtil.createDirIfNotExists(new File(configuration.getDocumentsFolder() + uuid + "/" ));
+				IOUtil.writeString(msmServiceDescriptionStream.toString(), new File(configuration.getDocumentsFolder() + uuid + "/" + fileName));
 			} catch (IOException e) {
 				model.open();
 				// FIXME: May remove ALL the statement in the repository, when using early version of Swift OWLim!
@@ -231,9 +232,9 @@ public class ServiceManagerRdf implements ServiceManager {
 		// delete from hard disk
 		// FIXME: This should probably take place via the Document Manager
 		// TODO: Dont use the configuration directly
-		String prefix = configuration.getUriPrefix() + MSM.DOCUMENT_INFIX;
+		String prefix = configuration.getIserveUrl() + MSM.DOCUMENT_INFIX;
 		String relativePath = StringUtil.subStrings(contextUri, prefix); 
-		String filePath = configuration.getDocFolderPath() + relativePath;
+		String filePath = configuration.getDocumentsFolder() + relativePath;
 
 		File file = new File(filePath);
 		File docFolder = new File(file.getParent());
@@ -338,7 +339,7 @@ public class ServiceManagerRdf implements ServiceManager {
 				while ( iter.hasNext() ) {
 					org.ontoware.rdf2go.model.QueryRow qr = iter.next();
 					String valueString = qr.getValue("c").toString();
-					if ( valueString.toLowerCase().contains(configuration.getUriPrefix()) ) {
+					if ( valueString.toLowerCase().contains(configuration.getIserveUrl().toString()) ) {
 						defUri = valueString;
 					}
 				}
@@ -367,7 +368,7 @@ public class ServiceManagerRdf implements ServiceManager {
 				while ( iter.hasNext() ) {
 					org.ontoware.rdf2go.model.QueryRow qr = iter.next();
 					String valueString = qr.getValue("c").toString();
-					if ( valueString.toLowerCase().contains(configuration.getUriPrefix()) ) {
+					if ( valueString.toLowerCase().contains(configuration.getIserveUrl().toString()) ) {
 						defUri = valueString;
 					}
 				}
@@ -395,7 +396,7 @@ public class ServiceManagerRdf implements ServiceManager {
 				while ( iter.hasNext() ) {
 					org.ontoware.rdf2go.model.QueryRow qr = iter.next();
 					String valueString = qr.getValue("s").toString();
-					if ( valueString.toLowerCase().contains(configuration.getUriPrefix()) ) {
+					if ( valueString.toLowerCase().contains(configuration.getIserveUrl().toString()) ) {
 						defUri = valueString;
 					}
 				}

@@ -24,12 +24,14 @@ import org.apache.abdera.model.Entry;
 public interface IServiceDiscoveryPlugin {
 
 	public String getName();
+	
+	public String getVersion();
 
 	public String getDescription();
 
-	public String getUri();
-
 	public String getFeedTitle();
+	
+	// TODO: Include the notion of support for discovering services and operations
 
 	public Set<Entry> discover(MultivaluedMap<String, String> parameters) throws DiscoveryException;
 

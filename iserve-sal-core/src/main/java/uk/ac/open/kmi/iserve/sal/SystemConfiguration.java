@@ -15,6 +15,7 @@
  */
 package uk.ac.open.kmi.iserve.sal;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -37,7 +38,7 @@ public class SystemConfiguration {
 	private static final String DEFAULT_XSLT_PATH = "../hrests.xslt";
 
 	/**
-	 * Default services reporitory name
+	 * Default services repository name
 	 */
 	private static final String DEFAULT_SERVICES_REPO = "iserve-services";
 
@@ -57,35 +58,44 @@ public class SystemConfiguration {
 	private static final String DEFAULT_LUF_URL = "http://soa4all.isoco.net/luf";
 
 	// Configuration properties
-	private static final String URI_PREFIX = "serverName";
-	private static final String DOC_FOLDER_PATH = "docFolder";
-	private static final String REPO_SERVER_URL = "sesameServerURL";
-	private static final String REPO_NAME = "repoName";
-	private static final String LOG_SERVER_URL = "logServerURL";
-	private static final String LOG_REPO_NAME = "logRepoName";
-	private static final String USER_SERVER_URL = "userServerURL";
-	private static final String USER_REPO_NAME = "userRepoName";
-	private static final String LUF_URL = "lufURL";
-	private static final String PROXY_HOST_NAME = "proxyHostName";
-	private static final String PROXY_PORT = "proxyPort";
-	private static final String CORPUS_FILE = "corpusFile";
-	private static final String XSLT_PATH = "xsltPath";
+	private static final String ISERVE_URL_PROP = "iserve.url";
+	private static final String DOC_FOLDER_PATH_PROP = "iserve.documents";
+	private static final String PROXY_HOST_NAME_PROP = "iserve.proxyHost";
+	private static final String PROXY_PORT_PROP = "iserve.proxyPort";
+	// Services data
+	private static final String SERVICES_REPOSITORY_URL_PROP = "services.rdfserver";
+	private static final String SERVICES_REPOSITORY_NAME_PROP = "services.repository";
+	// Logs data
+	private static final String LOG_REPOSITORY_URL_PROP = "log.server";
+	private static final String LOG_REPOSITORY_NAME_PROP = "log.repository";
+	// Users data
+	private static final String USERS_SERVER_URL_PROP = "users.server";
+	private static final String USERS_REPOSITORY_NAME_PROP = "users.repository";
+	// Tagging, rating, etc
+	private static final String LUF_URL_PROP = "lufURL";
 
-	private String uriPrefix;
+	
+	// TODO: Remove this one?
+	private static final String CORPUS_FILE_PROP = "corpusFile";
+	
+	private static final String XSLT_PATH_PROP = "xsltPath";
 
-	private String dataRepositoryUrl;
+	// This should contain the URL to the base of iServe's server (thus including hostname and module path)
+	private URL iserveUrl;
+
+	private URL dataRepositoryUrl;
 
 	private String dataRepositoryName;
 
-	private String logRepositoryUrl;
+	private URL logRepositoryUrl;
 
 	private String logRepositoryName;
 
-	private String userRepositoryUrl;
+	private URL usersRepositoryUrl;
 
-	private String userRepositoryName;
+	private String usersRepositoryName;
 
-	private String lufUrl;
+	private URL lufUrl;
 
 	private String proxyHostName;
 
@@ -107,145 +117,152 @@ public class SystemConfiguration {
 		log.info("Loading iServe configuration from " + configFileUrl);
 		
 		config = new PropertiesConfiguration(configFileUrl);
-		this.corpusFile = config.getString(CORPUS_FILE);
-		this.docFolderPath = config.getString(DOC_FOLDER_PATH);
-		this.logRepositoryName = config.getString(LOG_REPO_NAME, DEFAULT_LOGS_REPO);
-		this.logRepositoryUrl = config.getString(LOG_SERVER_URL);
-		this.lufUrl = config.getString(LUF_URL, DEFAULT_LUF_URL);
-		this.proxyHostName = config.getString(PROXY_HOST_NAME);
-		this.proxyPort = config.getString(PROXY_PORT);
-		this.dataRepositoryName = config.getString(REPO_NAME, DEFAULT_SERVICES_REPO);
-		this.dataRepositoryUrl = config.getString(REPO_SERVER_URL);
-		this.uriPrefix = config.getString(URI_PREFIX);
-		this.userRepositoryName = config.getString(USER_REPO_NAME, DEFAULT_USERS_REPO);
-		this.userRepositoryUrl = config.getString(USER_SERVER_URL);
-		this.microWsmoXsltPath = config.getString(XSLT_PATH, DEFAULT_XSLT_PATH);
+		try {
+			this.corpusFile = config.getString(CORPUS_FILE_PROP);
+			this.docFolderPath = config.getString(DOC_FOLDER_PATH_PROP);
+			this.logRepositoryName = config.getString(LOG_REPOSITORY_NAME_PROP, DEFAULT_LOGS_REPO);
+			this.logRepositoryUrl = new URL(config.getString(LOG_REPOSITORY_URL_PROP));
+			this.lufUrl = new URL(config.getString(LUF_URL_PROP, DEFAULT_LUF_URL));		
+			this.proxyHostName = config.getString(PROXY_HOST_NAME_PROP);
+			this.proxyPort = config.getString(PROXY_PORT_PROP);
+			this.dataRepositoryName = config.getString(SERVICES_REPOSITORY_NAME_PROP, DEFAULT_SERVICES_REPO);
+			this.dataRepositoryUrl = new URL(config.getString(SERVICES_REPOSITORY_URL_PROP));
+			this.iserveUrl = new URL(config.getString(ISERVE_URL_PROP));
+			this.usersRepositoryName = config.getString(USERS_REPOSITORY_NAME_PROP, DEFAULT_USERS_REPO);
+			this.usersRepositoryUrl = new URL(config.getString(USERS_SERVER_URL_PROP));
+			this.microWsmoXsltPath = config.getString(XSLT_PATH_PROP, DEFAULT_XSLT_PATH);
+		} catch (MalformedURLException e) {
+			throw new ConfigurationException("Unable to setup iServe.", e);
+		}
 	}
 
 	/**
-	 * TODO: Fix name for this operation
+	 * Returns the URL where iServe is. This shall include both the hostname as well
+	 * as the path to the iServe module within the application if necessary.
+	 * All the REST services will be deployed in relative URLs to this.
+	 * 
 	 * @return the uriPrefix
 	 */
-	public String getUriPrefix() {
-		return this.uriPrefix;
+	public URL getIserveUrl() {
+		return this.iserveUrl;
 	}
 
 	/**
 	 * @param uriPrefix the uriPrefix to set
 	 */
-	public void setUriPrefix(String uriPrefix) {
-		this.uriPrefix = uriPrefix;
+	public void setUriPrefix(URL uriPrefix) {
+		this.iserveUrl = uriPrefix;
 	}
 
 	/**
 	 * @return the docFolderPath
 	 */
-	public String getDocFolderPath() {
+	public String getDocumentsFolder() {
 		return this.docFolderPath;
 	}
 
 	/**
 	 * @param docFolderPath the docFolderPath to set
 	 */
-	public void setDocFolderPath(String docFolderPath) {
+	public void setDocumentsFolder(String docFolderPath) {
 		this.docFolderPath = docFolderPath;
 	}
 
 	/**
 	 * @return the repoServerUrl
 	 */
-	public String getRepoServerUrl() {
+	public URL getServicesRepositoryUrl() {
 		return this.dataRepositoryUrl;
 	}
 
 	/**
 	 * @param repoServerUrl the repoServerUrl to set
 	 */
-	public void setRepoServerUrl(String repoServerUrl) {
+	public void setServicesRepositoryUrl(URL repoServerUrl) {
 		this.dataRepositoryUrl = repoServerUrl;
 	}
 
 	/**
 	 * @return the repoName
 	 */
-	public String getRepoName() {
+	public String getServicesRepositoryName() {
 		return this.dataRepositoryName;
 	}
 
 	/**
 	 * @param repoName the repoName to set
 	 */
-	public void setRepoName(String repoName) {
+	public void setServicesRepositoryName(String repoName) {
 		this.dataRepositoryName = repoName;
 	}
 
 	/**
 	 * @return the logServerUrl
 	 */
-	public String getLogServerUrl() {
+	public URL getLogServerUrl() {
 		return this.logRepositoryUrl;
 	}
 
 	/**
 	 * @param logServerUrl the logServerUrl to set
 	 */
-	public void setLogServerUrl(String logServerUrl) {
+	public void setLogServerUrl(URL logServerUrl) {
 		this.logRepositoryUrl = logServerUrl;
 	}
 
 	/**
 	 * @return the logRepoName
 	 */
-	public String getLogRepoName() {
+	public String getLogsRepositoryName() {
 		return this.logRepositoryName;
 	}
 
 	/**
 	 * @param logRepoName the logRepoName to set
 	 */
-	public void setLogRepoName(String logRepoName) {
+	public void setLogsRepositoryName(String logRepoName) {
 		this.logRepositoryName = logRepoName;
 	}
 
 	/**
 	 * @return the userServerUrl
 	 */
-	public String getUserServerUrl() {
-		return this.userRepositoryUrl;
+	public URL getUserServerUrl() {
+		return this.usersRepositoryUrl;
 	}
 
 	/**
 	 * @param userServerUrl the userServerUrl to set
 	 */
-	public void setUserServerUrl(String userServerUrl) {
-		this.userRepositoryUrl = userServerUrl;
+	public void setUserServerUrl(URL userServerUrl) {
+		this.usersRepositoryUrl = userServerUrl;
 	}
 
 	/**
 	 * @return the userRepoName
 	 */
-	public String getUserRepoName() {
-		return this.userRepositoryName;
+	public String getUsersRepositoryName() {
+		return this.usersRepositoryName;
 	}
 
 	/**
 	 * @param userRepoName the userRepoName to set
 	 */
-	public void setUserRepoName(String userRepoName) {
-		this.userRepositoryName = userRepoName;
+	public void setUsersRepositoryName(String userRepoName) {
+		this.usersRepositoryName = userRepoName;
 	}
 
 	/**
 	 * @return the lufUrl
 	 */
-	public String getLufUrl() {
+	public URL getLufUrl() {
 		return this.lufUrl;
 	}
 
 	/**
 	 * @param lufUrl the lufUrl to set
 	 */
-	public void setLufUrl(String lufUrl) {
+	public void setLufUrl(URL lufUrl) {
 		this.lufUrl = lufUrl;
 	}
 

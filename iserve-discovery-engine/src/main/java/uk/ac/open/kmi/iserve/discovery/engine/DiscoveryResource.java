@@ -24,8 +24,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 
@@ -39,26 +42,29 @@ import uk.ac.open.kmi.iserve.discovery.disco.RDFSInputOutputDiscoveryPlugin;
 @Path("/disco")
 public class DiscoveryResource {
 	
+	// Base URI for this resource
+	@Context  UriInfo uriInfo;
+	
+	public static String NEW_LINE = System.getProperty("line.separator");
 	private Map<String, IServiceDiscoveryPlugin> plugins;
-//	private RDFRepositoryConnector connector;
-//	private ServiceManager serviceManager;
 
 	public DiscoveryResource() throws RepositoryException, 
 		TransformerConfigurationException, IOException, 
 		ParserConfigurationException {
 		plugins = new HashMap<String, IServiceDiscoveryPlugin>();
-
-		IServiceDiscoveryPlugin plugin = new RDFSInputOutputDiscoveryPlugin(false);
+		
+		IServiceDiscoveryPlugin plugin;
+		plugin = new AllServicesPlugin();
 		plugins.put(plugin.getName(), plugin);
 
-//		plugin = new IMatcherDiscoveryPlugin(connector);
-//		plugins.put(plugin.getName(), plugin);
+		plugin = new RDFSInputOutputDiscoveryPlugin(false);
+		plugins.put(plugin.getName(), plugin);
 
 		plugin = new RDFSClassificationDiscoveryPlugin(false);
 		plugins.put(plugin.getName(), plugin);
-
-		plugin = new AllServicesPlugin();
-		plugins.put(plugin.getName(), plugin);
+	
+//		plugin = new IMatcherDiscoveryPlugin(connector);
+//		plugins.put(plugin.getName(), plugin);
 	}
 	
 	@GET
@@ -75,38 +81,44 @@ public class DiscoveryResource {
 	 */
 	private String generateListOfPlugins() {
 		
-		String result = "";
-		result += insertHeader();
+		StringBuffer result = new StringBuffer(insertHeader());
 		
 		if (plugins != null) {
 			
 			Set<java.util.Map.Entry<String, IServiceDiscoveryPlugin>> runningPlugins = 
 				plugins.entrySet();
 		
+			result.append("<H2>iServe Discovery Plugins Registered</H2>");
+			
 			// Create table
-			result += "<table border=\"1\" width=\"90%\">" +
-					"<tr><th>Plugin</th>" +
-					"<th>Description</th>" +
-					"<th>Endpoint</th>" +
-					"</tr>";
+			result.append("<table border=\"1\" width=\"90%\"><tr>" + NEW_LINE);
+			result.append("<th>Plugin</th>"+ NEW_LINE);
+			result.append("<th>Version</th>"+ NEW_LINE);
+			result.append("<th>Description</th>"+ NEW_LINE);
+			result.append("<th>Endpoint</th>"+ NEW_LINE);
+			result.append("</tr>"+ NEW_LINE);
 			
 			for (java.util.Map.Entry<String, IServiceDiscoveryPlugin> entry : runningPlugins) {
 				IServiceDiscoveryPlugin regPlugin = entry.getValue();
-				result += "<tr>";
-				result += "<td>" + regPlugin.getName() + "</td>";
-				result += "<td>" + regPlugin.getDescription() + "</td>";
-				result += "<td>" + regPlugin.getUri() + "</td>";
-				result += "</tr>";
+				result.append("<tr>"+ NEW_LINE);
+				result.append("<td>" + regPlugin.getName() + "</td>" + NEW_LINE);
+				result.append("<td>" + regPlugin.getVersion() + "</td>" + NEW_LINE);
+				result.append("<td>" + regPlugin.getDescription() + "</td>" + NEW_LINE);
+				UriBuilder ub = uriInfo.getAbsolutePathBuilder();
+				String pluginUri = ub.path(regPlugin.getName()).build().toString();
+				result.append("<td><a href=" + pluginUri + ">" + pluginUri + "</a></td>" + NEW_LINE);
+				result.append("</tr>" + NEW_LINE);
 			}
 			
 			// Close table
-			result += "</table>";
+			result.append("</table>" + NEW_LINE);
+			
 		} else {
-			result += "No plugins registered.";
+			result.append("No plugins registered." + NEW_LINE);
 		}
 		
-		result += insertFooter();
-		return result;
+		result.append(insertFooter());
+		return result.toString();
 	}
 
 	/**
@@ -114,10 +126,9 @@ public class DiscoveryResource {
 	 * @return
 	 */
 	private String insertFooter() {
-		String result = "";
-		result += "</body>" + "\n" +
-				"</html>";
-		return result;
+		StringBuffer result = new StringBuffer("</body>" + NEW_LINE);
+		result.append("</html>" + NEW_LINE);
+		return result.toString();
 	}
 
 	/**
@@ -125,16 +136,15 @@ public class DiscoveryResource {
 	 * @return
 	 */
 	private String insertHeader() {
-		String result = "";
-		result += "<!DOCTYPE html>" + "\n" + 
-				"<html lang=\"en-UK\">" + "\n" +
-				"<head>" + "\n" +
-				"<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />" + "\n" +
-				"<title>iServe Service Discovery Plugins</title>" + "\n" +
-				"</head>" + "\n" +
-				"<body>";
+		StringBuffer result = new StringBuffer("<!DOCTYPE html>" + NEW_LINE);
+		result.append("<html lang=\"en-UK\">" + NEW_LINE);
+		result.append("<head>" + NEW_LINE);
+		result.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />" + NEW_LINE);
+		result.append("<title>iServe Service Discovery Plugins</title>" + NEW_LINE);
+		result.append("</head>" + NEW_LINE);
+		result.append("<body>" + NEW_LINE);
 		
-		return result;
+		return result.toString();
 	}
 
 }

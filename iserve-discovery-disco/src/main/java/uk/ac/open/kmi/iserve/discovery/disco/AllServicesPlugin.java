@@ -123,16 +123,20 @@ public class AllServicesPlugin implements IServiceDiscoveryPlugin {
 	}
 
 	public String getDescription() {
-		return "iServe trivial discovery (all services) API 2012/06/01";
-	}
-
-	public String getUri() {
-		return "http://iserve.kmi.open.ac.uk/";
+		return "iServe trivial discovery. Returns all the services available ";
 	}
 
 	public String getFeedTitle() {
 		String feedTitle = "all " + count + " known service(s)";
 		return feedTitle;
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin#getVersion()
+	 */
+	@Override
+	public String getVersion() {
+		return "v1.1.2";
 	}
 
 }

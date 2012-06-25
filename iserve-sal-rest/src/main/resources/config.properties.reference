@@ -1,18 +1,24 @@
-# Core Data RDF Server
-serverName = localhost:9080/iserve-sal-rest
-sesameServerURL = http://localhost:8080/openrdf-sesame
-repoName = serv_repo_owlim
+# iServe URL base
+iserve.url = http://localhost:9080/iserve-sal-rest
 
 # iServe Documents Folder
-docFolder = ./service-docs/
+iserve.documents = ./service-docs/
+
+# Proxy Configuration
+#iserve.proxyHost = proxy.domain.com
+#iserve.proxyPort = 80
+
+# Service Registry 
+services.rdfserver = http://localhost:8080/openrdf-sesame
+services.repository = iserve-dev-services
 
 # Logs Server
-logServerURL = http://localhost:8080/openrdf-sesame
-logRepoName = iserve-logs
+log.server = http://localhost:8080/openrdf-sesame
+log.repository = iserve-dev-logs
 
 # Users Data Server
-userServerURL = http://localhost:8080/openrdf-sesame
-userRepoName = iserve-logs
+users.server = http://localhost:8080/openrdf-sesame
+users.repository = iserve-dev-logs
 
 # Ratings, Comments and Tags Server
 lufURL = http://soa4all.isoco.net/luf
@@ -20,6 +26,4 @@ lufURL = http://soa4all.isoco.net/luf
 # Test Data
 corpusFile = /Users/dl3962/Workspace/JWS/owls-imatcher/OWLSTCv2_Corpus.ser
 
-# Proxy Configuration
-#proxyHostName = wwwcache.open.ac.uk
-#proxyPort = 80
+

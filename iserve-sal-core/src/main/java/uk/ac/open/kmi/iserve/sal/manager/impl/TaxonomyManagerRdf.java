@@ -50,7 +50,8 @@ public class TaxonomyManagerRdf implements TaxonomyManager {
 	 * @throws RepositoryException
 	 */
 	protected TaxonomyManagerRdf(SystemConfiguration configuration) throws RepositoryException {
-		repoConnector = new RDFRepositoryConnector(configuration.getRepoServerUrl(), configuration.getRepoName());
+		repoConnector = new RDFRepositoryConnector(configuration.getServicesRepositoryUrl().toString(),
+				configuration.getServicesRepositoryName());
 	}
 
 	/* (non-Javadoc)

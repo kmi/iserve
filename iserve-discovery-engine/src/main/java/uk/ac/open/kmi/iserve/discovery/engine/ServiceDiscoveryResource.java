@@ -30,6 +30,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.abdera.model.Entry;
@@ -48,6 +49,9 @@ import com.sun.jersey.api.NotFoundException;
 @Path("/disco/svc")
 public class ServiceDiscoveryResource {
 
+	// Base URI for this resource
+	@Context  UriInfo uriInfo;
+	
 	private Map<String, IServiceDiscoveryPlugin> plugins;
 
 	public ServiceDiscoveryResource() throws RepositoryException, IOException {
@@ -93,8 +97,10 @@ public class ServiceDiscoveryResource {
 		feed.addLink(ui.getRequestUri().toString(),"self");
 		feed.setTitle(plugin.getFeedTitle());
 		feed.setUpdated(new Date());
+		
+		UriBuilder ub = uriInfo.getAbsolutePathBuilder();
 		//FIXME: we should include the version
-		feed.setGenerator(plugin.getUri(), null, plugin.getDescription()); 
+		feed.setGenerator(ub.path(plugin.getName()).build().toString(), null, plugin.getDescription()); 
 
 		if ( matchingResults != null ) {
 			for ( Entry result : matchingResults ) {

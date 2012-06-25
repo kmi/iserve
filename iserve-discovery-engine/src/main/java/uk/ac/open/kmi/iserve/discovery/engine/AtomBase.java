@@ -74,6 +74,9 @@ import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
  *
  */
 public abstract class AtomBase {
+	
+	// Base URI for this resource
+	@Context  UriInfo uriInfo;
 
     /**
      * <p>HTTP header for sending authentication credentials.</p>
@@ -189,8 +192,9 @@ public abstract class AtomBase {
 		Feed combinedFeed = DiscoveryUtil.getAbderaInstance().getFactory().newFeed();
 		combinedFeed.setId(requestURI);
 		combinedFeed.addLink(requestURI,"self");
-		combinedFeed.setGenerator("http://iserve.kmi.open.ac.uk/", null, 
-				"iServe Atom " + combinatorName() + " combinator 2010/06/23"); 
+		UriBuilder ub = uriInfo.getAbsolutePathBuilder();
+		combinedFeed.setGenerator(ub.toString(), null, 
+				"iServe Atom " + combinatorName() + " combinator 2012/06/23"); 
 		
 		String rights = "The constituent feeds have the following rights statements (in no particular order): ";
 		
