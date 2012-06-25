@@ -131,6 +131,55 @@ public class ManagerSingleton implements iServeManager {
 	public SystemConfiguration getConfiguration() {
 		return this.configuration;
 	}
+	
+	/**
+	 * @return the docManager
+	 */
+	public DocumentManager getDocManager() {
+		return this.docManager;
+	}
+
+	/**
+	 * @return the logManager
+	 */
+	public LogManager getLogManager() {
+		return this.logManager;
+	}
+
+	/**
+	 * @return the reviewManager
+	 */
+	public ReviewManager getReviewManager() {
+		return this.reviewManager;
+	}
+
+	/**
+	 * @return the serviceManager
+	 */
+	public ServiceManager getServiceManager() {
+		return this.serviceManager;
+	}
+
+	/**
+	 * @return the taxonomyManager
+	 */
+	public TaxonomyManager getTaxonomyManager() {
+		return this.taxonomyManager;
+	}
+
+	/**
+	 * @return the userManager
+	 */
+	public UserManager getUserManager() {
+		return this.userManager;
+	}
+
+	/**
+	 * @return the keyManager
+	 */
+	public KeyManager getKeyManager() {
+		return this.keyManager;
+	}
 
 	/**
 	 * Registers the given importer for that format so that it is used when saving
@@ -252,14 +301,6 @@ public class ManagerSingleton implements iServeManager {
 	 */
 	public List<String> listService() {
 		return this.serviceManager.listService();
-	}
-
-	/**
-	 * @return
-	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#getServicesRepositoryConnector()
-	 */
-	public RDFRepositoryConnector getServicesRepositoryConnector() {
-		return this.serviceManager.getServicesRepositoryConnector();
 	}
 
 	/**

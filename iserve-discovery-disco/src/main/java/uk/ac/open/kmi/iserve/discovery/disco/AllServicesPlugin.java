@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package uk.ac.open.kmi.iserve.discovery.disco;
 
 import java.util.HashMap;
@@ -21,7 +21,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
 import org.apache.abdera.model.Entry;
 import org.ontoware.rdf2go.model.QueryResultTable;
@@ -38,7 +40,9 @@ import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 
 public class AllServicesPlugin implements IServiceDiscoveryPlugin {
 
@@ -46,43 +50,62 @@ public class AllServicesPlugin implements IServiceDiscoveryPlugin {
 
 	private int count;
 
-	public AllServicesPlugin() {	}
+	RDFRepositoryConnector serviceConnector;
+
+	public AllServicesPlugin() {	
+		ServiceManager svcManager = ManagerSingleton.getInstance().getServiceManager();
+		if (svcManager instanceof ServiceManagerRdf) {
+			serviceConnector = ((ServiceManagerRdf)svcManager).getRepoConnector();
+		} else {
+			throw new WebApplicationException(
+					new IllegalStateException("The '" + this.getName() + "' " + 
+							this.getVersion() + " services discovery plugin currently requires a Service Manager based backed by an RDF Repository."), 
+							Response.Status.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin#discover(javax.ws.rs.core.MultivaluedMap)
 	 */
 	public Set<Entry> discover(MultivaluedMap<String, String> parameters) throws DiscoveryException {
-		log.debug("Discover services: " + parameters);
 		
+		// If there is no service connector raise an error 
+		if (serviceConnector == null) {
+			throw new WebApplicationException(
+					new IllegalStateException("The '" + this.getName() + "' " + 
+							this.getVersion() + " the RDF connector to the services repository is null."), 
+					Response.Status.INTERNAL_SERVER_ERROR);
+		}
+		
+		log.debug("Discover services: " + parameters);
+
 		// set of services
 		Set<String> services = new HashSet<String>();
-
 		Map<String, String> labels = new HashMap<String,String>();
 
-		RDFRepositoryConnector connector = ManagerSingleton.getInstance().getServicesRepositoryConnector();
-		RepositoryModel repoModel = connector.openRepositoryModel();
+		RepositoryModel repoModel = serviceConnector.openRepositoryModel();
 
-        String query = "prefix msm: <" + MSM.NS_URI + ">\n"
-			+ "prefix rdfs: <" + RDFS.NAMESPACE + ">\n"
-			+ "select ?svc ?label \n"
-		    + "where {  ?svc a msm:Service .\n"
-			+ "  optional { ?svc rdfs:label ?label }\n"
-		    + "}";
+		String query = "prefix msm: <" + MSM.NS_URI + ">\n"
+		+ "prefix rdfs: <" + RDFS.NAMESPACE + ">\n"
+		+ "select ?svc ?label \n"
+		+ "where {  ?svc a msm:Service .\n"
+		+ "  optional { ?svc rdfs:label ?label }\n"
+		+ "}";
 
-        log.info("Querying for services: " + query);
-        
+		log.info("Querying for services: " + query);
+
 		QueryResultTable qresult = repoModel.querySelect(query, "sparql");
 		for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
 			QueryRow row = it.next();
 			Node svcNode = row.getValue("svc");
-			
+
 			// Filter blank nodes
 			if (svcNode instanceof BlankNode) {
 				log.warn("Service blank node found: " + svcNode.toString());
 			} else {
 				String svc = svcNode.asURI().toString();
 				services.add(svc);
-				
+
 				log.debug("Adding result: " + svc);
 
 				Node label = row.getValue("label");
@@ -93,7 +116,7 @@ public class AllServicesPlugin implements IServiceDiscoveryPlugin {
 
 		}
 
-		connector.closeRepositoryModel(repoModel);
+		serviceConnector.closeRepositoryModel(repoModel);
 
 		count = services.size();
 
@@ -102,9 +125,9 @@ public class AllServicesPlugin implements IServiceDiscoveryPlugin {
 	}
 
 	private Set<Entry> serializeServices(Set<String> services, Map<String, String> labels) {
-		
+
 		log.debug("Serialising " + services.size() + " results");
-		
+
 		Set<Entry> matchingResults = new HashSet<Entry>();
 		for (Iterator<String> it = services.iterator(); it.hasNext();) {
 			String svc = it.next();

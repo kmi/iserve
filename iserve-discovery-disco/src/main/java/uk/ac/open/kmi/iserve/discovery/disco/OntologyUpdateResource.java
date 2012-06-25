@@ -44,7 +44,9 @@ import org.openrdf.repository.RepositoryException;
 
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 
 /**
  * This class takes care of loading the ontologies that are referenced within
@@ -83,7 +85,18 @@ public class OntologyUpdateResource {
 		builtinExtras = Collections.unmodifiableList(extras);
 	}
 
+	private static RDFRepositoryConnector serviceConnector;
+
 	public OntologyUpdateResource() throws RepositoryException, IOException {
+		ServiceManager svcManager = ManagerSingleton.getInstance().getServiceManager();
+		if (svcManager instanceof ServiceManagerRdf) {
+			serviceConnector = ((ServiceManagerRdf)svcManager).getRepoConnector();
+		} else {
+			throw new WebApplicationException(
+					new IllegalStateException("The Ontology Updater requires a Service Manager based backed by an RDF Repository."), 
+					Response.Status.INTERNAL_SERVER_ERROR);
+		}
+		
 		if (updaterThread == null) {
 		    initUpdaterThread();
 		}
@@ -93,10 +106,9 @@ public class OntologyUpdateResource {
 	@Produces(MediaType.TEXT_HTML)
 	public Response getStatistics() {
 		
-		RDFRepositoryConnector connector = ManagerSingleton.getInstance().getServicesRepositoryConnector();
-		RepositoryModel repoModel = connector.openRepositoryModel();
+		RepositoryModel repoModel = serviceConnector.openRepositoryModel();
 		Set<URI> modelRefs = getExternalReferences(repoModel, NONE, NONE);
-		connector.closeRepositoryModel(repoModel);
+		serviceConnector.closeRepositoryModel(repoModel);
 
 		String result = "<html><head><title>iServe Ontology Autoupdater</title></head><body><h1>iServe Ontology Autoupdater</h1>\n" +
 				"<p>Last update was on " + String.valueOf(lastUpdate) + ", resulting in " + lastTripleCount + " triples.</p>\n" +
@@ -166,20 +178,19 @@ public class OntologyUpdateResource {
 	
 	private static Set<Statement> updateOntologies(String[] services, String[] extras) {
         // the incoming representation is ignored and can be empty
-		RDFRepositoryConnector connector = ManagerSingleton.getInstance().getServicesRepositoryConnector();
-		RepositoryModel repoModel = connector.openRepositoryModel();
+		RepositoryModel repoModel = serviceConnector.openRepositoryModel();
         
         Set<URI> modelRefs = getExternalReferences(repoModel, services, extras);
         
-        connector.closeRepositoryModel(repoModel);
+        serviceConnector.closeRepositoryModel(repoModel);
         
         Set<Statement> crawledData = rdfCrawler.crawl(modelRefs);
         if (crawledData.size() != 0) {
             // put the statements in the repository
-            repoModel = connector.openRepositoryModel(MODELREF_DEFN_CACHE_CTXT);
+            repoModel = serviceConnector.openRepositoryModel(MODELREF_DEFN_CACHE_CTXT);
 //                repoModel.removeAll(); // todo clear the cache context if we want to perform an update here, but owlim seems to interpret this as clearing the whole repository
             repoModel.addAll(crawledData.iterator());
-            connector.closeRepositoryModel(repoModel);
+            serviceConnector.closeRepositoryModel(repoModel);
         }
         return crawledData;
     }

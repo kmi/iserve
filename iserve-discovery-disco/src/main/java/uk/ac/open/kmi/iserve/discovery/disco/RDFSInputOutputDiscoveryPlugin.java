@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
@@ -40,7 +42,9 @@ import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 
 public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 
@@ -58,10 +62,23 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 	 */
 	private boolean operationDiscovery = false;
 
+	private RDFRepositoryConnector serviceConnector;
+
 	public RDFSInputOutputDiscoveryPlugin(boolean operationDiscovery) throws RepositoryException, IOException {
 		this.count = 0;
 		this.feedSuffix = "";
 		this.operationDiscovery = operationDiscovery;
+		
+		ServiceManager svcManager = ManagerSingleton.getInstance().getServiceManager();
+		if (svcManager instanceof ServiceManagerRdf) {
+			serviceConnector = ((ServiceManagerRdf)svcManager).getRepoConnector();
+		} else {
+			throw new WebApplicationException(
+					new IllegalStateException("The '" + this.getName() + "' " + 
+							this.getVersion() + " services discovery plugin currently requires a Service Manager based backed by an RDF Repository."), 
+					Response.Status.INTERNAL_SERVER_ERROR);
+		}
+		
 	}
 
 	public String getName() {
@@ -100,6 +117,15 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 	 * @see uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin#discover(javax.ws.rs.core.MultivaluedMap)
 	 */
 	public Set<Entry> discover(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+		
+		// If there is no service connector raise an error 
+		if (serviceConnector == null) {
+			throw new WebApplicationException(
+					new IllegalStateException("The '" + this.getName() + "' " + 
+							this.getVersion() + " the RDF connector to the services repository is null."), 
+					Response.Status.INTERNAL_SERVER_ERROR);
+		}
+		
 		List<String> inputClasses = parameters.get("i");
 		List<String> outputClasses = parameters.get("o");
 
@@ -263,8 +289,7 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 
 	private void matchInputs(List<String> classes, Map<String, Degree> matches, Map<String, String> labels) throws DiscoveryException {
 
-		RDFRepositoryConnector connector = ManagerSingleton.getInstance().getServicesRepositoryConnector();
-		RepositoryModel repoModel = connector.openRepositoryModel();
+		RepositoryModel repoModel = serviceConnector.openRepositoryModel();
 		
 		String query = generateQuery(MSM.NS_URI + "hasInput", classes);
 		//FIXME: Replace with proper logging framework
@@ -387,13 +412,12 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 			}
 		}
 		
-		connector.closeRepositoryModel(repoModel);
+		serviceConnector.closeRepositoryModel(repoModel);
 	}
 
 	private void matchOutputs(List<String> classes, Map<String, Degree> matches, Map<String, String> labels) throws DiscoveryException {
 
-		RDFRepositoryConnector connector = ManagerSingleton.getInstance().getServicesRepositoryConnector();
-		RepositoryModel repoModel = connector.openRepositoryModel();
+		RepositoryModel repoModel = serviceConnector.openRepositoryModel();
 		
 		String query = generateQuery(MSM.NS_URI + "hasOutput", classes);
 		//FIXME: Replace with proper logging framework
@@ -478,7 +502,7 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 
 		}
 		
-		connector.closeRepositoryModel(repoModel);
+		serviceConnector.closeRepositoryModel(repoModel);
 	}
 	
 	/**

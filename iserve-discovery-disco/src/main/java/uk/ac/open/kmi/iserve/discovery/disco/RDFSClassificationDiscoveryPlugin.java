@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
@@ -39,7 +41,9 @@ import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 
 public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugin {
 
@@ -57,6 +61,8 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 	 */
 	private boolean operationDiscovery = false;
 
+	private RDFRepositoryConnector serviceConnector;
+
 	public RDFSClassificationDiscoveryPlugin(boolean operationDiscovery) {
 		matchTypesValuesMap = new HashMap<String, Integer>();
 		matchTypesValuesMap.put(DiscoveryUtil.EXACT_DEGREE, Integer.valueOf(0));
@@ -64,6 +70,16 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 		matchTypesValuesMap.put(DiscoveryUtil.GSSOS_DEGREE, Integer.valueOf(2));
 		matchTypesValuesMap.put(DiscoveryUtil.INTER_DEGREE, Integer.valueOf(3));
 		this.operationDiscovery = operationDiscovery;
+		
+		ServiceManager svcManager = ManagerSingleton.getInstance().getServiceManager();
+		if (svcManager instanceof ServiceManagerRdf) {
+			serviceConnector = ((ServiceManagerRdf)svcManager).getRepoConnector();
+		} else {
+			throw new WebApplicationException(
+					new IllegalStateException("The '" + this.getName() + "' " + 
+							this.getVersion() + " services discovery plugin currently requires a Service Manager based backed by an RDF Repository."), 
+					Response.Status.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	public String getName() {
@@ -101,6 +117,15 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 	 * @see uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin#discover(javax.ws.rs.core.MultivaluedMap)
 	 */
 	public Set<Entry> discover(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+		
+		// If there is no service connector raise an error 
+		if (serviceConnector == null) {
+			throw new WebApplicationException(
+					new IllegalStateException("The '" + this.getName() + "' " + 
+							this.getVersion() + " the RDF connector to the services repository is null."), 
+					Response.Status.INTERNAL_SERVER_ERROR);
+		}
+		
 		List<String> classes = parameters.get("class");
 		if ( classes == null || classes.size() == 0 ) {
 			throw new DiscoveryException(403, "Functional discovery without parameters is not supported - add parameter 'class=uri'");
@@ -170,10 +195,9 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 			Set<String> goalSubclassOfItem, Set<String> intersection, Map<String, String> labels) {
 		Set<String> goalNotSubclassOfItem = new HashSet<String>();
 
-		RDFRepositoryConnector connector = ManagerSingleton.getInstance().getServicesRepositoryConnector();
-		RepositoryModel repoModel = connector.openRepositoryModel();
+		RepositoryModel repoModel = serviceConnector.openRepositoryModel();
 
-		// todo extension: don't care about WSMO-Lite wl:FCR
+		// TODO extension: don't care about WSMO-Lite wl:FCR
 
 		// 1 exact match, 2 service subset of goal, 3 goal subset of service:
 		// 1,2 find services that have a subcategory of each of the goal categories			
@@ -310,7 +334,7 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 			// TODO: find services for which there exists a category that is a subcategory of all the categories of both the goal and the svc; but remove any from above
 		// TODO: also find potential intersections where some service and goal classes are related through subclass
 
-		connector.closeRepositoryModel(repoModel);
+		serviceConnector.closeRepositoryModel(repoModel);
 	}
 
 	/**

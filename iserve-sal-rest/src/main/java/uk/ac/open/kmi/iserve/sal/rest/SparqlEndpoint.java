@@ -21,6 +21,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -35,18 +36,28 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
+import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 @Path("/")
 public class SparqlEndpoint {
-
-	private ServiceManagerRdf serviceManager;
-
+	
 	@Context
 	UriInfo uriInfo;
+	
+	private RDFRepositoryConnector serviceConnector;
 
-	public SparqlEndpoint() { }
+	public SparqlEndpoint() { 
+		ServiceManager svcManager = ManagerSingleton.getInstance().getServiceManager();
+		if (svcManager instanceof ServiceManagerRdf) {
+			serviceConnector = ((ServiceManagerRdf)svcManager).getRepoConnector();
+		} else {
+			throw new WebApplicationException(
+					new IllegalStateException("The SPARQL Endpoint needs to be backed by an RDF Repository."), 
+							Response.Status.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	/**
 	 * Provides querying access support to the underlying services registry
@@ -64,12 +75,19 @@ public class SparqlEndpoint {
 	@GET
 	@Produces({"application/sparql-results+xml", "application/rdf+xml", MediaType.WILDCARD})
 	public Response query(@QueryParam("query") String queryString) throws RepositoryException, MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, RDFHandlerException, IOException {
+		
+		// If there is no service connector raise an error 
+		if (serviceConnector == null) {
+			throw new WebApplicationException(
+					new IllegalStateException("The SPARQL Endpoint needs to be backed by an RDF Repository."), 
+					Response.Status.INTERNAL_SERVER_ERROR);
+		}
+		
 		String absolutePath = uriInfo.getAbsolutePath().toString();
 		if ( absolutePath.endsWith("sparql/") || absolutePath.endsWith("execute-query/") ||
 				absolutePath.endsWith("sparql") || absolutePath.endsWith("execute-query")) {
 			
-			RDFRepositoryConnector connector = ManagerSingleton.getInstance().getServicesRepositoryConnector();
-			String result = connector.query(queryString);
+			String result = serviceConnector.query(queryString);
 
 			if ( result.contains("http://www.w3.org/2005/sparql-results") ) {
 				return Response.ok(result, "application/sparql-results+xml").build();

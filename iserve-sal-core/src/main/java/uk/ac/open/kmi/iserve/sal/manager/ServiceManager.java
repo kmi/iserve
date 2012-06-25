@@ -69,8 +69,5 @@ public interface ServiceManager {
 	 */
 	public String addService(String fileName, InputStream msmServiceDescriptionStream,
 			String sourceUri) throws ServiceException;
-	
-	
-	public RDFRepositoryConnector getServicesRepositoryConnector();
 
 }

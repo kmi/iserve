@@ -57,12 +57,12 @@ public class UserManagerRdf implements UserManager {
 		repoConnector = new RDFRepositoryConnector(configuration.getUserServerUrl().toString(), 
 				configuration.getUsersRepositoryName());
 		//TODO: This should be deployment independent
-		hasUserName = new org.ontoware.rdf2go.model.node.impl.URIImpl("http://" + 
-				configuration.getIserveUrl() + USER.HAS_USER_NAME);
-		hasPassword = new org.ontoware.rdf2go.model.node.impl.URIImpl("http://" + 
-				configuration.getIserveUrl() + USER.HAS_PASSWORD);
+		hasUserName = new org.ontoware.rdf2go.model.node.impl.URIImpl(configuration.getIserveUrl() + 
+				USER.HAS_USER_NAME);
+		hasPassword = new org.ontoware.rdf2go.model.node.impl.URIImpl(configuration.getIserveUrl() + 
+				USER.HAS_PASSWORD);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.sal.manager.UserManager#getUser(uk.ac.open.kmi.iserve.sal.model.common.URI)
 	 */

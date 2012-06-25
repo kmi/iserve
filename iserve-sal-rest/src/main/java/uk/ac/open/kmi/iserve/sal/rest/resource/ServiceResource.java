@@ -29,6 +29,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -52,7 +53,9 @@ import uk.ac.open.kmi.iserve.commons.vocabulary.LOG;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.sal.exception.LogException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
+import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 import uk.ac.open.kmi.iserve.sal.rest.auth.AuthenticationException;
 import uk.ac.open.kmi.iserve.sal.util.HtmlUtil;
 import uk.ac.open.kmi.iserve.sal.util.ModelReferenceUtil;
@@ -60,6 +63,11 @@ import uk.ac.open.kmi.iserve.sal.util.XmlUtil;
 
 import com.sun.jersey.api.container.MappableContainerException;
 
+/**
+ * TODO: Refactor based on the Manager Singleton.
+ * 
+ * @author Dong Liu (Knowledge Media Institute - The Open University)
+ */
 @Path("/services")
 public class ServiceResource {
 
@@ -227,10 +235,18 @@ public class ServiceResource {
 			sb.append(HtmlUtil.LIST_HTML_SUFFIX);
 			return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
 		} else if ( absolutePath.endsWith("data/services/") ) {
-			RDFRepositoryConnector connector = ManagerSingleton.getInstance().getServicesRepositoryConnector();
-			String queryString = "SELECT ?service WHERE { ?service " + RDF.type.toSPARQL() + " " + MSM.Service.toSPARQL() + "}";
-			String result = connector.query(queryString);
-			return Response.ok(result, "application/sparql-results+xml").build();
+			// TODO: find better fix for this
+			ServiceManager svcManager = ManagerSingleton.getInstance().getServiceManager();
+			if (svcManager instanceof ServiceManagerRdf) {
+				String queryString = "SELECT ?service WHERE { ?service " + RDF.type.toSPARQL() + " " + MSM.Service.toSPARQL() + "}";
+				String result = ((ServiceManagerRdf)svcManager).getRepoConnector().query(queryString);
+				return Response.ok(result, "application/sparql-results+xml").build();
+				
+			} else {
+				throw new WebApplicationException(
+						new IllegalStateException("iServe needs to be backed by an RDF Store."), 
+						Response.Status.INTERNAL_SERVER_ERROR);
+			}
 		}
 		return Response.status(Status.BAD_REQUEST).build();		
 	}
@@ -266,10 +282,19 @@ public class ServiceResource {
 					String result = model.serialize(Syntax.Trix);
 					return Response.ok(result, "application/rdf+xml").build();
 				} else if ( syntax.equals(xmlSyntax) ) {
-					RepositoryModel m = (RepositoryModel) ManagerSingleton.getInstance().getServiceAsModelById(id);
-					ModelReferenceUtil.getInstance().setRDFRepositoryConnector(ManagerSingleton.getInstance().getServicesRepositoryConnector());
-					String result = XmlUtil.serializeService(m);
-					return Response.ok(result, "text/xml").build();
+					// TODO: find better fix for this
+					ServiceManager svcManager = ManagerSingleton.getInstance().getServiceManager();
+					if (svcManager instanceof ServiceManagerRdf) {
+						RepositoryModel m = (RepositoryModel) ManagerSingleton.getInstance().getServiceAsModelById(id);
+						ModelReferenceUtil.getInstance().setRDFRepositoryConnector(((ServiceManagerRdf)svcManager).getRepoConnector());
+						String result = XmlUtil.serializeService(m);
+						return Response.ok(result, "text/xml").build();
+					} else {
+						throw new WebApplicationException(
+								new IllegalStateException("iServe needs to be backed by an RDF Store."), 
+								Response.Status.INTERNAL_SERVER_ERROR);
+					}
+					
 				}
 			}
 			String result = model.serialize(Syntax.RdfXml);

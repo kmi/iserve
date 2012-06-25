@@ -81,6 +81,13 @@ public class ServiceManagerRdf implements ServiceManager {
 				configuration.getServicesRepositoryName());		
 	}
 
+	/**
+	 * @return the repoConnector
+	 */
+	public RDFRepositoryConnector getRepoConnector() {
+		return this.repoConnector;
+	}
+
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#listService()
 	 */
@@ -383,38 +390,37 @@ public class ServiceManagerRdf implements ServiceManager {
 
 	// TODO: Dont use the configuration directly
 	private String getServiceUri(String serviceId) {
+		if (serviceId == null) {
+			return null;
+		}
+		
 		String queryString = "select ?s where { \n" +
 			"?s " + RDF.type.toSPARQL() + " " + MSM.Service.toSPARQL() + "\n" +
 			"FILTER regex(str(?s), \"" + serviceId + "\", \"i\")\n}";
 
-		RepositoryModel model = repoConnector.openRepositoryModel();
-		QueryResultTable qrt = model.sparqlSelect(queryString);
 		String defUri = null;
-		if ( qrt != null ) {
-			ClosableIterator<org.ontoware.rdf2go.model.QueryRow> iter = qrt.iterator();
-			if ( iter != null ) {
-				while ( iter.hasNext() ) {
-					org.ontoware.rdf2go.model.QueryRow qr = iter.next();
-					String valueString = qr.getValue("s").toString();
-					if ( valueString.toLowerCase().contains(configuration.getIserveUrl().toString()) ) {
-						defUri = valueString;
+		RepositoryModel model = repoConnector.openRepositoryModel();
+		try {
+			QueryResultTable qrt = model.sparqlSelect(queryString);
+			
+			if ( qrt != null ) {
+				ClosableIterator<org.ontoware.rdf2go.model.QueryRow> iter = qrt.iterator();
+				if ( iter != null ) {
+					while ( iter.hasNext() ) {
+						org.ontoware.rdf2go.model.QueryRow qr = iter.next();
+						String valueString = qr.getValue("s").toString();
+						if ( valueString.toLowerCase().contains(configuration.getIserveUrl().toString()) ) {
+							defUri = valueString;
+						}
 					}
+					iter.close();
+					iter = null;
 				}
-				iter.close();
-				iter = null;
 			}
+		} finally {
+			repoConnector.closeRepositoryModel(model);
 		}
-		repoConnector.closeRepositoryModel(model);
-		model = null;
 		return defUri;
-	}
-
-	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#getRepositoryConnector()
-	 */
-	@Override
-	public RDFRepositoryConnector getServicesRepositoryConnector() {
-		return repoConnector;
 	}
 
 	/* (non-Javadoc)
