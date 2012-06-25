@@ -1,6 +1,6 @@
 if [ -z "$TOMCAT_DIR" ]
 then
-    TOMCAT_DIR="/Users/dl3962/Workspace/apache-tomcat-6.0.32/"
+    TOMCAT_DIR="/Library/Tomcat/Home"
 fi
 
 rm -rf ./iserve
