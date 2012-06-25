@@ -1,1 +1,3 @@
 /config.properties
+config.properties.*
+!config.properties.reference
