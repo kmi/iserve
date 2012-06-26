@@ -71,10 +71,10 @@ public class DiscoveryResource {
 		plugin = new AllServicesPlugin();
 		registerPlugin(plugin);
 
-		plugin = new RDFSInputOutputDiscoveryPlugin(false);
+		plugin = new RDFSInputOutputDiscoveryPlugin();
 		registerPlugin(plugin);
 
-		plugin = new RDFSClassificationDiscoveryPlugin(false);
+		plugin = new RDFSClassificationDiscoveryPlugin();
 		registerPlugin(plugin);
 
 		//		plugin = new IMatcherDiscoveryPlugin(connector);
@@ -115,9 +115,9 @@ public class DiscoveryResource {
 		StringBuffer result = new StringBuffer(insertHeader());
 		result.append("<H2>iServe Discovery Plugins Registered</H2>");
 		result.append("<H3>Service Discovery Plugins</H3>");
-		result.append(generatePluginsTable(servicePlugins));
+		result.append(generatePluginsTable(ServiceDiscoveryPlugin.class, servicePlugins));
 		result.append("<H3>Operation Discovery Plugins</H3>");
-		result.append(generatePluginsTable(operationPlugins));
+		result.append(generatePluginsTable(OperationDiscoveryPlugin.class, operationPlugins));
 		result.append(insertFooter());
 		return result.toString();
 	}
@@ -126,10 +126,11 @@ public class DiscoveryResource {
 	 * Generate an HTML table with the details of the plugins in the Map handed
 	 * 
 	 * @param <T> the type of plugins which extends Discovery Plugin
+	 * @param typeOfPlugin the type of plugin being listed
 	 * @param pluginsMap The map of plugins to use
 	 * @return An HTML table with the details of the plugins in the map
 	 */
-	private <T extends DiscoveryPlugin> String generatePluginsTable(Map<String, T> pluginsMap) {
+	private <T extends DiscoveryPlugin> String generatePluginsTable(Class typeOfPlugin, Map<String, T> pluginsMap) {
 
 		StringBuffer result = new StringBuffer();
 		if (pluginsMap != null && !pluginsMap.isEmpty()) {
@@ -143,7 +144,8 @@ public class DiscoveryResource {
 			result.append("<th>Parameters</th>"+ NEW_LINE);
 			result.append("<th>Endpoint</th>"+ NEW_LINE);
 			result.append("</tr>"+ NEW_LINE);
-
+			
+			String interPath = "";
 			for (java.util.Map.Entry<String, T> entry : plugins) {
 				DiscoveryPlugin regPlugin = entry.getValue();
 				result.append("<tr>"+ NEW_LINE);
@@ -161,8 +163,11 @@ public class DiscoveryResource {
 
 				// Include the endpoint 
 				UriBuilder ub = uriInfo.getAbsolutePathBuilder();
-				String interPath = "op";
-				if (regPlugin instanceof ServiceDiscoveryPlugin) {
+				// Fix the intermediate path
+				if (typeOfPlugin.equals(OperationDiscoveryPlugin.class)) {
+					interPath = "op";
+				}
+				if (typeOfPlugin.equals(ServiceDiscoveryPlugin.class)) {
 					interPath = "svc";
 				}
 				String pluginUri = ub.path(interPath + "/" + regPlugin.getName()).build().toString();

@@ -38,18 +38,23 @@ import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.rdf2go.RepositoryModel;
 import org.openrdf.repository.RepositoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 
-public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin {
+public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, OperationDiscoveryPlugin {
+	
+	private static final Logger log = LoggerFactory.getLogger(RDFSInputOutputDiscoveryPlugin.class);
 
 	private static final String PLUGIN_VERSION = "v1.1.2";
 
@@ -90,6 +95,8 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin {
 		parameterDetails.put(INPUTS_PARAM, INPUTS_PARAM_DESCRIPTION);
 	}
 	
+	public static String NEW_LINE = System.getProperty("line.separator");
+	
 	// TODO: Add additional details to the enum? (Merge with others?)
 	private enum Degree {
 		EXACT, PLUGIN, SUBSUME, PARTIAL_PLUGIN, PARTIAL_SUBSUME, FAIL
@@ -99,18 +106,11 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin {
 
 	private String feedSuffix;
 
-	/**
-	 * This plugin supports discovery over services and operations
-	 * If this is true we will discovery operations rather than services
-	 */
-	private boolean operationDiscovery = false;
-
 	private RDFRepositoryConnector serviceConnector;
 
-	public RDFSInputOutputDiscoveryPlugin(boolean operationDiscovery) {
+	public RDFSInputOutputDiscoveryPlugin() {
 		this.count = 0;
 		this.feedSuffix = "";
-		this.operationDiscovery = operationDiscovery;
 		
 		ServiceManager svcManager = ManagerSingleton.getInstance().getServiceManager();
 		if (svcManager instanceof ServiceManagerRdf) {
@@ -160,22 +160,27 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin {
 	 * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getFeedTitle()
 	 */
 	public String getFeedTitle() {
-		String feedTitle;
-		feedTitle = "RDFS I/O discovery results: " + count ;
-		if (operationDiscovery) {
-			feedTitle += " operation(s) for " + feedSuffix;
-		}
-		else {
-			feedTitle += " service(s) for " + feedSuffix;
-		}
+		String feedTitle = "RDFS I/O discovery results: " + count + " services(s) or operation(s) for " + feedSuffix;
 		return feedTitle;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin#discoverServices(javax.ws.rs.core.MultivaluedMap)
 	 */
 	@Override
 	public SortedSet<Entry> discoverServices(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+		return discover(false, parameters);
+	}
+	
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin#discoverOperations(javax.ws.rs.core.MultivaluedMap)
+	 */
+	@Override
+	public SortedSet<Entry> discoverOperations(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+		return discover(true, parameters);
+	}
+	
+	public SortedSet<Entry> discover(boolean operationDiscovery, MultivaluedMap<String, String> parameters) throws DiscoveryException {
 		
 		// If there is no service connector raise an error 
 		if (serviceConnector == null) {
@@ -216,11 +221,11 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin {
 		Set<String> matches = new HashSet<String>();
 
 		if (matchingInputs) {
-			matchInputs(inputClasses, s_input, labels);
+			matchInputs(operationDiscovery, inputClasses, s_input, labels);
 			matches.addAll(s_input.keySet());
 		}
 		if (matchingOutputs) {
-			matchOutputs(outputClasses, s_output, labels);
+			matchOutputs(operationDiscovery, outputClasses, s_output, labels);
 			if (matchingInputs && intersection) {
 				matches.retainAll(s_output.keySet());
 			} else {
@@ -275,11 +280,13 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin {
 	 * @return
 	 */
 	private SortedSet<Entry> serializeMatches(Set<String> matches, Map<String, Degree> inputDegrees, Map<String, Degree> outputDegrees, Map<String, String> labels) {
-		SortedSet<Entry> matchingResults = new TreeSet<Entry>();
+		SortedSet<Entry> matchingResults = new TreeSet<Entry>(new EntryComparatorClassificationMatching());
 
 		final Map<String, String> combinedMatchDegrees = new HashMap<String, String>();
 		Map<String, String> degreeNames = new HashMap<String, String>();
 		Map<String, String> degreeDescs = new HashMap<String, String>();
+		
+		log.info("Serialising " + matches.size() + " discovery results.");
 
 		for (String match : matches) {
 			Degree iDeg = inputDegrees.get(match);
@@ -313,21 +320,6 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin {
 			degreeNames.put(degreeNum, degreeName);
 			degreeDescs.put(degreeNum, degreeDesc);
 		}
-//		
-//		SortedSet<String> sortedMatches = new TreeSet<String>(new Comparator<String>() {
-//			public int compare(String o1, String o2) {
-//				String deg1 = combinedMatchDegrees.get(o1);
-//				String deg2 = combinedMatchDegrees.get(o2);
-//				int retval = deg1.compareTo(deg2);
-//				if (retval == 0) {
-//					retval = o1.compareTo(o2);
-//				}
-//				return retval;
-//			}
-//		});
-//		sortedMatches.addAll(matches);
-
-//		for (String match : sortedMatches) {
 		
 		for (String match : matches) {			
 			String degreeNum = combinedMatchDegrees.get(match);
@@ -344,13 +336,12 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin {
 		return matchingResults;
 	}
 
-	private void matchInputs(List<String> classes, Map<String, Degree> matches, Map<String, String> labels) throws DiscoveryException {
+	private void matchInputs(boolean operationDiscovery, List<String> classes, Map<String, Degree> matches, Map<String, String> labels) throws DiscoveryException {
 
 		RepositoryModel repoModel = serviceConnector.openRepositoryModel();
 		
 		String query = generateQuery(MSM.NS_URI + "hasInput", classes);
-		//FIXME: Replace with proper logging framework
-		System.err.println("Input matching query: \n" + query);
+		log.info("Input matching query: " + NEW_LINE + query);
 
 		QueryResultTable qresult = repoModel.querySelect(query, "sparql");
 
@@ -427,6 +418,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin {
 			}
 		}
 
+		// FIXME: This is inefficient
 		opExact.removeAll(opNotExact);
 		opPlugin.removeAll(opNotPlugin);
 		opSubsume.removeAll(opNotSubsume);
@@ -469,16 +461,18 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin {
 			}
 		}
 		
+		//TODO: handle connection properly
 		serviceConnector.closeRepositoryModel(repoModel);
+		
+		log.info("Returning " + matches.size() + " discovery results.");
 	}
 
-	private void matchOutputs(List<String> classes, Map<String, Degree> matches, Map<String, String> labels) throws DiscoveryException {
+	private void matchOutputs(boolean operationDiscovery, List<String> classes, Map<String, Degree> matches, Map<String, String> labels) throws DiscoveryException {
 
 		RepositoryModel repoModel = serviceConnector.openRepositoryModel();
 		
 		String query = generateQuery(MSM.NS_URI + "hasOutput", classes);
-		//FIXME: Replace with proper logging framework
-		System.err.println("Output matching query: \n" + query);
+		log.info("Output matching query: " + NEW_LINE + query);
 
 		QueryResultTable qresult = repoModel.querySelect(query, "sparql");
 		for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
@@ -558,8 +552,9 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin {
 			}
 
 		}
-		
+		//TODO: handle connection properly
 		serviceConnector.closeRepositoryModel(repoModel);
+		log.info("Returning " + matches.size() + " discovery results.");
 	}
 	
 	/**
@@ -585,50 +580,62 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin {
 		// in the query, ?exX is exact annotation, ?cpX is annotation class for
 		// plugin, ?csX is annotation class for subsume
 		
-		String query = "prefix wl: <" + MSM.WL_NS_URI + ">\n"
-		+ "prefix sawsdl: <" + MSM.SAWSDL_NS_URI + ">\n"
-		+ "prefix msm: <" + MSM.NS_URI + ">\n"  
-		+ "prefix rdfs: <" + RDFS.NAMESPACE + ">\n"
-		+ "prefix rdf: <" + RDF.NAMESPACE + ">\n"
-		+ "select ?svc ?labels ?op ?labelop ?ic ?icp ";
+		StringBuffer query = new StringBuffer();
+		query.append("prefix wl: <" + MSM.WL_NS_URI + ">" + NEW_LINE);
+		query.append("prefix sawsdl: <" + MSM.SAWSDL_NS_URI + ">" + NEW_LINE);
+		query.append("prefix msm: <" + MSM.NS_URI + ">" + NEW_LINE);  
+		query.append("prefix rdfs: <" + RDFS.NAMESPACE + ">" + NEW_LINE);
+		query.append("prefix rdf: <" + RDF.NAMESPACE + ">" + NEW_LINE);
+		query.append("select ?svc ?labels ?op ?labelop ?ic ?icp ");
+		
 		for (int i = 0; i < classes.size(); i++) {
-			query += "?su" + i + " ?pl" + i + " ?ex" + i + " ";
+			query.append("?su" + i + " ?pl" + i + " ?ex" + i + " ");
 		}
-		query += "\nwhere {\n "
-			+ "  ?svc a msm:Service ; msm:hasOperation ?op .\n"
-			+ "  ?op <" + relOperationAndClasses + "> ?imsg .\n"
-			+ "  ?imsg msm:hasPartTransitive ?i .\n"
-			+ "  ?i sawsdl:modelReference ?ic . \n"     
-			+ "  ?i sawsdl:modelReference ?prop . \n"   // Take into account annotations to properties of the type
-			+ "  ?prop rdfs:range ?icp . \n"
-			+ "  OPTIONAL { ?svc rdfs:label ?labels }\n"
-			+ "  OPTIONAL { ?op rdfs:label ?labelop }\n";
+		
+		query.append("\nwhere {" + NEW_LINE);
+		query.append("  ?svc a msm:Service ; msm:hasOperation ?op ." + NEW_LINE);
+		query.append("  ?op <" + relOperationAndClasses + "> ?imsg ." + NEW_LINE);
+		query.append("  ?imsg msm:hasPartTransitive ?i ." + NEW_LINE);
+		query.append("  ?i sawsdl:modelReference ?ic . " + NEW_LINE);     
+		query.append("  ?i sawsdl:modelReference ?prop . " + NEW_LINE);   // Take into account annotations to properties of the type
+		query.append("  ?prop rdfs:range ?icp . " + NEW_LINE);
+		query.append("  OPTIONAL { ?svc rdfs:label ?labels }" + NEW_LINE);
+		query.append("  OPTIONAL { ?op rdfs:label ?labelop }" + NEW_LINE);
+		
 		for (int i = 0; i < classes.size(); i++) {
-			query += "  OPTIONAL {\n" + "    ?ic rdfs:subClassOf <"
-			+ classes.get(i).replace(">", "%3e") + "> ; ?su" + i + " <"
-			+ classes.get(i).replace(">", "%3e") + "> .\n" + "  }\n";
-			query += "  OPTIONAL {\n" + "    <"
-			+ classes.get(i).replace(">", "%3e")
-			+ "> rdfs:subClassOf ?ic ; ?pl" + i + " ?ic .\n" + "  }\n";
-			query += "  OPTIONAL {\n" + "    ?i sawsdl:modelReference <"
-			+ classes.get(i).replace(">", "%3e") + "> ; ?ex" + i + " <"
-			+ classes.get(i).replace(">", "%3e") + "> .\n" + "  }\n";
+			query.append("  OPTIONAL {" + NEW_LINE);
+			query.append("    ?ic rdfs:subClassOf <"
+					+ classes.get(i).replace(">", "%3e") + "> ; ?su" + i + " <"
+					+ classes.get(i).replace(">", "%3e") + "> ." + NEW_LINE + "  }" + NEW_LINE);
+			
+			query.append("  OPTIONAL {" + NEW_LINE);
+			query.append("    <" + classes.get(i).replace(">", "%3e")
+					+ "> rdfs:subClassOf ?ic ; ?pl" + i + " ?ic ." + NEW_LINE + "  }" + NEW_LINE);
+			
+			query.append("  OPTIONAL {" + NEW_LINE);
+			query.append("    ?i sawsdl:modelReference <"
+					+ classes.get(i).replace(">", "%3e") + "> ; ?ex" + i + " <"
+					+ classes.get(i).replace(">", "%3e") + "> ." + NEW_LINE + "  }" + NEW_LINE);
 		}
 		// Take into account annotations to properties of the type
 		for (int i = 0; i < classes.size(); i++) {
-			query += "  OPTIONAL {\n" + "    ?icp rdfs:subClassOf <"
-			+ classes.get(i).replace(">", "%3e") + "> ; ?su" + i + " <"
-			+ classes.get(i).replace(">", "%3e") + "> .\n" + "  }\n";
-			query += "  OPTIONAL {\n" + "    <"
-			+ classes.get(i).replace(">", "%3e")
-			+ "> rdfs:subClassOf ?icp ; ?pl" + i + " ?icp .\n" + "  }\n";
-			query += "  OPTIONAL {\n" + "    ?icp rdfs:subClassOf <"
-			+ classes.get(i).replace(">", "%3e") + "> ."
-			+ "<" + classes.get(i).replace(">", "%3e") + "> rdfs:subClassOf ?icp ;"
-			+ " ?ex" + i + " <"
-			+ classes.get(i).replace(">", "%3e") + "> .\n" + "  }\n";
+			query.append("  OPTIONAL {" + NEW_LINE);
+			query.append("    ?icp rdfs:subClassOf <"
+					+ classes.get(i).replace(">", "%3e") + "> ; ?su" + i + " <"
+					+ classes.get(i).replace(">", "%3e") + "> ." + NEW_LINE + "  }" + NEW_LINE);
+			
+			query.append("  OPTIONAL {" + NEW_LINE);
+			query.append("    <" + classes.get(i).replace(">", "%3e")
+					+ "> rdfs:subClassOf ?icp ; ?pl" + i + " ?icp ." + NEW_LINE + "  }" + NEW_LINE);
+			
+			query.append("  OPTIONAL {" + NEW_LINE);
+			query.append("    ?icp rdfs:subClassOf <"
+					+ classes.get(i).replace(">", "%3e") + "> ."
+					+ "<" + classes.get(i).replace(">", "%3e") + "> rdfs:subClassOf ?icp ;"
+					+ " ?ex" + i + " <"
+					+ classes.get(i).replace(">", "%3e") + "> ." + NEW_LINE + "  }" + NEW_LINE);
 		}
-		query += "}";
-		return query;
+		query.append("}");
+		return query.toString();
 	}
 }

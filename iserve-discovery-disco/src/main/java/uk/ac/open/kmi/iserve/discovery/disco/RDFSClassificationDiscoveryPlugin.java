@@ -42,13 +42,22 @@ import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 
-public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin {
+/**
+ * Plugin for discovering both services and operations given Functional Classifications
+ * using RDFS reasoning. This plugin requires that the underlying Service Manager
+ * is based on an RDF Store.
+ * 
+ * @author Jacek Kopecky (Knowledge Media Institute - The Open University)
+ * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
+ */
+public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin, OperationDiscoveryPlugin {
 
 	// Discovery Pluging Parameters
 	
@@ -74,17 +83,9 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 
 	private String feedSuffix;
 
-	/**
-	 * This plugin supports discovery over services and operations
-	 * If this is true we will discovery operations rather than services
-	 */
-	private boolean operationDiscovery = false;
-
 	private RDFRepositoryConnector serviceConnector;
 
-	
-
-	public RDFSClassificationDiscoveryPlugin(boolean operationDiscovery) {
+	public RDFSClassificationDiscoveryPlugin() {
 		
 		//TODO: Replace this with an Enum
 		matchTypesValuesMap = new HashMap<String, Integer>();
@@ -92,7 +93,6 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 		matchTypesValuesMap.put(DiscoveryUtil.SSSOG_DEGREE, Integer.valueOf(1));
 		matchTypesValuesMap.put(DiscoveryUtil.GSSOS_DEGREE, Integer.valueOf(2));
 		matchTypesValuesMap.put(DiscoveryUtil.INTER_DEGREE, Integer.valueOf(3));
-		this.operationDiscovery = operationDiscovery;
 		
 		ServiceManager svcManager = ManagerSingleton.getInstance().getServiceManager();
 		if (svcManager instanceof ServiceManagerRdf) {
@@ -136,13 +136,7 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 	 */
 	@Override
 	public String getFeedTitle() {
-		String feedTitle;
-		if (operationDiscovery) {
-			feedTitle = "RDFS Functional Classification discovery results: " + count + " operation(s) for " + feedSuffix;
-		}
-		else {
-			feedTitle = "RDFS Functional Classification discovery results: " + count + " service(s) for " + feedSuffix;
-		}
+		String feedTitle = "RDFS Functional Classification discovery results: " + count + " service(s) or operation(s) for " + feedSuffix;
 		return feedTitle;
 	}
 
@@ -152,7 +146,33 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 	 */
 	@Override
 	public SortedSet<Entry> discoverServices(MultivaluedMap<String, String> parameters) throws DiscoveryException {
-		
+		return discover(false, parameters);
+	}
+	
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin#discoverOperations(javax.ws.rs.core.MultivaluedMap)
+	 */
+	@Override
+	public SortedSet<Entry> discoverOperations(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+		return discover(true, parameters);
+	}
+	
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getParametersDetails()
+	 */
+	@Override
+	public Map<String, String> getParametersDetails() {
+		return parameterDetails;
+	}
+	
+	/**
+	 * @param operationDiscovery
+	 * @param parameters
+	 * @return
+	 * @throws DiscoveryException
+	 */
+	public SortedSet<Entry> discover(boolean operationDiscovery, MultivaluedMap<String, String> parameters) throws DiscoveryException {
+	
 		// If there is no service connector raise an error 
 		if (serviceConnector == null) {
 			throw new DiscoveryException("The '" + this.getName() + "' " + 
@@ -177,7 +197,7 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 
 		Map<String, String> labels = new HashMap<String,String>();
 
-		funcClassificationDisco(classes, s_exact, s_sssog, s_gssos, s_intersection, labels);
+		funcClassificationDisco(operationDiscovery, classes, s_exact, s_sssog, s_gssos, s_intersection, labels);
 
 		SortedSet<Entry> matchingResults = serializeResults(matchTypesValuesMap.get(DiscoveryUtil.EXACT_DEGREE), 
 				DiscoveryUtil.EXACT_DEGREE, s_exact, labels);
@@ -224,7 +244,7 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 		return matchingResults;
 	}
 
-	private void funcClassificationDisco(List<String> classes, Set<String> exact, Set<String> itemSubclassOfGoal,
+	private void funcClassificationDisco(boolean operationDiscovery, List<String> classes, Set<String> exact, Set<String> itemSubclassOfGoal,
 			Set<String> goalSubclassOfItem, Set<String> intersection, Map<String, String> labels) {
 		Set<String> goalNotSubclassOfItem = new HashSet<String>();
 
@@ -391,13 +411,4 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 	public static String xmlAttEncode(String src) {
 		return xmlEncode(src).replace("'", "&apos;").replace("\"", "&quot;");
 	}
-
-	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getParametersDetails()
-	 */
-	@Override
-	public Map<String, String> getParametersDetails() {
-		return parameterDetails;
-	}
-
 }

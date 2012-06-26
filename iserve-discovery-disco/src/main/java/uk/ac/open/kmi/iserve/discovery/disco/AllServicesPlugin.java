@@ -39,25 +39,28 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
+import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 
-public class AllServicesPlugin implements ServiceDiscoveryPlugin {
+public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDiscoveryPlugin {
 
 	private static final String PLUGIN_NAME = "all";
 
 	private static final String PLUGIN_DESCRIPTION = "iServe trivial discovery. " +
-			"Returns all the services available.";
+	"Returns all the services or operations available.";
 
 	private static final String PLUGIN_VERSION = "v1.1.2";
 
 	// No Discovery Pluging Parameters	
 	private static final Map<String, String> parameterDetails = new HashMap<String, String>();
-		
+
 	private static final Logger log = LoggerFactory.getLogger(AllServicesPlugin.class);
+
+	public static String NEW_LINE = System.getProperty("line.separator");
 
 	private int count;
 
@@ -112,19 +115,30 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin {
 	public Map<String, String> getParametersDetails() {
 		return parameterDetails;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin#discoverServices(javax.ws.rs.core.MultivaluedMap)
 	 */
 	public SortedSet<Entry> discoverServices(MultivaluedMap<String, String> parameters) throws DiscoveryException {
-		
+		return discover(false, parameters);
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin#discoverOperations(javax.ws.rs.core.MultivaluedMap)
+	 */
+	@Override
+	public SortedSet<Entry> discoverOperations(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+		return discover(true, parameters);
+	}
+
+	public SortedSet<Entry> discover(boolean operationDiscovery, MultivaluedMap<String, String> parameters) throws DiscoveryException {
 		// If there is no service connector raise an error 
 		if (serviceConnector == null) {
 			throw new DiscoveryException("The '" + this.getName() + "' " + 
-							this.getVersion() + " the RDF connector to the services repository is null.");
+					this.getVersion() + " the RDF connector to the services repository is null.");
 		}
-		
+
 		log.debug("Discover services: " + parameters);
 
 		// set of services
@@ -133,32 +147,36 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin {
 
 		RepositoryModel repoModel = serviceConnector.openRepositoryModel();
 
-		String query = "prefix msm: <" + MSM.NS_URI + ">\n"
-		+ "prefix rdfs: <" + RDFS.NAMESPACE + ">\n"
-		+ "select ?svc ?label \n"
-		+ "where {  ?svc a msm:Service .\n"
-		+ "  optional { ?svc rdfs:label ?label }\n"
-		+ "}";
+		StringBuffer query = new StringBuffer("prefix msm: <" + MSM.NS_URI + ">" + NEW_LINE);
+		query.append("prefix rdfs: <" + RDFS.NAMESPACE + ">" + NEW_LINE);
+		query.append("select ?item ?label " + NEW_LINE);
+		if (operationDiscovery) {
+			query.append("where {  ?item a msm:Operation ." + NEW_LINE);
+		} else {
+			query.append("where {  ?item a msm:Service ." + NEW_LINE);
+		}
+		query.append("  optional { ?item rdfs:label ?label }" + NEW_LINE);
+		query.append("}");
 
-		log.info("Querying for services: " + query);
+		log.info("Querying the backend: " + query);
 
-		QueryResultTable qresult = repoModel.querySelect(query, "sparql");
+		QueryResultTable qresult = repoModel.querySelect(query.toString(), "sparql");
 		for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
 			QueryRow row = it.next();
-			Node svcNode = row.getValue("svc");
+			Node itemNode = row.getValue("item");
 
 			// Filter blank nodes
-			if (svcNode instanceof BlankNode) {
-				log.warn("Service blank node found: " + svcNode.toString());
+			if (itemNode instanceof BlankNode) {
+				log.warn("Blank node found: " + itemNode.toString());
 			} else {
-				String svc = svcNode.asURI().toString();
-				services.add(svc);
+				String item = itemNode.asURI().toString();
+				services.add(item);
 
-				log.debug("Adding result: " + svc);
+				log.debug("Adding result: " + item);
 
 				Node label = row.getValue("label");
 				if (label != null) {
-					labels.put(svc, label.toString());
+					labels.put(item, label.toString());
 				} 
 			}
 
@@ -190,7 +208,7 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin {
 			result.setTitle(labels.get(svc));
 			matchingResults.add(result);
 		}
-		
+
 		return matchingResults;
 	}
 
