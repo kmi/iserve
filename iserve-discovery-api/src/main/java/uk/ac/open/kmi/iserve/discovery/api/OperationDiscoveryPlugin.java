@@ -1,5 +1,5 @@
 /*
-   Copyright ${year}  Knowledge Media Institute - The Open University
+   Copyright 2012  Knowledge Media Institute - The Open University
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -15,24 +15,21 @@
 */
 package uk.ac.open.kmi.iserve.discovery.api;
 
-import java.util.Set;
+import java.util.SortedSet;
 
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.abdera.model.Entry;
 
-public interface IServiceDiscoveryPlugin {
+/**
+ * Interface that Operation Discovery Plugins should implement
+ * TODO: The results should be Match Results rather than Abdera Entries
+ * (Serialisation of results should take place at a later stage)
+ * 
+ * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
+ */
+public interface OperationDiscoveryPlugin extends DiscoveryPlugin {
 
-	public String getName();
+	public SortedSet<Entry> discoverOperations(MultivaluedMap<String, String> parameters) throws DiscoveryException;
 	
-	public String getVersion();
-
-	public String getDescription();
-
-	public String getFeedTitle();
-	
-	// TODO: Include the notion of support for discovering services and operations
-
-	public Set<Entry> discover(MultivaluedMap<String, String> parameters) throws DiscoveryException;
-
 }

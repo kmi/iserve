@@ -16,10 +16,11 @@
 package uk.ac.open.kmi.iserve.discovery.disco;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
@@ -38,14 +39,24 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
-import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 
-public class AllServicesPlugin implements IServiceDiscoveryPlugin {
+public class AllServicesPlugin implements ServiceDiscoveryPlugin {
 
+	private static final String PLUGIN_NAME = "all";
+
+	private static final String PLUGIN_DESCRIPTION = "iServe trivial discovery. " +
+			"Returns all the services available.";
+
+	private static final String PLUGIN_VERSION = "v1.1.2";
+
+	// No Discovery Pluging Parameters	
+	private static final Map<String, String> parameterDetails = new HashMap<String, String>();
+		
 	private static final Logger log = LoggerFactory.getLogger(AllServicesPlugin.class);
 
 	private int count;
@@ -65,22 +76,59 @@ public class AllServicesPlugin implements IServiceDiscoveryPlugin {
 	}
 
 	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin#discover(javax.ws.rs.core.MultivaluedMap)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getName()
 	 */
-	public Set<Entry> discover(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+	public String getName() {
+		return PLUGIN_NAME;
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getDescription()
+	 */
+	public String getDescription() {
+		return PLUGIN_DESCRIPTION;
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getFeedTitle()
+	 */
+	public String getFeedTitle() {
+		String feedTitle = "all " + count + " known service(s)";
+		return feedTitle;
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin#getVersion()
+	 */
+	@Override
+	public String getVersion() {
+		return PLUGIN_VERSION;
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getParametersDetails()
+	 */
+	@Override
+	public Map<String, String> getParametersDetails() {
+		return parameterDetails;
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin#discoverServices(javax.ws.rs.core.MultivaluedMap)
+	 */
+	public SortedSet<Entry> discoverServices(MultivaluedMap<String, String> parameters) throws DiscoveryException {
 		
 		// If there is no service connector raise an error 
 		if (serviceConnector == null) {
-			throw new WebApplicationException(
-					new IllegalStateException("The '" + this.getName() + "' " + 
-							this.getVersion() + " the RDF connector to the services repository is null."), 
-					Response.Status.INTERNAL_SERVER_ERROR);
+			throw new DiscoveryException("The '" + this.getName() + "' " + 
+							this.getVersion() + " the RDF connector to the services repository is null.");
 		}
 		
 		log.debug("Discover services: " + parameters);
 
 		// set of services
-		Set<String> services = new HashSet<String>();
+		SortedSet<String> services = new TreeSet<String>();
 		Map<String, String> labels = new HashMap<String,String>();
 
 		RepositoryModel repoModel = serviceConnector.openRepositoryModel();
@@ -120,15 +168,20 @@ public class AllServicesPlugin implements IServiceDiscoveryPlugin {
 
 		count = services.size();
 
-		Set<Entry> matchingResults = serializeServices(services, labels);
+		SortedSet<Entry> matchingResults = serializeServices(services, labels);
 		return matchingResults;
 	}
 
-	private Set<Entry> serializeServices(Set<String> services, Map<String, String> labels) {
+	/**
+	 * @param services
+	 * @param labels
+	 * @return
+	 */
+	private SortedSet<Entry> serializeServices(Set<String> services, Map<String, String> labels) {
 
 		log.debug("Serialising " + services.size() + " results");
 
-		Set<Entry> matchingResults = new HashSet<Entry>();
+		SortedSet<Entry> matchingResults = new TreeSet<Entry>();
 		for (Iterator<String> it = services.iterator(); it.hasNext();) {
 			String svc = it.next();
 			Entry result = DiscoveryUtil.getAbderaInstance().newEntry();
@@ -139,27 +192,6 @@ public class AllServicesPlugin implements IServiceDiscoveryPlugin {
 
 		}
 		return matchingResults;
-	}
-
-	public String getName() {
-		return "all";
-	}
-
-	public String getDescription() {
-		return "iServe trivial discovery. Returns all the services available ";
-	}
-
-	public String getFeedTitle() {
-		String feedTitle = "all " + count + " known service(s)";
-		return feedTitle;
-	}
-
-	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin#getVersion()
-	 */
-	@Override
-	public String getVersion() {
-		return "v1.1.2";
 	}
 
 }

@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
@@ -40,14 +42,55 @@ import org.openrdf.repository.RepositoryException;
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
-import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 
-public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
+public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin {
 
+	private static final String PLUGIN_VERSION = "v1.1.2";
+
+	private static final String PLUGIN_NAME = "io-rdfs";
+
+	private static final String PLUGIN_DESCRIPTION = "iServe RDFS input/output discovery plugin. Discovers services and " +
+					"operations based on their inputs and outputs using subsumption " +
+					"reasoning as supported by the underlying RDF Store.";
+
+	// Discovery Plugin Parameters
+	private static final String FUNCTION_PARAM = "f";
+	
+	private static final String AND_FUNCTION = "and";
+	
+	private static final String FUNCTION_PARAM_DESCRIPTION = "This parameter should" +
+			"indicate the function to be applied over the inputs and outputs discovery." +
+			"It should be either 'and' (each condition needs to hold) or 'or' (some " +
+			"condition must hold to be part of the results). The default value is 'or'.";
+
+	private static final String OUTPUTS_PARAM = "o";
+	
+	private static final String OUTPUTS_PARAM_DESCRIPTION = "This parameter " +
+			"indicates the URLs of the concepts the outputs should be matched" +
+			"against.";
+
+	private static final String INPUTS_PARAM = "i";
+	
+	private static final String INPUTS_PARAM_DESCRIPTION = "This parameter " +
+	"indicates the URLs of the concepts the inputs should be matched" +
+	"against.";
+	
+	private static final Map<String, String> parameterDetails;
+
+	static {
+		parameterDetails = new HashMap<String, String>();
+		parameterDetails.put(FUNCTION_PARAM, FUNCTION_PARAM_DESCRIPTION);
+		parameterDetails.put(OUTPUTS_PARAM, OUTPUTS_PARAM_DESCRIPTION);
+		parameterDetails.put(INPUTS_PARAM, INPUTS_PARAM_DESCRIPTION);
+	}
+	
+	// TODO: Add additional details to the enum? (Merge with others?)
 	private enum Degree {
 		EXACT, PLUGIN, SUBSUME, PARTIAL_PLUGIN, PARTIAL_SUBSUME, FAIL
 	};
@@ -64,7 +107,7 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 
 	private RDFRepositoryConnector serviceConnector;
 
-	public RDFSInputOutputDiscoveryPlugin(boolean operationDiscovery) throws RepositoryException, IOException {
+	public RDFSInputOutputDiscoveryPlugin(boolean operationDiscovery) {
 		this.count = 0;
 		this.feedSuffix = "";
 		this.operationDiscovery = operationDiscovery;
@@ -81,8 +124,12 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getName()
+	 */
+	@Override
 	public String getName() {
-		return "io-rdfs";
+		return PLUGIN_NAME;
 	}
 	
 	/* (non-Javadoc)
@@ -90,15 +137,28 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 	 */
 	@Override
 	public String getVersion() {
-		return "v1.1.2";
+		return PLUGIN_VERSION;
 	}
 	
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getDescription()
+	 */
+	@Override
 	public String getDescription() {
-		return "iServe RDFS input/output discovery plugin. Discovers services and " +
-				"operations based on their inputs and outputs using subsumption " +
-				"reasoning as supported by the underlying RDF Store.";
+		return PLUGIN_DESCRIPTION;
+	}
+	
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getParametersDetails()
+	 */
+	@Override
+	public Map<String, String> getParametersDetails() {
+		return parameterDetails;
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getFeedTitle()
+	 */
 	public String getFeedTitle() {
 		String feedTitle;
 		feedTitle = "RDFS I/O discovery results: " + count ;
@@ -111,23 +171,20 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 		return feedTitle;
 	}
 
-	/* 
-	 * FIXME: This plugin should probably implement the Ranked Service interface
-	 * (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin#discover(javax.ws.rs.core.MultivaluedMap)
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin#discoverServices(javax.ws.rs.core.MultivaluedMap)
 	 */
-	public Set<Entry> discover(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+	@Override
+	public SortedSet<Entry> discoverServices(MultivaluedMap<String, String> parameters) throws DiscoveryException {
 		
 		// If there is no service connector raise an error 
 		if (serviceConnector == null) {
-			throw new WebApplicationException(
-					new IllegalStateException("The '" + this.getName() + "' " + 
-							this.getVersion() + " the RDF connector to the services repository is null."), 
-					Response.Status.INTERNAL_SERVER_ERROR);
+			throw new DiscoveryException("The '" + this.getName() + "' " + 
+							this.getVersion() + " the RDF connector to the services repository is null.");
 		}
 		
-		List<String> inputClasses = parameters.get("i");
-		List<String> outputClasses = parameters.get("o");
+		List<String> inputClasses = parameters.get(INPUTS_PARAM);
+		List<String> outputClasses = parameters.get(OUTPUTS_PARAM);
 
 		boolean matchingInputs = inputClasses != null && inputClasses.size() != 0;
 		boolean matchingOutputs = outputClasses != null && outputClasses.size() != 0;
@@ -148,8 +205,8 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 				}
 			}
 		}
-		String andOr = parameters.getFirst("f");
-		boolean intersection = "and".equals(andOr);
+		String andOr = parameters.getFirst(FUNCTION_PARAM);
+		boolean intersection = AND_FUNCTION.equals(andOr);
 
 		// sets of matching services
 		Map<String, Degree> s_input = new HashMap<String, Degree>();
@@ -183,7 +240,7 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 			}
 		}
 
-		Set<Entry> matchingResults = serializeMatches(matches, s_input, s_output, labels);
+		SortedSet<Entry> matchingResults = serializeMatches(matches, s_input, s_output, labels);
 
 		count = matchingResults.size();
 
@@ -209,7 +266,7 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 	}
 
 	/**
-	 * FIXME: Implement a proper comparator so that the services are ranked
+	 * TODO: Implement a proper comparator so that the services are ranked
 	 * appropriately
 	 * @param matches
 	 * @param inputDegrees
@@ -217,8 +274,8 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 	 * @param labels
 	 * @return
 	 */
-	private Set<Entry> serializeMatches(Set<String> matches, Map<String, Degree> inputDegrees, Map<String, Degree> outputDegrees, Map<String, String> labels) {
-		Set<Entry> matchingResults = new HashSet<Entry>();
+	private SortedSet<Entry> serializeMatches(Set<String> matches, Map<String, Degree> inputDegrees, Map<String, Degree> outputDegrees, Map<String, String> labels) {
+		SortedSet<Entry> matchingResults = new TreeSet<Entry>();
 
 		final Map<String, String> combinedMatchDegrees = new HashMap<String, String>();
 		Map<String, String> degreeNames = new HashMap<String, String>();
@@ -574,7 +631,4 @@ public class RDFSInputOutputDiscoveryPlugin implements IServiceDiscoveryPlugin {
 		query += "}";
 		return query;
 	}
-
-
-
 }

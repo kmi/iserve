@@ -27,7 +27,7 @@ import org.apache.abdera.model.ExtensibleElement;
 
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
-import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
 import uk.ac.open.kmi.iserve.imatcher.IServeIMatcher;
 import uk.ac.open.kmi.iserve.imatcher.strategy.api.IStrategy;
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 
-public class IMatcherDiscoveryPlugin implements IServiceDiscoveryPlugin {
+public class IMatcherDiscoveryPlugin implements DiscoveryPlugin {
 
 	private int count;
 

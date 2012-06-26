@@ -21,6 +21,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
@@ -39,13 +41,28 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
-import uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 
-public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugin {
+public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin {
+
+	// Discovery Pluging Parameters
+	
+	private static final String CLASS_PARAMETER = "class";
+	private static final String CLASS_PARAM_DESCRIPTION = "This parameter should" +
+			"contain a list of 1 or more URLs of concepts identifying the " +
+			"Functional Classifications we wish to use for discovery.";
+	
+	private static final Map<String, String> parameterDetails;
+
+	static {
+		parameterDetails = new HashMap<String, String>();
+		parameterDetails.put(CLASS_PARAMETER, CLASS_PARAM_DESCRIPTION);
+	}
 
 	private static final Logger log = LoggerFactory.getLogger(RDFSClassificationDiscoveryPlugin.class);
 
@@ -63,7 +80,11 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 
 	private RDFRepositoryConnector serviceConnector;
 
+	
+
 	public RDFSClassificationDiscoveryPlugin(boolean operationDiscovery) {
+		
+		//TODO: Replace this with an Enum
 		matchTypesValuesMap = new HashMap<String, Integer>();
 		matchTypesValuesMap.put(DiscoveryUtil.EXACT_DEGREE, Integer.valueOf(0));
 		matchTypesValuesMap.put(DiscoveryUtil.SSSOG_DEGREE, Integer.valueOf(1));
@@ -82,10 +103,18 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getName()
+	 */
+	@Override
 	public String getName() {
 		return "func-rdfs";
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getDescription()
+	 */
+	@Override
 	public String getDescription() {
 		return "iServe RDFS functional discovery plugin. Discovers services and " +
 				"operations based on their functional classification using " +
@@ -100,6 +129,10 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 		return "v1.1.2";
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getFeedTitle()
+	 */
+	@Override
 	public String getFeedTitle() {
 		String feedTitle;
 		if (operationDiscovery) {
@@ -111,22 +144,20 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 		return feedTitle;
 	}
 
-	/* 
-	 * FIXME: This plugin should probably implement the Ranked plugin interface
-	 * (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin#discover(javax.ws.rs.core.MultivaluedMap)
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin#discoverServices(javax.ws.rs.core.MultivaluedMap)
 	 */
-	public Set<Entry> discover(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+	@Override
+	public SortedSet<Entry> discoverServices(MultivaluedMap<String, String> parameters) throws DiscoveryException {
 		
 		// If there is no service connector raise an error 
 		if (serviceConnector == null) {
-			throw new WebApplicationException(
-					new IllegalStateException("The '" + this.getName() + "' " + 
-							this.getVersion() + " the RDF connector to the services repository is null."), 
-					Response.Status.INTERNAL_SERVER_ERROR);
+			throw new DiscoveryException("The '" + this.getName() + "' " + 
+							this.getVersion() + " the RDF connector to the services repository is null.");
 		}
 		
-		List<String> classes = parameters.get("class");
+		List<String> classes = parameters.get(CLASS_PARAMETER);
 		if ( classes == null || classes.size() == 0 ) {
 			throw new DiscoveryException(403, "Functional discovery without parameters is not supported - add parameter 'class=uri'");
 		}
@@ -146,7 +177,7 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 
 		funcClassificationDisco(classes, s_exact, s_sssog, s_gssos, s_intersection, labels);
 
-		Set<Entry> matchingResults = serializeResults(matchTypesValuesMap.get(DiscoveryUtil.EXACT_DEGREE), 
+		SortedSet<Entry> matchingResults = serializeResults(matchTypesValuesMap.get(DiscoveryUtil.EXACT_DEGREE), 
 				DiscoveryUtil.EXACT_DEGREE, s_exact, labels);
 		matchingResults.addAll(serializeResults(matchTypesValuesMap.get(DiscoveryUtil.SSSOG_DEGREE),
 				DiscoveryUtil.SSSOG_DEGREE, s_sssog, labels));
@@ -166,15 +197,15 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 	}
 
 	/**
-	 * FIXME: Make this return a sorted set a comparator so that results are ordered 
+	 * TODO: Order the results
 	 * @param degreeNum
 	 * @param degree
 	 * @param results
 	 * @param labels
 	 * @return
 	 */
-	private Set<Entry> serializeResults(int degreeNum, String degree, Set<String> results, Map<String, String> labels) {
-		Set<Entry> matchingResults = new HashSet<Entry>();
+	private SortedSet<Entry> serializeResults(int degreeNum, String degree, Set<String> results, Map<String, String> labels) {
+		SortedSet<Entry> matchingResults = new TreeSet<Entry>();
 		for (Iterator<String> it = results.iterator(); it.hasNext();) {
 			String item = it.next();
 			String content = "Matching degree: " + degree;
@@ -356,6 +387,14 @@ public class RDFSClassificationDiscoveryPlugin implements IServiceDiscoveryPlugi
 	 */
 	public static String xmlAttEncode(String src) {
 		return xmlEncode(src).replace("'", "&apos;").replace("\"", "&quot;");
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getParametersDetails()
+	 */
+	@Override
+	public Map<String, String> getParametersDetails() {
+		return parameterDetails;
 	}
 
 }
