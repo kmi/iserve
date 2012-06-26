@@ -179,9 +179,9 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin {
 	 */
 	private SortedSet<Entry> serializeServices(Set<String> services, Map<String, String> labels) {
 
-		log.debug("Serialising " + services.size() + " results");
+		log.info("Serialising " + services.size() + " results");
 
-		SortedSet<Entry> matchingResults = new TreeSet<Entry>();
+		SortedSet<Entry> matchingResults = new TreeSet<Entry>(new EntryComparatorClassificationMatching());
 		for (Iterator<String> it = services.iterator(); it.hasNext();) {
 			String svc = it.next();
 			Entry result = DiscoveryUtil.getAbderaInstance().newEntry();
@@ -189,8 +189,8 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin {
 			result.addLink(svc, "alternate");
 			result.setTitle(labels.get(svc));
 			matchingResults.add(result);
-
 		}
+		
 		return matchingResults;
 	}
 

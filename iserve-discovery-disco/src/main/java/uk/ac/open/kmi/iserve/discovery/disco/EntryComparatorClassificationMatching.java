@@ -35,12 +35,10 @@ public class EntryComparatorClassificationMatching implements Comparator<Entry> 
 	 */
 	public int compare(Entry arg0, Entry arg1) {
 		
-		String  link0 = arg0.getSelfLink().toString();
-		String  link1 = arg1.getSelfLink().toString();
+		String  link0 = arg0.getId().toASCIIString();
+		String  link1 = arg1.getId().toASCIIString();
 		
-		if (arg0.equals(arg1) || link0.equals(link1)) {
-			return 0;
-		}
+		return link0.compareTo(link1);
 		
 		// get the value for the match degree
 		// get the actual matching degree and return the ordering
@@ -48,8 +46,7 @@ public class EntryComparatorClassificationMatching implements Comparator<Entry> 
 //		ExtensibleElement e = result.addExtension(DiscoveryUtil.MATCH_DEGREE);
 //		e.setAttributeValue("num", Integer.toString(degreeNum));
 //		e.setText(degree);
-		
-		return 0;
+
 	}
 
 }
