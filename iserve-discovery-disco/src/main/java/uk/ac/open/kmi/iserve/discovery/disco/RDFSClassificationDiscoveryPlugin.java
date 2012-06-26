@@ -65,6 +65,8 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 	}
 
 	private static final Logger log = LoggerFactory.getLogger(RDFSClassificationDiscoveryPlugin.class);
+	
+	public static String NEW_LINE = System.getProperty("line.separator");
 
 	HashMap<String,Integer> matchTypesValuesMap;
 
@@ -205,7 +207,7 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 	 * @return
 	 */
 	private SortedSet<Entry> serializeResults(int degreeNum, String degree, Set<String> results, Map<String, String> labels) {
-		SortedSet<Entry> matchingResults = new TreeSet<Entry>();
+		SortedSet<Entry> matchingResults = new TreeSet<Entry>(new EntryComparatorClassificationMatching());
 		for (Iterator<String> it = results.iterator(); it.hasNext();) {
 			String item = it.next();
 			String content = "Matching degree: " + degree;
@@ -237,74 +239,73 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 		// the presence of gX means the goal contains a subcategory of a class category; if every row for a service contains at least one gX then the goal is a subset of service
 		// todo what about kinda-gssos where all goal classes are subclasses of service classes? it's stronger gssos if also all service classes have goal subclasses.
 
-		String selectStatement = "select ?svc ?labelSvc ?catSvc ?sssog0";
+		StringBuffer query = new StringBuffer("prefix wl: <" + MSM.WL_NS_URI + ">" + NEW_LINE);
+		query.append("prefix sawsdl: <" + MSM.SAWSDL_NS_URI + ">" + NEW_LINE);
+		query.append("prefix msm: <" + MSM.NS_URI + ">" + NEW_LINE);
+		query.append("prefix rdfs: <" + RDFS.NAMESPACE + ">" + NEW_LINE);
+		
+		query.append("select ?svc ?labelSvc ?catSvc ?sssog0");
 		if (operationDiscovery) {
-			selectStatement += " ?op  ?labelOp  ?catOp ";
+			query.append(" ?op  ?labelOp  ?catOp ");
 		}
-
-		String query = "prefix wl: <" + MSM.WL_NS_URI + ">\n"
-		+ "prefix sawsdl: <" + MSM.SAWSDL_NS_URI + ">\n"
-		+ "prefix msm: <" + MSM.NS_URI + ">\n"
-		+ "prefix rdfs: <" + RDFS.NAMESPACE + ">\n"
-		+ selectStatement;
 
 		for (int i=0; i<classes.size(); i++) {
-			query += "?g" + i + " ";
+			query.append("?g" + i + " ");
 		}
 
-		query += "\nwhere {\n  " 
-			+ "?svc a msm:Service . \n"
-			+ "optional { ?svc rdfs:label ?labelSvc } \n";
+		query.append(NEW_LINE + "where {" + NEW_LINE);
+		query.append("?svc a msm:Service . " + NEW_LINE);
+		query.append("optional { ?svc rdfs:label ?labelSvc } " + NEW_LINE);
 
 		if (operationDiscovery) {
-			query += "?svc msm:hasOperation ?op . \n" +
-			"?op a msm:Operation . \n" +
-			"optional { ?op rdfs:label ?labelOp } \n";
+			query.append("?svc msm:hasOperation ?op . " + NEW_LINE);
+			query.append("?op a msm:Operation . " + NEW_LINE);
+			query.append("optional { ?op rdfs:label ?labelOp } " + NEW_LINE);
 		}
 
 		// Generate the optional query for SVC and subclasses of the FC
-		query += "optional {" +
-		"?svc sawsdl:modelReference ?catSvc .\n"
-		+ "  ?catSvc rdfs:subClassOf [ a wl:FunctionalClassificationRoot ] . \n" ;
+		query.append("optional {");
+		query.append("?svc sawsdl:modelReference ?catSvc ." + NEW_LINE);
+		query.append("  ?catSvc rdfs:subClassOf [ a wl:FunctionalClassificationRoot ] . " + NEW_LINE) ;
 
 		for (int i = 0; i < classes.size(); i++) {
-			query += " <" + classes.get(i).replace(">", "%3e") + "> rdfs:subClassOf ?catSvc ; ?g" + i + " ?catSvc .\n" ;
+			query.append(" <" + classes.get(i).replace(">", "%3e") + "> rdfs:subClassOf ?catSvc ; ?g" + i + " ?catSvc ." + NEW_LINE) ;
 		}
 
-		query += "  }\n";
+		query.append("  }" + NEW_LINE);
 		// End
 
 		// Generate the optional query for OP and subclasses of the FC
 		if (operationDiscovery) {
-			query += "optional {" +
-			"?op sawsdl:modelReference ?catOp . \n" +
-			"?catOp rdfs:subClassOf [ a wl:FunctionalClassificationRoot ] . \n" ;
+			query.append("optional {");
+			query.append("?op sawsdl:modelReference ?catOp . " + NEW_LINE);
+			query.append("?catOp rdfs:subClassOf [ a wl:FunctionalClassificationRoot ] . " + NEW_LINE);
 
 			for (int i = 0; i < classes.size(); i++) {
-				query+= "    <" + classes.get(i).replace(">", "%3e") + "> rdfs:subClassOf ?catOp ; ?g" + i + " ?catOp .\n";
+				query.append("    <" + classes.get(i).replace(">", "%3e") + "> rdfs:subClassOf ?catOp ; ?g" + i + " ?catOp ." + NEW_LINE);
 			}
-			query += "  }\n";
+			query.append("  }" + NEW_LINE);
 		}		        
 
-		query += "  optional {\n";
+		query.append("  optional {" + NEW_LINE);
 		for (int i = 0; i < classes.size(); i++) {
-			query += "    ?svc sawsdl:modelReference ?sssog" + i + " . \n    ?sssog" + i + " rdfs:subClassOf <" + classes.get(i).replace(">", "%3e") + "> .\n";
+			query.append("    ?svc sawsdl:modelReference ?sssog" + i + " . " + NEW_LINE + "    ?sssog" + i + " rdfs:subClassOf <" + classes.get(i).replace(">", "%3e") + "> ." + NEW_LINE);
 		}
-		query += "  }\n";
+		query.append("  }" + NEW_LINE);
 
 		if (operationDiscovery) {
-			query += "  optional {\n";
+			query.append("  optional {" + NEW_LINE);
 			for (int i = 0; i < classes.size(); i++) {
-				query += "    ?op sawsdl:modelReference ?sssog" + i + " . \n    ?sssog" + i + " rdfs:subClassOf <" + classes.get(i).replace(">", "%3e") + "> .\n";
+				query.append("    ?op sawsdl:modelReference ?sssog" + i + " . " + NEW_LINE + "    ?sssog" + i + " rdfs:subClassOf <" + classes.get(i).replace(">", "%3e") + "> ." + NEW_LINE);
 			}
-			query += "  }\n";
+			query.append("  }" + NEW_LINE);
 		}
 
-		query += "}";
+		query.append("}");
 
 		log.info("Querying for services: \n" + query);
 
-		QueryResultTable qresult = repoModel.querySelect(query, "sparql");
+		QueryResultTable qresult = repoModel.querySelect(query.toString(), "sparql");
 		for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
 			QueryRow row = it.next();
 
