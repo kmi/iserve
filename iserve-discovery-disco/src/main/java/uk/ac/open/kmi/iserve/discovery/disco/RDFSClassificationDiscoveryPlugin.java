@@ -289,14 +289,16 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 
 		query.append("  optional {" + NEW_LINE);
 		for (int i = 0; i < classes.size(); i++) {
-			query.append("    ?svc sawsdl:modelReference ?sssog" + i + " . " + NEW_LINE + "    ?sssog" + i + " rdfs:subClassOf <" + classes.get(i).replace(">", "%3e") + "> ." + NEW_LINE);
+			query.append("    ?svc sawsdl:modelReference ?sssog" + i + " . " + NEW_LINE);
+			query.append("    ?sssog" + i + " rdfs:subClassOf <" + classes.get(i).replace(">", "%3e") + "> ." + NEW_LINE);
 		}
 		query.append("  }" + NEW_LINE);
 
 		if (operationDiscovery) {
 			query.append("  optional {" + NEW_LINE);
 			for (int i = 0; i < classes.size(); i++) {
-				query.append("    ?op sawsdl:modelReference ?sssog" + i + " . " + NEW_LINE + "    ?sssog" + i + " rdfs:subClassOf <" + classes.get(i).replace(">", "%3e") + "> ." + NEW_LINE);
+				query.append("    ?op sawsdl:modelReference ?sssog" + i + " . " + NEW_LINE);
+				query.append("    ?sssog" + i + " rdfs:subClassOf <" + classes.get(i).replace(">", "%3e") + "> ." + NEW_LINE);
 			}
 			query.append("  }" + NEW_LINE);
 		}
