@@ -15,7 +15,6 @@
  */
 package uk.ac.open.kmi.iserve.sal.gwt.server;
 
-import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
@@ -30,12 +29,12 @@ import java.util.UUID;
 import javax.servlet.http.HttpSession;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-import org.apache.commons.httpclient.HttpException;
 import org.ontoware.aifbcommons.collection.ClosableIterator;
 import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.QueryRow;
 
+import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.io.URIUtil;
 import uk.ac.open.kmi.iserve.commons.vocabulary.LOG;
 import uk.ac.open.kmi.iserve.sal.exception.LogException;
@@ -47,12 +46,10 @@ import uk.ac.open.kmi.iserve.sal.gwt.client.exception.BrowserException;
 import uk.ac.open.kmi.iserve.sal.gwt.model.ServiceCategoryModel;
 import uk.ac.open.kmi.iserve.sal.gwt.model.ServiceListModel;
 import uk.ac.open.kmi.iserve.sal.gwt.server.servlets.OpenIdServlet;
-import uk.ac.open.kmi.iserve.sal.manager.LogManager;
-import uk.ac.open.kmi.iserve.sal.manager.ReviewManager;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
-import uk.ac.open.kmi.iserve.sal.manager.TaxonomyManager;
-import uk.ac.open.kmi.iserve.sal.manager.UserManager;
 import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 import uk.ac.open.kmi.iserve.sal.model.common.URI;
 import uk.ac.open.kmi.iserve.sal.model.impl.URIImpl;
 import uk.ac.open.kmi.iserve.sal.model.log.LogItem;
@@ -90,7 +87,9 @@ public class ServiceBrowseServiceImpl extends RemoteServiceServlet implements Se
 		if ( queryString != null && queryString.equalsIgnoreCase("") == false ) {
 			try {
 				Map<String, LogItem> serviceLog = manager.getAllLogItems();
-				Model model = manager.getServicesRepositoryConnector().openRepositoryModel();
+				
+				Model model = getServicesModel();
+				
 				QueryResultTable qrt = model.sparqlSelect(queryString);
 				if ( qrt != null ) {
 					ClosableIterator<QueryRow> iter = qrt.iterator();
@@ -216,15 +215,36 @@ public class ServiceBrowseServiceImpl extends RemoteServiceServlet implements Se
 	}
 
 	public QueryResult executeQuery(String queryString) throws BrowserException {
-		Model model = manager.getServicesRepositoryConnector().openRepositoryModel();
+		
+		Model model = getServicesModel();
+		
 		QueryResultTable qrt = model.sparqlSelect(queryString);
 		model.close();
 		model = null;
 		return ModelConverter.convertQueryResultTable(qrt);
 	}
 
+	/**
+	 * @return
+	 * @throws BrowserException
+	 */
+	private Model getServicesModel() throws BrowserException {
+		RDFRepositoryConnector serviceConnector;
+		ServiceManager svcManager = ManagerSingleton.getInstance().getServiceManager();
+		if (svcManager instanceof ServiceManagerRdf) {
+			serviceConnector = ((ServiceManagerRdf)svcManager).getRepoConnector();
+		} else {
+			throw new BrowserException("The service browser currently requires a Service Manager backed by an RDF Repository.");
+		}
+		
+		Model model = serviceConnector.openRepositoryModel();
+		return model;
+	}
+
 	public QueryResult executeLogQuery(String queryString) throws BrowserException {
-		Model model = manager.getServicesRepositoryConnector().openRepositoryModel();
+		
+		Model model = getServicesModel();
+		
 		QueryResultTable qrt = model.sparqlSelect(queryString);
 		model.close();
 		model = null;
