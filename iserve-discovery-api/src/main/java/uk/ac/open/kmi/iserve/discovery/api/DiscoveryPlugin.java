@@ -27,18 +27,40 @@ import org.apache.abdera.model.Entry;
  * Concrete implementations should implement the {@link ServiceDiscoveryPlugin}
  * interface, and/or the {@link OperationDiscoveryPlugin} interface.
  * 
+ * @author Dong Liu (Knowledge Media Institute - The Open University)
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
 public interface DiscoveryPlugin {
 
+	/**
+	 * Obtain the name of the plugin
+	 * 
+	 * @return the plugin name
+	 */
 	public String getName();
 	
+	/**
+	 * Obtains the version of the plugin
+	 * 
+	 * @return the plugin version
+	 */
 	public String getVersion();
 
+	/**
+	 * Obtains the description of the plugin
+	 * 
+	 * @return the plugin description
+	 */
 	public String getDescription();
 
+	// TODO: Remove this
 	public String getFeedTitle();
 	
+	/**
+	 * Obtains information about the parameters supported by the engine
+	 * 
+	 * @return the parameters details (name, details)
+	 */
 	public Map<String, String> getParametersDetails();
 
 }

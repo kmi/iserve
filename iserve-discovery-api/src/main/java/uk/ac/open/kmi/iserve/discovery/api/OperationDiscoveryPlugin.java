@@ -15,21 +15,29 @@
 */
 package uk.ac.open.kmi.iserve.discovery.api;
 
-import java.util.SortedSet;
+import java.util.Set;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.apache.abdera.model.Entry;
-
 /**
  * Interface that Operation Discovery Plugins should implement
- * TODO: The results should be Match Results rather than Abdera Entries
- * (Serialisation of results should take place at a later stage)
  * 
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
 public interface OperationDiscoveryPlugin extends DiscoveryPlugin {
 
-	public SortedSet<Entry> discoverOperations(MultivaluedMap<String, String> parameters) throws DiscoveryException;
+	/**
+	 * Discover matching operations based on the key-value pairs providing values 
+	 * for the plugin discovery parameters. 
+	 * 
+	 * @param parameters the invocation parameters for the discovery plugin.
+	 * These parameters are plugin dependent {@link DiscoveryPlugin}
+	 * 
+	 * @return the matching results not necessarily ordered. The ordering shall
+	 * take place at a later stage prior to returning the results.
+	 * 
+	 * @throws DiscoveryException
+	 */
+	public Set<MatchResult> discoverOperations(MultivaluedMap<String, String> parameters) throws DiscoveryException;
 	
 }

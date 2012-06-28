@@ -51,6 +51,15 @@ import uk.ac.open.kmi.iserve.discovery.disco.RDFSClassificationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.RDFSInputOutputDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
 
+/**
+ * Resource providing access to the discovery infrastructure.
+ * 
+ * TODO: Provide pagination support for discovery results 
+ * TODO: Enable the configuration of ordering and scoring functionality for 
+ * discovery results (composite or simple)
+ * 
+ * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
+ */
 @Path("/disco")
 public class DiscoveryResource {
 
@@ -144,7 +153,7 @@ public class DiscoveryResource {
 			result.append("<th>Parameters</th>"+ NEW_LINE);
 			result.append("<th>Endpoint</th>"+ NEW_LINE);
 			result.append("</tr>"+ NEW_LINE);
-			
+
 			String interPath = "";
 			for (java.util.Map.Entry<String, T> entry : plugins) {
 				DiscoveryPlugin regPlugin = entry.getValue();

@@ -1,5 +1,6 @@
+package uk.ac.open.kmi.iserve.discovery.api;
 /*
-   Copyright 2011  Knowledge Media Institute - The Open University
+   Copyright 2012  Knowledge Media Institute - The Open University
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,25 +14,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve.discovery.api;
 
-import java.util.SortedSet;
-
-import javax.ws.rs.core.MultivaluedMap;
-
-import org.apache.abdera.model.Entry;
+import java.net.URL;
 
 /**
- * Extension of the Service Discovery Plugins that ensures services returned
- * are ordered according to some some ranking criteria
+ * Interface that match results obtained from discovery plugins should implement
  * 
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
- * @version $Rev$
- * $LastChangedDate$ 
- * $LastChangedBy$
  */
-public interface RankedServiceDiscoveryPlugin extends DiscoveryPlugin {
+public interface MatchResult {
 
-	public SortedSet<Entry> discover(MultivaluedMap<String, String> parameters) throws DiscoveryException;
+	public URL getMatchUrl();
+	
+	public float getScore();
+	
+	public URL getRequest();
+	
+	public URL getEngineUrl();
+	
+	public String getExplanation();
 	
 }
