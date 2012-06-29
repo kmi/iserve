@@ -61,7 +61,7 @@ public class DiscoveryUtil {
 	 * @param opLabel
 	 * @return
 	 */
-	public static String createEntryTitle(boolean operationDiscovery, String svcUri, String svcLabel, String opUri, String opLabel) {
+	public static String createMatchLabel(boolean operationDiscovery, String svcUri, String svcLabel, String opUri, String opLabel) {
 		String result;
 		if (operationDiscovery) {
 			if (opLabel != null) {

@@ -26,7 +26,11 @@ public interface MatchResult {
 
 	public URL getMatchUrl();
 	
+	public String getMatchLabel();
+	
 	public float getScore();
+	
+	public void setScore(float score);
 	
 	public URL getRequest();
 	

@@ -16,6 +16,7 @@
 package uk.ac.open.kmi.iserve.discovery.disco;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -45,6 +46,7 @@ import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
@@ -168,7 +170,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 	 * @see uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin#discoverServices(javax.ws.rs.core.MultivaluedMap)
 	 */
 	@Override
-	public SortedSet<Entry> discoverServices(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+	public Map<URL, MatchResult> discoverServices(MultivaluedMap<String, String> parameters) throws DiscoveryException {
 		return discover(false, parameters);
 	}
 	
@@ -176,11 +178,21 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 	 * @see uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin#discoverOperations(javax.ws.rs.core.MultivaluedMap)
 	 */
 	@Override
-	public SortedSet<Entry> discoverOperations(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+	public Map<URL, MatchResult> discoverOperations(MultivaluedMap<String, 
+			String> parameters) throws DiscoveryException {
 		return discover(true, parameters);
 	}
 	
-	public SortedSet<Entry> discover(boolean operationDiscovery, MultivaluedMap<String, String> parameters) throws DiscoveryException {
+	/**
+	 * TODO: Fix the implementation to adapt to the new interface
+	 * 
+	 * @param operationDiscovery
+	 * @param parameters
+	 * @return
+	 * @throws DiscoveryException
+	 */
+	public Map<URL, MatchResult> discover(boolean operationDiscovery, 
+			MultivaluedMap<String, String> parameters) throws DiscoveryException {
 		
 		// If there is no service connector raise an error 
 		if (serviceConnector == null) {
@@ -267,7 +279,8 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 			}
 		}
 
-		return matchingResults;
+//		return matchingResults;
+		return null;
 	}
 
 	/**
@@ -378,7 +391,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 			opPlugin.add(op);
 			opSubsume.add(op);
 
-			String entryTitle = DiscoveryUtil.createEntryTitle(operationDiscovery, svc, labelSvc, op, labelOp);
+			String entryTitle = DiscoveryUtil.createMatchLabel(operationDiscovery, svc, labelSvc, op, labelOp);
 			if (operationDiscovery) {
 				labels.put(op, entryTitle);
 			} else {

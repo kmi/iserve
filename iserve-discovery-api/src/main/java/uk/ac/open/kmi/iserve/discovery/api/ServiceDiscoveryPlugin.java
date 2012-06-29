@@ -15,6 +15,8 @@
 */
 package uk.ac.open.kmi.iserve.discovery.api;
 
+import java.net.URL;
+import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -29,7 +31,8 @@ public interface ServiceDiscoveryPlugin extends DiscoveryPlugin {
 
 	/**
 	 * Discover matching services based on the key-value pairs providing values 
-	 * for the plugin discovery parameters. 
+	 * for the plugin discovery parameters. The results are indexed by the URL
+	 * of the matching result in order to better support merging results
 	 * 
 	 * @param parameters the invocation parameters for the discovery plugin.
 	 * These parameters are plugin dependent {@link DiscoveryPlugin}
@@ -39,6 +42,6 @@ public interface ServiceDiscoveryPlugin extends DiscoveryPlugin {
 	 * 
 	 * @throws DiscoveryException
 	 */
-	public Set<MatchResult> discoverServices(MultivaluedMap<String, String> parameters) throws DiscoveryException;
+	public Map<URL, MatchResult> discoverServices(MultivaluedMap<String, String> parameters) throws DiscoveryException;
 	
 }

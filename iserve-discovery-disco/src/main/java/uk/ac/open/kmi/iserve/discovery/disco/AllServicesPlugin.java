@@ -15,18 +15,16 @@
  */
 package uk.ac.open.kmi.iserve.discovery.disco;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
-import org.apache.abdera.model.Entry;
 import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.QueryRow;
 import org.ontoware.rdf2go.model.node.BlankNode;
@@ -39,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
+import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
@@ -120,7 +119,7 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDisco
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin#discoverServices(javax.ws.rs.core.MultivaluedMap)
 	 */
-	public SortedSet<Entry> discoverServices(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+	public Map<URL, MatchResult> discoverServices(MultivaluedMap<String, String> parameters) throws DiscoveryException {
 		return discover(false, parameters);
 	}
 
@@ -128,11 +127,11 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDisco
 	 * @see uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin#discoverOperations(javax.ws.rs.core.MultivaluedMap)
 	 */
 	@Override
-	public SortedSet<Entry> discoverOperations(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+	public Map<URL, MatchResult> discoverOperations(MultivaluedMap<String, String> parameters) throws DiscoveryException {
 		return discover(true, parameters);
 	}
 
-	public SortedSet<Entry> discover(boolean operationDiscovery, MultivaluedMap<String, String> parameters) throws DiscoveryException {
+	public Map<URL, MatchResult> discover(boolean operationDiscovery, MultivaluedMap<String, String> parameters) throws DiscoveryException {
 		// If there is no service connector raise an error 
 		if (serviceConnector == null) {
 			throw new DiscoveryException("The '" + this.getName() + "' " + 
@@ -141,75 +140,85 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDisco
 
 		log.debug("Discover services: " + parameters);
 
-		// set of services
-		SortedSet<String> services = new TreeSet<String>();
-		Map<String, String> labels = new HashMap<String,String>();
-
-		RepositoryModel repoModel = serviceConnector.openRepositoryModel();
-
+		// Matching results
+		Map<URL, MatchResult> results = new HashMap<URL, MatchResult>();
+		
+		// Query for every item
 		StringBuffer query = new StringBuffer("prefix msm: <" + MSM.NS_URI + ">" + NEW_LINE);
 		query.append("prefix rdfs: <" + RDFS.NAMESPACE + ">" + NEW_LINE);
-		query.append("select ?item ?label " + NEW_LINE);
+		query.append("select ?svc ?labelSvc ");
 		if (operationDiscovery) {
-			query.append("where {  ?item a msm:Operation ." + NEW_LINE);
-		} else {
-			query.append("where {  ?item a msm:Service ." + NEW_LINE);
+			query.append("?op ?labelOp");
 		}
-		query.append("  optional { ?item rdfs:label ?label }" + NEW_LINE);
+		query.append(NEW_LINE);
+		query.append("where {  ?svc a msm:Service ." + NEW_LINE);
+		
+		if (operationDiscovery) {
+			query.append("?svc msm:hasOperation ?op ." + NEW_LINE);
+			query.append("?op a msm:Operation ." + NEW_LINE);
+		} 
+		query.append("  optional { ?svc rdfs:label ?labelSvc }" + NEW_LINE);
+		if (operationDiscovery) {
+			query.append("  optional { ?op rdfs:label ?labelOp }" + NEW_LINE);
+		}
 		query.append("}");
 
 		log.info("Querying the backend: " + query);
 
-		QueryResultTable qresult = repoModel.querySelect(query.toString(), "sparql");
-		for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
-			QueryRow row = it.next();
-			Node itemNode = row.getValue("item");
-
-			// Filter blank nodes
-			if (itemNode instanceof BlankNode) {
-				log.warn("Blank node found: " + itemNode.toString());
-			} else {
-				String item = itemNode.asURI().toString();
-				services.add(item);
-
-				log.debug("Adding result: " + item);
-
-				Node label = row.getValue("label");
-				if (label != null) {
-					labels.put(item, label.toString());
-				} 
-			}
-
+		RepositoryModel repoModel = null;
+		// Query and process the results
+		try {
+			repoModel = serviceConnector.openRepositoryModel();
+			QueryResultTable qresult = repoModel.querySelect(query.toString(), "sparql");
+			for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
+				QueryRow row = it.next();
+				Node svcNode = row.getValue("svc");
+	
+				// Ignore and track services that are blank nodes
+				if (svcNode instanceof BlankNode) {
+					log.warn("Blank node found: " + svcNode.toString());
+				} else {
+					String svcUrl = svcNode.asURI().toString();
+					String svcLabel = null;
+					String opLabel = null;
+					String opUrl = null;
+					
+					Node labelSvcNode = row.getValue("labelSvc");
+					if (labelSvcNode != null) {
+						svcLabel = labelSvcNode.toString();
+					}
+					
+					if (operationDiscovery) {
+						// Get operation details
+						Node opNode = row.getValue("op");
+						opUrl = opNode.asURI().toString();
+						
+						Node labelOpNode = row.getValue("labelOp");
+						if (labelOpNode != null) {
+							opLabel = labelOpNode.toString();
+						} 
+					}
+					
+					String matchLabel = DiscoveryUtil.createMatchLabel(operationDiscovery, svcUrl, svcLabel, opUrl, opLabel);
+					URL matchUrl = (operationDiscovery) ? new URL(opUrl) : new URL(svcUrl);
+					
+					// TODO: Add plugin URL as well as that of the request
+					// Default score for every match: 0
+					MatchResult match = new SimpleMatchResult(matchUrl, matchLabel, 
+							MatchType.EXACT, 0, null, null);
+					
+					results.put(matchUrl, match);
+				}
+			} 
+		} catch (MalformedURLException e) {
+			log.error("Error generating URL for resource", e);
+		} catch (ClassCastException e) {
+			log.error("Error casting resource", e);
+		} finally {
+			serviceConnector.closeRepositoryModel(repoModel);
 		}
-
-		serviceConnector.closeRepositoryModel(repoModel);
-
-		count = services.size();
-
-		SortedSet<Entry> matchingResults = serializeServices(services, labels);
-		return matchingResults;
+		
+		log.debug("Matching results: " + results);
+		return results;
 	}
-
-	/**
-	 * @param services
-	 * @param labels
-	 * @return
-	 */
-	private SortedSet<Entry> serializeServices(Set<String> services, Map<String, String> labels) {
-
-		log.info("Serialising " + services.size() + " results");
-
-		SortedSet<Entry> matchingResults = new TreeSet<Entry>(new EntryComparatorClassificationMatching());
-		for (Iterator<String> it = services.iterator(); it.hasNext();) {
-			String svc = it.next();
-			Entry result = DiscoveryUtil.getAbderaInstance().newEntry();
-			result.setId(svc);
-			result.addLink(svc, "alternate");
-			result.setTitle(labels.get(svc));
-			matchingResults.add(result);
-		}
-
-		return matchingResults;
-	}
-
 }

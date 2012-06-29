@@ -15,6 +15,8 @@
  */
 package uk.ac.open.kmi.iserve.discovery.disco;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,6 +44,7 @@ import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
@@ -136,7 +139,8 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 	 */
 	@Override
 	public String getFeedTitle() {
-		String feedTitle = "RDFS Functional Classification discovery results: " + count + " service(s) or operation(s) for " + feedSuffix;
+		String feedTitle = "RDFS Functional Classification discovery results: " + 
+			count + " service(s) or operation(s) for " + feedSuffix;
 		return feedTitle;
 	}
 
@@ -145,7 +149,7 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 	 * @see uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin#discoverServices(javax.ws.rs.core.MultivaluedMap)
 	 */
 	@Override
-	public SortedSet<Entry> discoverServices(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+	public Map<URL, MatchResult> discoverServices(MultivaluedMap<String, String> parameters) throws DiscoveryException {
 		return discover(false, parameters);
 	}
 	
@@ -153,7 +157,7 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 	 * @see uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin#discoverOperations(javax.ws.rs.core.MultivaluedMap)
 	 */
 	@Override
-	public SortedSet<Entry> discoverOperations(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+	public Map<URL, MatchResult> discoverOperations(MultivaluedMap<String, String> parameters) throws DiscoveryException {
 		return discover(true, parameters);
 	}
 	
@@ -171,12 +175,13 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 	 * @return
 	 * @throws DiscoveryException
 	 */
-	public SortedSet<Entry> discover(boolean operationDiscovery, MultivaluedMap<String, String> parameters) throws DiscoveryException {
+	public Map<URL, MatchResult> discover(boolean operationDiscovery, MultivaluedMap<String, String> parameters) throws DiscoveryException {
 	
 		// If there is no service connector raise an error 
 		if (serviceConnector == null) {
 			throw new DiscoveryException("The '" + this.getName() + "' " + 
-							this.getVersion() + " the RDF connector to the services repository is null.");
+							this.getVersion() + 
+							" the RDF connector to the services repository is null.");
 		}
 		
 		List<String> classes = parameters.get(CLASS_PARAMETER);
@@ -189,76 +194,158 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 			}
 		}
 
-		// sets of services for the 4 matching degrees
-		Set<String> s_exact = new HashSet<String>();
-		Set<String> s_sssog = new HashSet<String>();
-		Set<String> s_gssos = new HashSet<String>();
-		Set<String> s_intersection = new HashSet<String>();
+		Map<URL, MatchResult> results = funcClassificationDisco(operationDiscovery, classes);
 
-		Map<String, String> labels = new HashMap<String,String>();
+		return results;
+	}
 
-		funcClassificationDisco(operationDiscovery, classes, s_exact, s_sssog, s_gssos, s_intersection, labels);
-
-		SortedSet<Entry> matchingResults = serializeResults(matchTypesValuesMap.get(DiscoveryUtil.EXACT_DEGREE), 
-				DiscoveryUtil.EXACT_DEGREE, s_exact, labels);
-		matchingResults.addAll(serializeResults(matchTypesValuesMap.get(DiscoveryUtil.SSSOG_DEGREE),
-				DiscoveryUtil.SSSOG_DEGREE, s_sssog, labels));
-		matchingResults.addAll(serializeResults(matchTypesValuesMap.get(DiscoveryUtil.GSSOS_DEGREE),
-				DiscoveryUtil.GSSOS_DEGREE, s_gssos, labels));
-		matchingResults.addAll(serializeResults(matchTypesValuesMap.get(DiscoveryUtil.INTER_DEGREE),
-				DiscoveryUtil.INTER_DEGREE, s_intersection, labels));
-
-		count = s_exact.size() + s_sssog.size() + s_gssos.size() + s_intersection.size();
-
-		feedSuffix = "";
-		for (int i = 0; i < classes.size(); i++) {
-			feedSuffix += xmlEncode(classes.get(i)) + ((i<classes.size() - 1) ? ", " : "");
+	private Map<URL, MatchResult> funcClassificationDisco(boolean operationDiscovery, List<String> classes) {
+		
+		Map<URL, MatchResult> results = new HashMap<URL, MatchResult>();
+		// Return immediately if there is nothing to discover
+		if (classes == null || classes.isEmpty()) {
+			return results;
 		}
+		
 
-		return matchingResults;
+		String query = generateQuery(operationDiscovery, classes);
+		log.info("Querying for services: \n" + query);
+		
+		RepositoryModel repoModel = null;
+		try{
+			repoModel = serviceConnector.openRepositoryModel();
+			QueryResultTable qresult = repoModel.querySelect(query.toString(), "sparql");
+			for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
+				QueryRow row = it.next();
+	
+				String svcUri = row.getValue("svc").toString();
+				String svcLabel = null;
+				String opUri = null;
+				String opLabel = null;
+				String item;
+	
+				Node label = row.getValue("labelSvc");
+				if (label != null) {
+					svcLabel = label.toString();
+				}
+	
+				if (operationDiscovery) {
+					opUri = row.getValue("op").toString();
+					label = row.getValue("labelOp");
+					if (label != null) {
+						opLabel = label.toString();
+					}
+					item = opUri;
+				} else {
+					item = svcUri;
+				}
+				
+				// Prepare the Match result instance
+				URL itemURL = new URL(item);
+				String itemLabel = null;
+				if (svcLabel != null) {
+					itemLabel = svcLabel;
+				}
+				if (opLabel != null) {
+					itemLabel += "." + opLabel;
+				}
+	
+				Node sssog0 = row.getValue("sssog0");
+				if (sssog0 != null) {
+					results.put(itemURL, new SimpleMatchResult(itemURL, itemLabel, MatchType.SSSOG, null, null) );
+//					itemSubclassOfGoal.add(item);
+				}
+				// initially, all services are counted as being supersets of the goal, 
+				// below the set s_notgssos counts the instances that aren't, which 
+				// are removed from s_gssos after the loop
+//				goalSubclassOfItem.add(item);
+				
+				// Only add to GSSOS if no gX is missing
+				boolean lacks_gX = false;
+				for (int i = 0; i < classes.size(); i++) {
+					Node gi = row.getValue("g" + i);
+					if (gi == null) {
+						lacks_gX = true;
+						break;
+					}
+				}
+				
+				if (!lacks_gX) {
+					// The service is either GSSOS or Exact if it is SSOG too
+					if (results.containsKey(itemURL)) {
+						// If it is there, it's a SSOG too
+						results.put(itemURL, new SimpleMatchResult(itemURL, itemLabel, MatchType.EXACT, null, null) );
+					} else {
+						results.put(itemURL, new SimpleMatchResult(itemURL, itemLabel, MatchType.GSSOS, null, null) );
+					}
+						
+//					goalNotSubclassOfItem.add(item);
+				}
+	
+			}
+//			goalSubclassOfItem.removeAll(goalNotSubclassOfItem);
+			
+//			exact.addAll(itemSubclassOfGoal);
+//			exact.retainAll(goalSubclassOfItem);	
+			
+//			itemSubclassOfGoal.removeAll(exact);
+//			goalSubclassOfItem.removeAll(exact);
+			
+		} catch (MalformedURLException e) {
+			log.error("Unable to create URL for item.", e);
+		} finally {
+			serviceConnector.closeRepositoryModel(repoModel);
+		}
+		
+		return results;
+		
 	}
 
 	/**
-	 * TODO: Order the results
-	 * @param degreeNum
-	 * @param degree
-	 * @param results
-	 * @param labels
+	 * Discovery query for functional classification of items
+	 * 
+	 * TODO extension: don't care about WSMO-Lite wl:FCR
+	 * TODO: what about kinda-gssos where all goal classes are subclasses of 
+	 * service classes? it's stronger gssos if also all service classes have 
+	 * goal subclasses.
+	 * TODO: Intersection match
+	 *  - find services for which there exists a category that is a subcategory 
+	 *  of all the categories of both the goal and the svc; but remove any from 
+	 *  above
+	 * 	- also find potential intersections where some service and goal classes 
+	 * are related through subclass
+	 * 
+	 * 1 exact match, 2 service subset of goal, 3 goal subset of service:
+	 * 1,2 find services that have a subcategory of each of the goal categories			
+	 * 1,3 find services for which the goal has a subcategory of every service category
+	 * 
+	 * In the query, the presence of sssog0 means that the service contains 
+	 * subcategories of all goal categories (service is a subset of goal)
+	 * 
+	 * The presence of gX means the goal contains a subcategory of a class 
+	 * category; if every row for a service contains at least one gX then the 
+	 * goal is a subset of service
+	 * 
+	 * 
+	 * Evaluating this query should lead to the following variables:
+	 * ?svc - indicates the service
+	 * ?labelSvc - contains the label of the service
+	 * ?catSvc - contains the categories of the service
+	 * ?sssog0 - contains all the sssog
+	 * ?op - indicates the op (if necessary)
+	 * ?labelOp - contains the label of the operation (if necessary)
+	 * ?catOp - contains the categories of the operation (if necessary)
+	 * ?gX as in ?g0, ?g1 - contain the goal classes
+	 * 
+	 * @param operationDiscovery
+	 * @param classes
 	 * @return
 	 */
-	private SortedSet<Entry> serializeResults(int degreeNum, String degree, Set<String> results, Map<String, String> labels) {
-		SortedSet<Entry> matchingResults = new TreeSet<Entry>(new EntryComparatorClassificationMatching());
-		for (Iterator<String> it = results.iterator(); it.hasNext();) {
-			String item = it.next();
-			String content = "Matching degree: " + degree;
-			Entry result = DiscoveryUtil.getAbderaInstance().newEntry();
-			result.setId(item);
-			result.addLink(item, "alternate");
-			result.setTitle(labels.get(item));
-			ExtensibleElement e = result.addExtension(DiscoveryUtil.MATCH_DEGREE);
-			e.setAttributeValue("num", Integer.toString(degreeNum));
-			e.setText(degree);
-			result.setContent(content);
-			matchingResults.add(result);
-		}
-		return matchingResults;
-	}
-
-	private void funcClassificationDisco(boolean operationDiscovery, List<String> classes, Set<String> exact, Set<String> itemSubclassOfGoal,
-			Set<String> goalSubclassOfItem, Set<String> intersection, Map<String, String> labels) {
-		Set<String> goalNotSubclassOfItem = new HashSet<String>();
-
-		RepositoryModel repoModel = serviceConnector.openRepositoryModel();
-
-		// TODO extension: don't care about WSMO-Lite wl:FCR
-
-		// 1 exact match, 2 service subset of goal, 3 goal subset of service:
-		// 1,2 find services that have a subcategory of each of the goal categories			
-		// 1,3 find services for which the goal has a subcategory of every service category
-		// in the query, the presence of sssog0 means that the service contains subcategories of all goal categories (service is a subset of goal)
-		// the presence of gX means the goal contains a subcategory of a class category; if every row for a service contains at least one gX then the goal is a subset of service
-		// todo what about kinda-gssos where all goal classes are subclasses of service classes? it's stronger gssos if also all service classes have goal subclasses.
-
+	private String generateQuery(boolean operationDiscovery,
+			List<String> classes) {
+		
+		log.debug("Generating query for classes: " + classes.toString());
+		
 		StringBuffer query = new StringBuffer("prefix wl: <" + MSM.WL_NS_URI + ">" + NEW_LINE);
 		query.append("prefix sawsdl: <" + MSM.SAWSDL_NS_URI + ">" + NEW_LINE);
 		query.append("prefix msm: <" + MSM.NS_URI + ">" + NEW_LINE);
@@ -324,71 +411,8 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 		}
 
 		query.append("}");
-
-		log.info("Querying for services: \n" + query);
-
-		QueryResultTable qresult = repoModel.querySelect(query.toString(), "sparql");
-		for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
-			QueryRow row = it.next();
-
-			String svcUri = row.getValue("svc").toString();
-			String svcLabel = null;
-			String opUri = null;
-			String opLabel = null;
-
-			Node label = row.getValue("labelSvc");
-			if (label != null) {
-				svcLabel = label.toString();
-			}
-
-			String item;
-
-			if (operationDiscovery) {
-				opUri = row.getValue("op").toString();
-				label = row.getValue("labelOp");
-				if (label != null) {
-					opLabel = label.toString();
-				}
-				item = opUri;
-			} else {
-				item = svcUri;
-			}
-
-			Node sssog0 = row.getValue("sssog0");
-			if (sssog0 != null) {
-				itemSubclassOfGoal.add(item);
-			}
-			// initially, all services are counted as being supersets of the goal, 
-			// below the set s_notgssos counts the instances that aren't, which 
-			// are removed from s_gssos after the loop
-			goalSubclassOfItem.add(item); 
-			boolean lacks_gX = true;
-			for (int i=0; i<classes.size(); i++) {
-				Node gi = row.getValue("g"+i);
-				if (gi != null) {
-					lacks_gX = false;
-					break;
-				}
-			}
-			if (lacks_gX) {
-				goalNotSubclassOfItem.add(item);
-			}
-
-			labels.put(item, DiscoveryUtil.createEntryTitle(operationDiscovery, svcUri, svcLabel, opUri, opLabel));
-
-		}
-		goalSubclassOfItem.removeAll(goalNotSubclassOfItem);
-
-		exact.addAll(itemSubclassOfGoal);
-		exact.retainAll(goalSubclassOfItem);
-		itemSubclassOfGoal.removeAll(exact);
-		goalSubclassOfItem.removeAll(exact);
-
-		// intersection match:
-			// TODO: find services for which there exists a category that is a subcategory of all the categories of both the goal and the svc; but remove any from above
-		// TODO: also find potential intersections where some service and goal classes are related through subclass
-
-		serviceConnector.closeRepositoryModel(repoModel);
+		
+		return query.toString();
 	}
 
 	/**

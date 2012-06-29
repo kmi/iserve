@@ -16,9 +16,12 @@
 package uk.ac.open.kmi.iserve.discovery.engine;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
@@ -37,16 +40,24 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 
+import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Feed;
 import org.openrdf.repository.RepositoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Ordering;
 import com.sun.jersey.api.NotFoundException;
 
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.AllServicesPlugin;
+import uk.ac.open.kmi.iserve.discovery.disco.EntryComparatorClassificationMatching;
 import uk.ac.open.kmi.iserve.discovery.disco.RDFSClassificationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.RDFSInputOutputDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
@@ -67,6 +78,8 @@ public class DiscoveryResource {
 	@Context  UriInfo uriInfo;
 
 	public static String NEW_LINE = System.getProperty("line.separator");
+
+	private static final Logger log = LoggerFactory.getLogger(DiscoveryResource.class);
 
 	private Map<String, ServiceDiscoveryPlugin> servicePlugins = new HashMap<String, ServiceDiscoveryPlugin>();
 	private Map<String, OperationDiscoveryPlugin> operationPlugins = new HashMap<String, OperationDiscoveryPlugin>();
@@ -224,40 +237,25 @@ public class DiscoveryResource {
 	@Produces({MediaType.APPLICATION_ATOM_XML,
 		MediaType.APPLICATION_JSON,
 		MediaType.TEXT_XML})
-		@Path("/op/{name}")
-		public Response discoverOperations(@PathParam("name") String name, @Context UriInfo ui) throws WebApplicationException {
+	@Path("/op/{name}")
+	public Response discoverOperations(@PathParam("name") String name, @Context UriInfo ui) throws WebApplicationException {
 		MultivaluedMap<String, String> queryParams = ui.getQueryParameters();
 
-		// find discovery plug-in
+		// find operation discovery plug-in
 		OperationDiscoveryPlugin plugin = operationPlugins.get(name);
 		if ( plugin == null ) {
 			throw new NotFoundException("Plugin named '" + name + "' is not available for operation discovery.");
 		}
 
-		SortedSet<org.apache.abdera.model.Entry> matchingResults;
+		Map<URL, MatchResult> matchingResults;
 		try {
+			// apply it
 			matchingResults = plugin.discoverOperations(queryParams);
 		} catch (DiscoveryException e) {
 			throw new WebApplicationException(e, e.getStatus());
 		}
 
-		// process the results
-		Feed feed = DiscoveryUtil.getAbderaInstance().getFactory().newFeed();
-		feed.setId(ui.getRequestUri().toString());
-		feed.addLink(ui.getRequestUri().toString(),"self");
-		feed.setTitle(plugin.getFeedTitle());
-		feed.setUpdated(new Date());
-
-		UriBuilder ub = uriInfo.getAbsolutePathBuilder();
-		//FIXME: we should include the version
-		feed.setGenerator(ub.path(plugin.getName()).build().toString(), null, plugin.getDescription()); 
-
-		if ( matchingResults != null ) {
-			for ( org.apache.abdera.model.Entry result : matchingResults ) {
-				feed.addEntry(result);
-			}
-		}
-
+		Feed feed = generateFeed(rank(matchingResults), plugin);
 		return Response.ok(feed).build();
 	}
 
@@ -265,41 +263,113 @@ public class DiscoveryResource {
 	@Produces({MediaType.APPLICATION_ATOM_XML,
 		MediaType.APPLICATION_JSON,
 		MediaType.TEXT_XML})
-		@Path("/svc/{name}")
-		public Response discoverServices(@PathParam("name") String name, @Context UriInfo ui) throws WebApplicationException {
+	@Path("/svc/{name}")
+	public Response discoverServices(@PathParam("name") String name, 
+		@Context UriInfo ui) throws WebApplicationException {
+
 		MultivaluedMap<String, String> queryParams = ui.getQueryParameters();
 
-		// Else find discovery plug-in and apply it
+		// find service discovery plug-in
 		ServiceDiscoveryPlugin plugin = servicePlugins.get(name);
 		if ( plugin == null ) {
-			throw new NotFoundException("Plugin named '" + name + "' is not available for service discovery.");
+			throw new NotFoundException("Plugin named '" + name +
+			"' is not available for service discovery.");
 		}
 
-		SortedSet<org.apache.abdera.model.Entry> matchingResults;
+		Map<URL, MatchResult> matchingResults;
 		try {
+			// apply it
 			matchingResults = plugin.discoverServices(queryParams);
 		} catch (DiscoveryException e) {
 			throw new WebApplicationException(e, e.getStatus());
 		}
 
-		// process the results
-		Feed feed = DiscoveryUtil.getAbderaInstance().getFactory().newFeed();
-		feed.setId(ui.getRequestUri().toString());
-		feed.addLink(ui.getRequestUri().toString(),"self");
-		feed.setTitle(plugin.getFeedTitle());
-		feed.setUpdated(new Date());
-
-		UriBuilder ub = uriInfo.getAbsolutePathBuilder();
-		//FIXME: we should include the version
-		feed.setGenerator(ub.path(plugin.getName()).build().toString(), null, plugin.getDescription()); 
-
-		if ( matchingResults != null ) {
-			for ( org.apache.abdera.model.Entry result : matchingResults ) {
-				feed.addEntry(result);
-			}
-		}
-
+		// Generate feed out of the ranked list of matches
+		Feed feed = generateFeed(rank(matchingResults), plugin);
 		return Response.ok(feed).build();
 	}
+
+	/**
+	 * Primitive Ranker
+	 * TODO: Move out to its place as a configurable ranking engine
+	 * 
+	 * @param matchingResults
+	 * @return
+	 */
+	private Map<URL, MatchResult> rank(Map<URL, MatchResult> matchingResults) {
+		
+		if (matchingResults == null) {
+			return null;
+		}
+		
+		Function<Map.Entry<URL, MatchResult>, MatchResult> getMatchResult = 
+			new Function<Map.Entry<URL, MatchResult>, MatchResult>() {
+				public MatchResult apply(Map.Entry<URL, MatchResult> entry) {
+					return entry.getValue();
+				}
+			};
+
+		// Order the results by score and then by url
+		Ordering<Map.Entry<URL, MatchResult>> entryOrdering = 
+			Ordering.from(MatchesRankers.BY_SCORE).onResultOf(getMatchResult).reverse()
+			.compound(Ordering.from(MatchesRankers.BY_URL).onResultOf(getMatchResult));
+
+		// Desired entries in desired order.  Put them in an ImmutableMap in this order.
+		ImmutableMap.Builder<URL, MatchResult> builder = ImmutableMap.builder();
+		for (Entry<URL, MatchResult> entry : entryOrdering.sortedCopy(matchingResults.entrySet())) {
+			builder.put(entry.getKey(), entry.getValue());
+		}
+		
+		return builder.build();
+	}
+
+	/**
+	 * TODO: Implement properly
+	 * 
+	 * We require the request URL
+	 * 
+	 * @param matchingResults
+	 * @return
+	 */
+	private Feed generateFeed(Map<URL, MatchResult> matchingResults, DiscoveryPlugin plugin) {
+		// Basic initialisation
+		Feed feed = DiscoveryUtil.getAbderaInstance().getFactory().newFeed();
+		feed.setUpdated(new Date());
+		//FIXME: we should include the version
+		UriBuilder ub = uriInfo.getAbsolutePathBuilder();
+		feed.setGenerator(ub.build().toString(), null, plugin.getDescription()); 
+
+		// Return empty feed if null
+		if (matchingResults == null) {
+			return feed;
+		}
+
+		int numResults = matchingResults.size();
+		log.info("Results obtained: " + numResults);
+		log.debug(matchingResults.keySet().toString());
+
+		Set<Entry<URL, MatchResult>> entries = matchingResults.entrySet();
+		for (Entry<URL, MatchResult> entry : entries) {
+			org.apache.abdera.model.Entry rssEntry = 
+				DiscoveryUtil.getAbderaInstance().newEntry();
+			rssEntry.setId(entry.getKey().toString());
+			rssEntry.addLink(entry.getKey().toString(), "alternate");
+			rssEntry.setTitle(entry.getValue().getMatchLabel());
+			//			String content = "Matching degree: " + degree;
+			//			ExtensibleElement e = rssEntry.addExtension(entry.getValue().);
+			//			e.setAttributeValue("score", entry.getValue().getScore());
+			//			e.setText(degree);
+			rssEntry.setContent(entry.getValue().getExplanation());
+			feed.addEntry(rssEntry);
+		}	
+
+		//		feed.setId(ui.getRequestUri().toString());
+		//		feed.addLink(ui.getRequestUri().toString(),"self");
+		//		feed.setTitle(plugin.getFeedTitle());
+
+		return feed;
+
+	}
+
 
 }

@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.iserve.discovery.engine;
+package uk.ac.open.kmi.iserve.discovery.disco;
 import java.net.URL;
 
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
@@ -27,7 +27,9 @@ import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 public class SimpleMatchResult implements MatchResult {
 
 	private URL matchUrl;
-	private float score;
+	private String matchLabel;
+	private MatchType matchType;
+	private float score = Float.MAX_VALUE;
 	private URL request;
 	private URL engineUrl;
 	
@@ -37,9 +39,31 @@ public class SimpleMatchResult implements MatchResult {
 	 * @param request
 	 * @param engineUrl
 	 */
-	public SimpleMatchResult(URL url1, float score, URL request, URL engineUrl) {
+	public SimpleMatchResult(URL url, String label, MatchType matchType, 
+			URL request, URL engineUrl) {
 		super();
-		this.matchUrl = url1;
+		this.matchUrl = url;
+		this.matchLabel = label;
+		this.matchType = matchType;
+		this.request = request;
+		this.engineUrl = engineUrl;
+	}
+	
+
+	/**
+	 * @param matchUrl
+	 * @param matchLabel
+	 * @param matchType
+	 * @param score
+	 * @param request
+	 * @param engineUrl
+	 */
+	public SimpleMatchResult(URL matchUrl, String matchLabel,
+			MatchType matchType, float score, URL request, URL engineUrl) {
+		super();
+		this.matchUrl = matchUrl;
+		this.matchLabel = matchLabel;
+		this.matchType = matchType;
 		this.score = score;
 		this.request = request;
 		this.engineUrl = engineUrl;
@@ -51,12 +75,33 @@ public class SimpleMatchResult implements MatchResult {
 	public URL getMatchUrl() {
 		return matchUrl;
 	}
+	
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.MatchResult#getMatchLabel()
+	 */
+	public String getMatchLabel() {
+		return matchLabel;
+	}
+	
+	/**
+	 * @return the matchType
+	 */
+	public MatchType getMatchType() {
+		return this.matchType;
+	}
 
 	/* (non-Javadoc)
 	 * @see MatchResult#getScore()
 	 */
 	public float getScore() {
 		return score;
+	}
+	
+	/* (non-Javadoc)
+	 * @see MatchResult#setScore()
+	 */
+	public void setScore(float score) {
+		this.score = score;
 	}
 
 	/* (non-Javadoc)
@@ -77,8 +122,8 @@ public class SimpleMatchResult implements MatchResult {
 	 * @see MatchResult#getExplanation()
 	 */
 	public String getExplanation() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.matchType.getLongName() + " match with a score of: " +
+			this.score;
 	}
 
 }
