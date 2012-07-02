@@ -144,8 +144,7 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDisco
 		Map<URL, MatchResult> results = new HashMap<URL, MatchResult>();
 		
 		// Query for every item
-		StringBuffer query = new StringBuffer("prefix msm: <" + MSM.NS_URI + ">" + NEW_LINE);
-		query.append("prefix rdfs: <" + RDFS.NAMESPACE + ">" + NEW_LINE);
+		StringBuffer query = new StringBuffer(Util.generateQueryPrefix());
 		query.append("select ?svc ?labelSvc ");
 		if (operationDiscovery) {
 			query.append("?op ?labelOp");
@@ -172,46 +171,14 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDisco
 			QueryResultTable qresult = repoModel.querySelect(query.toString(), "sparql");
 			for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
 				QueryRow row = it.next();
-				Node svcNode = row.getValue("svc");
-	
-				// Ignore and track services that are blank nodes
-				if (svcNode instanceof BlankNode) {
-					log.warn("Blank node found: " + svcNode.toString());
-				} else {
-					String svcUrl = svcNode.asURI().toString();
-					String svcLabel = null;
-					String opLabel = null;
-					String opUrl = null;
-					
-					Node labelSvcNode = row.getValue("labelSvc");
-					if (labelSvcNode != null) {
-						svcLabel = labelSvcNode.toString();
-					}
-					
-					if (operationDiscovery) {
-						// Get operation details
-						Node opNode = row.getValue("op");
-						opUrl = opNode.asURI().toString();
-						
-						Node labelOpNode = row.getValue("labelOp");
-						if (labelOpNode != null) {
-							opLabel = labelOpNode.toString();
-						} 
-					}
-					
-					String matchLabel = DiscoveryUtil.createMatchLabel(operationDiscovery, svcUrl, svcLabel, opUrl, opLabel);
-					URL matchUrl = (operationDiscovery) ? new URL(opUrl) : new URL(svcUrl);
-					
-					// TODO: Add plugin URL as well as that of the request
-					// Default score for every match: 0
-					MatchResult match = new SimpleMatchResult(matchUrl, matchLabel, 
-							MatchType.EXACT, 0, null, null);
-					
-					results.put(matchUrl, match);
-				}
+				MatchResult match = Util.createMatchResult(row, operationDiscovery, MatchType.EXACT);
+				match.setScore(0);
+				// TODO: Add these
+				// match.setEngineUrl(engineUrl);
+				// match.setRequest(request);
+				// Add the result
+				results.put(match.getMatchUrl(), match);
 			} 
-		} catch (MalformedURLException e) {
-			log.error("Error generating URL for resource", e);
 		} catch (ClassCastException e) {
 			log.error("Error casting resource", e);
 		} finally {

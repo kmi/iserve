@@ -391,7 +391,8 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 			opPlugin.add(op);
 			opSubsume.add(op);
 
-			String entryTitle = DiscoveryUtil.createMatchLabel(operationDiscovery, svc, labelSvc, op, labelOp);
+//			String entryTitle = DiscoveryUtil.createMatchLabel(operationDiscovery, svc, labelSvc, op, labelOp);
+			String entryTitle = null;
 			if (operationDiscovery) {
 				labels.put(op, entryTitle);
 			} else {

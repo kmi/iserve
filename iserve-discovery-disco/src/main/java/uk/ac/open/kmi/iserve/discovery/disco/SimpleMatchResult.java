@@ -33,23 +33,20 @@ public class SimpleMatchResult implements MatchResult {
 	private URL request;
 	private URL engineUrl;
 	
+	
+	
 	/**
-	 * @param url1
-	 * @param score
-	 * @param request
-	 * @param engineUrl
+	 * @param url
+	 * @param label
+	 * @param matchType
 	 */
-	public SimpleMatchResult(URL url, String label, MatchType matchType, 
-			URL request, URL engineUrl) {
+	public SimpleMatchResult(URL url, String label, MatchType matchType) {
 		super();
 		this.matchUrl = url;
 		this.matchLabel = label;
 		this.matchType = matchType;
-		this.request = request;
-		this.engineUrl = engineUrl;
 	}
 	
-
 	/**
 	 * @param matchUrl
 	 * @param matchLabel
@@ -69,6 +66,7 @@ public class SimpleMatchResult implements MatchResult {
 		this.engineUrl = engineUrl;
 	}
 	
+
 	/* (non-Javadoc)
 	 * @see MatchResult#getMatchUrl()
 	 */
@@ -96,13 +94,6 @@ public class SimpleMatchResult implements MatchResult {
 	public float getScore() {
 		return score;
 	}
-	
-	/* (non-Javadoc)
-	 * @see MatchResult#setScore()
-	 */
-	public void setScore(float score) {
-		this.score = score;
-	}
 
 	/* (non-Javadoc)
 	 * @see MatchResult#getRequest()
@@ -124,6 +115,36 @@ public class SimpleMatchResult implements MatchResult {
 	public String getExplanation() {
 		return this.matchType.getLongName() + " match with a score of: " +
 			this.score;
+	}
+
+	/* (non-Javadoc)
+	 * @see MatchResult#setScore()
+	 */
+	public void setScore(float score) {
+		this.score = score;
+	}
+	
+	/**
+	 * @param matchType the matchType to set
+	 */
+	public void setMatchType(MatchType matchType) {
+		this.matchType = matchType;
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.MatchResult#setRequest(java.net.URL)
+	 */
+	@Override
+	public void setRequest(URL request) {
+		this.request = request;
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.MatchResult#setEngineUrl(java.net.URL)
+	 */
+	@Override
+	public void setEngineUrl(URL engineUrl) {
+		this.engineUrl = engineUrl;
 	}
 
 }

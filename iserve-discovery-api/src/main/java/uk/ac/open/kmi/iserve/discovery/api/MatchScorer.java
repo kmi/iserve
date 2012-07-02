@@ -1,4 +1,3 @@
-package uk.ac.open.kmi.iserve.discovery.api;
 /*
    Copyright 2012  Knowledge Media Institute - The Open University
 
@@ -14,32 +13,15 @@ package uk.ac.open.kmi.iserve.discovery.api;
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-
-import java.net.URL;
+package uk.ac.open.kmi.iserve.discovery.api;
 
 /**
- * Interface that match results obtained from discovery plugins should implement
+ * Match Scorer interface that anybody can implement for their own
+ * scoring strategies
  * 
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
-public interface MatchResult {
+public interface MatchScorer {
 
-	public URL getMatchUrl();
-	
-	public String getMatchLabel();
-	
-	public float getScore();
-	
-	public void setScore(float score);
-	
-	public URL getRequest();
-	
-	public void setRequest(URL request);
-	
-	public URL getEngineUrl();
-	
-	public void setEngineUrl(URL engineUrl);
-	
-	public String getExplanation();
-	
+	public float computeScore(MatchResult match);
 }

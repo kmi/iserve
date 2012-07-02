@@ -26,7 +26,7 @@ import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
  * 
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
-public enum MatchesRankers implements Comparator<MatchResult> {
+public enum MatchComparator implements Comparator<MatchResult> {
 
 	/**
 	 * Simple comparator for Match Results based on the score of the match results

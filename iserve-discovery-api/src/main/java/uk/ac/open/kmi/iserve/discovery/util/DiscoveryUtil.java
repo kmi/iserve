@@ -54,44 +54,6 @@ public class DiscoveryUtil {
       return abdera;
     }
     
-	/**
-	 * @param svcUri
-	 * @param svcLabel
-	 * @param opUri
-	 * @param opLabel
-	 * @return
-	 */
-	public static String createMatchLabel(boolean operationDiscovery, String svcUri, String svcLabel, String opUri, String opLabel) {
-		String result;
-		if (operationDiscovery) {
-			if (opLabel != null) {
-				result = opLabel;
-			} else {
-				result = generateOperationLabel(svcUri, svcLabel, opUri);
-			}
-		} else {
-			if (svcLabel != null) {
-				result = svcLabel;
-			} else {
-				result = generateServiceLabel(svcUri);
-			}	
-		}
-		return result;
-	}
-	
-	private static String generateServiceLabel(String serviceUri) {
-		return URIUtil.getLocalName(serviceUri);
-	}
-	
-	private static String generateOperationLabel(String serviceUri, String serviceLabel, String opUri) {
-		String result = null;
-		if (serviceLabel != null) {
-			result = serviceLabel;
-		} else {
-			result = generateServiceLabel(serviceUri);
-		}
-		result += "." + URIUtil.getLocalName(opUri);
-		return result;
-	}
+
     
 }

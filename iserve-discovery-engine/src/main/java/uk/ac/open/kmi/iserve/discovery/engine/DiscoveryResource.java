@@ -276,6 +276,8 @@ public class DiscoveryResource {
 			"' is not available for service discovery.");
 		}
 
+		
+		
 		Map<URL, MatchResult> matchingResults;
 		try {
 			// apply it
@@ -311,8 +313,13 @@ public class DiscoveryResource {
 
 		// Order the results by score and then by url
 		Ordering<Map.Entry<URL, MatchResult>> entryOrdering = 
-			Ordering.from(MatchesRankers.BY_SCORE).onResultOf(getMatchResult).reverse()
-			.compound(Ordering.from(MatchesRankers.BY_URL).onResultOf(getMatchResult));
+			Ordering.from(MatchComparator.BY_SCORE).onResultOf(getMatchResult)
+			.compound(Ordering.from(MatchComparator.BY_URL).onResultOf(getMatchResult));
+		
+		// Same version but reverse ordering
+//		Ordering<Map.Entry<URL, MatchResult>> entryOrdering = 
+//			Ordering.from(MatchesRankers.BY_SCORE).onResultOf(getMatchResult).reverse()
+//			.compound(Ordering.from(MatchesRankers.BY_URL).onResultOf(getMatchResult));
 
 		// Desired entries in desired order.  Put them in an ImmutableMap in this order.
 		ImmutableMap.Builder<URL, MatchResult> builder = ImmutableMap.builder();
