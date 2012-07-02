@@ -276,7 +276,9 @@ public class DiscoveryResource {
 			"' is not available for service discovery.");
 		}
 
-		
+		long startTime = System.nanoTime();
+		long endTime;	
+		long duration;
 		
 		Map<URL, MatchResult> matchingResults;
 		try {
@@ -286,8 +288,20 @@ public class DiscoveryResource {
 			throw new WebApplicationException(e, e.getStatus());
 		}
 
+		endTime = System.nanoTime();
+		duration = endTime - startTime;
+		log.info("Time elapsed during discovery: " + duration );
+		
+		startTime = System.nanoTime();
+		
+		Map<URL, MatchResult> rankedResults = rank(matchingResults);
+		
+		endTime = System.nanoTime();
+		duration = endTime - startTime;
+		log.info("Time elapsed during ranking: " + duration );
+		
 		// Generate feed out of the ranked list of matches
-		Feed feed = generateFeed(rank(matchingResults), plugin);
+		Feed feed = generateFeed(rankedResults, plugin);
 		return Response.ok(feed).build();
 	}
 
