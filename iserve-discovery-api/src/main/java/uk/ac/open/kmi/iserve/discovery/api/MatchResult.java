@@ -28,9 +28,9 @@ public interface MatchResult {
 	
 	public String getMatchLabel();
 	
-	public float getScore();
+	public Float getScore();
 	
-	public void setScore(float score);
+	public void setScore(Float score);
 	
 	public URL getRequest();
 	

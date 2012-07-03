@@ -29,7 +29,7 @@ public class SimpleMatchResult implements MatchResult {
 	private URL matchUrl;
 	private String matchLabel;
 	private MatchType matchType;
-	private float score = Float.MAX_VALUE;
+	private Float score = Float.MAX_VALUE;
 	private URL request;
 	private URL engineUrl;
 	
@@ -40,11 +40,10 @@ public class SimpleMatchResult implements MatchResult {
 	 * @param label
 	 * @param matchType
 	 */
-	public SimpleMatchResult(URL url, String label, MatchType matchType) {
+	public SimpleMatchResult(URL url, String label) {
 		super();
 		this.matchUrl = url;
 		this.matchLabel = label;
-		this.matchType = matchType;
 	}
 	
 	/**
@@ -91,7 +90,7 @@ public class SimpleMatchResult implements MatchResult {
 	/* (non-Javadoc)
 	 * @see MatchResult#getScore()
 	 */
-	public float getScore() {
+	public Float getScore() {
 		return score;
 	}
 
@@ -120,7 +119,7 @@ public class SimpleMatchResult implements MatchResult {
 	/* (non-Javadoc)
 	 * @see MatchResult#setScore()
 	 */
-	public void setScore(float score) {
+	public void setScore(Float score) {
 		this.score = score;
 	}
 	

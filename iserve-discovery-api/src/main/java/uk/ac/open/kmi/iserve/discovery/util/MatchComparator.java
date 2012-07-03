@@ -13,11 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve.discovery.engine;
+package uk.ac.open.kmi.iserve.discovery.util;
 
 import java.util.Comparator;
-
-import com.google.common.primitives.Floats;
 
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 
@@ -37,7 +35,7 @@ public enum MatchComparator implements Comparator<MatchResult> {
 
 		@Override
 		public int compare(MatchResult arg0, MatchResult arg1) {
-			return Floats.compare(arg0.getScore(), arg1.getScore());
+			return arg0.getScore().compareTo(arg1.getScore());
 		}
     },
     
