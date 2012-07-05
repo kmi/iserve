@@ -15,8 +15,14 @@
 */
 package uk.ac.open.kmi.iserve.commons.io;
 
+import java.net.URL;
+
 public class URIUtil {
 
+	public static String getLocalName(URL url) {
+		return getLocalName(url.toString());
+	}
+	
 	public static String getLocalName(String uriString) {
 		int len = uriString.length();
 		if ( uriString.endsWith("/") ) {
@@ -51,6 +57,27 @@ public class URIUtil {
 	public static String getNameSpace(String uriString) {
 		int localNameIdx = getLocalNameIndex(uriString);
 		return uriString.substring(0, localNameIdx - 1);
+	}
+	
+	public static String generateItemLabel(URL itemUrl) {
+		return generateItemLabel(null, itemUrl);
+	}
+	
+	public static String generateItemLabel(String prefix, URL itemUrl) {
+		
+		// Check the input and exit immediately if null
+		if (itemUrl == null) {
+			return null;
+		}
+		
+		String result = null;
+		if (prefix != null && !prefix.isEmpty()) {
+			result = prefix + "." + URIUtil.getLocalName(itemUrl);
+		} else {
+			result = URIUtil.getLocalName(itemUrl);
+		}
+		
+		return result;
 	}
 
 }
