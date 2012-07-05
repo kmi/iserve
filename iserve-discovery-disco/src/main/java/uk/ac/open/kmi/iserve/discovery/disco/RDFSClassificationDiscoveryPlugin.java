@@ -15,23 +15,16 @@
  */
 package uk.ac.open.kmi.iserve.discovery.disco;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
-import org.apache.abdera.model.Entry;
-import org.apache.abdera.model.ExtensibleElement;
+import org.ontoware.aifbcommons.collection.ClosableIterator;
 import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.QueryRow;
 import org.ontoware.rdf2go.model.node.Node;
@@ -43,12 +36,9 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
-import uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
-import uk.ac.open.kmi.iserve.discovery.api.MatchScorer;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
@@ -90,7 +80,7 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 	private RDFRepositoryConnector serviceConnector;
 	
 	// TODO: Make this a configurable parameter;
-	private MatchScorer scorer = new BasicScorer();
+//	private MatchScorer scorer = new BasicScorer();
 
 	public RDFSClassificationDiscoveryPlugin() {
 		
@@ -217,52 +207,61 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 		log.info("Querying for services: \n" + query);
 		
 		RepositoryModel repoModel = null;
+		ClosableIterator<QueryRow> it = null;
 		try{
 			repoModel = serviceConnector.openRepositoryModel();
-			QueryResultTable qresult = repoModel.querySelect(query.toString(), "sparql");
-			for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
+			QueryResultTable qresult = repoModel.querySelect(query, "sparql");
+			it = qresult.iterator();
+			while (it.hasNext()) {
 				QueryRow row = it.next();
-				// Create a match result by default. We will modify the match
-				// and add it only when necessary
-				SimpleMatchResult match = Util.createMatchResult(row, operationDiscovery, MatchType.SSSOG);
+				URL matchUrl = Util.getMatchUrl(row, operationDiscovery);
 				// Only continue processing if the match exists
-				if (match == null) {
+				if (matchUrl == null) {
 					break;
 				}
 				
+				String matchLabel = Util.getOrGenerateMatchLabel(row, operationDiscovery);
+				
+				// Create a match result 
+				MatchResultImpl match = new MatchResultImpl(matchUrl, matchLabel);
+				
+				boolean isSssog = Util.isVariableSet(row, "sssog0");
 				Node sssog0 = row.getValue("sssog0");
-				if (sssog0 != null) {
-					// Add the result as it is: SSOG
+				if (isSssog) {
+					// Add the result as it is: SSSOG = PLUGIN
+					match.setMatchType(MatchType.PLUGIN);
 					results.put(match.getMatchUrl(), match);
 				}
 				
 				// Only add to GSSOS if no gX is missing
 				boolean lacks_gX = false;
+				boolean isGxSet;
 				for (int i = 0; i < classes.size(); i++) {
-					Node gi = row.getValue("g" + i);
-					if (gi == null) {
+					isGxSet = Util.isVariableSet(row, "g" + i);
+					if (!isGxSet) {
 						lacks_gX = true;
 						break;
 					}
 				}
 				
 				if (!lacks_gX) {
-					// The service is either GSSOS, or Exact if it is SSOG too
+					// The service is either GSSOS (Subsume), or Exact if it is SSOG too
 					if (results.containsKey(match.getMatchUrl())) {
 						// If it is there, it's a SSOG too -> Change to Exact
 						match.setMatchType(MatchType.EXACT);
 					} else {
 						// Change to GSSOS and add to results
-						match.setMatchType(MatchType.GSSOS);
+						match.setMatchType(MatchType.SUBSUME);
 						results.put(match.getMatchUrl(), match);
 					}
 				}
 				
-				// By now the match type is already known -> compute score
-				match.setScore(scorer.computeScore(match));
+//				// By now the match type is already known -> compute score
+//				match.setScore(scorer.computeScore(match));
 			}
 			
 		} finally {
+			it.close();
 			serviceConnector.closeRepositoryModel(repoModel);
 		}
 		

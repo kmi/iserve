@@ -15,44 +15,39 @@
  */
 package uk.ac.open.kmi.iserve.discovery.disco;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
-import org.apache.abdera.model.Entry;
-import org.apache.abdera.model.ExtensibleElement;
+import org.ontoware.aifbcommons.collection.ClosableIterator;
 import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.QueryRow;
-import org.ontoware.rdf2go.model.node.Node;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.rdf2go.RepositoryModel;
-import org.openrdf.repository.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
-import uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
+
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 
 public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, OperationDiscoveryPlugin {
 	
@@ -97,7 +92,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 		parameterDetails.put(INPUTS_PARAM, INPUTS_PARAM_DESCRIPTION);
 	}
 	
-	public static String NEW_LINE = System.getProperty("line.separator");
+	public static String NL = System.getProperty("line.separator");
 	
 	// TODO: Add additional details to the enum? (Merge with others?)
 	private enum Degree {
@@ -186,9 +181,25 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 	/**
 	 * TODO: Fix the implementation to adapt to the new interface
 	 * 
-	 * @param operationDiscovery
-	 * @param parameters
-	 * @return
+	 * 5 match degrees for inputs: exact, plugin, subsume, partial-plugin, partial-subsume
+	 * exact           <= the goal has all the exact service input classes (but may have more)
+	 * plugin          <= for each service input class, goal has a subclass of it
+	 * subsume         <= for each service input class, goal has a superclass of it
+	 * partial-plugin  <= goal has subclass of some service input class
+	 * partial-subsume <= goal has superclass of some service input class
+	 * 
+	 * 5 match degrees for outputs: exact, plugin, subsume, partial-plugin, partial-subsume
+	 * exact           <= the service has all the exact goal output classes (but may have more)
+	 * plugin          <= for each goal output class, service has a subclass of it
+	 * subsume         <= for each goal output class, service has a superclass of it
+	 * partial-plugin  <= service has subclass of some goal output class
+	 * partial-subsume <= service has superclass of some goal output class
+	 * 
+	 * 
+	 * 
+	 * @param operationDiscovery true if carrying out operation discovery
+	 * @param parameters request parameters
+	 * @return the set of discovery results
 	 * @throws DiscoveryException
 	 */
 	public Map<URL, MatchResult> discover(boolean operationDiscovery, 
@@ -208,381 +219,349 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 		if (!matchingInputs && !matchingOutputs) {
 			throw new DiscoveryException(403, "I/O discovery without parameters is not supported");
 		}
-		if ( matchingInputs == true ) {
+		if ( matchingInputs ) {
 			for (String clazz : inputClasses) {
 				if (clazz == null) {
 					throw new DiscoveryException(400, "Empty class URI not allowed");
 				}
 			}
 		}
-		if ( matchingOutputs == true ) {
+		if ( matchingOutputs ) {
 			for (String clazz : outputClasses) {
 				if (clazz == null) {
 					throw new DiscoveryException(400, "Empty class URI not allowed");
 				}
 			}
 		}
+		
 		String andOr = parameters.getFirst(FUNCTION_PARAM);
 		boolean intersection = AND_FUNCTION.equals(andOr);
-
-		// sets of matching services
-		Map<String, Degree> s_input = new HashMap<String, Degree>();
-		Map<String, Degree> s_output = new HashMap<String, Degree>();
-		Map<String, String> labels = new HashMap<String, String>();
-
-		Set<String> matches = new HashSet<String>();
+		
+		Map<URL, MatchResult> results = null;
+		Map<URL, MatchResult> inputMatches = null;
+		Map<URL, MatchResult> outputMatches = null;
 
 		if (matchingInputs) {
-			matchInputs(operationDiscovery, inputClasses, s_input, labels);
-			matches.addAll(s_input.keySet());
+			inputMatches = matchInputs(operationDiscovery, inputClasses);
 		}
+		
 		if (matchingOutputs) {
-			matchOutputs(operationDiscovery, outputClasses, s_output, labels);
-			if (matchingInputs && intersection) {
-				matches.retainAll(s_output.keySet());
-			} else {
-				matches.addAll(s_output.keySet());
-			}
+			outputMatches = matchOutputs(operationDiscovery, outputClasses);
 		}
-		if (matchingInputs && matchingOutputs) {
-			for (String svc : s_input.keySet()) {
-				if (!s_output.containsKey(svc)) {
-					s_output.put(svc, Degree.FAIL);
-				}
-			}
-			for (String svc : s_output.keySet()) {
-				if (!s_input.containsKey(svc)) {
-					s_input.put(svc, Degree.FAIL);
-				}
-			}
-		}
-
-		SortedSet<Entry> matchingResults = serializeMatches(matches, s_input, s_output, labels);
-
-		count = matchingResults.size();
-
+		
+		// Combine the matches into one Map
+		// Based on Guava, returns views that will be computed every time so 
+		// if we have to loop several times we should actually materialise them
 		if (matchingInputs) {
-			feedSuffix += inputClasses.size() + " provided inputs: ";
-			for (int i = 0; i < inputClasses.size(); i++) {
-				feedSuffix += inputClasses.get(i)
-				+ ((i < inputClasses.size() - 1) ? ", " : "");
-			}
 			if (matchingOutputs) {
-				feedSuffix += " and ";
+				Set<Map<URL, MatchResult>> toCombine = new HashSet<Map<URL,MatchResult>>();
+				toCombine.add(inputMatches);
+				toCombine.add(outputMatches);
+				Multimap<URL, MatchResult> combination;
+				if (intersection) {
+					combination = MatchMapCombinator.INTERSECTION.apply(toCombine);
+					
+				} else {
+					combination = MatchMapCombinator.UNION.apply(toCombine);
+				}
+				results = Maps.transformValues(combination.asMap(), new MatchResultsMerger());
+			} else {
+				results = inputMatches;
 			}
-		}
-		if (matchingOutputs) {
-			feedSuffix += outputClasses.size() + " requested outputs: ";
-			for (int i = 0; i < outputClasses.size(); i++) {
-				feedSuffix += outputClasses.get(i)
-				+ ((i < outputClasses.size() - 1) ? ", " : "");
-			}
+		} else {
+			// Should be matching outputs
+			results = outputMatches;
 		}
 
-//		return matchingResults;
-		return null;
+		return results;
 	}
 
 	/**
-	 * TODO: Implement a proper comparator so that the services are ranked
-	 * appropriately
+	 * Match Services and Operations inputs given the classes requested
+	 * 
+	 * TODO: The current query generated takes way too long
+	 * 
+	 * 
+	 * algorithm for inputs (how it was and should be, not necessarily how it is):
+	 * 1) with sparql, find all service operations and their inputs (represented by values of modelreference annotations)
+	 *    if ?suX is set, the input is a subclass of some goal input
+	 *    if ?plX is set, the goal has a subclass of the input
+	 *    if ?exX is set, the input is equal to a goal class X
+	 * 2) going through the results
+	 *    For each input that has a match > Fail 
+	 * 		create an inner match
+	 * 
+	 * 	  If the service had some match
+	 * 		create a composite match based on the inner matches
+	 * 
+	 * 	  Figure out the aggregated match based on the best and worst matches
+	 * 
+	 * @param operationDiscovery
+	 * @param classes
 	 * @param matches
-	 * @param inputDegrees
-	 * @param outputDegrees
 	 * @param labels
-	 * @return
+	 * @throws DiscoveryException
 	 */
-	private SortedSet<Entry> serializeMatches(Set<String> matches, Map<String, Degree> inputDegrees, Map<String, Degree> outputDegrees, Map<String, String> labels) {
-		SortedSet<Entry> matchingResults = new TreeSet<Entry>(new EntryComparatorClassificationMatching());
+	private Map<URL, MatchResult> matchInputs(boolean operationDiscovery, List<String> classes) throws DiscoveryException {
 
-		final Map<String, String> combinedMatchDegrees = new HashMap<String, String>();
-		Map<String, String> degreeNames = new HashMap<String, String>();
-		Map<String, String> degreeDescs = new HashMap<String, String>();
-		
-		log.info("Serialising " + matches.size() + " discovery results.");
-
-		for (String match : matches) {
-			Degree iDeg = inputDegrees.get(match);
-			Degree oDeg = outputDegrees.get(match);
-			Degree degreeMajor = iDeg;
-			Degree degreeMinor = oDeg;
-			// switch them if output is a better match than input
-			if (iDeg == null || oDeg != null && oDeg.compareTo(iDeg) < 0) {
-				degreeMajor = oDeg;
-				degreeMinor = iDeg;
-			}
-			String degreeNum = Integer.toString(degreeMajor.ordinal()); 
-			String degreeName = degreeMajor.toString();
-			if (degreeMinor != null) { 
-				degreeNum += "." + degreeMinor.ordinal(); 
-				if (degreeMinor != Degree.FAIL) {
-					degreeName += "." + degreeMinor.toString();
-				}
-			}
-			String degreeDesc = "";
-			if (iDeg != null) {
-				degreeDesc = "input " + iDeg.toString();
-				if (oDeg != null) {
-					degreeDesc += ", ";
-				}
-			}
-			if (oDeg != null) {
-				degreeDesc += "output " + oDeg.toString();
-			}
-			combinedMatchDegrees.put(match, degreeNum);
-			degreeNames.put(degreeNum, degreeName);
-			degreeDescs.put(degreeNum, degreeDesc);
+		Map<URL, MatchResult> results = new HashMap<URL, MatchResult>();
+		// Return immediately if there is nothing to discover
+		if (classes == null || classes.isEmpty()) {
+			return results;
 		}
 		
-		for (String match : matches) {			
-			String degreeNum = combinedMatchDegrees.get(match);
-			Entry result = DiscoveryUtil.getAbderaInstance().newEntry();
-			result.addLink(match);
-			result.setTitle(labels.get(match));
-			ExtensibleElement e = result.addExtension(DiscoveryUtil.MATCH_DEGREE);
-			e.setAttributeValue("num", degreeNum);
-			e.setText(degreeNames.get(degreeNum));
-			result.setContent(degreeDescs.get(degreeNum));
-			matchingResults.add(result);
-		}
-
-		return matchingResults;
-	}
-
-	private void matchInputs(boolean operationDiscovery, List<String> classes, Map<String, Degree> matches, Map<String, String> labels) throws DiscoveryException {
-
-		RepositoryModel repoModel = serviceConnector.openRepositoryModel();
+		RepositoryModel repoModel = null;
+		ClosableIterator<QueryRow> it = null;
 		
-		String query = generateQuery(MSM.NS_URI + "hasInput", classes);
-		log.info("Input matching query: " + NEW_LINE + query);
+		String query = generateInputsQuery(classes);
+		log.info("Input matching query: " + NL + query);
 
-		QueryResultTable qresult = repoModel.querySelect(query, "sparql");
-
-		Map<String, String> op2svc = new HashMap<String, String>();
-		Set<String> opExact = new HashSet<String>();
-		Set<String> opPlugin = new HashSet<String>();
-		Set<String> opSubsume = new HashSet<String>();
-		Set<String> opNotExact = new HashSet<String>();
-		Set<String> opNotPlugin = new HashSet<String>();
-		Set<String> opNotSubsume = new HashSet<String>();
-		Set<String> opPartPlugin = new HashSet<String>();
-		Set<String> opPartSubsume = new HashSet<String>();
-
-		for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
-			QueryRow row = it.next();
-			String svc = row.getValue("svc").toString();
-			String labelSvc = null;
-			Node label = row.getValue("labelSvc");
-			if (label != null) {
-				labelSvc = label.toString();
-			}
+		try {
+			repoModel = serviceConnector.openRepositoryModel();
+			// TODO: Remove profiling
+			long startTime = System.currentTimeMillis();
 			
-			String op = row.getValue("op").toString();
-			String labelOp = null;
-			label = row.getValue("labelOp");
-			if (label != null) {
-				labelOp = label.toString();
-			}
+			QueryResultTable qresult = repoModel.querySelect(query, "sparql");
 			
-			op2svc.put(op, svc);
-			// initially all ops are assumed to match until proven otherwise
-			// (below)
-			opExact.add(op);
-			opPlugin.add(op);
-			opSubsume.add(op);
-
-//			String entryTitle = DiscoveryUtil.createMatchLabel(operationDiscovery, svc, labelSvc, op, labelOp);
-			String entryTitle = null;
-			if (operationDiscovery) {
-				labels.put(op, entryTitle);
-			} else {
-				labels.put(svc, entryTitle);
-			}
-
-			boolean has_ex = false;
-			boolean has_pl = false;
-			boolean has_su = false;
-
-			for (int i = 0; i < classes.size(); i++) {
-				Node val = row.getValue("su" + i);
-				if (val != null) {
-					has_su = true;
+			// TODO: Remove profiling
+			long endTime = System.currentTimeMillis();
+			long duration = endTime - startTime;
+			log.info("Time taken for querying the registry: " + duration);
+			
+			it = qresult.iterator();
+			// Iterate over the results obtained
+			while (it.hasNext()) {
+				QueryRow row = it.next();
+				
+				URL matchUrl = Util.getMatchUrl(row, operationDiscovery);
+				// Only continue processing if the match exists
+				if (matchUrl == null) {
+					log.warn("Skipping result as the URL is null");
+					break;
 				}
-				val = row.getValue("pl" + i);
-				if (val != null) {
-					has_pl = true;
-				}
-				val = row.getValue("ex" + i);
-				if (val != null) {
-					has_ex = true;
-				}
-			}
-			if (!has_su) {
-				opNotSubsume.add(op);
-			} else {
-				opPartSubsume.add(op);
-			}
-			if (!has_pl) {
-				opNotPlugin.add(op);
-			} else {
-				opPartPlugin.add(op);
-			}
-			if (!has_ex) {
-				opNotExact.add(op);
-			}
-		}
-
-		// FIXME: This is inefficient
-		opExact.removeAll(opNotExact);
-		opPlugin.removeAll(opNotPlugin);
-		opSubsume.removeAll(opNotSubsume);
-
-		// the following order is significant - worse matches get rewritten by
-		// better ones
-		for (String op : opPartSubsume) {
-			if (operationDiscovery) {
-				matches.put(op, Degree.PARTIAL_SUBSUME);
-			} else {
-				matches.put(op2svc.get(op), Degree.PARTIAL_SUBSUME);
-			}
-		}
-		for (String op : opPartPlugin) {
-			if (operationDiscovery) {
-				matches.put(op, Degree.PARTIAL_PLUGIN);
-			} else {
-				matches.put(op2svc.get(op), Degree.PARTIAL_PLUGIN);
-			}
-		}
-		for (String op : opSubsume) {
-			if (operationDiscovery) {
-				matches.put(op, Degree.SUBSUME);
-			} else {
-				matches.put(op2svc.get(op), Degree.SUBSUME);
-			}
-		}
-		for (String op : opPlugin) {
-			if (operationDiscovery) {
-				matches.put(op, Degree.PLUGIN);
-			} else {
-				matches.put(op2svc.get(op), Degree.PLUGIN);
-			}
-		}
-		for (String op : opExact) {
-			if (operationDiscovery) {
-				matches.put(op, Degree.EXACT);
-			} else {
-				matches.put(op2svc.get(op), Degree.EXACT);
-			}
-		}
-		
-		//TODO: handle connection properly
-		serviceConnector.closeRepositoryModel(repoModel);
-		
-		log.info("Returning " + matches.size() + " discovery results.");
-	}
-
-	private void matchOutputs(boolean operationDiscovery, List<String> classes, Map<String, Degree> matches, Map<String, String> labels) throws DiscoveryException {
-
-		RepositoryModel repoModel = serviceConnector.openRepositoryModel();
-		
-		String query = generateQuery(MSM.NS_URI + "hasOutput", classes);
-		log.info("Output matching query: " + NEW_LINE + query);
-
-		QueryResultTable qresult = repoModel.querySelect(query, "sparql");
-		for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
-			QueryRow row = it.next();
-			String svc = row.getValue("svc").toString();
-			String op = row.getValue("op").toString();
-
-			Node label = row.getValue("labels");
-			if (label != null) {
-				labels.put(svc, label.toString());
-			}
-			label = row.getValue("labelop");
-			if (label != null) {
-				labels.put(op, label.toString());
-			}
-
-			Node exact = row.getValue("exact");
-			if (exact != null) {
-				if (operationDiscovery) {
-					matches.put(op, Degree.EXACT);
-				} else {
-					matches.put(svc, Degree.EXACT);
-				}
-				continue;
-			}
-
-			boolean has_cpx = false;
-			boolean misses_cpx = false;
-			boolean has_csx = false;
-			boolean misses_csx = false;
-			for (int i = 0; i < classes.size(); i++) {
-				Node val = row.getValue("cp" + i);
-				if (val != null) {
-					has_cpx = true;
-				} else {
-					misses_cpx = true;
-				}
-				val = row.getValue("cs" + i);
-				if (val != null) {
-					has_csx = true;
-				} else {
-					misses_csx = true;
-				}
-			}
-			Degree degree = Degree.FAIL;
-			if (has_cpx) {
-				if (misses_cpx) {
-					degree = Degree.PARTIAL_PLUGIN;
-				} else {
-					degree = Degree.PLUGIN;
-				}
-			} else {
-				if (has_csx) {
-					if (misses_csx) {
-						degree = Degree.PARTIAL_SUBSUME;
-					} else {
-						degree = Degree.SUBSUME;
+				
+				String matchLabel = Util.getOrGenerateMatchLabel(row, operationDiscovery);
+	
+				boolean isExact = false;
+				boolean isPlugin = false;
+				boolean isSubsume = false;
+				// Keep track of the best and worst match for the aggregated 
+				// match type
+				MatchType worstMatch = MatchType.EXACT;
+				MatchType bestMatch = MatchType.FAIL;
+				
+				// Create an inner match per class matched
+				// The overall match will be determined by the best and worst match
+				Set<MatchResult> innerMatches = new HashSet<MatchResult>();
+	
+				for (int i = 0; i < classes.size(); i++) {
+					isExact = Util.isVariableSet(row, "ex" + i); // TODO: We probably can skip this
+					isSubsume = Util.isVariableSet(row, "su" + i);
+					isPlugin = Util.isVariableSet(row, "pl" + i);
+					
+					// Create an inner match  if there is some match relationship
+					// We don't keep track of the fail matches within the composite
+					MatchType matchType = Util.getMatchType(isSubsume, isPlugin);
+					if (matchType == null) {
+						log.warn("Skipping result as the Match Type is null");
+						break;
+					}
+					
+					if (matchType != MatchType.FAIL) { 
+						MatchResultImpl innerMatch = new MatchResultImpl(matchUrl, matchLabel);
+						innerMatch.setMatchType(matchType);
+						innerMatches.add(innerMatch);
+						log.debug("Adding inner match for " + 
+								innerMatch.getMatchUrl() + " of type " + 
+								innerMatch.getMatchType().getShortName());
+					}
+					
+					if (matchType.compareTo(bestMatch) > 0) {
+						bestMatch = matchType;
+					}
+					
+					if (matchType.compareTo(worstMatch) < 0) {
+						worstMatch = matchType;
 					}
 				}
-			}
-			Degree oldDegree;
-			if (operationDiscovery) {
-				oldDegree = matches.get(op);
-			} else {
-				oldDegree = matches.get(svc);
-			}
-			
-			if (degree != Degree.FAIL
-					&& (oldDegree == null || oldDegree.compareTo(degree) > 0)) {
 				
-				if (operationDiscovery) {
-					matches.put(op, degree);
-				} else {
-					matches.put(svc, degree);
+				if (!innerMatches.isEmpty()) {
+					// The service has some match. Add it
+					MatchType aggregatedType = Util.calculateCompositeMatchType(bestMatch, worstMatch);
+					CompositeMatchResultImpl compositeMatch = new CompositeMatchResultImpl(matchUrl, matchLabel);
+					compositeMatch.setInnerMatches(innerMatches);
+					compositeMatch.setMatchType(aggregatedType);
+					
+					// TODO: Ensure we take care of several rows of results 
+					// for the same match (i.e., several ops for the service)
+					results.put(compositeMatch.getMatchUrl(), compositeMatch);
+					
+					log.debug("Adding Match for " + 
+							compositeMatch.getMatchUrl() + " of type " + 
+							compositeMatch.getMatchType().getShortName());
 				}
-				matches.put(svc, degree);
 			}
-
+				
+				
+		} finally {
+			it.close();
+			serviceConnector.closeRepositoryModel(repoModel);
 		}
-		//TODO: handle connection properly
-		serviceConnector.closeRepositoryModel(repoModel);
-		log.info("Returning " + matches.size() + " discovery results.");
+
+		log.info("Returning " + results.size() + " discovery results.");
+		return results;
+	}
+
+	/**
+	 * algorithm for outputs (how it should be, not necessarily how it is):
+	 * 1) with sparql, find all service operations
+	 * 	if ?cpX is set, the operation has an output message part that is a subclass of goal class X
+	 *  if ?csX is set, the operation has an output message part that is a superclass of goal class X
+	 *  if ?exact is set, for each goal class the operation has an output message part with equal class
+	 *    
+	 * 2) going through the results
+	 *	if any ?cpX is set, the operation is partial-plugin match
+	 *  if all ?cpX are set, the operation is plugin match
+	 *  if any ?csX is set, the operation is partial-subsume match
+	 *  if all ?csX are set, the operation is subsume match
+	 *  if ?exact is set, the operation is an exact match
+	 *        
+	 * 3) each matching service has the best match degree from among its operations
+	 * 
+	 * @param operationDiscovery
+	 * @param classes
+	 * @param matches
+	 * @param labels
+	 * @throws DiscoveryException
+	 */
+	private Map<URL, MatchResult> matchOutputs(boolean operationDiscovery, List<String> classes) throws DiscoveryException {
+
+		Map<URL, MatchResult> results = new HashMap<URL, MatchResult>();
+		// Return immediately if there is nothing to discover
+		if (classes == null || classes.isEmpty()) {
+			return results;
+		}
+		
+		RepositoryModel repoModel = null;
+		ClosableIterator<QueryRow> it = null;	
+		String query = generateOutputsQuery(classes);
+		log.info("Output matching query: " + NL + query);
+
+		try {
+			repoModel = serviceConnector.openRepositoryModel();
+			
+			// TODO: Remove profiling
+			long startTime = System.currentTimeMillis();
+			
+			QueryResultTable qresult = repoModel.querySelect(query, "sparql");
+			
+			// TODO: Remove profiling
+			long endTime = System.currentTimeMillis();
+			long duration = endTime - startTime;
+			log.info("Time taken for querying the registry: " + duration);
+			
+			it = qresult.iterator();
+			while (it.hasNext()) {
+				QueryRow row = it.next();
+				URL matchUrl = Util.getMatchUrl(row, operationDiscovery);
+				// Only continue processing if the match exists
+				if (matchUrl == null) {
+					log.warn("Skipping result as the URL is null");
+					break;
+				}
+				
+				String matchLabel = Util.getOrGenerateMatchLabel(row, operationDiscovery);
+				
+				
+				// TODO: Check the variables
+				// XXX: Will this ever be true?
+//				Node exact = row.getValue("exact");
+//				if (exact != null) {
+//					if (operationDiscovery) {
+//						matches.put(op, Degree.EXACT);
+//					} else {
+//						matches.put(svc, Degree.EXACT);
+//					}
+//					continue;
+//				}
+	
+				boolean has_cpx = false;
+				boolean has_csx = false;
+				
+				// Keep track of the best and worst match for the aggregated 
+				// match type
+				MatchType worstMatch = MatchType.EXACT;
+				MatchType bestMatch = MatchType.FAIL;
+				
+				// Create an inner match per class matched
+				// The overall match will be determined by the best and worst match
+				Set<MatchResult> innerMatches = new HashSet<MatchResult>();
+	
+				for (int i = 0; i < classes.size(); i++) {
+					has_cpx = Util.isVariableSet(row, "cp" + i); 
+					has_csx = Util.isVariableSet(row, "cs" + i);
+					
+					MatchType matchType = Util.getMatchType(has_csx, has_cpx);
+					if (matchType == null) {
+						log.warn("Skipping result as the Match Type is null");
+						break;
+					}
+					
+					if (matchType != MatchType.FAIL) { 
+						MatchResultImpl innerMatch = new MatchResultImpl(matchUrl, matchLabel);
+						innerMatch.setMatchType(matchType);
+						innerMatches.add(innerMatch);
+					}
+					
+					if (matchType.compareTo(bestMatch) > 0) {
+						bestMatch = matchType;
+					}
+					
+					if (matchType.compareTo(worstMatch) < 0) {
+						worstMatch = matchType;
+					}
+				}
+				
+				if (!innerMatches.isEmpty()) {
+					// The service has some match. Add it
+					MatchType aggregatedType = Util.calculateCompositeMatchType(bestMatch, worstMatch);
+					CompositeMatchResultImpl compositeMatch = new CompositeMatchResultImpl(matchUrl, matchLabel);
+					compositeMatch.setInnerMatches(innerMatches);
+					compositeMatch.setMatchType(aggregatedType);
+					
+					// TODO: Ensure we take care of several rows of results 
+					// for the same match (i.e., several ops for the service)
+					results.put(compositeMatch.getMatchUrl(), compositeMatch);
+				}
+			}
+		} finally {
+			it.close();
+			serviceConnector.closeRepositoryModel(repoModel);
+		}
+		
+		log.info("Returning " + results.size() + " discovery results.");
+		return results;
 	}
 	
 	/**
 	 * Generates a discovery query taken into account the given relationship
 	 * between the operation and the classes identified.
 	 * 
-	 * @param relOperationAndClasses The relationship between operations and 
-	 * classes that we are looking for. 
-	 * @param classes 
+	 * The resulting query will bind the results to the following variables:
+	 * ?svc -> service 
+	 * ?labelSvc -> service label
+	 * ?op -> operation
+	 * ?labelOp -> operation label
+	 * ?ic -> modelReference at the message level
+	 * ?icp -> modelReference at the property level
+	 * ?suX -> the match is subsumes on the class #X
+	 * ?plX -> the match is plugin on the class #X
+	 * ?exX -> the match is exact on the class #X
 	 * 
-	 * @return
+	 * @param classes the classes we want to match
+	 * @return the SPARQL query
 	 */
-	private String generateQuery(String relOperationAndClasses, List<String> classes) {
-		
+	private String generateInputsQuery(List<String> classes) {
 		// 1 exact match, 2 plugin goal inputs subclasses of service inputs, 3
 		// subsume service inputs subclasses of goal inputs, 4 partial plugin, 5
 		// partial subsume:
@@ -595,59 +574,172 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 		// plugin, ?csX is annotation class for subsume
 		
 		StringBuffer query = new StringBuffer();
-		query.append("prefix wl: <" + MSM.WL_NS_URI + ">" + NEW_LINE);
-		query.append("prefix sawsdl: <" + MSM.SAWSDL_NS_URI + ">" + NEW_LINE);
-		query.append("prefix msm: <" + MSM.NS_URI + ">" + NEW_LINE);  
-		query.append("prefix rdfs: <" + RDFS.NAMESPACE + ">" + NEW_LINE);
-		query.append("prefix rdf: <" + RDF.NAMESPACE + ">" + NEW_LINE);
-		query.append("select ?svc ?labels ?op ?labelop ?ic ?icp ");
+		query.append("prefix wl: <" + MSM.WL_NS_URI + ">" + NL);
+		query.append("prefix sawsdl: <" + MSM.SAWSDL_NS_URI + ">" + NL);
+		query.append("prefix msm: <" + MSM.NS_URI + ">" + NL);  
+		query.append("prefix rdfs: <" + RDFS.NAMESPACE + ">" + NL);
+		query.append("prefix rdf: <" + RDF.NAMESPACE + ">" + NL);
+		query.append("select ?svc ?labelSvc ?op ?labelOp ?ic ?icp ");
 		
 		for (int i = 0; i < classes.size(); i++) {
 			query.append("?su" + i + " ?pl" + i + " ?ex" + i + " ");
 		}
+		query.append(NL);
 		
-		query.append("\nwhere {" + NEW_LINE);
-		query.append("  ?svc a msm:Service ; msm:hasOperation ?op ." + NEW_LINE);
-		query.append("  ?op <" + relOperationAndClasses + "> ?imsg ." + NEW_LINE);
-		query.append("  ?imsg msm:hasPartTransitive ?i ." + NEW_LINE);
-		query.append("  ?i sawsdl:modelReference ?ic . " + NEW_LINE);     
-		query.append("  ?i sawsdl:modelReference ?prop . " + NEW_LINE);   // Take into account annotations to properties of the type
-		query.append("  ?prop rdfs:range ?icp . " + NEW_LINE);
-		query.append("  OPTIONAL { ?svc rdfs:label ?labels }" + NEW_LINE);
-		query.append("  OPTIONAL { ?op rdfs:label ?labelop }" + NEW_LINE);
+		query.append("where {" + NL);
+		query.append("  ?svc a msm:Service ; msm:hasOperation ?op ." + NL);
+		query.append("  ?op msm:hasInput ?imsg ." + NL);
+		query.append("  ?imsg msm:hasPartTransitive ?i ." + NL); 		// TODO: Ensure that hasPartTransitive is properly defined in the latest MSM version
+		query.append("  OPTIONAL { ?imsg sawsdl:modelReference ?ic } " + NL); // Reference at the message level
+		query.append("  OPTIONAL { ?i sawsdl:modelReference ?ic } " + NL);  // Reference at the message part level   
+		query.append("  OPTIONAL { ?i sawsdl:modelReference ?prop . " + NL); // Reference to properties of the type    
+		query.append("    ?prop rdfs:range ?icp . } " + NL);
+		query.append("  OPTIONAL { ?svc rdfs:label ?labelSvc }" + NL);  
+		query.append("  OPTIONAL { ?op rdfs:label ?labelOp }" + NL);  
 		
 		for (int i = 0; i < classes.size(); i++) {
-			query.append("  OPTIONAL {" + NEW_LINE);
+			query.append("  OPTIONAL {" + NL);
 			query.append("    ?ic rdfs:subClassOf <"
 					+ classes.get(i).replace(">", "%3e") + "> ; ?su" + i + " <"
-					+ classes.get(i).replace(">", "%3e") + "> ." + NEW_LINE + "  }" + NEW_LINE);
+					+ classes.get(i).replace(">", "%3e") + "> ." + NL + "  }" + NL);
 			
-			query.append("  OPTIONAL {" + NEW_LINE);
+			query.append("  OPTIONAL {" + NL);
 			query.append("    <" + classes.get(i).replace(">", "%3e")
-					+ "> rdfs:subClassOf ?ic ; ?pl" + i + " ?ic ." + NEW_LINE + "  }" + NEW_LINE);
+					+ "> rdfs:subClassOf ?ic ; ?pl" + i + " ?ic ." + NL + "  }" + NL);
 			
-			query.append("  OPTIONAL {" + NEW_LINE);
+			query.append("  OPTIONAL {" + NL);
 			query.append("    ?i sawsdl:modelReference <"
 					+ classes.get(i).replace(">", "%3e") + "> ; ?ex" + i + " <"
-					+ classes.get(i).replace(">", "%3e") + "> ." + NEW_LINE + "  }" + NEW_LINE);
+					+ classes.get(i).replace(">", "%3e") + "> ." + NL + "  }" + NL);
 		}
 		// Take into account annotations to properties of the type
 		for (int i = 0; i < classes.size(); i++) {
-			query.append("  OPTIONAL {" + NEW_LINE);
+			query.append("  OPTIONAL {" + NL);
 			query.append("    ?icp rdfs:subClassOf <"
 					+ classes.get(i).replace(">", "%3e") + "> ; ?su" + i + " <"
-					+ classes.get(i).replace(">", "%3e") + "> ." + NEW_LINE + "  }" + NEW_LINE);
+					+ classes.get(i).replace(">", "%3e") + "> ." + NL + "  }" + NL);
 			
-			query.append("  OPTIONAL {" + NEW_LINE);
+			query.append("  OPTIONAL {" + NL);
 			query.append("    <" + classes.get(i).replace(">", "%3e")
-					+ "> rdfs:subClassOf ?icp ; ?pl" + i + " ?icp ." + NEW_LINE + "  }" + NEW_LINE);
+					+ "> rdfs:subClassOf ?icp ; ?pl" + i + " ?icp ." + NL + "  }" + NL);
 			
-			query.append("  OPTIONAL {" + NEW_LINE);
+			query.append("  OPTIONAL {" + NL);
 			query.append("    ?icp rdfs:subClassOf <"
 					+ classes.get(i).replace(">", "%3e") + "> ."
 					+ "<" + classes.get(i).replace(">", "%3e") + "> rdfs:subClassOf ?icp ;"
 					+ " ?ex" + i + " <"
-					+ classes.get(i).replace(">", "%3e") + "> ." + NEW_LINE + "  }" + NEW_LINE);
+					+ classes.get(i).replace(">", "%3e") + "> ." + NL + "  }" + NL);
+		}
+		query.append("}");
+		return query.toString();
+	}
+	
+	/**
+	 * Generate the SPARQL Query for obtaining the matches at the outputs level.
+	 * The resulting query will bind the results to the following variables:
+	 * ?svc -> service 
+	 * ?labelSvc -> service label
+	 * ?op -> operation
+	 * ?labelOp -> operation label
+	 * ?oc -> modelReference at the message level
+	 * ?ocp -> modelReference at the property level
+	 * ?suX -> the match is subsumes on the class #X
+	 * ?plX -> the match is plugin on the class #X
+	 * ?exX -> the match is exact on the class #X
+	 * 
+	 * @param classes the classes we want to match
+	 * @return the SPARQL query
+	 */
+	private String generateOutputsQuery(List<String> classes) {
+		
+		/*
+		 * EXACT < PLUGIN < SUBSUME < PARTIAL PLUGIN < PARTIAL SUBSUME < FAIL
+		 * 
+		 * Algorithm
+		 * EXACT: find services that have all the goal classes
+		 * PLUGIN: find services that have a subclass of each of the goal classes
+		 * SUBSUME: find services that have a superclass of each of the goal classes
+		 * PARTIAL PLUGIN: find services that have a subclass for any of the 
+		 * goal classes
+		 * PARTIAL SUBSUME: find services that have a superclass for any of the 
+		 * goal classes 
+		 * 
+		 * TODO: Check this
+		 * In the query, ?exact signifies exact match, ?cpX is annotation class
+		 * for plugin, ?csX is annotation class for subsume 
+		 * 
+		 * TODO: Ensure that when services have different matching operations
+		 * the best match is the one that is kept
+		 * 
+		 * Variables:
+		 * ?svc -> service 
+		 * ?labelSvc -> service label
+		 * ?op -> operation
+		 * ?labelOp -> operation label
+		 * ?oc -> modelReference at the message level
+		 * ?ocp -> modelReference at the property level
+		 * ?suX -> the match is subsumes on the class #X
+		 * ?plX -> the match is plugin on the class #X
+		 * ?exX -> the match is exact on the class #X
+		 * 
+		 */
+		
+		StringBuffer query = new StringBuffer();
+		query.append("prefix wl: <" + MSM.WL_NS_URI + ">" + NL);
+		query.append("prefix sawsdl: <" + MSM.SAWSDL_NS_URI + ">" + NL);
+		query.append("prefix msm: <" + MSM.NS_URI + ">" + NL);  
+		query.append("prefix rdfs: <" + RDFS.NAMESPACE + ">" + NL);
+		query.append("prefix rdf: <" + RDF.NAMESPACE + ">" + NL);
+		query.append("select ?svc ?labelSvc ?op ?labelOp ?oc ?ocp ");
+		
+		for (int i = 0; i < classes.size(); i++) {
+			query.append("?su" + i + " ?pl" + i + " ?ex" + i + " ");
+		}
+		query.append(NL);
+		
+		query.append("where {" + NL);
+		query.append("  ?svc a msm:Service ; msm:hasOperation ?op ." + NL);
+		query.append("  ?op msm:hasOutput ?omsg ." + NL);
+		query.append("  ?omsg msm:hasPartTransitive ?out ." + NL); 		// TODO: Ensure that hasPartTransitive is properly defined in the latest MSM version
+		query.append("  OPTIONAL { ?omsg sawsdl:modelReference ?oc } " + NL); // Reference at the message level
+		query.append("  OPTIONAL { ?out sawsdl:modelReference ?oc } " + NL);  // Reference at the message part level   
+		query.append("  OPTIONAL { ?out sawsdl:modelReference ?prop . " + NL); // Reference to properties of the type
+		query.append("    ?prop rdfs:range ?ocp . }" + NL);
+		query.append("  OPTIONAL { ?svc rdfs:label ?labelSvc }" + NL);  
+		query.append("  OPTIONAL { ?op rdfs:label ?labelOp }" + NL);  
+		
+		for (int i = 0; i < classes.size(); i++) {
+			query.append("  OPTIONAL {" + NL);
+			query.append("    ?oc rdfs:subClassOf <"
+					+ classes.get(i).replace(">", "%3e") + "> ; ?su" + i + " <"
+					+ classes.get(i).replace(">", "%3e") + "> ." + NL + "  }" + NL);
+			
+			query.append("  OPTIONAL {" + NL);
+			query.append("    <" + classes.get(i).replace(">", "%3e")
+					+ "> rdfs:subClassOf ?oc ; ?pl" + i + " ?oc ." + NL + "  }" + NL);
+			
+			query.append("  OPTIONAL {" + NL);
+			query.append("    ?out sawsdl:modelReference <"
+					+ classes.get(i).replace(">", "%3e") + "> ; ?ex" + i + " <"
+					+ classes.get(i).replace(">", "%3e") + "> ." + NL + "  }" + NL);
+		}
+		// Take into account annotations to properties of the type
+		for (int i = 0; i < classes.size(); i++) {
+			query.append("  OPTIONAL {" + NL);
+			query.append("    ?ocp rdfs:subClassOf <"
+					+ classes.get(i).replace(">", "%3e") + "> ; ?su" + i + " <"
+					+ classes.get(i).replace(">", "%3e") + "> ." + NL + "  }" + NL);
+			
+			query.append("  OPTIONAL {" + NL);
+			query.append("    <" + classes.get(i).replace(">", "%3e")
+					+ "> rdfs:subClassOf ?ocp ; ?pl" + i + " ?ocp ." + NL + "  }" + NL);
+			
+			query.append("  OPTIONAL {" + NL);
+			query.append("    ?ocp rdfs:subClassOf <"
+					+ classes.get(i).replace(">", "%3e") + "> ."
+					+ "<" + classes.get(i).replace(">", "%3e") + "> rdfs:subClassOf ?ocp ;"
+					+ " ?ex" + i + " <"
+					+ classes.get(i).replace(">", "%3e") + "> ." + NL + "  }" + NL);
 		}
 		query.append("}");
 		return query.toString();

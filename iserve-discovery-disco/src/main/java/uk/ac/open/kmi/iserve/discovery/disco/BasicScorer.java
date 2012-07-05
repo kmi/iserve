@@ -16,45 +16,61 @@
 package uk.ac.open.kmi.iserve.discovery.disco;
 
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
-import uk.ac.open.kmi.iserve.discovery.api.MatchScorer;
+
+import com.google.common.base.Function;
 
 /**
  * Class Description
  * 
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
-public class BasicScorer implements MatchScorer {
+public class BasicScorer implements Function<MatchResult, MatchResult> {
 
 	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.discovery.api.MatchScorer#computeScore(uk.ac.open.kmi.iserve.discovery.api.MatchResult)
+	 * @see com.google.common.base.Function#apply(java.lang.Object)
 	 */
 	@Override
-	public float computeScore(MatchResult match) {
+	public MatchResult apply(MatchResult input) {
+		if (input == null) {
+			return null;
+		} else {
 
-		if (match == null) {
-			return Float.MAX_VALUE;
-		}
-
-		if (match instanceof SimpleMatchResult) {
-			MatchType matchType = ((SimpleMatchResult) match).getMatchType();
-
-			switch (matchType) {
-			// Scoring for FC
-			case EXACT:
-				return 0;
-
-			case SSSOG:
-				return 1;
-
-			case GSSOS:
-				return 2;
-
-			default:
-				return Float.MAX_VALUE;
+			if (input instanceof MatchResultImpl) {
+				MatchType matchType = ((MatchResultImpl) input).getMatchType();
+	
+				switch (matchType) {
+				// Scoring by basic type of match
+				case EXACT:
+					input.setScore(Float.valueOf(0));
+					break;
+	
+				case PLUGIN:
+					input.setScore(Float.valueOf(1));
+					break;
+	
+				case SUBSUME:
+					input.setScore(Float.valueOf(2));
+					break;
+	
+				default:
+					input.setScore(Float.MAX_VALUE);
+				}
+			} else if (input instanceof CompositeMatchResultImpl) {
+				CompositeMatchResultImpl composit = (CompositeMatchResultImpl) input;
+				Float score = (float) 0;
+				for (MatchResult innerMatch : composit.getInnerMatches()) {
+					Float innerScore = innerMatch.getScore();
+					if (innerScore == null) {
+						this.apply(innerMatch);
+						innerScore = innerMatch.getScore();
+					}
+					// TODO; Carry out a proper calculation here
+					score += innerScore;
+				}
+				composit.setScore(score);
 			}
 		}
-		return Float.MAX_VALUE;
-
+		return input;
 	}
 
 }

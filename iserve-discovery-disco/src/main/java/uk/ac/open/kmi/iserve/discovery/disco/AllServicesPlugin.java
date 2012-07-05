@@ -25,6 +25,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
+import org.ontoware.aifbcommons.collection.ClosableIterator;
 import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.QueryRow;
 import org.ontoware.rdf2go.model.node.BlankNode;
@@ -165,14 +166,32 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDisco
 		log.info("Querying the backend: " + query);
 
 		RepositoryModel repoModel = null;
+		ClosableIterator<QueryRow> it = null;
 		// Query and process the results
 		try {
 			repoModel = serviceConnector.openRepositoryModel();
 			QueryResultTable qresult = repoModel.querySelect(query.toString(), "sparql");
-			for (Iterator<QueryRow> it = qresult.iterator(); it.hasNext();) {
+			it = qresult.iterator();
+			while (it.hasNext()) {
 				QueryRow row = it.next();
-				MatchResult match = Util.createMatchResult(row, operationDiscovery, MatchType.EXACT);
-				match.setScore(0);
+				URL matchUrl;
+				String matchLabel;
+				
+				if (operationDiscovery) {
+					matchUrl = Util.getOperationUrl(row);
+					matchLabel = Util.getOperationLabel(row);
+				} else {
+					matchUrl = Util.getServiceUrl(row);
+					matchLabel = Util.getServiceLabel(row);
+				}
+				// Only continue processing if the match exists
+				if (matchUrl == null) {
+					break;
+				}
+				// Create a match result 
+				MatchResultImpl match = new MatchResultImpl(matchUrl, matchLabel);
+				match.setMatchType(MatchType.EXACT);
+				match.setScore(Float.valueOf(0));
 				// TODO: Add these
 				// match.setEngineUrl(engineUrl);
 				// match.setRequest(request);
@@ -182,6 +201,7 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDisco
 		} catch (ClassCastException e) {
 			log.error("Error casting resource", e);
 		} finally {
+			it.close();
 			serviceConnector.closeRepositoryModel(repoModel);
 		}
 		

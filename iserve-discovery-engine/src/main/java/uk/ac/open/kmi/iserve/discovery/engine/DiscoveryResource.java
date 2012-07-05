@@ -57,10 +57,12 @@ import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.AllServicesPlugin;
+import uk.ac.open.kmi.iserve.discovery.disco.BasicScorer;
 import uk.ac.open.kmi.iserve.discovery.disco.EntryComparatorClassificationMatching;
 import uk.ac.open.kmi.iserve.discovery.disco.RDFSClassificationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.RDFSInputOutputDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
+import uk.ac.open.kmi.iserve.discovery.util.MatchComparator;
 
 /**
  * Resource providing access to the discovery infrastructure.
@@ -276,7 +278,7 @@ public class DiscoveryResource {
 			"' is not available for service discovery.");
 		}
 
-		long startTime = System.nanoTime();
+		long startTime = System.currentTimeMillis();
 		long endTime;	
 		long duration;
 		
@@ -288,26 +290,34 @@ public class DiscoveryResource {
 			throw new WebApplicationException(e, e.getStatus());
 		}
 
-		endTime = System.nanoTime();
+		endTime = System.currentTimeMillis();
 		duration = endTime - startTime;
 		log.info("Time elapsed during discovery: " + duration );
 		
-		startTime = System.nanoTime();
+		startTime = System.currentTimeMillis();
 		
 		Map<URL, MatchResult> rankedResults = rank(matchingResults);
 		
-		endTime = System.nanoTime();
+		endTime = System.currentTimeMillis();
 		duration = endTime - startTime;
 		log.info("Time elapsed during ranking: " + duration );
 		
 		// Generate feed out of the ranked list of matches
+		startTime = System.currentTimeMillis();
+		
 		Feed feed = generateFeed(rankedResults, plugin);
+		
+		endTime = System.currentTimeMillis();
+		duration = endTime - startTime;
+		log.info("Time elapsed generating the feed: " + duration );
+		
 		return Response.ok(feed).build();
 	}
 
 	/**
 	 * Primitive Ranker
 	 * TODO: Move out to its place as a configurable ranking engine
+	 * in terms of both scoring and ordering functions
 	 * 
 	 * @param matchingResults
 	 * @return
@@ -327,7 +337,7 @@ public class DiscoveryResource {
 
 		// Order the results by score and then by url
 		Ordering<Map.Entry<URL, MatchResult>> entryOrdering = 
-			Ordering.from(MatchComparator.BY_SCORE).onResultOf(getMatchResult)
+			Ordering.from(MatchComparator.BY_SCORE).onResultOf(new BasicScorer()).onResultOf(getMatchResult)
 			.compound(Ordering.from(MatchComparator.BY_URL).onResultOf(getMatchResult));
 		
 		// Same version but reverse ordering
@@ -366,7 +376,6 @@ public class DiscoveryResource {
 		}
 
 		int numResults = matchingResults.size();
-		log.info("Results obtained: " + numResults);
 		log.debug(matchingResults.keySet().toString());
 
 		Set<Entry<URL, MatchResult>> entries = matchingResults.entrySet();

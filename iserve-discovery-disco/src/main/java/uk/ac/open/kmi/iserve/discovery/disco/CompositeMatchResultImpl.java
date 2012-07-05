@@ -1,8 +1,3 @@
-package uk.ac.open.kmi.iserve.discovery.disco;
-import java.net.URL;
-
-import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
-
 /*
    Copyright 2012  Knowledge Media Institute - The Open University
 
@@ -17,45 +12,59 @@ import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */
+*/
+package uk.ac.open.kmi.iserve.discovery.disco;
+
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
+
+import uk.ac.open.kmi.iserve.discovery.api.CompositeMatchResult;
+import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 
 /**
  * Class Description
  * 
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
-public class SimpleMatchResult implements MatchResult {
+public class CompositeMatchResultImpl implements CompositeMatchResult {
 
 	private URL matchUrl;
 	private String matchLabel;
 	private MatchType matchType;
-	private Float score = Float.MAX_VALUE;
+	private Float score;
 	private URL request;
 	private URL engineUrl;
-	
+	private Set<MatchResult> innerMatches = new HashSet<MatchResult>();
 	
 	
 	/**
+	 * Constructor 
+	 * 
 	 * @param url
 	 * @param label
 	 * @param matchType
 	 */
-	public SimpleMatchResult(URL url, String label) {
+	public CompositeMatchResultImpl(URL url, String label) {
 		super();
 		this.matchUrl = url;
 		this.matchLabel = label;
 	}
 	
 	/**
+	 * Constructor
+	 * 
 	 * @param matchUrl
 	 * @param matchLabel
 	 * @param matchType
 	 * @param score
 	 * @param request
 	 * @param engineUrl
+	 * @param innerMatches
 	 */
-	public SimpleMatchResult(URL matchUrl, String matchLabel,
-			MatchType matchType, float score, URL request, URL engineUrl) {
+	public CompositeMatchResultImpl(URL matchUrl, String matchLabel,
+			MatchType matchType, Float score, URL request, URL engineUrl, 
+			Set<MatchResult> innerMatches) {
 		super();
 		this.matchUrl = matchUrl;
 		this.matchLabel = matchLabel;
@@ -63,8 +72,35 @@ public class SimpleMatchResult implements MatchResult {
 		this.score = score;
 		this.request = request;
 		this.engineUrl = engineUrl;
+		this.innerMatches = innerMatches;
 	}
 	
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.CompositeMatchResult#addInnerMatch(uk.ac.open.kmi.iserve.discovery.api.MatchResult)
+	 */
+	public void addInnerMatch(MatchResult innerMatch) {
+		if (innerMatch != null) {
+			this.innerMatches.add(innerMatch);
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.CompositeMatchResult#setInnerMatches(java.util.Set)
+	 */
+	public void setInnerMatches(Set<MatchResult> innerMatches) {
+		if (innerMatches != null) {
+			this.innerMatches = innerMatches;
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.CompositeMatchResult#removeInnerMatch(uk.ac.open.kmi.iserve.discovery.api.MatchResult)
+	 */
+	public void removeInnerMatch(MatchResult innerMatch) {
+		if (innerMatch != null) {
+			this.innerMatches.remove(innerMatch);
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see MatchResult#getMatchUrl()
@@ -112,8 +148,13 @@ public class SimpleMatchResult implements MatchResult {
 	 * @see MatchResult#getExplanation()
 	 */
 	public String getExplanation() {
-		return this.matchType.getLongName() + " match with a score of: " +
-			this.score;
+		StringBuffer result = new StringBuffer();
+		result.append("Composite Match of type: " + this.matchType.getShortName() + Util.NL);
+		result.append("Total Score: " + this.getScore() + Util.NL); 
+		for (MatchResult match : innerMatches) {
+			result.append("Inner match - " + match.getExplanation() + Util.NL);
+		}
+		return result.toString();
 	}
 
 	/* (non-Javadoc)
@@ -144,6 +185,14 @@ public class SimpleMatchResult implements MatchResult {
 	@Override
 	public void setEngineUrl(URL engineUrl) {
 		this.engineUrl = engineUrl;
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.CompositeMatchResult#getInnerMatches()
+	 */
+	@Override
+	public Set<MatchResult> getInnerMatches() {
+		return this.innerMatches;
 	}
 
 }
