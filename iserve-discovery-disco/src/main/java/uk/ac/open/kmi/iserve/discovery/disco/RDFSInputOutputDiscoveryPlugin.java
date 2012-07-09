@@ -16,6 +16,7 @@
 package uk.ac.open.kmi.iserve.discovery.disco;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -47,7 +48,6 @@ import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 
 public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, OperationDiscoveryPlugin {
 	
@@ -240,9 +240,14 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 		Map<URL, MatchResult> results = null;
 		Map<URL, MatchResult> inputMatches = null;
 		Map<URL, MatchResult> outputMatches = null;
+		
+		// TESTS
+		Map<URL, MatchResult> inputMatchesAlt = null;
 
 		if (matchingInputs) {
 			inputMatches = matchInputs(operationDiscovery, inputClasses);
+			
+			inputMatchesAlt = matchInputsAlternative(operationDiscovery, inputClasses);
 		}
 		
 		if (matchingOutputs) {
@@ -278,8 +283,6 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 
 	/**
 	 * Match Services and Operations inputs given the classes requested
-	 * 
-	 * TODO: The current query generated takes way too long
 	 * 
 	 * 
 	 * algorithm for inputs (how it was and should be, not necessarily how it is):
@@ -361,7 +364,15 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 					
 					// Create an inner match  if there is some match relationship
 					// We don't keep track of the fail matches within the composite
-					MatchType matchType = Util.getMatchType(isSubsume, isPlugin);
+					MatchType matchType = null;
+					if (isExact) {
+						matchType = MatchType.EXACT;
+					} else if (isPlugin) {
+						matchType = MatchType.PLUGIN;
+					} else if (isSubsume) {
+						matchType = MatchType.SUBSUME;
+					}
+					
 					if (matchType == null) {
 						log.warn("Skipping result as the Match Type is null");
 						break;
@@ -404,8 +415,132 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 				
 				
 		} finally {
-			it.close();
-			serviceConnector.closeRepositoryModel(repoModel);
+			if (it != null)
+				it.close();
+			if (serviceConnector != null)
+				serviceConnector.closeRepositoryModel(repoModel);
+		}
+
+		log.info("Returning " + results.size() + " discovery results.");
+		return results;
+	}
+	
+	
+	// REMOVE, ONLY FOR TESTS
+	private Map<URL, MatchResult> matchInputsAlternative(boolean operationDiscovery, List<String> classes) throws DiscoveryException {
+
+		Map<URL, MatchResult> results = new HashMap<URL, MatchResult>();
+		// Return immediately if there is nothing to discover
+		if (classes == null || classes.isEmpty()) {
+			return results;
+		}
+		
+		RepositoryModel repoModel = null;
+		ClosableIterator<QueryRow> it = null;
+		
+		String query = generateInputsQueryAlternative(classes);
+		log.info("Input matching query: " + NL + query);
+
+		try {
+			repoModel = serviceConnector.openRepositoryModel();
+			// TODO: Remove profiling
+			long startTime = System.currentTimeMillis();
+			
+			QueryResultTable qresult = repoModel.querySelect(query, "sparql");
+			
+			// TODO: Remove profiling
+			long endTime = System.currentTimeMillis();
+			long duration = endTime - startTime;
+			log.info("Time taken for querying the registry: " + duration);
+			
+			it = qresult.iterator();
+			// Iterate over the results obtained
+			while (it.hasNext()) {
+				QueryRow row = it.next();
+				
+				URL matchUrl = Util.getMatchUrl(row, operationDiscovery);
+				// Only continue processing if the match exists
+				if (matchUrl == null) {
+					log.warn("Skipping result as the URL is null");
+					break;
+				}
+				
+				String matchLabel = Util.getOrGenerateMatchLabel(row, operationDiscovery);
+	
+				boolean isExact = false;
+				boolean isPlugin = false;
+				boolean isSubsume = false;
+				// Keep track of the best and worst match for the aggregated 
+				// match type
+				MatchType worstMatch = MatchType.EXACT;
+				MatchType bestMatch = MatchType.FAIL;
+				
+				// Create an inner match per class matched
+				// The overall match will be determined by the best and worst match
+				Set<MatchResult> innerMatches = new HashSet<MatchResult>();
+	
+				for (int i = 0; i < classes.size(); i++) {
+					isExact = Util.isVariableSet(row, "ex" + i); // TODO: We probably can skip this
+					isSubsume = Util.isVariableSet(row, "su" + i);
+					isPlugin = Util.isVariableSet(row, "pl" + i);
+					
+					// Create an inner match  if there is some match relationship
+					// We don't keep track of the fail matches within the composite
+					MatchType matchType = null;
+					if (isExact) {
+						matchType = MatchType.EXACT;
+					} else if (isPlugin) {
+						matchType = MatchType.PLUGIN;
+					} else if (isSubsume) {
+						matchType = MatchType.SUBSUME;
+					}
+					
+					if (matchType == null) {
+						log.warn("Skipping result as the Match Type is null");
+						break;
+					}
+					
+					if (matchType != MatchType.FAIL) { 
+						MatchResultImpl innerMatch = new MatchResultImpl(matchUrl, matchLabel);
+						innerMatch.setMatchType(matchType);
+						innerMatches.add(innerMatch);
+						log.debug("Adding inner match for " + 
+								innerMatch.getMatchUrl() + " of type " + 
+								innerMatch.getMatchType().getShortName());
+					}
+					
+					if (matchType.compareTo(bestMatch) > 0) {
+						bestMatch = matchType;
+					}
+					
+					if (matchType.compareTo(worstMatch) < 0) {
+						worstMatch = matchType;
+					}
+				}
+				
+				if (!innerMatches.isEmpty()) {
+					// The service has some match. Add it
+					MatchType aggregatedType = Util.calculateCompositeMatchType(bestMatch, worstMatch);
+					CompositeMatchResultImpl compositeMatch = new CompositeMatchResultImpl(matchUrl, matchLabel);
+					compositeMatch.setInnerMatches(innerMatches);
+					compositeMatch.setMatchType(aggregatedType);
+					
+					// TODO: Ensure we take care of several rows of results 
+					// for the same match (i.e., several ops for the service)
+					results.put(compositeMatch.getMatchUrl(), compositeMatch);
+					
+					log.debug("Adding Match for " + 
+							compositeMatch.getMatchUrl() + " of type " + 
+							compositeMatch.getMatchType().getShortName());
+				}
+			}
+				
+				
+		} finally {
+			if (it != null)
+				it.close();
+			if (serviceConnector != null)
+				serviceConnector.closeRepositoryModel(repoModel);
 		}
 
 		log.info("Returning " + results.size() + " discovery results.");
@@ -544,16 +679,26 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 	}
 	
 	/**
-	 * Generates a discovery query taken into account the given relationship
-	 * between the operation and the classes identified.
+	 * Generates a discovery query that retrieves all the matches between service
+	 * operations inputs (and parts thereof) and the classes passed as a parameter.
+	 * Each of the rows will provide 3 different matches:
+	 * - Exact (?exX has a value) if the class was matched perfectly
+	 * - Plugin (?plX has a value) if a subclass was found
+	 * - Subsume (?suX has a value) if a superclass was found
+	 * 
+	 * The query is based on UNION statements rather than OPTIONAL ones for 
+	 * performance reasons. The patterns are more restrictive which help us 
+	 * reduce the querying time in more than 90% based on some initial tests.
+	 * Additionally only the matching results are returned which reduces
+	 * post-processing time.
 	 * 
 	 * The resulting query will bind the results to the following variables:
-	 * ?svc -> service 
+	 * ?svc -> service that matches
 	 * ?labelSvc -> service label
-	 * ?op -> operation
+	 * ?op -> operation that matches
 	 * ?labelOp -> operation label
-	 * ?ic -> modelReference at the message level
-	 * ?icp -> modelReference at the property level
+	 * ?prop -> the property that matches
+	 * ?ic -> the class of the modelReference 
 	 * ?suX -> the match is subsumes on the class #X
 	 * ?plX -> the match is plugin on the class #X
 	 * ?exX -> the match is exact on the class #X
@@ -562,77 +707,113 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 	 * @return the SPARQL query
 	 */
 	private String generateInputsQuery(List<String> classes) {
-		// 1 exact match, 2 plugin goal inputs subclasses of service inputs, 3
-		// subsume service inputs subclasses of goal inputs, 4 partial plugin, 5
-		// partial subsume:
-		// 1 find services that have all the goal classes
-		// 2 find services that have a subclass of each of the goal classes
-		// 3 find services that have a superclass of each of the goal classes
-		// 4 find services that have a subclass for any of the goal classes
-		// 5 find services that have a superclass for any of the goal classes
-		// in the query, ?exX is exact annotation, ?cpX is annotation class for
-		// plugin, ?csX is annotation class for subsume
 		
 		StringBuffer query = new StringBuffer();
-		query.append("prefix wl: <" + MSM.WL_NS_URI + ">" + NL);
-		query.append("prefix sawsdl: <" + MSM.SAWSDL_NS_URI + ">" + NL);
-		query.append("prefix msm: <" + MSM.NS_URI + ">" + NL);  
-		query.append("prefix rdfs: <" + RDFS.NAMESPACE + ">" + NL);
-		query.append("prefix rdf: <" + RDF.NAMESPACE + ">" + NL);
-		query.append("select ?svc ?labelSvc ?op ?labelOp ?ic ?icp ");
-		
-		for (int i = 0; i < classes.size(); i++) {
-			query.append("?su" + i + " ?pl" + i + " ?ex" + i + " ");
-		}
+		query.append(Util.generateQueryPrefix());
+		query.append("select * "); // Obtain every variable for further details
 		query.append(NL);
 		
 		query.append("where {" + NL);
 		query.append("  ?svc a msm:Service ; msm:hasOperation ?op ." + NL);
 		query.append("  ?op msm:hasInput ?imsg ." + NL);
-		query.append("  ?imsg msm:hasPartTransitive ?i ." + NL); 		// TODO: Ensure that hasPartTransitive is properly defined in the latest MSM version
-		query.append("  OPTIONAL { ?imsg sawsdl:modelReference ?ic } " + NL); // Reference at the message level
-		query.append("  OPTIONAL { ?i sawsdl:modelReference ?ic } " + NL);  // Reference at the message part level   
-		query.append("  OPTIONAL { ?i sawsdl:modelReference ?prop . " + NL); // Reference to properties of the type    
-		query.append("    ?prop rdfs:range ?icp . } " + NL);
-		query.append("  OPTIONAL { ?svc rdfs:label ?labelSvc }" + NL);  
-		query.append("  OPTIONAL { ?op rdfs:label ?labelOp }" + NL);  
 		
+		// Bind ?ic to modelReferences at one of the possible levels
+		// 1) Input, 2) Part of the Input, 3) Part of the Input through a property
+		// Each option is bound with UNION statements for performance and to 
+		// ensure that at least one of the options is bound
+
+		// Reference at the message level
+		query.append("  { ?imsg sawsdl:modelReference ?ic } " + NL);
+		
+		// Reference at the level of Parts
+		// The following statement requires MSM v2 at least
+		// Can be replaced with variable length paths in SPARQL 1.1.
+		query.append("  UNION { ?imsg msm:hasPartTransitive ?i ." + NL);
+		query.append("  ?i sawsdl:modelReference ?ic } " + NL); 
+		
+		// Reference at the level of Parts through a property
+		query.append("  UNION { ?imsg msm:hasPartTransitive ?i ." + NL);
+		query.append("  ?i sawsdl:modelReference ?prop . " + NL);   
+		query.append("  ?prop rdfs:range ?ic . } " + NL);
+		
+		List<String> patterns = new ArrayList<String>();	
 		for (int i = 0; i < classes.size(); i++) {
-			query.append("  OPTIONAL {" + NL);
-			query.append("    ?ic rdfs:subClassOf <"
-					+ classes.get(i).replace(">", "%3e") + "> ; ?su" + i + " <"
-					+ classes.get(i).replace(">", "%3e") + "> ." + NL + "  }" + NL);
+			String currClass = classes.get(i).replace(">", "%3e");
 			
-			query.append("  OPTIONAL {" + NL);
-			query.append("    <" + classes.get(i).replace(">", "%3e")
-					+ "> rdfs:subClassOf ?ic ; ?pl" + i + " ?ic ." + NL + "  }" + NL);
-			
-			query.append("  OPTIONAL {" + NL);
-			query.append("    ?i sawsdl:modelReference <"
-					+ classes.get(i).replace(">", "%3e") + "> ; ?ex" + i + " <"
-					+ classes.get(i).replace(">", "%3e") + "> ." + NL + "  }" + NL);
+			// Match the modelRef of the input to strict subclasses of the class
+			patterns.add(Util.generateMatchStrictSubclassesPattern("ic", currClass, "su"+i));
+			// Match the modelRef of the input to strict superclasses of the class
+			patterns.add(Util.generateMatchStrictSuperclassesPattern("ic", currClass, "pl"+i));
+			// Match the modelRef of the input to exact matches for the class
+			patterns.add(Util.generateExactMatchPattern("ic", currClass, "ex" + i));
 		}
-		// Take into account annotations to properties of the type
-		for (int i = 0; i < classes.size(); i++) {
-			query.append("  OPTIONAL {" + NL);
-			query.append("    ?icp rdfs:subClassOf <"
-					+ classes.get(i).replace(">", "%3e") + "> ; ?su" + i + " <"
-					+ classes.get(i).replace(">", "%3e") + "> ." + NL + "  }" + NL);
-			
-			query.append("  OPTIONAL {" + NL);
-			query.append("    <" + classes.get(i).replace(">", "%3e")
-					+ "> rdfs:subClassOf ?icp ; ?pl" + i + " ?icp ." + NL + "  }" + NL);
-			
-			query.append("  OPTIONAL {" + NL);
-			query.append("    ?icp rdfs:subClassOf <"
-					+ classes.get(i).replace(">", "%3e") + "> ."
-					+ "<" + classes.get(i).replace(">", "%3e") + "> rdfs:subClassOf ?icp ;"
-					+ " ?ex" + i + " <"
-					+ classes.get(i).replace(">", "%3e") + "> ." + NL + "  }" + NL);
-		}
+		
+		query.append(Util.generateUnionStatement(patterns));
+		
+		// Obtain labels is they exist
+		query.append("  OPTIONAL {" + Util.generateLabelPattern("svc", "labelSvc") + "}" + NL);  
+		query.append("  OPTIONAL {" + Util.generateLabelPattern("op", "labelOp") + "}" + NL);
+		
 		query.append("}");
 		return query.toString();
 	}
+	
+	private String generateInputsQueryAlternative(List<String> classes) {
+		
+		StringBuffer query = new StringBuffer();
+		query.append(Util.generateQueryPrefix());
+		query.append("select ?svc ?op (GROUP_CONCAT(DISTINCT ?labelSvc; separator = \",\") as ?sLabel) (GROUP_CONCAT(DISTINCT ?labelOp; separator = \",\") as ?oLabel) "); // Obtain every variable for further details
+		for (int i = 0; i < classes.size(); i++) {
+			query.append(" (COUNT (?su" + i +") as ?nsu" + i +") (COUNT (?pl" + i +") as ?npl" + i +") (COUNT (?ex" + i +") as ?nex" + i +") ");
+		}
+		
+		query.append(NL);
+		
+		query.append("where {" + NL);
+		query.append("  ?svc a msm:Service ; msm:hasOperation ?op ." + NL);
+		query.append("  ?op msm:hasInput ?imsg ." + NL);
+		
+		// Bind ?ic to modelReferences at one of the possible levels
+		// 1) Input, 2) Part of the Input, 3) Part of the Input through a property
+		// Each option is bound with UNION statements for performance and to 
+		// ensure that at least one of the options is bound
+
+		// Reference at the message level
+		query.append("  { ?imsg sawsdl:modelReference ?ic } " + NL);
+		
+		// Reference at the level of Parts
+		// The following statement requires MSM v2 at least
+		// Can be replaced with variable length paths in SPARQL 1.1.
+		query.append("  UNION { ?imsg msm:hasPartTransitive ?i ." + NL);
+		query.append("  ?i sawsdl:modelReference ?ic } " + NL); 
+		
+		// Reference at the level of Parts through a property
+		query.append("  UNION { ?imsg msm:hasPartTransitive ?i ." + NL);
+		query.append("  ?i sawsdl:modelReference ?prop . " + NL);   
+		query.append("  ?prop rdfs:range ?ic . } " + NL);
+		
+		List<String> patterns = new ArrayList<String>();	
+		for (int i = 0; i < classes.size(); i++) {
+			String currClass = classes.get(i).replace(">", "%3e");
+			
+			// Match the modelRef of the input to strict subclasses of the class
+			patterns.add(Util.generateMatchStrictSubclassesPattern("ic", currClass, "su"+i));
+			// Match the modelRef of the input to strict superclasses of the class
+			patterns.add(Util.generateMatchStrictSuperclassesPattern("ic", currClass, "pl"+i));
+			// Match the modelRef of the input to exact matches for the class
+			patterns.add(Util.generateExactMatchPattern("ic", currClass, "ex" + i));
+		}
+		
+		query.append(Util.generateUnionStatement(patterns));
+		
+		// Obtain labels is they exist
+		query.append("  OPTIONAL {" + Util.generateLabelPattern("svc", "labelSvc") + "}" + NL);  
+		query.append("  OPTIONAL {" + Util.generateLabelPattern("op", "labelOp") + "}" + NL);
+		
+		query.append("} GROUP BY ?svc ?op");
+		return query.toString();
+	}
+	
 	
 	/**
 	 * Generate the SPARQL Query for obtaining the matches at the outputs level.
@@ -705,8 +886,9 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 		query.append("  OPTIONAL { ?out sawsdl:modelReference ?oc } " + NL);  // Reference at the message part level   
 		query.append("  OPTIONAL { ?out sawsdl:modelReference ?prop . " + NL); // Reference to properties of the type
 		query.append("    ?prop rdfs:range ?ocp . }" + NL);
-		query.append("  OPTIONAL { ?svc rdfs:label ?labelSvc }" + NL);  
-		query.append("  OPTIONAL { ?op rdfs:label ?labelOp }" + NL);  
+		
+		query.append("  OPTIONAL {" + Util.generateLabelPattern("svc", "labelSvc") + "}" + NL);  
+		query.append("  OPTIONAL {" + Util.generateLabelPattern("op", "labelOp") + "}" + NL); 
 		
 		for (int i = 0; i < classes.size(); i++) {
 			query.append("  OPTIONAL {" + NL);

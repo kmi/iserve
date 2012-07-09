@@ -19,8 +19,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.abdera.Abdera;
 
-import uk.ac.open.kmi.iserve.commons.io.URIUtil;
-
 /**
  * Class Description
  * 
@@ -53,7 +51,5 @@ public class DiscoveryUtil {
       if (abdera == null) abdera = new Abdera();
       return abdera;
     }
-    
-
     
 }

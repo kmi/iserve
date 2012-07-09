@@ -19,12 +19,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.TreeSet;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.SortedSet;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -40,16 +37,10 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 
-import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Feed;
 import org.openrdf.repository.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Ordering;
-import com.sun.jersey.api.NotFoundException;
 
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin;
@@ -58,11 +49,15 @@ import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.AllServicesPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.BasicScorer;
-import uk.ac.open.kmi.iserve.discovery.disco.EntryComparatorClassificationMatching;
 import uk.ac.open.kmi.iserve.discovery.disco.RDFSClassificationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.RDFSInputOutputDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
 import uk.ac.open.kmi.iserve.discovery.util.MatchComparator;
+
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Ordering;
+import com.sun.jersey.api.NotFoundException;
 
 /**
  * Resource providing access to the discovery infrastructure.

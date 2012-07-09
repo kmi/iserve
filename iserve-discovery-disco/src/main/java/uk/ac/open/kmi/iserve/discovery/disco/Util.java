@@ -17,10 +17,14 @@ package uk.ac.open.kmi.iserve.discovery.disco;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.ontoware.rdf2go.model.QueryRow;
 import org.ontoware.rdf2go.model.node.BlankNode;
 import org.ontoware.rdf2go.model.node.Node;
+import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +32,10 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.URIUtil;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
-import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
+
+import com.google.common.collect.MapDifference;
+import com.google.common.collect.MapDifference.ValueDifference;
+import com.google.common.collect.Maps;
 
 /**
  * Class Description
@@ -37,6 +44,26 @@ import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
  */
 public class Util {
 	
+	/**
+	 * 
+	 */
+	private static final String RDF_PREFIX = "rdf";
+
+	/**
+	 * 
+	 */
+	private static final String RDFS_PREFIX = "rdfs";
+
+	/**
+	 * 
+	 */
+	private static final String SAWSDL_PREFIX = "sawsdl";
+
+	/**
+	 * 
+	 */
+	private static final String WSMO_LITE_PREFIX = "wl";
+
 	private static final Logger log = LoggerFactory.getLogger(Util.class);
 	
 	// Common variables used for querying the RDF repository
@@ -168,11 +195,157 @@ public class Util {
 		return false;
 	}
 	
+	/**
+	 * Add the used namespaces to the prefix to be used in SPARQL queries
+	 * 
+	 * @return
+	 */
 	public static String generateQueryPrefix() {
-		return "prefix msm: <" + MSM.NS_URI + ">" + NL +
-			"prefix rdfs: <" + RDFS.NAMESPACE + ">" + NL;
+		StringBuffer prefix = new StringBuffer();
+		prefix.append(generateNamespacePrefix(WSMO_LITE_PREFIX, MSM.WL_NS_URI));
+		prefix.append(generateNamespacePrefix(SAWSDL_PREFIX, MSM.SAWSDL_NS_URI));
+		prefix.append(generateNamespacePrefix(MSM.NS_PREFIX, MSM.NS_URI));
+		prefix.append(generateNamespacePrefix(RDFS_PREFIX, RDFS.NAMESPACE));
+		prefix.append(generateNamespacePrefix(RDF_PREFIX, RDF.NAMESPACE));
+		return prefix.toString();
 	}
 
+	/**
+	 * Create a namespace prefix line
+	 * 
+	 * @param prefix
+	 */
+	public static String generateNamespacePrefix(String abbrev, String namespace) {
+		return "prefix " + abbrev+ ": <" + namespace + ">" + NL;
+	}
+	
+	/**
+	 * Generate a pattern for binding to a label
+	 * 
+	 * @param var the name of the variable
+	 * @param labelVar the name of the label varible
+	 * @return
+	 */
+	public static String generateLabelPattern(String var, String labelVar) {
+		return "?" + var + " <" + RDFS.LABEL.toString() + "> ?" + labelVar + " . ";
+	}
+	
+	/**
+	 * Generate a patter for matching var to the subclasses of clazz
+	 * 
+	 * @param var
+	 * @return
+	 */
+	public static String generateSubclassPattern(String var, String clazz) {
+		return "?" + var + " <" + RDFS.SUBCLASSOF.toString() + "> <" + clazz.replace(">", "%3e") + "> .";
+	}
+	
+	/**
+	 * Generate a pattern for matching var to the superclasses of clazz
+	 * 
+	 * @param var
+	 * @return
+	 */
+	public static String generateSuperclassPattern(String var, String clazz) {
+		return "<" + clazz.replace(">", "%3e") + "> <" + RDFS.SUBCLASSOF.toString() + "> ?" + var + " .";
+	}
+
+	/**
+	 * Generates a UNION SPARQL statement for the patterns passed in the input 
+	 * 
+	 * @param patterns the patterns to make a UNION of
+	 * @return the UNION SPARQL statement
+	 */
+	public static String generateUnionStatement(List<String> patterns) {
+		// Check the input and exit immediately if null
+		if (patterns == null) {
+			return "";
+		}
+		
+		// This is a trivial UNION
+		if (patterns.size() == 1) {
+			return patterns.get(0);
+		}
+		
+		// General case
+		StringBuffer query = new StringBuffer();
+		// Add the first one as a special case and then loop over the rest
+		query.append("  {" + NL);
+		query.append(patterns.get(0));
+		query.append("  }" + NL);
+		
+		for (int i = 1; i < patterns.size(); i++) {
+			query.append("  UNION {" + NL);
+			query.append(patterns.get(i));
+			query.append("  }" + NL);
+		}
+		
+		return query.toString();
+	}
+
+	/**
+	 * Generate a pattern for obtaining the exact matches of a concept.
+	 * Basically we look for those that are subclasses and superclasses
+	 * Uses BIND -> Requires SPARQL 1.1
+	 * 
+	 * @param modelRefVar the model reference variable 
+	 * @param currClass the URL of the class we want to find exact matches for
+	 * @param bindingVar the name of the variable we will bind results to for 
+	 * ulterior inspection
+	 * @return the query pattern
+	 */
+	public static String generateExactMatchPattern(String modelRefVar, 
+			String currClass, String bindingVar) {
+		
+		StringBuffer query = new StringBuffer();
+		query.append(Util.generateSubclassPattern(modelRefVar, currClass) + NL);
+		query.append(Util.generateSuperclassPattern(modelRefVar, currClass) + NL);
+		// Bind a variable for inspection
+		query.append("BIND (true as ?" + bindingVar + ") ." + NL);  
+		return query.toString();
+	}
+
+
+	/**
+	 * Generate a pattern for obtaining the strict subclasses of a concept.
+	 * Uses BIND -> Requires SPARQL 1.1
+	 * 
+	 * @param modelRefVar the model reference variable 
+	 * @param currClass the URL of the class we want to find subclasses for
+	 * @param bindingVar the name of the variable we will bind results to for 
+	 * ulterior inspection
+	 * @return the query pattern
+	 */
+	public static String generateMatchStrictSubclassesPattern(String modelRefVar, 
+			String currClass, String bindingVar) {
+		StringBuffer query = new StringBuffer();		
+		query.append(Util.generateSubclassPattern(modelRefVar, currClass) + NL);
+		// Bind a variable for inspection
+		query.append("BIND (true as ?" + bindingVar + ") ." + NL);  
+		query.append("FILTER NOT EXISTS { " + Util.generateSuperclassPattern(modelRefVar, currClass) + "}" + NL);
+		return query.toString();
+	}
+	
+	/**
+	 * Generate a pattern for obtaining the strict superclasses of a concept.
+	 * Uses BIND -> Requires SPARQL 1.1
+	 * 
+	 * @param modelRefVar the model reference variable 
+	 * @param currClass the URL of the class we want to find superclasses for
+	 * @param bindingVar the name of the variable we will bind results to for 
+	 * ulterior inspection
+	 * @return the query pattern
+	 */
+	public static String generateMatchStrictSuperclassesPattern(String modelRefVar, 
+			String currClass, String bindingVar) {
+		StringBuffer query = new StringBuffer();		
+		query.append(Util.generateSuperclassPattern(modelRefVar, currClass) + NL);
+		// Bind a variable for inspection
+		query.append("BIND (true as ?" + bindingVar + ") ." + NL); 
+		query.append("FILTER NOT EXISTS { " + Util.generateSubclassPattern(modelRefVar, currClass) + "}" + NL);
+		return query.toString();
+	}
+	
 	/**
 	 * Given the match between concepts obtain the match type
 	 * 
@@ -346,6 +519,62 @@ public class Util {
 			result = svcLabel + "." + opLabel;
 		}
 		return result;
+	}
+	
+	/**
+	 * Given two sets of matches find out there differences
+	 * TODO: Probably useful for others. Place somewhere else.
+	 * The discovery-api module is an option but it forces to have guava as a
+	 * dependency, do we want to?
+	 * 
+	 * @param inputMatches
+	 * @param inputMatchesAlt
+	 */
+	public static void compareResults(Map<URL, MatchResult> inputMatches,
+			Map<URL, MatchResult> inputMatchesAlt) {
+		
+		MapDifference<URL,MatchResult> diff = Maps.difference(inputMatches, inputMatchesAlt);
+		System.out.println("Comparing Match Results Maps");
+		
+		Map<URL, MatchResult> common = diff.entriesInCommon();
+		System.out.println("Entries in common");
+		showMapDetails(common);
+		
+		Map<URL, MatchResult> onlyLeft = diff.entriesOnlyOnLeft();
+		System.out.println("Entries only in the left map");
+		showMapDetails(common);
+		
+		Map<URL, MatchResult> onlyRight = diff.entriesOnlyOnRight();
+		System.out.println("Entries only in the right map" );
+		showMapDetails(common);
+		
+		Map<URL, ValueDifference<MatchResult>> diffValues = diff.entriesDiffering();
+		System.out.println("Differing values");
+		for (Entry<URL, ValueDifference<MatchResult>> entry : diffValues.entrySet()) {
+			MatchResult resultLeft = entry.getValue().leftValue();
+			MatchResult resultRight = entry.getValue().rightValue();
+			
+			System.out.println("Match " + entry.getKey().toString());
+			System.out.println("Left value details: ");
+			System.out.println("Match score: " + resultLeft.getScore());
+			System.out.println("Match explanation: " + resultLeft.getExplanation());
+			
+			System.out.println("Right value details: ");
+			System.out.println("Match score: " + resultRight.getScore());
+			System.out.println("Match explanation: " + resultRight.getExplanation());
+		}
+		
+	}
+
+	/**
+	 * Expose the data within the map
+	 * 
+	 * @param map
+	 */
+	private static void showMapDetails(Map<URL, MatchResult> map) {
+		for (Entry<URL, MatchResult> entry : map.entrySet()) {
+			log.info("Match " + entry.getKey().toString() + NL);	
+		}
 	}
 	
 }
