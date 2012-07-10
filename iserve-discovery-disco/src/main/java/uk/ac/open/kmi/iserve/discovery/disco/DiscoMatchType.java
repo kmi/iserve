@@ -29,28 +29,16 @@ public enum DiscoMatchType implements MatchType {
 
 	// Increasing order of match
 	FAIL("Fail", "Fail", "There is no subsumption relationship between the concept present and the one required"),
-	PARTIAL_SUBSUME("In-Part-Subsume", "Input Partial Subsume", "The goal has a superclass of some service input class"),
-	PARTIAL_PLUGIN("In-Part-Plugin", "Input Partial Plugin", "The goal has a subclass of some service input class"),
+	PARTIAL_SUBSUME("Partial Subsume", "Partial Subsume", "The goal has a superclass of some service input class"),
+	PARTIAL_PLUGIN("Partial Plugin", "Partial Plugin", "The goal has a subclass of some service input class"),
 	SUBSUME("Subsume", "Subsume", "The concept present is a superclass of the one required"),
 	PLUGIN("Plugin", "Plugin", "The concept present is a subclass of the one required"),
-	EXACT("Exact", "Exact", ""),
+	EXACT("Exact", "Exact", "The concept is an exact match with that required"),
 	
 	// Functional Classification Match Types
 	SSSOG("SSSOG", "Service Subset of Goal", "For each goal class the service has a category that is a subclass of it"),
 	GSSOS("GSSOS", "Goal Subset of Service", "For each service category the goal asks for a subclass of it"),
 	INTER_DEGREE("Intersection", "Intersection", "There is a class that is a subclass of all goal classes and service categories"); // Not implemented	
-	
-	// Do we really need these?
-//	INPUT_EXACT("In-Exact", "Input Exact", "The goal has all the exact service input classes (but may have more)"),
-//	OUTPUT_EXACT("Out-Exact", "Output Exact", "The service has all the exact goal output classes (but may have more)" ),
-//	INPUT_PLUGIN("In-Plugin", "Input Plugin", "For each service input class the goal has a subclass of it"),
-//	OUTPUT_PLUGIN("Out-Plugin","Output Plugin", "For each goal output class the service has a subclass of it"),
-//	INPUT_SUBSUME("In-Subsume", "Input Subsume", "For each service input class the goal has a superclass of it"),
-//	OUTPUT_SUBSUME("Out-Subsume", "Output Subsume", "For each goal output class the service has a superclass of it" ),
-//	INPUT_PARTIAL_PLUGIN("In-Part-Plugin", "Input Partial Plugin", "The goal has a subclass of some service input class"),
-//	OUTPUT_PARTIAL_PLUGIN("Out-Part-Plugin", "Output Partial Plugin", "The service has a subclass of some goal output class"),
-//	INPUT_PARTIAL_SUBSUME("In-Part-Subsume", "Input Partial Subsume", "The goal has a superclass of some service input class"),
-//	OUTPUT_PARTIAL_SUBSUME("Out-Part-Subsume", "Output Partial Subsume", "The service has a superclass of some goal output class");
 	
 	private final String shortName;
 	private final String longName;

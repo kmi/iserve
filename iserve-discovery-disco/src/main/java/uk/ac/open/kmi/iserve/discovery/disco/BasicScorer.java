@@ -15,7 +15,9 @@
  */
 package uk.ac.open.kmi.iserve.discovery.disco;
 
+import uk.ac.open.kmi.iserve.discovery.api.CompositeMatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
+import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 
 import com.google.common.base.Function;
 
@@ -35,29 +37,9 @@ public class BasicScorer implements Function<MatchResult, MatchResult> {
 			return null;
 		} else {
 
-			if (input instanceof MatchResultImpl) {
-				MatchType matchType = ((MatchResultImpl) input).getMatchType();
-	
-				switch (matchType) {
-				// Scoring by basic type of match
-				case EXACT:
-					input.setScore(Float.valueOf(0));
-					break;
-	
-				case PLUGIN:
-					input.setScore(Float.valueOf(1));
-					break;
-	
-				case SUBSUME:
-					input.setScore(Float.valueOf(2));
-					break;
-	
-				default:
-					input.setScore(Float.MAX_VALUE);
-				}
-			} else if (input instanceof CompositeMatchResultImpl) {
-				CompositeMatchResultImpl composit = (CompositeMatchResultImpl) input;
-				Float score = (float) 0;
+			if (input instanceof CompositeMatchResult) {
+				CompositeMatchResult composit = (CompositeMatchResult) input;
+				Float score = Float.valueOf(0);
 				for (MatchResult innerMatch : composit.getInnerMatches()) {
 					Float innerScore = innerMatch.getScore();
 					if (innerScore == null) {
@@ -68,7 +50,10 @@ public class BasicScorer implements Function<MatchResult, MatchResult> {
 					score += innerScore;
 				}
 				composit.setScore(score);
-			}
+			} else {
+				MatchType matchType = input.getMatchType();
+				input.setScore(Float.valueOf(matchType.ordinal()));
+			} 
 		}
 		return input;
 	}

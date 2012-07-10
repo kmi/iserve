@@ -18,6 +18,7 @@ package uk.ac.open.kmi.iserve.discovery.util;
 import java.util.Comparator;
 
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
+import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 
 /**
  * Reference implementation of basic Comparators methods for Match Results
@@ -53,7 +54,7 @@ public enum MatchComparator implements Comparator<MatchResult> {
     }, 
     
     /**
-     * Use the natural ordering of match types
+     * Use the natural ordering of match types.
      * 
      * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
      */
@@ -61,7 +62,22 @@ public enum MatchComparator implements Comparator<MatchResult> {
 
 		@Override
 		public int compare(MatchResult arg0, MatchResult arg1) {
-			return ((Comparable<Object>) arg0.getMatchType()).compareTo(arg1);
+			// Deal with null values for the Match Results
+			if (arg0 == null && arg1 == null) return 0;
+	        if (arg0 == null) return -1;
+	        if (arg1 == null) return 1;
+	        
+	        // Deal with null values for the Match Types
+	        MatchType type0 = arg0.getMatchType();
+	        MatchType type1 = arg1.getMatchType();
+	        if (type0 == null && type1 == null) return 0;
+	        if (type0 == null) return -1;
+	        if (type1 == null) return 1;
+	        
+	        if (type0.ordinal() == type1.ordinal()) return 0;
+	        if (type0.ordinal() > type1.ordinal()) return 1;
+	        else return -1;
+	        
 		}
     	
     }

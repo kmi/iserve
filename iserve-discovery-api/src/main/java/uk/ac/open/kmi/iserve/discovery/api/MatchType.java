@@ -16,14 +16,25 @@
 package uk.ac.open.kmi.iserve.discovery.api;
 
 /**
- * Match Type Interface extends Comparable
+ * Match Type Interface
  * 
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
 public interface MatchType {
 
 	public String getDescription();
+	
 	public String getShortName();
+	
 	public String getLongName();
+	
+	/**
+	 * Get the ordinal value of this match type.
+	 * This should be its position within the family of match types it belongs to.
+	 * Should serve as a basis for comparison and basic scoring
+	 * 
+	 * @return
+	 */
+	public int ordinal();
 	
 }
