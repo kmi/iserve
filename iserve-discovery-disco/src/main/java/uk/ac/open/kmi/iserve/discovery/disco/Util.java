@@ -196,6 +196,26 @@ public class Util {
 	}
 	
 	/**
+	 * Given a query result from a SPARQL query, obtain the number value at the 
+	 * given variable
+	 * 
+	 * @param resultRow the result from a SPARQL query
+	 * @param variableName the name of the variable to obtain
+	 * @return the Integer value, or null otherwise
+	 */
+	public static Integer getIntegerValue(QueryRow resultRow, String variableName) {
+		
+		if (resultRow != null) {
+			Node val = resultRow.getValue(variableName);
+			if (val != null) {
+				return Integer.valueOf(val.asDatatypeLiteral().getValue());
+			}
+		} 
+		
+		return 0;
+	}
+	
+	/**
 	 * Add the used namespaces to the prefix to be used in SPARQL queries
 	 * 
 	 * @return
@@ -320,9 +340,9 @@ public class Util {
 			String currClass, String bindingVar) {
 		StringBuffer query = new StringBuffer();		
 		query.append(Util.generateSubclassPattern(modelRefVar, currClass) + NL);
+		query.append("FILTER NOT EXISTS { " + Util.generateSuperclassPattern(modelRefVar, currClass) + "}" + NL);
 		// Bind a variable for inspection
 		query.append("BIND (true as ?" + bindingVar + ") ." + NL);  
-		query.append("FILTER NOT EXISTS { " + Util.generateSuperclassPattern(modelRefVar, currClass) + "}" + NL);
 		return query.toString();
 	}
 	
@@ -340,9 +360,9 @@ public class Util {
 			String currClass, String bindingVar) {
 		StringBuffer query = new StringBuffer();		
 		query.append(Util.generateSuperclassPattern(modelRefVar, currClass) + NL);
-		// Bind a variable for inspection
-		query.append("BIND (true as ?" + bindingVar + ") ." + NL); 
 		query.append("FILTER NOT EXISTS { " + Util.generateSubclassPattern(modelRefVar, currClass) + "}" + NL);
+		// Bind a variable for inspection
+		query.append("BIND (true as ?" + bindingVar + ") ." + NL);
 		return query.toString();
 	}
 	
@@ -353,19 +373,19 @@ public class Util {
 	 * @param isPlugin true if the concept match is plugin
 	 * @return Exact, Plugin or Subsumes depending on the values 
 	 */
-	public static MatchType getMatchType(boolean isSubsume, boolean isPlugin) {
+	public static DiscoMatchType getMatchType(boolean isSubsume, boolean isPlugin) {
 		if (isSubsume) {
 			if (isPlugin) {
 				// If plugin and subsume -> this is an exact match
-				return MatchType.EXACT;
+				return DiscoMatchType.EXACT;
 			}
-			return MatchType.SUBSUME;
+			return DiscoMatchType.SUBSUME;
 		} else {
 			if (isPlugin) {
-				return MatchType.PLUGIN;
+				return DiscoMatchType.PLUGIN;
 			}
 		}
-		return MatchType.FAIL;
+		return DiscoMatchType.FAIL;
 	}
 
 	/**
@@ -379,42 +399,42 @@ public class Util {
 	 * @param worstMatch worst match type within the composite match
 	 * @return match type for the composite match
 	 */
-	public static MatchType calculateCompositeMatchType(MatchType bestMatch,
-			MatchType worstMatch) {
+	public static DiscoMatchType calculateCompositeMatchType(DiscoMatchType bestMatch,
+			DiscoMatchType worstMatch) {
 		
 		switch (worstMatch) {
 		case EXACT:
-			return MatchType.EXACT;
+			return DiscoMatchType.EXACT;
 		
 		case PLUGIN:
-			return MatchType.PLUGIN;
+			return DiscoMatchType.PLUGIN;
 
 		case SUBSUME:
-			return MatchType.SUBSUME;
+			return DiscoMatchType.SUBSUME;
 			
 		case FAIL:
 			switch (bestMatch) {
 			case EXACT:
-				return MatchType.PARTIAL_PLUGIN;
+				return DiscoMatchType.PARTIAL_PLUGIN;
 			
 			case PLUGIN:
-				return MatchType.PARTIAL_PLUGIN;
+				return DiscoMatchType.PARTIAL_PLUGIN;
 
 			case SUBSUME:
-				return MatchType.PARTIAL_SUBSUME;
+				return DiscoMatchType.PARTIAL_SUBSUME;
 				
 			default:
 				log.warn("This match type is not supported: " + 
 						bestMatch.getShortName());
 				
-				return MatchType.FAIL;
+				return DiscoMatchType.FAIL;
 			}
 			
 		default:
 			log.warn("This match type is not supported: " + 
 					worstMatch.getShortName());
 			
-			return MatchType.FAIL;
+			return DiscoMatchType.FAIL;
 		}
 	}
 

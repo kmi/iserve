@@ -2,6 +2,7 @@ package uk.ac.open.kmi.iserve.discovery.disco;
 import java.net.URL;
 
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
+import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 
 /*
    Copyright 2012  Knowledge Media Institute - The Open University

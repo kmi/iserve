@@ -1,4 +1,3 @@
-package uk.ac.open.kmi.iserve.discovery.api;
 /*
    Copyright 2012  Knowledge Media Institute - The Open University
 
@@ -14,36 +13,17 @@ package uk.ac.open.kmi.iserve.discovery.api;
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-
-import java.net.URL;
+package uk.ac.open.kmi.iserve.discovery.api;
 
 /**
- * Interface that match results obtained from discovery plugins should implement
+ * Match Type Interface extends Comparable
  * 
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
-public interface MatchResult {
+public interface MatchType {
 
-	public URL getMatchUrl();
-	
-	public String getMatchLabel();
-	
-	public Float getScore();
-	
-	public void setScore(Float score);
-	
-	public URL getRequest();
-	
-	public void setRequest(URL request);
-	
-	public URL getEngineUrl();
-	
-	public void setEngineUrl(URL engineUrl);
-	
-	public String getExplanation();
-	
-	public MatchType getMatchType();
-	
-	public void setMatchType(MatchType matchType);
+	public String getDescription();
+	public String getShortName();
+	public String getLongName();
 	
 }

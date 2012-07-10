@@ -190,7 +190,7 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDisco
 				}
 				// Create a match result 
 				MatchResultImpl match = new MatchResultImpl(matchUrl, matchLabel);
-				match.setMatchType(MatchType.EXACT);
+				match.setMatchType(DiscoMatchType.EXACT);
 				match.setScore(Float.valueOf(0));
 				// TODO: Add these
 				// match.setEngineUrl(engineUrl);

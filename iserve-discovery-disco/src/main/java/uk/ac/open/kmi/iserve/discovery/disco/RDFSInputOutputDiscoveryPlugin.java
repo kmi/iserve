@@ -179,8 +179,6 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 	}
 	
 	/**
-	 * TODO: Fix the implementation to adapt to the new interface
-	 * 
 	 * 5 match degrees for inputs: exact, plugin, subsume, partial-plugin, partial-subsume
 	 * exact           <= the goal has all the exact service input classes (but may have more)
 	 * plugin          <= for each service input class, goal has a subclass of it
@@ -247,7 +245,8 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 		if (matchingInputs) {
 			inputMatches = matchInputs(operationDiscovery, inputClasses);
 			
-			inputMatchesAlt = matchInputsAlternative(operationDiscovery, inputClasses);
+			// TEST
+//			inputMatchesAlt = matchInputsAlternative(operationDiscovery, inputClasses);
 		}
 		
 		if (matchingOutputs) {
@@ -265,11 +264,12 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 				Multimap<URL, MatchResult> combination;
 				if (intersection) {
 					combination = MatchMapCombinator.INTERSECTION.apply(toCombine);
-					
+					results = Maps.transformValues(combination.asMap(),  MatchResultsMerger.INTERSECTION);
 				} else {
 					combination = MatchMapCombinator.UNION.apply(toCombine);
+					results = Maps.transformValues(combination.asMap(),  MatchResultsMerger.UNION);
 				}
-				results = Maps.transformValues(combination.asMap(), new MatchResultsMerger());
+				
 			} else {
 				results = inputMatches;
 			}
@@ -331,6 +331,12 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 			long duration = endTime - startTime;
 			log.info("Time taken for querying the registry: " + duration);
 			
+			// Map results to combine (one per class to match)
+			List<Map<URL, MatchResult>> toCombine = new ArrayList<Map<URL,MatchResult>>();
+			for (int i = 0; i < classes.size(); i++) {
+				toCombine.add(new HashMap<URL, MatchResult>());
+			}
+			
 			it = qresult.iterator();
 			// Iterate over the results obtained
 			while (it.hasNext()) {
@@ -348,71 +354,45 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 				boolean isExact = false;
 				boolean isPlugin = false;
 				boolean isSubsume = false;
-				// Keep track of the best and worst match for the aggregated 
-				// match type
-				MatchType worstMatch = MatchType.EXACT;
-				MatchType bestMatch = MatchType.FAIL;
-				
-				// Create an inner match per class matched
-				// The overall match will be determined by the best and worst match
-				Set<MatchResult> innerMatches = new HashSet<MatchResult>();
 	
 				for (int i = 0; i < classes.size(); i++) {
-					isExact = Util.isVariableSet(row, "ex" + i); // TODO: We probably can skip this
+					isExact = Util.isVariableSet(row, "ex" + i); 
 					isSubsume = Util.isVariableSet(row, "su" + i);
 					isPlugin = Util.isVariableSet(row, "pl" + i);
 					
-					// Create an inner match  if there is some match relationship
-					// We don't keep track of the fail matches within the composite
-					MatchType matchType = null;
+					// Create an inner match for each case if there is some 
+					// match relationship. Fails are important within the 
+					// Composite Match. Only relevant services (with some sort
+					// of match will be obtained.
+					DiscoMatchType matchType = null;
 					if (isExact) {
-						matchType = MatchType.EXACT;
+						matchType = DiscoMatchType.EXACT;
 					} else if (isPlugin) {
-						matchType = MatchType.PLUGIN;
+						matchType = DiscoMatchType.PLUGIN;
 					} else if (isSubsume) {
-						matchType = MatchType.SUBSUME;
+						matchType = DiscoMatchType.SUBSUME;
+					} else {
+						// By default it's failed
+						matchType = DiscoMatchType.FAIL;
 					}
 					
-					if (matchType == null) {
-						log.warn("Skipping result as the Match Type is null");
-						break;
-					}
-					
-					if (matchType != MatchType.FAIL) { 
-						MatchResultImpl innerMatch = new MatchResultImpl(matchUrl, matchLabel);
-						innerMatch.setMatchType(matchType);
-						innerMatches.add(innerMatch);
-						log.debug("Adding inner match for " + 
-								innerMatch.getMatchUrl() + " of type " + 
-								innerMatch.getMatchType().getShortName());
-					}
-					
-					if (matchType.compareTo(bestMatch) > 0) {
-						bestMatch = matchType;
-					}
-					
-					if (matchType.compareTo(worstMatch) < 0) {
-						worstMatch = matchType;
-					}
-				}
-				
-				if (!innerMatches.isEmpty()) {
-					// The service has some match. Add it
-					MatchType aggregatedType = Util.calculateCompositeMatchType(bestMatch, worstMatch);
-					CompositeMatchResultImpl compositeMatch = new CompositeMatchResultImpl(matchUrl, matchLabel);
-					compositeMatch.setInnerMatches(innerMatches);
-					compositeMatch.setMatchType(aggregatedType);
-					
-					// TODO: Ensure we take care of several rows of results 
-					// for the same match (i.e., several ops for the service)
-					results.put(compositeMatch.getMatchUrl(), compositeMatch);
-					
-					log.debug("Adding Match for " + 
-							compositeMatch.getMatchUrl() + " of type " + 
-							compositeMatch.getMatchType().getShortName());
+					// TODO: Add more details for real debugging
+					MatchResultImpl match = new MatchResultImpl(matchUrl, matchLabel);
+					match.setMatchType(matchType);
+					toCombine.get(i).put(matchUrl, match);
+					log.debug("Adding match for " + 
+							match.getMatchUrl() + " of type " + 
+							match.getMatchType().getShortName());
 				}
 			}
-				
+			
+			// Now merge the results obtained
+			Multimap<URL, MatchResult> combination = 
+				MatchMapCombinator.INTERSECTION.apply(toCombine);
+		
+			results = Maps.transformValues(combination.asMap(), 
+					MatchResultsMerger.INTERSECTION);
+			
 				
 		} finally {
 			if (it != null)
@@ -453,6 +433,12 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 			long duration = endTime - startTime;
 			log.info("Time taken for querying the registry: " + duration);
 			
+			// Create a Map of results to combine per class to match
+			List<Map<URL, MatchResult>> toCombine = new ArrayList<Map<URL,MatchResult>>();
+			for (int i = 0; i < classes.size(); i++) {
+				toCombine.add(new HashMap<URL, MatchResult>());
+			}
+			
 			it = qresult.iterator();
 			// Iterate over the results obtained
 			while (it.hasNext()) {
@@ -470,71 +456,45 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 				boolean isExact = false;
 				boolean isPlugin = false;
 				boolean isSubsume = false;
-				// Keep track of the best and worst match for the aggregated 
-				// match type
-				MatchType worstMatch = MatchType.EXACT;
-				MatchType bestMatch = MatchType.FAIL;
-				
-				// Create an inner match per class matched
-				// The overall match will be determined by the best and worst match
-				Set<MatchResult> innerMatches = new HashSet<MatchResult>();
 	
 				for (int i = 0; i < classes.size(); i++) {
-					isExact = Util.isVariableSet(row, "ex" + i); // TODO: We probably can skip this
+					isExact = Util.isVariableSet(row, "ex" + i); 
 					isSubsume = Util.isVariableSet(row, "su" + i);
 					isPlugin = Util.isVariableSet(row, "pl" + i);
 					
-					// Create an inner match  if there is some match relationship
-					// We don't keep track of the fail matches within the composite
-					MatchType matchType = null;
+					// Create an inner match for each case if there is some 
+					// match relationship. Fails are important within the 
+					// Composite Match. Only relevant services (with some sort
+					// of match will be obtained.
+					DiscoMatchType matchType = null;
 					if (isExact) {
-						matchType = MatchType.EXACT;
+						matchType = DiscoMatchType.EXACT;
 					} else if (isPlugin) {
-						matchType = MatchType.PLUGIN;
+						matchType = DiscoMatchType.PLUGIN;
 					} else if (isSubsume) {
-						matchType = MatchType.SUBSUME;
+						matchType = DiscoMatchType.SUBSUME;
+					} else {
+						// By default it's failed
+						matchType = DiscoMatchType.FAIL;
 					}
 					
-					if (matchType == null) {
-						log.warn("Skipping result as the Match Type is null");
-						break;
-					}
-					
-					if (matchType != MatchType.FAIL) { 
-						MatchResultImpl innerMatch = new MatchResultImpl(matchUrl, matchLabel);
-						innerMatch.setMatchType(matchType);
-						innerMatches.add(innerMatch);
-						log.debug("Adding inner match for " + 
-								innerMatch.getMatchUrl() + " of type " + 
-								innerMatch.getMatchType().getShortName());
-					}
-					
-					if (matchType.compareTo(bestMatch) > 0) {
-						bestMatch = matchType;
-					}
-					
-					if (matchType.compareTo(worstMatch) < 0) {
-						worstMatch = matchType;
-					}
-				}
-				
-				if (!innerMatches.isEmpty()) {
-					// The service has some match. Add it
-					MatchType aggregatedType = Util.calculateCompositeMatchType(bestMatch, worstMatch);
-					CompositeMatchResultImpl compositeMatch = new CompositeMatchResultImpl(matchUrl, matchLabel);
-					compositeMatch.setInnerMatches(innerMatches);
-					compositeMatch.setMatchType(aggregatedType);
-					
-					// TODO: Ensure we take care of several rows of results 
-					// for the same match (i.e., several ops for the service)
-					results.put(compositeMatch.getMatchUrl(), compositeMatch);
-					
-					log.debug("Adding Match for " + 
-							compositeMatch.getMatchUrl() + " of type " + 
-							compositeMatch.getMatchType().getShortName());
+					// TODO: Add more details for real debugging
+					MatchResultImpl match = new MatchResultImpl(matchUrl, matchLabel);
+					match.setMatchType(matchType);
+					toCombine.get(i).put(matchUrl, match);
+					log.debug("Adding match for " + 
+							match.getMatchUrl() + " of type " + 
+							match.getMatchType().getShortName());
 				}
 			}
-				
+			
+			// Now merge the results obtained
+			Multimap<URL, MatchResult> combination = 
+				MatchMapCombinator.INTERSECTION.apply(toCombine);
+		
+			results = Maps.transformValues(combination.asMap(), 
+					MatchResultsMerger.INTERSECTION);
+			
 				
 		} finally {
 			if (it != null)
@@ -606,27 +566,14 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 				}
 				
 				String matchLabel = Util.getOrGenerateMatchLabel(row, operationDiscovery);
-				
-				
-				// TODO: Check the variables
-				// XXX: Will this ever be true?
-//				Node exact = row.getValue("exact");
-//				if (exact != null) {
-//					if (operationDiscovery) {
-//						matches.put(op, Degree.EXACT);
-//					} else {
-//						matches.put(svc, Degree.EXACT);
-//					}
-//					continue;
-//				}
 	
 				boolean has_cpx = false;
 				boolean has_csx = false;
 				
 				// Keep track of the best and worst match for the aggregated 
 				// match type
-				MatchType worstMatch = MatchType.EXACT;
-				MatchType bestMatch = MatchType.FAIL;
+				DiscoMatchType worstMatch = DiscoMatchType.EXACT;
+				DiscoMatchType bestMatch = DiscoMatchType.FAIL;
 				
 				// Create an inner match per class matched
 				// The overall match will be determined by the best and worst match
@@ -636,13 +583,13 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 					has_cpx = Util.isVariableSet(row, "cp" + i); 
 					has_csx = Util.isVariableSet(row, "cs" + i);
 					
-					MatchType matchType = Util.getMatchType(has_csx, has_cpx);
+					DiscoMatchType matchType = Util.getMatchType(has_csx, has_cpx);
 					if (matchType == null) {
 						log.warn("Skipping result as the Match Type is null");
 						break;
 					}
 					
-					if (matchType != MatchType.FAIL) { 
+					if (matchType != DiscoMatchType.FAIL) { 
 						MatchResultImpl innerMatch = new MatchResultImpl(matchUrl, matchLabel);
 						innerMatch.setMatchType(matchType);
 						innerMatches.add(innerMatch);
@@ -659,7 +606,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 				
 				if (!innerMatches.isEmpty()) {
 					// The service has some match. Add it
-					MatchType aggregatedType = Util.calculateCompositeMatchType(bestMatch, worstMatch);
+					DiscoMatchType aggregatedType = Util.calculateCompositeMatchType(bestMatch, worstMatch);
 					CompositeMatchResultImpl compositeMatch = new CompositeMatchResultImpl(matchUrl, matchLabel);
 					compositeMatch.setInnerMatches(innerMatches);
 					compositeMatch.setMatchType(aggregatedType);
@@ -693,15 +640,17 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 	 * post-processing time.
 	 * 
 	 * The resulting query will bind the results to the following variables:
-	 * ?svc -> service that matches
-	 * ?labelSvc -> service label
-	 * ?op -> operation that matches
-	 * ?labelOp -> operation label
-	 * ?prop -> the property that matches
-	 * ?ic -> the class of the modelReference 
-	 * ?suX -> the match is subsumes on the class #X
-	 * ?plX -> the match is plugin on the class #X
-	 * ?exX -> the match is exact on the class #X
+	 * - ?svc -> service that matches
+	 * - ?labelSvc -> service label. In principle there should only be one label per 
+	 * service and operation. In the strange event that there are several they 
+	 * will appear separated by a comma
+	 * - ?op -> operation that matches
+	 * - ?labelOp -> operation label. In principle there should only be one label per 
+	 * service and operation. In the strange event that there are several they 
+	 * will appear separated by a comma
+	 * - ?suX -> the number of matches where the input subsumes on the class #X
+	 * - ?plX -> the number of matches where the input is plugin on the class #X
+	 * - ?exX -> the number of matches where the input is exact on the class #X
 	 * 
 	 * @param classes the classes we want to match
 	 * @return the SPARQL query
@@ -762,11 +711,17 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 		
 		StringBuffer query = new StringBuffer();
 		query.append(Util.generateQueryPrefix());
-		query.append("select ?svc ?op (GROUP_CONCAT(DISTINCT ?labelSvc; separator = \",\") as ?sLabel) (GROUP_CONCAT(DISTINCT ?labelOp; separator = \",\") as ?oLabel) "); // Obtain every variable for further details
+		query.append("select ?svc ?op ");
+		// Obtain the labels. In principle there should only be one label per 
+		// service and operation. In the strange event that there are several
+		// they will appear separated by a comma
+		query.append("(GROUP_CONCAT(DISTINCT ?sLabel; separator = \",\") as ?labelSvc) ");
+		query.append("(GROUP_CONCAT(DISTINCT ?oLabelOp; separator = \",\") as ?labelOp) "); 
 		for (int i = 0; i < classes.size(); i++) {
-			query.append(" (COUNT (?su" + i +") as ?nsu" + i +") (COUNT (?pl" + i +") as ?npl" + i +") (COUNT (?ex" + i +") as ?nex" + i +") ");
+			query.append(" (COUNT (?interSu" + i +") as ?su" + i +") ");
+			query.append(" (COUNT (?interPl" + i +") as ?pl" + i +") ");
+			query.append(" (COUNT (?interEx" + i +") as ?ex" + i +") ");
 		}
-		
 		query.append(NL);
 		
 		query.append("where {" + NL);
@@ -797,20 +752,22 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 			String currClass = classes.get(i).replace(">", "%3e");
 			
 			// Match the modelRef of the input to strict subclasses of the class
-			patterns.add(Util.generateMatchStrictSubclassesPattern("ic", currClass, "su"+i));
+			patterns.add(Util.generateMatchStrictSubclassesPattern("ic", currClass, "interSu"+i));
 			// Match the modelRef of the input to strict superclasses of the class
-			patterns.add(Util.generateMatchStrictSuperclassesPattern("ic", currClass, "pl"+i));
+			patterns.add(Util.generateMatchStrictSuperclassesPattern("ic", currClass, "interPl"+i));
 			// Match the modelRef of the input to exact matches for the class
-			patterns.add(Util.generateExactMatchPattern("ic", currClass, "ex" + i));
+			patterns.add(Util.generateExactMatchPattern("ic", currClass, "interEx" + i));
 		}
 		
 		query.append(Util.generateUnionStatement(patterns));
 		
 		// Obtain labels is they exist
-		query.append("  OPTIONAL {" + Util.generateLabelPattern("svc", "labelSvc") + "}" + NL);  
-		query.append("  OPTIONAL {" + Util.generateLabelPattern("op", "labelOp") + "}" + NL);
+		query.append("  OPTIONAL {" + Util.generateLabelPattern("svc", "slabel") + "}" + NL);  
+		query.append("  OPTIONAL {" + Util.generateLabelPattern("op", "oLabel") + "}" + NL);
 		
-		query.append("} GROUP BY ?svc ?op");
+		query.append("} "+ NL);
+		// Group the results by SVC and OP
+		query.append("GROUP BY ?svc ?op");
 		return query.toString();
 	}
 	

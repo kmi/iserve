@@ -15,6 +15,8 @@
 */
 package uk.ac.open.kmi.iserve.discovery.disco;
 
+import uk.ac.open.kmi.iserve.discovery.api.MatchType;
+
 
 /**
  * Enumeration of all the MatchTypes currently contemplated by the discovery
@@ -23,7 +25,7 @@ package uk.ac.open.kmi.iserve.discovery.disco;
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  * @author Jacek Kopecky (Knowledge Media Institute - The Open University)
  */
-public enum MatchType {
+public enum DiscoMatchType implements MatchType {
 
 	// Increasing order of match
 	FAIL("Fail", "Fail", "There is no subsumption relationship between the concept present and the one required"),
@@ -57,7 +59,7 @@ public enum MatchType {
 	/**
 	 * 
 	 */
-	private MatchType(String shortName, String longName, String description) {
+	private DiscoMatchType(String shortName, String longName, String description) {
 		this.description = description;
 		this.shortName = shortName;
 		this.longName = longName;
@@ -80,7 +82,7 @@ public enum MatchType {
 	/**
 	 * @return the longName
 	 */
-	protected String getLongName() {
+	public String getLongName() {
 		return this.longName;
 	}
 }

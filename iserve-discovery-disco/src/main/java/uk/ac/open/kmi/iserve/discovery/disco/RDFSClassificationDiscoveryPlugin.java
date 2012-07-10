@@ -229,7 +229,7 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 				Node sssog0 = row.getValue("sssog0");
 				if (isSssog) {
 					// Add the result as it is: SSSOG = PLUGIN
-					match.setMatchType(MatchType.PLUGIN);
+					match.setMatchType(DiscoMatchType.PLUGIN);
 					results.put(match.getMatchUrl(), match);
 				}
 				
@@ -248,10 +248,10 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 					// The service is either GSSOS (Subsume), or Exact if it is SSOG too
 					if (results.containsKey(match.getMatchUrl())) {
 						// If it is there, it's a SSOG too -> Change to Exact
-						match.setMatchType(MatchType.EXACT);
+						match.setMatchType(DiscoMatchType.EXACT);
 					} else {
 						// Change to GSSOS and add to results
-						match.setMatchType(MatchType.SUBSUME);
+						match.setMatchType(DiscoMatchType.SUBSUME);
 						results.put(match.getMatchUrl(), match);
 					}
 				}

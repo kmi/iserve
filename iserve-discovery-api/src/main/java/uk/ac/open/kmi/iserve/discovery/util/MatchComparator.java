@@ -31,7 +31,7 @@ public enum MatchComparator implements Comparator<MatchResult> {
 	 * 
 	 * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
 	 */
-	BY_SCORE{
+	BY_SCORE {
 
 		@Override
 		public int compare(MatchResult arg0, MatchResult arg1) {
@@ -44,12 +44,26 @@ public enum MatchComparator implements Comparator<MatchResult> {
      * 
      * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
      */
-    BY_URL{
+    BY_URL {
 
 		@Override
 		public int compare(MatchResult arg0, MatchResult arg1) {
 			return arg0.getMatchUrl().toString().compareTo(arg1.getMatchUrl().toString());
 		}
+    }, 
+    
+    /**
+     * Use the natural ordering of match types
+     * 
+     * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
+     */
+    BY_TYPE {
+
+		@Override
+		public int compare(MatchResult arg0, MatchResult arg1) {
+			return ((Comparable<Object>) arg0.getMatchType()).compareTo(arg1);
+		}
+    	
     }
 	
 }
