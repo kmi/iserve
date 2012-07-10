@@ -19,6 +19,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 
+import uk.ac.open.kmi.iserve.discovery.api.CompositeMatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 
@@ -68,7 +69,7 @@ public enum MatchResultsMerger implements Function<Collection<MatchResult>, Matc
 			URL matchUrl = match.getMatchUrl();
 			String matchLabel = match.getMatchLabel();
 
-			CompositeMatchResultImpl result = new CompositeMatchResultImpl(matchUrl, matchLabel);
+			CompositeMatchResult result = new CompositeMatchResultImpl(matchUrl, matchLabel);
 			result.addInnerMatch(match);
 
 			while (it.hasNext()) {
@@ -123,7 +124,7 @@ public enum MatchResultsMerger implements Function<Collection<MatchResult>, Matc
 			URL matchUrl = match.getMatchUrl();
 			String matchLabel = match.getMatchLabel();
 
-			CompositeMatchResultImpl result = new CompositeMatchResultImpl(matchUrl, matchLabel);
+			CompositeMatchResult result = new CompositeMatchResultImpl(matchUrl, matchLabel);
 			result.addInnerMatch(match);
 			
 			while (it.hasNext()) {

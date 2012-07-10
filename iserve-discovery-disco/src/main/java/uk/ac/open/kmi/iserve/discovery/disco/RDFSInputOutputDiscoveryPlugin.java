@@ -46,8 +46,14 @@ import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 
+import com.google.common.base.Function;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 
 public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, OperationDiscoveryPlugin {
 	
@@ -332,9 +338,11 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 			log.info("Time taken for querying the registry: " + duration);
 			
 			// Map results to combine (one per class to match)
-			List<Map<URL, MatchResult>> toCombine = new ArrayList<Map<URL,MatchResult>>();
+			// These are also multimaps as there can be several matches for the
+			// same class for a given service and/or operation
+			List<Multimap<URL, MatchResult>> toCombine = new ArrayList<Multimap<URL,MatchResult>>();
 			for (int i = 0; i < classes.size(); i++) {
-				toCombine.add(new HashMap<URL, MatchResult>());
+				toCombine.add(HashMultimap.<URL, MatchResult>create());
 			}
 			
 			it = qresult.iterator();
@@ -384,15 +392,21 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 							match.getMatchUrl() + " of type " + 
 							match.getMatchType().getShortName());
 				}
-			}
+			} 
+			
 			
 			// Now merge the results obtained
-			Multimap<URL, MatchResult> combination = 
-				MatchMapCombinator.INTERSECTION.apply(toCombine);
-		
-			results = Maps.transformValues(combination.asMap(), 
-					MatchResultsMerger.INTERSECTION);
+			// First merge the matches for the same class & service/op (UNION)
+			List<Map<URL, MatchResult>> classAndServiceMatches = 
+				Lists.newArrayList(Iterables.<Multimap<URL, MatchResult>, 
+						Map<URL, MatchResult>>transform(toCombine, MultimapToMapMerger.UNION));
 			
+			// Second merge the matches for diff classes, same service (INTER)
+			Multimap<URL, MatchResult> svcMatches = 
+				MatchMapCombinator.INTERSECTION.apply(classAndServiceMatches);
+			
+			results = ImmutableMap.copyOf(Maps.transformValues(svcMatches.asMap(), 
+			MatchResultsMerger.INTERSECTION));
 				
 		} finally {
 			if (it != null)
@@ -492,8 +506,8 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 			Multimap<URL, MatchResult> combination = 
 				MatchMapCombinator.INTERSECTION.apply(toCombine);
 		
-			results = Maps.transformValues(combination.asMap(), 
-					MatchResultsMerger.INTERSECTION);
+			results = ImmutableMap.copyOf(Maps.transformValues(combination.asMap(), 
+					MatchResultsMerger.INTERSECTION));
 			
 				
 		} finally {

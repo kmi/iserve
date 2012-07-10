@@ -56,6 +56,7 @@ import uk.ac.open.kmi.iserve.discovery.util.MatchComparator;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.sun.jersey.api.NotFoundException;
 
@@ -332,15 +333,11 @@ public class DiscoveryResource {
 
 		// Order the results by score and then by url
 		Ordering<Map.Entry<URL, MatchResult>> entryOrdering = 
-			Ordering.from(MatchComparator.BY_SCORE).onResultOf(new BasicScorer()).onResultOf(getMatchResult)
-			.compound(Ordering.from(MatchComparator.BY_URL).onResultOf(getMatchResult));
-		
-		// Same version but reverse ordering
-//		Ordering<Map.Entry<URL, MatchResult>> entryOrdering = 
-//			Ordering.from(MatchesRankers.BY_SCORE).onResultOf(getMatchResult).reverse()
-//			.compound(Ordering.from(MatchesRankers.BY_URL).onResultOf(getMatchResult));
+			Ordering.from(MatchComparator.BY_SCORE).onResultOf(new BasicScorer()).
+			onResultOf(getMatchResult).reverse().
+			compound(Ordering.from(MatchComparator.BY_URL).onResultOf(getMatchResult));
 
-		// Desired entries in desired order.  Put them in an ImmutableMap in this order.
+		// Desired entries in desired order.  Put them in an ImmutableMap in this order.		
 		ImmutableMap.Builder<URL, MatchResult> builder = ImmutableMap.builder();
 		for (Entry<URL, MatchResult> entry : entryOrdering.sortedCopy(matchingResults.entrySet())) {
 			builder.put(entry.getKey(), entry.getValue());
