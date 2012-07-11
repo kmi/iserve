@@ -308,6 +308,8 @@ public class Util {
 	 * Basically we look for those that are subclasses and superclasses
 	 * Uses BIND -> Requires SPARQL 1.1
 	 * 
+	 * TODO: Does not match if we don't know a certain element is a class!
+	 * 
 	 * @param modelRefVar the model reference variable 
 	 * @param currClass the URL of the class we want to find exact matches for
 	 * @param bindingVar the name of the variable we will bind results to for 
