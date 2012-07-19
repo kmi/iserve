@@ -52,7 +52,6 @@
 	<modules>
 		<module>iserve-commons-io</module>
 		<module>iserve-commons-vocabulary</module>
-		<module>iserve-imatcher-api</module>
 		<module>iserve-importer-api</module>
 		<module>iserve-importer-sawsdl</module>
 		<module>iserve-importer-hrests</module>
@@ -64,8 +63,11 @@
 		<module>iserve-sal-gwt</module>
 		<module>iserve-discovery-api</module>
 		<module>iserve-discovery-disco</module>
-		<!-- <module>iserve-discovery-imatcher</module> -->
 		<module>iserve-discovery-engine</module>
+		<!-- Disable iMatcher Plugin  
+		<module>iserve-discovery-imatcher</module>
+		<module>iserve-imatcher-api</module>
+		 -->
 		<!-- <module>iserve-analysis-engine</module> -->
 	</modules>
 
