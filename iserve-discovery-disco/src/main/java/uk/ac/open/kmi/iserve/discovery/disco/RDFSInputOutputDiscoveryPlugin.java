@@ -22,6 +22,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
@@ -105,10 +110,81 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 	private String feedSuffix;
 
 	private RDFRepositoryConnector serviceConnector;
+	
+	// TODO: Make this configurable
+	private static final int NUM_THREADS = 2;
+	private ExecutorService pool;
 
+	// TODO: Generalise this further in the future
+	/**
+	 * Class Description
+	 * 
+	 * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
+	 */
+	public class InputMatchCallable implements Callable<Map<URL, MatchResult>> {
+
+		boolean operationDiscovery;
+		List<String> matchClasses;
+		
+		/**
+		 * @param operationDiscovery
+		 * @param matchClasses
+		 */
+		public InputMatchCallable(boolean operationDiscovery,
+				List<String> matchClasses) {
+			super();
+			this.operationDiscovery = operationDiscovery;
+			this.matchClasses = matchClasses;
+		}
+		
+		/* (non-Javadoc)
+		 * @see java.util.concurrent.Callable#call()
+		 */
+		@Override
+		public Map<URL, MatchResult> call() throws Exception {
+			return matchInputs(operationDiscovery, matchClasses);
+		}
+
+	}
+	
+	/**
+	 * Class Description
+	 * 
+	 * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
+	 */
+	public class OutputMatchCallable implements Callable<Map<URL, MatchResult>> {
+
+		/**
+		 * @param operationDiscovery
+		 * @param matchClasses
+		 */
+		public OutputMatchCallable(boolean operationDiscovery,
+				List<String> matchClasses) {
+			super();
+			this.operationDiscovery = operationDiscovery;
+			this.matchClasses = matchClasses;
+		}
+
+		boolean operationDiscovery;
+		List<String> matchClasses;
+		
+		/* (non-Javadoc)
+		 * @see java.util.concurrent.Callable#call()
+		 */
+		@Override
+		public Map<URL, MatchResult> call() throws Exception {
+			return matchOutputs(operationDiscovery, matchClasses);
+		}
+
+	}
+	
+	
 	public RDFSInputOutputDiscoveryPlugin() {
 		this.count = 0;
 		this.feedSuffix = "";
+		
+		// Create the thread pool to carry out discovery tasks in parallel
+		pool = Executors.newFixedThreadPool(NUM_THREADS);
 		
 		ServiceManager svcManager = ManagerSingleton.getInstance().getServiceManager();
 		if (svcManager instanceof ServiceManagerRdf) {
@@ -240,43 +316,54 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 		Map<URL, MatchResult> inputMatches = null;
 		Map<URL, MatchResult> outputMatches = null;
 		
-		// TESTS
-		
-
-		if (matchingInputs) {
-			inputMatches = matchInputs(operationDiscovery, inputClasses);
+		if (matchingInputs && matchingOutputs) {
+			Set<Map<URL, MatchResult>> toCombine = new HashSet<Map<URL,MatchResult>>();
 			
-			// TEST
-//			Map<URL, MatchResult> inputMatchesAlt = matchInputsAlternative(operationDiscovery, inputClasses);
-		}
+//			// Sequential execution
+//			toCombine.add(matchInputs(operationDiscovery, inputClasses));
+//			toCombine.add(matchOutputs(operationDiscovery, outputClasses));
 		
-		if (matchingOutputs) {
-			outputMatches = matchOutputs(operationDiscovery, outputClasses);
-		}
-		
-		// Combine the matches into one Map
-		// Based on Guava, returns views that will be computed every time so 
-		// if we have to loop several times we should actually materialise them
-		if (matchingInputs) {
-			if (matchingOutputs) {
-				Set<Map<URL, MatchResult>> toCombine = new HashSet<Map<URL,MatchResult>>();
-				toCombine.add(inputMatches);
-				toCombine.add(outputMatches);
-				Multimap<URL, MatchResult> combination;
-				if (intersection) {
-					combination = MatchMapCombinator.INTERSECTION.apply(toCombine);
-					results = Maps.transformValues(combination.asMap(),  MatchResultsMerger.INTERSECTION);
-				} else {
-					combination = MatchMapCombinator.UNION.apply(toCombine);
-					results = Maps.transformValues(combination.asMap(),  MatchResultsMerger.UNION);
+			// Create the tasks and run them in parallel
+			Set<Callable<Map<URL, MatchResult>>> callables = new HashSet<Callable<Map<URL, MatchResult>>>();
+			callables.add(new InputMatchCallable(operationDiscovery, inputClasses));
+			callables.add(new OutputMatchCallable(operationDiscovery, outputClasses));
+			try {
+				
+				List<Future<Map<URL,MatchResult>>> futures = pool.invokeAll(callables);
+				// Invoke each discovery task and get the results
+				for (Future<Map<URL, MatchResult>> future : futures) {
+					toCombine.add(future.get());
 				}
 				
-			} else {
-				results = inputMatches;
+			} catch (InterruptedException e) {
+				log.error("The discovery engine was interrupted while executing the discovery tasks.", e);
+			} catch (ExecutionException e) {
+				log.error("Error executing the discovery task.", e);
 			}
+			
+			// Combine the results obtained into one Map
+			// Based on Guava, returns views that will be computed every time so 
+			// if we have to loop several times we should actually materialise them
+			Multimap<URL, MatchResult> combination;
+			if (intersection) {
+				combination = MatchMapCombinator.INTERSECTION.apply(toCombine);
+				results = Maps.transformValues(combination.asMap(),  MatchResultsMerger.INTERSECTION);
+			} else {
+				combination = MatchMapCombinator.UNION.apply(toCombine);
+				results = Maps.transformValues(combination.asMap(),  MatchResultsMerger.UNION);
+			}
+			
 		} else {
-			// Should be matching outputs
-			results = outputMatches;
+			// Just one task, no need for parallel execution
+			if (matchingInputs) {
+				inputMatches = matchInputs(operationDiscovery, inputClasses);
+				results = inputMatches;
+				// TEST
+//				Map<URL, MatchResult> inputMatchesAlt = matchInputsAlternative(operationDiscovery, inputClasses);
+			} else {
+				outputMatches = matchOutputs(operationDiscovery, outputClasses);
+				results = outputMatches;
+			}
 		}
 
 		return results;

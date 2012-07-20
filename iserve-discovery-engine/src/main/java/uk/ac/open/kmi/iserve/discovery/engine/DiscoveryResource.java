@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -66,6 +68,7 @@ import com.sun.jersey.api.NotFoundException;
  * TODO: Provide pagination support for discovery results 
  * TODO: Enable the configuration of ordering and scoring functionality for 
  * discovery results (composite or simple)
+ * TODO: Provide a thread pool for more efficient discovery?
  * 
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
@@ -85,7 +88,7 @@ public class DiscoveryResource {
 	public DiscoveryResource() throws RepositoryException, 
 	TransformerConfigurationException, IOException, 
 	ParserConfigurationException {
-
+		
 		// Register all plugins manually for now
 		DiscoveryPlugin plugin;
 		plugin = new AllServicesPlugin();
