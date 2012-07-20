@@ -333,13 +333,15 @@ public class DiscoveryResource {
 
 		// Order the results by score and then by url
 		Ordering<Map.Entry<URL, MatchResult>> entryOrdering = 
-			Ordering.from(MatchComparator.BY_SCORE).onResultOf(new BasicScorer()).
-			onResultOf(getMatchResult).reverse().
+			Ordering.from(MatchComparator.BY_SCORE).onResultOf(getMatchResult).reverse().
 			compound(Ordering.from(MatchComparator.BY_URL).onResultOf(getMatchResult));
-
+		
+		// First obtain the map with the values scored, then order it
+		Map<URL, MatchResult> scoredMap = Maps.transformValues(matchingResults, new BasicScorer());
+		
 		// Desired entries in desired order.  Put them in an ImmutableMap in this order.		
 		ImmutableMap.Builder<URL, MatchResult> builder = ImmutableMap.builder();
-		for (Entry<URL, MatchResult> entry : entryOrdering.sortedCopy(matchingResults.entrySet())) {
+		for (Entry<URL, MatchResult> entry : entryOrdering.sortedCopy(scoredMap.entrySet())) {
 			builder.put(entry.getKey(), entry.getValue());
 		}
 		

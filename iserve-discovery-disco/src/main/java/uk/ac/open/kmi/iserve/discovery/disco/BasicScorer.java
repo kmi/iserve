@@ -38,9 +38,8 @@ public class BasicScorer implements Function<MatchResult, MatchResult> {
 		} else {
 
 			if (input instanceof CompositeMatchResult) {
-				CompositeMatchResult composit = (CompositeMatchResult) input;
-				Float score = Float.valueOf(0);
-				for (MatchResult innerMatch : composit.getInnerMatches()) {
+				float score = 0;
+				for (MatchResult innerMatch : ((CompositeMatchResult) input).getInnerMatches()) {
 					Float innerScore = innerMatch.getScore();
 					if (innerScore == null) {
 						this.apply(innerMatch);
@@ -49,7 +48,7 @@ public class BasicScorer implements Function<MatchResult, MatchResult> {
 					// TODO; Carry out a proper calculation here
 					score += innerScore;
 				}
-				composit.setScore(score);
+				input.setScore(score);
 			} else {
 				MatchType matchType = input.getMatchType();
 				input.setScore(Float.valueOf(matchType.ordinal()));

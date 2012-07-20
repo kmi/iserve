@@ -71,14 +71,14 @@ public class MatchResultImpl implements MatchResult {
 	 * @see MatchResult#getMatchUrl()
 	 */
 	public URL getMatchUrl() {
-		return matchUrl;
+		return this.matchUrl;
 	}
 	
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.discovery.api.MatchResult#getMatchLabel()
 	 */
 	public String getMatchLabel() {
-		return matchLabel;
+		return this.matchLabel;
 	}
 	
 	/**
@@ -92,21 +92,21 @@ public class MatchResultImpl implements MatchResult {
 	 * @see MatchResult#getScore()
 	 */
 	public Float getScore() {
-		return score;
+		return this.score;
 	}
 
 	/* (non-Javadoc)
 	 * @see MatchResult#getRequest()
 	 */
 	public URL getRequest() {
-		return request;
+		return this.request;
 	}
 
 	/* (non-Javadoc)
 	 * @see MatchResult#getEngineUrl()
 	 */
 	public URL getEngineUrl() {
-		return engineUrl;
+		return this.engineUrl;
 	}
 
 	/* (non-Javadoc)

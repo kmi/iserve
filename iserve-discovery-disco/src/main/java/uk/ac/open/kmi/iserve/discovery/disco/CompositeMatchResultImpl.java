@@ -100,11 +100,11 @@ public class CompositeMatchResultImpl extends MatchResultImpl implements Composi
 	 */
 	@Override
 	public String getExplanation() {
-		StringBuffer result = new StringBuffer();
-		result.append("Composite Match of type: " + this.getMatchType().getShortName() + Util.NL);
-		result.append("Total Score: " + this.getScore() + Util.NL); 
+		StringBuilder result = new StringBuilder();
+		result.append("Composite Match of type: " + this.getMatchType().getShortName() + ". " + Util.NL);
+		result.append("Total Score: " + this.getScore() + ". " + Util.NL); 
 		for (MatchResult match : innerMatches) {
-			result.append("Inner match - " + match.getExplanation() + Util.NL);
+			result.append("Inner match - " + match.getExplanation() + ". " + Util.NL);
 		}
 		return result.toString();
 	}
