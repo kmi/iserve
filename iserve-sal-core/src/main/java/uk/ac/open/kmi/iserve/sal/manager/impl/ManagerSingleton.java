@@ -637,7 +637,7 @@ public class ManagerSingleton implements iServeManager {
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ReviewManager#addRating(java.net.URI, java.net.URI, java.lang.String)
 	 */
 	public boolean addRating(java.net.URI agentUri, java.net.URI serviceUri, String rating) {
-		return this._instance.addRating(agentUri, serviceUri, rating);
+		return ManagerSingleton._instance.addRating(agentUri, serviceUri, rating);
 	}
 
 	/**
@@ -648,7 +648,7 @@ public class ManagerSingleton implements iServeManager {
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ReviewManager#addComment(java.net.URI, java.net.URI, java.lang.String)
 	 */
 	public boolean addComment(java.net.URI agentUri, java.net.URI serviceUri, String comment) {
-		return this._instance.addComment(agentUri, serviceUri, comment);
+		return ManagerSingleton._instance.addComment(agentUri, serviceUri, comment);
 	}
 
 	/**
@@ -659,7 +659,7 @@ public class ManagerSingleton implements iServeManager {
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ReviewManager#addTag(java.net.URI, java.net.URI, java.lang.String)
 	 */
 	public boolean addTag(java.net.URI agentUri, java.net.URI serviceUri, String tag) {
-		return this._instance.addTag(agentUri, serviceUri, tag);
+		return ManagerSingleton._instance.addTag(agentUri, serviceUri, tag);
 	}
 
 	/**
@@ -668,7 +668,7 @@ public class ManagerSingleton implements iServeManager {
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ReviewManager#getRatings(java.net.URI)
 	 */
 	public List<String> getRatings(java.net.URI serviceUri) {
-		return this._instance.getRatings(serviceUri);
+		return ManagerSingleton._instance.getRatings(serviceUri);
 	}
 
 	/**
@@ -677,7 +677,7 @@ public class ManagerSingleton implements iServeManager {
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ReviewManager#getComments(java.net.URI)
 	 */
 	public List<String> getComments(java.net.URI serviceUri) {
-		return this._instance.getComments(serviceUri);
+		return ManagerSingleton._instance.getComments(serviceUri);
 	}
 
 	/**
@@ -686,7 +686,7 @@ public class ManagerSingleton implements iServeManager {
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ReviewManager#getTags(java.net.URI)
 	 */
 	public List<String> getTags(java.net.URI serviceUri) {
-		return this._instance.getTags(serviceUri);
+		return ManagerSingleton._instance.getTags(serviceUri);
 	}
 
 	/**
@@ -698,7 +698,7 @@ public class ManagerSingleton implements iServeManager {
 	 */
 	public boolean updateRating(java.net.URI agentUri, java.net.URI serviceUri,
 			String rating) {
-		return this._instance.updateRating(agentUri, serviceUri, rating);
+		return ManagerSingleton._instance.updateRating(agentUri, serviceUri, rating);
 	}
 
 	/**
@@ -708,7 +708,7 @@ public class ManagerSingleton implements iServeManager {
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ReviewManager#deleteRating(java.net.URI, java.net.URI)
 	 */
 	public boolean deleteRating(java.net.URI agentUri, java.net.URI serviceUri) {
-		return this._instance.deleteRating(agentUri, serviceUri);
+		return ManagerSingleton._instance.deleteRating(agentUri, serviceUri);
 	}
 
 	/**
@@ -718,7 +718,7 @@ public class ManagerSingleton implements iServeManager {
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ReviewManager#deleteComment(java.net.URI, java.net.URI)
 	 */
 	public boolean deleteComment(java.net.URI agentUri, java.net.URI serviceUri) {
-		return this._instance.deleteComment(agentUri, serviceUri);
+		return ManagerSingleton._instance.deleteComment(agentUri, serviceUri);
 	}
 
 	/**
@@ -730,7 +730,7 @@ public class ManagerSingleton implements iServeManager {
 	 */
 	public boolean deleteTag(java.net.URI agentUri, java.net.URI serviceUri,
 			String tag) {
-		return this._instance.deleteTag(agentUri, serviceUri, tag);
+		return ManagerSingleton._instance.deleteTag(agentUri, serviceUri, tag);
 	}
 	
 }
