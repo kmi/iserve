@@ -1,0 +1,39 @@
+====================
+iServe Release Notes
+====================
+
+iServe release 1.1 includes about XX bug fixes and performance improvements
+
+iServe requires Java 1.5 or higher. The distribution should be runnable in 
+most J2EE servlet containers. 
+
+NOTE: Old configuration files need updating due to changes in the configuration
+mechanism.
+
+============
+New Features
+============
+
+Discovery
+=========
+- Discovery plugins can now discover operations and services
+- Discovery plugins are now accompanied by their own internal documentation
+- New Scoring and Ranking mechanism implemented for better results ordering
+- Discovery results now include details on the inner matches for debugging and 
+better scoring purposes.
+- Homogeneised discovery result types within the standard discovery plugin
+- Scoring and ranking is only performed at the end to avoid recomputations
+
+Import
+======
+- Added a services importing module with direct support for BioCatalogue 
+
+General
+=======
+- Better centralised configuration mechanism (old configuration files need updating)
+
+=========
+Bug Fixes
+=========
+- Discovery was not taking into account modelReferences at all possible levels
+ 
