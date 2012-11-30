@@ -127,53 +127,55 @@ public class DocumentResource {
 				}
 			}
 		}
-		String uriString = ManagerSingleton.getInstance().addDocument(fileName, serviceDescription);
+		URI docUri = ManagerSingleton.getInstance().addDocument(fileName, serviceDescription);
 		// TODO: Push this down to the above method
-		ManagerSingleton.getInstance().log(userFoafId, LOG.ITEM_CREATION, uriString, new Date(), "REST");
+		ManagerSingleton.getInstance().log(userFoafId, LOG.ITEM_CREATION, docUri.toString(), new Date(), "REST");
 		String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-			"  <body>\nA document is created at <a href='" + uriString + "'>" + uriString + "</a>\n  </body>\n</html>";
-		return Response.status(Status.CREATED).contentLocation(new URI(uriString)).entity(htmlString).build();
+			"  <body>\nA document is created at <a href='" + docUri.toString() + "'>" + docUri.toString() + "</a>\n  </body>\n</html>";
+		return Response.status(Status.CREATED).contentLocation(docUri).entity(htmlString).build();
 	}
 
-	@DELETE @Path("/{id}")
-	@Produces({MediaType.TEXT_HTML})
-	public String deleteDocumentById(@PathParam("id") String id) throws DocumentException, LogException {
-		if ( security.getUserPrincipal() == null ) {
-			throw new MappableContainerException(
-					new AuthenticationException(
-							"Authentication credentials are required\r\n",
-							"iServe SAL RESTful API"));
-		}
+	// TODO: Support delete
+//	@DELETE @Path("/{id}")
+//	@Produces({MediaType.TEXT_HTML})
+//	public String deleteDocumentById(@PathParam("id") String id) throws DocumentException, LogException {
+//		if ( security.getUserPrincipal() == null ) {
+//			throw new MappableContainerException(
+//					new AuthenticationException(
+//							"Authentication credentials are required\r\n",
+//							"iServe SAL RESTful API"));
+//		}
+//
+//		String userFoafId = security.getUserPrincipal().getName();
+//
+//		String uriString = ManagerSingleton.getInstance().deleteDocumentById(id);
+//		// TODO: Push this down to the above method
+//		ManagerSingleton.getInstance().log(userFoafId, LOG.ITEM_DELETING, uriString, new Date(), "REST");
+//		String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+//			"  <body>\nA document is removed from <a href='" + uriString + "'>" + uriString + "</a>\n  </body>\n</html>";
+//		return htmlString;
+//	}
 
-		String userFoafId = security.getUserPrincipal().getName();
-
-		String uriString = ManagerSingleton.getInstance().deleteDocumentById(id);
-		// TODO: Push this down to the above method
-		ManagerSingleton.getInstance().log(userFoafId, LOG.ITEM_DELETING, uriString, new Date(), "REST");
-		String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-			"  <body>\nA document is removed from <a href='" + uriString + "'>" + uriString + "</a>\n  </body>\n</html>";
-		return htmlString;
-	}
-
-	@DELETE @Path("/{id}/{filename}")
-	@Produces({MediaType.TEXT_HTML})
-	public String deleteDocument(@PathParam("id") String id) throws DocumentException, LogException {
-		if ( security.getUserPrincipal() == null ) {
-			throw new MappableContainerException(
-					new AuthenticationException(
-							"Authentication credentials are required\r\n",
-							"iServe SAL RESTful API"));
-		}
-
-		String userFoafId = security.getUserPrincipal().getName();
-
-		String uriString = ManagerSingleton.getInstance().deleteDocumentById(id);
-		// TODO: Push this down to the above method
-		ManagerSingleton.getInstance().log(userFoafId, LOG.ITEM_DELETING, uriString, new Date(), "REST");
-		String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-			"  <body>\nA document is removed from <a href='" + uriString + "'>" + uriString + "</a>\n  </body>\n</html>";
-		return htmlString;
-	}
+	// TODO: Implement Again
+//	@DELETE @Path("/{id}/{filename}")
+//	@Produces({MediaType.TEXT_HTML})
+//	public String deleteDocument(@PathParam("id") String id) throws DocumentException, LogException {
+//		if ( security.getUserPrincipal() == null ) {
+//			throw new MappableContainerException(
+//					new AuthenticationException(
+//							"Authentication credentials are required\r\n",
+//							"iServe SAL RESTful API"));
+//		}
+//
+//		String userFoafId = security.getUserPrincipal().getName();
+//
+//		String uriString = ManagerSingleton.getInstance().deleteDocumentById(id);
+//		// TODO: Push this down to the above method
+//		ManagerSingleton.getInstance().log(userFoafId, LOG.ITEM_DELETING, uriString, new Date(), "REST");
+//		String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+//			"  <body>\nA document is removed from <a href='" + uriString + "'>" + uriString + "</a>\n  </body>\n</html>";
+//		return htmlString;
+//	}
 
 	private Response getDocument(String absolutePath, String id, String filename, String redirect) throws URISyntaxException, DocumentException {
 		if (absolutePath.endsWith("/") == false) {
@@ -215,7 +217,7 @@ public class DocumentResource {
 		} else if ( absolutePath.endsWith("page/documents/") ) {
 			StringBuffer sb = new StringBuffer();
 			sb.append(HtmlUtil.LIST_HTML_PREFIX.replaceAll("<<<title>>>", "Document List"));
-			List<String> serviceList = ManagerSingleton.getInstance().listDocument();
+			List<String> serviceList = ManagerSingleton.getInstance().listDocuments();
 			sb.append(HtmlUtil.uriListToTable(serviceList));
 			sb.append(HtmlUtil.LIST_HTML_SUFFIX);
 			return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
@@ -237,7 +239,7 @@ public class DocumentResource {
 
 			StringBuffer sb = new StringBuffer();
 			sb.append(header);
-			List<String> uriList = ManagerSingleton.getInstance().listDocument();
+			List<String> uriList = ManagerSingleton.getInstance().listDocuments();
 			for (String uri : uriList) {
 				sb.append(uriHeader + uri + uriTail);
 			}

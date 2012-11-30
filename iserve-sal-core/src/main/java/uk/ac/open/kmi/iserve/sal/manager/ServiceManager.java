@@ -16,15 +16,13 @@
 package uk.ac.open.kmi.iserve.sal.manager;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 
 import org.ontoware.rdf2go.model.Model;
-import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.Syntax;
 
-import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve.sal.model.common.URI;
 import uk.ac.open.kmi.iserve.sal.model.service.Service;
 
 /**
@@ -37,37 +35,33 @@ import uk.ac.open.kmi.iserve.sal.model.service.Service;
  */
 public interface ServiceManager {
 
-	public abstract List<String> listService();
+	public abstract List<URI> listServices();
 
-	public abstract String addService(String fileName,
-			String serviceDescription, String sourceUri)
+	public URI addService(String serviceId, InputStream msmInputStream,
+			URI sourceDocumentUri) throws ServiceException;
+	
+	public abstract URI addService(String serviceId, String msmServiceDescription, URI sourceDocumentUri)
 			throws ServiceException;
 
-	public abstract String deleteService(String serviceUri)
+	public abstract URI deleteService(URI serviceUri)
 			throws ServiceException;
 
-	public abstract String deleteServiceById(String serviceId)
+	public abstract URI deleteServiceById(String serviceId)
 			throws ServiceException;
 
-	public abstract String getService(String serviceUri, Syntax syntax)
+	public abstract String getService(URI serviceUri, Syntax syntax)
 			throws ServiceException;
 
-	public abstract Model getServiceAsModel(String serviceUri)
+	public abstract Model getServiceAsModel(URI serviceUri)
 			throws ServiceException;
 
 	public abstract Model getServiceAsModelById(String serviceId)
 			throws ServiceException;
 
 	public abstract Service getService(URI serviceUri) throws ServiceException;
-
-	/**
-	 * @param fileName
-	 * @param msmServiceDescriptionStream
-	 * @param sourceUri
-	 * @return
-	 * @throws ServiceException
-	 */
-	public String addService(String fileName, InputStream msmServiceDescriptionStream,
-			String sourceUri) throws ServiceException;
+	
+	public abstract boolean serviceExists(URI serviceUri) throws ServiceException;
+	
+	public abstract boolean serviceExists(String serviceId) throws ServiceException;
 
 }

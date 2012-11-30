@@ -230,7 +230,7 @@ public class ServiceResource {
 		} else if ( absolutePath.endsWith("page/services/") ) {
 			StringBuffer sb = new StringBuffer();
 			sb.append(HtmlUtil.LIST_HTML_PREFIX.replaceAll("<<<title>>>", "Service List"));
-			List<String> serviceList = ManagerSingleton.getInstance().listService();
+			List<String> serviceList = ManagerSingleton.getInstance().listServices();
 			sb.append(HtmlUtil.uriListToTable(serviceList));
 			sb.append(HtmlUtil.LIST_HTML_SUFFIX);
 			return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();

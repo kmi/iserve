@@ -112,7 +112,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 	private RDFRepositoryConnector serviceConnector;
 	
 	// TODO: Make this configurable
-	private static final int NUM_THREADS = 2;
+	private static final int NUM_THREADS = 20;
 	private ExecutorService pool;
 
 	// TODO: Generalise this further in the future

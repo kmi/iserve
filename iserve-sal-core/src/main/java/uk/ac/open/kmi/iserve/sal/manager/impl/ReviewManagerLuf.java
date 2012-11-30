@@ -68,6 +68,15 @@ public class ReviewManagerLuf implements ReviewManager {
 	}
 
 	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.ReviewManager#addTags(java.net.URI, java.net.URI, java.util.List)
+	 */
+	@Override
+	public boolean addTags(URI agentUri, URI resourceUri, List<String> tags) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ReviewManager#getRatings(java.net.URI)
 	 */
 	@Override
@@ -129,6 +138,5 @@ public class ReviewManagerLuf implements ReviewManager {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
 
 }

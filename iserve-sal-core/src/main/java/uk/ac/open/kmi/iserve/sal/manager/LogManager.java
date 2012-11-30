@@ -15,6 +15,7 @@
  */
 package uk.ac.open.kmi.iserve.sal.manager;
 
+import java.net.URI;
 import java.util.Date;
 import java.util.Map;
 
@@ -26,14 +27,22 @@ import uk.ac.open.kmi.iserve.sal.model.log.LogItem;
 /**
  * Class Description
  * 
+ * @author Dong Liu (Knowledge Media Institute - The Open University)
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
 public interface LogManager {
 
+	// TODO: Change to use URIs
 	public abstract void log(String agentUri, String actionUri, String object,
 			Date time, String method) throws LogException;
 
 	public abstract Map<String, LogItem> getAllLogItems()
+			throws DatatypeConfigurationException;
+	
+	public abstract Map<String, LogItem> getAllLogItemsForUser(URI userUri)
+			throws DatatypeConfigurationException;
+	
+	public abstract Map<String, LogItem> getAllLogItemsAboutResource(URI resourceUri)
 			throws DatatypeConfigurationException;
 
 }

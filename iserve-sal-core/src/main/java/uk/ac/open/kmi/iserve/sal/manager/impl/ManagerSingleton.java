@@ -29,6 +29,8 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.model.Syntax;
 import org.openrdf.repository.RepositoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.sal.ServiceFormat;
@@ -70,6 +72,8 @@ import uk.ac.open.kmi.iserve.sal.model.user.User;
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
 public class ManagerSingleton implements iServeManager {
+	
+	private static final Logger log = LoggerFactory.getLogger(iServeManager.class);
 	
 	private static final String CONFIG_PROPERTIES_FILENAME = "config.properties";
 	
@@ -132,143 +136,53 @@ public class ManagerSingleton implements iServeManager {
 		return this.configuration;
 	}
 	
-	/**
-	 * @return the docManager
-	 */
-	public DocumentManager getDocManager() {
-		return this.docManager;
-	}
-
-	/**
-	 * @return the logManager
-	 */
-	public LogManager getLogManager() {
-		return this.logManager;
-	}
-
-	/**
-	 * @return the reviewManager
-	 */
-	public ReviewManager getReviewManager() {
-		return this.reviewManager;
-	}
-
-	/**
-	 * @return the serviceManager
-	 */
-	public ServiceManager getServiceManager() {
-		return this.serviceManager;
-	}
-
-	/**
-	 * @return the taxonomyManager
-	 */
-	public TaxonomyManager getTaxonomyManager() {
-		return this.taxonomyManager;
-	}
-
-	/**
-	 * @return the userManager
-	 */
-	public UserManager getUserManager() {
-		return this.userManager;
-	}
-
-	/**
-	 * @return the keyManager
-	 */
-	public KeyManager getKeyManager() {
-		return this.keyManager;
-	}
-
-	/**
-	 * Registers the given importer for that format so that it is used when saving
-	 * a service 
-	 * 
-	 * @param format the format handled by the importer
-	 * @param importer the previous value associated with key, or null if there 
-	 * was no mapping for key. (A null return can also indicate that the map 
-	 * previously associated null with key, if the implementation supports null 
-	 * values.)
-	 * @return 
-	 */
-	public ServiceImporter registerImporter(ServiceFormat format, ServiceImporter importer) {
-		return this.importerMap.put(format, importer);
-	}
-	
-	/**
-	 * Unregisters the importer for the given format
-	 * @param format the format to remove the importer for
-	 * @return the previous value associated with key, or null if there was 
-	 * no mapping for key.
-	 */
-	public ServiceImporter unregisterImporter(ServiceFormat format) {
-		return this.importerMap.remove(format);
-	}
 	
 	// Delegate Methods
+
+	// Document Manager
 	
-	/**
-	 * @return
-	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#listDocument()
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#listDocuments()
 	 */
-	public List<String> listDocument() {
-		return this.docManager.listDocument();
+	public List<java.net.URI> listDocuments() {
+		return this.docManager.listDocuments();
+	}	
+
+	/**
+	 * @param serviceId
+	 * @return
+	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#listDocumentsForService(java.lang.String)
+	 */
+	public List<java.net.URI> listDocumentsForService(String serviceId) {
+		return this.docManager.listDocumentsForService(serviceId);
 	}
 
 	/**
 	 * @param fileName
-	 * @param serviceDescription
+	 * @param documentContent
+	 * @param serviceId
 	 * @return
 	 * @throws DocumentException
-	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#addDocument(java.lang.String, java.lang.String)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#addDocument(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public String addDocument(String fileName, String serviceDescription)
-			throws DocumentException {
-		return this.docManager.addDocument(fileName, serviceDescription);
+	public java.net.URI addDocument(String fileName, String documentContent,
+			String serviceId) throws DocumentException {
+		return this.docManager
+				.addDocument(fileName, documentContent, serviceId);
 	}
 
-	/**
-	 * @param documentUri
-	 * @return
-	 * @throws DocumentException
-	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#deleteDocument(java.lang.String)
-	 */
-	public String deleteDocument(String documentUri) throws DocumentException {
-		return this.docManager.deleteDocument(documentUri);
+	public java.net.URI deleteDocument(java.net.URI documentUri) {
+		try {
+			return this.docManager.deleteDocument(documentUri);
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
-	/**
-	 * @param documentId
-	 * @return
-	 * @throws DocumentException
-	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#deleteDocumentById(java.lang.String)
-	 */
-	public String deleteDocumentById(String documentId)
-			throws DocumentException {
-		return this.docManager.deleteDocumentById(documentId);
-	}
-
-	/**
-	 * @param documentUri
-	 * @return
-	 * @throws DocumentException
-	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#getDocument(java.lang.String)
-	 */
-	public String getDocument(String documentUri) throws DocumentException {
-		return this.docManager.getDocument(documentUri);
-	}
-
-	/**
-	 * @param documentId
-	 * @return
-	 * @throws DocumentException
-	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#getDocumentById(java.lang.String)
-	 */
-	public String getDocumentById(String documentId) throws DocumentException {
-		return this.docManager.getDocumentById(documentId);
-	}
-
+	// Log Manager
 	/**
 	 * TODO: We should abstract the higher levels from the logging of Actions
 	 * 
@@ -295,38 +209,40 @@ public class ManagerSingleton implements iServeManager {
 		return this.logManager.getAllLogItems();
 	}
 
+	// Service Manager
+	
 	/**
 	 * @return
-	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#listService()
+	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#listServices()
 	 */
-	public List<String> listService() {
-		return this.serviceManager.listService();
+	public List<java.net.URI> listServices() {
+		return this.serviceManager.listServices();
 	}
 
 	/**
 	 * @param fileName
-	 * @param msmServiceDescriptionStream
-	 * @param sourceUri
+	 * @param msmInputStream
+	 * @param sourceDocumentUri
 	 * @return
 	 * @throws ServiceException
 	 */
 	public String addService(String fileName,
-			InputStream msmServiceDescriptionStream, String sourceUri)
+			InputStream msmInputStream, String sourceDocumentUri)
 			throws ServiceException {
 		//TODO: Fix the interface in Service Manager instead
-		return addService(fileName, msmServiceDescriptionStream.toString(), sourceUri);
+		return addService(fileName, msmInputStream.toString(), sourceDocumentUri);
 	}
 	
 	/**
 	 * @param fileName
 	 * @param serviceDescription
-	 * @param sourceUri
+	 * @param sourceDocumentUri
 	 * @return
 	 * @throws ServiceException
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#addService(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public String addService(String fileName, String serviceDescription,
-			String sourceUri) throws ServiceException {
+			String sourceDocumentUri) throws ServiceException {
 		
 		// detect type
 		ServiceFormat format = ServiceFormat.UNSUPPORTED;
@@ -352,38 +268,37 @@ public class ManagerSingleton implements iServeManager {
 				fileName = "service.rdf.xml";
 			}
 		}
-		// Transform the service prior to storing it
+		
+		// 1st - Store the file if necessary (sourceUri is not set)
+		String documentUri = null;
+		if ( sourceDocumentUri == null || sourceDocumentUri.equalsIgnoreCase("") ) {
+			// save file to disk
+			try {
+				documentUri = this.docManager.addDocument(fileName, serviceDescription);
+			} catch (DocumentException e) {
+				log.error("Error saving the document while adding new service", e);
+			}
+		} else {
+			documentUri = sourceDocumentUri;
+		}
+		
+		// 2nd - Transform the service
 		ServiceImporter importer = importerMap.get(format);
 		String serviceUri = null;
 		try {
 			InputStream msmServiceDescriptionStream = importer.transformStream(serviceDescription);
-			serviceUri = this.serviceManager.addService(fileName, msmServiceDescriptionStream,
-					sourceUri);
+			
+			// 3rd - Store the resulting MSM service
+			serviceUri = this.serviceManager.addService(msmServiceDescriptionStream,
+					documentUri);	
+			
 		} catch (ImporterException e) {
 			throw new ServiceException(e);
 		}
 		
+		// 4th - log that the service has been added
+		
 		return serviceUri;
-	}
-
-	/**
-	 * @param serviceUri
-	 * @return
-	 * @throws ServiceException
-	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#deleteService(java.lang.String)
-	 */
-	public String deleteService(String serviceUri) throws ServiceException {
-		return this.serviceManager.deleteService(serviceUri);
-	}
-
-	/**
-	 * @param serviceId
-	 * @return
-	 * @throws ServiceException
-	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#deleteServiceById(java.lang.String)
-	 */
-	public String deleteServiceById(String serviceId) throws ServiceException {
-		return this.serviceManager.deleteServiceById(serviceId);
 	}
 
 	/**
@@ -409,15 +324,18 @@ public class ManagerSingleton implements iServeManager {
 		return this.serviceManager.getServiceAsModel(serviceUri);
 	}
 
-	/**
-	 * @param serviceId
-	 * @return
-	 * @throws ServiceException
-	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#getServiceAsModelById(java.lang.String)
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#getServiceAsModelById(java.lang.String)
 	 */
-	public Model getServiceAsModelById(String serviceId)
-			throws ServiceException {
-		return this.serviceManager.getServiceAsModelById(serviceId);
+	public Model getServiceAsModelById(String serviceId) {
+		Model result;
+		try {
+			return this.serviceManager.getServiceAsModelById(serviceId);
+		} catch (ServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return null;
 	}
 
 	/**
@@ -731,6 +649,115 @@ public class ManagerSingleton implements iServeManager {
 	public boolean deleteTag(java.net.URI agentUri, java.net.URI serviceUri,
 			String tag) {
 		return ManagerSingleton._instance.deleteTag(agentUri, serviceUri, tag);
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#registerService(java.net.URI, java.lang.String)
+	 */
+	@Override
+	public java.net.URI registerService(java.net.URI sourceDocumentUri,
+			String contentType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#importService(java.io.InputStream, java.lang.String)
+	 */
+	@Override
+	public java.net.URI importService(InputStream serviceContent,
+			String contentType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#unregisterService(java.net.URI)
+	 */
+	@Override
+	public boolean unregisterService(java.net.URI serviceUri) {
+		
+		// Delete first the service	
+		// TODO: Change return type 
+		String result;
+		try {
+			result = this.serviceManager.deleteService(serviceUri.toString());
+		} catch (ServiceException e1) {
+			log.error("Problems deleting the service", e1);
+			return false;
+		}
+		if (result != null) {
+			boolean deleted = deleteServiceDocuments(serviceUri);
+			if (deleted) {
+				// TODO: Log services deleted
+				return true;
+			} else {
+				// TODO: Log problem deleting service documents
+				return false;
+			}
+		} else {
+			// TODO: Log problem deleting service
+			return false;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#getService(java.net.URI, org.ontoware.rdf2go.model.Syntax)
+	 */
+	@Override
+	public String getService(java.net.URI serviceUri, Syntax syntax) {
+		return this.serviceManager.getService(serviceUri, syntax);
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#getServiceAsModel(java.net.URI)
+	 */
+	@Override
+	public Model getServiceAsModel(java.net.URI serviceUri) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#getService(java.net.URI)
+	 */
+	@Override
+	public Service getService(java.net.URI serviceUri) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#listDocumentsForService(java.net.URI)
+	 */
+	@Override
+	public List<java.net.URI> listDocumentsForService(java.net.URI serviceUri) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#addDocumentToService(java.lang.String, java.net.URI)
+	 */
+	@Override
+	public java.net.URI addDocumentToService(String fileName,
+			java.net.URI serviceUri) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#getDocument(java.net.URI)
+	 */
+	@Override
+	public String getDocument(java.net.URI documentUri) {
+		try {
+			return this.docManager.getDocument(documentUri);
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 }

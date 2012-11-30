@@ -15,6 +15,8 @@
  */
 package uk.ac.open.kmi.iserve.sal.manager;
 
+import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 
 import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
@@ -26,21 +28,31 @@ import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
  */
 public interface DocumentManager {
 
-	public abstract List<String> listDocument();
+	public abstract List<URI> listDocuments();
+	
+	public abstract List<URI> listDocumentsForService(String serviceId);
+	
+	public abstract List<URI> listDocumentsForService(URI serviceURI);
 
-	public abstract String addDocument(String fileName,
-			String serviceDescription) throws DocumentException;
+	public abstract String getDocument(URI documentUri)
+			throws DocumentException;
+	
+	public abstract URI addDocument(String fileName,
+			String documentContent, String serviceId) throws DocumentException;
+	
+	public abstract URI addDocument(String fileName,
+			InputStream docContent, URI serviceUri) throws DocumentException;
 
-	public abstract String deleteDocument(String documentUri)
+	public abstract URI deleteDocument(URI documentUri)
 			throws DocumentException;
 
-	public abstract String deleteDocumentById(String documentId)
+	public abstract URI deleteDocumentById(String documentId)
 			throws DocumentException;
 
-	public abstract String getDocument(String documentUri)
+	public abstract boolean documentExists(String serviceId, String fileName)
 			throws DocumentException;
 
-	public abstract String getDocumentById(String documentId)
+	public abstract boolean documentExists(URI documentUri)
 			throws DocumentException;
-
+	
 }

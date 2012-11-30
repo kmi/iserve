@@ -16,14 +16,13 @@
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
@@ -39,23 +38,19 @@ import org.ontoware.rdf2go.vocabulary.RDF;
 import org.openrdf.rdf2go.RepositoryModel;
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve.commons.io.FileUtil;
-import uk.ac.open.kmi.iserve.commons.io.IOUtil;
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
-import uk.ac.open.kmi.iserve.commons.io.StringUtil;
 import uk.ac.open.kmi.iserve.commons.vocabulary.DC;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.imatcher.IServeIMatcher;
 import uk.ac.open.kmi.iserve.sal.ServiceFormat;
 import uk.ac.open.kmi.iserve.sal.ServiceFormatDetector;
-import uk.ac.open.kmi.iserve.sal.ServiceImporter;
 import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
-import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
-import uk.ac.open.kmi.iserve.sal.model.common.URI;
+import uk.ac.open.kmi.iserve.sal.model.impl.URIImpl;
 import uk.ac.open.kmi.iserve.sal.model.service.Service;
 import uk.ac.open.kmi.iserve.sal.util.ModelConverter;
+import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
 public class ServiceManagerRdf implements ServiceManager {
 	
@@ -92,8 +87,8 @@ public class ServiceManagerRdf implements ServiceManager {
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#listService()
 	 */
 	@Override
-	public List<String> listService() {
-		List<String> result = new ArrayList<String>();
+	public List<URI> listServices() {
+		List<URI> result = new ArrayList<URI>();
 		String queryString = "select DISTINCT ?s where { \n" +
 			"?s " + RDF.type.toSPARQL() + " " + MSM.Service.toSPARQL() +
 			" . }";
@@ -106,7 +101,12 @@ public class ServiceManagerRdf implements ServiceManager {
 				while ( iter.hasNext() ) {
 					org.ontoware.rdf2go.model.QueryRow qr = iter.next();
 					String valueString = qr.getValue("s").toString();
-					result.add(valueString);
+					try {
+						result.add(new URI(valueString));
+					} catch (URISyntaxException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				iter.close();
 				iter = null;
@@ -116,52 +116,46 @@ public class ServiceManagerRdf implements ServiceManager {
 		model = null;
 		return result;
 	}
-
-	
-	/**
-	 * Generate a unique identifier for a new service to be stored.
-	 * 
-	 * @return
-	 */
-	private String generateUniqueId() {
-		// FIXME: UUID may be too long in this case.
-		String uid = UUID.randomUUID().toString();
-		return uid;
-	}
 	
 	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#addService(java.lang.String, java.lang.String, java.lang.String)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#addService(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public String addService(String fileName, String serviceDescription,
-			String sourceUri) throws ServiceException {
+	public URI addService(String serviceId, String serviceDescription,
+			URI documentUri) throws ServiceException {
 		// TODO: We are assuming here a concrete charset 
 		try {
-			return addService(fileName, new ByteArrayInputStream(serviceDescription.getBytes("UTF-8")), sourceUri);
+			return addService(serviceId, new ByteArrayInputStream(serviceDescription.getBytes("UTF-8")), documentUri);
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException("Unsupported encoding for the service", e);
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#addService(java.lang.String, java.lang.String, java.lang.String)
-	 */
-	@Override
-	public String addService(String fileName, InputStream msmServiceDescriptionStream, String sourceUri) throws ServiceException {
 
-		if (msmServiceDescriptionStream == null || !isValid(msmServiceDescriptionStream)) {
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#addService(java.lang.String, java.io.InputStream, java.net.URI)
+	 */
+	public URI addService(String serviceId, InputStream msmInputStream, URI sourceDocumentUri) throws ServiceException {
+
+		if (serviceId == null || serviceId.isEmpty()) {
+			throw new ServiceException("The service Id has not been set.");
+		}
+		
+		if (msmInputStream == null || !isValid(msmInputStream)) {
 			throw new ServiceException("The service is not valid MSM.");
 		}
 		
-		String uuid = generateUniqueId();
-		String documentBaseURI = configuration.getIserveUrl() + MSM.DOCUMENT_INFIX + uuid + "/";
-		String serviceBaseURI = configuration.getIserveUrl() + MSM.SERVICE_INFIX + uuid;
-		String newServiceUri = null;
+		if (sourceDocumentUri == null) {
+			throw new ServiceException("The URI of the source document is null. Unable to store the service.");
+		}
+		
+		URI serviceBaseURI = getServiceBaseUri(serviceId);
+		URI newServiceUri = null;
 		
 		// save RDF to OWLim
-		RepositoryModel model = repoConnector.openRepositoryModel(documentBaseURI + fileName);
+		RepositoryModel model = repoConnector.openRepositoryModel(sourceDocumentUri.toString());
 		try {
-			model.readFrom(msmServiceDescriptionStream, Syntax.RdfXml, serviceBaseURI);
+			model.readFrom(msmInputStream, Syntax.RdfXml, serviceBaseURI.toString());
 			ClosableIterator<Statement> serviceURIs = model.findStatements(Variable.ANY, RDF.type, MSM.Service);
 			if ( null == serviceURIs ) {
 				throw new ServiceException("Errors in transformation results: msm:Service cannot be found");
@@ -172,37 +166,16 @@ public class ServiceManagerRdf implements ServiceManager {
 			}
 			serviceURIs.close();
 			
-			// Only store the document and include the dc:source if no original
-			// source for the document is given
-			if ( sourceUri != null && sourceUri.equalsIgnoreCase("") ) {
-				model.addStatement(stmt.getSubject(), DC.source, model.createURI(sourceUri));
-			} else {
-				model.addStatement(stmt.getSubject(), DC.source, model.createURI(documentBaseURI + fileName));
-			}
-			newServiceUri = stmt.getSubject().toString();
+			// Store the source for the document is given
+			model.addStatement(stmt.getSubject(), DC.source, model.createURI(sourceDocumentUri.toString()));
+			newServiceUri = stmt.getSubject().asURI().asJavaURI();
 		} catch (ModelRuntimeException e) {
 			throw new ServiceException(e);
 		} catch (IOException e) {
 			throw new ServiceException(e);
 		} finally {
 			repoConnector.closeRepositoryModel(model);
-		}
-
-		//TODO: This should be done directly using the Document Manager from
-		// iServe Manager 
-		if ( sourceUri == null || sourceUri.equalsIgnoreCase("") ) {
-			// save file to disk
-			try {
-				FileUtil.createDirIfNotExists(new File(configuration.getDocumentsFolder() + uuid + "/" ));
-				IOUtil.writeString(msmServiceDescriptionStream.toString(), new File(configuration.getDocumentsFolder() + uuid + "/" + fileName));
-			} catch (IOException e) {
-				model.open();
-				// FIXME: May remove ALL the statement in the repository, when using early version of Swift OWLim!
-				model.removeAll();
-				repoConnector.closeRepositoryModel(model);
-				throw new ServiceException(e);
-			}
-		}		
+		}	
 
 		// add to iServe iMatcher
 		// Replace with an observer mechanism so that anybody can register 
@@ -218,6 +191,28 @@ public class ServiceManagerRdf implements ServiceManager {
 	}
 
 	/**
+	 * Returns the URI of the document defining the service, i.e., without the 
+	 * fragment.
+	 * 
+	 * @param serviceId the unique id of the service
+	 * @return the URI of the service document
+	 */
+	private URI getServiceBaseUri(String serviceId) {
+		return getServicesPath().resolve(serviceId);
+	}
+
+	/**
+	 * Done every time to support on the fly updates on the configuration.
+	 * If this is not necessary we should push this up to the constructor.
+	 * 
+	 * @return the URI of the services resource path
+	 */
+	private URI getServicesPath() {
+		URI servicesBaseUri = URI.create(configuration.getIserveUrl() + MSM.SERVICE_INFIX);
+		return servicesBaseUri;
+	}
+
+	/**
 	 * @param msmServiceDescriptionStream
 	 * @return
 	 */
@@ -230,22 +225,11 @@ public class ServiceManagerRdf implements ServiceManager {
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#deleteService(java.lang.String)
 	 */
 	@Override
-	public String deleteService(String serviceUri) throws ServiceException {
+	public URI deleteService(URI serviceUri) throws ServiceException {
 		String contextUri = getContextUri(serviceUri);
 		if ( null == contextUri ) {
 			throw new ServiceException("Cannot find service identified by " + serviceUri);
 		}
-
-		// delete from hard disk
-		// FIXME: This should probably take place via the Document Manager
-		// TODO: Dont use the configuration directly
-		String prefix = configuration.getIserveUrl() + MSM.DOCUMENT_INFIX;
-		String relativePath = StringUtil.subStrings(contextUri, prefix); 
-		String filePath = configuration.getDocumentsFolder() + relativePath;
-
-		File file = new File(filePath);
-		File docFolder = new File(file.getParent());
-		FileUtil.deltree(docFolder);
 
 		// delete from OWLim
 		RepositoryModel model = repoConnector.openRepositoryModel(contextUri);
@@ -267,7 +251,7 @@ public class ServiceManagerRdf implements ServiceManager {
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#deleteServiceById(java.lang.String)
 	 */
 	@Override
-	public String deleteServiceById(String serviceId) throws ServiceException {
+	public URI deleteServiceById(String serviceId) throws ServiceException {
 		return deleteService(getServiceUri(serviceId));
 	}
 
@@ -275,7 +259,7 @@ public class ServiceManagerRdf implements ServiceManager {
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#getService(java.lang.String, org.ontoware.rdf2go.model.Syntax)
 	 */
 	@Override
-	public String getService(String serviceUri, Syntax syntax) throws ServiceException {
+	public String getService(URI serviceUri, Syntax syntax) throws ServiceException {
 		String contextUri = getContextUri(serviceUri);
 		if ( null == contextUri ) {
 			throw new ServiceException("Cannot find service identified by " + serviceUri);
@@ -291,7 +275,7 @@ public class ServiceManagerRdf implements ServiceManager {
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#getServiceAsModel(java.lang.String)
 	 */
 	@Override
-	public Model getServiceAsModel(String serviceUri) throws ServiceException {
+	public Model getServiceAsModel(URI serviceUri) throws ServiceException {
 		String contextUri = getContextUri(serviceUri);
 		if ( null == contextUri ) {
 			throw new ServiceException("Cannot find service identified by " + serviceUri);
@@ -319,8 +303,9 @@ public class ServiceManagerRdf implements ServiceManager {
 	@Override
 	public Service getService(URI serviceUri) throws ServiceException {
 		Service result = null;
-		Model model = getServiceAsModel(serviceUri.toString());
-		result = ModelConverter.coverterService(serviceUri, model);
+		Model model = getServiceAsModel(serviceUri);
+		//TODO: do we need our specific URI class?
+		result = ModelConverter.coverterService(new URIImpl(serviceUri.toString()), model);
 		model.close();
 		model = null;
 		return result;
@@ -330,8 +315,14 @@ public class ServiceManagerRdf implements ServiceManager {
 		return formatDetector.detect(serviceDescription);
 	}
 
-	// TODO: Dont use the configuration directly
-	private String getContextUri(String serviceUri) {
+
+	/**
+	 * Get the context URI given a service
+	 * 
+	 * @param serviceUri
+	 * @return
+	 */
+	private String getContextUri(URI serviceUri) {
 		String queryString = "select ?c where { \n" +
 			"graph ?c { \n" +
 			"<" + serviceUri + "> " + RDF.type.toSPARQL() + " " + MSM.Service.toSPARQL() +
@@ -359,7 +350,13 @@ public class ServiceManagerRdf implements ServiceManager {
 		return defUri;
 	}
 
-	// TODO: Dont use the configuration directly
+	
+	/**
+	 * Get the context URI given a service ID
+	 * 
+	 * @param serviceId
+	 * @return
+	 */
 	private String getContextUriById(String serviceId) {
 		String queryString = "select ?c where { \n" +
 			"graph ?c { \n" +
@@ -389,7 +386,7 @@ public class ServiceManagerRdf implements ServiceManager {
 	}
 
 	// TODO: Dont use the configuration directly
-	private String getServiceUri(String serviceId) {
+	private URI getServiceUri(String serviceId) {
 		if (serviceId == null) {
 			return null;
 		}
@@ -398,7 +395,7 @@ public class ServiceManagerRdf implements ServiceManager {
 			"?s " + RDF.type.toSPARQL() + " " + MSM.Service.toSPARQL() + "\n" +
 			"FILTER regex(str(?s), \"" + serviceId + "\", \"i\")\n}";
 
-		String defUri = null;
+		URI defUri = null;
 		RepositoryModel model = repoConnector.openRepositoryModel();
 		try {
 			QueryResultTable qrt = model.sparqlSelect(queryString);
@@ -410,13 +407,16 @@ public class ServiceManagerRdf implements ServiceManager {
 						org.ontoware.rdf2go.model.QueryRow qr = iter.next();
 						String valueString = qr.getValue("s").toString();
 						if ( valueString.toLowerCase().contains(configuration.getIserveUrl().toString()) ) {
-							defUri = valueString;
+							defUri = new URI(valueString);
 						}
 					}
 					iter.close();
 					iter = null;
 				}
 			}
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 			repoConnector.closeRepositoryModel(model);
 		}
@@ -424,12 +424,21 @@ public class ServiceManagerRdf implements ServiceManager {
 	}
 
 	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#querySelect(java.lang.String, java.lang.String)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#serviceExists(java.net.URI)
 	 */
-//	@Override
-//	public QueryResultTable querySelect(String query, String language) {
-//		Model model = repoConnector.openRepositoryModel();
-//		return model.querySelect(query, language);
-//	}
+	@Override
+	public boolean serviceExists(URI serviceUri) throws ServiceException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#serviceExists(java.lang.String)
+	 */
+	@Override
+	public boolean serviceExists(String serviceId) throws ServiceException {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }

@@ -158,4 +158,24 @@ public class LogManagerRdf implements LogManager {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.LogManager#getAllLogItemsForUser(java.net.URI)
+	 */
+	@Override
+	public Map<String, LogItem> getAllLogItemsForUser(java.net.URI userUri)
+			throws DatatypeConfigurationException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.LogManager#getAllLogItemsAboutResource(java.net.URI)
+	 */
+	@Override
+	public Map<String, LogItem> getAllLogItemsAboutResource(
+			java.net.URI resourceUri) throws DatatypeConfigurationException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

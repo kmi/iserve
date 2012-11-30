@@ -29,28 +29,30 @@ import java.util.List;
 public interface ReviewManager {
 
 	// Create
-	public abstract boolean addRating(URI agentUri, URI serviceUri, String rating);
+	public abstract boolean addRating(URI agentUri, URI resourceUri, String rating);
 
-	public abstract boolean addComment(URI agentUri, URI serviceUri, String comment);
+	public abstract boolean addComment(URI agentUri, URI resourceUri, String comment);
 
-	public abstract boolean addTag(URI agentUri, URI serviceUri, String tag);
+	public abstract boolean addTag(URI agentUri, URI resourceUri, String tag);
+	
+	public abstract boolean addTags(URI agentUri, URI resourceUri, List<String> tags);
 	
 	// Read
-	public abstract List<String> getRatings(URI serviceUri);
+	public abstract List<String> getRatings(URI resourceUri);
 	
-	public abstract List<String> getComments(URI serviceUri);
+	public abstract List<String> getComments(URI resourceUri);
 	
-	public abstract List<String> getTags(URI serviceUri);
+	public abstract List<String> getTags(URI resourceUri);
 	
 	//Update (only seems to make sense for rating)
-	public abstract boolean updateRating(URI agentUri, URI serviceUri, String rating);
+	public abstract boolean updateRating(URI agentUri, URI resourceUri, String rating);
 	
 	// Delete
-	public abstract boolean deleteRating(URI agentUri, URI serviceUri);
+	public abstract boolean deleteRating(URI agentUri, URI resourceUri);
 	
-	public abstract boolean deleteComment(URI agentUri, URI serviceUri);
+	public abstract boolean deleteComment(URI agentUri, URI resourceUri);
 	
-	public abstract boolean deleteTag(URI agentUri, URI serviceUri, String tag);
+	public abstract boolean deleteTag(URI agentUri, URI resourceUri, String tag);
 	
 	
 
