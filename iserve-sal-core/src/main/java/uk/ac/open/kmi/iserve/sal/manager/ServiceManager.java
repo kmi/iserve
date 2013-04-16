@@ -35,20 +35,14 @@ import uk.ac.open.kmi.iserve.sal.model.service.Service;
  */
 public interface ServiceManager {
 
-	public abstract List<URI> listServices();
-
+	// Create Methods
 	public URI addService(String serviceId, InputStream msmInputStream,
 			URI sourceDocumentUri) throws ServiceException;
 	
 	public abstract URI addService(String serviceId, String msmServiceDescription, URI sourceDocumentUri)
 			throws ServiceException;
-
-	public abstract URI deleteService(URI serviceUri)
-			throws ServiceException;
-
-	public abstract URI deleteServiceById(String serviceId)
-			throws ServiceException;
-
+	
+	// Read Methods
 	public abstract String getService(URI serviceUri, Syntax syntax)
 			throws ServiceException;
 
@@ -59,6 +53,17 @@ public interface ServiceManager {
 			throws ServiceException;
 
 	public abstract Service getService(URI serviceUri) throws ServiceException;
+	
+	// Delete Methods
+	public abstract URI deleteService(URI serviceUri)
+			throws ServiceException;
+
+	public abstract URI deleteServiceById(String serviceId)
+			throws ServiceException;
+
+	
+	// General Management Methods
+	public abstract List<URI> listServices();
 	
 	public abstract boolean serviceExists(URI serviceUri) throws ServiceException;
 	
