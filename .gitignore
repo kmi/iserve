@@ -4,8 +4,8 @@
 .settings/*
 target
 target/*
-iserve.war
 iserve/*
 deploy.sh
 
 /iserve
+/iserve*.war
