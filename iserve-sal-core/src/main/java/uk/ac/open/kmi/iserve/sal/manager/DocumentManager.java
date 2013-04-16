@@ -28,27 +28,34 @@ import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
  */
 public interface DocumentManager {
 
-	public abstract List<URI> listDocuments();
-	
-	public abstract List<URI> listDocumentsForService(String serviceId);
-	
-	public abstract List<URI> listDocumentsForService(URI serviceURI);
-
-	public abstract String getDocument(URI documentUri)
-			throws DocumentException;
-	
+	// Create Methods
 	public abstract URI addDocument(String fileName,
 			String documentContent, String serviceId) throws DocumentException;
 	
 	public abstract URI addDocument(String fileName,
 			InputStream docContent, URI serviceUri) throws DocumentException;
+	
+	// Read Methods
 
+	public abstract String getDocument(URI documentUri)
+			throws DocumentException;
+	
+	// Delete Methods
 	public abstract URI deleteDocument(URI documentUri)
 			throws DocumentException;
 
 	public abstract URI deleteDocumentById(String documentId)
 			throws DocumentException;
 
+	
+	// General Management Methods
+	
+	public abstract List<URI> listDocuments();
+	
+	public abstract List<URI> listDocumentsForService(String serviceId);
+	
+	public abstract List<URI> listDocumentsForService(URI serviceURI);
+	
 	public abstract boolean documentExists(String serviceId, String fileName)
 			throws DocumentException;
 
