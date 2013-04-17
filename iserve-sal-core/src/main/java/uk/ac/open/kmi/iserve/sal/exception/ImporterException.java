@@ -15,7 +15,7 @@
 */
 package uk.ac.open.kmi.iserve.sal.exception;
 
-public class ImporterException extends Exception {
+public class ImporterException extends SalException {
 
 	private static final long serialVersionUID = -2069203220017813003L;
 

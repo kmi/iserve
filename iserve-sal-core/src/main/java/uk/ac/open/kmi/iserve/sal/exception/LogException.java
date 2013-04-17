@@ -15,7 +15,7 @@
 */
 package uk.ac.open.kmi.iserve.sal.exception;
 
-public class LogException extends Exception {
+public class LogException extends SalException {
 
 	private static final long serialVersionUID = -7092358620629758742L;
 

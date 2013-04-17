@@ -15,7 +15,7 @@
 */
 package uk.ac.open.kmi.iserve.sal.exception;
 
-public class TaxonomyException extends Exception {
+public class TaxonomyException extends SalException {
 
 	/**
 	 * 

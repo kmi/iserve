@@ -15,7 +15,7 @@
 */
 package uk.ac.open.kmi.iserve.sal.exception;
 
-public class ReviewException extends Exception {
+public class ReviewException extends SalException {
 
 	private static final long serialVersionUID = -7092358620629758742L;
 
