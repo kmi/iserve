@@ -27,6 +27,7 @@ import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.model.Statement;
 import org.ontoware.rdf2go.model.Syntax;
 import org.openrdf.repository.RepositoryException;
+import org.w3c.dom.Document;
 
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.importer.ImporterConfig;
@@ -62,13 +63,13 @@ public class RdfImporter implements ServiceImporter {
 	}
 
 	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.ServiceImporter#transformStream(java.lang.String)
+	 * @see uk.ac.open.kmi.iserve.sal.ServiceImporter#transformStream(java.io.InputStream)
 	 */
 	@Override
-	public InputStream transformStream(String serviceDescription) throws ImporterException {
+	public InputStream transformStream(InputStream originalDescription) throws ImporterException {
 		try {
-			String serviceUriInRdf = RdfTransformer.getServiceUri(serviceDescription);
-			String rdfToStore = RdfTransformer.replaceBaseUri(serviceDescription, serviceUriInRdf, "#");
+			String serviceUriInRdf = RdfTransformer.getServiceUri(originalDescription);
+			String rdfToStore = RdfTransformer.replaceBaseUri(originalDescription, serviceUriInRdf, "#");
 			// add hasPartTransitive
 			rdfToStore = addHasPartTransitive(rdfToStore);
 			return new ByteArrayInputStream(rdfToStore.getBytes());

@@ -29,6 +29,7 @@ import org.ontoware.rdf2go.model.QueryRow;
 import org.ontoware.rdf2go.model.Statement;
 import org.ontoware.rdf2go.model.Syntax;
 import org.openrdf.repository.RepositoryException;
+import org.w3c.dom.Document;
 
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.importer.ImporterConfig;
@@ -112,16 +113,16 @@ public class OwlsImporter implements ServiceImporter {
 	public OwlsImporter() {	}
 
 	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.ServiceImporter#transformStream(java.lang.String)
+	 * @see uk.ac.open.kmi.iserve.sal.ServiceImporter#transformStream(java.io.InputStream)
 	 */
 	@Override
-	public InputStream transformStream(String serviceDescription) throws ImporterException {
+	public InputStream transformStream(InputStream originalDescription) throws ImporterException {
 		// store the service into a temporary repository.
 		Model tempModel = RDF2Go.getModelFactory().createModel();
 		tempModel.open();
 		String resultString = null;
 		try {
-			tempModel.readFrom(new ByteArrayInputStream(serviceDescription.getBytes()));
+			tempModel.readFrom(originalDescription);
 			resultString = transform(tempModel);
 		} catch (ModelRuntimeException e) {
 			throw new ImporterException(e);

@@ -16,7 +16,7 @@
 package uk.ac.open.kmi.iserve.importer.sawsdl;
 
 import java.io.IOException;
-import java.io.StringReader;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +46,6 @@ import org.ontoware.rdf2go.model.node.URI;
 import org.ontoware.rdf2go.vocabulary.RDF;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
@@ -74,13 +73,12 @@ public class Sawsdl20Transformer {
 		builder = factory.newDocumentBuilder();
 	}
 
-	public String transform(String serviceDescription) throws WSDLException, SAXException, IOException {
+	public String transform(InputStream originalDescription) throws WSDLException, SAXException, IOException {
 		WSDLFactory wsdlFactory = WSDLFactory.newInstance();
 		WSDLReader reader = wsdlFactory.newWSDLReader();
 		reader.setFeature(WSDLReader.FEATURE_VALIDATION, false);
 
-		InputSource is = new InputSource(new StringReader(serviceDescription));
-		Document dom = builder.parse(is);
+		Document dom = builder.parse(originalDescription);
 		Element domElement = dom.getDocumentElement();
 
 		WSDLSource wsdlSource = reader.createWSDLSource();

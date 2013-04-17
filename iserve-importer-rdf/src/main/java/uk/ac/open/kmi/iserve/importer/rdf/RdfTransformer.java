@@ -15,8 +15,10 @@
 */
 package uk.ac.open.kmi.iserve.importer.rdf;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import org.ontoware.aifbcommons.collection.ClosableIterator;
 import org.ontoware.rdf2go.RDF2Go;
@@ -39,15 +41,18 @@ public class RdfTransformer {
 		return baseUri;
 	}
 
-	public static String replaceBaseUri(String rdf, String serviceUri, String newBaseUri) {
+	public static String replaceBaseUri(InputStream serviceDescription, String serviceUri, String newBaseUri) throws IOException {
 		String oldBaseUri = getBaseUri(serviceUri);
 //		return rdf.replaceAll(oldBaseUri, "");
 
 		// FIXME: only replace NS of Service, Operation and Message
 		// read line, lines contain "<rdf:Description", "hasInput", "hasOutput", "hasInputFault" and "hasOutputFault"
-		String[] lines = rdf.split("\n");
-		String newRdf = "";
-		for ( String line : lines) {
+		StringBuilder response = new StringBuilder();
+		
+		BufferedReader in = new BufferedReader(new InputStreamReader(serviceDescription));
+		String line = null;
+		
+		while((line = in.readLine()) != null) {
 			if ( line.contains("xml:base") ||
 					line.contains("rdf:Description") ||
 					line.contains("http://www.w3.org/1999/02/22-rdf-syntax-ns#Description") ||
@@ -66,20 +71,19 @@ public class RdfTransformer {
 					line.contains("hasPart") ||
 					line.contains("hasOptionalPart") ||
 					line.contains("hasMandatoryPart") ) {
-				newRdf += line.replaceAll(oldBaseUri, newBaseUri) + "\n";
+				response.append(line.replaceAll(oldBaseUri, newBaseUri) + "\n");
 			} else {
-				newRdf += line + "\n";
+				response.append(line + "\n");
 			}
 		}
-		return newRdf;
+		return response.toString();
 	}
 
-	public static String getServiceUri(String rdf) throws ModelRuntimeException, IOException {
+	public static String getServiceUri(InputStream serviceDescription) throws ModelRuntimeException, IOException {
 		String serviceUriString = "";
-		StringReader stringReader = new StringReader(rdf);
 		Model model = RDF2Go.getModelFactory().createModel();
 		model.open();
-		model.readFrom(stringReader, Syntax.RdfXml);
+		model.readFrom(serviceDescription, Syntax.RdfXml);
 		ClosableIterator<org.ontoware.rdf2go.model.Statement> iter = model.findStatements(Variable.ANY, RDF.type, MSM.Service);
 		if ( iter.hasNext() ) {
 			Statement stmt = iter.next();

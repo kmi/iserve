@@ -15,7 +15,7 @@
 */
 package uk.ac.open.kmi.iserve.importer.sawsdl;
 
-import java.io.StringReader;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -49,8 +49,8 @@ import org.ontoware.rdf2go.vocabulary.RDF;
 import org.ontoware.rdf2go.vocabulary.RDFS;
 import org.xml.sax.InputSource;
 
-import uk.ac.open.kmi.iserve.importer.sawsdl.schema.Element;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.importer.sawsdl.schema.Element;
 import uk.ac.open.kmi.iserve.importer.sawsdl.schema.SchemaMap;
 import uk.ac.open.kmi.iserve.importer.sawsdl.schema.SchemaParser;
 import uk.ac.open.kmi.iserve.importer.sawsdl.util.ModelReferenceExtractor;
@@ -71,8 +71,8 @@ public class Sawsdl11Transformer {
 		schemaMaps = new ArrayList<SchemaMap>();
 	}
 
-	public String transform(String serviceDescription) throws WSDLException {
-		InputSource is = new InputSource(new StringReader(serviceDescription));
+	public String transform(InputStream originalDescription) throws WSDLException {
+		InputSource is = new InputSource(originalDescription);
 		Definition definition = reader.readWSDL(null, is);
 		Model tempModel = RDF2Go.getModelFactory().createModel();
 		tempModel.open();

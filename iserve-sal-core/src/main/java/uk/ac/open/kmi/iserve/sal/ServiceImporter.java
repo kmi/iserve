@@ -15,25 +15,8 @@
 */
 package uk.ac.open.kmi.iserve.sal;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.UUID;
 
-import org.ontoware.aifbcommons.collection.ClosableIterator;
-import org.ontoware.rdf2go.exception.ModelRuntimeException;
-import org.ontoware.rdf2go.model.Statement;
-import org.ontoware.rdf2go.model.Syntax;
-import org.ontoware.rdf2go.model.node.Variable;
-import org.ontoware.rdf2go.vocabulary.RDF;
-import org.openrdf.rdf2go.RepositoryModel;
-import org.openrdf.repository.RepositoryException;
-
-import uk.ac.open.kmi.iserve.commons.io.FileUtil;
-import uk.ac.open.kmi.iserve.commons.io.IOUtil;
-import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
-import uk.ac.open.kmi.iserve.commons.vocabulary.DC;
-import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 
 /**
@@ -47,11 +30,11 @@ public interface ServiceImporter {
 	 * Transform a service description, e.g. SAWSDL, OWL-S, hRESTS, etc., into
 	 * Minimal Service Model (MSM).
 	 * 
-	 * @param serviceDescription
+	 * @param orginalDescription
 	 *        The semantic Web service description
 	 * @return An input stream of the RDF describing the service and conforming to MSM model
 	 */
-	public abstract InputStream transformStream(String serviceDescription) throws ImporterException;
+	public abstract InputStream transformStream(InputStream orginalDescription) throws ImporterException;
 
 
 

@@ -52,11 +52,11 @@ public class HrestsImporter implements ServiceImporter {
 	}
 
 	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.ServiceImporter#transformStream(java.lang.String)
+	 * @see uk.ac.open.kmi.iserve.sal.ServiceImporter#transformStream(java.io.InputStream)
 	 */
 	@Override
-	public InputStream transformStream(String serviceDescription) throws ImporterException {
-		Document document = parser.parseDOM(new ByteArrayInputStream(serviceDescription.getBytes()), null);
+	public InputStream transformStream(InputStream originalDescription) throws ImporterException {
+		Document document = parser.parseDOM(originalDescription, null);
 		DOMSource source = new DOMSource(document);
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
 		StreamResult result = new StreamResult(bout);

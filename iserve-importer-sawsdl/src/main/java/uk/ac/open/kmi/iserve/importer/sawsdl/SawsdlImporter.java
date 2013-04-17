@@ -19,16 +19,14 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 import javax.wsdl.WSDLException;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.openrdf.repository.RepositoryException;
 import org.xml.sax.SAXException;
 
-import uk.ac.open.kmi.iserve.importer.ImporterConfig;
 import uk.ac.open.kmi.iserve.sal.ServiceImporter;
 import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 
@@ -58,17 +56,17 @@ public class SawsdlImporter implements ServiceImporter {
 	}
 
 	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.ServiceImporter#transformStream(java.lang.String)
+	 * @see uk.ac.open.kmi.iserve.sal.ServiceImporter#transformStream(java.io.InputStream)
 	 */
 	@Override
-	public InputStream transformStream(String serviceDescription) throws ImporterException {
+	public InputStream transformStream(InputStream originalDescription) throws ImporterException {
 		String resultString = null;
 		try {
-			int v = getVersion(serviceDescription);
+			int v = getVersion(originalDescription);
 			if ( v == v11 ) {
-				resultString = sawsdl11Transformer.transform(serviceDescription);
+				resultString = sawsdl11Transformer.transform(originalDescription);
 			} else if ( v == v20 ) {
-				resultString = sawsdl20Transformer.transform(serviceDescription);
+				resultString = sawsdl20Transformer.transform(originalDescription);
 			} else {
 				throw new ImporterException("Unknown version of WSDL, can not find either http://schemas.xmlsoap.org/wsdl or http://www.w3.org/ns/wsdl ");
 			}
@@ -87,8 +85,8 @@ public class SawsdlImporter implements ServiceImporter {
 		return new ByteArrayInputStream(resultString.getBytes());
 	}
 
-	private int getVersion(String serviceDescription) throws IOException {
-		StringReader reader = new StringReader(serviceDescription);
+	private int getVersion(InputStream serviceDescription) throws IOException {
+		InputStreamReader reader = new InputStreamReader(serviceDescription);
 		BufferedReader br = null;
 		br = new BufferedReader(reader);
 		String line = null;
