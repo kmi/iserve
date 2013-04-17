@@ -1,10 +1,10 @@
+# Proxy Configuration
+#http.proxyHost = wwwcache.open.ac.uk
+#http.proxyPort = 80
+
 # iServe Configuration
 iserve.url = http://localhost:9080/iserve-sal-rest
 iserve.documents = ./service-docs/
-
-# Proxy Configuration
-#iserve.proxyHost = wwwcache.open.ac.uk
-#iserve.proxyPort = 80
 
 # Core Data RDF Server
 services.rdfserver = http://localhost:8080/openrdf-sesame
