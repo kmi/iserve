@@ -58,10 +58,11 @@ public class SystemConfiguration {
 	private static final String DEFAULT_LUF_URL = "http://soa4all.isoco.net/luf";
 
 	// Configuration properties
+	private static final String PROXY_HOST_NAME_PROP = "http.proxyHost";
+	private static final String PROXY_PORT_PROP = "http.proxyPort";
 	private static final String ISERVE_URL_PROP = "iserve.url";
 	private static final String DOC_FOLDER_PATH_PROP = "iserve.documents";
-	private static final String PROXY_HOST_NAME_PROP = "iserve.proxyHost";
-	private static final String PROXY_PORT_PROP = "iserve.proxyPort";
+
 	// Services data
 	private static final String SERVICES_REPOSITORY_URL_PROP = "services.rdfserver";
 	private static final String SERVICES_REPOSITORY_NAME_PROP = "services.repository";
