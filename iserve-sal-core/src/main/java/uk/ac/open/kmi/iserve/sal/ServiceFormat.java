@@ -16,10 +16,23 @@
 package uk.ac.open.kmi.iserve.sal;
 
 public enum ServiceFormat {
-	UNSUPPORTED,
-	HTML,
-	WSDL,
-	OWLS,
-	RDFXML;
+	UNSUPPORTED ("err"),
+	HTML ("html"),
+	WSDL ("wsdl"),
+	OWLS ("owls"),
+	RDFXML ("rdf");
 //	RDF_N3;
+	
+	private final String fileExtension;
+	
+	ServiceFormat(String fileExtension) {
+		this.fileExtension = fileExtension;
+	}
+
+	/**
+	 * @return the fileExtension
+	 */
+	public String getFileExtension() {
+		return this.fileExtension;
+	}
 }
