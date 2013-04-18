@@ -15,11 +15,12 @@
 */
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 
 import org.ontoware.aifbcommons.collection.ClosableIterator;
 import org.ontoware.rdf2go.exception.ModelRuntimeException;
-import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.QueryRow;
 import org.ontoware.rdf2go.model.node.Variable;
@@ -32,12 +33,16 @@ import uk.ac.open.kmi.iserve.commons.vocabulary.USER;
 import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.UserException;
 import uk.ac.open.kmi.iserve.sal.manager.UserManager;
-import uk.ac.open.kmi.iserve.sal.model.common.URI;
 import uk.ac.open.kmi.iserve.sal.model.impl.URIImpl;
 import uk.ac.open.kmi.iserve.sal.model.impl.UserImpl;
 import uk.ac.open.kmi.iserve.sal.model.user.User;
 import uk.ac.open.kmi.iserve.sal.util.MD5;
 
+/**
+ * This entire implementation needs fixing
+ * 
+ * @author Dong Liu (Knowledge Media Institute - The Open University)
+ */
 public class UserManagerRdf implements UserManager {
 
 	private org.ontoware.rdf2go.model.node.URI hasUserName;
@@ -71,12 +76,14 @@ public class UserManagerRdf implements UserManager {
 		if ( null == openId || null == openId.toString() || "".equalsIgnoreCase(openId.toString())) {
 			throw new UserException("OpenID is null");
 		}
+		uk.ac.open.kmi.iserve.sal.model.common.URI openIdUri = 
+				new URIImpl(openId.toString());
 		User result = new UserImpl();
-		result.setOpenId(openId);
+		result.setOpenId(openIdUri);
 		//TODO: Correct this. The vocabulary should not depend on the deployment,
 		// only the instances should depend!!
 		String queryString = "SELECT ?p ?u ?pwd WHERE { " +
-			"?p " + FOAF.foafOpenId.toSPARQL() + " " + openId.toSPARQL() + " . " +
+			"?p " + FOAF.foafOpenId.toSPARQL() + " " + openIdUri.toSPARQL() + " . " +
 			"?p " + hasUserName.toSPARQL() + " ?u . " +
 			"?p " + hasPassword.toSPARQL() + " ?pwd . }";
 		RepositoryModel repoModel = repoConnector.openRepositoryModel();
@@ -138,6 +145,9 @@ public class UserManagerRdf implements UserManager {
 		if ( null == openId || null == openId.toString() || "" == openId.toString() ) {
 			throw new UserException("User's OpenID is null");
 		}
+		
+		uk.ac.open.kmi.iserve.sal.model.common.URI foafIdUri = 
+				new URIImpl(foafId.toString());
 
 		RepositoryModel repoModel = repoConnector.openRepositoryModel();
 
@@ -158,7 +168,7 @@ public class UserManagerRdf implements UserManager {
 		}
 
 		qrt = repoModel.sparqlSelect("SELECT ?o WHERE { \n" +
-				foafId.toSPARQL() + " " + FOAF.foafOpenId.toSPARQL() + " ?o . }");
+				foafIdUri.toSPARQL() + " " + FOAF.foafOpenId.toSPARQL() + " ?o . }");
 		if ( qrt != null ) {
 			ClosableIterator<QueryRow> iter = qrt.iterator();
 			if ( iter.hasNext() ) {
@@ -203,14 +213,21 @@ public class UserManagerRdf implements UserManager {
 		if ( null == user ) {
 			throw new UserException("User is null");
 		}
-		return addUser(user.getFoafId(), user.getOpenId(), user.getUserName(), user.getPassword());
+		try {
+			return addUser(new URI(user.getFoafId().toString()), 
+					new URI(user.getOpenId().toString()), 
+					user.getUserName(), 
+					user.getPassword());
+		} catch (URISyntaxException e) {
+			throw new UserException("Unable to obtain user details.", e);
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.sal.manager.UserManager#removeUser(uk.ac.open.kmi.iserve.sal.model.common.URI)
 	 */
 	@Override
-	public void removeUser(URI foafId) throws UserException {
+	public boolean removeUser(URI foafId) throws UserException {
 		if ( null == foafId || null == foafId.toString() || "" == foafId.toString() ) {
 			throw new UserException("FOAF ID is null");
 		}
@@ -223,18 +240,23 @@ public class UserManagerRdf implements UserManager {
 		}
 		repoConnector.closeRepositoryModel(repoModel);
 		repoModel = null;
+		return true;
 	}
 
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.sal.manager.UserManager#removeUser(java.lang.String)
 	 */
 	@Override
-	public void removeUser(String userName) throws UserException {
+	public boolean removeUser(String userName) throws UserException {
 		User user = getUser(userName);
 		if ( null == user ) {
 			throw new UserException("Cannot find the user with username:" + userName);
 		}
-		removeUser(user.getFoafId());
+		try {
+			return removeUser( new URI(user.getFoafId().toString()));
+		} catch (URISyntaxException e) {
+			throw new UserException("Unable to obtain user details.", e);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -247,9 +269,22 @@ public class UserManagerRdf implements UserManager {
 			return null;
 		}
 
-		User userInRepo = getUser(user.getOpenId());
+		User userInRepo;
+		try {
+			userInRepo = getUser(new URI(user.getOpenId().toString()));
+		} catch (URISyntaxException e1) {
+			throw new UserException("Unable to obtain user details. The Open ID is wrong.");
+		}
+		
 		if ( userInRepo == null || userInRepo.getPassword() == null || userInRepo.getPassword().equalsIgnoreCase("") ) {
 			return null;
+		}
+		
+		URI userInRepoUri;
+		try {
+			userInRepoUri = new URI(userInRepo.getFoafId().toString());
+		} catch (URISyntaxException e1) {
+			throw new UserException("Unable to obtain user foaf id.");
 		}
 
 		// check password
@@ -265,8 +300,17 @@ public class UserManagerRdf implements UserManager {
 			throw new UserException(e);
 		}
 
-		removeUser(userInRepo.getFoafId());
-		return addUser(user);
+		// Add first and ensure we delete the previous prior to returning the result
+		URI newUserUri = addUser(user);
+		if (newUserUri != null) {
+			if (removeUser(userInRepoUri)) {
+				return newUserUri;
+			} else {
+				// It went wrong, delete the previous user
+				removeUser(newUserUri);
+			}
+		}
+		return null;
 	}
 
 	/* (non-Javadoc)

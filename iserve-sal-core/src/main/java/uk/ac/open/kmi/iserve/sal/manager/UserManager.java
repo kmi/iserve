@@ -15,9 +15,10 @@
  */
 package uk.ac.open.kmi.iserve.sal.manager;
 
+import java.net.URI;
+
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.sal.exception.UserException;
-import uk.ac.open.kmi.iserve.sal.model.common.URI;
 import uk.ac.open.kmi.iserve.sal.model.user.User;
 
 /**
@@ -36,12 +37,13 @@ public interface UserManager {
 
 	public abstract URI addUser(User user) throws UserException;
 
-	public abstract void removeUser(URI foafId) throws UserException;
+	public abstract boolean removeUser(URI foafId) throws UserException;
 
-	public abstract void removeUser(String userName) throws UserException;
+	public abstract boolean removeUser(String userName) throws UserException;
 
 	public abstract URI updateUser(User user) throws UserException;
 	
+	// TODO: should not be here
 	public RDFRepositoryConnector getUsersRepositoryConnector();
 
 }
