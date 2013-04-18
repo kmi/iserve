@@ -46,26 +46,19 @@ public interface ServiceManager {
 	public abstract Model getServiceAsModel(URI serviceUri)
 			throws ServiceException;
 
-	public abstract Model getServiceAsModelById(String serviceId)
-			throws ServiceException;
-
 	public abstract Service getService(URI serviceUri) throws ServiceException;
 	
 	// Delete Methods
 	public abstract boolean deleteService(URI serviceUri)
 			throws ServiceException;
 
-	public abstract boolean deleteServiceById(String serviceId)
-			throws ServiceException;
-
-	
 	// General Management Methods
-	public String generateUniqueServiceId();
+	public abstract String generateUniqueServiceId();
+	
+	public abstract URI getServiceUri(String serviceId);
 	
 	public abstract List<URI> listServices();
 	
 	public abstract boolean serviceExists(URI serviceUri) throws ServiceException;
-	
-	public abstract boolean serviceExists(String serviceId) throws ServiceException;
 
 }

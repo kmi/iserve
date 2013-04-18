@@ -15,10 +15,8 @@
  */
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -51,7 +49,6 @@ import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.model.impl.URIImpl;
 import uk.ac.open.kmi.iserve.sal.model.service.Service;
 import uk.ac.open.kmi.iserve.sal.util.ModelConverter;
-import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
 public class ServiceManagerRdf implements ServiceManager {
 
@@ -246,14 +243,6 @@ public class ServiceManagerRdf implements ServiceManager {
 	}
 
 	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#deleteServiceById(java.lang.String)
-	 */
-	@Override
-	public boolean deleteServiceById(String serviceId) throws ServiceException {
-		return deleteService(getServiceUri(serviceId));
-	}
-
-	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#getService(java.lang.String, org.ontoware.rdf2go.model.Syntax)
 	 */
 	@Override
@@ -277,19 +266,6 @@ public class ServiceManagerRdf implements ServiceManager {
 		String contextUri = getContextUri(serviceUri);
 		if ( null == contextUri ) {
 			throw new ServiceException("Cannot find service identified by " + serviceUri);
-		}
-		RepositoryModel model = repoConnector.openRepositoryModel(contextUri);
-		return model;
-	}
-
-	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#getServiceAsModelById(java.lang.String)
-	 */
-	@Override
-	public Model getServiceAsModelById(String serviceId) throws ServiceException {
-		String contextUri = getContextUriById(serviceId);
-		if ( null == contextUri ) {
-			throw new ServiceException("Cannot find service identified by " + serviceId);
 		}
 		RepositoryModel model = repoConnector.openRepositoryModel(contextUri);
 		return model;
@@ -383,8 +359,8 @@ public class ServiceManagerRdf implements ServiceManager {
 		return defUri;
 	}
 
-	// TODO: Dont use the configuration directly
-	private URI getServiceUri(String serviceId) {
+	// TODO: Id generation should not require a SPARQL Query
+	public URI getServiceUri(String serviceId) {
 		if (serviceId == null) {
 			return null;
 		}
@@ -426,15 +402,6 @@ public class ServiceManagerRdf implements ServiceManager {
 	 */
 	@Override
 	public boolean serviceExists(URI serviceUri) throws ServiceException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#serviceExists(java.lang.String)
-	 */
-	@Override
-	public boolean serviceExists(String serviceId) throws ServiceException {
 		// TODO Auto-generated method stub
 		return false;
 	}
