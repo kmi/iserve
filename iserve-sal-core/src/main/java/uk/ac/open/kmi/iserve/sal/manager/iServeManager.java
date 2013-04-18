@@ -25,11 +25,14 @@ import org.ontoware.rdf2go.model.Syntax;
 import uk.ac.open.kmi.iserve.sal.ServiceFormat;
 import uk.ac.open.kmi.iserve.sal.ServiceImporter;
 import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
+import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.model.service.Service;
 import uk.ac.open.kmi.iserve.sal.model.user.User;
 
 /**
  * General Purpose Manager for iServe. 
+ * Higher Level Access to Data management within iServe. Only a controlled subset
+ * of the inner methods for data management are exposed at this level
  * 
  * TODO: Registering import mechanisms should also be defined somewhere
  * 
@@ -58,8 +61,11 @@ public interface iServeManager extends LogManager, KeyManager,
 	 */
 	public abstract ServiceImporter unregisterImporter(ServiceFormat format);
 	
-	// Service Management Operations
-	
+	/*
+	 * Service Management Methods
+	 */
+
+	// Create
 	/**
 	 * Register a new service. This operation takes care of performing the 
 	 * appropriate format transformation. The source document is not stored on 
@@ -67,109 +73,134 @@ public interface iServeManager extends LogManager, KeyManager,
 	 * use @see importService instead.
 	 * 
 	 * @param sourceDocumentUri
-	 * @param contentType
+	 * @param format
 	 * @return
+	 * @throws SalException
 	 */
 	public abstract URI registerService(URI sourceDocumentUri, 
-			String contentType);
+			ServiceFormat format) throws SalException;
 	
 	/**
 	 * Imports a new service within iServe. The original document is stored 
 	 * in the server and the transformed version registered within iServe.
 	 * 
 	 * @param serviceContent
-	 * @param contentType
+	 * @param format
 	 * @return
+	 * @throws SalException
 	 */
 	public abstract URI importService(InputStream serviceContent, 
-			String contentType);
+			ServiceFormat format) throws SalException;
 	
+	// Read
+	/**
+	 * Obtains the textual representation of a Service in a particular syntax
+	 * TODO: This should actually use ServiceFormat
+	 * 
+	 * @param serviceUri
+	 * @param syntax
+	 * @return
+	 * @throws SalException
+	 */
+	public abstract String getServiceSerialisation(URI serviceUri, Syntax syntax) throws SalException;
+
+	/**
+	 * Obtains the RDF Model representing the service
+	 * TODO: This method is backend specific and may need to go
+	 * 
+	 * @param serviceUri
+	 * @return
+	 * @throws SalException
+	 */
+	public abstract Model getServiceAsModel(URI serviceUri) throws SalException;
+
+	/**
+	 * Obtains the Service model
+	 * 
+	 * @param serviceUri
+	 * @return
+	 * @throws SalException
+	 */
+	public abstract Service getService(URI serviceUri) throws SalException;
+	
+	/**
+	 * List all the known services
+	 * 
+	 * @return
+	 * @throws SalException
+	 */
+	public abstract List<URI> listServices() throws SalException;
+	
+	// Delete
 	/**
 	 * Unregisters the service from iServe. Any related documents are also 
 	 * deleted in the process.
 	 * 
 	 * @param serviceUri
 	 * @return
+	 * @throws SalException
 	 */
-	public abstract boolean unregisterService(URI serviceUri);
-
-	public abstract String getService(URI serviceUri, Syntax syntax);
-
-	public abstract Model getServiceAsModel(URI serviceUri);
-
-	public abstract Service getService(URI serviceUri);
-	
-	public abstract List<URI> listServices();
+	public abstract boolean unregisterService(URI serviceUri) throws SalException;
 	
 
-	// Document Management Operations
-	public abstract List<URI> listDocuments();
+	/*
+	 *  Document Management Operations
+	 */
 	
-	public abstract List<URI> listDocumentsForService(URI serviceUri);
-
+	// Create
+	/**
+	 * Adds a document to a given service. In iServe every document is bound to 
+	 * a service and does not stand on its own
+	 * 
+	 * @param fileName name of the file to use
+	 * @param docContent content of the document
+	 * @param serviceUri the URI of service this document relates to
+	 * @return
+	 * @throws SalException
+	 */
 	public abstract URI addDocumentToService(String fileName, 
-			InputStream docContent, URI serviceUri);
-
-	public abstract URI deleteDocument(URI documentUri);
-
-	public abstract String getDocument(URI documentUri);
+			InputStream docContent, URI serviceUri) throws SalException;
 	
-	// Log Management Operations 
-	// TODO: Check these. 
-//	public abstract Map<String, LogItem> getAllLogItems()
-//			throws DatatypeConfigurationException;
-//	
-//	public abstract Map<String, LogItem> getAllLogItemsForUser(URI userUri)
-//			throws DatatypeConfigurationException;
-//	
-//	public abstract Map<String, LogItem> getAllLogItemsAboutResource(URI resourceUri)
-//			throws DatatypeConfigurationException;
+	// Read
+	
+	/**
+	 * Lists all known documents
+	 * 
+	 * @return the list of the URIs of all the documents known to this server
+	 * @throws SalException
+	 */
+	public abstract List<URI> listDocuments() throws SalException;
+	
+	/**
+	 * Lists all documents related to a given service
+	 * 
+	 * @param serviceUri the service URI
+	 * @return the List of the URIs of all the documents related to the service
+	 * @throws SalException
+	 */
+	public abstract List<URI> listDocumentsForService(URI serviceUri) throws SalException;
+
+	/**
+	 * Obtains a particular document
+	 * 
+	 * @param documentUri the URI of the document to get
+	 * @return the content of the document
+	 * @throws SalException
+	 */
+	public abstract String getDocument(URI documentUri) throws SalException;
+	
+	// Delete
+	/**
+	 * Deletes a document from the server
+	 * 
+	 * @param documentUri the URI of the document to delete
+	 * @return true if it was successful or null otherwise
+	 * @throws SalException
+	 */
+	public abstract boolean deleteDocument(URI documentUri) throws SalException;
 
 	
-	// Review Manamgenet Methods
-	// TODO: Check these. Extend or redefine?
-//	// Create
-//	public abstract boolean addRating(URI agentUri, URI resourceUri, String rating);
-//
-//	public abstract boolean addComment(URI agentUri, URI resourceUri, String comment);
-//
-//	public abstract boolean addTag(URI agentUri, URI resourceUri, String tag);
-//	
-//	public abstract boolean addTags(URI agentUri, URI resourceUri, List<String> tags);
-//	
-//	// Read
-//	public abstract List<String> getRatings(URI resourceUri);
-//	
-//	public abstract List<String> getComments(URI resourceUri);
-//	
-//	public abstract List<String> getTags(URI resourceUri);
-//	
-//	//Update (only seems to make sense for rating)
-//	public abstract boolean updateRating(URI agentUri, URI resourceUri, String rating);
-//	
-//	// Delete
-//	public abstract boolean deleteRating(URI agentUri, URI resourceUri);
-//	
-//	public abstract boolean deleteComment(URI agentUri, URI resourceUri);
-//	
-//	public abstract boolean deleteTag(URI agentUri, URI resourceUri, String tag);
-	
-	// User Managemet Methods
-	// TODO: Check these.
-//	public abstract User getUser(URI openId);
-//
-//	public abstract User getUser(String userName);
-//
-//	public abstract URI addUser(URI foafId, URI openId, String userName,
-//			String password);
-//
-//	public abstract URI addUser(User user);
-//
-//	public abstract void removeUser(URI foafId);
-//
-//	public abstract void removeUser(String userName);
-//
-//	public abstract URI updateUser(User user);
 	
 	
 }
+
