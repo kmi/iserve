@@ -82,13 +82,13 @@ public class ServiceManagerRdf implements ServiceManager {
 	}
 	
 	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#generateUniqueServiceId()
+	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#generateServiceUri()
 	 */
 	@Override
-	public String generateUniqueServiceId() {
+	public URI generateServiceUri() {
 		// FIXME: UUID may be too long in this case.
 		String uid = UUID.randomUUID().toString();
-		return uid;
+		return this.getServiceUri(uid);
 	}
 
 	/* (non-Javadoc)
@@ -129,10 +129,10 @@ public class ServiceManagerRdf implements ServiceManager {
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#addService(java.lang.String, java.io.InputStream, java.net.URI)
 	 */
-	public URI addService(String serviceId, InputStream msmInputStream, URI sourceDocumentUri) throws ServiceException {
+	public URI addService(URI serviceUri, InputStream msmInputStream, URI sourceDocumentUri) throws ServiceException {
 
-		if (serviceId == null || serviceId.isEmpty()) {
-			throw new ServiceException("The service Id has not been set.");
+		if (serviceUri == null || !serviceUri.isAbsolute()) {
+			throw new ServiceException("The service URI is not correct.");
 		}
 
 		if (msmInputStream == null || !isValid(msmInputStream)) {
@@ -143,13 +143,12 @@ public class ServiceManagerRdf implements ServiceManager {
 			throw new ServiceException("The URI of the source document is null. Unable to store the service.");
 		}
 
-		URI serviceBaseURI = getServiceBaseUri(serviceId);
 		URI newServiceUri = null;
 
 		// save RDF to OWLim
 		RepositoryModel model = repoConnector.openRepositoryModel(sourceDocumentUri.toString());
 		try {
-			model.readFrom(msmInputStream, Syntax.RdfXml, serviceBaseURI.toString());
+			model.readFrom(msmInputStream, Syntax.RdfXml, serviceUri.toString());
 			ClosableIterator<Statement> serviceURIs = model.findStatements(Variable.ANY, RDF.type, MSM.Service);
 			if ( null == serviceURIs ) {
 				throw new ServiceException("Errors in transformation results: msm:Service cannot be found");
@@ -162,7 +161,7 @@ public class ServiceManagerRdf implements ServiceManager {
 
 			// Store the source for the document is given
 			model.addStatement(stmt.getSubject(), DC.source, model.createURI(sourceDocumentUri.toString()));
-			newServiceUri = stmt.getSubject().asURI().asJavaURI();
+
 		} catch (ModelRuntimeException e) {
 			throw new ServiceException(e);
 		} catch (IOException e) {
@@ -181,7 +180,7 @@ public class ServiceManagerRdf implements ServiceManager {
 		//		model.close();
 		//		model = null;
 
-		return newServiceUri;
+		return serviceUri;
 	}
 
 	/**
@@ -360,7 +359,7 @@ public class ServiceManagerRdf implements ServiceManager {
 	}
 
 	// TODO: Id generation should not require a SPARQL Query
-	public URI getServiceUri(String serviceId) {
+	private URI getServiceUri(String serviceId) {
 		if (serviceId == null) {
 			return null;
 		}

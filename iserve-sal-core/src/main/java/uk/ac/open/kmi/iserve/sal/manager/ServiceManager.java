@@ -36,7 +36,7 @@ import uk.ac.open.kmi.iserve.sal.model.service.Service;
 public interface ServiceManager {
 
 	// Create Methods
-	public URI addService(String serviceId, InputStream msmInputStream,
+	public URI addService(URI serviceUri, InputStream msmInputStream,
 			URI sourceDocumentUri) throws ServiceException;
 	
 	// Read Methods
@@ -53,9 +53,12 @@ public interface ServiceManager {
 			throws ServiceException;
 
 	// General Management Methods
-	public abstract String generateUniqueServiceId();
-	
-	public abstract URI getServiceUri(String serviceId);
+	/**
+	 * This method generates a unique URI for a new service to be uploaded
+	 * 
+	 * @return a unique URI to be used for new services.
+	 */
+	public abstract URI generateServiceUri();
 	
 	public abstract List<URI> listServices();
 	
