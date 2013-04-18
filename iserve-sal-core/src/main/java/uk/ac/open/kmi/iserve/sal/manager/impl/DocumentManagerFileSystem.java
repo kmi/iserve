@@ -23,6 +23,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.compress.utils.IOUtils;
+
 import uk.ac.open.kmi.iserve.commons.io.FileUtil;
 import uk.ac.open.kmi.iserve.commons.io.IOUtil;
 import uk.ac.open.kmi.iserve.commons.io.StringUtil;
@@ -30,6 +32,7 @@ import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
+import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
 public class DocumentManagerFileSystem implements DocumentManager {
 	
@@ -96,6 +99,21 @@ public class DocumentManagerFileSystem implements DocumentManager {
 	}
 	
 	/**
+	 * Obtain the Internal URI for a given document.
+	 * 
+	 * @param serviceURI
+	 * @param fileName
+	 * @return
+	 * @throws URISyntaxException 
+	 */
+	private URI getDocumentInternalUri(URI serviceUri, String fileName) throws URISyntaxException {
+		URI docsFolder = getDocumentsInternalPath();
+		return docsFolder.resolve(
+				UriUtil.getUniqueId(serviceUri, 
+						configuration.getIserveUrl().toURI()) + "/" + fileName);
+	}
+
+	/**
 	 * @param file
 	 * @return
 	 */
@@ -104,11 +122,17 @@ public class DocumentManagerFileSystem implements DocumentManager {
 		return null; 
 	}
 	
+	// TODO: The constant doesn't belong to MSM but rather to iServe Config
+	// TODO: Move the entire method to the configuration class? (needs aligning servlets definitions and configuration)
+	private URI getServicesPublicPath() {
+		return URI.create(configuration.getIserveUrl() + MSM.SERVICE_INFIX);
+	} 
+	
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#listDocument()
 	 */
 	@Override
-	public List<URI> listDocuments() {
+	public List<URI> listDocuments() throws DocumentException {
 		List<URI> result = new ArrayList<URI>();
 		File wsdlFolder = new File(configuration.getDocumentsFolder());
 		File[] folderList = wsdlFolder.listFiles();
@@ -126,19 +150,10 @@ public class DocumentManagerFileSystem implements DocumentManager {
 	}
 
 	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#listDocumentsForService(java.lang.String)
-	 */
-	@Override
-	public List<URI> listDocumentsForService(String serviceId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#listDocumentsForService(java.net.URI)
 	 */
 	@Override
-	public List<URI> listDocumentsForService(URI serviceURI) {
+	public List<URI> listDocumentsForService(URI serviceURI) throws DocumentException {
 		List<URI> result = new ArrayList<URI>();
 		if (serviceURI == null) {
 			return result;
@@ -177,83 +192,60 @@ public class DocumentManagerFileSystem implements DocumentManager {
 		return result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#addDocument(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public URI addDocument(String fileName, String docContent, String serviceId) throws DocumentException {
-		
-		URI folder = this.getDocumentsInternalPath().resolve(serviceId); 
-		URI fileUri = folder.resolve(fileName);
-		URI result = null;
-		try {
-			FileUtil.createDirIfNotExists(new File(folder));
-			File file = new File(fileUri);
-			IOUtil.writeString(docContent, file);
-			result = this.getDocumentPublicUri(file);
-		} catch (IOException e) {
-			throw new DocumentException(e);
-		}
-		return result;
-	}
+//	/* (non-Javadoc)
+//	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#addDocument(java.lang.String, java.lang.String)
+//	 */
+//	@Override
+//	public URI addDocumentToService(String fileName, String docContent, String serviceId) throws DocumentException {
+//		
+//		URI folder = this.getDocumentsInternalPath().resolve(serviceId); 
+//		URI fileUri = folder.resolve(fileName);
+//		URI result = null;
+//		try {
+//			FileUtil.createDirIfNotExists(new File(folder));
+//			File file = new File(fileUri);
+//			IOUtil.writeString(docContent, file);
+//			result = this.getDocumentPublicUri(file);
+//		} catch (IOException e) {
+//			throw new DocumentException(e);
+//		}
+//		return result;
+//	}
 	
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#addDocument(java.lang.String, java.io.InputStream, java.net.URI)
 	 */
 	@Override
-	public URI addDocument(String fileName, InputStream docContent,
+	public URI addDocumentToService(String fileName, InputStream docContent,
 			URI serviceUri) throws DocumentException {
-		// TODO Auto-generated method stub
-		return null;
+				
+		URI result = null;
+		try {
+			URI internalDocUri = this.getDocumentInternalUri(serviceUri, fileName);
+			File file = new File(internalDocUri);
+			FileUtil.createDirIfNotExists(file.getParentFile());	
+			IOUtil.writeStream(docContent, file);
+			result = this.getDocumentPublicUri(file);
+		} catch (IOException e) {
+			throw new DocumentException("Unable to add document to service.", e);
+		} catch (URISyntaxException e) {
+			throw new DocumentException("Unable to add document to service.", e);
+		}
+		return result;
 	}
 
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#deleteDocument(java.net.URI)
 	 */
 	@Override
-	public URI deleteDocument(URI documentUri) throws DocumentException {
+	public boolean deleteDocument(URI documentUri) throws DocumentException {
 		// delete from hard disk
 		URI fileUri = this.getDocumentInternalUri(documentUri);
 		File file = new File(fileUri);
-		// TODO: Should only remove the file in the future
-		File docFolder = new File(file.getParent());
-		FileUtil.deltree(docFolder);
-		return documentUri;
-	}
-
-	// TODO: Is this method necessary
-	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#deleteDocumentById(java.lang.String)
-	 */
-	@Override
-	public URI deleteDocumentById(String documentId) throws DocumentException {
-		URI result =  null;
-		File docFolder = new File(configuration.getDocumentsFolder() + documentId);
-		if ( docFolder.isDirectory() == true ) {
-			String[] files = docFolder.list();
-			if ( files.length > 0 ) {
-				try {
-					result = new URI(configuration.getDocumentsFolder() + documentId + "/" + files[0]);
-				} catch (URISyntaxException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+		if (file.exists()) {
+			return file.delete();
 		}
-		FileUtil.deltree(docFolder);
-		return result;
-	}
-
-	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#documentExists(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public boolean documentExists(String serviceId, String fileName)
-			throws DocumentException {
-		
-		URI fileUri = getDocumentInternalUri(serviceId, fileName);
-		File file = new File(fileUri);
-		return file.exists();
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -265,6 +257,25 @@ public class DocumentManagerFileSystem implements DocumentManager {
 		URI fileUri = getDocumentInternalUri(documentUri);
 		File file = new File(fileUri);
 		return file.exists();
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#deleteServiceDocuments(java.net.URI)
+	 */
+	@Override
+	public boolean deleteServiceDocuments(URI serviceURI)
+			throws DocumentException {
+		
+		if (serviceURI == null) {
+			return false;
+		}
+		
+		URI folderUri = this.getDocumentInternalUri(serviceURI);
+		File serviceFolder = new File(folderUri);
+		if (serviceFolder.exists() && serviceFolder.isDirectory()) {
+			return FileUtil.deltree(serviceFolder);
+		}
+		return false;
 	}
 
 }
