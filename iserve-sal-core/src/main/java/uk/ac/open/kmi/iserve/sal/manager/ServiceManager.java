@@ -39,11 +39,8 @@ public interface ServiceManager {
 	public URI addService(String serviceId, InputStream msmInputStream,
 			URI sourceDocumentUri) throws ServiceException;
 	
-	public abstract URI addService(String serviceId, String msmServiceDescription, URI sourceDocumentUri)
-			throws ServiceException;
-	
 	// Read Methods
-	public abstract String getService(URI serviceUri, Syntax syntax)
+	public abstract String getServiceSerialisation(URI serviceUri, Syntax syntax)
 			throws ServiceException;
 
 	public abstract Model getServiceAsModel(URI serviceUri)
@@ -55,14 +52,16 @@ public interface ServiceManager {
 	public abstract Service getService(URI serviceUri) throws ServiceException;
 	
 	// Delete Methods
-	public abstract URI deleteService(URI serviceUri)
+	public abstract boolean deleteService(URI serviceUri)
 			throws ServiceException;
 
-	public abstract URI deleteServiceById(String serviceId)
+	public abstract boolean deleteServiceById(String serviceId)
 			throws ServiceException;
 
 	
 	// General Management Methods
+	public String generateUniqueServiceId();
+	
 	public abstract List<URI> listServices();
 	
 	public abstract boolean serviceExists(URI serviceUri) throws ServiceException;

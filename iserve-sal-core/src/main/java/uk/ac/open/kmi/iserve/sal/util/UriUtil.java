@@ -24,17 +24,6 @@ import java.util.UUID;
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
 public class UriUtil {
-
-	/**
-	 * This does not ensure that we get a unique ID
-	 * 
-	 * @return
-	 */
-	public static String generateUniqueId() {
-		// FIXME: UUID may be too long in this case.
-		String uid = UUID.randomUUID().toString();
-		return uid;
-	}
 	
 	/**
 	 * Given the URI of a resource it returns the Unique ID.
