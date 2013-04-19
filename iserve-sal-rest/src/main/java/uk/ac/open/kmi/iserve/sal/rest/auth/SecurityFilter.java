@@ -16,6 +16,7 @@
 package uk.ac.open.kmi.iserve.sal.rest.auth;
 
 import java.io.IOException;
+import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 
@@ -126,7 +127,8 @@ public class SecurityFilter implements ContainerRequestFilter {
 		}
 		User user = null;
 		try {
-			user = ManagerSingleton.getInstance().getUser(accessToken.getAccessAs());
+			user = ManagerSingleton.getInstance().getUser(
+					URI.create(accessToken.getAccessAs().toString()));
 		} catch (UserException e) {
 			throw new MappableContainerException(e);
 		}
