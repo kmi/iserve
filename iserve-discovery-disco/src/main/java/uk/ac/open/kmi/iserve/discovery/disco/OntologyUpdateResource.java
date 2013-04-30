@@ -44,9 +44,9 @@ import org.openrdf.repository.RepositoryException;
 
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
+import uk.ac.open.kmi.iserve.commons.vocabulary.WSMO_LITE;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
-import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 
 /**
  * This class takes care of loading the ontologies that are referenced within
@@ -88,13 +88,21 @@ public class OntologyUpdateResource {
 	private static RDFRepositoryConnector serviceConnector;
 
 	public OntologyUpdateResource() throws RepositoryException, IOException {
-		ServiceManager svcManager = ManagerSingleton.getInstance().getServiceManager();
-		if (svcManager instanceof ServiceManagerRdf) {
-			serviceConnector = ((ServiceManagerRdf)svcManager).getRepoConnector();
+		String repoName = ManagerSingleton.getInstance().getConfiguration().getDataRepositoryName();
+		java.net.URI repoUri = ManagerSingleton.getInstance().getConfiguration().getDataRepositoryUri();
+		
+		if (repoName != null && repoUri != null) {
+			try {
+				serviceConnector = new RDFRepositoryConnector(repoUri.toString(), repoName);
+			} catch (RepositoryException e) {
+				throw new WebApplicationException(
+						new IllegalStateException("The ontology updater could not connect to the RDF Repository."), 
+								Response.Status.INTERNAL_SERVER_ERROR);
+			}
 		} else {
 			throw new WebApplicationException(
-					new IllegalStateException("The Ontology Updater requires a Service Manager based backed by an RDF Repository."), 
-					Response.Status.INTERNAL_SERVER_ERROR);
+					new IllegalStateException("The ontology updater requires a Service Manager based backed by an RDF Repository."), 
+							Response.Status.INTERNAL_SERVER_ERROR);
 		}
 		
 		if (updaterThread == null) {
@@ -211,7 +219,7 @@ public class OntologyUpdateResource {
 
 		Set<URI> modelRefs = new HashSet<URI>();
 
-		String query = "prefix sawsdl: <" + MSM.SAWSDL_NS_URI + ">\n" + "select distinct ?ref \n" +
+		String query = "prefix sawsdl: <" + SAWSDL.NS + ">\n" + "select distinct ?ref \n" +
                 "where { ?x sawsdl:modelReference ?ref . }";
 
         QueryResultTable qresult = repoModel.querySelect(query, "sparql");
@@ -221,7 +229,7 @@ public class OntologyUpdateResource {
             modelRefs.add(ref);
         }
 
-        query = "prefix wl: <" + MSM.WL_NS_URI + ">\n" + "select distinct ?ref \n" +
+        query = "prefix wl: <" + WSMO_LITE.NS + ">\n" + "select distinct ?ref \n" +
                 "where { ?x wl:usesOntology ?ref . }";
 
         qresult = repoModel.querySelect(query, "sparql");
