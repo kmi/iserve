@@ -22,6 +22,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
 import uk.ac.open.kmi.iserve.importer.sawsdl.util.ModelReferenceExtractor;
 
 public class Element extends Entity {
@@ -96,11 +97,11 @@ public class Element extends Entity {
 
 	public void toRdf(Model model) {
 		URI elementUri = model.createURI(getUriString());
-		model.addStatement(elementUri, RDF.type, MSM.MessagePart);
+		model.addStatement(elementUri, RDF.type, MSM.MESSAGE_PART);
 		String modelRefString = getModelReference();
 		ModelReferenceExtractor.processModelRefString(modelRefString, model, elementUri);
-		ModelReferenceExtractor.processLiLoString(getLoweringSchemaMapping(), model, elementUri, MSM.loweringSchemaMapping);
-		ModelReferenceExtractor.processLiLoString(getLiftingSchemaMapping(), model, elementUri, MSM.liftingSchemaMapping);
+		ModelReferenceExtractor.processLiLoString(getLoweringSchemaMapping(), model, elementUri, model.createURI(SAWSDL.LOWERING_SCHEMA_MAPPING));
+		ModelReferenceExtractor.processLiLoString(getLiftingSchemaMapping(), model, elementUri, model.createURI(SAWSDL.LIFTING_SCHEMA_MAPPING));
 	}
 
 }

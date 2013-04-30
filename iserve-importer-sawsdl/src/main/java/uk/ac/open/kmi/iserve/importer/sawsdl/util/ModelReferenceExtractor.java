@@ -32,6 +32,7 @@ import org.ontoware.rdf2go.model.node.URI;
 import org.w3c.dom.NamedNodeMap;
 
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
 
 public class ModelReferenceExtractor {
 
@@ -88,11 +89,11 @@ public class ModelReferenceExtractor {
 			return;
 		Object obj = element.getExtensionAttribute(loweringQName);
 		if ( obj != null ) {
-			processLiLoString(obj.toString(), model, elementUri, MSM.loweringSchemaMapping);
+			processLiLoString(obj.toString(), model, elementUri, model.createURI(SAWSDL.LOWERING_SCHEMA_MAPPING));
 		}
 		obj = element.getExtensionAttribute(liftingQName);
 		if ( obj != null ) {
-			processLiLoString(obj.toString(), model, elementUri, MSM.liftingSchemaMapping);
+			processLiLoString(obj.toString(), model, elementUri, model.createURI(SAWSDL.LIFTING_SCHEMA_MAPPING));
 		}
 		// process attrExtensions
 		List<UnknownExtensibilityElement> extElements = element.getExtensibilityElements();
@@ -105,9 +106,9 @@ public class ModelReferenceExtractor {
 				for ( int i = 0; i < len; i++ ) {
 					if ( nodeMap.item(i) != null && nodeMap.item(i).getNodeName() != null ) {
 						if ( nodeMap.item(i).getNodeName().contains("loweringSchemaMapping") ) {
-							processLiLoString(nodeMap.item(i).getNodeValue(), model, elementUri, MSM.loweringSchemaMapping);
+							processLiLoString(nodeMap.item(i).getNodeValue(), model, elementUri, model.createURI(SAWSDL.LOWERING_SCHEMA_MAPPING));
 						} else if ( nodeMap.item(i).getNodeName().contains("liftingSchemaMapping") ) {
-							processLiLoString(nodeMap.item(i).getNodeValue(), model, elementUri, MSM.liftingSchemaMapping);
+							processLiLoString(nodeMap.item(i).getNodeValue(), model, elementUri, model.createURI(SAWSDL.LIFTING_SCHEMA_MAPPING));
 						}
 					} 
 				}
@@ -125,7 +126,7 @@ public class ModelReferenceExtractor {
 				if ( modelRef != null && !modelRef.equalsIgnoreCase("") ) {
 //					System.out.println("modelRef: " + modelRef);
 					modelRef = fixWsdl4jBug(modelRef);
-					model.addStatement(elementUri, MSM.modelReference, model.createURI(modelRef));
+					model.addStatement(elementUri, model.createURI(SAWSDL.MODEL_REFERENCE), model.createURI(modelRef));
 				}
 			}
 		}
@@ -166,10 +167,10 @@ public class ModelReferenceExtractor {
 		for ( XMLAttr attribute : attributes ) {
 			if ( attribute.getAttributeType() != null && attribute.getAttributeType().getLocalPart() != null &&
 					attribute.getAttributeType().getLocalPart().contains("liftingSchemaMapping") ) {
-				processLiLoString(attribute.getContent().toString(), model, elementUri, MSM.liftingSchemaMapping);
+				processLiLoString(attribute.getContent().toString(), model, elementUri, model.createURI(SAWSDL.LIFTING_SCHEMA_MAPPING));
 			} else if ( attribute.getAttributeType() != null && attribute.getAttributeType().getLocalPart() != null &&
 					attribute.getAttributeType().getLocalPart().contains("loweringSchemaMapping") ) {
-				processLiLoString(attribute.getContent().toString(), model, elementUri, MSM.loweringSchemaMapping);
+				processLiLoString(attribute.getContent().toString(), model, elementUri, model.createURI(SAWSDL.LOWERING_SCHEMA_MAPPING));
 			}
 		}
 	}

@@ -150,7 +150,7 @@ public class Sawsdl11Transformer {
 			QName key = iter.next();
 			Service service = services.get(key);
 			URI serviceUri = tempModel.createURI(TEMP_BASE_URI + "wsdl.service(" + service.getQName().getLocalPart() + ")");
-			tempModel.addStatement(serviceUri, RDF.type, MSM.Service);
+			tempModel.addStatement(serviceUri, RDF.type, MSM.SERVICE);
 			tempModel.addStatement(serviceUri, RDFS.label, service.getQName().getLocalPart());
 			ModelReferenceExtractor.extractModelReferences((WSDLElement) service, tempModel, serviceUri);
 			processPortType(service, tempModel, serviceUri);
@@ -182,23 +182,23 @@ public class Sawsdl11Transformer {
 			return;
 		for ( Operation operation : operations ) {
 			URI operationUri = tempModel.createURI(serviceUri.toString() + "/" + operation.getName());
-			tempModel.addStatement(operationUri, RDF.type, MSM.Operation);
-			tempModel.addStatement(serviceUri, MSM.hasOperation, operationUri);
+			tempModel.addStatement(operationUri, RDF.type, MSM.OPERATION);
+			tempModel.addStatement(serviceUri, tempModel.createURI(MSM.HAS_OPERATION), operationUri);
 			ModelReferenceExtractor.extractModelReferences(operation, tempModel, operationUri);
 			Input input = operation.getInput();
 			if ( input != null ) {
-				processMessage(input.getMessage(), tempModel, operationUri, MSM.hasInput);
+				processMessage(input.getMessage(), tempModel, operationUri, tempModel.createURI(MSM.HAS_INPUT_MESSAGE));
 			}
 			Output output = operation.getOutput();
 			if ( output != null ) {
-				processMessage(output.getMessage(), tempModel, operationUri, MSM.hasOutput);
+				processMessage(output.getMessage(), tempModel, operationUri, tempModel.createURI(MSM.HAS_OUTPUT_MESSAGE));
 			}
 		}
 	}
 
 	private void processMessage(Message message, Model tempModel, URI operationUri, URI typeUri) {
 		URI messageUri = tempModel.createURI(operationUri.toString() + "/" + message.getQName().getLocalPart());
-		tempModel.addStatement(messageUri, RDF.type, MSM.Message);
+		tempModel.addStatement(messageUri, RDF.type, MSM.MESSAGE);
 		tempModel.addStatement(operationUri, typeUri, messageUri);
 		ModelReferenceExtractor.extractModelReferences(message, tempModel, messageUri);
 		ModelReferenceExtractor.extractLiLoSchema(message, tempModel, messageUri);
@@ -213,9 +213,10 @@ public class Sawsdl11Transformer {
 			String key = iter.next();
 			Part part = parts.get(key);
 			URI partUri = tempModel.createURI(messageUri.toString() + "/" + part.getName());
-			tempModel.addStatement(partUri, RDF.type, MSM.MessagePart);
-			tempModel.addStatement(messageUri, MSM.hasPart, partUri);
-			tempModel.addStatement(messageUri, MSM.hasPartTransitive, partUri);
+			tempModel.addStatement(partUri, RDF.type, MSM.MESSAGE_PART);
+			// TODO: Check and fix this
+			tempModel.addStatement(messageUri, tempModel.createURI(MSM.HAS_PART), partUri);
+			tempModel.addStatement(messageUri, tempModel.createURI(MSM.HAS_PART_TRANSITIVE), partUri);
 			ModelReferenceExtractor.extractModelReferences(part, tempModel, partUri);
 			ModelReferenceExtractor.extractLiLoSchema(part, tempModel, partUri);
 			QName elementName = part.getElementName();
@@ -225,8 +226,8 @@ public class Sawsdl11Transformer {
 					Element element = schemaMap.findElementType(elementName.getLocalPart());
 					if ( element != null && element.getUriString() != null && element.getUriString() != "" ) {
 //						System.out.println("element.getUriString(): " + element.getUriString());
-						tempModel.addStatement(partUri, MSM.hasPart, tempModel.createURI(element.getUriString()));
-						tempModel.addStatement(partUri, MSM.hasPartTransitive, tempModel.createURI(element.getUriString()));
+						tempModel.addStatement(partUri, tempModel.createURI(MSM.HAS_PART), tempModel.createURI(element.getUriString()));
+						tempModel.addStatement(partUri, tempModel.createURI(MSM.HAS_PART_TRANSITIVE), tempModel.createURI(element.getUriString()));
 					}
 				}
 			} else {

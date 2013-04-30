@@ -124,7 +124,7 @@ public class Sawsdl20Transformer {
 			InterfaceElement intfElement = serviceElement.getInterfaceElement();
 			if ( intfElement != null && serviceElement != null && serviceElement.getName() != null ) {
 				URI serviceUri = tempModel.createURI(TEMP_BASE_URI + "wsdl.service(" + serviceElement.getName().getLocalPart() + ")");
-				tempModel.addStatement(serviceUri, RDF.type, MSM.Service);
+				tempModel.addStatement(serviceUri, RDF.type, MSM.SERVICE);
 				processOperations(intfElement.getInterfaceOperationElements(), tempModel, serviceUri);
 			}
 		}
@@ -136,8 +136,8 @@ public class Sawsdl20Transformer {
 		}
 		for ( InterfaceOperationElement operationElement : operationElements ) {
 			URI operationUri = tempModel.createURI(serviceUri.toString() + "/" + operationElement.getName().getLocalPart());
-			tempModel.addStatement(operationUri, RDF.type, MSM.Operation);
-			tempModel.addStatement(serviceUri, MSM.hasOperation, operationUri);
+			tempModel.addStatement(operationUri, RDF.type, MSM.OPERATION);
+			tempModel.addStatement(serviceUri, tempModel.createURI(MSM.HAS_OPERATION), operationUri);
 			ModelReferenceExtractor.extractModelReferences(operationElement, tempModel, operationUri);
 			InterfaceMessageReferenceElement[] messages = operationElement.getInterfaceMessageReferenceElements();
 			processMessages(messages, tempModel, operationUri);
@@ -154,17 +154,17 @@ public class Sawsdl20Transformer {
 			URI faultUri = null;
 			if ( fault.getDirection().equals(Direction.IN) ) {
 				faultUri = tempModel.createURI(operationUri.toString() + "/infault/" + fault.getMessageLabel().toString());
-				tempModel.addStatement(operationUri, MSM.hasInputFault, faultUri);
+				tempModel.addStatement(operationUri, tempModel.createURI(MSM.HAS_INPUT_FAULT), faultUri);
 			} else if ( fault.getDirection().equals(Direction.OUT) ) {
 				faultUri = tempModel.createURI(operationUri.toString() + "/outfault/" + fault.getMessageLabel().toString());
-				tempModel.addStatement(operationUri, MSM.hasOutputFault, faultUri);
+				tempModel.addStatement(operationUri, tempModel.createURI(MSM.HAS_OUTPUT_FAULT), faultUri);
 			}
-			tempModel.addStatement(faultUri, RDF.type, MSM.Message);
+			tempModel.addStatement(faultUri, RDF.type, MSM.MESSAGE);
 			if ( fault.getRef() != null && fault.getRef().getLocalPart() != null ) {
 				URI faultPart = tempModel.createURI(TEMP_BASE_URI + "types/" + fault.getRef().getLocalPart());
-				tempModel.addStatement(faultPart, RDF.type, MSM.MessagePart);
-				tempModel.addStatement(faultUri, MSM.hasPart, faultPart);
-				tempModel.addStatement(faultUri, MSM.hasPartTransitive, faultPart);
+				tempModel.addStatement(faultPart, RDF.type, tempModel.createURI(MSM.MESSAGE_PART));
+				tempModel.addStatement(faultUri, tempModel.createURI(MSM.HAS_PART), faultPart);
+				tempModel.addStatement(faultUri, tempModel.createURI(MSM.HAS_PART_TRANSITIVE), faultPart);
 			}
 			ModelReferenceExtractor.extractModelReferences(fault, tempModel, faultUri);
 			ModelReferenceExtractor.extractLiLoSchema(fault, tempModel, faultUri);
@@ -179,19 +179,19 @@ public class Sawsdl20Transformer {
 			URI messageUri = null;
 			if ( message.getDirection().equals(Direction.IN) ) {
 				messageUri = tempModel.createURI(operationUri.toString() + "/input/" + message.getMessageLabel().toString());
-				tempModel.addStatement(operationUri, MSM.hasInput, messageUri);
+				tempModel.addStatement(operationUri, tempModel.createURI(MSM.HAS_INPUT_MESSAGE), messageUri);
 			} else if ( message.getDirection().equals(Direction.OUT) ) {
 				messageUri = tempModel.createURI(operationUri.toString() + "/output/" + message.getMessageLabel().toString());
-				tempModel.addStatement(operationUri, MSM.hasOutput, messageUri);
+				tempModel.addStatement(operationUri, tempModel.createURI(MSM.HAS_OUTPUT_MESSAGE), messageUri);
 			}
 			if ( message.getElement() != null && message.getElement().getQName() != null &&
 					message.getElement().getQName().getLocalPart() != null ) {
 				URI messagePart = tempModel.createURI(TEMP_BASE_URI + "types/" + message.getElement().getQName().getLocalPart());
-				tempModel.addStatement(messagePart, RDF.type, MSM.MessagePart);
-				tempModel.addStatement(messageUri, MSM.hasPart, messagePart);
-				tempModel.addStatement(messageUri, MSM.hasPartTransitive, messagePart);
+				tempModel.addStatement(messagePart, RDF.type, MSM.MESSAGE_PART);
+				tempModel.addStatement(messageUri, tempModel.createURI(MSM.HAS_PART), messagePart);
+				tempModel.addStatement(messageUri, tempModel.createURI(MSM.HAS_PART_TRANSITIVE), messagePart);
 			}
-			tempModel.addStatement(messageUri, RDF.type, MSM.Message);
+			tempModel.addStatement(messageUri, RDF.type, tempModel.createURI(MSM.MESSAGE));
 			ModelReferenceExtractor.extractModelReferences(message, tempModel, messageUri);
 			ModelReferenceExtractor.extractLiLoSchema(message, tempModel, messageUri);
 		}

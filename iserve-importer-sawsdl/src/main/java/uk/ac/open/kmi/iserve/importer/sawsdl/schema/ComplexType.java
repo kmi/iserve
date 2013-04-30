@@ -24,6 +24,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
 import uk.ac.open.kmi.iserve.importer.sawsdl.util.ModelReferenceExtractor;
 
 public class ComplexType extends Type {
@@ -71,13 +72,13 @@ public class ComplexType extends Type {
 
 	public void toRdf(Model tempModel, URI partUri) {
 		ModelReferenceExtractor.processModelRefString(getModelReference(), tempModel, partUri);
-		ModelReferenceExtractor.processLiLoString(getLoweringSchemaMapping(), tempModel, partUri, MSM.loweringSchemaMapping);
-		ModelReferenceExtractor.processLiLoString(getLiftingSchemaMapping(), tempModel, partUri, MSM.liftingSchemaMapping);
+		ModelReferenceExtractor.processLiLoString(getLoweringSchemaMapping(), tempModel, partUri, tempModel.createURI(SAWSDL.LOWERING_SCHEMA_MAPPING));
+		ModelReferenceExtractor.processLiLoString(getLiftingSchemaMapping(), tempModel, partUri, tempModel.createURI(SAWSDL.LIFTING_SCHEMA_MAPPING));
 
 		// process children
 		for ( Element child : children ) {
-			tempModel.addStatement(partUri, MSM.hasPart, tempModel.createURI(child.getUriString()));
-			tempModel.addStatement(partUri, MSM.hasPartTransitive, tempModel.createURI(child.getUriString()));
+			tempModel.addStatement(partUri, tempModel.createURI(MSM.HAS_PART), tempModel.createURI(child.getUriString()));
+			tempModel.addStatement(partUri, tempModel.createURI(MSM.HAS_PART_TRANSITIVE), tempModel.createURI(child.getUriString()));
 		}
 	}
 

@@ -16,6 +16,7 @@
 package uk.ac.open.kmi.iserve.importer.sawsdl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -87,8 +88,8 @@ public class SawsdlImporterTest {
 		    for (int i=0; i<children.length; i++) {
 		        // Get filename of file or directory
 		        File file = children[i];
-		        String contents = IOUtil.readString(file);
-				InputStream result = importer.transformStream(contents);
+		        InputStream in = new FileInputStream(file);
+				InputStream result = importer.transformStream(in);
 		        System.out.println(result.toString());
 		        
 		    }
