@@ -31,6 +31,7 @@ public class OwlsImporterTest {
 		importer = new OwlsImporter();
 	}
 
+	// TODO: Do proper testing
 	public void test() throws ImporterException {
 		try {
 			InputStream in = new FileInputStream("/Users/dl3962/Workspace/gtd/Action/iServe/data/testing-20100125/vehicle_price_service.owls");
