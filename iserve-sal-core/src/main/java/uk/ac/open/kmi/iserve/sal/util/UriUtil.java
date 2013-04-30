@@ -18,6 +18,8 @@ package uk.ac.open.kmi.iserve.sal.util;
 import java.net.URI;
 import java.util.UUID;
 
+import org.ontoware.rdf2go.model.node.impl.URIImpl;
+
 /**
  * Class common URI manipulation
  * 
@@ -30,12 +32,12 @@ public class UriUtil {
 	 * Checks for those that are local to the server only
 	 * 
 	 * @param resourceUri
-	 * @param serverUri the server URI
+	 * @param basePath the base path of the URI
 	 * @return the uniqueId if it is a local URI to the server or null.
 	 */
-	public static String getUniqueId(URI resourceUri, URI serverUri) {
+	public static String getUniqueId(URI resourceUri, URI basePath) {
 		String result = null;
-		URI relativeUri = resourceUri.relativize(serverUri);
+		URI relativeUri = resourceUri.relativize(basePath);
 		// If it is relative the first part of the path is the Unique ID
 		if (!relativeUri.isAbsolute()) {
 			result = relativeUri.toString().substring(0, 
@@ -55,5 +57,11 @@ public class UriUtil {
 	public static boolean isResourceLocalToServer(URI resourceUri, URI serverUri) {
 		URI relativeUri = resourceUri.relativize(serverUri);
 		return !relativeUri.isAbsolute();
+	}
+	
+	public static URI generateUniqueResourceUri(URI basePath) {
+		// FIXME: UUID may be too long in this case.
+		String uid = UUID.randomUUID().toString();
+		return basePath.resolve(uid);
 	}
 }

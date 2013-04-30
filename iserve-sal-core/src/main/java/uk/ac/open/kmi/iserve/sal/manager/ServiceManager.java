@@ -19,49 +19,76 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 
-import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.model.Syntax;
 
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve.sal.model.service.Service;
 
 /**
  * Interface that defines the operations a Service Manager should offer
- * Currently this is bound to RDF2GO and therefore is RDF-oriented
  * If other implementations backed by different types of storage systems are 
- * needed we should update this 
+ * needed we should update this.
  * 
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
 public interface ServiceManager {
 
 	// Create Methods
-	public URI addService(URI serviceUri, InputStream msmInputStream,
+	/**
+	 * Creates a Service Description in the system.
+	 * Only needs to be fed with an serialisation of some kind. At the moment
+	 * this is to be limited to RDF descriptions.
+	 * 
+	 * Prior to storing the description the system should ensure that this is 
+	 * a correct serialisation.
+	 * 
+	 * @param msmInputStream the input service description in terms of MSM
+	 * @param sourceDocumentUri the source document this description has been 
+	 * extracted from. Could be local or external
+	 * @return the URI this service description was saved to
+	 * @throws ServiceException
+	 */
+	public URI addService(InputStream msmInputStream,
 			URI sourceDocumentUri) throws ServiceException;
 	
 	// Read Methods
+	/**
+	 * Obtains the service description of the service identified by the URI
+	 * in the serialisation requested.
+	 *  
+	 * @param serviceUri the URI of the service to obtain
+	 * @param syntax the format to use when serialising the service
+	 * @return the serialised service description
+	 * @throws ServiceException
+	 */
 	public abstract String getServiceSerialisation(URI serviceUri, Syntax syntax)
 			throws ServiceException;
-
-	public abstract Model getServiceAsModel(URI serviceUri)
-			throws ServiceException;
-
-	public abstract Service getService(URI serviceUri) throws ServiceException;
 	
 	// Delete Methods
+	/**
+	 * Deletes the given service
+	 * 
+	 * @param serviceUri the URI of the service to delete
+	 * @return True if it was deleted or false otherwise
+	 * @throws ServiceException
+	 */
 	public abstract boolean deleteService(URI serviceUri)
 			throws ServiceException;
 
 	// General Management Methods
 	/**
-	 * This method generates a unique URI for a new service to be uploaded
+	 * Obtains a list of service URIs with all the services known to the system
 	 * 
-	 * @return a unique URI to be used for new services.
+	 * @return list of URIs with all the services in the registry
 	 */
-	public abstract URI generateServiceUri();
-	
 	public abstract List<URI> listServices();
 	
+	/**
+	 * Determines whether a service is known to the registry
+	 * 
+	 * @param serviceUri the URI of the service being looked up
+	 * @return True if it is registered in the server
+	 * @throws ServiceException
+	 */
 	public abstract boolean serviceExists(URI serviceUri) throws ServiceException;
 
 }

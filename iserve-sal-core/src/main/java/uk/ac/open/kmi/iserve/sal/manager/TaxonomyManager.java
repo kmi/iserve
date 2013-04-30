@@ -15,10 +15,10 @@
  */
 package uk.ac.open.kmi.iserve.sal.manager;
 
+import java.net.URI;
 import java.util.List;
 
 import uk.ac.open.kmi.iserve.sal.exception.TaxonomyException;
-import uk.ac.open.kmi.iserve.sal.model.taxonomy.Category;
 
 /**
  * Class Description
@@ -27,12 +27,9 @@ import uk.ac.open.kmi.iserve.sal.model.taxonomy.Category;
  */
 public interface TaxonomyManager {
 
-	public abstract List<String> listTaxonomy();
+	public abstract List<String> listTaxonomies();
 
-	public abstract String addTaxonomy(String taxonomyUri)
-			throws TaxonomyException;
-
-	public abstract List<Category> loadTaxonomy(String taxonomyUri)
+	public abstract boolean addTaxonomy(URI taxonomyUri)
 			throws TaxonomyException;
 
 }

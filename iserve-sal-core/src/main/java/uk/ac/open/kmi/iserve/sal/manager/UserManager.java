@@ -19,29 +19,30 @@ import java.net.URI;
 
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.sal.exception.UserException;
-import uk.ac.open.kmi.iserve.sal.model.user.User;
 
 /**
  * Class Description
+ * 
+ * TODO: Complete
  * 
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
 public interface UserManager {
 
-	public abstract User getUser(URI openId) throws UserException;
+//	public abstract User getUser(URI openId) throws UserException;
 
-	public abstract User getUser(String userName) throws UserException;
+//	public abstract User getUser(String userName) throws UserException;
 
 	public abstract URI addUser(URI foafId, URI openId, String userName,
 			String password) throws UserException;
 
-	public abstract URI addUser(User user) throws UserException;
+//	public abstract URI addUser(User user) throws UserException;
 
 	public abstract boolean removeUser(URI foafId) throws UserException;
 
 	public abstract boolean removeUser(String userName) throws UserException;
 
-	public abstract URI updateUser(User user) throws UserException;
+//	public abstract URI updateUser(User user) throws UserException;
 	
 	// TODO: should not be here
 	public RDFRepositoryConnector getUsersRepositoryConnector();

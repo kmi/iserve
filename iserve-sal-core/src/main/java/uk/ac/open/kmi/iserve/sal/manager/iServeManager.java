@@ -19,15 +19,12 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 
-import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.model.Syntax;
 
 import uk.ac.open.kmi.iserve.sal.ServiceFormat;
 import uk.ac.open.kmi.iserve.sal.ServiceImporter;
 import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
-import uk.ac.open.kmi.iserve.sal.model.service.Service;
-import uk.ac.open.kmi.iserve.sal.model.user.User;
 
 /**
  * General Purpose Manager for iServe. 
@@ -38,8 +35,10 @@ import uk.ac.open.kmi.iserve.sal.model.user.User;
  * 
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
-public interface iServeManager extends LogManager, KeyManager,
-		ReviewManager, TaxonomyManager, UserManager {
+//public interface iServeManager extends LogManager, KeyManager,
+//		ReviewManager, TaxonomyManager, UserManager {
+
+public interface iServeManager {
 
 	public abstract SystemConfiguration getConfiguration();
 	
@@ -95,33 +94,13 @@ public interface iServeManager extends LogManager, KeyManager,
 	// Read
 	/**
 	 * Obtains the textual representation of a Service in a particular syntax
-	 * TODO: This should actually use ServiceFormat
 	 * 
 	 * @param serviceUri
-	 * @param syntax
+	 * @param format the format to use for the serialisation
 	 * @return
 	 * @throws SalException
 	 */
-	public abstract String getServiceSerialisation(URI serviceUri, Syntax syntax) throws SalException;
-
-	/**
-	 * Obtains the RDF Model representing the service
-	 * TODO: This method is backend specific and may need to go
-	 * 
-	 * @param serviceUri
-	 * @return
-	 * @throws SalException
-	 */
-	public abstract Model getServiceAsModel(URI serviceUri) throws SalException;
-
-	/**
-	 * Obtains the Service model
-	 * 
-	 * @param serviceUri
-	 * @return
-	 * @throws SalException
-	 */
-	public abstract Service getService(URI serviceUri) throws SalException;
+	public abstract String getService(URI serviceUri, ServiceFormat format) throws SalException;
 	
 	/**
 	 * List all the known services
@@ -142,6 +121,17 @@ public interface iServeManager extends LogManager, KeyManager,
 	 */
 	public abstract boolean unregisterService(URI serviceUri) throws SalException;
 	
+	// Update Operations	
+	/**
+	 * Relates a given document to a service. The relationship is just a generic one. 
+	 * 
+	 * @param serviceUri the service URI
+	 * @param relatedDocument the related document URI
+	 * @return True if successful or False otherwise
+	 * @throws SalException
+	 */
+	public abstract boolean addRelatedDocumentToService(URI serviceUri, URI relatedDocument) throws SalException;
+	
 
 	/*
 	 *  Document Management Operations
@@ -149,8 +139,9 @@ public interface iServeManager extends LogManager, KeyManager,
 	
 	// Create
 	/**
-	 * Adds a document to a given service. In iServe every document is bound to 
-	 * a service and does not stand on its own
+	 * Adds a document to the system. Documents are resources on their own
+	 * but are expected to be linked to services.
+	 * @see  
 	 * 
 	 * @param fileName name of the file to use
 	 * @param docContent content of the document
@@ -158,8 +149,7 @@ public interface iServeManager extends LogManager, KeyManager,
 	 * @return
 	 * @throws SalException
 	 */
-	public abstract URI addDocumentToService(String fileName, 
-			InputStream docContent, URI serviceUri) throws SalException;
+	public URI createDocument(InputStream docContent) throws SalException;
 	
 	// Read
 	
@@ -198,9 +188,6 @@ public interface iServeManager extends LogManager, KeyManager,
 	 * @throws SalException
 	 */
 	public abstract boolean deleteDocument(URI documentUri) throws SalException;
-
-	
-	
 	
 }
 

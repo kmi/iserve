@@ -15,8 +15,8 @@
  */
 package uk.ac.open.kmi.iserve.sal;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -56,16 +56,23 @@ public class SystemConfiguration {
 	 * Default Linked User Feedback URL
 	 */
 	private static final String DEFAULT_LUF_URL = "http://soa4all.isoco.net/luf";
+	
+	private static final String DEFAULT_SERVICES_URL_PATH = "/id/services";
+	
+	private static final String DEFAULT_DOCUMENTS_URL_PATH = "/id/documents";
 
 	// Configuration properties
 	private static final String PROXY_HOST_NAME_PROP = "http.proxyHost";
 	private static final String PROXY_PORT_PROP = "http.proxyPort";
 	private static final String ISERVE_URL_PROP = "iserve.url";
-	private static final String DOC_FOLDER_PATH_PROP = "iserve.documents";
+	
+	private static final String DOC_FOLDER_PATH_PROP = "iserve.documents.folder";
+	private static final String DOCUMENTS_URL_PATH = "iserve.documents.path";
 
 	// Services data
-	private static final String SERVICES_REPOSITORY_URL_PROP = "services.rdfserver";
-	private static final String SERVICES_REPOSITORY_NAME_PROP = "services.repository";
+	private static final String SERVICES_REPOSITORY_URL_PROP = "iserve.services.rdfserver";
+	private static final String SERVICES_REPOSITORY_NAME_PROP = "iserve.services.repository";
+	private static final String SERVICES_URL_PATH = "iserve.services.path";
 	// Logs data
 	private static final String LOG_REPOSITORY_URL_PROP = "log.server";
 	private static final String LOG_REPOSITORY_NAME_PROP = "log.repository";
@@ -82,31 +89,25 @@ public class SystemConfiguration {
 	private static final String XSLT_PATH_PROP = "xsltPath";
 
 	// This should contain the URL to the base of iServe's server (thus including hostname and module path)
-	private URL iserveUrl;
-
-	private URL dataRepositoryUrl;
-
 	private String dataRepositoryName;
-
-	private URL logRepositoryUrl;
-
 	private String logRepositoryName;
-
-	private URL usersRepositoryUrl;
-
 	private String usersRepositoryName;
-
-	private URL lufUrl;
-
 	private String proxyHostName;
-
 	private String proxyPort;
-
 	private String corpusFile;
-
 	private String docFolderPath;
-
 	private String microWsmoXsltPath;
+	private String servicesPath;
+	private String documentsPath;
+	
+	private URI iserveUri;
+	private URI dataRepositoryUri;
+	private URI logRepositoryUri;
+	private URI usersRepositoryUri;
+	private URI lufUri;
+	private URI servicesUri;
+	private URI documentsUri;
+	
 
 	public SystemConfiguration(String configFileUrl) throws ConfigurationException {
 		PropertiesConfiguration config;
@@ -122,17 +123,24 @@ public class SystemConfiguration {
 			this.corpusFile = config.getString(CORPUS_FILE_PROP);
 			this.docFolderPath = config.getString(DOC_FOLDER_PATH_PROP);
 			this.logRepositoryName = config.getString(LOG_REPOSITORY_NAME_PROP, DEFAULT_LOGS_REPO);
-			this.logRepositoryUrl = new URL(config.getString(LOG_REPOSITORY_URL_PROP));
-			this.lufUrl = new URL(config.getString(LUF_URL_PROP, DEFAULT_LUF_URL));		
+			this.logRepositoryUri = new URI(config.getString(LOG_REPOSITORY_URL_PROP));
+			this.lufUri = new URI(config.getString(LUF_URL_PROP, DEFAULT_LUF_URL));		
 			this.proxyHostName = config.getString(PROXY_HOST_NAME_PROP);
 			this.proxyPort = config.getString(PROXY_PORT_PROP);
 			this.dataRepositoryName = config.getString(SERVICES_REPOSITORY_NAME_PROP, DEFAULT_SERVICES_REPO);
-			this.dataRepositoryUrl = new URL(config.getString(SERVICES_REPOSITORY_URL_PROP));
-			this.iserveUrl = new URL(config.getString(ISERVE_URL_PROP));
+			this.dataRepositoryUri = new URI(config.getString(SERVICES_REPOSITORY_URL_PROP));
+			this.iserveUri = new URI(config.getString(ISERVE_URL_PROP));
 			this.usersRepositoryName = config.getString(USERS_REPOSITORY_NAME_PROP, DEFAULT_USERS_REPO);
-			this.usersRepositoryUrl = new URL(config.getString(USERS_SERVER_URL_PROP));
+			this.usersRepositoryUri = new URI(config.getString(USERS_SERVER_URL_PROP));
 			this.microWsmoXsltPath = config.getString(XSLT_PATH_PROP, DEFAULT_XSLT_PATH);
-		} catch (MalformedURLException e) {
+			this.servicesPath = config.getString(SERVICES_URL_PATH, DEFAULT_SERVICES_URL_PATH);
+			this.documentsPath = config.getString(DOCUMENTS_URL_PATH, DEFAULT_DOCUMENTS_URL_PATH);
+			
+			// Create the services and documents base URIs
+			this.servicesUri = this.iserveUri.resolve(this.servicesPath);
+			this.documentsUri = this.iserveUri.resolve(this.documentsUri);
+			
+		} catch (URISyntaxException e) {
 			throw new ConfigurationException("Unable to setup iServe.", e);
 		}
 	}
@@ -144,15 +152,15 @@ public class SystemConfiguration {
 	 * 
 	 * @return the uriPrefix
 	 */
-	public URL getIserveUrl() {
-		return this.iserveUrl;
+	public URI getIserveUri() {
+		return this.iserveUri;
 	}
 
 	/**
 	 * @param uriPrefix the uriPrefix to set
 	 */
-	public void setUriPrefix(URL uriPrefix) {
-		this.iserveUrl = uriPrefix;
+	public void setUriPrefix(URI uriPrefix) {
+		this.iserveUri = uriPrefix;
 	}
 
 	/**
@@ -172,15 +180,15 @@ public class SystemConfiguration {
 	/**
 	 * @return the repoServerUrl
 	 */
-	public URL getServicesRepositoryUrl() {
-		return this.dataRepositoryUrl;
+	public URI getServicesRepositoryUrl() {
+		return this.dataRepositoryUri;
 	}
 
 	/**
 	 * @param repoServerUrl the repoServerUrl to set
 	 */
-	public void setServicesRepositoryUrl(URL repoServerUrl) {
-		this.dataRepositoryUrl = repoServerUrl;
+	public void setServicesRepositoryUrl(URI repoServerUrl) {
+		this.dataRepositoryUri = repoServerUrl;
 	}
 
 	/**
@@ -198,17 +206,17 @@ public class SystemConfiguration {
 	}
 
 	/**
-	 * @return the logServerUrl
+	 * @return the logServerUri
 	 */
-	public URL getLogServerUrl() {
-		return this.logRepositoryUrl;
+	public URI getLogServerUri() {
+		return this.logRepositoryUri;
 	}
 
 	/**
 	 * @param logServerUrl the logServerUrl to set
 	 */
-	public void setLogServerUrl(URL logServerUrl) {
-		this.logRepositoryUrl = logServerUrl;
+	public void setLogServerUrl(URI logServerUri) {
+		this.logRepositoryUri = logServerUri;
 	}
 
 	/**
@@ -226,17 +234,17 @@ public class SystemConfiguration {
 	}
 
 	/**
-	 * @return the userServerUrl
+	 * @return the userServerUri
 	 */
-	public URL getUserServerUrl() {
-		return this.usersRepositoryUrl;
+	public URI getUserServerUri() {
+		return this.usersRepositoryUri;
 	}
 
 	/**
-	 * @param userServerUrl the userServerUrl to set
+	 * @param userServerUri the userServerUri to set
 	 */
-	public void setUserServerUrl(URL userServerUrl) {
-		this.usersRepositoryUrl = userServerUrl;
+	public void setUserServerUri(URI userServerUri) {
+		this.usersRepositoryUri = userServerUri;
 	}
 
 	/**
@@ -254,17 +262,17 @@ public class SystemConfiguration {
 	}
 
 	/**
-	 * @return the lufUrl
+	 * @return the lufUri
 	 */
-	public URL getLufUrl() {
-		return this.lufUrl;
+	public URI getLufUri() {
+		return this.lufUri;
 	}
 
 	/**
-	 * @param lufUrl the lufUrl to set
+	 * @param lufUri the lufUri to set
 	 */
-	public void setLufUrl(URL lufUrl) {
-		this.lufUrl = lufUrl;
+	public void setLufUri(URI lufUri) {
+		this.lufUri = lufUri;
 	}
 
 	/**
@@ -322,4 +330,61 @@ public class SystemConfiguration {
 	public void setXsltPath(String xsltPath) {
 		this.microWsmoXsltPath = xsltPath;
 	}
+
+	/**
+	 * @return the servicesPath
+	 */
+	public String getServicesPath() {
+		return this.servicesPath;
+	}
+	
+	/**
+	 * @param servicesPath the servicesPath to set
+	 */
+	public void setServicesPath(String servicesPath) {
+		this.servicesPath = servicesPath;
+	}
+
+	/**
+	 * @return the documentsPath
+	 */
+	public String getDocumentsPath() {
+		return this.documentsPath;
+	}
+
+	/**
+	 * @param documentsPath the documentsPath to set
+	 */
+	public void setDocumentsPath(String documentsPath) {
+		this.documentsPath = documentsPath;
+	}
+
+	/**
+	 * @return the servicesUri
+	 */
+	public URI getServicesUri() {
+		return this.servicesUri;
+	}
+
+	/**
+	 * @param servicesUri the servicesUri to set
+	 */
+	public void setServicesUri(URI servicesUri) {
+		this.servicesUri = servicesUri;
+	}
+
+	/**
+	 * @return the documentsUri
+	 */
+	public URI getDocumentsUri() {
+		return this.documentsUri;
+	}
+
+	/**
+	 * @param documentsUri the documentsUri to set
+	 */
+	public void setDocumentsUri(URI documentsUri) {
+		this.documentsUri = documentsUri;
+	}
+	
 }

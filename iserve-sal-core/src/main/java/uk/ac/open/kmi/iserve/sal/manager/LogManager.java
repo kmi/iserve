@@ -17,15 +17,12 @@ package uk.ac.open.kmi.iserve.sal.manager;
 
 import java.net.URI;
 import java.util.Date;
-import java.util.Map;
-
-import javax.xml.datatype.DatatypeConfigurationException;
 
 import uk.ac.open.kmi.iserve.sal.exception.LogException;
-import uk.ac.open.kmi.iserve.sal.model.log.LogItem;
 
 /**
  * Class Description
+ * TODO: Complete and use PROVO
  * 
  * @author Dong Liu (Knowledge Media Institute - The Open University)
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
@@ -33,16 +30,7 @@ import uk.ac.open.kmi.iserve.sal.model.log.LogItem;
 public interface LogManager {
 
 	// TODO: Change to use URIs
-	public abstract void log(String agentUri, String actionUri, String object,
+	public abstract void log(URI agentUri, URI actionUri, URI object,
 			Date time, String method) throws LogException;
-
-	public abstract Map<String, LogItem> getAllLogItems()
-			throws DatatypeConfigurationException;
-	
-	public abstract Map<String, LogItem> getAllLogItemsForUser(URI userUri)
-			throws DatatypeConfigurationException;
-	
-	public abstract Map<String, LogItem> getAllLogItemsAboutResource(URI resourceUri)
-			throws DatatypeConfigurationException;
 
 }

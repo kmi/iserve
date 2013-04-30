@@ -15,14 +15,8 @@
 */
 package uk.ac.open.kmi.iserve.sal.util;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
 
 import org.ontoware.aifbcommons.collection.ClosableIterator;
 import org.ontoware.rdf2go.model.Model;
@@ -35,17 +29,11 @@ import org.ontoware.rdf2go.model.node.impl.URIImpl;
 import org.ontoware.rdf2go.vocabulary.RDF;
 import org.ontoware.rdf2go.vocabulary.RDFS;
 import org.ontoware.rdf2go.vocabulary.XSD;
-import org.openrdf.rdf2go.RepositoryModel;
-import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve.commons.io.IOUtil;
 import uk.ac.open.kmi.iserve.commons.io.URIUtil;
-import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
-import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 
-public class XmlUtil {
+/*public class XmlUtil {
 
 	private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 		"<Q1:Service xmlns:Q1=\"http://iserve.kmi.open.ac.uk/2011/01/ServiceInfo\"\n" +
@@ -279,3 +267,4 @@ public class XmlUtil {
 //	}
 
 }
+*/

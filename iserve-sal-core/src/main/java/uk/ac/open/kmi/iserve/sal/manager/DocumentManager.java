@@ -23,17 +23,16 @@ import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 
 /**
  * Class Description
+ * TODO: Distinguish between the metadata and the actual document and provide
+ * methods for accessing both
  * 
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
 public interface DocumentManager {
 
 	// Create Methods
-//	public abstract URI addDocumentToService(String fileName,
-//			InputStream docContent, String serviceId) throws DocumentException;
-	
-	public abstract URI addDocumentToService(String fileName,
-			InputStream docContent, URI serviceUri) throws DocumentException;
+	public abstract URI createDocument(InputStream docContent) 
+			throws DocumentException;
 	
 	// Read Methods
 	public abstract String getDocument(URI documentUri)
@@ -41,9 +40,6 @@ public interface DocumentManager {
 	
 	// Delete Methods
 	public abstract boolean deleteDocument(URI documentUri)
-			throws DocumentException;
-
-	public abstract boolean deleteServiceDocuments(URI serviceURI)
 			throws DocumentException;
 	
 	// General Management Methods

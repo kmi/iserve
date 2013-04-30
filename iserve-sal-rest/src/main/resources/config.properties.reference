@@ -7,8 +7,8 @@ iserve.url = http://localhost:9080/iserve-sal-rest
 iserve.documents = ./service-docs/
 
 # Core Data RDF Server
-services.rdfserver = http://localhost:8080/openrdf-sesame
-services.repository = iserve-services
+iserve.services.rdfserver = http://localhost:8080/openrdf-sesame
+iserve.services.repository = iserve-services
 
 # Logs Server
 log.server = http://localhost:8080/openrdf-sesame

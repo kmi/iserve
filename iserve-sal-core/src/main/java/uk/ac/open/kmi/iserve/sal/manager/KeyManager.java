@@ -15,12 +15,11 @@
  */
 package uk.ac.open.kmi.iserve.sal.manager;
 
-import uk.ac.open.kmi.iserve.sal.model.oauth.AccessToken;
-import uk.ac.open.kmi.iserve.sal.model.oauth.Consumer;
-import uk.ac.open.kmi.iserve.sal.model.oauth.RequestToken;
 
 /**
  * Class Description
+ * 
+ * TODO: Complete
  * 
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
@@ -29,11 +28,11 @@ public interface KeyManager {
 	public abstract void saveConsumer(String consumerUriString,
 			String consumerKey, String consumerSecret);
 
-	public abstract Consumer findConsumer(String consumerKey);
-
-	public abstract RequestToken findRequestToken(String requestTokenKey);
-
-	public abstract AccessToken findAccessToken(String accessTokenKey);
+//	public abstract Consumer findConsumer(String consumerKey);
+//
+//	public abstract RequestToken findRequestToken(String requestTokenKey);
+//
+//	public abstract AccessToken findAccessToken(String accessTokenKey);
 
 	public abstract void saveAuthorization(String requestTokenKey,
 			String openid, String callback);
@@ -43,8 +42,8 @@ public interface KeyManager {
 
 	public abstract void deleteRequestToken(String tokenKey);
 
-	public abstract void saveAccessToken(String tokenKey, String tokenSecret,
-			RequestToken requestToken, String accessAs);
+//	public abstract void saveAccessToken(String tokenKey, String tokenSecret,
+//			RequestToken requestToken, String accessAs);
 
 	public abstract void deleteAccessToken(String tokenKey);
 

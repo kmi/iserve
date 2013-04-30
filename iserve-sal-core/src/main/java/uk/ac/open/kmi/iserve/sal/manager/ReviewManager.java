@@ -23,7 +23,6 @@ import java.util.List;
  * Review Manager at the moment take care of Reviews, Comments, and Tags
  * Eventually we may want to take Tagging away from this interface. 
  * 
- * TODO: Implement ratings, comments and tags properly not just Strings.
  * TODO: Add methods for listing all the items by a user
  */
 public interface ReviewManager {
