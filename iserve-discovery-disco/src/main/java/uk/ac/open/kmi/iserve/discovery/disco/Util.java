@@ -31,6 +31,8 @@ import org.slf4j.LoggerFactory;
 
 import uk.ac.open.kmi.iserve.commons.io.URIUtil;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
+import uk.ac.open.kmi.iserve.commons.vocabulary.WSMO_LITE;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 
 import com.google.common.collect.MapDifference;
@@ -222,9 +224,9 @@ public class Util {
 	 */
 	public static String generateQueryPrefix() {
 		StringBuffer prefix = new StringBuffer();
-		prefix.append(generateNamespacePrefix(WSMO_LITE_PREFIX, MSM.WL_NS_URI));
-		prefix.append(generateNamespacePrefix(SAWSDL_PREFIX, MSM.SAWSDL_NS_URI));
-		prefix.append(generateNamespacePrefix(MSM.NS_PREFIX, MSM.NS_URI));
+		prefix.append(generateNamespacePrefix(WSMO_LITE_PREFIX, WSMO_LITE.NS));
+		prefix.append(generateNamespacePrefix(SAWSDL_PREFIX, SAWSDL.NS));
+		prefix.append(generateNamespacePrefix(MSM.NS_PREFIX, MSM.NS));
 		prefix.append(generateNamespacePrefix(RDFS_PREFIX, RDFS.NAMESPACE));
 		prefix.append(generateNamespacePrefix(RDF_PREFIX, RDF.NAMESPACE));
 		return prefix.toString();

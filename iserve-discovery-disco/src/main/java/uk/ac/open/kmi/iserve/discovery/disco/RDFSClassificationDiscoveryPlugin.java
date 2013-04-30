@@ -15,6 +15,7 @@
  */
 package uk.ac.open.kmi.iserve.discovery.disco;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -30,18 +31,19 @@ import org.ontoware.rdf2go.model.QueryRow;
 import org.ontoware.rdf2go.model.node.Node;
 import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.rdf2go.RepositoryModel;
+import org.openrdf.repository.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
+import uk.ac.open.kmi.iserve.commons.vocabulary.WSMO_LITE;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
-import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
 
 /**
  * Plugin for discovering both services and operations given Functional Classifications
@@ -83,15 +85,25 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 //	private MatchScorer scorer = new BasicScorer();
 
 	public RDFSClassificationDiscoveryPlugin() {
+		//TODO: Change to use a sparql endpoint instead or a specific index
 		
-		ServiceManager svcManager = ManagerSingleton.getInstance().getServiceManager();
-		if (svcManager instanceof ServiceManagerRdf) {
-			serviceConnector = ((ServiceManagerRdf)svcManager).getRepoConnector();
+		String repoName = ManagerSingleton.getInstance().getConfiguration().getDataRepositoryName();
+		URI repoUri = ManagerSingleton.getInstance().getConfiguration().getDataRepositoryUri();
+		
+		if (repoName != null && repoUri != null) {
+			try {
+				serviceConnector = new RDFRepositoryConnector(repoUri.toString(), repoName);
+			} catch (RepositoryException e) {
+				throw new WebApplicationException(
+						new IllegalStateException("The '" + this.getName() + "' " + 
+								this.getVersion() + " services discovery plugin could not connect to the RDF Repository."), 
+								Response.Status.INTERNAL_SERVER_ERROR);
+			}
 		} else {
 			throw new WebApplicationException(
 					new IllegalStateException("The '" + this.getName() + "' " + 
 							this.getVersion() + " services discovery plugin currently requires a Service Manager based backed by an RDF Repository."), 
-					Response.Status.INTERNAL_SERVER_ERROR);
+							Response.Status.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -317,9 +329,9 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 		
 		log.debug("Generating query for classes: " + classes.toString());
 		
-		StringBuffer query = new StringBuffer("prefix wl: <" + MSM.WL_NS_URI + ">" + NEW_LINE);
-		query.append("prefix sawsdl: <" + MSM.SAWSDL_NS_URI + ">" + NEW_LINE);
-		query.append("prefix msm: <" + MSM.NS_URI + ">" + NEW_LINE);
+		StringBuffer query = new StringBuffer("prefix wl: <" + WSMO_LITE.NS + ">" + NEW_LINE);
+		query.append("prefix sawsdl: <" + SAWSDL.NS + ">" + NEW_LINE);
+		query.append("prefix msm: <" + MSM.NS + ">" + NEW_LINE);
 		query.append("prefix rdfs: <" + RDFS.NAMESPACE + ">" + NEW_LINE);
 		
 		query.append("select ?svc ?labelSvc ?catSvc ?sssog0");

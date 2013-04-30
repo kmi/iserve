@@ -15,6 +15,7 @@
  */
 package uk.ac.open.kmi.iserve.discovery.disco;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +39,7 @@ import org.ontoware.rdf2go.model.QueryRow;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.rdf2go.RepositoryModel;
+import org.openrdf.repository.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +63,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 
 public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, OperationDiscoveryPlugin {
-	
+
 	private static final Logger log = LoggerFactory.getLogger(RDFSInputOutputDiscoveryPlugin.class);
 
 	private static final String PLUGIN_VERSION = "v1.1.2";
@@ -69,31 +71,31 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 	private static final String PLUGIN_NAME = "io-rdfs";
 
 	private static final String PLUGIN_DESCRIPTION = "iServe RDFS input/output discovery plugin. Discovers services and " +
-					"operations based on their inputs and outputs using subsumption " +
-					"reasoning as supported by the underlying RDF Store.";
+			"operations based on their inputs and outputs using subsumption " +
+			"reasoning as supported by the underlying RDF Store.";
 
 	// Discovery Plugin Parameters
 	private static final String FUNCTION_PARAM = "f";
-	
+
 	private static final String AND_FUNCTION = "and";
-	
+
 	private static final String FUNCTION_PARAM_DESCRIPTION = "This parameter should" +
 			"indicate the function to be applied over the inputs and outputs discovery." +
 			"It should be either 'and' (each condition needs to hold) or 'or' (some " +
 			"condition must hold to be part of the results). The default value is 'or'.";
 
 	private static final String OUTPUTS_PARAM = "o";
-	
+
 	private static final String OUTPUTS_PARAM_DESCRIPTION = "This parameter " +
 			"indicates the URLs of the concepts the outputs should be matched" +
 			"against.";
 
 	private static final String INPUTS_PARAM = "i";
-	
+
 	private static final String INPUTS_PARAM_DESCRIPTION = "This parameter " +
-	"indicates the URLs of the concepts the inputs should be matched" +
-	"against.";
-	
+			"indicates the URLs of the concepts the inputs should be matched" +
+			"against.";
+
 	private static final Map<String, String> parameterDetails;
 
 	static {
@@ -102,7 +104,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 		parameterDetails.put(OUTPUTS_PARAM, OUTPUTS_PARAM_DESCRIPTION);
 		parameterDetails.put(INPUTS_PARAM, INPUTS_PARAM_DESCRIPTION);
 	}
-	
+
 	public static String NL = System.getProperty("line.separator");
 
 	private int count;
@@ -110,7 +112,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 	private String feedSuffix;
 
 	private RDFRepositoryConnector serviceConnector;
-	
+
 	// TODO: Make this configurable
 	private static final int NUM_THREADS = 20;
 	private ExecutorService pool;
@@ -125,7 +127,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 
 		boolean operationDiscovery;
 		List<String> matchClasses;
-		
+
 		/**
 		 * @param operationDiscovery
 		 * @param matchClasses
@@ -136,7 +138,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 			this.operationDiscovery = operationDiscovery;
 			this.matchClasses = matchClasses;
 		}
-		
+
 		/* (non-Javadoc)
 		 * @see java.util.concurrent.Callable#call()
 		 */
@@ -146,7 +148,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 		}
 
 	}
-	
+
 	/**
 	 * Class Description
 	 * 
@@ -167,7 +169,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 
 		boolean operationDiscovery;
 		List<String> matchClasses;
-		
+
 		/* (non-Javadoc)
 		 * @see java.util.concurrent.Callable#call()
 		 */
@@ -177,25 +179,34 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 		}
 
 	}
-	
-	
+
 	public RDFSInputOutputDiscoveryPlugin() {
 		this.count = 0;
 		this.feedSuffix = "";
-		
+
 		// Create the thread pool to carry out discovery tasks in parallel
 		pool = Executors.newFixedThreadPool(NUM_THREADS);
-		
-		ServiceManager svcManager = ManagerSingleton.getInstance().getServiceManager();
-		if (svcManager instanceof ServiceManagerRdf) {
-			serviceConnector = ((ServiceManagerRdf)svcManager).getRepoConnector();
+
+		//TODO: Change to use a sparql endpoint instead
+		String repoName = ManagerSingleton.getInstance().getConfiguration().getDataRepositoryName();
+		URI repoUri = ManagerSingleton.getInstance().getConfiguration().getDataRepositoryUri();
+
+		if (repoName != null && repoUri != null) {
+			try {
+				serviceConnector = new RDFRepositoryConnector(repoUri.toString(), repoName);
+			} catch (RepositoryException e) {
+				throw new WebApplicationException(
+						new IllegalStateException("The '" + this.getName() + "' " + 
+								this.getVersion() + " services discovery plugin could not connect to the RDF Repository."), 
+								Response.Status.INTERNAL_SERVER_ERROR);
+			}
 		} else {
 			throw new WebApplicationException(
 					new IllegalStateException("The '" + this.getName() + "' " + 
 							this.getVersion() + " services discovery plugin currently requires a Service Manager based backed by an RDF Repository."), 
-					Response.Status.INTERNAL_SERVER_ERROR);
+							Response.Status.INTERNAL_SERVER_ERROR);
 		}
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -205,7 +216,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 	public String getName() {
 		return PLUGIN_NAME;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin#getVersion()
 	 */
@@ -213,7 +224,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 	public String getVersion() {
 		return PLUGIN_VERSION;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getDescription()
 	 */
@@ -221,7 +232,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 	public String getDescription() {
 		return PLUGIN_DESCRIPTION;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getParametersDetails()
 	 */
@@ -237,7 +248,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 		String feedTitle = "RDFS I/O discovery results: " + count + " services(s) or operation(s) for " + feedSuffix;
 		return feedTitle;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin#discoverServices(javax.ws.rs.core.MultivaluedMap)
 	 */
@@ -245,7 +256,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 	public Map<URL, MatchResult> discoverServices(MultivaluedMap<String, String> parameters) throws DiscoveryException {
 		return discover(false, parameters);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin#discoverOperations(javax.ws.rs.core.MultivaluedMap)
 	 */
@@ -254,7 +265,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 			String> parameters) throws DiscoveryException {
 		return discover(true, parameters);
 	}
-	
+
 	/**
 	 * 5 match degrees for inputs: exact, plugin, subsume, partial-plugin, partial-subsume
 	 * exact           <= the goal has all the exact service input classes (but may have more)
@@ -279,13 +290,13 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 	 */
 	public Map<URL, MatchResult> discover(boolean operationDiscovery, 
 			MultivaluedMap<String, String> parameters) throws DiscoveryException {
-		
+
 		// If there is no service connector raise an error 
 		if (serviceConnector == null) {
 			throw new DiscoveryException("The '" + this.getName() + "' " + 
-							this.getVersion() + " the RDF connector to the services repository is null.");
+					this.getVersion() + " the RDF connector to the services repository is null.");
 		}
-		
+
 		List<String> inputClasses = parameters.get(INPUTS_PARAM);
 		List<String> outputClasses = parameters.get(OUTPUTS_PARAM);
 
@@ -308,39 +319,39 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 				}
 			}
 		}
-		
+
 		String andOr = parameters.getFirst(FUNCTION_PARAM);
 		boolean intersection = AND_FUNCTION.equals(andOr);
-		
+
 		Map<URL, MatchResult> results = null;
 		Map<URL, MatchResult> inputMatches = null;
 		Map<URL, MatchResult> outputMatches = null;
-		
+
 		if (matchingInputs && matchingOutputs) {
 			Set<Map<URL, MatchResult>> toCombine = new HashSet<Map<URL,MatchResult>>();
-			
-//			// Sequential execution
-//			toCombine.add(matchInputs(operationDiscovery, inputClasses));
-//			toCombine.add(matchOutputs(operationDiscovery, outputClasses));
-		
+
+			//			// Sequential execution
+			//			toCombine.add(matchInputs(operationDiscovery, inputClasses));
+			//			toCombine.add(matchOutputs(operationDiscovery, outputClasses));
+
 			// Create the tasks and run them in parallel
 			Set<Callable<Map<URL, MatchResult>>> callables = new HashSet<Callable<Map<URL, MatchResult>>>();
 			callables.add(new InputMatchCallable(operationDiscovery, inputClasses));
 			callables.add(new OutputMatchCallable(operationDiscovery, outputClasses));
 			try {
-				
+
 				List<Future<Map<URL,MatchResult>>> futures = pool.invokeAll(callables);
 				// Invoke each discovery task and get the results
 				for (Future<Map<URL, MatchResult>> future : futures) {
 					toCombine.add(future.get());
 				}
-				
+
 			} catch (InterruptedException e) {
 				log.error("The discovery engine was interrupted while executing the discovery tasks.", e);
 			} catch (ExecutionException e) {
 				log.error("Error executing the discovery task.", e);
 			}
-			
+
 			// Combine the results obtained into one Map
 			// Based on Guava, returns views that will be computed every time so 
 			// if we have to loop several times we should actually materialise them
@@ -352,14 +363,14 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 				combination = MatchMapCombinator.UNION.apply(toCombine);
 				results = Maps.transformValues(combination.asMap(),  MatchResultsMerger.UNION);
 			}
-			
+
 		} else {
 			// Just one task, no need for parallel execution
 			if (matchingInputs) {
 				inputMatches = matchInputs(operationDiscovery, inputClasses);
 				results = inputMatches;
 				// TEST
-//				Map<URL, MatchResult> inputMatchesAlt = matchInputsAlternative(operationDiscovery, inputClasses);
+				//				Map<URL, MatchResult> inputMatchesAlt = matchInputsAlternative(operationDiscovery, inputClasses);
 			} else {
 				outputMatches = matchOutputs(operationDiscovery, outputClasses);
 				results = outputMatches;
@@ -399,7 +410,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 		if (classes == null || classes.isEmpty()) {
 			return results;
 		}
-		
+
 		String query = generateInOutQuery(classes, true);
 		log.info("Input matching query: " + NL + query);
 		results = processQueryResults(operationDiscovery, classes, query);
@@ -415,7 +426,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 	 */
 	private Map<URL, MatchResult> processQueryResults(
 			boolean operationDiscovery, List<String> classes, String query) {
-		
+
 		Map<URL, MatchResult> results;
 		RepositoryModel repoModel = null;
 		ClosableIterator<QueryRow> it = null;
@@ -423,14 +434,14 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 			repoModel = serviceConnector.openRepositoryModel();
 			// TODO: Remove profiling
 			long startTime = System.currentTimeMillis();
-			
+
 			QueryResultTable qresult = repoModel.querySelect(query, "sparql");
-			
+
 			// TODO: Remove profiling
 			long endTime = System.currentTimeMillis();
 			long duration = endTime - startTime;
 			log.info("Time taken for querying the registry: " + duration);
-			
+
 			// Map results to combine (one per class to match)
 			// These are also multimaps as there can be several matches for the
 			// same class for a given service and/or operation
@@ -438,30 +449,30 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 			for (int i = 0; i < classes.size(); i++) {
 				toCombine.add(HashMultimap.<URL, MatchResult>create());
 			}
-			
+
 			it = qresult.iterator();
 			// Iterate over the results obtained
 			while (it.hasNext()) {
 				QueryRow row = it.next();
-				
+
 				URL matchUrl = Util.getMatchUrl(row, operationDiscovery);
 				// Only continue processing if the match exists
 				if (matchUrl == null) {
 					log.warn("Skipping result as the URL is null");
 					break;
 				}
-				
+
 				String matchLabel = Util.getOrGenerateMatchLabel(row, operationDiscovery);
-	
+
 				boolean isExact = false;
 				boolean isPlugin = false;
 				boolean isSubsume = false;
-	
+
 				for (int i = 0; i < classes.size(); i++) {
 					isExact = Util.isVariableSet(row, "ex" + i); 
 					isSubsume = Util.isVariableSet(row, "su" + i);
 					isPlugin = Util.isVariableSet(row, "pl" + i);
-					
+
 					// Create an inner match for each case if there is some 
 					// match relationship. Fails are important within the 
 					// Composite Match. Only relevant services (with some sort
@@ -477,7 +488,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 						// By default it's failed
 						matchType = DiscoMatchType.FAIL;
 					}
-					
+
 					// TODO: Add more details for real debugging
 					MatchResultImpl match = new MatchResultImpl(matchUrl, matchLabel);
 					match.setMatchType(matchType);
@@ -487,20 +498,20 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 							match.getMatchType().getShortName());
 				}
 			} 
-			
+
 			// Now merge the results obtained
 			// First merge the matches for the same class & service/op (UNION)
 			List<Map<URL, MatchResult>> classAndServiceMatches = 
-				Lists.newArrayList(Iterables.<Multimap<URL, MatchResult>, 
-						Map<URL, MatchResult>>transform(toCombine, MultimapToMapMerger.UNION));
-			
+					Lists.newArrayList(Iterables.<Multimap<URL, MatchResult>, 
+							Map<URL, MatchResult>>transform(toCombine, MultimapToMapMerger.UNION));
+
 			// Second merge the matches for diff classes, same service (INTER)
 			Multimap<URL, MatchResult> svcMatches = 
-				MatchMapCombinator.INTERSECTION.apply(classAndServiceMatches);
-			
+					MatchMapCombinator.INTERSECTION.apply(classAndServiceMatches);
+
 			results = ImmutableMap.copyOf(Maps.transformValues(svcMatches.asMap(), 
-			MatchResultsMerger.INTERSECTION));
-				
+					MatchResultsMerger.INTERSECTION));
+
 		} finally {
 			if (it != null)
 				it.close();
@@ -509,8 +520,8 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 		}
 		return results;
 	}
-	
-	
+
+
 	// REMOVE, ONLY FOR TESTS
 	private Map<URL, MatchResult> matchInputsAlternative(boolean operationDiscovery, List<String> classes) throws DiscoveryException {
 
@@ -519,10 +530,10 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 		if (classes == null || classes.isEmpty()) {
 			return results;
 		}
-		
+
 		RepositoryModel repoModel = null;
 		ClosableIterator<QueryRow> it = null;
-		
+
 		String query = generateInputsQueryAlternative(classes);
 		log.info("Input matching query: " + NL + query);
 
@@ -530,43 +541,43 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 			repoModel = serviceConnector.openRepositoryModel();
 			// TODO: Remove profiling
 			long startTime = System.currentTimeMillis();
-			
+
 			QueryResultTable qresult = repoModel.querySelect(query, "sparql");
-			
+
 			// TODO: Remove profiling
 			long endTime = System.currentTimeMillis();
 			long duration = endTime - startTime;
 			log.info("Time taken for querying the registry: " + duration);
-			
+
 			// Create a Map of results to combine per class to match
 			List<Map<URL, MatchResult>> toCombine = new ArrayList<Map<URL,MatchResult>>();
 			for (int i = 0; i < classes.size(); i++) {
 				toCombine.add(new HashMap<URL, MatchResult>());
 			}
-			
+
 			it = qresult.iterator();
 			// Iterate over the results obtained
 			while (it.hasNext()) {
 				QueryRow row = it.next();
-				
+
 				URL matchUrl = Util.getMatchUrl(row, operationDiscovery);
 				// Only continue processing if the match exists
 				if (matchUrl == null) {
 					log.warn("Skipping result as the URL is null");
 					break;
 				}
-				
+
 				String matchLabel = Util.getOrGenerateMatchLabel(row, operationDiscovery);
-	
+
 				boolean isExact = false;
 				boolean isPlugin = false;
 				boolean isSubsume = false;
-	
+
 				for (int i = 0; i < classes.size(); i++) {
 					isExact = Util.isVariableSet(row, "ex" + i); 
 					isSubsume = Util.isVariableSet(row, "su" + i);
 					isPlugin = Util.isVariableSet(row, "pl" + i);
-					
+
 					// Create an inner match for each case if there is some 
 					// match relationship. Fails are important within the 
 					// Composite Match. Only relevant services (with some sort
@@ -582,7 +593,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 						// By default it's failed
 						matchType = DiscoMatchType.FAIL;
 					}
-					
+
 					// TODO: Add more details for real debugging
 					MatchResultImpl match = new MatchResultImpl(matchUrl, matchLabel);
 					match.setMatchType(matchType);
@@ -592,15 +603,15 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 							match.getMatchType().getShortName());
 				}
 			}
-			
+
 			// Now merge the results obtained
 			Multimap<URL, MatchResult> combination = 
-				MatchMapCombinator.INTERSECTION.apply(toCombine);
-		
+					MatchMapCombinator.INTERSECTION.apply(toCombine);
+
 			results = ImmutableMap.copyOf(Maps.transformValues(combination.asMap(), 
 					MatchResultsMerger.INTERSECTION));
-			
-				
+
+
 		} finally {
 			if (it != null)
 				it.close();
@@ -626,14 +637,14 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 		if (classes == null || classes.isEmpty()) {
 			return results;
 		}
-			
+
 		String query = generateInOutQuery(classes, false);
 		log.info("Output matching query: " + NL + query);
 		results = processQueryResults(operationDiscovery, classes, query);
 		log.info("Returning " + results.size() + " discovery results.");
 		return results;
 	}
-	
+
 	/**
 	 * Generates a discovery query that retrieves all the matches between service
 	 * operations inputs/outputs (and parts thereof) and the classes passed as a parameter.
@@ -668,23 +679,23 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 	 * @return the SPARQL query
 	 */
 	private String generateInOutQuery(List<String> classes, boolean inputMatch) {
-		
+
 		StringBuffer query = new StringBuffer();
 		query.append(Util.generateQueryPrefix());
 		query.append("select * "); // Obtain every variable for further details
 		query.append(NL);
-		
+
 		query.append("where {" + NL);
 		query.append("  ?svc a msm:Service ; msm:hasOperation ?op ." + NL);
 		query.append("  ?op a msm:Operation ." + NL);
-		
+
 		if (inputMatch)
 			query.append("  ?op msm:hasInput ?msg ." + NL);
 		else
 			query.append("  ?op msm:hasOutput ?msg ." + NL);
-		
+
 		query.append("  ?msg a msm:MessageContent ." + NL);
-		
+
 		// Bind ?mr to modelReferences at one of the possible levels
 		// 1) Input, 2) Part of the Input, 3) Part of the Input through a property
 		// Each option is bound with UNION statements for performance and to 
@@ -692,22 +703,22 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 
 		// Reference at the message level
 		query.append("  { ?msg sawsdl:modelReference ?mr . } " + NL);
-		
+
 		// Reference at the level of Parts
 		// The following statement requires MSM v2 at least
 		// Can be replaced with variable length paths in SPARQL 1.1.
 		query.append("  UNION { ?msg msm:hasPartTransitive ?part ." + NL);
 		query.append("  ?part sawsdl:modelReference ?mr . } " + NL); 
-		
+
 		// Reference at the level of Parts through a property
 		query.append("  UNION { ?msg msm:hasPartTransitive ?part ." + NL);
 		query.append("  ?part sawsdl:modelReference ?prop . " + NL);   
 		query.append("  ?prop rdfs:range ?mr . } " + NL);
-		
+
 		List<String> patterns = new ArrayList<String>();	
 		for (int i = 0; i < classes.size(); i++) {
 			String currClass = classes.get(i).replace(">", "%3e");
-			
+
 			if (inputMatch) {
 				// Match the modelRef of the input to strict subclasses of the class
 				patterns.add(Util.generateMatchStrictSubclassesPattern("mr", currClass, "su"+i));
@@ -723,19 +734,19 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 			// Match the modelRef of the input to exact matches for the class
 			patterns.add(Util.generateExactMatchPattern("mr", currClass, "ex" + i));
 		}
-		
+
 		query.append(Util.generateUnionStatement(patterns));
-		
+
 		// Obtain labels is they exist
 		query.append("  OPTIONAL {" + Util.generateLabelPattern("svc", "labelSvc") + "}" + NL);  
 		query.append("  OPTIONAL {" + Util.generateLabelPattern("op", "labelOp") + "}" + NL);
-		
+
 		query.append("}");
 		return query.toString();
 	}
-	
+
 	private String generateInputsQueryAlternative(List<String> classes) {
-		
+
 		StringBuffer query = new StringBuffer();
 		query.append(Util.generateQueryPrefix());
 		query.append("select ?svc ?op ");
@@ -750,11 +761,11 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 			query.append(" (COUNT (?interEx" + i +") as ?ex" + i +") ");
 		}
 		query.append(NL);
-		
+
 		query.append("where {" + NL);
 		query.append("  ?svc a msm:Service ; msm:hasOperation ?op ." + NL);
 		query.append("  ?op msm:hasInput ?imsg ." + NL);
-		
+
 		// Bind ?ic to modelReferences at one of the possible levels
 		// 1) Input, 2) Part of the Input, 3) Part of the Input through a property
 		// Each option is bound with UNION statements for performance and to 
@@ -762,22 +773,22 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 
 		// Reference at the message level
 		query.append("  { ?imsg sawsdl:modelReference ?ic } " + NL);
-		
+
 		// Reference at the level of Parts
 		// The following statement requires MSM v2 at least
 		// Can be replaced with variable length paths in SPARQL 1.1.
 		query.append("  UNION { ?imsg msm:hasPartTransitive ?i ." + NL);
 		query.append("  ?i sawsdl:modelReference ?ic } " + NL); 
-		
+
 		// Reference at the level of Parts through a property
 		query.append("  UNION { ?imsg msm:hasPartTransitive ?i ." + NL);
 		query.append("  ?i sawsdl:modelReference ?prop . " + NL);   
 		query.append("  ?prop rdfs:range ?ic . } " + NL);
-		
+
 		List<String> patterns = new ArrayList<String>();	
 		for (int i = 0; i < classes.size(); i++) {
 			String currClass = classes.get(i).replace(">", "%3e");
-			
+
 			// Match the modelRef of the input to strict subclasses of the class
 			patterns.add(Util.generateMatchStrictSubclassesPattern("ic", currClass, "interSu"+i));
 			// Match the modelRef of the input to strict superclasses of the class
@@ -785,17 +796,17 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 			// Match the modelRef of the input to exact matches for the class
 			patterns.add(Util.generateExactMatchPattern("ic", currClass, "interEx" + i));
 		}
-		
+
 		query.append(Util.generateUnionStatement(patterns));
-		
+
 		// Obtain labels is they exist
 		query.append("  OPTIONAL {" + Util.generateLabelPattern("svc", "slabel") + "}" + NL);  
 		query.append("  OPTIONAL {" + Util.generateLabelPattern("op", "oLabel") + "}" + NL);
-		
+
 		query.append("} "+ NL);
 		// Group the results by SVC and OP
 		query.append("GROUP BY ?svc ?op");
 		return query.toString();
 	}
-	
+
 }

@@ -15,10 +15,9 @@
  */
 package uk.ac.open.kmi.iserve.discovery.disco;
 
-import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.ws.rs.WebApplicationException;
@@ -28,20 +27,16 @@ import javax.ws.rs.core.Response;
 import org.ontoware.aifbcommons.collection.ClosableIterator;
 import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.QueryRow;
-import org.ontoware.rdf2go.model.node.BlankNode;
-import org.ontoware.rdf2go.model.node.Node;
-import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.rdf2go.RepositoryModel;
+import org.openrdf.repository.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
-import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerRdf;
@@ -66,10 +61,20 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDisco
 
 	RDFRepositoryConnector serviceConnector;
 
-	public AllServicesPlugin() {	
-		ServiceManager svcManager = ManagerSingleton.getInstance().getServiceManager();
-		if (svcManager instanceof ServiceManagerRdf) {
-			serviceConnector = ((ServiceManagerRdf)svcManager).getRepoConnector();
+	public AllServicesPlugin() {
+		//TODO: Change to use a sparql endpoint instead
+		String repoName = ManagerSingleton.getInstance().getConfiguration().getDataRepositoryName();
+		URI repoUri = ManagerSingleton.getInstance().getConfiguration().getDataRepositoryUri();
+		
+		if (repoName != null && repoUri != null) {
+			try {
+				serviceConnector = new RDFRepositoryConnector(repoUri.toString(), repoName);
+			} catch (RepositoryException e) {
+				throw new WebApplicationException(
+						new IllegalStateException("The '" + this.getName() + "' " + 
+								this.getVersion() + " services discovery plugin could not connect to the RDF Repository."), 
+								Response.Status.INTERNAL_SERVER_ERROR);
+			}
 		} else {
 			throw new WebApplicationException(
 					new IllegalStateException("The '" + this.getName() + "' " + 
