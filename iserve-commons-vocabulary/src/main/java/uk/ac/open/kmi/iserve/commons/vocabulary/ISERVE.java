@@ -15,14 +15,10 @@
 */
 package uk.ac.open.kmi.iserve.commons.vocabulary;
 
-import org.ontoware.rdf2go.model.node.URI;
-import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
 public class ISERVE {
 
-	public static final String ISERVE_NS_URI = "http://iserve.kmi.open.ac.uk/ns/iserve#";
-	public static final String ISERVE_NS_PREFIX = "iserve";
-
-//	public static final String HAS_SHA1 = ISERVE_NS_URI + "hasSha1";
+	public static final String NS_URI = "http://iserve.kmi.open.ac.uk/ns/iserve#";
+	public static final String NS_PREFIX = "iserve";
 
 }

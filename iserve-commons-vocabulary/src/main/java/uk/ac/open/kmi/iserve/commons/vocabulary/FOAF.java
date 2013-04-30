@@ -15,18 +15,14 @@
 */
 package uk.ac.open.kmi.iserve.commons.vocabulary;
 
-import org.ontoware.rdf2go.model.node.URI;
-import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
 public class FOAF {
 
-	public static final String FOAF_NS_URI = "http://xmlns.com/foaf/0.1/";
-	public static final String FOAF_NS_PREFIX = "foaf";
-
-	public static final String FOAF_OPENID = FOAF_NS_URI + "openid";
-	public static final URI foafOpenId = new URIImpl(FOAF_OPENID);
-
-	public static final String FOAF_DOCUMENT = FOAF_NS_URI + "Document";
-	public static final String FOAF_SHA1 = FOAF_NS_URI + "sha1";
+	// FOAF Constants
+	public static final String NS = "http://xmlns.com/foaf/0.1/";
+	public static final String NS_PREFIX = "foaf";
+	public static final String OPENID_URI = NS + "openid";
+	public static final String DOCUMENT_URI = NS + "Document";
+	public static final String SHA1_URI = NS + "sha1";
 
 }

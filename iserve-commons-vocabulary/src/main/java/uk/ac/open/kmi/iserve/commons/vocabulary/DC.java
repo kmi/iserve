@@ -12,21 +12,16 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package uk.ac.open.kmi.iserve.commons.vocabulary;
 
-import org.ontoware.rdf2go.model.node.URI;
-import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
 public class DC {
 
-	public static final String NS_URI = "http://purl.org/dc/elements/1.1/";
+	// DC Constants
+	public static final String NS = "http://purl.org/dc/elements/1.1/";
 	public static final String NS_PREFIX = "dc";
-
-	public static final String CREATOR = NS_URI + "creator";
-	public static final URI creator = new URIImpl(CREATOR);
-
-	public static final String SOURCE = NS_URI + "source";
-	public static final URI source = new URIImpl(SOURCE);
+	public static final String CREATOR_URI = NS + "creator";
+	public static final String SOURCE = NS + "source";
 
 }
