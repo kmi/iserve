@@ -57,12 +57,12 @@ public class RdfTransformer {
 					line.contains("rdf:Description") ||
 					line.contains("http://www.w3.org/1999/02/22-rdf-syntax-ns#Description") ||
 					line.contains("msm:Service") ||
-					line.contains("Service xmlns=\"http://cms-wg.sti2.org/ns/minimal-service-model#\"") ||
+					line.contains("Service xmlns=\"http://iserve.kmi.open.ac.uk/ns/msm#\"") ||
 					line.contains("msm:Operation") ||
-					line.contains("Operation xmlns=\"http://cms-wg.sti2.org/ns/minimal-service-model#\"") ||
+					line.contains("Operation xmlns=\"http://iserve.kmi.open.ac.uk/ns/msm#\"") ||
 					line.contains("msm:Message") ||
-					line.contains("MessageContent xmlns=\"http://cms-wg.sti2.org/ns/minimal-service-model#\"") ||
-					line.contains("MessagePart xmlns=\"http://cms-wg.sti2.org/ns/minimal-service-model#\"") ||
+					line.contains("MessageContent xmlns=\"http://iserve.kmi.open.ac.uk/ns/msm#\"") ||
+					line.contains("MessagePart xmlns=\"http://iserve.kmi.open.ac.uk/ns/msm#\"") ||
 					line.contains("hasOperation") ||
 					line.contains("hasInput") ||
 					line.contains("hasOutput") ||
@@ -84,7 +84,7 @@ public class RdfTransformer {
 		Model model = RDF2Go.getModelFactory().createModel();
 		model.open();
 		model.readFrom(serviceDescription, Syntax.RdfXml);
-		ClosableIterator<org.ontoware.rdf2go.model.Statement> iter = model.findStatements(Variable.ANY, RDF.type, MSM.Service);
+		ClosableIterator<org.ontoware.rdf2go.model.Statement> iter = model.findStatements(Variable.ANY, RDF.type, model.createURI(MSM.SERVICE));
 		if ( iter.hasNext() ) {
 			Statement stmt = iter.next();
 			serviceUriString = stmt.getSubject().toString();

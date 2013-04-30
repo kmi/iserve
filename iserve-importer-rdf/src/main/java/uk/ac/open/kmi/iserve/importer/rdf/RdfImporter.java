@@ -39,21 +39,21 @@ public class RdfImporter implements ServiceImporter {
 	private static final String TEMP_NS = "http://owls-transformer.baseuri/2878757605265003094#";
 
 	private static final String PART_QUERY_STRING = "CONSTRUCT {\n" +
-		"  ?m " + MSM.hasPartTransitive.toSPARQL() + " ?p .\n" +
+		"  ?m " + "<" + MSM.HAS_PART_TRANSITIVE + ">" + " ?p .\n" +
 		"} WHERE {\n" +
-		"  ?m " + MSM.hasPart.toSPARQL() + " ?p .\n" +
+		"  ?m " + "<" + MSM.HAS_PART + ">" + " ?p .\n" +
 		"}";
 
 	private static final String OPTIONAL_PART_QUERY_STRING = "CONSTRUCT {\n" +
-		"  ?m " + MSM.hasPartTransitive.toSPARQL() + " ?p .\n" +
+		"  ?m " + "<" + MSM.HAS_PART_TRANSITIVE + ">" + " ?p .\n" +
 		"} WHERE {\n" +
-		"  ?m " + MSM.hasOptionalPart.toSPARQL() + " ?p .\n" +
+		"  ?m " + "<" + MSM.HAS_OPTIONAL_PART + ">" + " ?p .\n" +
 		"}";
 
 	private static final String MANDATORY_PART_QUERY_STRING = "CONSTRUCT {\n" +
-		"  ?m " + MSM.hasPartTransitive.toSPARQL() + " ?p .\n" +
+		"  ?m " + "<" + MSM.HAS_PART_TRANSITIVE + ">" + " ?p .\n" +
 		"} WHERE {\n" +
-		"  ?m " + MSM.hasMandatoryPart.toSPARQL() + " ?p .\n" +
+		"  ?m " + "<" + MSM.HAS_MANDATORY_PART + ">" + " ?p .\n" +
 		"}";
 
 	private Model tempModel;
