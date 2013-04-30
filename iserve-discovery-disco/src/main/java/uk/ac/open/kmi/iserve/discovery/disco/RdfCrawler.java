@@ -38,6 +38,8 @@ import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.RDFS;
 
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
+import uk.ac.open.kmi.iserve.commons.vocabulary.WSMO_LITE;
 
 /**
  * This class is a parametric tool for crawling for RDF data.
@@ -66,9 +68,9 @@ public class RdfCrawler {
 		this.addKnownNamespace(RDF.NAMESPACE);
 		this.addKnownNamespace(RDFS.NAMESPACE);
 		this.addKnownNamespace(OWL.NAMESPACE);
-		this.addKnownNamespace(MSM.WL_NS_URI);
-		this.addKnownNamespace(MSM.SAWSDL_NS_URI);
-		this.addKnownNamespace(MSM.NS_URI);
+		this.addKnownNamespace(WSMO_LITE.NS);
+		this.addKnownNamespace(SAWSDL.NS);
+		this.addKnownNamespace(MSM.NS);
 		this.addKnownNamespace("http://www.w3.org/ns/wsdl-extensions#");  // for WSDLX safety
 	}
 
