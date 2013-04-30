@@ -15,14 +15,12 @@
 */
 package uk.ac.open.kmi.iserve.importer.owls;
 
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve.commons.io.IOUtil;
-import uk.ac.open.kmi.iserve.importer.ImporterConfig;
 import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 
 public class OwlsImporterTest {
@@ -35,8 +33,8 @@ public class OwlsImporterTest {
 
 	public void test() throws ImporterException {
 		try {
-			String contents = IOUtil.readString(new File("/Users/dl3962/Workspace/gtd/Action/iServe/data/testing-20100125/vehicle_price_service.owls"));
-			InputStream result = importer.transformStream(contents);
+			InputStream in = new FileInputStream("/Users/dl3962/Workspace/gtd/Action/iServe/data/testing-20100125/vehicle_price_service.owls");
+			InputStream result = importer.transformStream(in);
 			System.out.println(result.toString());
 		} catch (IOException e) {
 			e.printStackTrace();

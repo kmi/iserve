@@ -50,7 +50,7 @@ public class OwlsImporter implements ServiceImporter {
 			+ "PREFIX expr:<http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#>\n"
 			+ "PREFIX wl:<http://www.wsmo.org/ns/wsmo-lite#>"
 			+ "PREFIX msm:<"
-			+ MSM.NS_URI + ">\n";
+			+ MSM.NS + ">\n";
 
 	private static final String QUERY = PREFIX
 			+ "SELECT DISTINCT * WHERE {\n"
