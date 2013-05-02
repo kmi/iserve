@@ -206,8 +206,10 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDisco
 		} catch (ClassCastException e) {
 			log.error("Error casting resource", e);
 		} finally {
-			it.close();
-			serviceConnector.closeRepositoryModel(repoModel);
+			if (it != null) {
+				it.close();
+				serviceConnector.closeRepositoryModel(repoModel);
+			}
 		}
 		
 		log.debug("Matching results: " + results);
