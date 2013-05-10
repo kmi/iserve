@@ -22,12 +22,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
+import uk.ac.open.kmi.iserve.commons.vocabulary.WSMO_LITE;
+import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
+import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
+import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
+import uk.ac.open.kmi.iserve.discovery.disco.MatchResultImpl;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -38,19 +47,6 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDFS;
-
-import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
-import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
-import uk.ac.open.kmi.iserve.commons.vocabulary.WSMO_LITE;
-import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
-import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
-import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
-import uk.ac.open.kmi.iserve.discovery.disco.MatchResultImpl;
-import uk.ac.open.kmi.iserve.discovery.disco.Util;
-import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 /**
  * Plugin for discovering both services and operations given Functional Classifications
