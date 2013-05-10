@@ -278,6 +278,8 @@ public class ManagerSingleton implements iServeManager {
 	@Override
 	public boolean unregisterService(URI serviceUri) throws SalException {
 
+		// TODO: We should also delete the related documents from the server
+		
 		// Check the URI is correct and belongs to the server
 		if (serviceUri == null || 
 				!UriUtil.isResourceLocalToServer(serviceUri, configuration.getIserveUri()) ||

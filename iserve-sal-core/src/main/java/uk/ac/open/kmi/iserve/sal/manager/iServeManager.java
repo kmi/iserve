@@ -32,6 +32,7 @@ import uk.ac.open.kmi.iserve.sal.exception.SalException;
  * of the inner methods for data management are exposed at this level
  * 
  * TODO: Registering import mechanisms should also be defined somewhere
+ * TODO: Implement the Observer pattern so that we can update other software about changes
  * 
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */

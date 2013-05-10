@@ -21,14 +21,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 
 import org.ontoware.aifbcommons.collection.ClosableIterator;
 import org.ontoware.rdf2go.exception.ModelRuntimeException;
-import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.Statement;
 import org.ontoware.rdf2go.model.Syntax;
@@ -40,8 +38,6 @@ import org.openrdf.repository.RepositoryException;
 import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.DC;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
-
-import uk.ac.open.kmi.iserve.imatcher.IServeIMatcher;
 import uk.ac.open.kmi.iserve.sal.ServiceFormat;
 import uk.ac.open.kmi.iserve.sal.ServiceFormatDetector;
 import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
@@ -59,7 +55,7 @@ public class ServiceManagerRdf implements ServiceManager {
 
 	/**
 	 * Constructor for the Service Manager. Protected to avoid external access.
-	 * Any access to this should take place through the iServeManager
+	 * Any access to this should take place through the iServeManage
 	 * 
 	 * @param configuration
 	 * @throws RepositoryException
@@ -204,9 +200,10 @@ public class ServiceManagerRdf implements ServiceManager {
 		while ( iter.hasNext() ) {
 			Statement stmt = iter.next();
 			model.removeStatement(stmt);
-			// Remove from iServe iMatcher
-			IServeIMatcher.getInstance().removeStatement(stmt);
 		}
+		
+		//TODO: Notify observers
+		
 		iter.close();
 		iter = null;
 		repoConnector.closeRepositoryModel(model);
