@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -49,10 +47,10 @@ import uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.disco.AllServicesPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.BasicScorer;
-import uk.ac.open.kmi.iserve.discovery.disco.RDFSClassificationDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.disco.RDFSInputOutputDiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.disco.impl.AllServicesPlugin;
+import uk.ac.open.kmi.iserve.discovery.disco.impl.RDFSClassificationDiscoveryPlugin;
+import uk.ac.open.kmi.iserve.discovery.disco.impl.RDFSInputOutputDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
 import uk.ac.open.kmi.iserve.discovery.util.MatchComparator;
 
@@ -91,17 +89,20 @@ public class DiscoveryResource {
 		
 		// Register all plugins manually for now
 		DiscoveryPlugin plugin;
+		
 		plugin = new AllServicesPlugin();
 		registerPlugin(plugin);
-
+		
 		plugin = new RDFSInputOutputDiscoveryPlugin();
 		registerPlugin(plugin);
-
+		
 		plugin = new RDFSClassificationDiscoveryPlugin();
 		registerPlugin(plugin);
 
 		//		plugin = new IMatcherDiscoveryPlugin(connector);
 		//		plugins.put(plugin.getName(), plugin);
+		
+
 	}
 
 	/**
