@@ -72,6 +72,7 @@ public class SystemConfiguration {
 	// Services data
 	private static final String SERVICES_REPOSITORY_URL_PROP = "iserve.services.rdfserver";
 	private static final String SERVICES_REPOSITORY_NAME_PROP = "iserve.services.repository";
+	private static final String SERVICES_REPOSITORY_SPARQL_PROP = "iserve.services.sparql";
 	private static final String SERVICES_URL_PATH = "iserve.services.path";
 	// Logs data
 	private static final String LOG_REPOSITORY_URL_PROP = "log.server";
@@ -102,6 +103,7 @@ public class SystemConfiguration {
 	
 	private URI iserveUri;
 	private URI dataRepositoryUri;
+	private URI dataSparqlUri;
 	private URI logRepositoryUri;
 	private URI usersRepositoryUri;
 	private URI lufUri;
@@ -129,6 +131,7 @@ public class SystemConfiguration {
 			this.proxyPort = config.getString(PROXY_PORT_PROP);
 			this.dataRepositoryName = config.getString(SERVICES_REPOSITORY_NAME_PROP, DEFAULT_SERVICES_REPO);
 			this.dataRepositoryUri = new URI(config.getString(SERVICES_REPOSITORY_URL_PROP));
+			this.dataSparqlUri = new URI(config.getString(SERVICES_REPOSITORY_SPARQL_PROP));
 			this.iserveUri = new URI(config.getString(ISERVE_URL_PROP));
 			this.usersRepositoryName = config.getString(USERS_REPOSITORY_NAME_PROP, DEFAULT_USERS_REPO);
 			this.usersRepositoryUri = new URI(config.getString(USERS_SERVER_URL_PROP));
@@ -138,7 +141,7 @@ public class SystemConfiguration {
 			
 			// Create the services and documents base URIs
 			this.servicesUri = this.iserveUri.resolve(this.servicesPath);
-			this.documentsUri = this.iserveUri.resolve(this.documentsUri);
+			this.documentsUri = this.iserveUri.resolve(this.documentsPath);
 			
 		} catch (URISyntaxException e) {
 			throw new ConfigurationException("Unable to setup iServe.", e);
@@ -385,6 +388,62 @@ public class SystemConfiguration {
 	 */
 	public void setDocumentsUri(URI documentsUri) {
 		this.documentsUri = documentsUri;
+	}
+
+	/**
+	 * @return the dataRepositoryName
+	 */
+	public String getDataRepositoryName() {
+		return this.dataRepositoryName;
+	}
+
+	/**
+	 * @param dataRepositoryName the dataRepositoryName to set
+	 */
+	public void setDataRepositoryName(String dataRepositoryName) {
+		this.dataRepositoryName = dataRepositoryName;
+	}
+
+	/**
+	 * @return the docFolderPath
+	 */
+	public String getDocFolderPath() {
+		return this.docFolderPath;
+	}
+
+	/**
+	 * @param docFolderPath the docFolderPath to set
+	 */
+	public void setDocFolderPath(String docFolderPath) {
+		this.docFolderPath = docFolderPath;
+	}
+
+	/**
+	 * @return the dataRepositoryUri
+	 */
+	public URI getDataRepositoryUri() {
+		return this.dataRepositoryUri;
+	}
+
+	/**
+	 * @param dataRepositoryUri the dataRepositoryUri to set
+	 */
+	public void setDataRepositoryUri(URI dataRepositoryUri) {
+		this.dataRepositoryUri = dataRepositoryUri;
+	}
+
+	/**
+	 * @return the dataSparqlUri
+	 */
+	public URI getDataSparqlUri() {
+		return this.dataSparqlUri;
+	}
+
+	/**
+	 * @param dataSparqlUri the dataSparqlUri to set
+	 */
+	public void setDataSparqlUri(URI dataSparqlUri) {
+		this.dataSparqlUri = dataSparqlUri;
 	}
 	
 }
