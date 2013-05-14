@@ -39,13 +39,15 @@
 	</organization>
 
 	<properties>
+		<!-- Convenience properties for all subprojects -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jersey.version>1.9</jersey.version>
+		<jersey.version>1.9.1</jersey.version>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
 		<junit.version>4.7</junit.version>
-		<!-- Convenience property to set the GWT version -->
 		<gwtVersion>2.1.0</gwtVersion>
+		<jena.version>2.10.0</jena.version>
+		<httpclient.version>4.2.3</httpclient.version>
 	</properties>
 
 
@@ -60,14 +62,12 @@
 		<module>iserve-sal-model</module>
 		<module>iserve-sal-core</module>
 		<module>iserve-sal-rest</module>
-		<module>iserve-sal-gwt</module>
+		<!-- <module>iserve-sal-gwt</module> -->
 		<module>iserve-discovery-api</module>
 		<module>iserve-discovery-disco</module>
 		<module>iserve-discovery-engine</module>
-		<!-- Disable iMatcher Plugin  
-		<module>iserve-discovery-imatcher</module>
-		<module>iserve-imatcher-api</module>
-		 -->
+		<!-- Disable iMatcher Plugin <module>iserve-discovery-imatcher</module> 
+			<module>iserve-imatcher-api</module> -->
 		<!-- <module>iserve-analysis-engine</module> -->
 	</modules>
 
@@ -101,5 +101,12 @@
 			<name>Aduna Software</name>
 			<url>http://repo.aduna-software.org/maven2/releases/</url>
 		</repository>
+		
+		<repository>
+			<id>apache-repo-releases</id>
+			<name>Apache Repository</name>
+			<url>https://repository.apache.org/content/repositories/releases/</url>
+		</repository>
+
 	</repositories>
 </project>

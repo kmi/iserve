@@ -74,6 +74,12 @@
 			<artifactId>iserve-commons-vocabulary</artifactId>
 			<version>1.1.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>apache-jena-libs</artifactId>
+			<version>${jena.version}</version>
+			<type>pom</type>
+		</dependency>
 	</dependencies>
 
 	<url>http://iserve.kmi.open.ac.uk/</url>
