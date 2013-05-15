@@ -15,39 +15,42 @@
 */
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
-import org.ontoware.rdf2go.model.Model;
-import org.openrdf.rdf2go.RepositoryModel;
-import org.openrdf.repository.RepositoryException;
+import java.net.URI;
 
-import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
+import org.openrdf.repository.RepositoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 
 public class BaseSemanticManager {
-
-	protected RDFRepositoryConnector repoConnector;
+	
+	private static final Logger log = LoggerFactory.getLogger(BaseSemanticManager.class);
+	
 	private SystemConfiguration configuration;
+	private URI sparqlEndpoint;
 
 	protected BaseSemanticManager(SystemConfiguration configuration) throws RepositoryException {
 		this.configuration = configuration;
-		repoConnector = new RDFRepositoryConnector(configuration.getServicesRepositoryUrl().toString(), 
-				configuration.getServicesRepositoryName());
+		this.sparqlEndpoint = ManagerSingleton.getInstance().getConfiguration().getDataSparqlUri();
+		if (this.sparqlEndpoint == null) {
+			log.error(BaseSemanticManager.class.getSimpleName() + " requires a SPARQL endpoint.");
+			throw new RepositoryException(BaseSemanticManager.class.getSimpleName() + " requires a SPARQL endpoint.");
+		}	
 	}
 
-	protected Model getModel() {
-		RepositoryModel model = repoConnector.openRepositoryModel();
-		return model;
+	/**
+	 * @return the sparqlEndpoint
+	 */
+	public URI getSparqlEndpoint() {
+		return this.sparqlEndpoint;
 	}
 
-	protected Model getModel(String contextUri) {
-		if ( null == contextUri || contextUri.equalsIgnoreCase("") == true) {
-			return null;
-		}
-		RepositoryModel model = repoConnector.openRepositoryModel(contextUri);
-		return model;
+	/**
+	 * @return the configuration
+	 */
+	public SystemConfiguration getConfiguration() {
+		return this.configuration;
 	}
-
-	protected RDFRepositoryConnector getConnector() {
-		return repoConnector;
-	}
-
+	
 }
