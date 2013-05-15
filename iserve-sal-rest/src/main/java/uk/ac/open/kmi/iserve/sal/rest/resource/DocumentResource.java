@@ -15,19 +15,17 @@
 */
 package uk.ac.open.kmi.iserve.sal.rest.resource;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.List;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -38,15 +36,11 @@ import javax.ws.rs.core.UriInfo;
 
 import org.openrdf.repository.RepositoryException;
 
-import uk.ac.open.kmi.iserve.commons.io.URIUtil;
-import uk.ac.open.kmi.iserve.commons.vocabulary.LOG;
 import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 import uk.ac.open.kmi.iserve.sal.exception.LogException;
-import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
-import uk.ac.open.kmi.iserve.sal.manager.LogManager;
+import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 import uk.ac.open.kmi.iserve.sal.rest.auth.AuthenticationException;
-import uk.ac.open.kmi.iserve.sal.util.HtmlUtil;
 
 import com.sun.jersey.api.container.MappableContainerException;
 
@@ -61,40 +55,12 @@ public class DocumentResource {
 
 	public DocumentResource() throws IOException, RepositoryException { }
 
-	@GET
-	@Produces({MediaType.TEXT_HTML, MediaType.WILDCARD})
-	public Response listDocumentsAsHtml() throws URISyntaxException {
-		String absolutePath = uriInfo.getAbsolutePath().toString();
-		return listDocuments(absolutePath, "page");
-	}
-
-	@GET
-	@Produces({"application/rdf+xml", "text/turtle", "text/n3", "text/rdf+n3", "text/plain", "application/sparql-results+xml"})
-	public Response listDocumentsAsRdf() throws URISyntaxException {
-		String absolutePath = uriInfo.getAbsolutePath().toString();
-		return listDocuments(absolutePath, "data");		
-	}
-
-	@GET @Path("/{id}")
-	@Produces({MediaType.WILDCARD})
-	public Response getDocumentById(@PathParam("id") String id) throws URISyntaxException, DocumentException {
-		String absolutePath = uriInfo.getAbsolutePath().toString();
-		return getDocument(absolutePath, id, "", "page");
-	}
-
-	@GET @Path("/{id}/{filename}")
-	@Produces({MediaType.WILDCARD})
-	public Response getDocument(@PathParam("id") String id, @PathParam("filename") String filename) throws URISyntaxException, DocumentException {
-		String absolutePath = uriInfo.getAbsolutePath().toString();
-		return getDocument(absolutePath, id, filename, "page");
-	}
-
 	@POST
 	@Consumes({MediaType.TEXT_HTML, MediaType.TEXT_XML, MediaType.APPLICATION_XML, "application/rdf+xml",
 		"text/turtle", "text/n3", "text/rdf+n3", MediaType.TEXT_PLAIN})
 	@Produces({MediaType.TEXT_HTML})
-	public Response addDocument(String serviceDescription, @HeaderParam("Content-Location") String locationUri,
-			@HeaderParam("Content-Type") String contentType) throws DocumentException, URISyntaxException, LogException {
+	public Response addDocument(String document, @HeaderParam("Content-Location") String locationUri,
+			@HeaderParam("Content-Type") String contentType) {
 		if ( security.getUserPrincipal() == null ) {
 			throw new MappableContainerException(
 					new AuthenticationException(
@@ -103,36 +69,25 @@ public class DocumentResource {
 		}
 
 		String userFoafId = security.getUserPrincipal().getName();
-		String fileName = null; 
-		if ( (locationUri != null) && ("".equalsIgnoreCase(locationUri) == false) ) {
-			fileName = URIUtil.getLocalName(locationUri);
-		}
+		// TODO check the actual encoding
+		InputStream is;
+		try {
+			is = new ByteArrayInputStream(document.getBytes("UTF-8"));
+			URI docUri = ManagerSingleton.getInstance().createDocument(is);
 
-		if ( fileName == null ) {
-			if ( (contentType != null) && ("".equalsIgnoreCase(contentType) == false) ) {
-				if ( contentType.equalsIgnoreCase(MediaType.TEXT_HTML) ) {
-					fileName = "service.html";
-				} else if ( contentType.equalsIgnoreCase(MediaType.TEXT_XML) &&
-						contentType.equalsIgnoreCase(MediaType.APPLICATION_XML) ) {
-					fileName = "service.xml";
-				} else if ( contentType.equalsIgnoreCase("application/rdf+xml") ) {
-					fileName = "service.rdf.xml";
-				} else if ( contentType.equalsIgnoreCase("text/turtle")  ) {
-					fileName = "service.ttl";
-				} else if ( contentType.equalsIgnoreCase("text/rdf+n3") &&
-						contentType.equalsIgnoreCase("text/n3") ) {
-					fileName = "service.n3";
-				} else {
-					fileName = "service.txt";
-				}
-			}
-		}
-		URI docUri = ManagerSingleton.getInstance().addDocument(fileName, serviceDescription);
-		// TODO: Push this down to the above method
-		ManagerSingleton.getInstance().log(userFoafId, LOG.ITEM_CREATION, docUri.toString(), new Date(), "REST");
-		String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-			"  <body>\nA document is created at <a href='" + docUri.toString() + "'>" + docUri.toString() + "</a>\n  </body>\n</html>";
-		return Response.status(Status.CREATED).contentLocation(docUri).entity(htmlString).build();
+			String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+				"  <body>\nA document is created at <a href='" + docUri.toString() + "'>" + docUri.toString() + "</a>\n  </body>\n</html>";
+			
+			return Response.status(Status.CREATED).contentLocation(docUri).entity(htmlString).build();
+		} catch (Exception e) {
+			String error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+					"  <body>\nThere was an error while creating a document. Contact the system administrator. \n  </body>\n</html>";
+			
+			// TODO: Add logging
+		
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+		} 
+		
 	}
 
 	// TODO: Support delete
@@ -175,79 +130,5 @@ public class DocumentResource {
 //		String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
 //			"  <body>\nA document is removed from <a href='" + uriString + "'>" + uriString + "</a>\n  </body>\n</html>";
 //		return htmlString;
-//	}
-
-	private Response getDocument(String absolutePath, String id, String filename, String redirect) throws URISyntaxException, DocumentException {
-		if (absolutePath.endsWith("/") == false) {
-			absolutePath += "/";
-		}
-		if (absolutePath.endsWith("resource/documents/" + id + "/")) {
-			String newPath = absolutePath.substring(0, absolutePath.length() - ("resource/documents/" + id + "/").length());
-			newPath += redirect + "/documents/" + id;
-			return Response.seeOther(new URI(newPath)).build();
-		} else if (absolutePath.endsWith("page/documents/" + id + "/")) {
-			String result = ManagerSingleton.getInstance().getDocumentById(id);
-			return Response.ok(result).build();
-		} else if (absolutePath.endsWith("data/documents/" + id + "/")) {
-			String result = ManagerSingleton.getInstance().getDocumentById(id);
-			return Response.ok(result).build();
-		}
-		if (absolutePath.endsWith("resource/documents/" + id + "/" + filename + "/")) {
-			String newPath = absolutePath.substring(0, absolutePath.length() - ("resource/documents/" + id + "/" + filename + "/").length());
-			newPath += redirect + "/documents/" + id + "/" + filename;
-			return Response.seeOther(new URI(newPath)).build();
-		} else if (absolutePath.endsWith("page/documents/" + id + "/" + filename + "/")) {
-			String result = ManagerSingleton.getInstance().getDocumentById(id);
-			return Response.ok(result).build();
-		} else if (absolutePath.endsWith("data/documents/" + id + "/" + filename + "/")) {
-			String result = ManagerSingleton.getInstance().getDocumentById(id);
-			return Response.ok(result).build();
-		}
-		return Response.status(Status.BAD_REQUEST).build();
-	}
-
-	private Response listDocuments(String absolutePath, String redirect) throws URISyntaxException {
-		if ( absolutePath.endsWith("/") == false ) {
-			absolutePath += "/";
-		}
-		if ( absolutePath.endsWith("resource/documents/") ) {
-			String newPath = absolutePath.substring(0, absolutePath.length() - "resource/documents/".length() );
-			newPath += redirect + "/documents";
-			return Response.seeOther(new URI(newPath)).build();
-		} else if ( absolutePath.endsWith("page/documents/") ) {
-			StringBuffer sb = new StringBuffer();
-			sb.append(HtmlUtil.LIST_HTML_PREFIX.replaceAll("<<<title>>>", "Document List"));
-			List<String> serviceList = ManagerSingleton.getInstance().listDocuments();
-			sb.append(HtmlUtil.uriListToTable(serviceList));
-			sb.append(HtmlUtil.LIST_HTML_SUFFIX);
-			return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
-		} else if (absolutePath.endsWith("data/documents/")) {
-			String header = "<?xml version='1.0' encoding='UTF-8'?>\n"
-				+ "<sparql xmlns='http://www.w3.org/2005/sparql-results#'>\n"
-				+ "	<head>\n"
-				+ "		<variable name='document'/>\n"
-				+ "	</head>\n"
-				+ "	<results>\n";
-			String tail = " 	</results>\n"
-				+ "</sparql>";
-			String uriHeader = "		<result>\n"
-				+ "			<binding name='document'>\n"
-				+ "				<uri>";
-			String uriTail = "</uri>\n"
-				+ "			</binding>\n"
-				+ "		</result>\n";
-
-			StringBuffer sb = new StringBuffer();
-			sb.append(header);
-			List<String> uriList = ManagerSingleton.getInstance().listDocuments();
-			for (String uri : uriList) {
-				sb.append(uriHeader + uri + uriTail);
-			}
-			sb.append(tail);
-			return Response.ok(sb.toString(), "application/sparql-results+xml").build();
-		}
-		return Response.status(Status.BAD_REQUEST).build();
-	}
-
-	
+//	}	
 }

@@ -17,7 +17,6 @@ package uk.ac.open.kmi.iserve.sal.manager;
 
 import java.net.URI;
 
-import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.sal.exception.UserException;
 
 /**
@@ -44,7 +43,7 @@ public interface UserManager {
 
 //	public abstract URI updateUser(User user) throws UserException;
 	
-	// TODO: should not be here
-	public RDFRepositoryConnector getUsersRepositoryConnector();
+//	// TODO: should not be here
+//	public RDFRepositoryConnector getUsersRepositoryConnector();
 
 }

@@ -17,11 +17,11 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import java.net.URI;
 
-import org.openrdf.repository.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
+import uk.ac.open.kmi.iserve.sal.exception.SalException;
 
 public class BaseSemanticManager {
 	
@@ -30,12 +30,12 @@ public class BaseSemanticManager {
 	private SystemConfiguration configuration;
 	private URI sparqlEndpoint;
 
-	protected BaseSemanticManager(SystemConfiguration configuration) throws RepositoryException {
+	protected BaseSemanticManager(SystemConfiguration configuration) throws SalException {
 		this.configuration = configuration;
 		this.sparqlEndpoint = ManagerSingleton.getInstance().getConfiguration().getDataSparqlUri();
 		if (this.sparqlEndpoint == null) {
 			log.error(BaseSemanticManager.class.getSimpleName() + " requires a SPARQL endpoint.");
-			throw new RepositoryException(BaseSemanticManager.class.getSimpleName() + " requires a SPARQL endpoint.");
+			throw new SalException(BaseSemanticManager.class.getSimpleName() + " requires a SPARQL endpoint.");
 		}	
 	}
 

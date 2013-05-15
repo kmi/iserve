@@ -46,15 +46,15 @@ public class DownloadFileServlet extends HttpServlet {
 		String content = "";
 		try {
 			if ( format.equalsIgnoreCase("xml") ) {
-				content = iserveManager.getService(uri, Syntax.RdfXml);
+				content = iserveManager.getServiceSerialisation(uri, Syntax.RdfXml);
 			} else if ( format.equalsIgnoreCase("nt") ) {
-				content = iserveManager.getService(uri, Syntax.Ntriples);
+				content = iserveManager.getServiceSerialisation(uri, Syntax.Ntriples);
 			} else if ( format.equalsIgnoreCase("trig") ) {
-				content = iserveManager.getService(uri, Syntax.Trig);
+				content = iserveManager.getServiceSerialisation(uri, Syntax.Trig);
 			} else if ( format.equalsIgnoreCase("trix") ) {
-				content = iserveManager.getService(uri, Syntax.Trix);
+				content = iserveManager.getServiceSerialisation(uri, Syntax.Trix);
 			} else if ( format.equalsIgnoreCase("ttl") ) {
-				content = iserveManager.getService(uri, Syntax.Turtle);
+				content = iserveManager.getServiceSerialisation(uri, Syntax.Turtle);
 			}
 		} catch (ServiceException e) {
 			throw new ServletException(e);
@@ -79,15 +79,15 @@ public class DownloadFileServlet extends HttpServlet {
 		String content = "";
 		try {
 			if ( format.equalsIgnoreCase("xml") ) {
-				content = iserveManager.getService(uri, Syntax.RdfXml);
+				content = iserveManager.getServiceSerialisation(uri, Syntax.RdfXml);
 			} else if ( format.equalsIgnoreCase("nt") ) {
-				content = iserveManager.getService(uri, Syntax.Ntriples);
+				content = iserveManager.getServiceSerialisation(uri, Syntax.Ntriples);
 			} else if ( format.equalsIgnoreCase("trig") ) {
-				content = iserveManager.getService(uri, Syntax.Trig);
+				content = iserveManager.getServiceSerialisation(uri, Syntax.Trig);
 			} else if ( format.equalsIgnoreCase("trix") ) {
-				content = iserveManager.getService(uri, Syntax.Trix);
+				content = iserveManager.getServiceSerialisation(uri, Syntax.Trix);
 			} else if ( format.equalsIgnoreCase("ttl") ) {
-				content = iserveManager.getService(uri, Syntax.Turtle);
+				content = iserveManager.getServiceSerialisation(uri, Syntax.Turtle);
 			}
 		} catch (ServiceException e) {
 			throw new ServletException(e);

@@ -19,61 +19,49 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.MatchResult;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.ontoware.aifbcommons.collection.ClosableIterator;
-import org.ontoware.rdf2go.exception.ModelRuntimeException;
-import org.ontoware.rdf2go.model.QueryResultTable;
-import org.ontoware.rdf2go.model.Statement;
-import org.ontoware.rdf2go.model.Syntax;
-import org.ontoware.rdf2go.model.node.Variable;
-import org.ontoware.rdf2go.vocabulary.RDF;
-import org.openrdf.rdf2go.RepositoryModel;
-import org.openrdf.repository.RepositoryException;
-
-import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.vocabulary.DC;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.sal.ServiceFormat;
 import uk.ac.open.kmi.iserve.sal.ServiceFormatDetector;
 import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
+import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
-public class ServiceManagerRdf implements ServiceManager {
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Resource;
+
+public class ServiceManagerRdf extends BaseSemanticManager implements ServiceManager {
+
+	private static final Logger log = LoggerFactory.getLogger(ServiceManagerRdf.class);
 
 	private ServiceFormatDetector formatDetector;
-
-	private RDFRepositoryConnector repoConnector;
-
-	private SystemConfiguration configuration;
 
 	/**
 	 * Constructor for the Service Manager. Protected to avoid external access.
 	 * Any access to this should take place through the iServeManage
 	 * 
 	 * @param configuration
+	 * @throws SalException 
 	 * @throws RepositoryException
-	 * @throws TransformerConfigurationException
-	 * @throws WSDLException
-	 * @throws ParserConfigurationException
 	 */
-	protected ServiceManagerRdf(SystemConfiguration configuration) throws RepositoryException {
-		this.configuration = configuration;
-		repoConnector = new RDFRepositoryConnector(configuration.getServicesRepositoryUrl().toString(),
-				configuration.getServicesRepositoryName());		
-	}
-
-	/**
-	 * @return the repoConnector
-	 */
-	public RDFRepositoryConnector getRepoConnector() {
-		return this.repoConnector;
+	protected ServiceManagerRdf(SystemConfiguration configuration) throws SalException {
+		super(configuration);
 	}
 
 	/* (non-Javadoc)
@@ -82,31 +70,53 @@ public class ServiceManagerRdf implements ServiceManager {
 	@Override
 	public List<URI> listServices() {
 		List<URI> result = new ArrayList<URI>();
-		String queryString = "select DISTINCT ?s where { \n" +
+
+		// If the SPARQL endpoint does not exist return immediately.
+		if (this.getSparqlEndpoint() == null) {
+			return result;
+		}
+
+		String queryStr = "select DISTINCT ?s where { \n" +
 				"?s " + RDF.type.toSPARQL() + " " + MSM.NS_PREFIX + ":" + MSM.SERVICE +
 				" . }";
 
-		RepositoryModel model = repoConnector.openRepositoryModel();
-		QueryResultTable qrt = model.sparqlSelect(queryString);
-		if ( qrt != null ) {
-			ClosableIterator<org.ontoware.rdf2go.model.QueryRow> iter = qrt.iterator();
-			if ( iter != null ) {
-				while ( iter.hasNext() ) {
-					org.ontoware.rdf2go.model.QueryRow qr = iter.next();
-					String valueString = qr.getValue("s").toString();
-					try {
-						result.add(new URI(valueString));
-					} catch (URISyntaxException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+		// Query the engine
+		Query query = QueryFactory.create(queryStr);
+		QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlEndpoint().toASCIIString(), query);
+
+		try {		
+			// TODO: Remove profiling
+			long startTime = System.currentTimeMillis();
+
+			ResultSet qResults = qexec.execSelect();
+
+			// TODO: Remove profiling
+			long endTime = System.currentTimeMillis();
+			long duration = endTime - startTime;
+			log.info("Time taken for querying the registry: " + duration);
+
+			Resource resource;
+			URI matchUri;
+			// Iterate over the results obtained
+			while ( qResults.hasNext() ) {
+				QuerySolution soln = qResults.nextSolution();
+
+				// Get the match URL
+				resource = soln.getResource("s");
+
+				if (resource != null && resource.isURIResource()) {
+					matchUri = new URI(resource.getURI());
+					result.add(matchUri);
+				} else {
+					log.warn("Skipping result as the URL is null");
+					break;
 				}
-				iter.close();
-				iter = null;
-			}
+			}	
+		} catch (URISyntaxException e) {
+			log.error("Error obtaining match result. Expected a correct URI", e);
+		} finally {
+			qexec.close();
 		}
-		repoConnector.closeRepositoryModel(model);
-		model = null;
 		return result;
 	}
 
@@ -124,32 +134,34 @@ public class ServiceManagerRdf implements ServiceManager {
 			throw new ServiceException("The URI of the source document is null. Unable to store the service.");
 		}
 
-		URI newServiceUri = UriUtil.generateUniqueResourceUri(configuration.getServicesUri());
+		URI newServiceUri = UriUtil.generateUniqueResourceUri(this.getConfiguration().getServicesUri());
 
 		// save RDF to OWLim
-		RepositoryModel model = repoConnector.openRepositoryModel(sourceDocumentUri.toString());
-		try {
-			model.readFrom(msmInputStream, Syntax.RdfXml, newServiceUri.toString());
-			ClosableIterator<Statement> serviceURIs = model.findStatements(Variable.ANY, RDF.type, model.createURI(MSM.SERVICE));
-			if ( null == serviceURIs ) {
-				throw new ServiceException("Errors in transformation results: msm:Service cannot be found");
-			}
-			Statement stmt = serviceURIs.next();
-			if ( null == stmt || null == stmt.getSubject() ) {
-				throw new ServiceException("Errors in transformation results: msm:Service cannot be found");
-			}
-			serviceURIs.close();
-
-			// Store the source for the document is given
-			model.addStatement(stmt.getSubject(), model.createURI(DC.SOURCE), model.createURI(sourceDocumentUri.toString()));
-
-		} catch (ModelRuntimeException e) {
-			throw new ServiceException(e);
-		} catch (IOException e) {
-			throw new ServiceException(e);
-		} finally {
-			repoConnector.closeRepositoryModel(model);
-		}	
+		// TODO: Save it
+		
+//		RepositoryModel model = repoConnector.openRepositoryModel(sourceDocumentUri.toString());
+//		try {
+//			model.readFrom(msmInputStream, Syntax.RdfXml, newServiceUri.toString());
+//			ClosableIterator<Statement> serviceURIs = model.findStatements(Variable.ANY, RDF.type, model.createURI(MSM.SERVICE));
+//			if ( null == serviceURIs ) {
+//				throw new ServiceException("Errors in transformation results: msm:Service cannot be found");
+//			}
+//			Statement stmt = serviceURIs.next();
+//			if ( null == stmt || null == stmt.getSubject() ) {
+//				throw new ServiceException("Errors in transformation results: msm:Service cannot be found");
+//			}
+//			serviceURIs.close();
+//
+//			// Store the source for the document is given
+//			model.addStatement(stmt.getSubject(), model.createURI(DC.SOURCE), model.createURI(sourceDocumentUri.toString()));
+//
+//		} catch (ModelRuntimeException e) {
+//			throw new ServiceException(e);
+//		} catch (IOException e) {
+//			throw new ServiceException(e);
+//		} finally {
+//			repoConnector.closeRepositoryModel(model);
+//		}	
 
 		// add to iServe iMatcher
 		// Replace with an observer mechanism so that anybody can register 
@@ -172,7 +184,7 @@ public class ServiceManagerRdf implements ServiceManager {
 	 * @return the URI of the service document
 	 */
 	private URI getServiceBaseUri(String serviceId) {
-		return configuration.getServicesUri().resolve(serviceId);
+		return this.getConfiguration().getServicesUri().resolve(serviceId);
 	}
 
 	/**
@@ -194,20 +206,23 @@ public class ServiceManagerRdf implements ServiceManager {
 			throw new ServiceException("Cannot find service identified by " + serviceUri);
 		}
 
-		// delete from OWLim
-		RepositoryModel model = repoConnector.openRepositoryModel(contextUri);
-		ClosableIterator<Statement> iter = model.iterator();
-		while ( iter.hasNext() ) {
-			Statement stmt = iter.next();
-			model.removeStatement(stmt);
-		}
+		// TODO: Delete from server
 		
-		//TODO: Notify observers
 		
-		iter.close();
-		iter = null;
-		repoConnector.closeRepositoryModel(model);
-		model = null;
+//		// delete from OWLim
+//		RepositoryModel model = repoConnector.openRepositoryModel(contextUri);
+//		ClosableIterator<Statement> iter = model.iterator();
+//		while ( iter.hasNext() ) {
+//			Statement stmt = iter.next();
+//			model.removeStatement(stmt);
+//		}
+//
+//		//TODO: Notify observers
+//
+//		iter.close();
+//		iter = null;
+//		repoConnector.closeRepositoryModel(model);
+//		model = null;
 
 		return true;
 	}
@@ -217,15 +232,8 @@ public class ServiceManagerRdf implements ServiceManager {
 	 */
 	@Override
 	public String getServiceSerialisation(URI serviceUri, Syntax syntax) throws ServiceException {
-		String contextUri = getContextUri(serviceUri);
-		if ( null == contextUri ) {
-			throw new ServiceException("Cannot find service identified by " + serviceUri);
-		}
-		RepositoryModel model = repoConnector.openRepositoryModel(contextUri);
-		String result = model.serialize(syntax);
-		repoConnector.closeRepositoryModel(model);
-		model = null;
-		return result;
+		// TODO: Reimplement
+		return null;		
 	}
 
 	private ServiceFormat detectFormat(String serviceDescription) throws IOException {
@@ -245,27 +253,35 @@ public class ServiceManagerRdf implements ServiceManager {
 				"<" + serviceUri + "> " + RDF.type.toSPARQL() + " " + MSM.NS_PREFIX + ":" + MSM.SERVICE +
 				" . } }";
 
-		RepositoryModel model = repoConnector.openRepositoryModel();
-		QueryResultTable qrt = model.sparqlSelect(queryString);
-		String defUri = null;
-		if ( qrt != null ) {
-			ClosableIterator<org.ontoware.rdf2go.model.QueryRow> iter = qrt.iterator();
-			if ( iter != null ) {
-				while ( iter.hasNext() ) {
-					org.ontoware.rdf2go.model.QueryRow qr = iter.next();
-					String valueString = qr.getValue("c").toString();
-					if ( valueString.toLowerCase().contains(configuration.getIserveUri().toString()) ) {
-						defUri = valueString;
-					}
+		// Query the engine
+		Query query = QueryFactory.create(queryString, Syntax.syntaxSPARQL_11);
+		QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlEndpoint().toASCIIString(), query);
+
+		try {		
+			// TODO: Remove profiling
+			long startTime = System.currentTimeMillis();
+
+			ResultSet qResults = qexec.execSelect();
+
+			// TODO: Remove profiling
+			long endTime = System.currentTimeMillis();
+			long duration = endTime - startTime;
+			log.info("Time taken for querying the registry: " + duration);
+
+			// Iterate over the results obtained
+			if ( qResults.hasNext() ) {
+				QuerySolution soln = qResults.nextSolution();
+				Resource graphResource = soln.getResource("c");
+				if (graphResource != null && graphResource.isURIResource()) {
+					return graphResource.getURI();
 				}
-				iter.close();
-				iter = null;
 			}
+			return null;
+		} finally {
+			qexec.close();
 		}
-		repoConnector.closeRepositoryModel(model);
-		model = null;
-		return defUri;
 	}
+
 
 
 	/**
@@ -289,7 +305,7 @@ public class ServiceManagerRdf implements ServiceManager {
 				while ( iter.hasNext() ) {
 					org.ontoware.rdf2go.model.QueryRow qr = iter.next();
 					String valueString = qr.getValue("c").toString();
-					if ( valueString.toLowerCase().contains(configuration.getIserveUri().toString()) ) {
+					if ( valueString.toLowerCase().contains(this.getConfiguration().getIserveUri().toString()) ) {
 						defUri = valueString;
 					}
 				}
@@ -302,43 +318,43 @@ public class ServiceManagerRdf implements ServiceManager {
 		return defUri;
 	}
 
-//	// TODO: Id generation should not require a SPARQL Query
-//	private URI getServiceUri(String serviceId) {
-//		if (serviceId == null) {
-//			return null;
-//		}
-//
-//		String queryString = "select ?s where { \n" +
-//				"?s " + RDF.type.toSPARQL() + " " + MSM.NS_PREFIX + ":" + MSM.SERVICE + "\n" +
-//				"FILTER regex(str(?s), \"" + serviceId + "\", \"i\")\n}";
-//
-//		URI defUri = null;
-//		RepositoryModel model = repoConnector.openRepositoryModel();
-//		try {
-//			QueryResultTable qrt = model.sparqlSelect(queryString);
-//
-//			if ( qrt != null ) {
-//				ClosableIterator<org.ontoware.rdf2go.model.QueryRow> iter = qrt.iterator();
-//				if ( iter != null ) {
-//					while ( iter.hasNext() ) {
-//						org.ontoware.rdf2go.model.QueryRow qr = iter.next();
-//						String valueString = qr.getValue("s").toString();
-//						if ( valueString.toLowerCase().contains(configuration.getIserveUri().toString()) ) {
-//							defUri = new URI(valueString);
-//						}
-//					}
-//					iter.close();
-//					iter = null;
-//				}
-//			}
-//		} catch (URISyntaxException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} finally {
-//			repoConnector.closeRepositoryModel(model);
-//		}
-//		return defUri;
-//	}
+	//	// TODO: Id generation should not require a SPARQL Query
+	//	private URI getServiceUri(String serviceId) {
+	//		if (serviceId == null) {
+	//			return null;
+	//		}
+	//
+	//		String queryString = "select ?s where { \n" +
+	//				"?s " + RDF.type.toSPARQL() + " " + MSM.NS_PREFIX + ":" + MSM.SERVICE + "\n" +
+	//				"FILTER regex(str(?s), \"" + serviceId + "\", \"i\")\n}";
+	//
+	//		URI defUri = null;
+	//		RepositoryModel model = repoConnector.openRepositoryModel();
+	//		try {
+	//			QueryResultTable qrt = model.sparqlSelect(queryString);
+	//
+	//			if ( qrt != null ) {
+	//				ClosableIterator<org.ontoware.rdf2go.model.QueryRow> iter = qrt.iterator();
+	//				if ( iter != null ) {
+	//					while ( iter.hasNext() ) {
+	//						org.ontoware.rdf2go.model.QueryRow qr = iter.next();
+	//						String valueString = qr.getValue("s").toString();
+	//						if ( valueString.toLowerCase().contains(configuration.getIserveUri().toString()) ) {
+	//							defUri = new URI(valueString);
+	//						}
+	//					}
+	//					iter.close();
+	//					iter = null;
+	//				}
+	//			}
+	//		} catch (URISyntaxException e) {
+	//			// TODO Auto-generated catch block
+	//			e.printStackTrace();
+	//		} finally {
+	//			repoConnector.closeRepositoryModel(model);
+	//		}
+	//		return defUri;
+	//	}
 
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#serviceExists(java.net.URI)

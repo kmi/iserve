@@ -16,6 +16,7 @@
 package uk.ac.open.kmi.iserve.discovery.disco;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -35,17 +36,9 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.ontoware.rdf2go.model.QueryResultTable;
-import org.ontoware.rdf2go.model.QueryRow;
-import org.ontoware.rdf2go.model.Statement;
-import org.ontoware.rdf2go.model.node.URI;
-import org.openrdf.rdf2go.RepositoryModel;
-import org.openrdf.repository.RepositoryException;
-
-import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
-import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
 import uk.ac.open.kmi.iserve.commons.vocabulary.WSMO_LITE;
+import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 /**
@@ -57,7 +50,7 @@ import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
  * @author ??
  */
 @Path("/update-ontologies")
-public class OntologyUpdateResource {
+public class OntologyUpdateResource extends BaseSemanticManager {
 
 	/**
 	 * 
@@ -81,29 +74,12 @@ public class OntologyUpdateResource {
 
 	static {
 		List<URI> extras = new ArrayList<URI>(1);
-		extras.add(new org.ontoware.rdf2go.model.node.impl.URIImpl("http://www.w3.org/2009/08/skos-reference/skos.rdf"));
+		extras.add(URI.create("http://www.w3.org/2009/08/skos-reference/skos.rdf"));
 		builtinExtras = Collections.unmodifiableList(extras);
 	}
 
-	private static RDFRepositoryConnector serviceConnector;
-
-	public OntologyUpdateResource() throws RepositoryException, IOException {
-		String repoName = ManagerSingleton.getInstance().getConfiguration().getDataRepositoryName();
-		java.net.URI repoUri = ManagerSingleton.getInstance().getConfiguration().getDataRepositoryUri();
-		
-		if (repoName != null && repoUri != null) {
-			try {
-				serviceConnector = new RDFRepositoryConnector(repoUri.toString(), repoName);
-			} catch (RepositoryException e) {
-				throw new WebApplicationException(
-						new IllegalStateException("The ontology updater could not connect to the RDF Repository."), 
-								Response.Status.INTERNAL_SERVER_ERROR);
-			}
-		} else {
-			throw new WebApplicationException(
-					new IllegalStateException("The ontology updater requires a Service Manager based backed by an RDF Repository."), 
-							Response.Status.INTERNAL_SERVER_ERROR);
-		}
+	public OntologyUpdateResource(SystemConfiguration configuration) throws IOException {
+		super(configuration);
 		
 		if (updaterThread == null) {
 		    initUpdaterThread();
