@@ -3,28 +3,39 @@ package uk.ac.open.kmi.iserve.sal.util;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
-import java.util.Properties;
 
 import org.apache.tika.Tika;
-import org.ontoware.aifbcommons.collection.ClosableIterator;
 import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.QueryRow;
-import org.ontoware.rdf2go.vocabulary.RDF;
-import org.ontoware.rdf2go.vocabulary.RDFS;
-import org.ontoware.rdf2go.vocabulary.OWL;
-import org.ontoware.rdf2go.vocabulary.XSD;
 import org.openrdf.rdf2go.RepositoryModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uk.ac.open.kmi.iserve.commons.io.IOUtil;
-import uk.ac.open.kmi.iserve.commons.io.RDFRepositoryConnector;
 import uk.ac.open.kmi.iserve.commons.io.URIUtil;
+
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.util.iterator.ClosableIterator;
+import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.vocabulary.XSD;
 
 public class ModelReferenceUtil {
 
+	private static final Logger log = LoggerFactory.getLogger(ModelReferenceUtil.class);
+
 	private static ModelReferenceUtil instance = new ModelReferenceUtil();
 
-	private RDFRepositoryConnector connector;
+	private URI sparqlEndpoint;
 
 	private Tika tika;
 
@@ -36,40 +47,67 @@ public class ModelReferenceUtil {
 		return instance;
 	}
 
-	public void setRDFRepositoryConnector(RDFRepositoryConnector connector) {
-		this.connector = connector;
+	public void setSparqlEndpoint(URI endpoint) {
+		this.sparqlEndpoint = endpoint;
 	}
 
 	public void inputModelReference(String modelrefUri) throws MalformedURLException, IOException {
+
+		// If the SPARQL endpoint does not exist return immediately.
+		if (this.getSparqlEndpoint() == null) {
+			return;
+		}
+
 		String contextUri = URIUtil.getNameSpace(modelrefUri);
-		RepositoryModel model = connector.openRepositoryModel();
-		QueryResultTable qrt = model.sparqlSelect("SELECT DISTINCT ?g where {" +
-				" graph ?g { ?s ?p ?o . }" +
-				"}");
-		ClosableIterator<QueryRow> iter = qrt.iterator();
-		while( iter.hasNext() ) {
-			QueryRow row = iter.next();
-			if ( row.getValue("g").toString().equals(contextUri) ) {
-				iter.close();
-				connector.closeRepositoryModel(model);
-				return;
+
+		String queryStr = "SELECT DISTINCT ?g where { graph ?g { ?s ?p ?o . } }";
+
+		// Query the engine
+		Query query = QueryFactory.create(queryStr);
+		QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlEndpoint().toASCIIString(), query);
+
+		try {		
+			// TODO: Remove profiling
+			long startTime = System.currentTimeMillis();
+
+			ResultSet qResults = qexec.execSelect();
+
+			// TODO: Remove profiling
+			long endTime = System.currentTimeMillis();
+			long duration = endTime - startTime;
+			log.info("Time taken for querying the registry: " + duration);
+
+			Resource resource;
+			URI matchUri;
+			// Iterate over the results obtained
+			while ( qResults.hasNext() ) {
+				QuerySolution soln = qResults.nextSolution();
+
+				// Get the match URL
+				resource = soln.getResource("g");
+				if (resource != null && resource.isURIResource() && resource.getURI().equals(contextUri)) {
+					return;
+				}
 			}
-		}
-		iter.close();
-		connector.closeRepositoryModel(model);
 
-		System.setProperty("sun.net.client.defaultConnectTimeout", "3000");
-		System.setProperty("sun.net.client.defaultReadTimeout", "3000");
-		String mimeType = tika.detect(new URL(modelrefUri));
-			
-		if ( mimeType.contains("html") == true ) {
-			throw new IOException("It does not seem to be an ontology");
+			System.setProperty("sun.net.client.defaultConnectTimeout", "3000");
+			System.setProperty("sun.net.client.defaultReadTimeout", "3000");
+			String mimeType = tika.detect(new URL(modelrefUri));
+
+			if ( mimeType.contains("html") == true ) {
+				throw new IOException("It does not seem to be an ontology");
+			}
+
+			String ontologyString = IOUtil.readString(new URL(modelrefUri));
+
+			// TODO: FIX this
+//			model = connector.openRepositoryModel(URIUtil.getNameSpace(modelrefUri));
+//			model.readFrom(new ByteArrayInputStream(ontologyString.getBytes()));
+
+		} finally {
+			qexec.close();
 		}
 
-		String ontologyString = IOUtil.readString(new URL(modelrefUri));
-		model = connector.openRepositoryModel(URIUtil.getNameSpace(modelrefUri));
-		model.readFrom(new ByteArrayInputStream(ontologyString.getBytes()));
-		connector.closeRepositoryModel(model);
 	}
 
 	public String getDatatype(String modelrefUri) {
@@ -83,182 +121,297 @@ public class ModelReferenceUtil {
 	}
 
 	private boolean isProperty(String modelrefUri) {
-		String queryString = "SELECT ?t WHERE {\n" +
-			"<" + modelrefUri + "> " + RDF.type.toSPARQL() + " ?t . " +
-			"}";
-		RepositoryModel model = connector.openRepositoryModel();
-		QueryResultTable qrt = model.sparqlSelect(queryString);
-		ClosableIterator<QueryRow> iter = qrt.iterator();
-		while ( iter.hasNext() ) {
-			QueryRow row = iter.next();
-			String typeUri = row.getValue("t").asURI().toString();
-			if ( typeUri.endsWith(RDF.Property.toString()) ||
-					typeUri.endsWith(OWL.ObjectProperty.toString()) ||
-					typeUri.endsWith(OWL.DatatypeProperty.toString()) ||
-					typeUri.endsWith(OWL.TransitiveProperty.toString()) ||
-					typeUri.endsWith(OWL.SymmetricProperty.toString()) ||
-					typeUri.endsWith(OWL.FunctionalProperty.toString()) ||
-					typeUri.endsWith(OWL.InverseFunctionalProperty.toString()) ) {
-				iter.close();
-				connector.closeRepositoryModel(model);
-				return true;
-			}
+
+		// If the SPARQL endpoint does not exist return immediately.
+		if (this.getSparqlEndpoint() == null) {
+			// TODO: throw error
 		}
-		iter.close();
-		connector.closeRepositoryModel(model);
-		return false;
+
+		String queryStr = "SELECT ?t WHERE {\n" +
+				"<" + modelrefUri + ">" + "<" + RDF.type.getURI() + ">" + " ?t . " +
+				"}";
+
+		// Query the engine
+		Query query = QueryFactory.create(queryStr);
+		QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlEndpoint().toASCIIString(), query);
+
+		try {		
+			// TODO: Remove profiling
+			long startTime = System.currentTimeMillis();
+
+			ResultSet qResults = qexec.execSelect();
+
+			// TODO: Remove profiling
+			long endTime = System.currentTimeMillis();
+			long duration = endTime - startTime;
+			log.info("Time taken for querying the registry: " + duration);
+
+			Resource resource;
+
+			// Iterate over the results obtained
+			while ( qResults.hasNext() ) {
+				QuerySolution soln = qResults.nextSolution();
+
+				// Get the match URL
+				resource = soln.getResource("t");
+				if (resource != null && resource.isURIResource()) {
+					String typeUri = resource.getURI();
+
+					if (typeUri.equals(RDF.Property.getURI()) || 
+							typeUri.equals(OWL.ObjectProperty.getURI()) ||
+							typeUri.equals(OWL.DatatypeProperty.getURI()) || 
+							typeUri.equals(OWL.TransitiveProperty.getURI()) || 
+							typeUri.equals(OWL.SymmetricProperty.getURI()) || 
+							typeUri.equals(OWL.FunctionalProperty.getURI()) || 
+							typeUri.equals(OWL.InverseFunctionalProperty.getURI())) {
+						return true;
+					}
+
+				}
+			}
+			return false;
+		} finally {
+			qexec.close();
+		}
 	}
 
 	private boolean isClass(String modelrefUri) {
-		String queryString = "SELECT ?t WHERE {\n" +
-			"<" + modelrefUri + "> " + RDF.type.toSPARQL() + " ?t . " +
-			"}";
-		RepositoryModel model = connector.openRepositoryModel();
-		QueryResultTable qrt = model.sparqlSelect(queryString);
-		ClosableIterator<QueryRow> iter = qrt.iterator();
-		while ( iter.hasNext() ) {
-			QueryRow row = iter.next();
-			String typeUri = row.getValue("t").asURI().toString();
-			if ( typeUri.endsWith(RDF.RDF_NS + "Class") ||
-					typeUri.endsWith(RDFS.Class.toString()) ||
-					typeUri.endsWith(OWL.Class.toString()) ) {
-				iter.close();
-				connector.closeRepositoryModel(model);
-				return true;
-			}
+
+		// If the SPARQL endpoint does not exist return immediately.
+		if (this.getSparqlEndpoint() == null) {
+			// TODO: throw error
 		}
-		iter.close();
-		connector.closeRepositoryModel(model);
-		return false;
+
+		String queryStr = "SELECT ?t WHERE {\n" +
+				"<" + modelrefUri + ">" + "<" + RDF.type.getURI() + ">" + " ?t . " +
+				"}";
+
+		// Query the engine
+		Query query = QueryFactory.create(queryStr);
+		QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlEndpoint().toASCIIString(), query);
+
+		try {		
+			// TODO: Remove profiling
+			long startTime = System.currentTimeMillis();
+
+			ResultSet qResults = qexec.execSelect();
+
+			// TODO: Remove profiling
+			long endTime = System.currentTimeMillis();
+			long duration = endTime - startTime;
+			log.info("Time taken for querying the registry: " + duration);
+
+			Resource resource;
+
+			// Iterate over the results obtained
+			while ( qResults.hasNext() ) {
+				QuerySolution soln = qResults.nextSolution();
+
+				// Get the match URL
+				resource = soln.getResource("t");
+				if (resource != null && resource.isURIResource()) {
+					String typeUri = resource.getURI();
+
+					if (typeUri.equals(RDFS.Class.getURI()) || 
+							typeUri.equals(OWL.Class)) {
+						return true;
+					}
+
+				}
+			}
+			return false;
+		} finally {
+			qexec.close();
+		}
 	}
 
 	public String getLabel(String modelrefUri) {
-		String label = null;
-		String queryString = "SELECT ?l WHERE {\n" +
-			"<" + modelrefUri + "> " + RDFS.label.toSPARQL() + " ?l . " +
-			"}";
-		RepositoryModel model = connector.openRepositoryModel();
-		QueryResultTable qrt = model.sparqlSelect(queryString);
-		ClosableIterator<QueryRow> iter = qrt.iterator();
-		while ( iter.hasNext() ) {
-			QueryRow row = iter.next();
-			label = row.getValue("l").asLiteral().getValue();
+
+		// If the SPARQL endpoint does not exist return immediately.
+		if (this.getSparqlEndpoint() == null) {
+			// TODO: throw error
 		}
-		iter.close();
-		connector.closeRepositoryModel(model);
-		return label;
+
+		String queryStr = "SELECT ?l WHERE {\n" +
+				"<" + modelrefUri + ">" + "<" + RDFS.label.getURI() + ">" + " ?l . " +
+				"}";
+
+		// Query the engine
+		Query query = QueryFactory.create(queryStr);
+		QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlEndpoint().toASCIIString(), query);
+
+		try {		
+			// TODO: Remove profiling
+			long startTime = System.currentTimeMillis();
+
+			ResultSet qResults = qexec.execSelect();
+
+			// TODO: Remove profiling
+			long endTime = System.currentTimeMillis();
+			long duration = endTime - startTime;
+			log.info("Time taken for querying the registry: " + duration);
+
+			// Iterate over the results obtained
+			while ( qResults.hasNext() ) {
+				QuerySolution soln = qResults.nextSolution();
+				return soln.getLiteral("l").getString();
+			}
+
+			return null;
+		} finally {
+			qexec.close();
+		}
 	}
 
 	public String getComment(String modelrefUri) {
-		String comment = null;
-		String queryString = "SELECT ?c WHERE {\n" +
-			"<" + modelrefUri + "> " + RDFS.comment.toSPARQL() + " ?c . " +
-			"}";
-		RepositoryModel model = connector.openRepositoryModel();
-		QueryResultTable qrt = model.sparqlSelect(queryString);
-		ClosableIterator<QueryRow> iter = qrt.iterator();
-		while ( iter.hasNext() ) {
-			QueryRow row = iter.next();
-			comment = row.getValue("c").asLiteral().getValue();
+
+		// If the SPARQL endpoint does not exist return immediately.
+		if (this.getSparqlEndpoint() == null) {
+			// TODO: throw error
 		}
-		iter.close();
-		connector.closeRepositoryModel(model);
-		return comment;
+
+		String queryStr = "SELECT ?c WHERE {\n" +
+				"<" + modelrefUri + ">" + "<" + RDFS.comment.getURI() + ">" + " ?c . " +
+				"}";
+
+		// Query the engine
+		Query query = QueryFactory.create(queryStr);
+		QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlEndpoint().toASCIIString(), query);
+
+		try {		
+			// TODO: Remove profiling
+			long startTime = System.currentTimeMillis();
+
+			ResultSet qResults = qexec.execSelect();
+
+			// TODO: Remove profiling
+			long endTime = System.currentTimeMillis();
+			long duration = endTime - startTime;
+			log.info("Time taken for querying the registry: " + duration);
+
+			// Iterate over the results obtained
+			while ( qResults.hasNext() ) {
+				QuerySolution soln = qResults.nextSolution();
+				return soln.getLiteral("c").getString();
+			}
+
+			return null;
+		} finally {
+			qexec.close();
+		}
 	}
 
 	private String getRange(String modelrefUri) {
-		String queryString = "SELECT ?r WHERE {\n" +
-			"<" + modelrefUri + "> " + RDFS.range.toSPARQL() + " ?r . " +
-			"}";
-		RepositoryModel model = connector.openRepositoryModel();
-		QueryResultTable qrt = model.sparqlSelect(queryString);
-		ClosableIterator<QueryRow> iter = qrt.iterator();
-		String result = null;
-		String result2 = null;
-		while ( iter.hasNext() ) {
-			QueryRow row = iter.next();
-			if ( row.getValue("r") != null ) {
-				String rangeType = row.getValue("r").toString();
-				if ( rangeType.startsWith(XSD.XSD_NS) ) {
-					result = rangeType;
-				}
-				if ( rangeType.endsWith(RDFS.Literal.toString()) ) {
-					result2 = XSD._string.toString();
-				}
-				if ( isClass(rangeType) ) {
-					result2 = XSD._anyURI.toString();
-				}
-			}
+
+		// If the SPARQL endpoint does not exist return immediately.
+		if (this.getSparqlEndpoint() == null) {
+			// TODO: throw error
 		}
-		iter.close();
-		connector.closeRepositoryModel(model);
-		if ( result != null )
-			return result;
-		return result2;
+
+		String queryStr = "SELECT ?r WHERE {\n" +
+				"<" + modelrefUri + ">" + "<" + RDFS.range.getURI() + ">" + " ?r . " +
+				"}";
+
+		// Query the engine
+		Query query = QueryFactory.create(queryStr);
+		QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlEndpoint().toASCIIString(), query);
+
+		try {		
+			// TODO: Remove profiling
+			long startTime = System.currentTimeMillis();
+
+			ResultSet qResults = qexec.execSelect();
+
+			// TODO: Remove profiling
+			long endTime = System.currentTimeMillis();
+			long duration = endTime - startTime;
+			log.info("Time taken for querying the registry: " + duration);
+
+			// Iterate over the results obtained
+			while ( qResults.hasNext() ) {
+				QuerySolution soln = qResults.nextSolution();
+				return soln.getResource("r").getURI();
+			}
+
+			return null;
+		} finally {
+			qexec.close();
+		}
 	}
 
 	private String getPropertyRange(String modelrefUri) {
-		String queryString = "SELECT DISTINCT ?r ?r2 WHERE {\n" +
-			" <" + modelrefUri + "> " + RDFS.subClassOf.toSPARQL() + " ?s . \n" +
-			" OPTIONAL { \n" +
-			"  ?p " + RDF.type.toSPARQL() + " " + RDF.Property.toSPARQL() + ". \n" +
-			"  ?s ?p ?r . \n" +
-			"  OPTIONAL { ?r " + RDF.type.toSPARQL() + " " + RDFS.Datatype.toSPARQL() + " . }\n" +
-			" } \n" +
-			" OPTIONAL { ?p2 " + RDFS.domain.toSPARQL() + " ?s . \n" +
-			"  ?p2 " + RDFS.range.toSPARQL() + " ?r2 . \n" +
-			" }\n" +
-			"}";
-		RepositoryModel model = connector.openRepositoryModel();
-		QueryResultTable qrt = model.sparqlSelect(queryString);
-		ClosableIterator<QueryRow> iter = qrt.iterator();
-		String result = null;
-		String result2 = null;
-		while ( iter.hasNext() ) {
-			QueryRow row = iter.next();
-			if ( row.getValue("r") != null ) {
-				String rangeType = row.getValue("r").toString();
-				if ( rangeType.startsWith(XSD.XSD_NS) ) {
-					result = rangeType;
-				}
-				if ( rangeType.endsWith(RDFS.Literal.toString()) ) {
-					result2 = XSD._string.toString();
-				}
-				if ( isClass(rangeType) ) {
-					result2 = XSD._anyURI.toString();
-				}
-			}
-			if ( row.getValue("r2") != null ) {
-				String rangeType = row.getValue("r2").toString();
-				if ( rangeType.startsWith(XSD.XSD_NS) ) {
-					return rangeType;
-				}
-				if ( rangeType.endsWith(RDFS.Literal.toString()) ) {
-					result2 = XSD._string.toString();
-				}
-			}
-		}
-		iter.close();
-		connector.closeRepositoryModel(model);
-		if ( result != null )
-			return result;
-		return result2;
+		return null;
+		
+		// TODO: reimplement?
+		
+		//		String queryString = "SELECT DISTINCT ?r ?r2 WHERE {\n" +
+//				" <" + modelrefUri + "> " + RDFS.subClassOf.toSPARQL() + " ?s . \n" +
+//				" OPTIONAL { \n" +
+//				"  ?p " + RDF.type.toSPARQL() + " " + RDF.Property.toSPARQL() + ". \n" +
+//				"  ?s ?p ?r . \n" +
+//				"  OPTIONAL { ?r " + RDF.type.toSPARQL() + " " + RDFS.Datatype.toSPARQL() + " . }\n" +
+//				" } \n" +
+//				" OPTIONAL { ?p2 " + RDFS.domain.toSPARQL() + " ?s . \n" +
+//				"  ?p2 " + RDFS.range.toSPARQL() + " ?r2 . \n" +
+//				" }\n" +
+//				"}";
+//		RepositoryModel model = connector.openRepositoryModel();
+//		QueryResultTable qrt = model.sparqlSelect(queryString);
+//		ClosableIterator<QueryRow> iter = qrt.iterator();
+//		String result = null;
+//		String result2 = null;
+//		while ( iter.hasNext() ) {
+//			QueryRow row = iter.next();
+//			if ( row.getValue("r") != null ) {
+//				String rangeType = row.getValue("r").toString();
+//				if ( rangeType.startsWith(XSD.XSD_NS) ) {
+//					result = rangeType;
+//				}
+//				if ( rangeType.endsWith(RDFS.Literal.toString()) ) {
+//					result2 = XSD._string.toString();
+//				}
+//				if ( isClass(rangeType) ) {
+//					result2 = XSD._anyURI.toString();
+//				}
+//			}
+//			if ( row.getValue("r2") != null ) {
+//				String rangeType = row.getValue("r2").toString();
+//				if ( rangeType.startsWith(XSD.XSD_NS) ) {
+//					return rangeType;
+//				}
+//				if ( rangeType.endsWith(RDFS.Literal.toString()) ) {
+//					result2 = XSD._string.toString();
+//				}
+//			}
+//		}
+//		iter.close();
+//		connector.closeRepositoryModel(model);
+//		if ( result != null )
+//			return result;
+//		return result2;
 	}
 
-//	public static void main(String[] args) {
-//		String modelRefUri = "http://purl.org/iserve/ontology/owlstc/concept.owl#Price";
-////		String modelRefUri = "http://localhost:8080/PoliceAPI.rdfs#hasID";
-////		String modelRefUri = "http://localhost:8080/PoliceAPI.rdfs#PoliceFunctionalUnit";
-////		String modelRefUri = "http://purl.org/iserve/ontology/owlstc/books.owl#Book";
-//		try {
-//			ModelReferenceUtil.getInstance().inputModelReference(modelRefUri);
-////			ModelReferenceUtil.getInstance().getNameDescription(modelRefUri);
-//			ModelReferenceUtil.getInstance().getDatatype(modelRefUri);
-//		} catch (MalformedURLException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
+	/**
+	 * @return the sparqlEndpoint
+	 */
+	public URI getSparqlEndpoint() {
+		return this.sparqlEndpoint;
+	}
+
+	//	public static void main(String[] args) {
+	//		String modelRefUri = "http://purl.org/iserve/ontology/owlstc/concept.owl#Price";
+	////		String modelRefUri = "http://localhost:8080/PoliceAPI.rdfs#hasID";
+	////		String modelRefUri = "http://localhost:8080/PoliceAPI.rdfs#PoliceFunctionalUnit";
+	////		String modelRefUri = "http://purl.org/iserve/ontology/owlstc/books.owl#Book";
+	//		try {
+	//			ModelReferenceUtil.getInstance().inputModelReference(modelRefUri);
+	////			ModelReferenceUtil.getInstance().getNameDescription(modelRefUri);
+	//			ModelReferenceUtil.getInstance().getDatatype(modelRefUri);
+	//		} catch (MalformedURLException e) {
+	//			e.printStackTrace();
+	//		} catch (IOException e) {
+	//			e.printStackTrace();
+	//		}
+	//	}
 
 }
