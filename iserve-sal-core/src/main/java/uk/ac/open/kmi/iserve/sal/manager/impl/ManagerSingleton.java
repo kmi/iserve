@@ -74,7 +74,7 @@ public class ManagerSingleton implements iServeManager {
 
 	private static ManagerSingleton _instance;
 
-	private ManagerSingleton() throws RepositoryException, ConfigurationException {
+	private ManagerSingleton() throws ConfigurationException, SalException {
 
 		configuration = new SystemConfiguration(CONFIG_PROPERTIES_FILENAME);
 		docManager = new DocumentManagerFileSystem(configuration);
@@ -105,9 +105,9 @@ public class ManagerSingleton implements iServeManager {
 		if (_instance == null) {
 			try {
 				_instance = new ManagerSingleton();
-			} catch (RepositoryException e) {
-				throw(new IllegalStateException("iServe's storage and access layer is not properly configured", e));
 			} catch (ConfigurationException e) {
+				throw(new IllegalStateException("iServe's storage and access layer is not properly configured", e));
+			} catch (SalException e) {
 				throw(new IllegalStateException("iServe's storage and access layer is not properly configured", e));
 			}
 		}
