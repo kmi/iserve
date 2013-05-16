@@ -48,7 +48,7 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
 	 * 
 	 * @param configuration
 	 * @throws SalException 
-	 * @throws RepositoryException
+	 * @throws SalException
 	 */
 	protected ServiceManagerRdf(SystemConfiguration configuration) throws SalException {
 		super(configuration);
