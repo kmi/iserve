@@ -15,57 +15,25 @@
 */
 package uk.ac.open.kmi.iserve.discovery.engine;
 
-import java.io.StringWriter;
-import java.net.URLDecoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.client.apache4.ApacheHttpClient4;
+import com.sun.jersey.client.apache4.config.ApacheHttpClient4Config;
+import com.sun.jersey.client.apache4.config.DefaultApacheHttpClient4Config;
+import org.apache.abdera.model.Entry;
+import org.apache.abdera.model.Feed;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
+import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.apache.abdera.model.Entry;
-import org.apache.abdera.model.Feed;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.methods.GetMethod;
-
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSOutput;
-import org.w3c.dom.ls.LSSerializer;
-
-import com.sun.jersey.api.client.AsyncWebResource;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.client.apache4.config.ApacheHttpClient4Config;
-import com.sun.jersey.client.apache4.config.DefaultApacheHttpClient4Config;
-import com.sun.jersey.client.apache4.ApacheHttpClient4;
-import com.sun.jersey.client.apache4.ApacheHttpClient4Handler;
-
-import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
-import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
+import javax.ws.rs.core.*;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.*;
 
 /**
  * provides base functionality for atom combinators
@@ -74,6 +42,8 @@ import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
  *
  */
 public abstract class AtomBase {
+
+    private static final Logger log = LoggerFactory.getLogger(AtomBase.class);
 	
 	// Base URI for this resource
 	@Context  UriInfo uriInfo;
@@ -244,8 +214,12 @@ public abstract class AtomBase {
 				System.err.println("only http and https schemes supported; bad URI: " + properuri.toString());
 				uris.remove(i);
 			} else {
-				uris.set(i, URLDecoder.decode(properuri.toString()).replaceAll("#", "%23"));
-			}
+                try {
+                    uris.set(i, URLDecoder.decode(properuri.toString(), "UTF-8").replaceAll("#", "%23"));
+                } catch (UnsupportedEncodingException e) {
+                    log.error("Unsupported encoding while decoding URL", e);
+                }
+            }
 		}
 	}
 
