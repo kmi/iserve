@@ -15,13 +15,11 @@
  */
 package uk.ac.open.kmi.iserve.sal.manager;
 
+import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
+
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
-
-import org.ontoware.rdf2go.model.Syntax;
-
-import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 
 /**
  * Interface that defines the operations a Service Manager should offer
@@ -51,17 +49,17 @@ public interface ServiceManager {
 			URI sourceDocumentUri) throws ServiceException;
 	
 	// Read Methods
-	/**
-	 * Obtains the service description of the service identified by the URI
-	 * in the serialisation requested.
-	 *  
-	 * @param serviceUri the URI of the service to obtain
-	 * @param syntax the format to use when serialising the service
-	 * @return the serialised service description
-	 * @throws ServiceException
-	 */
-	public abstract String getServiceSerialisation(URI serviceUri, Syntax syntax)
-			throws ServiceException;
+//	/**
+//	 * Obtains the service description of the service identified by the URI
+//	 * in the serialisation requested.
+//	 *
+//	 * @param serviceUri the URI of the service to obtain
+//	 * @param syntax the format to use when serialising the service
+//	 * @return the serialised service description
+//	 * @throws ServiceException
+//	 */
+//	public abstract String getServiceSerialisation(URI serviceUri, Syntax syntax)
+//			throws ServiceException;
 	
 	// Delete Methods
 	/**

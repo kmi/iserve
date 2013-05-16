@@ -15,19 +15,11 @@
  */
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.MatchResult;
-
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import uk.ac.open.kmi.iserve.commons.vocabulary.DC;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.sal.ServiceFormat;
 import uk.ac.open.kmi.iserve.sal.ServiceFormatDetector;
@@ -37,14 +29,12 @@ import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Resource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServiceManagerRdf extends BaseSemanticManager implements ServiceManager {
 
@@ -77,7 +67,7 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
 		}
 
 		String queryStr = "select DISTINCT ?s where { \n" +
-				"?s " + RDF.type.toSPARQL() + " " + MSM.NS_PREFIX + ":" + MSM.SERVICE +
+				"?s " + "<" + RDF.type.getURI() + ">" +  " " + MSM.NS_PREFIX + ":" + MSM.SERVICE +
 				" . }";
 
 		// Query the engine
@@ -227,15 +217,6 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#getService(java.lang.String, org.ontoware.rdf2go.model.Syntax)
-	 */
-	@Override
-	public String getServiceSerialisation(URI serviceUri, Syntax syntax) throws ServiceException {
-		// TODO: Reimplement
-		return null;		
-	}
-
 	private ServiceFormat detectFormat(String serviceDescription) throws IOException {
 		return formatDetector.detect(serviceDescription);
 	}
@@ -250,7 +231,7 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
 	private String getContextUri(URI serviceUri) {
 		String queryString = "select ?c where { \n" +
 				"graph ?c { \n" +
-				"<" + serviceUri + "> " + RDF.type.toSPARQL() + " " + MSM.NS_PREFIX + ":" + MSM.SERVICE +
+				"<" + serviceUri + "> " + "<" + RDF.type.getURI() + ">" + " " + MSM.NS_PREFIX + ":" + MSM.SERVICE +
 				" . } }";
 
 		// Query the engine
@@ -282,41 +263,6 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
 		}
 	}
 
-
-
-	/**
-	 * Get the context URI given a service ID
-	 * 
-	 * @param serviceId
-	 * @return
-	 */
-	private String getContextUriById(String serviceId) {
-		String queryString = "select ?c where { \n" +
-				"graph ?c { \n" +
-				"?s " + RDF.type.toSPARQL() + " " + MSM.NS_PREFIX + ":" + MSM.SERVICE + "\n" +
-				"FILTER regex(str(?s), \"" + serviceId + "\", \"i\")}\n}";
-
-		RepositoryModel model = repoConnector.openRepositoryModel();
-		QueryResultTable qrt = model.sparqlSelect(queryString);
-		String defUri = null;
-		if ( qrt != null ) {
-			ClosableIterator<org.ontoware.rdf2go.model.QueryRow> iter = qrt.iterator();
-			if ( iter != null ) {
-				while ( iter.hasNext() ) {
-					org.ontoware.rdf2go.model.QueryRow qr = iter.next();
-					String valueString = qr.getValue("c").toString();
-					if ( valueString.toLowerCase().contains(this.getConfiguration().getIserveUri().toString()) ) {
-						defUri = valueString;
-					}
-				}
-				iter.close();
-				iter = null;
-			}
-		}
-		repoConnector.closeRepositoryModel(model);
-		model = null;
-		return defUri;
-	}
 
 	//	// TODO: Id generation should not require a SPARQL Query
 	//	private URI getServiceUri(String serviceId) {
