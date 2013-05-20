@@ -145,26 +145,6 @@
                     </commandlineArgs>
                 </configuration>
             </execution>
-            <!-- Automated File Generation with Schemagen: DCTERMS -->
-            <execution>
-                <id>DCTERMS</id>
-                <phase>generate-sources</phase>
-                <goals>
-                    <goal>java</goal>
-                </goals>
-                <configuration>
-                    <mainClass>jena.schemagen</mainClass>
-                    <commandlineArgs>
-                        -a http://purl.org/dc/terms/ \
-                        -i ${basedir}/src/main/resources/dcterms-2013-05-17.rdf \
-                        -e RDF/XML \
-                        --package uk.ac.open.kmi.iserve.commons.vocabulary \
-                        -o ${project.build.directory}/generated-sources/java \
-                        -n DC_TERMS \
-                        --rdfs
-                    </commandlineArgs>
-                </configuration>
-            </execution>
             <!-- Automated File Generation with Schemagen: FOAF -->
             <execution>
                 <id>FOAF</id>
