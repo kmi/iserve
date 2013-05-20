@@ -15,21 +15,12 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
    limitations under the License.
  */
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ws.rs.core.MultivaluedMap;
-
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
-import uk.ac.open.kmi.iserve.commons.vocabulary.WSMO_LITE;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
@@ -38,15 +29,13 @@ import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.MatchResultImpl;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.vocabulary.RDFS;
+import javax.ws.rs.core.MultivaluedMap;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Plugin for discovering both services and operations given Functional Classifications

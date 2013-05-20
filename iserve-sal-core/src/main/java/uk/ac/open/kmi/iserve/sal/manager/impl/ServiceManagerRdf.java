@@ -67,7 +67,8 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
 		}
 
 		String queryStr = "select DISTINCT ?s where { \n" +
-				"?s " + "<" + RDF.type.getURI() + ">" +  " " + MSM.NS_PREFIX + ":" + MSM.SERVICE +
+				"?s " + "<" + RDF.type.getURI() + ">" +  " " +
+                "<" + MSM.Service.getURI() + ">" +
 				" . }";
 
 		// Query the engine
@@ -231,7 +232,8 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
 	private String getContextUri(URI serviceUri) {
 		String queryString = "select ?c where { \n" +
 				"graph ?c { \n" +
-				"<" + serviceUri + "> " + "<" + RDF.type.getURI() + ">" + " " + MSM.NS_PREFIX + ":" + MSM.SERVICE +
+				"<" + serviceUri + "> " + "<" + RDF.type.getURI() + ">" + " " +
+                "<" + MSM.Service.getURI() + ">" +
 				" . } }";
 
 		// Query the engine

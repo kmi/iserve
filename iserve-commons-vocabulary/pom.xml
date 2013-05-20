@@ -80,7 +80,7 @@
                         -e TTL \
                         --package uk.ac.open.kmi.iserve.commons.vocabulary \
                         -o ${project.build.directory}/generated-sources/java \
-                        -n MSM_Jena \
+                        -n MSM \
                         --rdfs
                     </commandlineArgs>
                 </configuration>
@@ -100,7 +100,7 @@
                         -e N3 \
                         --package uk.ac.open.kmi.iserve.commons.vocabulary \
                         -o ${project.build.directory}/generated-sources/java \
-                        -n WSMO_LITE_Jena \
+                        -n WSMO_LITE \
                         --rdfs
                     </commandlineArgs>
                 </configuration>
@@ -120,7 +120,7 @@
                         -e N3 \
                         --package uk.ac.open.kmi.iserve.commons.vocabulary \
                         -o ${project.build.directory}/generated-sources/java \
-                        -n SAWSDL_Jena \
+                        -n SAWSDL \
                         --rdfs \
                     </commandlineArgs>
                 </configuration>
@@ -140,7 +140,7 @@
                         -e N3 \
                         --package uk.ac.open.kmi.iserve.commons.vocabulary \
                         -o ${project.build.directory}/generated-sources/java \
-                        -n HRESTS_Jena \
+                        -n HRESTS \
                         --rdfs
                     </commandlineArgs>
                 </configuration>
@@ -180,7 +180,7 @@
                         -e RDF/XML \
                         --package uk.ac.open.kmi.iserve.commons.vocabulary \
                         -o ${project.build.directory}/generated-sources/java \
-                        -n FOAF_Jena \
+                        -n FOAF \
                         --rdfs \
                     </commandlineArgs>
                 </configuration>
