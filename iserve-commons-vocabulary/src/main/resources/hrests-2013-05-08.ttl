@@ -1,0 +1,54 @@
+@prefix hr: <http://iserve.kmi.open.ac.uk/ns/hrests#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix dc: <http://purl.org/dc/terms/>.
+@prefix msm: <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix http: <http://www.w3.org/2008/http-methods#>.
+    
+hr: a owl:Ontology ;
+    dc:created "2010-03-10"^^xsd:date ;
+    dc:description "This is a description of the Web API Grounding Model, a simple model for capturing Web API details relevant for invocation support" ;
+    dc:modified "2011-12-03"^^xsd:date ;
+    dc:modified "2012-03-14"^^xsd:date ;
+    dc:modified "2012-05-08"^^xsd:date ;
+    rdfs:label "Web API Grounding Model" ;
+    owl:versionInfo "2013-05-08" ;
+    owl:priorVersion <http://purl.org/hrests/v2#> ;
+    owl:imports <http://iserve.kmi.open.ac.uk/ns/msm> , <http://www.w3.org/2008/http-methods> .
+
+http:Method a rdfs:Class ;
+    rdfs:subClassOf hr:Method .
+      
+hr:URITemplate a rdfs:Class .
+    
+hr:OutputFormatParameter a rdfs:Class .
+    
+hr:AuthenticationCredential a rdfs:Class .
+    
+hr:acceptsContentType a rdf:Property ;
+    rdfs:range hr:MediaType .
+         
+hr:producesContentType a rdf:Property ;
+    rdfs:range hr:MediaType .
+    
+hr:hasAddress a rdf:Property ;
+    rdfs:range hr:URITemplate .
+    
+hr:hasMethod a rdf:Property ;
+    rdfs:domain msm:Operation ;
+    rdfs:range hr:Method .
+    
+hr:isGroundedIn a rdf:Property ;
+    rdfs:domain msm:MessagePart .
+         
+hr:hasComment a rdf:Property ;
+    rdfs:subPropertyOf rdfs:comment .
+         
+hr:automaticallyExtractedDescription a rdf:Property ;
+    rdfs:range rdfs:Literal .
+   
+hr:MediaType a rdfs:Datatype .
+
+

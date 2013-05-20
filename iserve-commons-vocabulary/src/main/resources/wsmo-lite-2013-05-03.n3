@@ -1,0 +1,55 @@
+# namespace declarations (this line is a comment)
+@prefix  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix  rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix  owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix  sawsdl:  <http://www.w3.org/ns/sawsdl#> .
+@prefix  wl:  <http://www.wsmo.org/ns/wsmo-lite#> .
+@prefix  xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# classes for use in semantic annotation of service descriptions
+wl:FunctionalClassificationRoot  rdfs:subClassOf  rdfs:Class .
+wl:NonfunctionalParameter  rdf:type  rdfs:Class .
+wl:Condition  rdf:type  rdfs:Class .
+wl:Effect  rdf:type  rdfs:Class .
+
+# the following two are deprecated definitions (as of May 2013), they haven't been found useful
+
+wl:Ontology  rdf:type  rdfs:Class ;
+    rdfs:subClassOf  owl:Ontology ;
+    owl:deprecated "true"^^xsd:boolean .
+
+# property for identifying potentially relevant ontologies
+wl:usesOntology  a  rdfs:Property ;
+    rdfs:domain  wl:Service ;
+    rdfs:subPropertyOf  rdfs:seeAlso ;
+    owl:deprecated "true"^^xsd:boolean .
+
+
+# Additional useful definitions, not defined as part of WSMO-Lite
+
+# SAWSDL properties (repeated here for completeness)
+sawsdl:modelReference  rdf:type  rdf:Property .
+sawsdl:liftingSchemaMapping  rdf:type  rdf:Property .
+sawsdl:loweringSchemaMapping  rdf:type  rdf:Property .
+
+# Minimal Service Model used to be copied here but is no longer (as of May 2013)
+# most recent version of the MSM, as used in iServe, is at http://iserve.kmi.open.ac.uk/ns/msm
+#
+#   msm:Service  rdf:type  rdfs:Class .
+#   msm:hasOperation  rdf:type  rdf:Property ;
+#       rdfs:domain  msm:Service ;
+#       rdfs:range  msm:Operation .
+#   msm:Operation  rdf:type  rdfs:Class .
+#   msm:hasInputMessage  rdf:type  rdf:Property ;
+#       rdfs:domain  msm:Operation ;
+#       rdfs:range  msm:Message .
+#   msm:hasOutputMessage  rdf:type  rdf:Property ;
+#       rdfs:domain  msm:Operation ;
+#       rdfs:range  msm:Message . 
+#   msm:hasInputFault  rdf:type  rdf:Property ;
+#       rdfs:domain  msm:Operation ;
+#       rdfs:range  msm:Message .
+#   msm:hasOutputFault  rdf:type  rdf:Property ;
+#       rdfs:domain  msm:Operation ;
+#       rdfs:range  msm:Message .
+#   msm:Message  rdf:type  rdfs:Class .

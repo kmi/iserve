@@ -1,60 +1,209 @@
 <?xml version="1.0"?>
 <project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>iserve-parent</artifactId>
-		<groupId>uk.ac.open.kmi.iserve</groupId>
-		<version>1.1-SNAPSHOT</version>
-	</parent>
-	<groupId>uk.ac.open.kmi.iserve.commons</groupId>
-	<artifactId>iserve-commons-vocabulary</artifactId>
-	<version>1.1.0-SNAPSHOT</version>
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>iserve-parent</artifactId>
+        <groupId>uk.ac.open.kmi.iserve</groupId>
+        <version>1.1-SNAPSHOT</version>
+    </parent>
+    <groupId>uk.ac.open.kmi.iserve.commons</groupId>
+    <artifactId>iserve-commons-vocabulary</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
 
-	<name>iServe Commons Vocabulary</name>
+    <name>iServe Commons Vocabulary</name>
 
-	<developers>
-		<developer>
-			<id>cpedrinaci</id>
-			<name>Carlos Pedrinaci</name>
-			<email>c.pedrinaci-{AT}-open.ac.uk</email>
-			<url>http://people.kmi.open.ac.uk/carlos/</url>
-			<organization>Knowledge Media Institute - The Open University</organization>
-			<organizationUrl>http://kmi.open.ac.uk</organizationUrl>
-		</developer>
-		<developer>
-			<id>dong</id>
-			<name>Dong Liu</name>
-			<email>d.liu-{AT}-open.ac.uk</email>
-			<organization>Knowledge Media Institute - The Open University</organization>
-			<organizationUrl>http://kmi.open.ac.uk</organizationUrl>
-		</developer>
-		<developer>
-			<id>jkopecky</id>
-			<name>Jacek Kopecky</name>
-			<email>j.kopecky-{AT}-open.ac.uk</email>
-			<organization>Knowledge Media Institute - The Open University</organization>
-			<organizationUrl>http://kmi.open.ac.uk</organizationUrl>
-		</developer>
-	</developers>
-	<organization>
-		<name>Knowledge Media Institute - The Open University</name>
-		<url>http://kmi.open.ac.uk</url>
-	</organization>
+    <developers>
+        <developer>
+            <id>cpedrinaci</id>
+            <name>Carlos Pedrinaci</name>
+            <email>c.pedrinaci-{AT}-open.ac.uk</email>
+            <url>http://people.kmi.open.ac.uk/carlos/</url>
+            <organization>Knowledge Media Institute - The Open University</organization>
+            <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+        </developer>
+        <developer>
+            <id>dong</id>
+            <name>Dong Liu</name>
+            <email>d.liu-{AT}-open.ac.uk</email>
+            <organization>Knowledge Media Institute - The Open University</organization>
+            <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+        </developer>
+        <developer>
+            <id>jkopecky</id>
+            <name>Jacek Kopecky</name>
+            <email>j.kopecky-{AT}-open.ac.uk</email>
+            <organization>Knowledge Media Institute - The Open University</organization>
+            <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+        </developer>
+    </developers>
+    <organization>
+        <name>Knowledge Media Institute - The Open University</name>
+        <url>http://kmi.open.ac.uk</url>
+    </organization>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.semweb4j</groupId>
-			<artifactId>rdf2go.api</artifactId>
-			<version>4.7.3</version>
-		</dependency>
-	</dependencies>
-	<url>http://iserve.kmi.open.ac.uk/</url>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>apache-jena-libs</artifactId>
+            <version>${jena.version}</version>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
+    <url>http://iserve.kmi.open.ac.uk/</url>
+
+    <build>
+    <plugins>
+    <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+            <!-- Automated File Generation with Schemagen: MSM -->
+            <execution>
+                <id>MSM</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>java</goal>
+                </goals>
+                <configuration>
+                    <mainClass>jena.schemagen</mainClass>
+                    <commandlineArgs>
+                        -a http://iserve.kmi.open.ac.uk/ns/msm# \
+                        -i ${basedir}/src/main/resources/msm-2013-05-03.ttl \
+                        -e TTL \
+                        --package uk.ac.open.kmi.iserve.commons.vocabulary \
+                        -o ${project.build.directory}/generated-sources/java \
+                        -n MSM_Jena \
+                        --rdfs
+                    </commandlineArgs>
+                </configuration>
+            </execution>
+            <!-- Automated File Generation with Schemagen: WSMO_LITE -->
+            <execution>
+                <id>WSMO_LITE</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>java</goal>
+                </goals>
+                <configuration>
+                    <mainClass>jena.schemagen</mainClass>
+                    <commandlineArgs>
+                        -a http://www.wsmo.org/ns/wsmo-lite# \
+                        -i ${basedir}/src/main/resources/wsmo-lite-2013-05-03.n3 \
+                        -e N3 \
+                        --package uk.ac.open.kmi.iserve.commons.vocabulary \
+                        -o ${project.build.directory}/generated-sources/java \
+                        -n WSMO_LITE_Jena \
+                        --rdfs
+                    </commandlineArgs>
+                </configuration>
+            </execution>
+            <!-- Automated File Generation with Schemagen: SAWSDL_Jena -->
+            <execution>
+                <id>SAWSDL</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>java</goal>
+                </goals>
+                <configuration>
+                    <mainClass>jena.schemagen</mainClass>
+                    <commandlineArgs>
+                        -a http://www.w3.org/ns/sawsdl# \
+                        -i ${basedir}/src/main/resources/wsmo-lite-2013-05-03.n3 \
+                        -e N3 \
+                        --package uk.ac.open.kmi.iserve.commons.vocabulary \
+                        -o ${project.build.directory}/generated-sources/java \
+                        -n SAWSDL_Jena \
+                        --rdfs \
+                    </commandlineArgs>
+                </configuration>
+            </execution>
+            <!-- Automated File Generation with Schemagen: HRESTS -->
+            <execution>
+                <id>HRESTS</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>java</goal>
+                </goals>
+                <configuration>
+                    <mainClass>jena.schemagen</mainClass>
+                    <commandlineArgs>
+                        -a http://iserve.kmi.open.ac.uk/ns/hrests# \
+                        -i ${basedir}/src/main/resources/hrests-2013-05-08.ttl \
+                        -e N3 \
+                        --package uk.ac.open.kmi.iserve.commons.vocabulary \
+                        -o ${project.build.directory}/generated-sources/java \
+                        -n HRESTS_Jena \
+                        --rdfs
+                    </commandlineArgs>
+                </configuration>
+            </execution>
+            <!-- Automated File Generation with Schemagen: DCTERMS -->
+            <execution>
+                <id>DCTERMS</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>java</goal>
+                </goals>
+                <configuration>
+                    <mainClass>jena.schemagen</mainClass>
+                    <commandlineArgs>
+                        -a http://purl.org/dc/terms/ \
+                        -i ${basedir}/src/main/resources/dcterms-2013-05-17.rdf \
+                        -e RDF/XML \
+                        --package uk.ac.open.kmi.iserve.commons.vocabulary \
+                        -o ${project.build.directory}/generated-sources/java \
+                        -n DC_TERMS \
+                        --rdfs
+                    </commandlineArgs>
+                </configuration>
+            </execution>
+            <!-- Automated File Generation with Schemagen: FOAF -->
+            <execution>
+                <id>FOAF</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>java</goal>
+                </goals>
+                <configuration>
+                    <mainClass>jena.schemagen</mainClass>
+                    <commandlineArgs>
+                        -a http://xmlns.com/foaf/0.1/ \
+                        -i ${basedir}/src/main/resources/foaf-2010-08-09.rdf \
+                        -e RDF/XML \
+                        --package uk.ac.open.kmi.iserve.commons.vocabulary \
+                        -o ${project.build.directory}/generated-sources/java \
+                        -n FOAF_Jena \
+                        --rdfs \
+                    </commandlineArgs>
+                </configuration>
+            </execution>
+        </executions>
+    </plugin>
+    <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+            <execution>
+                <id>add-source</id>
+                <goals>
+                    <goal>add-source</goal>
+                </goals>
+                <configuration>
+                    <sources>
+                        <source>${project.build.directory}/generated-sources/java</source>
+                    </sources>
+                </configuration>
+            </execution>
+        </executions>
+    </plugin>
+    </plugins>
+    </build>
 </project>
