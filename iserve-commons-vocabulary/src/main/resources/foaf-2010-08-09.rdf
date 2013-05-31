@@ -1,4 +1,4 @@
-<!-- This is the FOAF formal vocabulary description, expressed using W3C RDFS and OWL markup. foaf/spec version -->
+<!-- This is the FOAF formal vocabulary comment, expressed using W3C RDFS and OWL markup. foaf/spec version -->
 <!-- For more information about FOAF:                                            -->
 <!--   see the FOAF project homepage, http://www.foaf-project.org/               -->
 <!--   FOAF specification, http://xmlns.com/foaf/spec/                             -->
@@ -13,7 +13,7 @@
 	xmlns:wot="http://xmlns.com/wot/0.1/" 
 	xmlns:dc="http://purl.org/dc/elements/1.1/">
 <!-- Here we describe general characteristics of the FOAF vocabulary ('ontology'). -->
-  <owl:Ontology rdf:about="http://xmlns.com/foaf/0.1/" dc:title="Friend of a Friend (FOAF) vocabulary" dc:description="The Friend of a Friend (FOAF) RDF vocabulary, described using W3C RDF Schema and the Web Ontology Language." >
+  <owl:Ontology rdf:about="http://xmlns.com/foaf/0.1/" dc:title="Friend of a Friend (FOAF) vocabulary" dc:comment="The Friend of a Friend (FOAF) RDF vocabulary, described using W3C RDF Schema and the Web Ontology Language." >
   </owl:Ontology>
 
 
@@ -32,7 +32,7 @@
   <!--  DC terms are NOT annotation properties in general, so we consider the following 
 	claims scoped to this document. They may be removed in future revisions if
 	OWL tools become more flexible. -->
-  <owl:AnnotationProperty rdf:about="http://purl.org/dc/elements/1.1/description"/>
+  <owl:AnnotationProperty rdf:about="http://purl.org/dc/elements/1.1/comment"/>
   <owl:AnnotationProperty rdf:about="http://purl.org/dc/elements/1.1/title"/>
   <owl:AnnotationProperty rdf:about="http://purl.org/dc/elements/1.1/date"/>
   <owl:Class rdf:about="http://www.w3.org/2000/01/rdf-schema#Class"/>

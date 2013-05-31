@@ -137,10 +137,30 @@
                     <commandlineArgs>
                         -a http://iserve.kmi.open.ac.uk/ns/hrests# \
                         -i ${basedir}/src/main/resources/hrests-2013-05-08.ttl \
-                        -e N3 \
+                        -e TTL \
                         --package uk.ac.open.kmi.iserve.commons.vocabulary \
                         -o ${project.build.directory}/generated-sources/java \
                         -n HRESTS \
+                        --rdfs
+                    </commandlineArgs>
+                </configuration>
+            </execution>
+            <!-- Automated File Generation with Schemagen: MSM_WSDL -->
+            <execution>
+                <id>MSM_WSDL</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>java</goal>
+                </goals>
+                <configuration>
+                    <mainClass>jena.schemagen</mainClass>
+                    <commandlineArgs>
+                        -a http://iserve.kmi.open.ac.uk/ns/msm-wsdl# \
+                        -i ${basedir}/src/main/resources/msm-wsdl-2013-05-30.ttl \
+                        -e TTL \
+                        --package uk.ac.open.kmi.iserve.commons.vocabulary \
+                        -o ${project.build.directory}/generated-sources/java \
+                        -n MSM_WSDL \
                         --rdfs
                     </commandlineArgs>
                 </configuration>
