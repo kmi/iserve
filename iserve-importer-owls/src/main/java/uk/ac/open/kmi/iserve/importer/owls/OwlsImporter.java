@@ -15,411 +15,475 @@
  */
 package uk.ac.open.kmi.iserve.importer.owls;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.ontoware.aifbcommons.collection.ClosableIterable;
-import org.ontoware.aifbcommons.collection.ClosableIterator;
-import org.ontoware.rdf2go.RDF2Go;
-import org.ontoware.rdf2go.exception.ModelRuntimeException;
-import org.ontoware.rdf2go.model.Model;
-import org.ontoware.rdf2go.model.QueryResultTable;
-import org.ontoware.rdf2go.model.QueryRow;
-import org.ontoware.rdf2go.model.Statement;
-import org.ontoware.rdf2go.model.Syntax;
-import org.openrdf.repository.RepositoryException;
-import org.w3c.dom.Document;
-
-import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve.importer.ImporterConfig;
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.commons.model.*;
+import uk.ac.open.kmi.iserve.commons.model.uk.ac.open.kmi.iserve.commons.model.util.Vocabularies;
 import uk.ac.open.kmi.iserve.sal.ServiceImporter;
 import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 public class OwlsImporter implements ServiceImporter {
 
-	private static final String PREFIX = "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>\n"
-			+ "PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>\n"
-			+ "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"
-			+ "PREFIX owl:<http://www.w3.org/2002/07/owl#>\n"
-			+ "PREFIX sawsdl:<http://www.w3.org/ns/sawsdl#>\n"
-			+ "PREFIX service:<http://www.daml.org/services/owl-s/1.1/Service.owl#>\n"
-			+ "PREFIX profile:<http://www.daml.org/services/owl-s/1.1/Profile.owl#>\n"
-			+ "PREFIX process:<http://www.daml.org/services/owl-s/1.1/Process.owl#>\n"
-			+ "PREFIX grounding:<http://www.daml.org/services/owl-s/1.1/Grounding.owl#>\n"
-			+ "PREFIX expr:<http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#>\n"
-			+ "PREFIX wl:<http://www.wsmo.org/ns/wsmo-lite#>"
-			+ "PREFIX msm:<"
-			+ MSM.NS + ">\n";
+    private static final Logger log = LoggerFactory.getLogger(OwlsImporter.class);
 
-	private static final String QUERY = PREFIX
-			+ "SELECT DISTINCT * WHERE {\n"
-			+ "  ?service rdf:type service:Service .\n"
-			+ "  ?service service:presents ?profile .\n"
-			+ "  OPTIONAL { ?service service:describedBy ?processModel. ?processModel process:hasProcess ?process . } "
-			+ "  OPTIONAL { ?service service:describedBy ?process . }"
-			+ "  OPTIONAL { \n"
-			+ "    ?process process:hasPrecondition ?condition . \n"
-			+ "    OPTIONAL { ?condition rdfs:label ?conditionlabel . }\n"
-			+ "    ?condition expr:expressionLanguage ?conditionExprLang .\n"
-			+ "    ?condition expr:expressionBody ?conditionExprBody .\n"
-			+ "  }\n"
-			+ "  OPTIONAL {?profile profile:serviceClassification ?sclass .}\n"
-			+ "  OPTIONAL {?profile profile:serviceProduct ?sproduct .}\n"
-			+ "  OPTIONAL {\n"
-			+ "    ?process process:hasResult ?result .\n"
-			+ "    OPTIONAL {\n"
-			+ "      ?result process:hasResultVar ?resultVar . \n"
-			+ "      ?resultVar process:parameterType ?resultVarType . "
-			+ "    }\n"
-			+ "    OPTIONAL {\n"
-			+ "      ?result process:inCondition ?inCondition .\n"
-			+ "      ?inCondition expr:expressionBody ?inConditionExprBody .\n"
-			+ "    }\n"
-			+ "    ?result process:hasEffect ?effect .\n"
-			+ "    ?effect expr:expressionBody ?effectExprBody .\n"
-			+ "  }\n"
-			+ "  OPTIONAL {\n"
-			+ "   ?processGrounding grounding:owlsProcess ?process .\n"
-			+ "   ?processGrounding grounding:wsdlOperation ?operationRef .\n"
-			+ "   ?operationRef grounding:operation ?operation .\n"
-			+ "  }\n"
-			+ "  OPTIONAL {\n"
-			+ "   ?processGrounding grounding:wsdlInputMessage ?inputMessage .\n"
-			+ "   ?processGrounding grounding:wsdlInput ?inputMap .\n"
-			+ "   ?inputMap grounding:wsdlMessagePart ?inputPart .\n"
-			+ "   ?inputMap grounding:owlsParameter ?inputParameter .\n"
-			+ "   ?inputParameter process:parameterType ?inputParameterType .\n"
-			+ "   OPTIONAL {?inputMap grounding:xsltTransformationString ?inputTransform . }\n"
-			+ "  }\n"
-			+ "  OPTIONAL {\n"
-			+ "   ?processGrounding grounding:wsdlOutputMessage ?outputMessage .\n"
-			+ "   ?processGrounding grounding:wsdlOutput ?outputMap .\n"
-			+ "   ?outputMap grounding:wsdlMessagePart ?outputPart .\n"
-			+ "   ?outputMap grounding:owlsParameter ?outputParameter .\n"
-			+ "   ?outputParameter process:parameterType ?outputParameterType .\n"
-			+ "   OPTIONAL {?outputMap grounding:xsltTransformationString ?outputTransform . }\n"
-			+ "  }\n"
-			// + "  OPTIONAL {\n"
-			+ "    OPTIONAL {?process process:hasInput ?inputParameter2 . }\n"
-			+ "    OPTIONAL {?inputParameter2 process:parameterType ?inputParameterType2 . }\n"
-			+ "    OPTIONAL {?process process:hasOutput ?outputParameter2 . }\n"
-			+ "    OPTIONAL {?outputParameter2 process:parameterType ?outputParameterType2 . }\n"
-			// + "  }"
-			+ "}";
+    private static final String SERVICE_VAR = "service";
+    private static final String PROFILE_VAR = "profile";
+    private static final String PROCESS_VAR = "process";
+    private static final String PROCESS_MODEL_VAR = PROCESS_VAR + "Model";
+    private static final String CONDITION_VAR = "condition";
+    private static final String CONDITION_LABEL_VAR = "conditionlabel";
+    private static final String CONDITION_EXPR_LANG_VAR = "conditionExprLang";
+    private static final String CONDITION_EXPR_BODY_VAR = "conditionExprBody";
+    private static final String CLASSIFICATION_VAR = "sclass";
+    private static final String SVC_PRODUCT_VAR = "sproduct";
+    private static final String RESULT_VAR = "result";
+    private static final String RESULT_VAR_VAR = "resultVar";
+    private static final String RESULT_VAR_TYPE_VAR = RESULT_VAR_VAR + "Type";
+    private static final String IN_CONDITION_VAR = "inCondition";
+    private static final String IN_CONDITION_EXPR_BODY_VAR = IN_CONDITION_VAR + "ExprBody";
+    private static final String EFFECT_VAR = "effect";
+    private static final String EFFECT_EXPR_BODY_VAR = EFFECT_VAR + "ExprBody";
+    private static final String EFFECT_EXPR_LANG_VAR = EFFECT_VAR + "ExprLang";
+    private static final String PROCESS_GROUNDING_VAR = "processGrounding";
+    private static final String WSDL_DOC_VAR = "wsdlDocument";
+    private static final String WSDL_GROUNDING_VAR = "wsdlGrounding"; // direct operation grounding for WSDL 2
+    private static final String WSDL_11_OPERATION_VAR = "wsdlOperation"; // indirect operation grounding for WSDL 11
+    private static final String WSDL_11_PORT_VAR = "wsdlPortType"; // indirect operation grounding for WSDL 11
+
+    private static final String MESSAGE_PART_VAR = "messagePart";
+    private static final String MESSAGE_PART_TYPE_VAR = MESSAGE_PART_VAR + "Type";
+    private static final String WSDL_MESSAGE_VAR = "wsdlMessage";
+    private static final String MAP_VAR = "map";
+    private static final String WSDL_PART_VAR = "wsdlPart";
+    private static final String TRANSFORM_VAR = "transform";
+
+    private static final String TYPE_OF_MESSAGE_VAR = "messageType";
+    private static final String INPUT_PARAMETER_VAR = "inputParameter";
+    private static final String INPUT_PARAMETER_TYPE_VAR = INPUT_PARAMETER_VAR + "Type";
+    private static final String INPUT_MESSAGE_VAR = "inputMessage";
+    private static final String INPUT_MAP_VAR = "inputMap";
+    private static final String INPUT_TRANSFORM_VAR = "inputTransform";
+    private static final String OUTPUT_PARAMETER_VAR = "outputParameter";
+    private static final String OUTPUT_PARAMETER_TYPE_VAR = OUTPUT_PARAMETER_VAR + "Type";
+    private static final String OUTPUT_MESSAGE_VAR = "outputMessage";
+    private static final String OUTPUT_MAP_VAR = "outputMap";
+    private static final String OUTPUT_PART_VAR = "outputPart";
+    private static final String OUTPUT_TRANSFORM_VAR = "outputTransform";
+    private static final String INPUT_PART_VAR = "inputPart";
+    private static final String INPUT_PARAMETER2_VAR = INPUT_PARAMETER_VAR + "2";
+    private static final String INPUT_PARAMETER2_TYPE_VAR = INPUT_PARAMETER_TYPE_VAR + "2";
+    private static final String OUTPUT_PARAMETER2_VAR = OUTPUT_PARAMETER_VAR + "2";
+    private static final String OUTPUT_PARAMETER2_TYPE_VAR = OUTPUT_PARAMETER_TYPE_VAR + "2";
+
+    // TODO: Use the constants automatically generated for resources
+    private static final String QUERY_GLOBAL =
+            "SELECT DISTINCT * WHERE {\n"
+            + "  ?" + SERVICE_VAR + " rdf:type service:Service .\n"
+            + "  ?" + SERVICE_VAR + " service:presents ?" + PROFILE_VAR + " .\n"
+            + "  OPTIONAL { \n"
+            + "    ?" + SERVICE_VAR + " service:describedBy ?" + PROCESS_MODEL_VAR + " .\n"
+            + "    ?" + PROCESS_MODEL_VAR + " process:hasProcess ?" + PROCESS_VAR + " .\n"
+            + "  }\n"
+            + "  OPTIONAL { ?" + SERVICE_VAR + " service:describedBy ?" + PROCESS_VAR + " . }\n"
+            + "  OPTIONAL { \n"
+            + "    ?" + PROCESS_VAR + " process:hasPrecondition ?" + CONDITION_VAR + " . \n"
+            + "    OPTIONAL { ?" + CONDITION_VAR + " rdfs:label ?" + CONDITION_LABEL_VAR + " . }\n"
+            + "    ?" + CONDITION_VAR + " expr:expressionLanguage ?" + CONDITION_EXPR_LANG_VAR + " .\n"
+            + "    ?" + CONDITION_VAR + " expr:expressionBody ?" + CONDITION_EXPR_BODY_VAR + " .\n"
+            + "  }\n"
+            + "  OPTIONAL {?" + PROFILE_VAR + " profile:serviceClassification ?" + CLASSIFICATION_VAR + " .}\n"
+            + "  OPTIONAL {?" + PROFILE_VAR + " profile:serviceProduct ?" + SVC_PRODUCT_VAR + " .}\n"
+            + "  OPTIONAL {\n"
+            + "    ?" + PROCESS_VAR + " process:hasResult ?" + RESULT_VAR + " .\n"
+            + "    OPTIONAL {\n"
+            + "      ?" + RESULT_VAR + " process:hasResultVar ?" + RESULT_VAR_VAR + " . \n"
+            + "      ?" + RESULT_VAR_VAR + " process:parameterType ?" + RESULT_VAR_TYPE_VAR + " . "
+            + "    }\n"
+            + "    OPTIONAL {\n"
+            + "      ?" + RESULT_VAR + " process:inCondition ?" + IN_CONDITION_VAR + ".\n"
+            + "      ?" + IN_CONDITION_VAR + " expr:expressionBody ?" + IN_CONDITION_EXPR_BODY_VAR + " .\n"
+            + "    }\n"
+            + "    ?" + RESULT_VAR + " process:hasEffect ?" + EFFECT_VAR + " .\n"
+            + "    ?" + EFFECT_VAR + " expr:expressionBody ?" + EFFECT_EXPR_BODY_VAR + " .\n"
+            + "  }\n"
+            + "  OPTIONAL {\n"
+            + "   ?" + PROCESS_GROUNDING_VAR + " grounding:owlsProcess ?" + PROCESS_VAR + " .\n"
+            + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlDocument ?" + WSDL_DOC_VAR + " .\n"
+            + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlOperation ?" + WSDL_GROUNDING_VAR + " .\n"
+            + "   ?" + WSDL_GROUNDING_VAR + " grounding:operation ?" + WSDL_11_OPERATION_VAR + " .\n"
+            + "   ?" + WSDL_GROUNDING_VAR + " grounding:portType ?" + WSDL_11_PORT_VAR + " .\n"
+            + "  }\n"
+            + "  OPTIONAL {\n"
+            + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlInputMessage ?" + INPUT_MESSAGE_VAR + " .\n"
+            + "  }\n"
+            + "  OPTIONAL {\n"
+            + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlOutputMessage ?" + OUTPUT_MESSAGE_VAR + " .\n"
+            + "  }\n"
+            + "}";
+
+    private static final String QUERY_IO =
+            "SELECT DISTINCT * WHERE {\n"
+            + "  {\n"
+            + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlInputMessage ?" + WSDL_MESSAGE_VAR + " .\n"
+            + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlInput ?" + MAP_VAR + " .\n"
+            + "   BIND (\"input\" AS ?" + TYPE_OF_MESSAGE_VAR + ") .\n"
+            + "  }\n"
+            + " UNION \n"
+            + "  {\n"
+            + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlOutputMessage ?" + WSDL_MESSAGE_VAR + " .\n"
+            + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlOutput ?" + MAP_VAR + " .\n"
+            + "   BIND (\"output\" AS ?" + TYPE_OF_MESSAGE_VAR + ") .\n"
+            + "  }\n"
+            + "   ?" + MAP_VAR + " grounding:wsdlMessagePart ?" + WSDL_PART_VAR + " .\n"
+            + "   ?" + MAP_VAR + " grounding:owlsParameter ?" + MESSAGE_PART_VAR + " .\n"
+            + "   ?" + MESSAGE_PART_VAR + " process:parameterType ?" + MESSAGE_PART_TYPE_VAR + " .\n"
+            + "   OPTIONAL {?" + MAP_VAR + " grounding:xsltTransformationString ?" + TRANSFORM_VAR + " . }\n"
+            + "}";
+
 
 	private static final String TEMP_NS = "http://owls-transformer.baseuri/8965949584020236497#";
+    private static final String PLUGIN_VERSION = "v0.2";
 
-	public OwlsImporter() {	}
+    private Map<String, String> prefixes;
+
+    public OwlsImporter() {
+        // Initialise prefixes
+        prefixes = new HashMap<String,String>(Vocabularies.prefixes);
+        // Add those specific for handling OWLS
+        prefixes.put("service", "http://www.daml.org/services/owl-s/1.1/Service.owl#");
+        prefixes.put("profile", "http://www.daml.org/services/owl-s/1.1/Profile.owl#");
+        prefixes.put("process", "http://www.daml.org/services/owl-s/1.1/Process.owl#");
+        prefixes.put("grounding", "http://www.daml.org/services/owl-s/1.1/Grounding.owl#");
+        prefixes.put("expr", "http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#");
+    }
 
 	/* (non-Javadoc)
 	 * @see uk.ac.open.kmi.iserve.sal.ServiceImporter#transformStream(java.io.InputStream)
 	 */
 	@Override
 	public InputStream transformStream(InputStream originalDescription) throws ImporterException {
-		// store the service into a temporary repository.
-		Model tempModel = RDF2Go.getModelFactory().createModel();
-		tempModel.open();
-		String resultString = null;
-		try {
-			tempModel.readFrom(originalDescription);
-			resultString = transform(tempModel);
-		} catch (ModelRuntimeException e) {
-			throw new ImporterException(e);
-		} catch (IOException e) {
-			throw new ImporterException(e);
-		} finally {
-			tempModel.close();
-		}
-		if ( null == resultString ) {
-			return null;
-		}
-		return new ByteArrayInputStream(resultString.getBytes());
+
+//        Collection<Service> services = extractServicesFromStream(originalDescription);
+//        Model resultModel = ModelFactory.createDefaultModel();
+//        for (Service svc : services) {
+//            resultModel = svc.populateModel(resultModel);
+//        }
+//        // Turn into an input stream.
+//        // This approach requires buffering in memory the entire model
+//        ByteArrayOutputStream out = new ByteArrayOutputStream();
+//        resultModel.write(out);
+//        return new ByteArrayInputStream(out.toByteArray());
+        return null;
 	}
 
-	private String transform(Model model) {
-		QueryResultTable qrt = extractInformation(model);
-		String triplePatterns = generateTriplePatterns(qrt);
-		String constructString = createMsmInstance(triplePatterns);
-		ClosableIterable<Statement> iterable = model.sparqlConstruct(constructString);
+    // TODO: Rename and replace earlier interface in import plugins
+    public Collection<Service> extractServicesFromStream(InputStream originalDescription) throws ImporterException {
 
-		Model resultModel = RDF2Go.getModelFactory().createModel();
-		resultModel.open();
-		resultModel.addAll(iterable.iterator());
-		String result = resultModel.serialize(Syntax.RdfXml);
-		resultModel.close();
-		result = result.replaceAll(TEMP_NS, "#");
-		return result;
-	}
+        // read the file
+        // TODO: figure out the syntax?
+        Model origModel = ModelFactory.createDefaultModel();
+        origModel.read(originalDescription, null);
 
-	private QueryResultTable extractInformation(Model model) {
-		QueryResultTable qrt = model.sparqlSelect(QUERY);
-		return qrt;
-	}
+        // Transform the original model (may have several service definitions)
+        Collection<Service> services = transform(origModel);
 
-	private String generateTriplePatterns(QueryResultTable queryResultTable) {
-		if ( queryResultTable == null ) return "";
-		ClosableIterator<QueryRow> iterator = queryResultTable.iterator();
-		StringBuffer result = new StringBuffer();
-		while (iterator.hasNext()) {
-			QueryRow row = (QueryRow) iterator.next();
-			if ( row.getValue("service") != null ) {
-				String serviceUri = row.getValue("service").toString();
-				String serviceLocalName = ":" + getLocalName(serviceUri);
+        return services;
+    }
 
-				result.append(serviceLocalName);
-				result.append(" rdf:type <" + MSM.SERVICE + "> .\n");
-				result.append(serviceLocalName);
-				result.append(" rdfs:label ?sname .\n");
-				result.append(serviceLocalName);
-				result.append(" rdfs:comment ?tdescription .\n");
-				if ( row.getValue("sclass") != null ) {
-					result.append(serviceLocalName);
-					result.append(" sawsdl:modelReference <" + row.getLiteralValue("sclass") + "> .\n");
-				}
-				if ( row.getValue("sproduct") != null ) {
-					result.append(serviceLocalName);
-					result.append(" sawsdl:modelReference <" + row.getLiteralValue("sproduct") + "> .\n");
-				}
+    private Collection<Service> transform(Model model) {
 
-				String operationUri = "";
-				String operationLocalName = ":operation";
-				if ( row.getValue("operation") != null ) {
-					operationUri = row.getValue("operation").toString();
-					operationLocalName = ":" + getLocalName(operationUri);
-				} else {
-					operationUri = row.getValue("process").toString();
-					operationLocalName = ":" + getLocalName(operationUri);
-				}
+        Collection<Service> result = new ArrayList<Service>();
+        // Exit early if empty
+        if (model == null) {
+            return result;
+        }
 
-				result.append(operationLocalName);
-				result.append(" rdf:type <" + MSM.OPERATION + "> .\n");
-				result.append(serviceLocalName);
-				result.append(" <" + MSM.HAS_OPERATION + "> ");
-				result.append(operationLocalName);
-				result.append(" .\n");
+        // Query the model to obtain only services
+        Query query = QueryFactory.create();
+        query.setPrefixMapping(query.getPrefixMapping().setNsPrefixes(prefixes));
+        QueryFactory.parse(query, QUERY_GLOBAL, null, Syntax.syntaxSPARQL_11);
+        QueryExecution qexec = QueryExecutionFactory.create(query, model);
 
-				if ( row.getValue("condition") != null ) {
-					String conditionUri = row.getValue("condition").toString();
-					result.append(operationLocalName + " sawsdl:modelReference :" + getLocalName(conditionUri) + " .\n");
-					result.append(":" + getLocalName(conditionUri) + " rdf:type wl:Condition .\n");
-					if ( row.getValue("conditionlabel") != null ) {
-						result.append(":" + getLocalName(conditionUri) + " rdfs:label \"" + row.getValue("conditionlabel").asLiteral().toString() + "\" .\n");
-					}
-//					if ( row.getLiteralValue("conditionlabel") != null && row.getLiteralValue("conditionlabel") != "" ) {
-//						result.append(":" + getLocalName(conditionUri) + " rdfs:label \"" + row.getLiteralValue("conditionlabel") + "\" .\n");
-//					}
-					if ( row.getValue("conditionExprLang") != null ) {
-						result.append(":" + getLocalName(conditionUri) + " expr:expressionLanguage " + row.getValue("conditionExprLang").toSPARQL() + " .\n");
-					}
-					if ( row.getValue("conditionExprBody") != null ) {
-						result.append(":" + getLocalName(conditionUri) + " expr:expressionBody " + row.getValue("conditionExprBody").toSPARQL() + " .\n");
-					}
-				}
+        log.debug("Querying model:");
+        log.debug(query.serialize());
 
-				// effect
-				if ( row.getValue("result") != null ) {
-					String resultUri = row.getValue("result").toString();
-					result.append(operationLocalName + " sawsdl:modelReference :" + getLocalName(resultUri) + " .\n");
-					result.append(":" + getLocalName(resultUri) + " rdf:type wl:Effect .\n");
-					if ( row.getValue("resultVar") != null ) {
-						result.append(":" + getLocalName(resultUri) + " process:hasResultVar " + row.getValue("resultVar").toSPARQL() + " .\n");
-					}
-					if ( row.getValue("resultVarType") != null ) {
-						result.append(":" + getLocalName(resultUri) + " process:parameterType " + row.getValue("resultVarType").toSPARQL() + " .\n");
-					}
-					if ( row.getValue("inCondition") != null ) {
-						result.append(":" + getLocalName(resultUri) + " process:inCondition <" + row.getValue("inCondition").toString() + "> .\n");
-						if ( row.getValue("inConditionExprBody") != null ) {
-							result.append("<" + row.getValue("inCondition").toString() + "> expr:expressionBody " + row.getValue("inConditionExprBody").toSPARQL() + " .\n");
-						}
-					}
-					if ( row.getValue("effect") != null ) {
-						String effectUriString = row.getValue("effect").toString();
-						if ( effectUriString.startsWith("_:") ) {
-							effectUriString = ":" + getLocalName(resultUri) + "_Effect";
-						} else {
-							effectUriString = "<" + effectUriString + ">"; 
-						}
-						result.append(":" + getLocalName(resultUri) + " process:hasEffect " + effectUriString + " .\n");
-						if ( row.getValue("effectExprBody") != null ) {
-							result.append(effectUriString + " expr:expressionBody " + row.getValue("effectExprBody").toSPARQL() + " .\n");
-						}
-					}
-				}
+        try {
+            ResultSet qResults = qexec.execSelect();
+
+            // Process the services found and generate the instances
+            QuerySolution soln;
+            Service svc;
+            while ( qResults.hasNext() ) {
+                soln = qResults.nextSolution();
+                try {
+                    svc = obtainService(model, soln);
+                    if (svc != null) {
+                        result.add(svc);
+                    }
+                } catch (URISyntaxException e) {
+                    log.error("Incorrect URL while transforming OWL-S service", e);
+                }
+            }
+
+            // Return the result
+            return result;
+        } finally {
+          if (qexec != null) {
+              qexec.close();
+          }
+        }
+    }
+
+    /**
+     * Given a query solution obtained by querying the model for OWL-S services
+     * generates a Service instance capturing the information.
+     * See constants for the variable names used.
+     *
+     * TODO: This needs urgent restructuring
+     *
+     * @param model
+     * @param querySolution query solution holding the service details
+     * @return an instance of Service duly filled or null if none could be found
+     */
+    private Service obtainService(Model model, QuerySolution querySolution) throws URISyntaxException {
+
+        Service result = null;
+        // Exit early if null
+        if (model == null || querySolution == null) {
+            return result;
+        }
+
+        Resource res;
+
+        // Create Svc
+        URI svcUri = new URI(querySolution.getResource(SERVICE_VAR).getURI());
+        // TODO: decide how to handle the URIs to be replaced when uploaded
+        result = new Service(svcUri);
+        result.setSource(svcUri); // Redundant here but not after the URL changes
+        result.setComment("Automatically transformed by OWL-S Importer " + PLUGIN_VERSION);
+        // TODO: set label
+        //result.setLabel();
+        //TODO: set creator
+        //result.setCreator();
+
+        // Add the grounding doc
+        Literal lit = querySolution.getLiteral(WSDL_DOC_VAR);
+        if (lit != null) {
+            result.setWsdlGrounding(new URI(lit.getString()));
+        }
+
+        // Add model references
+        res = querySolution.getResource(CLASSIFICATION_VAR);
+        if (res != null) {
+            URI fcUri = new URI(res.getURI());
+            result.addModelReference(new ModelReference(fcUri,
+                    ModelReference.ModelReferenceType.FUNC_CLASSIFICATION));
+        }
+
+        res = querySolution.getResource(SVC_PRODUCT_VAR);
+        if (res != null) {
+            URI fcUri = new URI(res.getURI());
+            result.addModelReference(new ModelReference(fcUri,
+                    ModelReference.ModelReferenceType.FUNC_CLASSIFICATION));
+        }
+
+        // Process Operations
+        Operation op = obtainOperation(model, querySolution);
+        if (op != null)
+            result.addOperation(op);
+
+        return result;
+    }
+
+    // TODO: This assumes there is just one operation
+    private Operation obtainOperation(Model model, QuerySolution querySolution) throws URISyntaxException {
+
+        Resource res;
+        Literal lit;
+        Operation result = null;
+
+        // Obtain the operation and exit early if none is available
+        res = querySolution.getResource(PROCESS_VAR);
+        if (res == null) {
+            return result;
+        }
+
+        result = new Operation(new URI(res.getURI()));
+        result.setSource(result.getUri()); // Redundant here but not after the URL changes
+
+        LogicalAxiom axiom;
+
+        // Process conditions
+        axiom = obtainCondition(querySolution);
+        if (axiom != null)
+            result.addModelReference(new ModelReference(axiom.getUri(), ModelReference.ModelReferenceType.CONDITION));
+
+        // Process effects
+        axiom = obtainEffects(querySolution);
+        if (axiom != null)
+            result.addModelReference(new ModelReference(axiom.getUri(), ModelReference.ModelReferenceType.EFFECT));
+
+        // Define a default node for the top level Input Message Content
+        MessageContent inputMc = new MessageContent(new URI(result.getUri().toASCIIString() + "_Input"));
+        result.addInput(inputMc);
+        // Add the grounding
+        lit = querySolution.getLiteral(INPUT_MESSAGE_VAR);
+        if (lit != null) {
+            inputMc.setWsdlGrounding(new URI(lit.getString()));
+        }
+
+        // Define a default node for the top level Output Message Content
+        MessageContent outputMc = new MessageContent(new URI(result.getUri().toASCIIString() + "_Output"));
+        result.addOutput(outputMc);
+        // Add the grounding
+        lit = querySolution.getLiteral(OUTPUT_MESSAGE_VAR);
+        if (lit != null) {
+            outputMc.setWsdlGrounding(new URI(lit.getString()));
+        }
+
+        populateMessageParts(model, inputMc, outputMc);
+        return result;
+    }
+
+    private void populateMessageParts(Model model, MessageContent inputMc, MessageContent outputMc) {
+
+        // Query the model
+        Query query = QueryFactory.create();
+        query.setPrefixMapping(query.getPrefixMapping().setNsPrefixes(prefixes));
+        QueryFactory.parse(query, QUERY_IO, null, Syntax.syntaxSPARQL_11);
+        QueryExecution qexec = QueryExecutionFactory.create(query, model);
+
+        log.debug("Querying model:");
+        log.debug(query.serialize());
+
+        System.out.println(query.serialize());
+
+        try {
+            MessagePart mp = null;
+            QuerySolution solution;
+            ResultSet qResults = qexec.execSelect();
+            while (qResults.hasNext()) {
+                solution = qResults.nextSolution();
+                mp = obtainMessagePart(solution);
+                if (mp != null) {
+                    Literal lit = solution.getLiteral(TYPE_OF_MESSAGE_VAR);
+                    if (lit != null) {
+                        if (lit.getString().equals("input")) {
+                            inputMc.addMandatoryPart(mp);
+                        } else {
+                            outputMc.addMandatoryPart(mp);
+                        }
+                    }
+                }
+            }
+
+        } finally {
+            if (qexec != null) {
+                qexec.close();
+            }
+        }
+    }
+
+    private MessagePart obtainMessagePart(QuerySolution querySolution) {
+
+        MessagePart result = null;
+
+        Resource res = querySolution.getResource(MESSAGE_PART_VAR);
+        if (res != null) {
+            URI mpUri;
+            try {
+                mpUri = new URI(res.getURI());
+                result = new MessagePart(mpUri);
+
+                Literal lit = querySolution.getLiteral(WSDL_PART_VAR);
+                if (lit != null) {
+                    URI wsdlGrounding = new URI(lit.getString());
+                    result.setWsdlGrounding(wsdlGrounding);
+                    // Get the type
+                    lit = querySolution.getLiteral(MESSAGE_PART_TYPE_VAR);
+                    if (lit != null) {
+                        URI typeUri = new URI(lit.getString());
+                        result.addModelReference(new ModelReference(typeUri));
+                    }
+                }
+            } catch (URISyntaxException e) {
+                log.error("Incorrect URI specified while parsing Message Content", e);
+            }
+        }
+        return result;
+    }
 
 
-				if ( row.getValue("inputMessage") != null ) {
-					String inputUri = row.getValue("inputMessage").toString();
-					String inputLocalName = ":" + getLocalName(inputUri);
+    private LogicalAxiom obtainAxiom(QuerySolution querySolution, LogicalAxiom.Type type) {
 
-					result.append(inputLocalName);
-					result.append(" rdf:type <" + MSM.MESSAGE + "> .\n");
-					result.append(operationLocalName);
-					result.append(" <" + MSM.HAS_INPUT_MESSAGE + "> ");
-					result.append(inputLocalName);
-					result.append(" .\n");
+        LogicalAxiom result = null;
+        Resource res;
+        // Get the appropriate resource
+        if (type == LogicalAxiom.Type.CONDITION) {
+            res = querySolution.getResource(CONDITION_VAR);
+        } else {
+            res = querySolution.getResource(EFFECT_VAR);
+        }
 
-					String inputPartUri = row.getValue("inputPart").toString();
-					String inputPartLocalName = ":" + getLocalName(inputPartUri);
-			
-					result.append(inputPartLocalName);
-					result.append(" rdf:type <" + MSM.MESSAGE_PART + "> .\n");
-					result.append(inputLocalName);
-					result.append(" <" + MSM.HAS_PART + "> ");
-					result.append(inputPartLocalName);
-					result.append(" .\n");
+        if (res != null) {
+            URI conditionUri;
+            try {
+                conditionUri = new URI(res.getURI());
 
-					result.append(inputLocalName);
-					result.append(" <" + MSM.HAS_PART_TRANSITIVE + "> ");
-					result.append(inputPartLocalName);
-					result.append(" .\n");
+                // TODO: earlier version used to deal with labels on conditions. Keep this?
 
-					result.append(inputPartLocalName);
-					result.append(" sawsdl:modelReference <");
-					result.append(row.getLiteralValue("inputParameterType"));
-					result.append("> .\n");
-				} else {
-					// for OWL-S TC 2.x
-					String inputLocalName = ":input";
+                result = new LogicalAxiom(conditionUri);
+                result.setType(type);
+                // Set the body
+                Literal body;
+                if (type == LogicalAxiom.Type.CONDITION) {
+                    body = querySolution.getLiteral(CONDITION_EXPR_BODY_VAR);
+                } else {
+                    body = querySolution.getLiteral(EFFECT_EXPR_BODY_VAR);
+                }
 
-					result.append(inputLocalName);
-					result.append(" rdf:type <" + MSM.MESSAGE + "> .\n");
-					result.append(operationLocalName);
-					result.append(" <" + MSM.HAS_INPUT_MESSAGE + "> ");
-					result.append(inputLocalName);
-					result.append(" .\n");
+                result.setValue(body.getString());
 
-					String inputPartUri = row.getValue("inputParameter2").toString();
-					String inputPartLocalName = ":" + getLocalName(inputPartUri) + "Part";
+                // Set the language
+                Literal lang;
+                if (type == LogicalAxiom.Type.CONDITION) {
+                    lang = querySolution.getLiteral(CONDITION_EXPR_LANG_VAR);
+                } else {
+                    lang = querySolution.getLiteral(EFFECT_EXPR_LANG_VAR);
+                }
 
-					result.append(inputPartLocalName);
-					result.append(" rdf:type <" + MSM.MESSAGE_PART + "> .\n");
-					result.append(inputLocalName);
-					result.append(" <" + MSM.HAS_PART + "> ");
-					result.append(inputPartLocalName);
-					result.append(" .\n");
-					result.append(inputLocalName);
-					result.append(" <" + MSM.HAS_PART_TRANSITIVE + "> ");
-					result.append(inputPartLocalName);
-					result.append(" .\n");
+                if (lang != null) {
+                    result.setLanguage(LogicalAxiom.RuleLanguage.valueOf(lang.getString()));
+                } else {
+                    result.setLanguage(LogicalAxiom.RuleLanguage.valueOf(lang.getLanguage()));
+                }
+            } catch (URISyntaxException e) {
+                log.error("Incorrect URI specified for Axiom", e);
+            }
+        }
+        return result;
 
-					result.append(inputPartLocalName);
-					result.append(" sawsdl:modelReference <");
-					result.append(row.getLiteralValue("inputParameterType2"));
-					result.append("> .\n");					
-				}
+    }
 
-				if ( row.getValue("outputMessage") != null ) {
-					String outputUri = row.getValue("outputMessage").toString();
-					String outputLocalName = ":" + getLocalName(outputUri);
-		
-					result.append(outputLocalName);
-					result.append(" rdf:type <" + MSM.MESSAGE + "> .\n");
-					result.append(operationLocalName);
-					result.append(" <" + MSM.HAS_OUTPUT_MESSAGE + "> ");
-					result.append(outputLocalName);
-					result.append(" .\n");
-		
-					String outputPartUri = row.getValue("outputPart").toString();
-					String outputPartLocalName = ":" + getLocalName(outputPartUri);
-		
-					result.append(outputPartLocalName);
-					result.append(" rdf:type <" + MSM.MESSAGE_PART + "> .\n");
-					result.append(outputLocalName);
-					result.append(" <" + MSM.HAS_PART + "> ");
-					result.append(outputPartLocalName);
-					result.append(" .\n");
-					result.append(outputLocalName);
-					result.append(" <" + MSM.HAS_PART_TRANSITIVE + "> ");
-					result.append(outputPartLocalName);
-					result.append(" .\n");
+    private LogicalAxiom obtainEffects(QuerySolution querySolution) {
+        return obtainAxiom(querySolution, LogicalAxiom.Type.EFFECT);
+    }
 
-					result.append(outputPartLocalName);
-					result.append(" sawsdl:modelReference <");
-					result.append(row.getLiteralValue("outputParameterType"));
-					result.append("> .\n");
-				} else {
-					// for OWL-S TC 2.x
-					String outputLocalName = ":output";
-
-					result.append(outputLocalName);
-					result.append(" rdf:type <" + MSM.MESSAGE + "> .\n");
-					result.append(operationLocalName);
-					result.append(" <" + MSM.HAS_OUTPUT_MESSAGE + "> ");
-					result.append(outputLocalName);
-					result.append(" .\n");
-
-					String outputPartUri = row.getValue("outputParameter2").toString();
-					String outputPartLocalName = ":" + getLocalName(outputPartUri) + "Part";
-
-					result.append(outputPartLocalName);
-					result.append(" rdf:type <" + MSM.MESSAGE_PART + "> .\n");
-					result.append(outputLocalName);
-					result.append(" <" + MSM.HAS_PART + "> ");
-					result.append(outputPartLocalName);
-					result.append(" .\n");
-					result.append(outputLocalName);
-					result.append(" <" + MSM.HAS_PART_TRANSITIVE + "> ");
-					result.append(outputPartLocalName);
-					result.append(" .\n");
-
-					result.append(outputPartLocalName);
-					result.append(" sawsdl:modelReference <");
-					result.append(row.getLiteralValue("outputParameterType2"));
-					result.append("> .\n");
-				}
-			}
-			result.append("\n");
-		}
-//		System.out.println("result: " + result.toString());
-		return result.toString();
-	}
-
-	private int getLocalNameIndex(String uri) {
-		int separatorIdx = uri.indexOf('#');
-
-		if (separatorIdx < 0) {
-			separatorIdx = uri.lastIndexOf('/');
-		}
-
-		if (separatorIdx < 0) {
-			separatorIdx = uri.lastIndexOf(':');
-		}
-
-		if (separatorIdx < 0) {
-			throw new IllegalArgumentException("No separator character founds in URI: " + uri);
-		}
-
-		return separatorIdx + 1;
-	}
-
-	private String getLocalName(String uriString) {
-		int idx = uriString.indexOf('^');
-		if ( idx >= 0 ) {
-			uriString = uriString.substring(0, idx);
-		}
-		int localNameIdx = getLocalNameIndex(uriString);
-		return uriString.substring(localNameIdx);
-	}
-
-	private String createMsmInstance(String triplePatterns) {
-		if ( null == triplePatterns || "".endsWith(triplePatterns) )
-			return "";
-		String prefix = PREFIX + "PREFIX :<" + TEMP_NS + ">\n";
-		String construct = prefix 
-			+ "CONSTRUCT {"
-			+ triplePatterns
-			+ "} WHERE {\n"
-			+ "?service rdf:type service:Service .\n"
-			+ "?service service:presents ?profile .\n"
-			+ "OPTIONAL {?profile profile:serviceName ?sname .}\n"
-			+ "OPTIONAL {?profile profile:textDescription ?tdescription .}\n"
-//			+ "OPTIONAL {?profile profile:serviceClassification ?sclass .}\n"
-//			+ "OPTIONAL {?profile profile:serviceProduct ?sproduct .}\n"
-			+ "}";
-//		System.out.println("construct: " + construct);
-		return construct;		
-	}
-
+    private LogicalAxiom obtainCondition(QuerySolution querySolution) {
+        return obtainAxiom(querySolution, LogicalAxiom.Type.CONDITION);
+    }
 }

@@ -57,4 +57,132 @@
 	</dependencies>
 
 	<url>http://iserve.kmi.open.ac.uk/</url>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <!-- Automated File Generation with Schemagen: OWL-S Service -->
+                    <execution>
+                        <id>OWLS Service</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>jena.schemagen</mainClass>
+                            <commandlineArgs>
+                                -a http://www.daml.org/services/owl-s/1.1/Service.owl# \
+                                -i ${basedir}/src/main/resources/Service.owl \
+                                -e RDF/XML \
+                                --package uk.ac.open.kmi.iserve.importer.owls.vocabulary \
+                                -o ${project.build.directory}/generated-sources/java \
+                                -n OWLS_11_SERVICE \
+                                --owl
+                            </commandlineArgs>
+                        </configuration>
+                    </execution>
+                    <!-- Automated File Generation with Schemagen: OWL-S Profile -->
+                    <execution>
+                        <id>OWLS Profile</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>jena.schemagen</mainClass>
+                            <commandlineArgs>
+                                -a http://www.daml.org/services/owl-s/1.1/Profile.owl# \
+                                -i ${basedir}/src/main/resources/Profile.owl \
+                                -e RDF/XML \
+                                --package uk.ac.open.kmi.iserve.importer.owls.vocabulary \
+                                -o ${project.build.directory}/generated-sources/java \
+                                -n OWLS_11_PROFILE \
+                                --owl
+                            </commandlineArgs>
+                        </configuration>
+                    </execution>
+                    <!-- Automated File Generation with Schemagen: OWL-S Process -->
+                    <execution>
+                        <id>OWLS Process</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>jena.schemagen</mainClass>
+                            <commandlineArgs>
+                                -a http://www.daml.org/services/owl-s/1.1/Process.owl# \
+                                -i ${basedir}/src/main/resources/Process.owl \
+                                -e RDF/XML \
+                                --package uk.ac.open.kmi.iserve.importer.owls.vocabulary \
+                                -o ${project.build.directory}/generated-sources/java \
+                                -n OWLS_11_PROCESS \
+                                --owl
+                            </commandlineArgs>
+                        </configuration>
+                    </execution>
+                    <!-- Automated File Generation with Schemagen: OWL-S Grounding -->
+                    <execution>
+                        <id>OWLS Grounding</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>jena.schemagen</mainClass>
+                            <commandlineArgs>
+                                -a http://www.daml.org/services/owl-s/1.1/Grounding.owl# \
+                                -i ${basedir}/src/main/resources/Grounding.owl \
+                                -e RDF/XML \
+                                --package uk.ac.open.kmi.iserve.importer.owls.vocabulary \
+                                -o ${project.build.directory}/generated-sources/java \
+                                -n OWLS_11_GROUNDING \
+                                --owl
+                            </commandlineArgs>
+                        </configuration>
+                    </execution>
+                    <!-- Automated File Generation with Schemagen: OWL-S Expression -->
+                    <execution>
+                        <id>OWLS Expression</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>jena.schemagen</mainClass>
+                            <commandlineArgs>
+                                -a http://www.daml.org/services/owl-s/1.1/generic/Expression.owl# \
+                                -i ${basedir}/src/main/resources/Expression.owl \
+                                -e RDF/XML \
+                                --package uk.ac.open.kmi.iserve.importer.owls.vocabulary \
+                                -o ${project.build.directory}/generated-sources/java \
+                                -n OWLS_11_EXPRESSION \
+                                --owl
+                            </commandlineArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
