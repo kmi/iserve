@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.iserve.commons.model.uk.ac.open.kmi.iserve.commons.model.util;
+package uk.ac.open.kmi.iserve.commons.model.util;
 
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.RDF;
