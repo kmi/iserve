@@ -1,8 +1,24 @@
+/*
+ * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.ac.open.kmi.iserve.commons.model;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Message Parts
@@ -13,8 +29,8 @@ import java.util.Collection;
  */
 public class MessagePart extends AnnotableResource {
 
-   private Collection<MessagePart> mandatoryParts;
-    private Collection<MessagePart> optionalParts;
+   private List<MessagePart> mandatoryParts;
+    private List<MessagePart> optionalParts;
 
     public MessagePart(URI uri) {
         super(uri);
@@ -22,19 +38,19 @@ public class MessagePart extends AnnotableResource {
         this.optionalParts = new ArrayList<MessagePart>();
     }
 
-    public Collection<MessagePart> getMandatoryParts() {
+    public List<MessagePart> getMandatoryParts() {
         return mandatoryParts;
     }
 
-    public void setMandatoryParts(Collection<MessagePart> mandatoryParts) {
+    public void setMandatoryParts(List<MessagePart> mandatoryParts) {
         this.mandatoryParts = mandatoryParts;
     }
 
-    public Collection<MessagePart> getOptionalParts() {
+    public List<MessagePart> getOptionalParts() {
         return optionalParts;
     }
 
-    public void setOptionalParts(Collection<MessagePart> optionalParts) {
+    public void setOptionalParts(List<MessagePart> optionalParts) {
         this.optionalParts = optionalParts;
     }
 
@@ -66,24 +82,4 @@ public class MessagePart extends AnnotableResource {
         }
         return false;
     }
-
-//    @Override
-//    public Model populateModel(Model model) {
-//
-//        // Add annotations from upper levels
-//        Model result = super.populateModel(model);
-//        com.hp.hpl.jena.rdf.model.Resource current = result.createResource(this.getUri().toASCIIString());
-//        // Process mandatory parts
-//        for (MessagePart part : mandatoryParts) {
-//            current.addProperty(MSM.hasMandatoryPart,
-//                    result.createResource(part.getUri().toASCIIString()));
-//        }
-//        // Process optional parts
-//        for (MessagePart part : optionalParts) {
-//            current.addProperty(MSM.hasOptionalPart,
-//                    result.createResource(part.getUri().toASCIIString()));
-//        }
-//
-//        return result;
-//    }
 }

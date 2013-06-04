@@ -1,9 +1,23 @@
+/*
+ * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.ac.open.kmi.iserve.commons.model;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumMap;
 import java.util.List;
 
 /**
@@ -16,49 +30,44 @@ import java.util.List;
  */
 public class InvocableEntity extends AnnotableResource {
 
-    /**
-     * Keep an organised list of axioms based on their type
-     * The axioms are stored in an EnumMap of axioms indexed by the type.
-     * Doing so allows us to easily control different types and loop over all of them with a
-     * single unique interface.
-     */
-    private EnumMap<LogicalAxiom.Type, List<LogicalAxiom>> axioms;
+    private List<Condition> conditions;
+    private List<Effect> effects;
 
     public InvocableEntity(URI uri) {
         super(uri);
-        this.axioms = new EnumMap<LogicalAxiom.Type, List<LogicalAxiom>>(LogicalAxiom.Type.class);
+        conditions = new ArrayList<Condition>();
+        effects = new ArrayList<Effect>();
     }
 
-    public Collection<List<LogicalAxiom>> getAxioms() {
-        return axioms.values();
+    public List<Condition> getConditions() {
+        return conditions;
     }
 
-    public List<LogicalAxiom> getAxiomsOfType(LogicalAxiom.Type type) {
-        return axioms.get(type);
+    public void setConditions(List<Condition> conditions) {
+        this.conditions = conditions;
     }
 
-    public boolean addLogicalAxiom(LogicalAxiom axiom) {
-        if (axiom != null) {
-            // Get the right array or create a new one
-            List<LogicalAxiom> list;
-            if (this.axioms.containsKey(axiom.getType())) {
-                list = this.axioms.get(axiom.getType());
-            } else {
-                list = new ArrayList<LogicalAxiom>();
-                axioms.put(axiom.getType(), list);
-            }
-            return list.add(axiom);
-        }
-        return false;
+    public List<Effect> getEffects() {
+        return effects;
     }
 
-    public boolean removeModelReference(LogicalAxiom axiom) {
-        if (axiom != null) {
-            // Get the right array
-            if (axioms.containsKey(axiom.getType())) {
-                return axioms.get(axiom.getType()).remove(axiom);
-            }
-        }
-        return false;
+    public void setEffects(List<Effect> effects) {
+        this.effects = effects;
+    }
+
+    public boolean addCondition(Condition condition) {
+        return conditions.add(condition);
+    }
+
+    public boolean removeCondition(Condition condition) {
+        return conditions.remove(condition);
+    }
+
+    public boolean addEffect(Effect effect) {
+        return effects.add(effect);
+    }
+
+    public boolean removeEffect(Effect effect) {
+        return effects.remove(effect);
     }
 }

@@ -1,9 +1,23 @@
+/*
+ * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.ac.open.kmi.iserve.commons.model;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumMap;
 import java.util.List;
 
 /**
@@ -17,50 +31,51 @@ import java.util.List;
 public class AnnotableResource extends Resource {
 
     /**
-     * Keep an organised list of model references based on their type
-     * The modelReferences are stored in an EnumMap of model refs
-     * indexed by the type. Easily control different types and loop over all of them with a
-     * single unique interface.
+     * General modelRefs (FCs, but also domain models)
+     * This could be used for any type of modelReference but it is recommended
+     * to be used only for FCs and domain models.
+     *
+     * For NFPs, Conditions and Effects use the specific methods that will ensure
+     * the proper rdf:type statements are also maintained.
      */
-    private EnumMap<ModelReference.ModelReferenceType, List<ModelReference>> modelReferences;
+    private List<Resource> modelReferences;
+    private List<NonFunctionalProperty> nfps;
 
     public AnnotableResource(URI uri) {
         super(uri);
-        this.modelReferences = new EnumMap<ModelReference.ModelReferenceType, List<ModelReference>>(ModelReference.ModelReferenceType.class);
+        this.modelReferences = new ArrayList<Resource>();
+        this.nfps = new ArrayList<NonFunctionalProperty>();
     }
 
-    public Collection<List<ModelReference>> getModelReferences() {
-        return modelReferences.values();
+    public List<Resource> getModelReferences() {
+        return modelReferences;
     }
 
-    public List<ModelReference> getModelReferencesOfType(ModelReference.ModelReferenceType type) {
-        return modelReferences.get(type);
+    public void setModelReferences(List<Resource> modelReferences) {
+        this.modelReferences = modelReferences;
     }
 
-    public boolean addModelReference(ModelReference modelRef) {
-        if (modelRef != null) {
-            // Get the right array or create a new one
-            List<ModelReference> list;
-            if (this.modelReferences.containsKey(modelRef.getType())) {
-                list = this.modelReferences.get(modelRef.getType());
-            } else {
-                list = new ArrayList<ModelReference>();
-                this.modelReferences.put(modelRef.getType(), list);
-            }
-            return list.add(modelRef);
-        }
-        return false;
+    public List<NonFunctionalProperty> getNfps() {
+        return nfps;
     }
 
-    public boolean removeModelReference(ModelReference modelRef) {
-        if (modelRef != null) {
-            // Get the right array or create a new one
-            if (this.modelReferences.containsKey(modelRef.getType())) {
-                 return this.modelReferences.get(modelRef.getType()).remove(modelRef);
-            }
-            return false;
-        }
-        return false;
+    public void setNfps(List<NonFunctionalProperty> nfps) {
+        this.nfps = nfps;
     }
 
+    public boolean addModelReference(Resource resource) {
+        return modelReferences.add(resource);
+    }
+
+    public boolean removeModelReference(Resource resource) {
+        return modelReferences.remove(resource);
+    }
+
+    public boolean addNonFunctionalProperty(NonFunctionalProperty nfp) {
+        return nfps.add(nfp);
+    }
+
+    public boolean removeNonFunctionalProperty(NonFunctionalProperty nfp) {
+        return nfps.remove(nfp);
+    }
 }

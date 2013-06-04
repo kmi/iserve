@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.ac.open.kmi.iserve.commons.model;
 
 import java.net.URI;
@@ -14,64 +30,24 @@ public class LogicalAxiom extends Resource {
 
     /**
      * Types of Logical Axioms.
-     * In reality they are identically defined but this helps us
-     * better track the role they play in a given service description
+     * TODO: Remove eventually
      */
     public static enum Type {
         CONDITION,
         EFFECT
     }
 
-    /**
-     * Rule language used in the logical axiom
-     * We include for now a few reference ones but this should be extended as necessary
-     */
-    public static enum RuleLanguage {
-        RIF ("RIF"),
-        SPIN ("SPIN"),
-        SPARQL ("SPARQL"),
-        WSML ("WSML");
-
-        private final String name;
-
-        RuleLanguage(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
-
-    private Type type;
-    private String value;
-    private RuleLanguage language;
+    private String typedValue;
 
     public LogicalAxiom(URI uri) {
         super(uri);
     }
 
-    public String getValue() {
-        return value;
+    public String getTypedValue() {
+        return typedValue;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public RuleLanguage getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(RuleLanguage language) {
-        this.language = language;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
+    public void setTypedValue(String typedValue) {
+        this.typedValue = typedValue;
     }
 }

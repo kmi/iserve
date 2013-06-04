@@ -1,8 +1,24 @@
+/*
+ * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.ac.open.kmi.iserve.commons.model;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Operations
@@ -13,10 +29,10 @@ import java.util.Collection;
  */
 public class Operation extends InvocableEntity {
 
-    private Collection<MessageContent> inputs;
-    private Collection<MessageContent> outputs;
-    private Collection<MessageContent> inputFaults;
-    private Collection<MessageContent> outputFaults;
+    private List<MessageContent> inputs;
+    private List<MessageContent> outputs;
+    private List<MessageContent> inputFaults;
+    private List<MessageContent> outputFaults;
 
     public Operation(URI uri) {
         super(uri);
@@ -26,35 +42,35 @@ public class Operation extends InvocableEntity {
         this.outputFaults = new ArrayList<MessageContent>();
     }
 
-    public Collection<MessageContent> getInputs() {
+    public List<MessageContent> getInputs() {
         return inputs;
     }
 
-    public void setInputs(Collection<MessageContent> inputs) {
+    public void setInputs(List<MessageContent> inputs) {
         this.inputs = inputs;
     }
 
-    public Collection<MessageContent> getOutputs() {
+    public List<MessageContent> getOutputs() {
         return outputs;
     }
 
-    public void setOutputs(Collection<MessageContent> outputs) {
+    public void setOutputs(List<MessageContent> outputs) {
         this.outputs = outputs;
     }
 
-    public Collection<MessageContent> getInputFaults() {
+    public List<MessageContent> getInputFaults() {
         return inputFaults;
     }
 
-    public void setInputFaults(Collection<MessageContent> inputFaults) {
+    public void setInputFaults(List<MessageContent> inputFaults) {
         this.inputFaults = inputFaults;
     }
 
-    public Collection<MessageContent> getOutputFaults() {
+    public List<MessageContent> getOutputFaults() {
         return outputFaults;
     }
 
-    public void setOutputFaults(Collection<MessageContent> outputFaults) {
+    public void setOutputFaults(List<MessageContent> outputFaults) {
         this.outputFaults = outputFaults;
     }
 
