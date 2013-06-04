@@ -1,39 +1,41 @@
 /*
-   Copyright ${year}  Knowledge Media Institute - The Open University
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+ * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package uk.ac.open.kmi.iserve.importer.owls;
 
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
+import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.commons.io.ServiceWriter;
+import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.model.*;
-import uk.ac.open.kmi.iserve.commons.model.uk.ac.open.kmi.iserve.commons.model.util.Vocabularies;
+import uk.ac.open.kmi.iserve.commons.model.util.Vocabularies;
 import uk.ac.open.kmi.iserve.sal.ServiceImporter;
 import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 
-import java.io.InputStream;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class OwlsImporter implements ServiceImporter {
@@ -171,27 +173,41 @@ public class OwlsImporter implements ServiceImporter {
         prefixes.put("expr", "http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#");
     }
 
-	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.ServiceImporter#transformStream(java.io.InputStream)
-	 */
+    /* (non-Javadoc)
+    * @see uk.ac.open.kmi.iserve.sal.ServiceImporter#transform(java.io.File)
+    */
+    @Override
+    public List<Service> transform(File file) throws ImporterException {
+
+        if (file != null && file.exists()) {
+            // Open the file and transform it
+            InputStream in = null;
+            try {
+                in = new FileInputStream(file);
+                return transform(in);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                throw new ImporterException("Unable to open input file", e);
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        throw new ImporterException("Error while closing input file", e);
+                    }
+                }
+            }
+        }
+        // Return an empty array if it could not be transformed.
+        return new ArrayList<Service>();
+    }
+
+    /* (non-Javadoc)
+    * @see uk.ac.open.kmi.iserve.sal.ServiceImporter#transformStream(java.io.InputStream)
+    */
 	@Override
-	public InputStream transformStream(InputStream originalDescription) throws ImporterException {
-
-//        Collection<Service> services = extractServicesFromStream(originalDescription);
-//        Model resultModel = ModelFactory.createDefaultModel();
-//        for (Service svc : services) {
-//            resultModel = svc.populateModel(resultModel);
-//        }
-//        // Turn into an input stream.
-//        // This approach requires buffering in memory the entire model
-//        ByteArrayOutputStream out = new ByteArrayOutputStream();
-//        resultModel.write(out);
-//        return new ByteArrayInputStream(out.toByteArray());
-        return null;
-	}
-
-    // TODO: Rename and replace earlier interface in import plugins
-    public Collection<Service> extractServicesFromStream(InputStream originalDescription) throws ImporterException {
+    public List<Service> transform(InputStream originalDescription) throws ImporterException {
 
         // read the file
         // TODO: figure out the syntax?
@@ -199,14 +215,14 @@ public class OwlsImporter implements ServiceImporter {
         origModel.read(originalDescription, null);
 
         // Transform the original model (may have several service definitions)
-        Collection<Service> services = transform(origModel);
+        List<Service> services = transform(origModel);
 
         return services;
     }
 
-    private Collection<Service> transform(Model model) {
+    private List<Service> transform(Model model) {
 
-        Collection<Service> result = new ArrayList<Service>();
+        List<Service> result = new ArrayList<Service>();
         // Exit early if empty
         if (model == null) {
             return result;
@@ -290,15 +306,13 @@ public class OwlsImporter implements ServiceImporter {
         res = querySolution.getResource(CLASSIFICATION_VAR);
         if (res != null) {
             URI fcUri = new URI(res.getURI());
-            result.addModelReference(new ModelReference(fcUri,
-                    ModelReference.ModelReferenceType.FUNC_CLASSIFICATION));
+            result.addModelReference(new uk.ac.open.kmi.iserve.commons.model.Resource(fcUri));
         }
 
         res = querySolution.getResource(SVC_PRODUCT_VAR);
         if (res != null) {
             URI fcUri = new URI(res.getURI());
-            result.addModelReference(new ModelReference(fcUri,
-                    ModelReference.ModelReferenceType.FUNC_CLASSIFICATION));
+            result.addModelReference(new uk.ac.open.kmi.iserve.commons.model.Resource(fcUri));
         }
 
         // Process Operations
@@ -325,17 +339,15 @@ public class OwlsImporter implements ServiceImporter {
         result = new Operation(new URI(res.getURI()));
         result.setSource(result.getUri()); // Redundant here but not after the URL changes
 
-        LogicalAxiom axiom;
-
         // Process conditions
-        axiom = obtainCondition(querySolution);
-        if (axiom != null)
-            result.addModelReference(new ModelReference(axiom.getUri(), ModelReference.ModelReferenceType.CONDITION));
+        Condition cond = obtainCondition(querySolution);
+        if (cond != null)
+            result.addCondition(cond);
 
         // Process effects
-        axiom = obtainEffects(querySolution);
-        if (axiom != null)
-            result.addModelReference(new ModelReference(axiom.getUri(), ModelReference.ModelReferenceType.EFFECT));
+        Effect effect = obtainEffect(querySolution);
+        if (effect != null)
+            result.addEffect(effect);
 
         // Define a default node for the top level Input Message Content
         MessageContent inputMc = new MessageContent(new URI(result.getUri().toASCIIString() + "_Input"));
@@ -417,7 +429,7 @@ public class OwlsImporter implements ServiceImporter {
                     lit = querySolution.getLiteral(MESSAGE_PART_TYPE_VAR);
                     if (lit != null) {
                         URI typeUri = new URI(lit.getString());
-                        result.addModelReference(new ModelReference(typeUri));
+                        result.addModelReference(new uk.ac.open.kmi.iserve.commons.model.Resource(typeUri));
                     }
                 }
             } catch (URISyntaxException e) {
@@ -440,37 +452,28 @@ public class OwlsImporter implements ServiceImporter {
         }
 
         if (res != null) {
-            URI conditionUri;
+            URI axiomUri;
             try {
-                conditionUri = new URI(res.getURI());
+                axiomUri = new URI(res.getURI());
 
                 // TODO: earlier version used to deal with labels on conditions. Keep this?
 
-                result = new LogicalAxiom(conditionUri);
-                result.setType(type);
-                // Set the body
+                // Set the axiom
                 Literal body;
-                if (type == LogicalAxiom.Type.CONDITION) {
-                    body = querySolution.getLiteral(CONDITION_EXPR_BODY_VAR);
-                } else {
-                    body = querySolution.getLiteral(EFFECT_EXPR_BODY_VAR);
-                }
-
-                result.setValue(body.getString());
-
-                // Set the language
                 Literal lang;
                 if (type == LogicalAxiom.Type.CONDITION) {
+                    result = new Condition(axiomUri);
+                    body = querySolution.getLiteral(CONDITION_EXPR_BODY_VAR);
                     lang = querySolution.getLiteral(CONDITION_EXPR_LANG_VAR);
                 } else {
+                    result = new Effect(axiomUri);
+                    body = querySolution.getLiteral(EFFECT_EXPR_BODY_VAR);
                     lang = querySolution.getLiteral(EFFECT_EXPR_LANG_VAR);
                 }
 
-                if (lang != null) {
-                    result.setLanguage(LogicalAxiom.RuleLanguage.valueOf(lang.getString()));
-                } else {
-                    result.setLanguage(LogicalAxiom.RuleLanguage.valueOf(lang.getLanguage()));
-                }
+                // TODO: Set the language
+                result.setTypedValue(body.getString());
+
             } catch (URISyntaxException e) {
                 log.error("Incorrect URI specified for Axiom", e);
             }
@@ -479,11 +482,130 @@ public class OwlsImporter implements ServiceImporter {
 
     }
 
-    private LogicalAxiom obtainEffects(QuerySolution querySolution) {
-        return obtainAxiom(querySolution, LogicalAxiom.Type.EFFECT);
+    private Effect obtainEffect(QuerySolution querySolution) {
+        return (Effect) obtainAxiom(querySolution, LogicalAxiom.Type.EFFECT);
     }
 
-    private LogicalAxiom obtainCondition(QuerySolution querySolution) {
-        return obtainAxiom(querySolution, LogicalAxiom.Type.CONDITION);
+    private Condition obtainCondition(QuerySolution querySolution) {
+        return (Condition) obtainAxiom(querySolution, LogicalAxiom.Type.CONDITION);
+    }
+
+    public static void main(String[] args) {
+
+        Options options = new Options();
+        // automatically generate the help statement
+        HelpFormatter formatter = new HelpFormatter();
+        // create the parser
+        CommandLineParser parser = new GnuParser();
+
+        options.addOption("h", "help", false, "print this message");
+        options.addOption("i", "input", true, "input directory or file to transform");
+        options.addOption("s", "save", false, "save result? (default: false)");
+        options.addOption("f", "format", true, "format to use when serialising. Default: TTL.");
+
+        // parse the command line arguments
+        CommandLine line = null;
+        String input = null;
+        File inputFile;
+        try {
+            line = parser.parse(options, args);
+            input = line.getOptionValue("i");
+            if (line.hasOption("help")) {
+                formatter.printHelp("OwlsImporter", options);
+                return;
+            }
+            if (input == null) {
+                // The input should not be null
+                formatter.printHelp(80, "java " + OwlsImporter.class.getCanonicalName(), "Options:", options, "You must provide an input", true);
+                return;
+            }
+        } catch (ParseException e) {
+            formatter.printHelp(80, "java " + OwlsImporter.class.getCanonicalName(), "Options:", options, "Error parsing input", true);
+        }
+
+        inputFile = new File(input);
+        if (inputFile == null || !inputFile.exists()) {
+            formatter.printHelp(80, "java " + OwlsImporter.class.getCanonicalName(), "Options:", options, "Input not found", true);
+            System.out.println(inputFile.getAbsolutePath());
+            return;
+        }
+
+        // Obtain input for transformation
+        File[] toTransform;
+        if (inputFile.isDirectory()) {
+            // Get potential files to transform based on extension
+            FilenameFilter owlsFilter = new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return (name.endsWith(".owl") || name.endsWith(".owls"));
+                }
+            };
+
+            toTransform = inputFile.listFiles(owlsFilter);
+        } else {
+            toTransform = new File[1];
+            toTransform[0] = inputFile;
+        }
+
+        // Obtain details for saving results
+        File rdfDir = null;
+        boolean save = line.hasOption("s");
+        if (save) {
+            rdfDir = new File(inputFile.getAbsolutePath() + "/RDF");
+            rdfDir.mkdir();
+        }
+
+        // Obtain details for serialisation format
+        String format = line.getOptionValue("f", uk.ac.open.kmi.iserve.commons.io.Syntax.TTL.getName());
+        uk.ac.open.kmi.iserve.commons.io.Syntax syntax = uk.ac.open.kmi.iserve.commons.io.Syntax.valueOf(format);
+
+        OwlsImporter importer;
+        ServiceWriter writer;
+
+        importer = new OwlsImporter();
+        writer = new ServiceWriterImpl();
+
+        List<Service> services;
+        System.out.println("Transforming input");
+        for (File file : toTransform) {
+            try {
+                services = importer.transform(file);
+
+                if (services != null) {
+                    System.out.println("Services obtained: " + services.size());
+
+                    File resultFile = null;
+                    if (rdfDir != null) {
+                        String fileName = file.getName();
+                        String newFileName = fileName.substring(0, fileName.length() - 4) + syntax.getExtension();
+                        resultFile = new File(rdfDir.getAbsolutePath() + "/" + newFileName);
+                    }
+
+                    if (rdfDir != null) {
+                        OutputStream out = null;
+                        try {
+                            out = new FileOutputStream(resultFile);
+                            for (Service service : services) {
+                                if (out != null) {
+                                    writer.serialise(service, out, syntax);
+                                    System.out.println("Service saved at: " + resultFile.getAbsolutePath());
+                                } else {
+                                    writer.serialise(service, System.out, syntax);
+                                }
+                            }
+                        } finally {
+                            if (out != null)
+                                out.close();
+                        }
+                    }
+
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ImporterException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

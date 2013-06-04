@@ -1,12 +1,28 @@
+
+/*
+ * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.ac.open.kmi.iserve.importer.owls;
 
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import uk.ac.open.kmi.iserve.commons.io.ServiceWriter;
+import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.model.Service;
-import uk.ac.open.kmi.iserve.commons.model.ServiceWriter;
-import uk.ac.open.kmi.iserve.commons.model.ServiceWriterImpl;
-import uk.ac.open.kmi.iserve.commons.model.Syntax;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,6 +41,7 @@ import java.util.List;
  */
 public class OwlsImporterTest {
 
+    private static final boolean SAVE_FILES = false;
     private static final String TEST_RESOURCES_PATH = "/src/test/resources/";
     private static final String OWLS_TC3_SERVICES_1_1 = "OWLS-TC3/htdocs/services/1.1";
 
@@ -51,7 +68,29 @@ public class OwlsImporterTest {
     }
 
     @Test
-    public void testExtractServicesFromStream() throws Exception {
+    public void testTransformFile() throws Exception {
+
+        // Add all the test collections
+        System.out.println("Transforming test collections");
+        for (String testFolder : testFolders) {
+            File dir = new File(testFolder);
+            System.out.println("Test collection: " + testFolder);
+
+            // Test services
+            Collection<Service> services;
+            System.out.println("Transforming services");
+            File[] owlsFiles = dir.listFiles(owlsFilter);
+            for (File file : owlsFiles) {
+                services = importer.transform(file);
+                Assert.assertNotNull("Service collection should not be null", services);
+                Assert.assertEquals(1, services.size());
+            }
+        }
+
+    }
+
+    @Test
+    public void testTransformInputStream() throws Exception {
 
         // Add all the test collections
         System.out.println("Transforming test collections");
@@ -65,20 +104,11 @@ public class OwlsImporterTest {
             File[] owlsFiles = dir.listFiles(owlsFilter);
             for (File file : owlsFiles) {
                 InputStream in = new FileInputStream(file);
-                services = importer.extractServicesFromStream(in);
+                services = importer.transform(in);
                 Assert.assertNotNull("Service collection should not be null", services);
                 Assert.assertEquals(1, services.size());
-
-                if (services != null) {
-                    System.out.println("Services obtained: " + services.size());
-                    for (Service service : services) {
-                        writer.serialise(service, System.out, Syntax.TTL);
-                    }
-                }
             }
         }
 
     }
-
-
 }
