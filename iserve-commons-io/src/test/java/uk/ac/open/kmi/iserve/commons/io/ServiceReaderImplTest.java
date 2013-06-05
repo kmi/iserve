@@ -41,7 +41,7 @@ import java.util.List;
  */
 public class ServiceReaderImplTest {
 
-    private static final String TEST_RESOURCES_PATH = "/src/test/resources/";
+    private static final String TEST_RESOURCES_PATH = "/../test/resources/";
     private static final String OWLS_TC3_SERVICES = "OWLS-TC3-MSM";
     private static final Syntax SYNTAX = Syntax.TTL;
 
