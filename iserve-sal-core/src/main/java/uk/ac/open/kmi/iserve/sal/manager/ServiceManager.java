@@ -1,23 +1,23 @@
 /*
-   Copyright 2012  Knowledge Media Institute - The Open University
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+ * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package uk.ac.open.kmi.iserve.sal.manager;
 
+import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 
-import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 
@@ -33,33 +33,34 @@ public interface ServiceManager {
 	// Create Methods
 	/**
 	 * Creates a Service Description in the system.
-	 * Only needs to be fed with an serialisation of some kind. At the moment
-	 * this is to be limited to RDF descriptions.
+	 * Only needs to be fed with an MSM Service description.
 	 * 
-	 * Prior to storing the description the system should ensure that this is 
-	 * a correct serialisation.
-	 * 
-	 * @param msmInputStream the input service description in terms of MSM
-	 * @param sourceDocumentUri the source document this description has been 
-	 * extracted from. Could be local or external
+	 * @param service the input service description in terms of MSM
 	 * @return the URI this service description was saved to
 	 * @throws ServiceException
 	 */
-	public URI addService(InputStream msmInputStream,
-			URI sourceDocumentUri) throws ServiceException;
+	public URI addService(Service service) throws ServiceException;
 	
 	// Read Methods
-//	/**
-//	 * Obtains the service description of the service identified by the URI
-//	 * in the serialisation requested.
-//	 *
-//	 * @param serviceUri the URI of the service to obtain
-//	 * @param syntax the format to use when serialising the service
-//	 * @return the serialised service description
-//	 * @throws ServiceException
-//	 */
-//	public abstract String getServiceSerialisation(URI serviceUri, Syntax syntax)
-//			throws ServiceException;
+	/**
+	 * Obtains the service description of the service identified by the URI
+	 *
+	 * @param serviceUri the URI of the service to obtain
+	 * @return the service description if it exists or null otherwise
+	 * @throws ServiceException
+	 */
+	public abstract Service getService(URI serviceUri)
+			throws ServiceException;
+
+    /**
+     * Obtains the service descriptions for all the services identified by the URI List
+     *
+     * @param serviceUris the URIs of the service to obtain
+     * @return the list of all services that could be obtained. If none could be obtained the list will be empty.
+     * @throws ServiceException
+     */
+    public abstract List<Service> getServices(List<URI> serviceUris)
+            throws ServiceException;
 	
 	// Delete Methods
 	/**
@@ -71,6 +72,16 @@ public interface ServiceManager {
 	 */
 	public abstract boolean deleteService(URI serviceUri)
 			throws ServiceException;
+
+    /**
+     * Deletes the given service
+     *
+     * @param service the service to delete
+     * @return True if it was deleted or false otherwise
+     * @throws ServiceException
+     */
+    public abstract boolean deleteService(Service service)
+            throws ServiceException;
 
 	// General Management Methods
 	/**
