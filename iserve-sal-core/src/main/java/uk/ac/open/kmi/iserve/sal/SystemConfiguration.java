@@ -1,27 +1,27 @@
 /*
-   Copyright 2012  Knowledge Media Institute - The Open University
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+ * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package uk.ac.open.kmi.iserve.sal;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Singleton with iServe's Configuration
@@ -72,7 +72,8 @@ public class SystemConfiguration {
 	// Services data
 	private static final String SERVICES_REPOSITORY_URL_PROP = "iserve.services.rdfserver";
 	private static final String SERVICES_REPOSITORY_NAME_PROP = "iserve.services.repository";
-	private static final String SERVICES_REPOSITORY_SPARQL_PROP = "iserve.services.sparql";
+	private static final String SERVICES_REPOSITORY_SPARQL_PROP = "iserve.services.sparql.query";
+    private static final String SERVICES_REPOSITORY_SPARQL_UPDATE_PROP = "iserve.services.sparql.update";
 	private static final String SERVICES_URL_PATH = "iserve.services.path";
 	// Logs data
 	private static final String LOG_REPOSITORY_URL_PROP = "log.server";
@@ -82,10 +83,6 @@ public class SystemConfiguration {
 	private static final String USERS_REPOSITORY_NAME_PROP = "users.repository";
 	// Tagging, rating, etc
 	private static final String LUF_URL_PROP = "lufURL";
-
-	
-	// TODO: Remove this one?
-	private static final String CORPUS_FILE_PROP = "corpusFile";
 	
 	private static final String XSLT_PATH_PROP = "xsltPath";
 
@@ -95,7 +92,6 @@ public class SystemConfiguration {
 	private String usersRepositoryName;
 	private String proxyHostName;
 	private String proxyPort;
-	private String corpusFile;
 	private String docFolderPath;
 	private String microWsmoXsltPath;
 	private String servicesPath;
@@ -104,14 +100,16 @@ public class SystemConfiguration {
 	private URI iserveUri;
 	private URI dataRepositoryUri;
 	private URI dataSparqlUri;
+    private URI sparqlUpdateUri;
 	private URI logRepositoryUri;
 	private URI usersRepositoryUri;
 	private URI lufUri;
 	private URI servicesUri;
 	private URI documentsUri;
-	
 
-	public SystemConfiguration(String configFileUrl) throws ConfigurationException {
+
+
+    public SystemConfiguration(String configFileUrl) throws ConfigurationException {
 		PropertiesConfiguration config;
 		
 		if (configFileUrl == null) {
@@ -122,7 +120,6 @@ public class SystemConfiguration {
 		
 		config = new PropertiesConfiguration(configFileUrl);
 		try {
-			this.corpusFile = config.getString(CORPUS_FILE_PROP);
 			this.docFolderPath = config.getString(DOC_FOLDER_PATH_PROP);
 			this.logRepositoryName = config.getString(LOG_REPOSITORY_NAME_PROP, DEFAULT_LOGS_REPO);
 			this.logRepositoryUri = new URI(config.getString(LOG_REPOSITORY_URL_PROP));
@@ -132,6 +129,7 @@ public class SystemConfiguration {
 			this.dataRepositoryName = config.getString(SERVICES_REPOSITORY_NAME_PROP, DEFAULT_SERVICES_REPO);
 			this.dataRepositoryUri = new URI(config.getString(SERVICES_REPOSITORY_URL_PROP));
 			this.dataSparqlUri = new URI(config.getString(SERVICES_REPOSITORY_SPARQL_PROP));
+            this.sparqlUpdateUri = new URI(config.getString(SERVICES_REPOSITORY_SPARQL_UPDATE_PROP));
 			this.iserveUri = new URI(config.getString(ISERVE_URL_PROP));
 			this.usersRepositoryName = config.getString(USERS_REPOSITORY_NAME_PROP, DEFAULT_USERS_REPO);
 			this.usersRepositoryUri = new URI(config.getString(USERS_SERVER_URL_PROP));
@@ -216,7 +214,7 @@ public class SystemConfiguration {
 	}
 
 	/**
-	 * @param logServerUrl the logServerUrl to set
+	 * @param logServerUri the logServerUrl to set
 	 */
 	public void setLogServerUrl(URI logServerUri) {
 		this.logRepositoryUri = logServerUri;
@@ -304,20 +302,6 @@ public class SystemConfiguration {
 	 */
 	public void setProxyPort(String proxyPort) {
 		this.proxyPort = proxyPort;
-	}
-
-	/**
-	 * @return the corpusFile
-	 */
-	public String getCorpusFile() {
-		return this.corpusFile;
-	}
-
-	/**
-	 * @param corpusFile the corpusFile to set
-	 */
-	public void setCorpusFile(String corpusFile) {
-		this.corpusFile = corpusFile;
 	}
 
 	/**
@@ -445,5 +429,12 @@ public class SystemConfiguration {
 	public void setDataSparqlUri(URI dataSparqlUri) {
 		this.dataSparqlUri = dataSparqlUri;
 	}
-	
+
+    public URI getSparqlUpdateUri() {
+        return sparqlUpdateUri;
+    }
+
+    public void setSparqlUpdateUri(URI sparqlUpdateUri) {
+        this.sparqlUpdateUri = sparqlUpdateUri;
+    }
 }
