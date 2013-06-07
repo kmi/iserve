@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * ServiceReaderImpl
  * TODO: Provide Description
- *
+ * <p/>
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 01/06/2013
  * Time: 12:23
@@ -62,31 +62,35 @@ public class ServiceReaderImpl implements ServiceReader {
     @Override
     public List<Service> parse(InputStream in, String syntax) {
 
-        ArrayList<Service> result = new ArrayList<Service>();
-
         try {
             // create an empty model
             model = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM);
             // Parse the stream into a model
             model.read(in, null, syntax);
+            return parseService(model);
+        } finally {
+            if (model != null)
+                model.close();
+        }
+    }
 
-            // Get the services
-            Service service;
-            Individual individual;
-            ExtendedIterator<Individual> services = model.listIndividuals(MSM.Service);
-            while (services.hasNext()) {
-                individual = services.next();
+    public ArrayList<Service> parseService(OntModel model) {
+        ArrayList<Service> result = new ArrayList<Service>();
+        // Get the services
+        Service service;
+        Individual individual;
+        ExtendedIterator<Individual> services = model.listIndividuals(MSM.Service);
+        while (services.hasNext()) {
+            individual = services.next();
+            try {
                 service = obtainService(individual);
                 if (service != null) {
                     result.add(service);
                 }
+            } catch (URISyntaxException e) {
+                log.error("Incorrect URI while parsing service.", e);
             }
 
-        } catch (URISyntaxException e) {
-            log.error("Incorrect URI found while parsing service", e);
-        } finally {
-            if (model != null)
-                model.close();
         }
 
         return result;
@@ -98,7 +102,7 @@ public class ServiceReaderImpl implements ServiceReader {
             return null;
 
         Service service = new Service(new URI(individual.getURI()));
-        setInvocableEntityProperties(individual,service);
+        setInvocableEntityProperties(individual, service);
 
         NodeIterator hasOpValues = null;
         try {
@@ -241,7 +245,7 @@ public class ServiceReaderImpl implements ServiceReader {
     private MessagePart obtainMessagePart(RDFNode inputNode) throws URISyntaxException {
 
         MessagePart result = null;
-        if (inputNode == null && ! inputNode.canAs(Individual.class)) {
+        if (inputNode == null && !inputNode.canAs(Individual.class)) {
             return result;
         }
 
@@ -305,13 +309,13 @@ public class ServiceReaderImpl implements ServiceReader {
                     Condition cond = new Condition(new URI(axiomIndiv.getURI()));
                     setResourceProperties(axiomIndiv, cond);
                     cond.setTypedValue(getAxiomBody(axiomIndiv));
-                    ((List<Condition>)result).add(cond);
+                    ((List<Condition>) result).add(cond);
 
                 } else {
                     Effect effect = new Effect(new URI(axiomIndiv.getURI()));
                     setResourceProperties(axiomIndiv, effect);
                     effect.setTypedValue(getAxiomBody(axiomIndiv));
-                    ((List<Effect>)result).add(effect);
+                    ((List<Effect>) result).add(effect);
                 }
             }
         } finally {
