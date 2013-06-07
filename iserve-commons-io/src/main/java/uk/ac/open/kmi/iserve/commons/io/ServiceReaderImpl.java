@@ -60,13 +60,13 @@ public class ServiceReaderImpl implements ServiceReader {
      * @return The collection of Services parsed from the stream
      */
     @Override
-    public List<Service> parse(InputStream in, String syntax) {
+    public List<Service> parse(InputStream in, Syntax syntax) {
 
         try {
             // create an empty model
             model = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM);
             // Parse the stream into a model
-            model.read(in, null, syntax);
+            model.read(in, null, syntax.getName());
             return parseService(model);
         } finally {
             if (model != null)

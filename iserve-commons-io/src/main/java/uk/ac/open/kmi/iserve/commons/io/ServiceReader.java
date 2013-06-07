@@ -31,5 +31,5 @@ import java.util.List;
  */
 public interface ServiceReader {
 
-    public List<Service> parse(InputStream in, String syntax);
+    public List<Service> parse(InputStream in, Syntax syntax);
 }
