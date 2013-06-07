@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,14 +42,12 @@ import java.util.List;
  */
 public class OwlsImporterTest {
 
-    private static final boolean SAVE_FILES = false;
-    private static final String TEST_RESOURCES_PATH = "/src/test/resources/";
-    private static final String OWLS_TC3_SERVICES_1_1 = "OWLS-TC3/htdocs/services/1.1";
+    private static final String OWLS_TC3_SERVICES_1_1 = "/OWLS-TC3/htdocs/services/1.1/";
+    private static final String OWLS_TC3_SERVICES_1_0 = "/OWLS-TC3/htdocs/services/1.0/";
 
     private OwlsImporter importer;
     private ServiceWriter writer;
-    private String workingDir;
-    private List<String> testFolders;
+    private List<URI> testFolders;
     private FilenameFilter owlsFilter;
 
     @Before
@@ -56,9 +55,8 @@ public class OwlsImporterTest {
 
         importer = new OwlsImporter();
         writer = new ServiceWriterImpl();
-        workingDir = System.getProperty("user.dir");
-        testFolders = new ArrayList<String>();
-        testFolders.add(workingDir + TEST_RESOURCES_PATH + OWLS_TC3_SERVICES_1_1);
+        testFolders = new ArrayList<URI>();
+        testFolders.add(OwlsImporterTest.class.getResource(OWLS_TC3_SERVICES_1_1).toURI());
 
         owlsFilter = new FilenameFilter() {
             public boolean accept(File dir, String name) {
@@ -72,7 +70,7 @@ public class OwlsImporterTest {
 
         // Add all the test collections
         System.out.println("Transforming test collections");
-        for (String testFolder : testFolders) {
+        for (URI testFolder : testFolders) {
             File dir = new File(testFolder);
             System.out.println("Test collection: " + testFolder);
 
@@ -94,7 +92,7 @@ public class OwlsImporterTest {
 
         // Add all the test collections
         System.out.println("Transforming test collections");
-        for (String testFolder : testFolders) {
+        for (URI testFolder : testFolders) {
             File dir = new File(testFolder);
             System.out.println("Test collection: " + testFolder);
 

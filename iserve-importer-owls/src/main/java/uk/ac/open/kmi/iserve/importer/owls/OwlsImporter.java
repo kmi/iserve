@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.importer.owls;
 
 import com.hp.hpl.jena.query.*;
@@ -381,8 +382,6 @@ public class OwlsImporter implements ServiceImporter {
 
         log.debug("Querying model:");
         log.debug(query.serialize());
-
-        System.out.println(query.serialize());
 
         try {
             MessagePart mp = null;
