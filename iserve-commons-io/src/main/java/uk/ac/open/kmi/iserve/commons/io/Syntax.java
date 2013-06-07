@@ -18,20 +18,23 @@ package uk.ac.open.kmi.iserve.commons.io;
 
 /**
  * Enum Type with the Syntaxes Supported
- *
+ * <p/>
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 22/05/2013
  * Time: 02:10
- *
+ * <p/>
  * TODO: Move to the proper package
  */
 public enum Syntax {
 
-    RDFXML ("RDF/XML", "rdf"),
-    RDFXML_ABBREV ("RDF/XML-ABBREV", "rdf"),
-    N_TRIPLE ("N-TRIPLE", "nt"),
-    N3 ("N3", "n3"),
-    TTL ("TTL", "ttl");
+    RDFXML("RDF/XML", "rdf"),
+    RDFXML_ABBREV("RDF/XML-ABBREV", "rdf"),
+    N_TRIPLE("N-TRIPLE", "nt"),
+    N3("N3", "n3"),
+    TTL("TTL", "ttl"),
+    N_QUADS("N-Quads", "nq"),
+    RDF_JSON("RDF/JSON", "json"),
+    TRIG("TriG", "trig");
 //    OWLS ("OWLS");
 
     private final String name;
