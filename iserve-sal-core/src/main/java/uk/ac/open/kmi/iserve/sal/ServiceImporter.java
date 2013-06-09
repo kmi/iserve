@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.sal;
 
 import uk.ac.open.kmi.iserve.commons.model.Service;
@@ -25,26 +26,29 @@ import java.util.List;
 /**
  * Abstract class to be extended by Service Importers
  * // TODO: Rename and move to other package
- * 
+ *
  * @author Dong Liu (Knowledge Media Institute - The Open University)
  */
 public interface ServiceImporter {
 
-	/**
-     * Transform a stream with service description(s), e.g. SAWSDL, OWL-S, hRESTS, etc., into
-     * Minimal Service Model (MSM), Service instances.
+    /**
+     * Parses and transforms a stream with service description(s), e.g. SAWSDL, OWL-S, hRESTS, etc., and
+     * returns a list of Service objects defined in the stream.
      *
-     * @param orginalDescription The semantic Web service description(s)
+     * @param originalDescription The semantic Web service description(s)
      * @return A List with the services transformed conforming to MSM model
+     * @see ServiceFormat for the list of supported formats
      */
-    public abstract List<Service> transform(InputStream orginalDescription) throws ImporterException;
+    public abstract List<Service> transform(InputStream originalDescription) throws ImporterException;
 
     /**
-     * Transform a file into Minimal Service Model (MSM).
+     * Parses and transforms a file with service description(s), e.g. SAWSDL, OWL-S, hRESTS, etc., and
+     * returns a list of Service objects defined in the file.
      *
-     * @param orginalFile The file containing the semantic Web service description(s)
+     * @param originalDescription The file containing the semantic Web service description(s)
      * @return A List with the services transformed conforming to MSM model
+     * @see ServiceFormat for the list of supported formats
      */
-    public abstract List<Service> transform(File orginalFile) throws ImporterException;
+    public abstract List<Service> transform(File originalDescription) throws ImporterException;
 
 }
