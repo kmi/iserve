@@ -175,9 +175,14 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         if (this.getSparqlUpdateEndpoint() == null)
             throw new ServiceException("No SPARQL Update endpoint provided. Unable to store the service.");
 
-        URI newServiceUri = this.generateUniqueServiceUri();
+        URI newBaseServiceUri = this.generateUniqueServiceUri();
         // Replace URIs in service description
-        replaceUris(service, newServiceUri);
+        try {
+            replaceUris(service, newBaseServiceUri);
+        } catch (URISyntaxException e) {
+            log.error("Unable to create URI for service", e);
+            throw new ServiceException("Unable to create URI for service", e);
+        }
 
         // Store in backend
         ServiceWriterImpl writer = new ServiceWriterImpl();
@@ -188,14 +193,14 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         request.add(new UpdateCreate(service.getUri().toASCIIString()));
         request.add(generateUpdateRequest(service.getUri().toASCIIString(), svcModel));
 
-        log.debug("Sparql Update Query issued: " + request.toString());
         log.info("Adding service: " + service.getUri().toASCIIString());
+        log.debug("Sparql Update Query issued: " + request.toString());
         // Use create form for Sesame-based engines. TODO: Generalise and push to config.
         UpdateProcessor processor = UpdateExecutionFactory.createRemoteForm(request, this.getSparqlUpdateEndpoint().toASCIIString());
         processor.execute(); // TODO: anyway to know if things went ok?
         log.info("Service added.");
 
-        return newServiceUri;
+        return service.getUri();
     }
 
     private URI generateUniqueServiceUri() {
@@ -226,7 +231,7 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
      * @param resource   The service that will be modified
      * @param newUriBase The new URI base
      */
-    private void replaceUris(uk.ac.open.kmi.iserve.commons.model.Resource resource, URI newUriBase) {
+    private void replaceUris(uk.ac.open.kmi.iserve.commons.model.Resource resource, URI newUriBase) throws URISyntaxException {
 
         // Exit early
         if (resource == null || newUriBase == null || !newUriBase.isAbsolute())

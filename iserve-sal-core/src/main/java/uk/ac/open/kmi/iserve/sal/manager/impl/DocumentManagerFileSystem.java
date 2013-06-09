@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import org.slf4j.Logger;
@@ -190,7 +191,7 @@ public class DocumentManagerFileSystem implements DocumentManager {
             if (result) {
                 log.info("File deleted: " + file.getName());
             } else {
-                log.info("File does not exist. Unable to delete it: " + file.getName());
+                log.info("File does not exist. Unable to delete it: " + file.getAbsolutePath());
             }
         }
         return result;
