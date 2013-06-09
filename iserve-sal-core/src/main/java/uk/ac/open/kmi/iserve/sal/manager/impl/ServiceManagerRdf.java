@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.hp.hpl.jena.ontology.OntModel;
@@ -21,6 +22,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.modify.request.Target;
 import com.hp.hpl.jena.sparql.modify.request.UpdateCreate;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDrop;
 import com.hp.hpl.jena.update.UpdateExecutionFactory;
@@ -51,79 +53,79 @@ import java.util.List;
 
 public class ServiceManagerRdf extends BaseSemanticManager implements ServiceManager {
 
-	private static final Logger log = LoggerFactory.getLogger(ServiceManagerRdf.class);
+    private static final Logger log = LoggerFactory.getLogger(ServiceManagerRdf.class);
 
-	private ServiceFormatDetector formatDetector;
+    private ServiceFormatDetector formatDetector;
 
-	/**
-	 * Constructor for the Service Manager. Protected to avoid external access.
-	 * Any access to this should take place through the iServeManager
-     *
+    /**
+     * Constructor for the Service Manager. Protected to avoid external access.
+     * Any access to this should take place through the iServeManager
+     * <p/>
      * TODO: Provide means for applications to register to changes in the registry
-	 * 
-	 * @param configuration the system configuration
-	 * @throws SalException
-	 */
-	protected ServiceManagerRdf(SystemConfiguration configuration) throws SalException {
-		super(configuration);
-	}
+     *
+     * @param configuration the system configuration
+     * @throws SalException
+     */
+    protected ServiceManagerRdf(SystemConfiguration configuration) throws SalException {
+        super(configuration);
+    }
 
-	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#listService()
-	 */
-	@Override
-	public List<URI> listServices() {
-		List<URI> result = new ArrayList<URI>();
+    /* (non-Javadoc)
+     * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#listService()
+     */
+    @Override
+    public List<URI> listServices() {
+        List<URI> result = new ArrayList<URI>();
 
-		// If the SPARQL endpoint does not exist return immediately.
-		if (this.getSparqlQueryEndpoint() == null) {
-			return result;
-		}
+        // If the SPARQL endpoint does not exist return immediately.
+        if (this.getSparqlQueryEndpoint() == null) {
+            return result;
+        }
 
-		String queryStr = "select DISTINCT ?s where { \n" +
-				"?s " + "<" + RDF.type.getURI() + ">" +  " " +
+        String queryStr = "select DISTINCT ?s where { \n" +
+                "?s " + "<" + RDF.type.getURI() + ">" + " " +
                 "<" + MSM.Service.getURI() + ">" +
-				" . }";
+                " . }";
 
-		// Query the engine
-		Query query = QueryFactory.create(queryStr);
-		QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
+        // Query the engine
+        Query query = QueryFactory.create(queryStr);
+        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
 
-		try {		
-			// TODO: Remove profiling
-			long startTime = System.currentTimeMillis();
+        try {
+            // TODO: Remove profiling
+            long startTime = System.currentTimeMillis();
 
-			ResultSet qResults = qexec.execSelect();
+            ResultSet qResults = qexec.execSelect();
 
-			// TODO: Remove profiling
-			long endTime = System.currentTimeMillis();
-			long duration = endTime - startTime;
-			log.info("Time taken for querying the registry: " + duration);
+            // TODO: Remove profiling
+            long endTime = System.currentTimeMillis();
+            long duration = endTime - startTime;
+            log.info("Time taken for querying the registry: " + duration);
 
-			Resource resource;
-			URI matchUri;
-			// Iterate over the results obtained
-			while ( qResults.hasNext() ) {
-				QuerySolution soln = qResults.nextSolution();
+            Resource resource;
+            URI matchUri;
+            // Iterate over the results obtained
+            while (qResults.hasNext()) {
+                QuerySolution soln = qResults.nextSolution();
 
-				// Get the match URL
-				resource = soln.getResource("s");
+                // Get the match URL
+                resource = soln.getResource("s");
 
-				if (resource != null && resource.isURIResource()) {
-					matchUri = new URI(resource.getURI());
-					result.add(matchUri);
-				} else {
-					log.warn("Skipping result as the URL is null");
-					break;
-				}
-			}	
-		} catch (URISyntaxException e) {
-			log.error("Error obtaining match result. Expected a correct URI", e);
-		} finally {
-			qexec.close();
-		}
-		return result;
-	}
+                if (resource != null && resource.isURIResource()) {
+                    matchUri = new URI(resource.getURI());
+                    result.add(matchUri);
+                } else {
+                    log.warn("Skipping result as the URL is null");
+                    break;
+                }
+            }
+        } catch (URISyntaxException e) {
+            log.error("Error obtaining match result. Expected a correct URI", e);
+        } finally {
+            qexec.close();
+        }
+        return result;
+    }
 
     @Override
     public Service getService(URI serviceUri) throws ServiceException {
@@ -135,11 +137,11 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
                 "WHERE \n" +
                 "{ GRAPH <" + serviceUri.toASCIIString() + "> { ?s ?p ?o } } \n";
 
-        Query query = QueryFactory.create(queryStr) ;
+        Query query = QueryFactory.create(queryStr);
         QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
         OntModel resultModel = ModelFactory.createOntologyModel();
-        qexec.execConstruct(resultModel) ;
-        qexec.close() ;
+        qexec.execConstruct(resultModel);
+        qexec.close();
 
         // Parse the service. There should only be one in the response
         ServiceReaderImpl reader = new ServiceReaderImpl();
@@ -173,7 +175,7 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         if (this.getSparqlUpdateEndpoint() == null)
             throw new ServiceException("No SPARQL Update endpoint provided. Unable to store the service.");
 
-        URI newServiceUri = UriUtil.generateUniqueResourceUri(this.getConfiguration().getServicesUri());
+        URI newServiceUri = this.generateUniqueServiceUri();
         // Replace URIs in service description
         replaceUris(service, newServiceUri);
 
@@ -181,12 +183,12 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         ServiceWriterImpl writer = new ServiceWriterImpl();
         Model svcModel = writer.generateModel(service);
 
-        UpdateRequest request = UpdateFactory.create() ;
+        UpdateRequest request = UpdateFactory.create();
         request.setPrefixMapping(PrefixMapping.Factory.create().setNsPrefixes(Vocabularies.prefixes));
-        request.add(new UpdateCreate(service.getUri().toASCIIString())) ;
-        request.add(generateUpdateRequest(service.getUri().toASCIIString(), svcModel)) ;
+        request.add(new UpdateCreate(service.getUri().toASCIIString()));
+        request.add(generateUpdateRequest(service.getUri().toASCIIString(), svcModel));
 
-        // Use remote form for dealing sesame
+        log.debug("Sparql Update Query issued: " + request.toString());
         log.info("Adding service: " + service.getUri().toASCIIString());
         // Use create form for Sesame-based engines. TODO: Generalise and push to config.
         UpdateProcessor processor = UpdateExecutionFactory.createRemoteForm(request, this.getSparqlUpdateEndpoint().toASCIIString());
@@ -194,6 +196,10 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         log.info("Service added.");
 
         return newServiceUri;
+    }
+
+    private URI generateUniqueServiceUri() {
+        return this.getConfiguration().getServicesUri().resolve(UriUtil.generateUniqueId());
     }
 
     private String generateUpdateRequest(String graphName, Model svcModel) {
@@ -208,7 +214,6 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         updateSB.append("}\n");
 
         String result = updateSB.toString();
-        log.debug("Update statement generated:\n" + result);
 
         return result;
     }
@@ -218,7 +223,7 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
      * This methods maintains the naming used by the service already.
      * Recursive implementation that traverses the entire graph
      *
-     * @param resource The service that will be modified
+     * @param resource   The service that will be modified
      * @param newUriBase The new URI base
      */
     private void replaceUris(uk.ac.open.kmi.iserve.commons.model.Resource resource, URI newUriBase) {
@@ -232,7 +237,7 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         // Handling of Service
         if (resource instanceof Service) {
             // Replace Operations
-            List<Operation> operations = ((Service)resource).getOperations();
+            List<Operation> operations = ((Service) resource).getOperations();
             for (Operation op : operations) {
                 replaceUris(op, newUriBase);
             }
@@ -242,22 +247,22 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         if (resource instanceof Operation) {
             List<MessageContent> mcs;
             // Replace Inputs, Outputs, InFaults, and Outfaults
-            mcs = ((Operation)resource).getInputs();
+            mcs = ((Operation) resource).getInputs();
             for (MessageContent mc : mcs) {
                 replaceUris(mc, newUriBase);
             }
 
-            mcs = ((Operation)resource).getInputFaults();
+            mcs = ((Operation) resource).getInputFaults();
             for (MessageContent mc : mcs) {
                 replaceUris(mc, newUriBase);
             }
 
-            mcs = ((Operation)resource).getOutputs();
+            mcs = ((Operation) resource).getOutputs();
             for (MessageContent mc : mcs) {
                 replaceUris(mc, newUriBase);
             }
 
-            mcs = ((Operation)resource).getOutputFaults();
+            mcs = ((Operation) resource).getOutputFaults();
             for (MessageContent mc : mcs) {
                 replaceUris(mc, newUriBase);
             }
@@ -267,12 +272,12 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         if (resource instanceof MessagePart) {
             // Deal with optional and mandatory parts
             List<MessagePart> mps;
-            mps = ((MessagePart)resource).getMandatoryParts();
+            mps = ((MessagePart) resource).getMandatoryParts();
             for (MessagePart mp : mps) {
                 replaceUris(mp, newUriBase);
             }
 
-            mps = ((MessagePart)resource).getOptionalParts();
+            mps = ((MessagePart) resource).getOptionalParts();
             for (MessagePart mp : mps) {
                 replaceUris(mp, newUriBase);
             }
@@ -281,13 +286,13 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         // Handling for Invocable Entities
         if (resource instanceof InvocableEntity) {
             // Replace Effects
-            List<Effect> effects = ((InvocableEntity)resource).getEffects();
+            List<Effect> effects = ((InvocableEntity) resource).getEffects();
             for (Effect effect : effects) {
                 replaceUris(effect, newUriBase);
             }
 
             // Replace Conditions
-            List<Condition> conditions = ((InvocableEntity)resource).getConditions();
+            List<Condition> conditions = ((InvocableEntity) resource).getConditions();
             for (Condition condition : conditions) {
                 replaceUris(condition, newUriBase);
             }
@@ -296,40 +301,40 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         // Handling for Annotable Resources
         if (resource instanceof AnnotableResource) {
             // Replace NFPs
-            List<NonFunctionalProperty> nfps = ((AnnotableResource)resource).getNfps();
+            List<NonFunctionalProperty> nfps = ((AnnotableResource) resource).getNfps();
             for (NonFunctionalProperty nfp : nfps) {
                 replaceUris(nfp, newUriBase);
             }
         }
     }
 
-	/**
-	 * Returns the URI of the document defining the service, i.e., without the 
-	 * fragment.
-	 * 
-	 * @param serviceId the unique id of the service
-	 * @return the URI of the service document
-	 */
-	private URI getServiceBaseUri(String serviceId) {
-		return this.getConfiguration().getServicesUri().resolve(serviceId);
-	}
+    /**
+     * Returns the URI of the document defining the service, i.e., without the
+     * fragment.
+     *
+     * @param serviceId the unique id of the service
+     * @return the URI of the service document
+     */
+    private URI getServiceBaseUri(String serviceId) {
+        return this.getConfiguration().getServicesUri().resolve(serviceId);
+    }
 
-	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#deleteService(java.lang.String)
-	 */
-	@Override
-	public boolean deleteService(URI serviceUri) throws ServiceException {
+    /* (non-Javadoc)
+     * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#deleteService(java.lang.String)
+     */
+    @Override
+    public boolean deleteService(URI serviceUri) throws ServiceException {
 
-		if ( serviceUri == null ) {
-			throw new ServiceException("Service URI is null.");
-		}
+        if (serviceUri == null) {
+            throw new ServiceException("Service URI is null.");
+        }
 
         if (this.getSparqlUpdateEndpoint() == null)
             throw new ServiceException("No SPARQL Update endpoint provided. Unable to delete the service.");
 
-        UpdateRequest request = UpdateFactory.create() ;
+        UpdateRequest request = UpdateFactory.create();
         request.setPrefixMapping(PrefixMapping.Factory.create().setNsPrefixes(Vocabularies.prefixes));
-        request.add(new UpdateDrop(serviceUri.toASCIIString())) ;
+        request.add(new UpdateDrop(serviceUri.toASCIIString()));
 
         // Use remote form for dealing sesame
         log.info("Deleting service: " + serviceUri.toASCIIString());
@@ -338,26 +343,45 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         processor.execute(); // TODO: anyway to know if things went ok?
         log.info("Service deleted.");
 
-		return true;
-	}
+        return true;
+    }
 
     @Override
     public boolean deleteService(Service service) throws ServiceException {
         return deleteService(service.getUri());
     }
 
-	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#serviceExists(java.net.URI)
-	 */
-	@Override
-	public boolean serviceExists(URI serviceUri) throws ServiceException {
-		String queryStr = "ASK { \n" +
+    /**
+     * Deletes all the services on the registry.
+     * This operation cannot be undone. Use with care.
+     *
+     * @return
+     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
+     *
+     */
+    @Override
+    public boolean clearServices() throws ServiceException {
+        UpdateRequest request = UpdateFactory.create();
+        request.add(new UpdateDrop(Target.ALL));
+        UpdateProcessor processor = UpdateExecutionFactory.createRemoteForm(request,
+                this.getSparqlUpdateEndpoint().toASCIIString());
+        processor.execute(); // TODO: anyway to know if things went ok?
+        log.info("Services registry cleared.");
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#serviceExists(java.net.URI)
+     */
+    @Override
+    public boolean serviceExists(URI serviceUri) throws ServiceException {
+        String queryStr = "ASK { \n" +
                 "GRAPH <" + serviceUri.toASCIIString() + "> {" +
                 "<" + serviceUri.toASCIIString() + "> " + RDF.type.getURI() + " " + MSM.Service + " }\n}";
 
-        Query query = QueryFactory.create(queryStr) ;
+        Query query = QueryFactory.create(queryStr);
         QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
         return qexec.execAsk();
-	}
+    }
 
 }
