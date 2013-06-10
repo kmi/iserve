@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.sal.manager;
 
 import uk.ac.open.kmi.iserve.commons.model.Service;
@@ -174,7 +175,7 @@ public interface iServeManager {
      * @throws SalException
      */
     public abstract boolean addRelatedDocumentToService(URI serviceUri, URI relatedDocument) throws SalException;
-	
+
 
 	/*
 	 *  Document Management Operations
@@ -217,10 +218,10 @@ public interface iServeManager {
      * Obtains a particular document
      *
      * @param documentUri the URI of the document to get
-     * @return the content of the document
+     * @return the InputStream with the content of the document
      * @throws SalException
      */
-    public abstract String getDocument(URI documentUri) throws SalException;
+    public abstract InputStream getDocument(URI documentUri) throws SalException;
 
     // Delete
 

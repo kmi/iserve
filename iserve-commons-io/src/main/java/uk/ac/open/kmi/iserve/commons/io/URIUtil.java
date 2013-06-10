@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.commons.io;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 public class URIUtil {
@@ -25,39 +27,39 @@ public class URIUtil {
     }
 
     public static String getLocalName(URL url) {
-		return getLocalName(url.toString());
-	}
-	
-	public static String getLocalName(String uriString) {
-		int len = uriString.length();
-		if ( uriString.endsWith("/") ) {
-			uriString = uriString.substring(0, len - 1);
-		}
-		int idx = uriString.indexOf('^');
-		if ( idx >= 0 ) {
-			uriString = uriString.substring(0, idx);
-		}
-		int localNameIdx = getLocalNameIndex(uriString);
-		return uriString.substring(localNameIdx);
-	}
+        return getLocalName(url.toString());
+    }
 
-	private static int getLocalNameIndex(String uri) {
-		int separatorIdx = uri.indexOf('#');
+    public static String getLocalName(String uriString) {
+        int len = uriString.length();
+        if (uriString.endsWith("/")) {
+            uriString = uriString.substring(0, len - 1);
+        }
+        int idx = uriString.indexOf('^');
+        if (idx >= 0) {
+            uriString = uriString.substring(0, idx);
+        }
+        int localNameIdx = getLocalNameIndex(uriString);
+        return uriString.substring(localNameIdx);
+    }
 
-		if (separatorIdx < 0) {
-			separatorIdx = uri.lastIndexOf('/');
-		}
+    private static int getLocalNameIndex(String uri) {
+        int separatorIdx = uri.indexOf('#');
 
-		if (separatorIdx < 0) {
-			separatorIdx = uri.lastIndexOf(':');
-		}
+        if (separatorIdx < 0) {
+            separatorIdx = uri.lastIndexOf('/');
+        }
 
-		if (separatorIdx < 0) {
-			throw new IllegalArgumentException("No separator character founds in URI: " + uri);
-		}
+        if (separatorIdx < 0) {
+            separatorIdx = uri.lastIndexOf(':');
+        }
 
-		return separatorIdx + 1;
-	}
+        if (separatorIdx < 0) {
+            throw new IllegalArgumentException("No separator character founds in URI: " + uri);
+        }
+
+        return separatorIdx + 1;
+    }
 
     public static String getNameSpace(URI uri) {
         String uriStr = uri.toASCIIString();
@@ -66,33 +68,33 @@ public class URIUtil {
     }
 
     public static String getNameSpace(String uriString) {
-		int localNameIdx = getLocalNameIndex(uriString);
-		return uriString.substring(0, localNameIdx - 1);
-	}
-	
-	public static String generateItemLabel(URL itemUrl) {
-		return generateItemLabel(null, itemUrl);
-	}
-	
-	public static String generateItemLabel(String prefix, URL itemUrl) {
-		
-		// Check the input and exit immediately if null
-		if (itemUrl == null) {
-			return null;
-		}
-		
-		String result = null;
-		if (prefix != null && !prefix.isEmpty()) {
-			result = prefix + "." + URIUtil.getLocalName(itemUrl);
-		} else {
-			result = URIUtil.getLocalName(itemUrl);
-		}
-		
-		return result;
-	}
+        int localNameIdx = getLocalNameIndex(uriString);
+        return uriString.substring(0, localNameIdx - 1);
+    }
 
-    public static URI replaceNamespace(URI originalUri, URI newNamespace) {
-        return newNamespace.resolve(getLocalName(originalUri));
+    public static String generateItemLabel(URL itemUrl) {
+        return generateItemLabel(null, itemUrl);
+    }
+
+    public static String generateItemLabel(String prefix, URL itemUrl) {
+
+        // Check the input and exit immediately if null
+        if (itemUrl == null) {
+            return null;
+        }
+
+        String result = null;
+        if (prefix != null && !prefix.isEmpty()) {
+            result = prefix + "." + URIUtil.getLocalName(itemUrl);
+        } else {
+            result = URIUtil.getLocalName(itemUrl);
+        }
+
+        return result;
+    }
+
+    public static URI replaceNamespace(URI originalUri, URI newNamespace) throws URISyntaxException {
+        return new URI(newNamespace.getScheme(), newNamespace.getSchemeSpecificPart(), getLocalName(originalUri));
     }
 
 }

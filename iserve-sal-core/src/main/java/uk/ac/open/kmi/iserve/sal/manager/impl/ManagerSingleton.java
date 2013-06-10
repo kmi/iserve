@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -184,8 +185,12 @@ public class ManagerSingleton implements iServeManager {
             }
 
             // 3rd - Store the resulting MSM services. In principle it should be just one
-            if (services != null && !services.isEmpty())
-                serviceUri = this.serviceManager.addService(services.get(0));
+            Service svc;
+            if (services != null && !services.isEmpty()) {
+                svc = services.get(0);
+                svc.setSource(sourceDocUri); // The service is being imported -> update the source
+                serviceUri = this.serviceManager.addService(svc);
+            }
 
             // 4th Log it was all done correctly
             // TODO: log to the system and notify observers
@@ -335,7 +340,7 @@ public class ManagerSingleton implements iServeManager {
     }
 
     /* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#getService(java.net.URI)
+     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#getService(java.net.URI)
 	 */
     @Override
     public Service getService(URI serviceUri) throws SalException {
@@ -370,7 +375,7 @@ public class ManagerSingleton implements iServeManager {
      * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#getDocument(java.net.URI)
      */
     @Override
-    public String getDocument(URI documentUri) throws DocumentException {
+    public InputStream getDocument(URI documentUri) throws DocumentException {
         return this.docManager.getDocument(documentUri);
     }
 

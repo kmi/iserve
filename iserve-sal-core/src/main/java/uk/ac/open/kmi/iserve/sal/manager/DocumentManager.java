@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.sal.manager;
 
 import uk.ac.open.kmi.iserve.sal.ServiceFormat;
@@ -36,7 +37,7 @@ public interface DocumentManager {
             throws DocumentException;
 
     // Read Methods
-    public abstract String getDocument(URI documentUri)
+    public abstract InputStream getDocument(URI documentUri)
             throws DocumentException;
 
     // Delete Methods

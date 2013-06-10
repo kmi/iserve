@@ -27,6 +27,7 @@ import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -93,17 +94,11 @@ public class DocumentManagerFileSystem implements DocumentManager {
     @Override
     public List<URI> listDocuments() throws DocumentException {
         List<URI> result = new ArrayList<URI>();
-        File wsdlFolder = new File(configuration.getDocumentsFolder());
-        File[] folderList = wsdlFolder.listFiles();
-        for (int i = 0; i < folderList.length; i++) {
-            if (folderList[i].isDirectory() == true) {
-                String[] fileList = folderList[i].list();
-                if (fileList.length > 0) {
-                    // TODO: This assumes only one document per folder/service.
-                    URI docsBaseUri = configuration.getDocumentsUri();
-                    result.add(docsBaseUri.resolve(folderList[i].getName() + "/" + fileList[0]));
-                }
-            }
+        File documentsFolder = new File(this.getDocumentsInternalPath());
+        File[] docsList = documentsFolder.listFiles();
+        for (File doc : docsList) {
+            if (doc.isFile())
+                result.add(this.getDocumentPublicUri(doc));
         }
         return result;
     }
@@ -118,19 +113,19 @@ public class DocumentManagerFileSystem implements DocumentManager {
     }
 
     /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#getDocument(java.lang.String)
+     * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#getDocument(java.io.InputStream)
      */
     @Override
-    public String getDocument(URI documentUri) throws DocumentException {
+    public InputStream getDocument(URI documentUri) throws DocumentException {
 
         if (!documentExists(documentUri)) {
             return null;
         }
 
         File file = new File(this.getDocumentInternalUri(documentUri));
-        String result = null;
+        InputStream result = null;
         try {
-            result = IOUtil.readString(file);
+            result = new FileInputStream(file);
         } catch (IOException e) {
             throw new DocumentException(e);
         }
@@ -210,7 +205,7 @@ public class DocumentManagerFileSystem implements DocumentManager {
         File[] files = internalFolder.listFiles();
         for (File file : files) {
             file.delete();
-            log.info("File deleted: " + file.getName());
+            log.info("File deleted: " + file.getAbsolutePath());
         }
         return true;
     }
