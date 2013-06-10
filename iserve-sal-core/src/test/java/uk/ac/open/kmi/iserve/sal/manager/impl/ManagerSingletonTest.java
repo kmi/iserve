@@ -17,7 +17,6 @@
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -183,27 +182,46 @@ public class ManagerSingletonTest {
         // Also depends on obtaining the right document
         ServiceReader reader = new ServiceReaderImpl();
         ServiceWriterImpl writer = new ServiceWriterImpl();
-        Model obtainedModel, fileModel;
+        Model obtainedModel;
 
         Service svc;
         InputStream docStream;
 
         List<URI> services = ManagerSingleton.getInstance().listServices();
         for (URI svcUri : services) {
+            System.out.println("Processing service: " + svcUri.toASCIIString());
             svc = ManagerSingleton.getInstance().getService(svcUri);
-            obtainedModel = writer.generateModel(svc);
-
+            System.out.println("Checking document sources is available: " + svc.getSource().toASCIIString());
             docStream = ManagerSingleton.getInstance().getDocument(svc.getSource());
-            fileModel = ModelFactory.createDefaultModel();
-            fileModel.read(docStream, Syntax.TTL.getName());
-            Assert.assertTrue(fileModel.isIsomorphicWith(obtainedModel));
+            Assert.assertNotNull(docStream);
         }
     }
-//
-//    @Test
-//    public void testGetServices() throws Exception {
-//
-//    }
+
+    @Test
+    public void testGetServices() throws Exception {
+
+        List<URI> services = ManagerSingleton.getInstance().listServices();
+        Random rand = new Random();
+        int delta = services.size() / 10;
+        int index = rand.nextInt(10 - 0 + 1) + 0;
+        // Obtain at most 10 services randomly
+
+        List<URI> servicesToLoad = new ArrayList<URI>();
+        while (index < services.size()) {
+            System.out.println("Adding service to be loaded: " + services.get(index).toASCIIString());
+            servicesToLoad.add(services.get(index));
+            index += delta;
+        }
+
+        List<Service> svcInstances = ManagerSingleton.getInstance().getServices(servicesToLoad);
+        Assert.assertNotNull(svcInstances);
+        Assert.assertEquals(servicesToLoad.size(), svcInstances.size());
+        for (Service svc : svcInstances) {
+            Assert.assertNotNull(svc);
+        }
+
+    }
+
 //
 //    @Test
 //    public void testListDocumentsForService() throws Exception {
