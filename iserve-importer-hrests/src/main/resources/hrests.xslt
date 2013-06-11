@@ -1,17 +1,30 @@
-<xsl:stylesheet version="1.0" 
-    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-    xmlns:xml="http://www.w3.org/XML/1998/namespace"
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xml:space="default"
-    xmlns:xhtml="http://www.w3.org/1999/xhtml"
-    xmlns:sawsdl="http://www.w3.org/ns/sawsdl#"
-    xmlns:hr="http://www.wsmo.org/ns/hrests#"
-    xmlns:wsl="http://www.wsmo.org/ns/wsmo-lite#"
-    xmlns:msm="http://cms-wg.sti2.org/ns/minimal-service-model#"
-    >
-    <!-- the msm namespace should probably be http://www.wsmo.org/ns/posm -->
-<xsl:output indent="yes" />
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<xsl:stylesheet version="1.0"
+                xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+                xmlns:xml="http://www.w3.org/XML/1998/namespace"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xml:space="default"
+                xmlns:sawsdl="http://www.w3.org/ns/sawsdl#"
+                xmlns:hr="http://iserve.kmi.open.ac.uk/ns/hrests#"
+                xmlns:msm="http://iserve.kmi.open.ac.uk/ns/msm#"
+        >
+    <xsl:output indent="yes"/>
     <!-- this template parses hRESTS and MicroWSMO microformats into RDF                -->
     <!-- it is intended to be used as a GRDDL transformation.                           -->
     <!-- this template does not do much input validation, so garbage-in-garbage-out     -->
@@ -25,12 +38,14 @@
                     <xsl:for-each select="//*[contains(concat(' ',normalize-space(@class),' '),' service ')]">
                         <msm:Service>
                             <xsl:if test="@id">
-                                <xsl:attribute name="rdf:ID"><xsl:value-of select="@id"/></xsl:attribute>
+                                <xsl:attribute name="rdf:ID">
+                                    <xsl:value-of select="@id"/>
+                                </xsl:attribute>
                             </xsl:if>
                             <!-- rdfs:isDefinedBy rdf:resource=""/ -->
-                            <xsl:apply-templates mode="servicelabel" select="*" />
-                            <xsl:apply-templates mode="microwsmo" select="*" />
-                            <xsl:apply-templates mode="localmicrowsmo" select="." />
+                            <xsl:apply-templates mode="servicelabel" select="*"/>
+                            <xsl:apply-templates mode="microwsmo" select="*"/>
+                            <xsl:apply-templates mode="localmicrowsmo" select="."/>
                             <xsl:apply-templates mode="operation" select="*"/>
                         </msm:Service>
                     </xsl:for-each>
@@ -49,16 +64,19 @@
         <msm:hasOperation>
             <msm:Operation>
                 <xsl:if test="@id">
-                    <xsl:attribute name="rdf:ID"><xsl:value-of select="@id"/></xsl:attribute>
+                    <xsl:attribute name="rdf:ID">
+                        <xsl:value-of select="@id"/>
+                    </xsl:attribute>
                 </xsl:if>
-                <xsl:apply-templates mode="operationlabel" select="*"/>                <xsl:choose>
+                <xsl:apply-templates mode="operationlabel" select="*"/>
+                <xsl:choose>
                     <xsl:when test=".//*[contains(concat(' ',normalize-space(@class),' '),' method ')]">
                         <xsl:apply-templates mode="operationmethod" select="*"/>
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:apply-templates mode="reverseservicemethod" select="."/>
                     </xsl:otherwise>
-                </xsl:choose> 
+                </xsl:choose>
                 <xsl:choose>
                     <xsl:when test=".//*[contains(concat(' ',normalize-space(@class),' '),' address ')]">
                         <xsl:apply-templates mode="operationaddress" select="*"/>
@@ -66,22 +84,22 @@
                     <xsl:otherwise>
                         <xsl:apply-templates mode="reverseserviceaddress" select="."/>
                     </xsl:otherwise>
-                </xsl:choose> 
-                <xsl:apply-templates mode="microwsmo" select="*" />
-                <xsl:apply-templates mode="localmicrowsmo" select="." />
+                </xsl:choose>
+                <xsl:apply-templates mode="microwsmo" select="*"/>
+                <xsl:apply-templates mode="localmicrowsmo" select="."/>
                 <xsl:apply-templates mode="operationinput" select="*"/>
                 <xsl:apply-templates mode="operationoutput" select="*"/>
             </msm:Operation>
         </msm:hasOperation>
     </xsl:template>
-    
+
     <xsl:template match="*" mode="operation">
         <xsl:apply-templates mode="operation" select="*"/>
     </xsl:template>
 
     <xsl:template match="*" mode="servicelabel">
         <xsl:choose>
-            <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' operation ')" />
+            <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' operation ')"/>
             <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' label ')">
                 <xsl:call-template name="label"/>
             </xsl:when>
@@ -94,7 +112,7 @@
     <xsl:template match="*" mode="operationlabel">
         <xsl:choose>
             <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' input ') or
-                            contains(concat(' ',normalize-space(@class),' '),' output ')" />
+                            contains(concat(' ',normalize-space(@class),' '),' output ')"/>
             <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' label ')">
                 <xsl:call-template name="label"/>
             </xsl:when>
@@ -107,8 +125,12 @@
     <xsl:template name="label">
         <rdfs:label>
             <xsl:choose>
-                <xsl:when test="@title"><xsl:value-of select="@title"/></xsl:when>
-                <xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+                <xsl:when test="@title">
+                    <xsl:value-of select="@title"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="."/>
+                </xsl:otherwise>
             </xsl:choose>
         </rdfs:label>
     </xsl:template>
@@ -117,7 +139,7 @@
         <xsl:choose>
             <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' input ') or
                             contains(concat(' ',normalize-space(@class),' '),' output ') or
-                            contains(concat(' ',normalize-space(@class),' '),' operation ')" />
+                            contains(concat(' ',normalize-space(@class),' '),' operation ')"/>
             <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' method ')">
                 <xsl:call-template name="method"/>
             </xsl:when>
@@ -129,7 +151,7 @@
 
     <xsl:template match="node()" mode="reverseservicemethod">
         <xsl:choose>
-            <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' service ')" />
+            <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' service ')"/>
             <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' method ')">
                 <xsl:call-template name="method"/>
             </xsl:when>
@@ -142,20 +164,26 @@
     </xsl:template>
 
     <xsl:template name="method">
-        <hr:hasMethod> 
+        <hr:hasMethod>
             <xsl:variable name="value">
                 <xsl:choose>
-                    <xsl:when test="@title"><xsl:value-of select="@title"/></xsl:when>
-                    <xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+                    <xsl:when test="@title">
+                        <xsl:value-of select="@title"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="."/>
+                    </xsl:otherwise>
                 </xsl:choose>
             </xsl:variable>
             <xsl:choose>
-                <xsl:when test="$value='GET'    or $value='get'    or $value='Get'"   >GET</xsl:when>
-                <xsl:when test="$value='PUT'    or $value='put'    or $value='Put'"   >PUT</xsl:when>
-                <xsl:when test="$value='POST'   or $value='post'   or $value='Post'"  >POST</xsl:when>
+                <xsl:when test="$value='GET'    or $value='get'    or $value='Get'">GET</xsl:when>
+                <xsl:when test="$value='PUT'    or $value='put'    or $value='Put'">PUT</xsl:when>
+                <xsl:when test="$value='POST'   or $value='post'   or $value='Post'">POST</xsl:when>
                 <xsl:when test="$value='DELETE' or $value='delete' or $value='Delete'">DELETE</xsl:when>
                 <xsl:otherwise>
-                    <xsl:message terminate="no">Unknown HTTP method: <xsl:value-of select="$value"/></xsl:message>
+                    <xsl:message terminate="no">Unknown HTTP method:
+                        <xsl:value-of select="$value"/>
+                    </xsl:message>
                     <xsl:value-of select="'GET'"/>
                 </xsl:otherwise>
             </xsl:choose>
@@ -167,7 +195,7 @@
         <xsl:choose>
             <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' input ') or
                             contains(concat(' ',normalize-space(@class),' '),' output ') or
-                            contains(concat(' ',normalize-space(@class),' '),' operation ')" />
+                            contains(concat(' ',normalize-space(@class),' '),' operation ')"/>
             <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' address ')">
                 <xsl:call-template name="address"/>
             </xsl:when>
@@ -179,7 +207,7 @@
 
     <xsl:template match="node()" mode="reverseserviceaddress">
         <xsl:choose>
-            <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' service ')" />
+            <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' service ')"/>
             <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' address ')">
                 <xsl:call-template name="address"/>
             </xsl:when>
@@ -192,18 +220,24 @@
     </xsl:template>
 
     <xsl:template name="address">
-        <hr:hasAddress rdf:datatype="http://www.wsmo.org/ns/hrests#URITemplate">
+        <hr:hasAddress rdf:datatype="http://iserve.kmi.open.ac.uk/ns/hrests#URITemplate">
             <xsl:choose>
-                <xsl:when test="@title"><xsl:value-of select="@title"/></xsl:when>
-                <xsl:when test="@href"><xsl:value-of select="@href"/></xsl:when>
-                <xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+                <xsl:when test="@title">
+                    <xsl:value-of select="@title"/>
+                </xsl:when>
+                <xsl:when test="@href">
+                    <xsl:value-of select="@href"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="."/>
+                </xsl:otherwise>
             </xsl:choose>
         </hr:hasAddress>
     </xsl:template>
 
     <xsl:template match="*" mode="operationinput">
         <xsl:choose>
-            <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' output ')" />
+            <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' output ')"/>
             <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' input ')">
                 <xsl:call-template name="input"/>
             </xsl:when>
@@ -215,7 +249,7 @@
 
     <xsl:template match="*" mode="operationoutput">
         <xsl:choose>
-            <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' input ')" />
+            <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' input ')"/>
             <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' output ')">
                 <xsl:call-template name="output"/>
             </xsl:when>
@@ -229,12 +263,14 @@
         <msm:hasInput>
             <msm:MessageContent>
                 <xsl:if test="@id">
-                    <xsl:attribute name="rdf:ID"><xsl:value-of select="@id"/></xsl:attribute>
+                    <xsl:attribute name="rdf:ID">
+                        <xsl:value-of select="@id"/>
+                    </xsl:attribute>
                 </xsl:if>
                 <xsl:apply-templates mode="messagelabel" select="*"/>
                 <xsl:apply-templates mode="parameter" select="*"/>
-                <xsl:apply-templates mode="microwsmo" select="*" />
-                <xsl:apply-templates mode="localmicrowsmo" select="." />
+                <xsl:apply-templates mode="microwsmo" select="*"/>
+                <xsl:apply-templates mode="localmicrowsmo" select="."/>
             </msm:MessageContent>
         </msm:hasInput>
     </xsl:template>
@@ -243,12 +279,14 @@
         <msm:hasOutput>
             <msm:MessageContent>
                 <xsl:if test="@id">
-                    <xsl:attribute name="rdf:ID"><xsl:value-of select="@id"/></xsl:attribute>
+                    <xsl:attribute name="rdf:ID">
+                        <xsl:value-of select="@id"/>
+                    </xsl:attribute>
                 </xsl:if>
                 <xsl:apply-templates mode="messagelabel" select="*"/>
                 <xsl:apply-templates mode="parameter" select="*"/>
-                <xsl:apply-templates mode="microwsmo" select="*" />
-                <xsl:apply-templates mode="localmicrowsmo" select="." />
+                <xsl:apply-templates mode="microwsmo" select="*"/>
+                <xsl:apply-templates mode="localmicrowsmo" select="."/>
             </msm:MessageContent>
         </msm:hasOutput>
     </xsl:template>
@@ -291,15 +329,17 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    
+
     <xsl:template name="parameterbody">
         <msm:MessagePart>
             <xsl:if test="@id">
-                <xsl:attribute name="rdf:ID"><xsl:value-of select="@id"/></xsl:attribute>
+                <xsl:attribute name="rdf:ID">
+                    <xsl:value-of select="@id"/>
+                </xsl:attribute>
             </xsl:if>
             <xsl:apply-templates mode="parameterlabel" select="*"/>
-            <xsl:apply-templates mode="microwsmo" select="*" />
-            <xsl:apply-templates mode="localmicrowsmo" select="." />
+            <xsl:apply-templates mode="microwsmo" select="*"/>
+            <xsl:apply-templates mode="localmicrowsmo" select="."/>
         </msm:MessagePart>
     </xsl:template>
 
@@ -315,14 +355,12 @@
     </xsl:template>
 
 
-
-
     <xsl:template match="*" mode="microwsmo">
         <xsl:choose>
             <xsl:when test="contains(concat(' ',normalize-space(@class),' '),' input ') or
                             contains(concat(' ',normalize-space(@class),' '),' output ') or
                             contains(concat(' ',normalize-space(@class),' '),' parameter ') or
-                            contains(concat(' ',normalize-space(@class),' '),' operation ')" />
+                            contains(concat(' ',normalize-space(@class),' '),' operation ')"/>
             <xsl:when test="contains(concat(' ',normalize-space(@rel),' '),' model ')">
                 <xsl:call-template name="model"/>
             </xsl:when>
@@ -374,11 +412,11 @@
     <xsl:template name="model">
         <sawsdl:modelReference>
             <xsl:attribute name="rdf:resource">
-               <xsl:call-template name="replace">
-                  <xsl:with-param name="data" select="@href"/>
-                  <xsl:with-param name="pattern" select="string(' ')"/>
-                  <xsl:with-param name="replacement" select="string('%20')"/>
-               </xsl:call-template>
+                <xsl:call-template name="replace">
+                    <xsl:with-param name="data" select="@href"/>
+                    <xsl:with-param name="pattern" select="string(' ')"/>
+                    <xsl:with-param name="replacement" select="string('%20')"/>
+                </xsl:call-template>
             </xsl:attribute>
         </sawsdl:modelReference>
         <!-- <sawsdl:modelReference rdf:resource="{replace(@href, ' ', '%20')}"/>  - this would work with xslt 2.0 -->
