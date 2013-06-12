@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.sal;
 
 import uk.ac.open.kmi.iserve.commons.io.Syntax;
@@ -21,17 +22,19 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 
 public enum ServiceFormat {
-    UNSUPPORTED("Unsupported", "err"),
-    HRESTS("hRESTS", "html"),
-    SAWSDL("SAWSDL", "wsdl"),
-    OWLS("OWL-S", "owls"),
-    MSM_RDF("MSM/RDF", "rdf"),
-    MSM_TTL("MSM/TTL", "ttl"),
-    MSM_N3("MSM/N3", "n3"),
-    MSM_N_TRIPLE("MSM/N-TRIPLE", "nt");
+    UNSUPPORTED("Unsupported", "err", null),
+    HRESTS("hRESTS", "html", MediaType.TEXT_HTML),
+    SAWSDL("SAWSDL", "wsdl", MediaType.APPLICATION_WSDL_XML),
+    OWLS("OWL-S", "owls", MediaType.APPLICATION_OWL_XML),
+    MSM_RDF("MSM/RDF", "rdf", MediaType.APPLICATION_RDF_XML),
+    MSM_TTL("MSM/TTL", "ttl", MediaType.TEXT_TURTLE),
+    MSM_N3("MSM/N3", "n3", MediaType.TEXT_N3),
+    MSM_N_TRIPLE("MSM/N-TRIPLE", "nt", MediaType.TEXT_PLAIN);
 
     public static final EnumSet<ServiceFormat> NATIVE_FORMATS = EnumSet.of(MSM_RDF, MSM_TTL, MSM_N3, MSM_N_TRIPLE);
     public static final EnumSet<ServiceFormat> EXTERNAL_FORMATS = EnumSet.complementOf(NATIVE_FORMATS);
+
+    // Map mapping Service Formats to native Syntax parsers
     public static final EnumMap<ServiceFormat, Syntax> NATIVE_PARSERS_MAP;
 
     static {
@@ -44,10 +47,12 @@ public enum ServiceFormat {
 
     private final String name;
     private final String fileExtension;
+    private final MediaType mediaType;
 
-    ServiceFormat(String name, String fileExtension) {
+    ServiceFormat(String name, String fileExtension, MediaType mediaType) {
         this.name = name;
         this.fileExtension = fileExtension;
+        this.mediaType = mediaType;
     }
 
     /**
@@ -59,5 +64,9 @@ public enum ServiceFormat {
 
     public String getName() {
         return name;
+    }
+
+    public MediaType getMediaType() {
+        return mediaType;
     }
 }

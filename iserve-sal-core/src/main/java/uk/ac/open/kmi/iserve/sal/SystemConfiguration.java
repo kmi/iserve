@@ -33,6 +33,11 @@ public class SystemConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(SystemConfiguration.class);
 
+    // Default path for service and documents URIs.
+    // Note that any change here should also affect the REST API
+    private static final String SERVICES_URL_PATH = "/services/";
+    private static final String DOCUMENTS_URL_PATH = "/documents/";
+
     /**
      *
      */
@@ -58,9 +63,6 @@ public class SystemConfiguration {
      */
     private static final String DEFAULT_LUF_URL = "http://soa4all.isoco.net/luf";
 
-    private static final String DEFAULT_SERVICES_URL_PATH = "/id/services";
-
-    private static final String DEFAULT_DOCUMENTS_URL_PATH = "/id/documents";
 
     // Configuration properties
     private static final String PROXY_HOST_NAME_PROP = "http.proxyHost";
@@ -68,14 +70,12 @@ public class SystemConfiguration {
     private static final String ISERVE_URL_PROP = "iserve.url";
 
     private static final String DOC_FOLDER_PATH_PROP = "iserve.documents.folder";
-    private static final String DOCUMENTS_URL_PATH = "iserve.documents.urlpath";
 
     // Services data
     private static final String SERVICES_REPOSITORY_URL_PROP = "iserve.services.rdfserver";
     private static final String SERVICES_REPOSITORY_NAME_PROP = "iserve.services.repository";
     private static final String SERVICES_REPOSITORY_SPARQL_PROP = "iserve.services.sparql.query";
     private static final String SERVICES_REPOSITORY_SPARQL_UPDATE_PROP = "iserve.services.sparql.update";
-    private static final String SERVICES_URL_PATH = "iserve.services.urlpath";
     // Logs data
     private static final String LOG_REPOSITORY_URL_PROP = "log.server";
     private static final String LOG_REPOSITORY_NAME_PROP = "log.repository";
@@ -86,6 +86,7 @@ public class SystemConfiguration {
     private static final String LUF_URL_PROP = "lufURL";
 
     private static final String XSLT_PATH_PROP = "xsltPath";
+
 
     // This should contain the URL to the base of iServe's server (thus including hostname and module path)
     private String dataRepositoryName;
@@ -134,8 +135,8 @@ public class SystemConfiguration {
             this.usersRepositoryName = config.getString(USERS_REPOSITORY_NAME_PROP, DEFAULT_USERS_REPO);
             this.usersRepositoryUri = new URI(config.getString(USERS_SERVER_URL_PROP));
             this.microWsmoXsltPath = config.getString(XSLT_PATH_PROP, DEFAULT_XSLT_PATH);
-            this.servicesPath = config.getString(SERVICES_URL_PATH, DEFAULT_SERVICES_URL_PATH);
-            this.documentsPath = config.getString(DOCUMENTS_URL_PATH, DEFAULT_DOCUMENTS_URL_PATH);
+            this.servicesPath = SERVICES_URL_PATH;
+            this.documentsPath = DOCUMENTS_URL_PATH;
 
             // Create the services and documents base URIs
             this.servicesUri = this.iserveUri.resolve(this.servicesPath);

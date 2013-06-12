@@ -20,6 +20,8 @@ import com.hp.hpl.jena.rdf.model.Model;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.*;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.sal.ServiceFormat;
@@ -41,6 +43,8 @@ import java.util.Random;
  * Time: 18:50
  */
 public class ManagerSingletonTest {
+
+    private static final Logger log = LoggerFactory.getLogger(ManagerSingletonTest.class);
 
     private static final String OWLS_TC3_SERVICES = "/OWLS-TC3-MSM";
     private static final Syntax SYNTAX = Syntax.TTL;
@@ -76,10 +80,10 @@ public class ManagerSingletonTest {
         // Upload every document and obtain their URLs
         for (File ttlFile : msmTtlTcFiles) {
             in = new FileInputStream(ttlFile);
-            System.out.println("Adding document: " + ttlFile.getName());
+            log.info("Adding document: " + ttlFile.getName());
             docUri = ManagerSingleton.getInstance().createDocument(in, ServiceFormat.MSM_TTL);
             Assert.assertNotNull(docUri);
-            System.out.println("Service added: " + docUri.toASCIIString());
+            log.info("Service added: " + docUri.toASCIIString());
             count++;
         }
         Assert.assertEquals(numServices, count);
@@ -99,7 +103,7 @@ public class ManagerSingletonTest {
         int count = numDocs;
         while (index < numDocs) {
             docUri = documents.get(index);
-            System.out.println("Deleting document: " + docUri);
+            log.info("Deleting document: " + docUri);
             result = ManagerSingleton.getInstance().deleteDocument(docUri);
             Assert.assertTrue(result);
             index += delta;
@@ -126,10 +130,10 @@ public class ManagerSingletonTest {
         int count = 0;
         for (File ttlFile : msmTtlTcFiles) {
             in = new FileInputStream(ttlFile);
-            System.out.println("Adding service: " + ttlFile.getName());
+            log.info("Adding service: " + ttlFile.getName());
             serviceUri = ManagerSingleton.getInstance().importService(in, ServiceFormat.MSM_TTL);
             Assert.assertNotNull(serviceUri);
-            System.out.println("Service added: " + serviceUri.toASCIIString());
+            log.info("Service added: " + serviceUri.toASCIIString());
             count++;
         }
         Assert.assertEquals(numServices, count);
@@ -162,7 +166,7 @@ public class ManagerSingletonTest {
         int index = rand.nextInt(10 - 0 + 1) + 0;
         while (index < numDocs) {
             docUri = documents.get(index);
-            System.out.println("Obtaining document: " + docUri);
+            log.info("Obtaining document: " + docUri);
             is = ManagerSingleton.getInstance().getDocument(docUri);
             Assert.assertNotNull(is);
             index += delta;
@@ -189,9 +193,9 @@ public class ManagerSingletonTest {
 
         List<URI> services = ManagerSingleton.getInstance().listServices();
         for (URI svcUri : services) {
-            System.out.println("Processing service: " + svcUri.toASCIIString());
+            log.info("Processing service: " + svcUri.toASCIIString());
             svc = ManagerSingleton.getInstance().getService(svcUri);
-            System.out.println("Checking document sources is available: " + svc.getSource().toASCIIString());
+            log.info("Checking document sources is available: " + svc.getSource().toASCIIString());
             docStream = ManagerSingleton.getInstance().getDocument(svc.getSource());
             Assert.assertNotNull(docStream);
         }
@@ -208,7 +212,7 @@ public class ManagerSingletonTest {
 
         List<URI> servicesToLoad = new ArrayList<URI>();
         while (index < services.size()) {
-            System.out.println("Adding service to be loaded: " + services.get(index).toASCIIString());
+            log.info("Adding service to be loaded: " + services.get(index).toASCIIString());
             servicesToLoad.add(services.get(index));
             index += delta;
         }
