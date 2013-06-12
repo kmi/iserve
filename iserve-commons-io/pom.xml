@@ -16,49 +16,49 @@
   -->
 
 <project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>iserve-parent</artifactId>
-		<groupId>uk.ac.open.kmi.iserve</groupId>
-		<version>1.1-SNAPSHOT</version>
-	</parent>
-	<groupId>uk.ac.open.kmi.iserve.commons</groupId>
-	<artifactId>iserve-commons-io</artifactId>
-	<version>1.1.0-SNAPSHOT</version>
-	<name>iServe Commons I/O</name>
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>iserve-parent</artifactId>
+        <groupId>uk.ac.open.kmi.iserve</groupId>
+        <version>1.1-SNAPSHOT</version>
+    </parent>
+    <groupId>uk.ac.open.kmi.iserve.commons</groupId>
+    <artifactId>iserve-commons-io</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+    <name>iServe Commons I/O</name>
 
-	<developers>
-		<developer>
-			<id>cpedrinaci</id>
-			<name>Carlos Pedrinaci</name>
-			<email>c.pedrinaci-{AT}-open.ac.uk</email>
-			<url>http://people.kmi.open.ac.uk/carlos/</url>
-			<organization>Knowledge Media Institute - The Open University</organization>
-			<organizationUrl>http://kmi.open.ac.uk</organizationUrl>
-		</developer>
-		<developer>
-			<id>dong</id>
-			<name>Dong Liu</name>
-			<email>d.liu-{AT}-open.ac.uk</email>
-			<organization>Knowledge Media Institute - The Open University</organization>
-			<organizationUrl>http://kmi.open.ac.uk</organizationUrl>
-		</developer>
-		<developer>
-			<id>jkopecky</id>
-			<name>Jacek Kopecky</name>
-			<email>j.kopecky-{AT}-open.ac.uk</email>
-			<organization>Knowledge Media Institute - The Open University</organization>
-			<organizationUrl>http://kmi.open.ac.uk</organizationUrl>
-		</developer>
-	</developers>
-	<organization>
-		<name>Knowledge Media Institute - The Open University</name>
-		<url>http://kmi.open.ac.uk</url>
-	</organization>
+    <developers>
+        <developer>
+            <id>cpedrinaci</id>
+            <name>Carlos Pedrinaci</name>
+            <email>c.pedrinaci-{AT}-open.ac.uk</email>
+            <url>http://people.kmi.open.ac.uk/carlos/</url>
+            <organization>Knowledge Media Institute - The Open University</organization>
+            <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+        </developer>
+        <developer>
+            <id>dong</id>
+            <name>Dong Liu</name>
+            <email>d.liu-{AT}-open.ac.uk</email>
+            <organization>Knowledge Media Institute - The Open University</organization>
+            <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+        </developer>
+        <developer>
+            <id>jkopecky</id>
+            <name>Jacek Kopecky</name>
+            <email>j.kopecky-{AT}-open.ac.uk</email>
+            <organization>Knowledge Media Institute - The Open University</organization>
+            <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+        </developer>
+    </developers>
+    <organization>
+        <name>Knowledge Media Institute - The Open University</name>
+        <url>http://kmi.open.ac.uk</url>
+    </organization>
 
-	<dependencies>
+    <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -71,16 +71,6 @@
             <version>${jena.version}</version>
             <type>pom</type>
         </dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>${httpclient.version}</version>
-		</dependency>
         <dependency>
             <groupId>uk.ac.open.kmi.iserve.commons</groupId>
             <artifactId>iserve-commons-vocabulary</artifactId>
@@ -89,5 +79,5 @@
 
     </dependencies>
 
-	<url>http://iserve.kmi.open.ac.uk/</url>
+    <url>http://iserve.kmi.open.ac.uk/</url>
 </project>
