@@ -21,6 +21,8 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 
 import java.io.File;
@@ -40,6 +42,8 @@ import java.util.List;
  * Time: 23:43
  */
 public class ServiceReaderImplTest {
+
+    private static final Logger log = LoggerFactory.getLogger(ServiceReaderImplTest.class);
 
     private static final String OWLS_TC3_SERVICES = "/OWLS-TC3-MSM";
     private static final Syntax SYNTAX = Syntax.TTL;
@@ -65,19 +69,19 @@ public class ServiceReaderImplTest {
     public void testParse() throws Exception {
 
         // Add all the test collections
-        System.out.println("Reading test collections");
+        log.info("Reading test collections");
         for (URI testFolder : testFolders) {
             File dir = new File(testFolder);
-            System.out.println("Test collection: " + testFolder);
+            log.info("Test collection: " + testFolder);
 
             // Test reading services
             List<Service> services;
             InputStream in = null;
-            System.out.println("Reading services");
+            log.info("Reading services");
             File[] ttlFiles = dir.listFiles(ttlFilter);
             for (File file : ttlFiles) {
                 try {
-                    System.out.println("Parsing file: " + file.getName());
+                    log.info("Parsing file: " + file.getName());
 
                     in = new FileInputStream(file);
                     services = reader.parse(in, Syntax.TTL);
