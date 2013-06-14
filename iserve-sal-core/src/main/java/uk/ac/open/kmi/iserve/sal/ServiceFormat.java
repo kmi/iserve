@@ -20,6 +20,7 @@ import uk.ac.open.kmi.iserve.commons.io.Syntax;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.Map;
 
 public enum ServiceFormat {
     UNSUPPORTED("Unsupported", "err", null),
@@ -35,7 +36,7 @@ public enum ServiceFormat {
     public static final EnumSet<ServiceFormat> EXTERNAL_FORMATS = EnumSet.complementOf(NATIVE_FORMATS);
 
     // Map mapping Service Formats to native Syntax parsers
-    public static final EnumMap<ServiceFormat, Syntax> NATIVE_PARSERS_MAP;
+    public static final Map<ServiceFormat, Syntax> NATIVE_PARSERS_MAP;
 
     static {
         NATIVE_PARSERS_MAP = new EnumMap<ServiceFormat, Syntax>(ServiceFormat.class);
