@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns:sawsdl="http://www.w3.org/ns/sawsdl" xmlns:s="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://ws.cdyne.com"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://ws.cdyne.com"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <wsdl:types>
+        <s:schema elementFormDefault="qualified" targetNamespace="http://ws.cdyne.com">
+            <s:element name="GetLatLong"
+                       sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#PostalCode">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="zipcode" type="s:string"/>
+                        <s:element minOccurs="0" maxOccurs="1" name="LicenseKey" type="s:string"/>
+                    </s:sequence>
+
+                </s:complexType>
+            </s:element>
+            <s:element name="GetLatLongResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="1" maxOccurs="1" name="GetLatLongResult" type="tns:LatLongReturn"/>
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+
+            <s:complexType name="LatLongReturn"
+                           sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protonu#City http://fusion.cs.uni-jena.de/geographydataset.owl#RectangularGeographicArea">
+                <s:sequence>
+                    <s:element minOccurs="1" maxOccurs="1" name="ServiceError" type="s:boolean"/>
+                    <s:element minOccurs="1" maxOccurs="1" name="AddressError" type="s:boolean"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="City" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="StateAbbrev" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="ZipCode" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="County" type="s:string"/>
+                    <s:element minOccurs="1" maxOccurs="1" name="FromLongitude" type="s:decimal"/>
+
+                    <s:element minOccurs="1" maxOccurs="1" name="FromLatitude" type="s:decimal"/>
+                    <s:element minOccurs="1" maxOccurs="1" name="ToLongitude" type="s:decimal"/>
+                    <s:element minOccurs="1" maxOccurs="1" name="ToLatitude" type="s:decimal"/>
+                    <s:element minOccurs="1" maxOccurs="1" name="AvgLongitude" type="s:decimal"/>
+                    <s:element minOccurs="1" maxOccurs="1" name="AvgLatitude" type="s:decimal"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="CMSA" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="PMSA" type="s:string"/>
+                </s:sequence>
+            </s:complexType>
+
+            <s:element name="LatLongReturn" type="tns:LatLongReturn"/>
+        </s:schema>
+    </wsdl:types>
+    <wsdl:message name="GetLatLongSoapIn">
+        <wsdl:part name="parameters" element="tns:GetLatLong"/>
+    </wsdl:message>
+    <wsdl:message name="GetLatLongSoapOut">
+        <wsdl:part name="parameters" element="tns:GetLatLongResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="GetLatLongHttpGetIn">
+        <wsdl:part name="zipcode" type="s:string"
+                   sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#PostalCode"/>
+        <wsdl:part name="LicenseKey" type="s:string"/>
+    </wsdl:message>
+    <wsdl:message name="GetLatLongHttpGetOut">
+        <wsdl:part name="Body" element="tns:LatLongReturn"/>
+    </wsdl:message>
+    <wsdl:message name="GetLatLongHttpPostIn">
+        <wsdl:part name="zipcode" type="s:string"
+                   sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#PostalCode"/>
+
+        <wsdl:part name="LicenseKey" type="s:string"/>
+    </wsdl:message>
+    <wsdl:message name="GetLatLongHttpPostOut">
+        <wsdl:part name="Body" element="tns:LatLongReturn"/>
+    </wsdl:message>
+    <wsdl:portType name="Zip2GeoSoap">
+        <wsdl:operation name="GetLatLong" sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">This method will convert a zip code to
+                Longitude and Latitude. You will get better accuracy with the plus 4 added to the zipcode. Use a license
+                key of 0 for testing.
+            </wsdl:documentation>
+
+            <wsdl:input message="tns:GetLatLongSoapIn"/>
+            <wsdl:output message="tns:GetLatLongSoapOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:portType name="Zip2GeoHttpGet">
+        <wsdl:operation name="GetLatLong" sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">This method will convert a zip code to
+                Longitude and Latitude. You will get better accuracy with the plus 4 added to the zipcode. Use a license
+                key of 0 for testing.
+            </wsdl:documentation>
+            <wsdl:input message="tns:GetLatLongHttpGetIn"/>
+
+            <wsdl:output message="tns:GetLatLongHttpGetOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:portType name="Zip2GeoHttpPost">
+        <wsdl:operation name="GetLatLong" sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">This method will convert a zip code to
+                Longitude and Latitude. You will get better accuracy with the plus 4 added to the zipcode. Use a license
+                key of 0 for testing.
+            </wsdl:documentation>
+            <wsdl:input message="tns:GetLatLongHttpPostIn"/>
+            <wsdl:output message="tns:GetLatLongHttpPostOut"/>
+
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="Zip2GeoSoap" type="tns:Zip2GeoSoap">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="GetLatLong">
+            <soap:operation soapAction="http://ws.cdyne.com/GetLatLong" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="Zip2GeoSoap12" type="tns:Zip2GeoSoap">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="GetLatLong">
+            <soap12:operation soapAction="http://ws.cdyne.com/GetLatLong" style="document"/>
+
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="Zip2GeoHttpGet" type="tns:Zip2GeoHttpGet">
+
+        <http:binding verb="GET"/>
+        <wsdl:operation name="GetLatLong">
+            <http:operation location="/GetLatLong"/>
+            <wsdl:input>
+                <http:urlEncoded/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:mimeXml part="Body"/>
+            </wsdl:output>
+
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="Zip2GeoHttpPost" type="tns:Zip2GeoHttpPost">
+        <http:binding verb="POST"/>
+        <wsdl:operation name="GetLatLong">
+            <http:operation location="/GetLatLong"/>
+            <wsdl:input>
+                <mime:content type="application/x-www-form-urlencoded"/>
+            </wsdl:input>
+
+            <wsdl:output>
+                <mime:mimeXml part="Body"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service sawsdl:modelReference=" http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#LocationLookup"
+                  name="Zip2Geo">
+        <wsdl:port name="Zip2GeoSoap" binding="tns:Zip2GeoSoap">
+            <soap:address location="http://ws.cdyne.com/ziptogeo/zip2geo.asmx"/>
+        </wsdl:port>
+
+        <wsdl:port name="Zip2GeoSoap12" binding="tns:Zip2GeoSoap12">
+            <soap12:address location="http://ws.cdyne.com/ziptogeo/zip2geo.asmx"/>
+        </wsdl:port>
+        <wsdl:port name="Zip2GeoHttpGet" binding="tns:Zip2GeoHttpGet">
+            <http:address location="http://ws.cdyne.com/ziptogeo/zip2geo.asmx"/>
+        </wsdl:port>
+        <wsdl:port name="Zip2GeoHttpPost" binding="tns:Zip2GeoHttpPost">
+            <http:address location="http://ws.cdyne.com/ziptogeo/zip2geo.asmx"/>
+        </wsdl:port>
+
+    </wsdl:service>
+</wsdl:definitions>

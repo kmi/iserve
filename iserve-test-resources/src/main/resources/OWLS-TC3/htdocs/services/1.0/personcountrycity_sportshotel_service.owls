@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/personcountrycity_sportshotel_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="PERSONCOUNTRYCITY_SPORTSHOTEL_SERVICE">
+<service:presents rdf:resource="#PERSONCOUNTRYCITY_SPORTSHOTEL_PROFILE"/>
+<service:describedBy rdf:resource="#PERSONCOUNTRYCITY_SPORTSHOTEL_PROCESS_MODEL"/>
+<service:supports rdf:resource="#PERSONCOUNTRYCITY_SPORTSHOTEL_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="PERSONCOUNTRYCITY_SPORTSHOTEL_PROFILE">
+<service:isPresentedBy rdf:resource="#PERSONCOUNTRYCITY_SPORTSHOTEL_SERVICE"/>
+<profile:serviceName xml:lang="en">
+PersonCityCountryInfoService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service is used not only to know the hotel in which
+the person is working, but also about sports  of the city of the country.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_CITY"/>
+<profile:hasInput  rdf:resource="#_COUNTRY"/>
+<profile:hasOutput rdf:resource="#_SPORTS"/>
+<profile:hasOutput rdf:resource="#_HOTEL"/>
+<profile:hasInput  rdf:resource="#_PERSON"/>
+
+<profile:has_process rdf:resource="PERSONCOUNTRYCITY_SPORTSHOTEL_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="PERSONCOUNTRYCITY_SPORTSHOTEL_PROCESS_MODEL">
+<service:describes rdf:resource="#PERSONCOUNTRYCITY_SPORTSHOTEL_SERVICE"/>
+<process:hasProcess rdf:resource="#PERSONCOUNTRYCITY_SPORTSHOTEL_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="PERSONCOUNTRYCITY_SPORTSHOTEL_PROCESS">
+<process:hasInput  rdf:resource="#_CITY"/>
+<process:hasInput  rdf:resource="#_COUNTRY"/>
+<process:hasOutput rdf:resource="#_SPORTS"/>
+<process:hasOutput rdf:resource="#_HOTEL"/>
+<process:hasInput  rdf:resource="#_PERSON"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_CITY">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/travel.owl#City" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_COUNTRY">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/portal.owl#Country" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_SPORTS">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/travel.owl#Sports" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_HOTEL">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/travel.owl#Hotel" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Input rdf:ID="_PERSON">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/portal.owl#Person" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<grounding:WsdlGrounding rdf:ID="PERSONCOUNTRYCITY_SPORTSHOTEL_GROUNDING">
+<service:supportedBy rdf:resource="#PERSONCOUNTRYCITY_SPORTSHOTEL_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/governmentmissileweapon_fundingfunding_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_SERVICE">
+<service:presents rdf:resource="#GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_PROFILE"/>
+<service:describedBy rdf:resource="#GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_PROCESS_MODEL"/>
+<service:supports rdf:resource="#GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_PROFILE">
+<service:isPresentedBy rdf:resource="#GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_SERVICE"/>
+<profile:serviceName xml:lang="en">
+GovMissilesAndWeaponsFundingsService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns the different funds each for the missile and other weapons by the government.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_WEAPON"/>
+<profile:hasInput  rdf:resource="#_MISSILE"/>
+<profile:hasInput  rdf:resource="#_GOVERNMENT"/>
+<profile:hasOutput rdf:resource="#_FUNDING"/>
+<profile:hasOutput rdf:resource="#_FUNDING"/>
+
+<profile:has_process rdf:resource="GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_PROCESS_MODEL">
+<service:describes rdf:resource="#GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_SERVICE"/>
+<process:hasProcess rdf:resource="#GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_PROCESS">
+<process:hasInput  rdf:resource="#_WEAPON"/>
+<process:hasInput  rdf:resource="#_MISSILE"/>
+<process:hasInput  rdf:resource="#_GOVERNMENT"/>
+<process:hasOutput rdf:resource="#_FUNDING"/>
+<process:hasOutput rdf:resource="#_FUNDING"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_WEAPON">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/SUMO.owl#Weapon" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_MISSILE">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl#Missile" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_GOVERNMENT">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/SUMO.owl#Government" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_FUNDING">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/SUMO.owl#Funding" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_FUNDING">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/SUMO.owl#Funding" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_GROUNDING">
+<service:supportedBy rdf:resource="#GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

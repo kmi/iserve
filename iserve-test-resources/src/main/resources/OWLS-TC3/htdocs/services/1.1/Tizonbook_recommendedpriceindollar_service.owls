@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/Tizonbook_recommendedpriceindollar_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="BOOK_RECOMMENDEDPRICEINDOLLAR_SERVICE">
+<service:presents rdf:resource="#BOOK_RECOMMENDEDPRICEINDOLLAR_PROFILE"/>
+<service:describedBy rdf:resource="#BOOK_RECOMMENDEDPRICEINDOLLAR_PROCESS"/>
+<service:supports rdf:resource="#BOOK_RECOMMENDEDPRICEINDOLLAR_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="BOOK_RECOMMENDEDPRICEINDOLLAR_PROFILE">
+<service:isPresentedBy rdf:resource="#BOOK_RECOMMENDEDPRICEINDOLLAR_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Tizon RecommendedPriceService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+Tizon is a rival US company of the book providers.
+It provides a web service to return recommended price of a book.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_BOOK"/>
+<profile:hasOutput rdf:resource="#_RECOMMENDEDPRICEINDOLLAR"/>
+
+<profile:has_process rdf:resource="BOOK_RECOMMENDEDPRICEINDOLLAR_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="BOOK_RECOMMENDEDPRICEINDOLLAR_PROCESS_MODEL">
+<service:describes rdf:resource="#BOOK_RECOMMENDEDPRICEINDOLLAR_SERVICE"/>
+<process:hasProcess rdf:resource="#BOOK_RECOMMENDEDPRICEINDOLLAR_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="BOOK_RECOMMENDEDPRICEINDOLLAR_PROCESS">
+<service:describes rdf:resource="#BOOK_RECOMMENDEDPRICEINDOLLAR_SERVICE"/>
+<process:hasInput  rdf:resource="#_BOOK"/>
+<process:hasOutput rdf:resource="#_RECOMMENDEDPRICEINDOLLAR"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_BOOK">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/books.owl#Book</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_RECOMMENDEDPRICEINDOLLAR">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/concept.owl#RecommendedPriceInDollar</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="BOOK_RECOMMENDEDPRICEINDOLLAR_GROUNDING">
+<service:supportedBy rdf:resource="#BOOK_RECOMMENDEDPRICEINDOLLAR_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="BOOK_RECOMMENDEDPRICEINDOLLAR_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#BOOK_RECOMMENDEDPRICEINDOLLAR_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Tizonbook_recommendedpriceindollar_service.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#BOOK_RECOMMENDEDPRICEINDOLLAR_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/BookRecommendedpriceindollar#get_RECOMMENDEDPRICEINDOLLAR</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/BookRecommendedpriceindollar#BookRecommendedpriceindollarSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/BookRecommendedpriceindollar#get_RECOMMENDEDPRICEINDOLLARRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/BookRecommendedpriceindollar#get_RECOMMENDEDPRICEINDOLLARResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_BOOK"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/BookRecommendedpriceindollar#_BOOK</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_RECOMMENDEDPRICEINDOLLAR"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/BookRecommendedpriceindollar#_RECOMMENDEDPRICEINDOLLAR</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

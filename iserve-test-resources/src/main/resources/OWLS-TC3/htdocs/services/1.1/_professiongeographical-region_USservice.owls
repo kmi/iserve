@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/_professiongeographical-region_USservice.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="_PROFESSIONGEOGRAPHICAL-REGION_SERVICE">
+<service:presents rdf:resource="#_PROFESSIONGEOGRAPHICAL-REGION_PROFILE"/>
+<service:describedBy rdf:resource="#_PROFESSIONGEOGRAPHICAL-REGION_PROCESS"/>
+<service:supports rdf:resource="#_PROFESSIONGEOGRAPHICAL-REGION_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="_PROFESSIONGEOGRAPHICAL-REGION_PROFILE">
+<service:isPresentedBy rdf:resource="#_PROFESSIONGEOGRAPHICAL-REGION_SERVICE"/>
+<profile:serviceName xml:lang="en">
+USprofessional career
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+Our US clients offers some professional jobs, you can find also the region of US
+in which you have to work.
+</profile:textDescription>
+<profile:hasOutput rdf:resource="#_PROFESSION"/>
+<profile:hasOutput rdf:resource="#_GEOGRAPHICAL-REGION"/>
+
+<profile:has_process rdf:resource="_PROFESSIONGEOGRAPHICAL-REGION_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="_PROFESSIONGEOGRAPHICAL-REGION_PROCESS_MODEL">
+<service:describes rdf:resource="#_PROFESSIONGEOGRAPHICAL-REGION_SERVICE"/>
+<process:hasProcess rdf:resource="#_PROFESSIONGEOGRAPHICAL-REGION_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="_PROFESSIONGEOGRAPHICAL-REGION_PROCESS">
+<service:describes rdf:resource="#_PROFESSIONGEOGRAPHICAL-REGION_SERVICE"/>
+<process:hasOutput rdf:resource="#_PROFESSION"/>
+<process:hasOutput rdf:resource="#_GEOGRAPHICAL-REGION"/>
+</process:AtomicProcess>
+
+<process:Output  rdf:ID="_PROFESSION">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#Profession</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_GEOGRAPHICAL-REGION">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/portal.owl#Geographical-Region</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="_PROFESSIONGEOGRAPHICAL-REGION_GROUNDING">
+<service:supportedBy rdf:resource="#_PROFESSIONGEOGRAPHICAL-REGION_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="_PROFESSIONGEOGRAPHICAL-REGION_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#_PROFESSIONGEOGRAPHICAL-REGION_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/_professiongeographical-region_USservice.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#_PROFESSIONGEOGRAPHICAL-REGION_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Professiongeographical-region#get_PROFESSION_GEOGRAPHICAL-REGION</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Professiongeographical-region#Professiongeographical-regionSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Professiongeographical-region#get_PROFESSION_GEOGRAPHICAL-REGIONRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Professiongeographical-region#get_PROFESSION_GEOGRAPHICAL-REGIONResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_PROFESSION"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Professiongeographical-region#_PROFESSION</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_GEOGRAPHICAL-REGION"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Professiongeographical-region#_GEOGRAPHICAL-REGION</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

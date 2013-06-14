@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+<!ENTITY books.owl "http://127.0.0.1/ontology/books.owl">
+<!ENTITY concept.owl "http://127.0.0.1/ontology/concept.owl">
+<!ENTITY my_ontology "http://127.0.0.1/ontology/my_ontology.owl#">
+<!ENTITY my_ontology.owl "http://127.0.0.1/ontology/my_ontology.owl">
+<!ENTITY owl "http://www.w3.org/2002/07/owl#">
+<!ENTITY portal.owl "http://127.0.0.1/ontology/portal.owl">
+<!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
+<!ENTITY simplified_sumo.owl "http://127.0.0.1/ontology/simplified_sumo.owl">
+<!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+]>
+<rdf:RDF xml:base="&my_ontology.owl;"
+xmlns:my_ontology="&my_ontology;"
+xmlns:owl="&owl;"
+xmlns:rdf="&rdf;"
+xmlns:rdfs="&rdfs;">
+
+<!-- Ontology Information -->
+<owl:Ontology rdf:about="">
+<owl:imports>
+<owl:Ontology rdf:about="&books.owl;"/>
+</owl:imports>
+<owl:imports>
+<owl:Ontology rdf:about="&concept.owl;"/>
+</owl:imports>
+<owl:imports>
+<owl:Ontology rdf:about="&portal.owl;"/>
+</owl:imports>
+<owl:imports>
+<owl:Ontology rdf:about="&simplified_sumo.owl;"/>
+</owl:imports>
+</owl:Ontology>
+
+<!-- Classes -->
+<owl:Class rdf:about="#OnePersonBicycle">
+<rdfs:subClassOf rdf:resource="#Bicycle"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+<owl:onProperty rdf:resource="#Person"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#TwoPersonBicycle">
+<rdfs:subClassOf rdf:resource="#Bicycle"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">2</owl:minCardinality>
+<owl:onProperty rdf:resource="#Person"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#ThreeWheeledCar">
+<rdfs:subClassOf rdf:resource="#Car"/>
+<rdfs:subClassOf>
+<owl:Restriction rdf:nodeID="b68">
+<owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">3</owl:minCardinality>
+<owl:onProperty rdf:resource="#Wheel"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#FourWheeledCar">
+<rdfs:subClassOf rdf:resource="#Car"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ActionFilm">
+<rdfs:subClassOf rdf:resource="#Film"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Appetizer">
+<rdfs:subClassOf rdf:resource="#Drinks"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Auto">
+<rdfs:subClassOf rdf:resource="#Machine"/>
+<rdfs:subClassOf rdf:resource="#PeopleTransporter"/>
+<rdfs:subClassOf rdf:resource="#WheeledVehicle"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#DesignedThing"/>
+<owl:onProperty rdf:resource="#Rigid"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">4</owl:maxCardinality>
+<owl:onProperty rdf:resource="#Wheel"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#DesignedThing"/>
+<owl:onProperty rdf:resource="#Shape"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">5</owl:maxCardinality>
+<owl:onProperty rdf:resource="#Person"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+<owl:onProperty rdf:resource="#Color"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#DesignedThing"/>
+<owl:onProperty rdf:resource="#LifeTime"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+<owl:onProperty rdf:resource="#Engine"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#MoveableThing"/>
+<owl:onProperty rdf:resource="#Power"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#MoveableThing"/>
+<owl:onProperty rdf:resource="#Speed"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#Company"/>
+<owl:onProperty rdf:resource="#madeBy"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="http://127.0.0.1/ontology/books.owl#Person"/>
+<owl:onProperty rdf:resource="#belongsTo"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#DesignedThing"/>
+<owl:onProperty rdf:resource="#Model"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="&owl;Thing"/>
+<owl:onProperty rdf:resource="#hasValue"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#DesignedThing"/>
+<owl:onProperty rdf:resource="#Profitable"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#Beer">
+<rdfs:subClassOf rdf:resource="#Liquid"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Bicycle">
+<rdfs:subClassOf rdf:resource="#Cycle"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">2</owl:minCardinality>
+<owl:onProperty rdf:resource="#Wheel"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#Black">
+<rdfs:subClassOf rdf:resource="#Color"/>
+</owl:Class>
+
+<owl:Class rdf:about="#BlackAndWhite">
+<rdfs:subClassOf rdf:resource="#Color"/>
+<rdfs:subClassOf>
+<owl:Restriction rdf:nodeID="b54">
+<owl:allValuesFrom rdf:resource="#Black"/>
+<owl:onProperty rdf:resource="#Color"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#White"/>
+<owl:onProperty rdf:resource="#Color"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#BlackOrWhite">
+<rdfs:subClassOf rdf:resource="#Color"/>
+<rdfs:subClassOf rdf:nodeID="b54"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#White"/>
+<owl:onProperty rdf:resource="#belongsTo"/>
+</owl:Restriction>
+</owl:allValuesFrom>
+<owl:onProperty rdf:resource="#Color"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#Blue">
+<rdfs:subClassOf rdf:resource="#Color"/>
+</owl:Class>
+
+<owl:Class rdf:about="#CD">
+<rdfs:subClassOf rdf:resource="#obtainableVideoMedia"/>
+</owl:Class>
+
+<owl:Class rdf:about="#CDPlayer">
+<rdfs:subClassOf rdf:resource="#MediaPlayer"/>
+</owl:Class>
+
+<owl:Class rdf:about="#CapableSoftwareEngineering">
+<rdfs:subClassOf rdf:resource="#ITProfessionals"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Car">
+<rdfs:subClassOf rdf:resource="#Auto"/>
+</owl:Class>
+
+<owl:Class rdf:about="#CheapCar">
+<rdfs:subClassOf rdf:resource="#Car"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Cocktail">
+<rdfs:subClassOf rdf:resource="#Appetizer"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Coffee">
+<rdfs:subClassOf rdf:resource="#Drinks"/>
+</owl:Class>
+
+<owl:Class rdf:about="#CoffeeWithWhiskey">
+<rdfs:subClassOf rdf:resource="#Coffee"/>
+<rdfs:subClassOf rdf:resource="#Whiskey"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Cola">
+<rdfs:subClassOf rdf:resource="#Drinks"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ColaBeer">
+<rdfs:subClassOf rdf:resource="#Beer"/>
+<rdfs:subClassOf rdf:resource="#Cola"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Color">
+<rdf:type rdf:resource="&owl;ObjectProperty"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ComedyFilm">
+<rdfs:subClassOf rdf:resource="#Film"/>
+</owl:Class>
+
+<owl:Class rdf:about="#CommercialSoftware">
+<rdfs:subClassOf rdf:resource="#DevelopedSoftware"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Company"/>
+<owl:Class rdf:about="#Cycle">
+<rdfs:subClassOf rdf:resource="&simplified_sumo.owl;#Object"/>
+</owl:Class>
+
+<owl:Class rdf:about="#DVD">
+<rdfs:subClassOf rdf:resource="#obtainableVideoMedia"/>
+</owl:Class>
+
+<owl:Class rdf:about="#DVDPlayer">
+<rdfs:subClassOf rdf:resource="#MediaPlayer"/>
+</owl:Class>
+
+<owl:Class rdf:about="#DatabaseSoftware">
+<rdfs:subClassOf rdf:resource="#DevelopedSoftware"/>
+</owl:Class>
+
+<owl:Class rdf:about="#DesignedThing">
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#Designer"/>
+<owl:onProperty rdf:resource="#designedBy"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#Designer">
+<rdfs:subClassOf rdf:resource="http://127.0.0.1/ontology/books.owl#Person"/>
+</owl:Class>
+
+<owl:Class rdf:about="#DevelopedSoftware">
+<rdfs:subClassOf rdf:resource="#InformationTechnology"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Drinks">
+<rdfs:subClassOf rdf:resource="#Liquid"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Driver">
+<rdfs:subClassOf rdf:resource="http://127.0.0.1/ontology/books.owl#Person"/>
+</owl:Class>
+
+<owl:Class rdf:about="#EducationalSoftware">
+<rdfs:subClassOf rdf:resource="#DevelopedSoftware"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ExpensiveCar">
+<rdfs:subClassOf rdf:resource="#Car"/>
+</owl:Class>
+
+<owl:Class rdf:about="#F1Car">
+<rdfs:subClassOf rdf:resource="#RacyCar"/>
+</owl:Class>
+
+<owl:Class rdf:about="#F1Driver">
+<rdfs:subClassOf rdf:resource="#RacyCarDriver"/>
+</owl:Class>
+
+<owl:Class rdf:about="#F1WorldChampion">
+<rdfs:subClassOf rdf:resource="#F1Driver"/>
+</owl:Class>
+
+<owl:Class rdf:about="#FantacyFilm">
+<rdfs:subClassOf rdf:resource="#Film"/>
+</owl:Class>
+
+<owl:Class rdf:about="#FastCar">
+<rdfs:subClassOf rdf:resource="#Car"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Film">
+<rdfs:subClassOf rdf:resource="#Media"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+<owl:onProperty rdf:resource="#Title"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#FootTrack">
+<rdfs:subClassOf rdf:resource="#Track"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Golden">
+<rdfs:subClassOf rdf:resource="#Color"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Green">
+<rdfs:subClassOf rdf:resource="#Color"/>
+</owl:Class>
+
+<owl:Class rdf:about="#HighComedyFilm">
+<rdfs:subClassOf rdf:resource="#ComedyFilm"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ITProfessionals">
+<rdfs:subClassOf rdf:resource="#InformationTechnology"/>
+<rdfs:subClassOf rdf:resource="http://127.0.0.1/ontology/books.owl#Person"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ImaginativeWriting">
+<rdfs:subClassOf rdf:resource="http://127.0.0.1/ontology/books.owl#Monograph"/>
+</owl:Class>
+
+<owl:Class rdf:about="#InformationTechnology">
+<rdfs:subClassOf rdf:resource="&portal.owl;#Technology"/>
+</owl:Class>
+
+<owl:Class rdf:about="#IrishCoffee">
+<rdfs:subClassOf rdf:resource="#CoffeeWithWhiskey"/>
+</owl:Class>
+
+<owl:Class rdf:about="#KitchenAppliance">
+<rdfs:subClassOf rdf:resource="&simplified_sumo.owl;#ElectricDevice"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Liquid"/>
+<owl:Class rdf:about="#LowComedyFilm">
+<rdfs:subClassOf rdf:resource="#ComedyFilm"/>
+</owl:Class>
+
+<owl:Class rdf:about="#MP3Player">
+<rdfs:subClassOf rdf:resource="#MediaPlayer"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Machine">
+<rdfs:subClassOf rdf:resource="&simplified_sumo.owl;#Object"/>
+<owl:disjointWith rdf:resource="&simplified_sumo.owl;#ElectricDevice"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Media"/>
+<owl:Class rdf:about="#MediaPlayer">
+<rdfs:subClassOf rdf:resource="&simplified_sumo.owl;#ElectricDevice"/>
+</owl:Class>
+
+<owl:Class rdf:about="#MicrowaveOven">
+<rdfs:subClassOf rdf:resource="#KitchenAppliance"/>
+<rdfs:subClassOf rdf:resource="&simplified_sumo.owl;#ElectricDevice"/>
+</owl:Class>
+
+<owl:Class rdf:about="#MixedColor">
+<rdfs:subClassOf rdf:resource="#Color"/>
+</owl:Class>
+
+<owl:Class rdf:about="#MixeryCola">
+<rdfs:subClassOf rdf:resource="#Cola"/>
+<rdfs:subClassOf rdf:resource="#Whiskey"/>
+</owl:Class>
+
+<owl:Class rdf:about="#MoreGPWinner">
+<rdfs:subClassOf rdf:resource="#F1Driver"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">50</owl:minCardinality>
+<owl:onProperty rdf:resource="#GPWinner"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#MoveableThing"/>
+<owl:Class rdf:about="#Novel">
+<rdfs:subClassOf rdf:resource="#ImaginativeWriting"/>
+<rdfs:subClassOf rdf:resource="http://127.0.0.1/ontology/books.owl#Book"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="http://127.0.0.1/ontology/books.owl#Medium"/>
+<owl:onProperty rdf:resource="http://127.0.0.1/ontology/books.owl#hasSize"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#PeopleTransporter">
+<rdfs:subClassOf rdf:resource="#Transporter"/>
+</owl:Class>
+
+<owl:Class rdf:about="#PortableDVDPlayer">
+<rdfs:subClassOf rdf:resource="#DVDPlayer"/>
+</owl:Class>
+
+<owl:Class rdf:about="#RacingTrack">
+<rdfs:subClassOf rdf:resource="#Track"/>
+</owl:Class>
+
+<owl:Class rdf:about="#RacyCar">
+<rdfs:subClassOf rdf:resource="#ExpensiveCar"/>
+<rdfs:subClassOf rdf:resource="#FastCar"/>
+</owl:Class>
+
+<owl:Class rdf:about="#RacyCarDriver">
+<rdfs:subClassOf rdf:resource="#Driver"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Red">
+<rdfs:subClassOf rdf:resource="#Color"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ScienceFictionFilm">
+<rdfs:subClassOf rdf:resource="#Film"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ScienceFictionNovel">
+<rdfs:subClassOf rdf:resource="#Novel"/>
+</owl:Class>
+
+<owl:Class rdf:about="#SoftwareEngineeringGraduate">
+<rdfs:subClassOf rdf:resource="#ITProfessionals"/>
+</owl:Class>
+
+<owl:Class rdf:about="#SportsCar">
+<rdfs:subClassOf rdf:resource="&simplified_sumo.owl;#Object"/>
+<owl:equivalentClass>
+<owl:Class>
+<owl:unionOf rdf:parseType="Collection">
+<rdf:Description rdf:about="#RacyCar"/>
+</owl:unionOf>
+</owl:Class>
+</owl:equivalentClass>
+</owl:Class>
+
+<owl:Class rdf:about="#Suzuki">
+<rdfs:subClassOf rdf:resource="#CheapCar"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Track"/>
+<owl:Class rdf:about="#Transporter"/>
+<owl:Class rdf:about="#Tricycle">
+<rdfs:subClassOf rdf:resource="#Cycle"/>
+<rdfs:subClassOf rdf:nodeID="b68"/>
+</owl:Class>
+
+<owl:Class rdf:about="#VHS">
+<rdfs:subClassOf rdf:resource="#obtainableVideoMedia"/>
+</owl:Class>
+
+<owl:Class rdf:about="#VW">
+<rdfs:subClassOf rdf:resource="#CheapCar"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Vehicle">
+<rdfs:subClassOf rdf:resource="&owl;Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#VideoMedia">
+<rdfs:subClassOf rdf:resource="#Media"/>
+<rdfs:subClassOf rdf:resource="&simplified_sumo.owl;#Object"/>
+</owl:Class>
+
+<owl:Class rdf:about="#WMAPlayer">
+<rdfs:subClassOf rdf:resource="#MediaPlayer"/>
+</owl:Class>
+
+<owl:Class rdf:about="#WheeledVehicle">
+<rdfs:subClassOf rdf:resource="#Vehicle"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Whiskey">
+<rdfs:subClassOf rdf:resource="#Drinks"/>
+</owl:Class>
+
+<owl:Class rdf:about="#White">
+<rdfs:subClassOf rdf:resource="#Color"/>
+</owl:Class>
+
+<owl:Class rdf:about="#WirelessPlayer">
+<rdfs:subClassOf rdf:resource="#MediaPlayer"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Yellow">
+<rdfs:subClassOf rdf:resource="#Color"/>
+</owl:Class>
+
+<owl:Class rdf:about="#obtainableVideoMedia">
+<rdfs:subClassOf rdf:resource="#VideoMedia"/>
+</owl:Class>
+
+<owl:Class rdf:about="http://127.0.0.1/ontology/books.owl#Book"/>
+<owl:Class rdf:about="http://127.0.0.1/ontology/books.owl#Medium"/>
+<owl:Class rdf:about="http://127.0.0.1/ontology/books.owl#Monograph"/>
+<owl:Class rdf:about="http://127.0.0.1/ontology/books.owl#Person"/>
+<owl:Class rdf:about="&portal.owl;#Technology"/>
+<owl:Class rdf:about="&simplified_sumo.owl;#ElectricDevice">
+<owl:disjointWith rdf:resource="#Machine"/>
+</owl:Class>
+
+<owl:Class rdf:about="&simplified_sumo.owl;#Object"/>
+<owl:Class rdf:about="&owl;Thing"/>
+
+<!-- Object Properties -->
+<owl:ObjectProperty rdf:about="#Engine"/>
+<owl:ObjectProperty rdf:about="#GPWinner"/>
+<owl:ObjectProperty rdf:about="#HighSpeed"/>
+<owl:ObjectProperty rdf:about="#LifeTime"/>
+<owl:ObjectProperty rdf:about="#Model"/>
+<owl:ObjectProperty rdf:about="#Person"/>
+<owl:ObjectProperty rdf:about="#Power"/>
+<owl:ObjectProperty rdf:about="#Profitable"/>
+<owl:ObjectProperty rdf:about="#Rigid"/>
+<owl:ObjectProperty rdf:about="#Shape"/>
+<owl:ObjectProperty rdf:about="#Speed"/>
+<owl:ObjectProperty rdf:about="#Title"/>
+<owl:ObjectProperty rdf:about="#Wheel"/>
+<owl:ObjectProperty rdf:about="#belongsTo"/>
+<owl:ObjectProperty rdf:about="#designedBy"/>
+<owl:ObjectProperty rdf:about="#hasValue"/>
+<owl:ObjectProperty rdf:about="#madeBy"/>
+<owl:ObjectProperty rdf:about="http://127.0.0.1/ontology/books.owl#hasSize"/>
+
+<!-- Instances -->
+<my_ontology:F1WorldChampion rdf:about="#Juan-Fangio"/>
+<my_ontology:F1WorldChampion rdf:about="#Michael-Schumacher">
+<rdf:type rdf:resource="#MoreGPWinner"/>
+</my_ontology:F1WorldChampion>
+</rdf:RDF>
+

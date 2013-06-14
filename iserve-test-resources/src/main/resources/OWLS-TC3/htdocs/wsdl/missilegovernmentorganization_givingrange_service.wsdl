@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns="http://127.0.0.1/wsdl/MissilegovermentorganizationGivingrange"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://127.0.0.1/wsdl/MissilegovermentorganizationGivingrange"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  name="MissilegovermentorganizationGivingrange"
+                  targetNamespace="http://127.0.0.1/wsdl/MissilegovermentorganizationGivingrange">
+    <wsdl:types>
+        <xsd:schema version="OWLS2WSDL Tue May 26 14:24:06 CEST 2009"
+                    targetNamespace="http://127.0.0.1/wsdl/MissilegovermentorganizationGivingrange"
+                    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:annotation>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/SUMO.owl#GovernmentOrganization"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/Mid-level-ontology.owl#Missile"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/SUMO.owl#Giving"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-ComplexType) of http://127.0.0.1/ontology/extendedCamera.owl#Range"/>
+            </xsd:annotation>
+            <xsd:element name="Giving" type="GivingType"/>
+            <xsd:element name="Missile" type="MissileType"/>
+            <xsd:element name="GovernmentOrganization" type="GovernmentOrganizationType"/>
+            <xsd:element name="Range" type="RangeType"/>
+            <xsd:complexType name="RangeType">
+                <xsd:sequence>
+                    <xsd:element name="steps" type="xsd:string"/>
+                    <xsd:element name="min" type="xsd:float"/>
+                    <xsd:element name="max" type="xsd:float"/>
+                    <xsd:element name="units" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="GovernmentOrganizationType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="GivingType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="MissileType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="get_GIVING_RANGERequest">
+        <wsdl:part name="_GOVERMENTORGANIZATION" type="tns:GovernmentOrganizationType">
+        </wsdl:part>
+        <wsdl:part name="_MISSILE" type="tns:MissileType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="get_GIVING_RANGEResponse">
+        <wsdl:part name="_GIVING" type="tns:GivingType">
+        </wsdl:part>
+        <wsdl:part name="_RANGE" type="tns:RangeType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="MissilegovermentorganizationGivingrangeSoap">
+        <wsdl:operation name="get_GIVING_RANGE">
+            <wsdl:input message="tns:get_GIVING_RANGERequest">
+            </wsdl:input>
+            <wsdl:output message="tns:get_GIVING_RANGEResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="MissilegovermentorganizationGivingrangeSoapBinding"
+                  type="MissilegovermentorganizationGivingrangeSoap">
+        <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="get_GIVING_RANGE">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/MissilegovermentorganizationGivingrange"/>
+            </wsdl:input>
+            <wsdl:output>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/MissilegovermentorganizationGivingrange"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="MissilegovermentorganizationGivingrangeService">
+        <wsdl:port name="MissilegovermentorganizationGivingrangeSoap"
+                   binding="MissilegovermentorganizationGivingrangeSoapBinding">
+            <wsdlsoap:address location="http://127.0.0.1/wsdl/MissilegovermentorganizationGivingrange"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

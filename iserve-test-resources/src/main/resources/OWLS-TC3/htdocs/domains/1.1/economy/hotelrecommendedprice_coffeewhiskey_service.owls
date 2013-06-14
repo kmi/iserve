@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/hotelrecommendedprice_coffeewhiskey_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="HOTELRECOMMENDEDPRICE_COFFEEWHISKEY_SERVICE">
+<service:presents rdf:resource="#HOTELRECOMMENDEDPRICE_COFFEEWHISKEY_PROFILE"/>
+<service:describedBy rdf:resource="#HOTELRECOMMENDEDPRICE_COFFEEWHISKEY_PROCESS"/>
+<service:supports rdf:resource="#HOTELRECOMMENDEDPRICE_COFFEEWHISKEY_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="HOTELRECOMMENDEDPRICE_COFFEEWHISKEY_PROFILE">
+<service:isPresentedBy rdf:resource="#HOTELRECOMMENDEDPRICE_COFFEEWHISKEY_SERVICE"/>
+<profile:serviceName xml:lang="en">
+RecommendedPriceCoffeeWhiskey Hotel Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns coffee and whiskey (products) for the given recommended price
+and avaialbe in the particular hotel.
+If hotel input is not given then it returns coffee and whiskey products for the given price..
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_RECOMMENDEDPRICE"/>
+<profile:hasOutput rdf:resource="#_COFFEE"/>
+<profile:hasOutput rdf:resource="#_WHISKEY"/>
+<profile:hasInput  rdf:resource="#_HOTEL"/>
+
+<profile:has_process rdf:resource="HOTELRECOMMENDEDPRICE_COFFEEWHISKEY_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="HOTELRECOMMENDEDPRICE_COFFEEWHISKEY_PROCESS_MODEL">
+<service:describes rdf:resource="#HOTELRECOMMENDEDPRICE_COFFEEWHISKEY_SERVICE"/>
+<process:hasProcess rdf:resource="#HOTELRECOMMENDEDPRICE_COFFEEWHISKEY_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="HOTELRECOMMENDEDPRICE_COFFEEWHISKEY_PROCESS">
+<service:describes rdf:resource="#HOTELRECOMMENDEDPRICE_COFFEEWHISKEY_SERVICE"/>
+<process:hasInput  rdf:resource="#_RECOMMENDEDPRICE"/>
+<process:hasOutput rdf:resource="#_COFFEE"/>
+<process:hasOutput rdf:resource="#_WHISKEY"/>
+<process:hasInput  rdf:resource="#_HOTEL"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_RECOMMENDEDPRICE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/concept.owl#RecommendedPrice</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_COFFEE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/my_ontology.owl#Coffee</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_WHISKEY">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/my_ontology.owl#Whiskey</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Input rdf:ID="_HOTEL">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/travel.owl#Hotel</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<grounding:WsdlGrounding rdf:ID="HOTELRECOMMENDEDPRICE_COFFEEWHISKEY_GROUNDING">
+<service:supportedBy rdf:resource="#HOTELRECOMMENDEDPRICE_COFFEEWHISKEY_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="HOTELRECOMMENDEDPRICE_COFFEEWHISKEY_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#HOTELRECOMMENDEDPRICE_COFFEEWHISKEY_AtomicProcessGrounding">
+    <grounding:owlsProcess rdf:resource="#HOTELRECOMMENDEDPRICE_COFFEEWHISKEY_PROCESS"/>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_HOTEL"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/HotelrecommendedpriceCoffeewhiskey#_HOTEL</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/hotelrecommendedprice_coffeewhiskey_service.wsdl</grounding:wsdlDocument>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_RECOMMENDEDPRICE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/HotelrecommendedpriceCoffeewhiskey#_RECOMMENDEDPRICE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/HotelrecommendedpriceCoffeewhiskey#get_COFFEE_WHISKEYRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_WHISKEY"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/HotelrecommendedpriceCoffeewhiskey#_WHISKEY</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_COFFEE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/HotelrecommendedpriceCoffeewhiskey#_COFFEE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/HotelrecommendedpriceCoffeewhiskey#get_COFFEE_WHISKEY</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/HotelrecommendedpriceCoffeewhiskey#HotelrecommendedpriceCoffeewhiskeySoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/HotelrecommendedpriceCoffeewhiskey#get_COFFEE_WHISKEYResponse</grounding:wsdlOutputMessage>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

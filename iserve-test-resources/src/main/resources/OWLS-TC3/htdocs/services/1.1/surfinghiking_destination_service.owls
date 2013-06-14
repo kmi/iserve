@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/surfinghiking_destination_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="SURFINGHIKING_DESTINATION_SERVICE">
+<service:presents rdf:resource="#SURFINGHIKING_DESTINATION_PROFILE"/>
+<service:describedBy rdf:resource="#SURFINGHIKING_DESTINATION_PROCESS"/>
+<service:supports rdf:resource="#SURFINGHIKING_DESTINATION_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="SURFINGHIKING_DESTINATION_PROFILE">
+<service:isPresentedBy rdf:resource="#SURFINGHIKING_DESTINATION_SERVICE"/>
+<profile:serviceName xml:lang="en">
+HikingSurfingDestination
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns the destination where
+both games hiking and surfing are available.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_HIKING"/>
+<profile:hasInput  rdf:resource="#_SURFING"/>
+<profile:hasOutput rdf:resource="#_DESTINATION"/>
+
+<profile:has_process rdf:resource="SURFINGHIKING_DESTINATION_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="SURFINGHIKING_DESTINATION_PROCESS_MODEL">
+<service:describes rdf:resource="#SURFINGHIKING_DESTINATION_SERVICE"/>
+<process:hasProcess rdf:resource="#SURFINGHIKING_DESTINATION_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="SURFINGHIKING_DESTINATION_PROCESS">
+<service:describes rdf:resource="#SURFINGHIKING_DESTINATION_SERVICE"/>
+<process:hasInput  rdf:resource="#_HIKING"/>
+<process:hasInput  rdf:resource="#_SURFING"/>
+<process:hasOutput rdf:resource="#_DESTINATION"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_HIKING">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/travel.owl#Hiking</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_SURFING">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/travel.owl#Surfing</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_DESTINATION">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/travel.owl#Destination</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="SURFINGHIKING_DESTINATION_GROUNDING">
+<service:supportedBy rdf:resource="#SURFINGHIKING_DESTINATION_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="SURFINGHIKING_DESTINATION_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#SURFINGHIKING_DESTINATION_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/surfinghiking_destination_service.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#SURFINGHIKING_DESTINATION_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/SurfinghikingDestination#get_DESTINATION</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/SurfinghikingDestination#SurfinghikingDestinationSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/SurfinghikingDestination#get_DESTINATIONRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/SurfinghikingDestination#get_DESTINATIONResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_HIKING"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/SurfinghikingDestination#_HIKING</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_SURFING"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/SurfinghikingDestination#_SURFING</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_DESTINATION"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/SurfinghikingDestination#_DESTINATION</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

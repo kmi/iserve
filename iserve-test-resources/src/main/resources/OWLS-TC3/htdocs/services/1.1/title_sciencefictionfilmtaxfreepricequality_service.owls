@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/title_sciencefictionfilmtaxfreepricequality_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/finance_th_web.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="TITLE_SCIENCEFICTIONFILMTAXFREEPRICEQUALITY_SERVICE">
+<service:presents rdf:resource="#TITLE_SCIENCEFICTIONFILMTAXFREEPRICEQUALITY_PROFILE"/>
+<service:describedBy rdf:resource="#TITLE_SCIENCEFICTIONFILMTAXFREEPRICEQUALITY_PROCESS"/>
+<service:supports rdf:resource="#TITLE_SCIENCEFICTIONFILMTAXFREEPRICEQUALITY_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="TITLE_SCIENCEFICTIONFILMTAXFREEPRICEQUALITY_PROFILE">
+<service:isPresentedBy rdf:resource="#TITLE_SCIENCEFICTIONFILMTAXFREEPRICEQUALITY_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Title ScienceFiction TaxFreePrice Quality service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service searches sciencefiction films for the given title, and also returns
+its taxfree price and quality.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_TITLE"/>
+<profile:hasOutput rdf:resource="#_SCIENCEFICTIONFILM"/>
+<profile:hasOutput rdf:resource="#_TAXFREEPRICE"/>
+<profile:hasOutput rdf:resource="#_QUALITY"/>
+
+<profile:has_process rdf:resource="TITLE_SCIENCEFICTIONFILMTAXFREEPRICEQUALITY_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="TITLE_SCIENCEFICTIONFILMTAXFREEPRICEQUALITY_PROCESS_MODEL">
+<service:describes rdf:resource="#TITLE_SCIENCEFICTIONFILMTAXFREEPRICEQUALITY_SERVICE"/>
+<process:hasProcess rdf:resource="#TITLE_SCIENCEFICTIONFILMTAXFREEPRICEQUALITY_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="TITLE_SCIENCEFICTIONFILMTAXFREEPRICEQUALITY_PROCESS">
+<service:describes rdf:resource="#TITLE_SCIENCEFICTIONFILMTAXFREEPRICEQUALITY_SERVICE"/>
+<process:hasInput  rdf:resource="#_TITLE"/>
+<process:hasOutput rdf:resource="#_SCIENCEFICTIONFILM"/>
+<process:hasOutput rdf:resource="#_TAXFREEPRICE"/>
+<process:hasOutput rdf:resource="#_QUALITY"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_TITLE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/books.owl#Title</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_SCIENCEFICTIONFILM">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/my_ontology.owl#ScienceFictionFilm</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_TAXFREEPRICE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/concept.owl#TaxFreePrice</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_QUALITY">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/finance_th_web.owl#quality</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="TITLE_SCIENCEFICTIONFILMTAXFREEPRICEQUALITY_GROUNDING">
+<service:supportedBy rdf:resource="#TITLE_SCIENCEFICTIONFILMTAXFREEPRICEQUALITY_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="TITLE_SCIENCEFICTIONFILMTAXFREEPRICEQUALITY_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#TITLE_SCIENCEFICTIONFILMTAXFREEPRICEQUALITY_AtomicProcessGrounding">
+    <grounding:owlsProcess rdf:resource="#TITLE_SCIENCEFICTIONFILMTAXFREEPRICEQUALITY_PROCESS"/>
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/title_sciencefictionfilmtaxfreepricequality_service.wsdl</grounding:wsdlDocument>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/TitleSciencefictionfilmtaxfreepricequality#get_SCIENCEFICTIONFILM_TAXFREEPRICE_QUALITYResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/TitleSciencefictionfilmtaxfreepricequality#get_SCIENCEFICTIONFILM_TAXFREEPRICE_QUALITYRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleSciencefictionfilmtaxfreepricequality#get_SCIENCEFICTIONFILM_TAXFREEPRICE_QUALITY</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleSciencefictionfilmtaxfreepricequality#TitleSciencefictionfilmtaxfreepricequalitySoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_TAXFREEPRICE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleSciencefictionfilmtaxfreepricequality#_TAXFREEPRICE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_SCIENCEFICTIONFILM"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleSciencefictionfilmtaxfreepricequality#_SCIENCEFICTIONFILM</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_TITLE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleSciencefictionfilmtaxfreepricequality#_TITLE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_QUALITY"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleSciencefictionfilmtaxfreepricequality#_QUALITY</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

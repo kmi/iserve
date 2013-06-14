@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/sports_ruralarea_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="SPORTS_RURALAREA_SERVICE">
+<service:presents rdf:resource="#SPORTS_RURALAREA_PROFILE"/>
+<service:describedBy rdf:resource="#SPORTS_RURALAREA_PROCESS_MODEL"/>
+<service:supports rdf:resource="#SPORTS_RURALAREA_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="SPORTS_RURALAREA_PROFILE">
+<service:isPresentedBy rdf:resource="#SPORTS_RURALAREA_SERVICE"/>
+<profile:serviceName xml:lang="en">
+SportsRuralAreaService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This is a nice service to know about
+the rural area where you can the sports especially hiking and surfing.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_SPORTS"/>
+<profile:hasOutput rdf:resource="#_RURALAREA"/>
+
+<profile:has_process rdf:resource="SPORTS_RURALAREA_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="SPORTS_RURALAREA_PROCESS_MODEL">
+<service:describes rdf:resource="#SPORTS_RURALAREA_SERVICE"/>
+<process:hasProcess rdf:resource="#SPORTS_RURALAREA_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="SPORTS_RURALAREA_PROCESS">
+<process:hasInput  rdf:resource="#_SPORTS"/>
+<process:hasOutput rdf:resource="#_RURALAREA"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_SPORTS">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/travel.owl#Sports" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_RURALAREA">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/travel.owl#RuralArea" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="SPORTS_RURALAREA_GROUNDING">
+<service:supportedBy rdf:resource="#SPORTS_RURALAREA_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

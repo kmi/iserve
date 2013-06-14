@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/_mapGerman_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="_MAP_SERVICE">
+<service:presents rdf:resource="#_MAP_PROFILE"/>
+<service:describedBy rdf:resource="#_MAP_PROCESS_MODEL"/>
+<service:supports rdf:resource="#_MAP_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="_MAP_PROFILE">
+<service:isPresentedBy rdf:resource="#_MAP_SERVICE"/>
+<profile:serviceName xml:lang="en">
+GermanMap Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns a map of Germany. This map is useful to find
+a route for traveling between its two cities, for example from
+Frankfurt to Berlin etc.
+</profile:textDescription>
+<profile:hasOutput rdf:resource="#_MAP"/>
+
+<profile:has_process rdf:resource="_MAP_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="_MAP_PROCESS_MODEL">
+<service:describes rdf:resource="#_MAP_SERVICE"/>
+<process:hasProcess rdf:resource="#_MAP_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="_MAP_PROCESS">
+<process:hasOutput rdf:resource="#_MAP"/>
+</process:AtomicProcess>
+
+<process:Output  rdf:ID="_MAP">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl#Map" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="_MAP_GROUNDING">
+<service:supportedBy rdf:resource="#_MAP_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

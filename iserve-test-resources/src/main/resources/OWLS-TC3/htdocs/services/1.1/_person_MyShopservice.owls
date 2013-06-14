@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/_person_MyShopservice.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="_PERSON_SERVICE">
+<service:presents rdf:resource="#_PERSON_PROFILE"/>
+<service:describedBy rdf:resource="#_PERSON_PROCESS"/>
+<service:supports rdf:resource="#_PERSON_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="_PERSON_PROFILE">
+<service:isPresentedBy rdf:resource="#_PERSON_SERVICE"/>
+<profile:serviceName xml:lang="en">
+myShop Person Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns info of a person, who is working as a proprietor in my shop.
+</profile:textDescription>
+<profile:hasOutput rdf:resource="#_PERSON"/>
+
+<profile:has_process rdf:resource="_PERSON_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="_PERSON_PROCESS_MODEL">
+<service:describes rdf:resource="#_PERSON_SERVICE"/>
+<process:hasProcess rdf:resource="#_PERSON_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="_PERSON_PROCESS">
+<service:describes rdf:resource="#_PERSON_SERVICE"/>
+<process:hasOutput rdf:resource="#_PERSON"/>
+</process:AtomicProcess>
+
+<process:Output  rdf:ID="_PERSON">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/books.owl#Person</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="_PERSON_GROUNDING">
+<service:supportedBy rdf:resource="#_PERSON_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="_PERSON_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#_PERSON_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/_person_MyShopservice.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#_PERSON_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Person#get_PERSON</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Person#PersonSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Person#get_PERSONRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Person#get_PERSONResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_PERSON"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Person#_PERSON</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/governmentdegree_scholarship_TheBestservice.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="GOVERNMENTDEGREE_SCHOLARSHIP_SERVICE">
+<service:presents rdf:resource="#GOVERNMENTDEGREE_SCHOLARSHIP_PROFILE"/>
+<service:describedBy rdf:resource="#GOVERNMENTDEGREE_SCHOLARSHIP_PROCESS_MODEL"/>
+<service:supports rdf:resource="#GOVERNMENTDEGREE_SCHOLARSHIP_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="GOVERNMENTDEGREE_SCHOLARSHIP_PROFILE">
+<service:isPresentedBy rdf:resource="#GOVERNMENTDEGREE_SCHOLARSHIP_SERVICE"/>
+<profile:serviceName xml:lang="en">
+GovernmentScholarDegreeShipService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+It is the best service that returns the scholarships offered by the given government.
+
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_DEGREE"/>
+<profile:hasInput  rdf:resource="#_GOVERNMENT"/>
+<profile:hasOutput rdf:resource="#_SCHOLARSHIP"/>
+
+<profile:has_process rdf:resource="GOVERNMENTDEGREE_SCHOLARSHIP_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="GOVERNMENTDEGREE_SCHOLARSHIP_PROCESS_MODEL">
+<service:describes rdf:resource="#GOVERNMENTDEGREE_SCHOLARSHIP_SERVICE"/>
+<process:hasProcess rdf:resource="#GOVERNMENTDEGREE_SCHOLARSHIP_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="GOVERNMENTDEGREE_SCHOLARSHIP_PROCESS">
+<process:hasInput  rdf:resource="#_DEGREE"/>
+<process:hasInput  rdf:resource="#_GOVERNMENT"/>
+<process:hasOutput rdf:resource="#_SCHOLARSHIP"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_DEGREE">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/portal.owl#Degree" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_GOVERNMENT">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/SUMO.owl#Government" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_SCHOLARSHIP">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl#Scholarship" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="GOVERNMENTDEGREE_SCHOLARSHIP_GROUNDING">
+<service:supportedBy rdf:resource="#GOVERNMENTDEGREE_SCHOLARSHIP_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

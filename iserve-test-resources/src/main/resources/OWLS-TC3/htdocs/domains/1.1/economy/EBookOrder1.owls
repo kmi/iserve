@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF  xmlns:owl = "http://www.w3.org/2002/07/owl#"
+          xmlns:rdfs = "http://www.w3.org/2000/01/rdf-schema#"
+          xmlns:rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+          xmlns:service = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+          xmlns:process = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+          xmlns:profile = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+          xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+          xml:base = "http://127.0.0.1/services/1.1/EBookOrder1.owls">
+
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+  </owl:Ontology>
+
+  <service:Service rdf:ID="EBookOrder1Service">
+    <service:presents rdf:resource="#EBookOrderProfile" />
+    <service:describedBy rdf:resource="#EBookOrderProcess" />
+    <service:supports rdf:resource="#EBookOrderGrounding" />
+  </service:Service>
+
+  <profile:Profile rdf:ID="EBookOrderProfile">
+    <service:presentedBy rdf:resource="#EBookOrder1Service" />
+    <profile:serviceName xml:lang="en">EBookOrder1</profile:serviceName>
+    <profile:textDescription xml:lang="en">A e-book order web service.</profile:textDescription>
+    <profile:hasInput rdf:resource="#EBookRequest" />
+    <profile:hasInput rdf:resource="#UserAccount" />
+    <profile:hasOutput rdf:resource="#EBook" />
+  </profile:Profile>
+
+  <process:AtomicProcess rdf:ID="EBookOrderProcess">
+    <service:describes rdf:resource="#EBookOrder1Service" />
+    <process:hasInput  rdf:resource="#EBookRequest"/>
+    <process:hasInput  rdf:resource="#UserAccount"/>
+    <process:hasOutput rdf:resource="#EBook"/>
+  </process:AtomicProcess>
+
+  <process:Input rdf:ID="EBookRequest">
+    <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/books.owl#Title</process:parameterType>
+    <rdfs:label>The name of the book.</rdfs:label>
+  </process:Input>
+
+  <process:Input rdf:ID="UserAccount">
+    <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/books.owl#User</process:parameterType>
+    <rdfs:label>The account information of the user.</rdfs:label>
+  </process:Input>
+
+  <process:Output  rdf:ID="EBook">
+    <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/books.owl#Book</process:parameterType>
+    <rdfs:label>The desired book.</rdfs:label>
+  </process:Output>
+
+  <grounding:WsdlGrounding rdf:ID="EBookOrderGrounding">
+    <service:supportedBy rdf:resource="#EBookOrder1Service" />
+    <grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="EBookOrder1AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#EBookOrder1AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/EBookOrder1.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#EBookOrderProcess"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Ebookorder1#getEBook</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Ebookorder1#Ebookorder1Soap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Ebookorder1#getEBookRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Ebookorder1#getEBookResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#EBookRequest"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Ebookorder1#EBookRequest</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#UserAccount"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Ebookorder1#UserAccount</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#EBook"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Ebookorder1#EBook</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

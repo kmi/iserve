@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns="http://127.0.0.1/wsdl/Higher-educational-organizationSenior-research-fellow-in-academia"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://127.0.0.1/wsdl/Higher-educational-organizationSenior-research-fellow-in-academia"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  name="Higher-educational-organizationSenior-research-fellow-in-academia"
+                  targetNamespace="http://127.0.0.1/wsdl/Higher-educational-organizationSenior-research-fellow-in-academia">
+    <wsdl:types>
+        <xsd:schema version="OWLS2WSDL Tue May 26 16:25:38 CEST 2009"
+                    targetNamespace="http://127.0.0.1/wsdl/Higher-educational-organizationSenior-research-fellow-in-academia"
+                    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:annotation>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/portal.owl#Higher-Educational-Organization"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/portal.owl#Senior-Research-Fellow-In-Academia"/>
+            </xsd:annotation>
+            <xsd:element name="Higher-Educational-Organization" type="Higher-Educational-OrganizationType"/>
+            <xsd:element name="Senior-Research-Fellow-In-Academia" type="Senior-Research-Fellow-In-AcademiaType"/>
+            <xsd:simpleType name="Senior-Research-Fellow-In-AcademiaType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="Higher-Educational-OrganizationType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="get_SENIOR-RESEARCH-FELLOW-IN-ACADEMIAResponse">
+        <wsdl:part name="_SENIOR-RESEARCH-FELLOW-IN-ACADEMIA" type="tns:Senior-Research-Fellow-In-AcademiaType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="get_SENIOR-RESEARCH-FELLOW-IN-ACADEMIARequest">
+        <wsdl:part name="_HIGHER-EDUCATIONAL-ORGANIZATION" type="tns:Higher-Educational-OrganizationType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="Higher-educational-organizationSenior-research-fellow-in-academiaSoap">
+        <wsdl:operation name="get_SENIOR-RESEARCH-FELLOW-IN-ACADEMIA">
+            <wsdl:input message="tns:get_SENIOR-RESEARCH-FELLOW-IN-ACADEMIARequest">
+            </wsdl:input>
+            <wsdl:output message="tns:get_SENIOR-RESEARCH-FELLOW-IN-ACADEMIAResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="Higher-educational-organizationSenior-research-fellow-in-academiaSoapBinding"
+                  type="Higher-educational-organizationSenior-research-fellow-in-academiaSoap">
+        <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="get_SENIOR-RESEARCH-FELLOW-IN-ACADEMIA">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/Higher-educational-organizationSenior-research-fellow-in-academia"/>
+            </wsdl:input>
+            <wsdl:output>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/Higher-educational-organizationSenior-research-fellow-in-academia"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="Higher-educational-organizationSenior-research-fellow-in-academiaService">
+        <wsdl:port name="Higher-educational-organizationSenior-research-fellow-in-academiaSoap"
+                   binding="Higher-educational-organizationSenior-research-fellow-in-academiaSoapBinding">
+            <wsdlsoap:address
+                    location="http://127.0.0.1/wsdl/Higher-educational-organizationSenior-research-fellow-in-academia"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

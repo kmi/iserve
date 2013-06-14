@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://127.0.0.1/wsdl/Academic-item-numberPublicationauthor"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  name="Academic-item-numberPublicationauthor"
+                  targetNamespace="http://127.0.0.1/wsdl/Academic-item-numberPublicationauthor">
+    <wsdl:types>
+        <xsd:schema version="OWLS2WSDL Thu Apr 23 21:43:41 CEST 2009"
+                    targetNamespace="http://127.0.0.1/wsdl/Academic-item-numberPublicationauthor"
+                    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:annotation>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/portal.owl#Academic-Item-Number"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-ComplexType) of http://127.0.0.1/ontology/portal.owl#Publication"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/books.owl#Author"/>
+            </xsd:annotation>
+            <xsd:element name="Academic-Item-Number" type="tns:Academic-Item-NumberType"/>
+            <xsd:element name="Author" type="tns:AuthorType"/>
+            <xsd:element name="Publication" type="tns:PublicationType"/>
+            <xsd:complexType name="Publication-Reference">
+                <xsd:sequence>
+                    <xsd:element name="has-place-of-publication" type="tns:Location"/>
+                    <xsd:element name="has-title" type="xsd:string"/>
+                    <xsd:element name="has-author" type="tns:Generic-Agent"/>
+                    <xsd:element name="has-date" type="tns:Calendar-Date"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Calendar-Date">
+                <xsd:sequence>
+                    <xsd:element name="month-of" type="xsd:nonNegativeInteger"/>
+                    <xsd:element name="year-of" type="xsd:nonNegativeInteger"/>
+                    <xsd:element name="minute-of" type="xsd:nonNegativeInteger"/>
+                    <xsd:element name="hour-of" type="xsd:nonNegativeInteger"/>
+                    <xsd:element name="second-of" type="xsd:nonNegativeInteger"/>
+                    <xsd:element name="day-of" type="xsd:nonNegativeInteger"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="PublicationType">
+                <xsd:sequence>
+                    <xsd:element name="has-publication-reference" type="tns:Publication-Reference"/>
+                    <xsd:element name="cites-publication-reference" type="tns:Publication-Reference"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="Location">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="Generic-Agent">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="AuthorType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="Academic-Item-NumberType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="get_PUBLICATION_AUTHORResponse">
+        <wsdl:part name="_PUBLICATION" type="tns:PublicationType">
+        </wsdl:part>
+        <wsdl:part name="_AUTHOR" type="tns:AuthorType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="get_PUBLICATION_AUTHORRequest">
+        <wsdl:part name="_ACADEMIC-ITEM-NUMBER" type="tns:Academic-Item-NumberType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="Academic-item-numberPublicationauthorSoap">
+        <wsdl:operation name="get_PUBLICATION_AUTHOR">
+            <wsdl:input message="tns:get_PUBLICATION_AUTHORRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:get_PUBLICATION_AUTHORResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="Academic-item-numberPublicationauthorSoapBinding"
+                  type="tns:Academic-item-numberPublicationauthorSoap">
+        <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="get_PUBLICATION_AUTHOR">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/Academic-item-numberPublicationauthor"/>
+            </wsdl:input>
+            <wsdl:output>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/Academic-item-numberPublicationauthor"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="Academic-item-numberPublicationauthorService">
+        <wsdl:port name="Academic-item-numberPublicationauthorSoap"
+                   binding="tns:Academic-item-numberPublicationauthorSoapBinding">
+            <wsdlsoap:address location="http://127.0.0.1/wsdl/Academic-item-numberPublicationauthor"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

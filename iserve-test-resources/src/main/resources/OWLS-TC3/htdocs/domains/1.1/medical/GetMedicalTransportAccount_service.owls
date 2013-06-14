@@ -1,0 +1,218 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns="http://127.0.0.1/services/1.1/GetMedicalTransportAccount_service.owls"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:process="http://www.daml.org/services/owl-s/1.1/Process.owl#"
+    xmlns:service="http://www.daml.org/services/owl-s/1.1/Service.owl#"
+    xmlns:list="http://www.daml.org/services/owl-s/1.1/generic/ObjectList.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:profile="http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+    xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+    xmlns:grounding="http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns:expression="http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://127.0.0.1/services/1.1/GetMedicalTransportAccount_service.owls">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="/ontology/MedicalTransportCompanyOntology.owl"/>
+    <owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.1/Process.owl"/>
+    <owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.1/Service.owl"/>
+    <owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.1/Profile.owl"/>
+    <owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.1/Grounding.owl"/>
+  </owl:Ontology>
+  <service:Service rdf:ID="GetMedicalTransportAccountService">
+    <service:presents>
+      <profile:Profile rdf:ID="GetMedicalTransportAccountProfile"/>
+    </service:presents>
+    <service:describedBy>
+      <process:AtomicProcess rdf:ID="GetMedicalTransportAccountProcess"/>
+    </service:describedBy>
+    <service:supports>
+      <grounding:WsdlGrounding rdf:ID="GetMedicalTransportAccountGrounding"/>
+    </service:supports>
+  </service:Service>
+  <profile:Profile rdf:about="#GetMedicalTransportAccountProfile">
+    <profile:hasInput>
+      <process:Input rdf:ID="GetMedicalTransportAccount_CustomerName">
+        <rdfs:label>GetMedicalTransportAccount_CustomerName</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/MedicalTransportCompanyOntology.owl#PersonName</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <service:presentedBy rdf:resource="#GetMedicalTransportAccountService"/>
+    <profile:hasInput>
+      <process:Input rdf:ID="ProvideMedicalTransportInformation_DesiredDepartureDateTime">
+        <rdfs:label>ProvideMedicalTransportInformation_DesiredDepartureDateTime</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/MedicalTransportCompanyOntology.owl#DateTime</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasOutput>
+      <process:Output rdf:ID="GetMedicalTransportAccount_Account">
+        <rdfs:label>GetMedicalTransportAccount_Account</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/MedicalTransportCompanyOntology.owl#Account</process:parameterType>
+      </process:Output>
+    </profile:hasOutput>
+    <profile:serviceName>GetMedicalTransportAccount</profile:serviceName>
+    <profile:textDescription>This service creates an account for the customer. This is required before a transport can be booked.</profile:textDescription>
+    <profile:hasInput>
+      <process:Input rdf:ID="ProvideMedicalTransportInformation_Diagnosis">
+        <rdfs:label>ProvideMedicalTransportInformation_Diagnosis</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/MedicalTransportCompanyOntology.owl#Diagnosis</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasInput>
+      <process:Input rdf:ID="GetMedicalTransportAccount_CustomerDesiredAccountName">
+        <rdfs:label>GetMedicalTransportAccount_CustomerDesiredAccountName</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/MedicalTransportCompanyOntology.owl#AccountName</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasInput>
+      <process:Input rdf:ID="GetMedicalTransportAccount_CustomerCreditCardNumber">
+        <rdfs:label>GetMedicalTransportAccount_CustomerCreditCardNumber</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/MedicalTransportCompanyOntology.owl#CreditCardNumber</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasInput>
+      <process:Input rdf:ID="GetMedicalTransportAccount_CustomerCreditCardExpDate">
+        <rdfs:label>GetMedicalTransportAccount_CustomerCreditCardExpDate</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/MedicalTransportCompanyOntology.owl#DateTime</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasInput>
+      <process:Input rdf:ID="GetMedicalTransportAccount_CustomerAddress">
+        <rdfs:label>GetMedicalTransportAccount_CustomerAddress</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/MedicalTransportCompanyOntology.owl#Address</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasInput>
+      <process:Input rdf:ID="GetMedicalTransportAccount_CustomerDesiredPassword">
+        <rdfs:label>GetMedicalTransportAccount_CustomerDesiredPassword</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/MedicalTransportCompanyOntology.owl#AccountPassword</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+  </profile:Profile>
+  <process:AtomicProcess rdf:about="#GetMedicalTransportAccountProcess">
+    <process:hasInput rdf:resource="#GetMedicalTransportAccount_CustomerDesiredPassword"/>
+    <process:hasInput rdf:resource="#GetMedicalTransportAccount_CustomerCreditCardExpDate"/>
+    <rdfs:label>GetMedicalTransportAccountProcess</rdfs:label>
+    <process:hasOutput rdf:resource="#GetMedicalTransportAccount_Account"/>
+    <process:hasInput rdf:resource="#ProvideMedicalTransportInformation_Diagnosis"/>
+    <process:hasInput rdf:resource="#ProvideMedicalTransportInformation_DesiredDepartureDateTime"/>
+    <process:hasInput rdf:resource="#GetMedicalTransportAccount_CustomerName"/>
+    <process:hasInput rdf:resource="#GetMedicalTransportAccount_CustomerAddress"/>
+    <process:hasInput rdf:resource="#GetMedicalTransportAccount_CustomerDesiredAccountName"/>
+    <process:hasInput rdf:resource="#GetMedicalTransportAccount_CustomerCreditCardNumber"/>
+    <service:describes rdf:resource="#GetMedicalTransportAccountService"/>
+  </process:AtomicProcess>
+  <grounding:WsdlGrounding rdf:about="#GetMedicalTransportAccountGrounding">
+    <service:supportedBy rdf:resource="#GetMedicalTransportAccountService"/>
+    <grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="GetMedicalTransportAccountAtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#GetMedicalTransportAccountAtomicProcessGrounding">
+    <grounding:owlsProcess rdf:resource="#GetMedicalTransportAccountProcess"/>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetMedicalTransportAccount_CustomerName"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getmedicaltransportaccount#GetMedicalTransportAccount_CustomerName</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#ProvideMedicalTransportInformation_DesiredDepartureDateTime"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getmedicaltransportaccount#ProvideMedicalTransportInformation_DesiredDepartureDateTime</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/GetMedicalTransportAccount_service.wsdl</grounding:wsdlDocument>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#ProvideMedicalTransportInformation_Diagnosis"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getmedicaltransportaccount#ProvideMedicalTransportInformation_Diagnosis</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getmedicaltransportaccount#getGetMedicalTransportAccount_Account</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getmedicaltransportaccount#GetmedicaltransportaccountSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetMedicalTransportAccount_CustomerCreditCardNumber"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getmedicaltransportaccount#GetMedicalTransportAccount_CustomerCreditCardNumber</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetMedicalTransportAccount_CustomerCreditCardExpDate"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getmedicaltransportaccount#GetMedicalTransportAccount_CustomerCreditCardExpDate</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Getmedicaltransportaccount#getGetMedicalTransportAccount_AccountRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Getmedicaltransportaccount#getGetMedicalTransportAccount_AccountResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetMedicalTransportAccount_CustomerAddress"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getmedicaltransportaccount#GetMedicalTransportAccount_CustomerAddress</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetMedicalTransportAccount_CustomerDesiredAccountName"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getmedicaltransportaccount#GetMedicalTransportAccount_CustomerDesiredAccountName</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetMedicalTransportAccount_CustomerDesiredPassword"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getmedicaltransportaccount#GetMedicalTransportAccount_CustomerDesiredPassword</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetMedicalTransportAccount_Account"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getmedicaltransportaccount#GetMedicalTransportAccount_Account</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+  <owl:Class rdf:about="/ontology/MedicalTransportCompanyOntology.owl#DateTime"/>
+  <owl:Class rdf:about="/ontology/MedicalTransportCompanyOntology.owl#PersonName"/>
+  <owl:Class rdf:about="/ontology/MedicalTransportCompanyOntology.owl#Address"/>
+  <owl:Class rdf:about="/ontology/MedicalTransportCompanyOntology.owl#CreditCardNumber"/>
+  <owl:Class rdf:about="/ontology/MedicalTransportCompanyOntology.owl#Diagnosis"/>
+  <owl:Class rdf:about="/ontology/MedicalTransportCompanyOntology.owl#AccountPassword"/>
+  <owl:Class rdf:about="/ontology/MedicalTransportCompanyOntology.owl#Account"/>
+  <owl:Class rdf:about="/ontology/MedicalTransportCompanyOntology.owl#AccountName"/>
+</rdf:RDF>

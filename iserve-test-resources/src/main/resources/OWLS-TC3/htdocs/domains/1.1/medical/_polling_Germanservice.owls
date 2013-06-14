@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/_polling_Germanservice.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="_POLLING_SERVICE">
+<service:presents rdf:resource="#_POLLING_PROFILE"/>
+<service:describedBy rdf:resource="#_POLLING_PROCESS"/>
+<service:supports rdf:resource="#_POLLING_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="_POLLING_PROFILE">
+<service:isPresentedBy rdf:resource="#_POLLING_SERVICE"/>
+<profile:serviceName xml:lang="en">
+GermanPollingService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service informs you about German polling.
+</profile:textDescription>
+<profile:hasOutput rdf:resource="#_POLLING"/>
+
+<profile:has_process rdf:resource="_POLLING_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="_POLLING_PROCESS_MODEL">
+<service:describes rdf:resource="#_POLLING_SERVICE"/>
+<process:hasProcess rdf:resource="#_POLLING_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="_POLLING_PROCESS">
+<service:describes rdf:resource="#_POLLING_SERVICE"/>
+<process:hasOutput rdf:resource="#_POLLING"/>
+</process:AtomicProcess>
+
+<process:Output  rdf:ID="_POLLING">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#Polling</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="_POLLING_GROUNDING">
+<service:supportedBy rdf:resource="#_POLLING_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="_POLLING_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#_POLLING_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/_polling_Germanservice.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#_POLLING_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Polling#get_POLLING</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Polling#PollingSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Polling#get_POLLINGRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Polling#get_POLLINGResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_POLLING"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Polling#_POLLING</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

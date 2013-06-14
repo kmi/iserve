@@ -1,0 +1,110 @@
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<html>
+
+
+<meta name="generator" content="HTML Tidy, see www.w3.org">
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<title>GeoNames Web uk.ac.open.kmi.iserve.commons.model.Service Documentation</title>
+<link rel="search" type="application/opensearchdescription+xml" title="geonames"
+      href="http://www.geonames.org/opensearch-plugin.xml">
+<link href="http://www.geonames.org/geonames.ico" rel="shortcut icon">
+<link type="text/css" rel="stylesheet" href="http://www.geonames.org/geonames.css">
+
+<table id="topmenutable">
+    <tbody>
+    <tr>
+        <td class="topmenu">&nbsp;<a href="javascript:callProxy('http://www.geonames.org/')">GeoNames
+            Home</a>&nbsp;|&nbsp;<a href="javascript:callProxy('http://www.geonames.org/postal-codes/')">Postal
+            Codes</a>&nbsp;|&nbsp;<a href="javascript:callProxy('http://www.geonames.org/export/')">Download
+            / Webservice</a>&nbsp;|&nbsp;<a href="javascript:callProxy('http://www.geonames.org/about.html')">About</a>&nbsp;|
+        </td>
+        <td class="topsearch">
+            <form class="topsearch" name="searchForm" method="post" action="/servlet/geonames"
+                  onsubmit="javascript:fulltextsearch();return false;">search <input class="topmenu" name="q" size="20"
+                                                                                     value="" type="text"> <input
+                    name="srv" value="1" type="hidden"></form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="margin: auto; width: 600px; text-align: left;">
+    <h3>GeoNames Web Services Documentation</h3>
+
+    GeoNames is mainly using REST webservices.<br>
+
+    <div class="service" id="GeoNames_SRTM3"
+         href="http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#InformationAboutLocationLookup" rel="model">
+        <div class="operation" id="operation1" href="http://www.w3.org/ns/wsdl-extensions#SafeInteraction" rel="model">
+            <h5><span class="label" id="label1">GeoNames_SRTM3</span></h5>
+
+            Shuttle Radar Topography Mission (SRTM)
+            <div class="output" id="output1" href="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#Elevation"
+                 rel="model">elevation data
+            </div>
+            . SRTM
+            consisted of a specially modified radar system that flew onboard
+            the Space Shuttle Endeavour during an 11-day mission in February of
+            2000. The dataset covers land areas between 60 degrees north and 56
+            degrees south.<br>
+            This web service is using SRTM3 data with data points located every
+            3-arc-second (approximately 90 meters) on a latitude/longitude
+            grid. Documentation : <a href="javascript:callProxy('http://www2.jpl.nasa.gov/srtm/')">Nasa</a>
+
+            <p>Webservice Type : REST<br>
+                Url : <span class="address" id="address1">ws.geonames.org/srtm3?</span><br>
+                Parameters :
+
+            <div class="input" id="input1" href="http://proton.semanticweb.org/2005/04/protont#Location" rel="model">
+                lat,lng;<br>
+                sample area: ca 90m x 90m Result : a single number giving the
+                elevation in meters according to srtm3, ocean areas have been
+                masked as "no data" and have been assigned a value of -32768
+            </div>
+            <br>
+            Example <a href="javascript:callProxy('http://ws.geonames.org/srtm3?lat=50.01&amp;lng=10.2')"
+                       target="_blank">http://ws.geonames.org/srtm3?lat=50.01&amp;lng=10.2</a><br>
+            <br>
+            This service is also available in XML and JSON format :<a
+                href="javascript:callProxy('http://ws.geonames.org/srtm3XML?lat=50.01&amp;lng=10.2')" target="_blank">ws.geonames.org/srtm3XML?lat=50.01&amp;lng=10.2</a>
+            <a href="javascript:callProxy('http://ws.geonames.org/srtm3JSON?lat=50.01&amp;lng=10.2')" target="_blank">ws.geonames.org/srtm3JSON?lat=50.01&amp;lng=10.2</a><br>
+            <br>
+            The text version of the service also accepts a list of lat/lng for
+            the parameters 'lats' and 'lngs'. On the free server the number of
+            points per call is limited to 20:<a
+                href="javascript:callProxy('http://ws.geonames.org/srtm3?lats=50.01,51.01&amp;lngs=10.2,11.2')"
+                target="_blank">http://ws.geonames.org/srtm3?lats=50.01,51.01&amp;lngs=10.2,11.2</a><br>
+            <br>
+            <br>
+            </a></p></div>
+    </div>
+
+    <div id="pageFooter">info@geonames.org
+
+        <p><a href="javascript:callProxy('http://www.geonames.org/')">GeoNames
+            Home</a> <span class="separator">•</span> <a
+                href="javascript:callProxy('http://www.geonames.org/postal-codes/')">Postal
+            Codes</a> <span class="separator">•</span> <a
+                href="javascript:callProxy('http://www.geonames.org/export/')">Download
+            / Webservice</a> <span class="separator">•</span> <a
+                href="javascript:callProxy('http://forum.geonames.org')">Forum</a> <span class="separator">•</span> <a
+                href="javascript:callProxy('http://geonames.wordpress.com')">Blog</a>
+            <span class="separator">•</span> <a href="javascript:callProxy('http://www.geonames.org/sitemap.html')">Sitemap</a>
+        </p>
+    </div>
+</html>

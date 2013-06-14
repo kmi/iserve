@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/governmentmissileweapon_fundingfunding_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_SERVICE">
+<service:presents rdf:resource="#GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_PROFILE"/>
+<service:describedBy rdf:resource="#GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_PROCESS"/>
+<service:supports rdf:resource="#GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_PROFILE">
+<service:isPresentedBy rdf:resource="#GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_SERVICE"/>
+<profile:serviceName xml:lang="en">
+GovMissilesAndWeaponsFundingsService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns the different funds each for the missile and other weapons by the government.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_WEAPON"/>
+<profile:hasInput  rdf:resource="#_MISSILE"/>
+<profile:hasInput  rdf:resource="#_GOVERNMENT"/>
+<profile:hasOutput rdf:resource="#_FUNDING1"/>
+<profile:hasOutput rdf:resource="#_FUNDING2"/>
+
+<profile:has_process rdf:resource="GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_PROCESS_MODEL">
+<service:describes rdf:resource="#GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_SERVICE"/>
+<process:hasProcess rdf:resource="#GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_PROCESS">
+<service:describes rdf:resource="#GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_SERVICE"/>
+<process:hasInput  rdf:resource="#_WEAPON"/>
+<process:hasInput  rdf:resource="#_MISSILE"/>
+<process:hasInput  rdf:resource="#_GOVERNMENT"/>
+<process:hasOutput rdf:resource="#_FUNDING1"/>
+<process:hasOutput rdf:resource="#_FUNDING2"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_WEAPON">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#Weapon</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_MISSILE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#Missile</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_GOVERNMENT">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#Government</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_FUNDING1">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#Funding</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_FUNDING2">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#Funding</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_GROUNDING">
+<service:supportedBy rdf:resource="#GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_AtomicProcessGrounding">
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_MISSILE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/GovernmentmissileweaponFundingfunding#_MISSILE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/GovernmentmissileweaponFundingfunding#get_FUNDING1_FUNDING2</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/GovernmentmissileweaponFundingfunding#GovernmentmissileweaponFundingfundingSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_WEAPON"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/GovernmentmissileweaponFundingfunding#_WEAPON</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/GovernmentmissileweaponFundingfunding#get_FUNDING1_FUNDING2Request</grounding:wsdlInputMessage>
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/governmentmissileweapon_fundingfunding_service.wsdl</grounding:wsdlDocument>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_FUNDING2"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/GovernmentmissileweaponFundingfunding#_FUNDING2</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:owlsProcess rdf:resource="#GOVERNMENTMISSILEWEAPON_FUNDINGFUNDING_PROCESS"/>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/GovernmentmissileweaponFundingfunding#get_FUNDING1_FUNDING2Response</grounding:wsdlOutputMessage>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_FUNDING1"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/GovernmentmissileweaponFundingfunding#_FUNDING1</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_GOVERNMENT"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/GovernmentmissileweaponFundingfunding#_GOVERNMENT</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

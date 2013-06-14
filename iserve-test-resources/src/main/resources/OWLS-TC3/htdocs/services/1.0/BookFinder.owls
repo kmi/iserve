@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?> 
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#" 
+          xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"  
+          xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+          xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#" 
+          xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#" 
+          xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#" 
+          xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#" 
+          xml:base        = "http://127.0.0.1/services/1.0/BookFinder.owls"> 
+ 
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="TITLE_BOOK_SERVICE"> 
+   <service:presents rdf:resource="#TITLE_BOOK_PROFILE"/> 
+   <service:describedBy rdf:resource="#TITLE_BOOK_PROCESS_MODEL"/> 
+   <service:supports rdf:resource="#TITLE_BOOK_GROUNDING"/> 
+</service:Service>
+
+<profile:Profile rdf:ID="TITLE_BOOK_PROFILE">
+   <service:isPresentedBy rdf:resource="#TITLE_BOOK_SERVICE"/>
+   <profile:serviceName xml:lang="en">
+      BookFinder
+   </profile:serviceName>
+   <profile:textDescription xml:lang="en">
+      This service returns the information of a book whose title best matches the give string
+   </profile:textDescription>
+   <profile:hasInput  rdf:resource="#_TITLE"/>
+   <profile:hasOutput rdf:resource="#_BOOK"/>
+
+<profile:has_process rdf:resource="TITLE_BOOK_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="TITLE_BOOK_PROCESS_MODEL">
+   <service:describes rdf:resource="#TITLE_BOOK_SERVICE"/>
+   <process:hasProcess rdf:resource="#TITLE_BOOK_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="TITLE_BOOK_PROCESS">
+   <process:hasInput  rdf:resource="#_TITLE"/>
+   <process:hasOutput rdf:resource="#_BOOK"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_TITLE">
+   <process:parameterType rdf:resource="http://127.0.0.1/ontology/books.owl#Title" />
+</process:Input>
+
+<process:Output  rdf:ID="_BOOK">
+   <process:parameterType rdf:resource="http://127.0.0.1/ontology/books.owl#Book" />
+</process:Output >
+
+<grounding:WsdlGrounding rdf:ID="TITLE_BOOK_GROUNDING">
+   <service:supportedBy rdf:resource="#TITLE_BOOK_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

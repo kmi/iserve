@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:process="http://www.daml.org/services/owl-s/1.1/Process.owl#"
+    xmlns="http://127.0.0.1/services/1.1/publication_number_publication_service.owls"
+    xmlns:service="http://www.daml.org/services/owl-s/1.1/Service.owl#"
+    xmlns:list="http://www.daml.org/services/owl-s/1.1/generic/ObjectList.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:profile="http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+    xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+    xmlns:grounding="http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns:expression="http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://127.0.0.1/services/1.1/publication_number_publication_service.owls">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl"/>
+  </owl:Ontology>
+  <service:Service rdf:ID="PUBLICATION-NUMBER_PUBLICATION_Service">
+  <service:presents rdf:resource="#PUBLICATION-NUMBER_PUBLICATION_Profile"/>
+<service:describedBy rdf:resource="#PUBLICATION-NUMBER_PUBLICATION_Process"/>
+<service:supports rdf:resource="#PUBLICATION-NUMBER_PUBLICATION_Grounding"/>
+</service:Service>
+  <profile:Profile rdf:ID="PUBLICATION-NUMBER_PUBLICATION_Profile">
+    <profile:serviceName>PublicationSearchingService</profile:serviceName>
+    <profile:textDescription>This service returns a publication on given PUBLICATION-NUMBER.</profile:textDescription>
+    <profile:hasInput>
+      <process:Input rdf:ID="_PUBLICATION-NUMBER">
+        <rdfs:label>_PUBLICATION-NUMBER</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/portal.owl#Publication-Number</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasOutput>
+      <process:Output rdf:ID="_PUBLICATION">
+        <rdfs:label>_PUBLICATION</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/portal.owl#Publication</process:parameterType>
+      </process:Output>
+    </profile:hasOutput>
+  </profile:Profile>
+  <process:AtomicProcess rdf:ID="PUBLICATION-NUMBER_PUBLICATION_Process">
+    <rdfs:label>PUBLICATION-NUMBER_PUBLICATION_Process</rdfs:label>
+    <process:hasInput rdf:resource="#_PUBLICATION-NUMBER"/>
+    <process:hasOutput rdf:resource="#_PUBLICATION"/>
+  </process:AtomicProcess>
+  <grounding:WsdlGrounding rdf:ID="PUBLICATION-NUMBER_PUBLICATION_Grounding">
+    <grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="PUBLICATION-NUMBER_PUBLICATION_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#PUBLICATION-NUMBER_PUBLICATION_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/publication_number_publication_service.wsdl</grounding:wsdlDocument>
+	<grounding:owlsProcess rdf:resource="#PUBLICATION-NUMBER_PUBLICATION_Process"/>
+	<grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Publication_numberPublication#get_PUBLICATION</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Publication_numberPublication#Publication-numberPublicationSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Publication_numberPublication#get_PUBLICATIONRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Publication_numberPublication#get_PUBLICATIONResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_PUBLICATION-NUMBER"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Publication_numberPublication#_PUBLICATION-NUMBER</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_PUBLICATION"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Publication_numberPublication#_PUBLICATION</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+  <owl:Class rdf:about="/ontology/portal.owl#Publication"/>
+  <owl:Class rdf:about="/ontology/portal.owl#Publication-Number"/>
+</rdf:RDF>

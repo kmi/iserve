@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/surfing_destination_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="SURFING_DESTINATION_SERVICE">
+<service:presents rdf:resource="#SURFING_DESTINATION_PROFILE"/>
+<service:describedBy rdf:resource="#SURFING_DESTINATION_PROCESS_MODEL"/>
+<service:supports rdf:resource="#SURFING_DESTINATION_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="SURFING_DESTINATION_PROFILE">
+<service:isPresentedBy rdf:resource="#SURFING_DESTINATION_SERVICE"/>
+<profile:serviceName xml:lang="en">
+SurfingDestinationService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This is the best service to know about
+the destination for surfing.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_SURFING"/>
+<profile:hasOutput rdf:resource="#_DESTINATION"/>
+
+<profile:has_process rdf:resource="SURFING_DESTINATION_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="SURFING_DESTINATION_PROCESS_MODEL">
+<service:describes rdf:resource="#SURFING_DESTINATION_SERVICE"/>
+<process:hasProcess rdf:resource="#SURFING_DESTINATION_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="SURFING_DESTINATION_PROCESS">
+<process:hasInput  rdf:resource="#_SURFING"/>
+<process:hasOutput rdf:resource="#_DESTINATION"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_SURFING">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/travel.owl#Surfing" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_DESTINATION">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/travel.owl#Destination" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="SURFING_DESTINATION_GROUNDING">
+<service:supportedBy rdf:resource="#SURFING_DESTINATION_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

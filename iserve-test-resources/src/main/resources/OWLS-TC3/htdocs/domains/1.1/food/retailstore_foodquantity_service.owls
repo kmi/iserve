@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/retailstore_foodquantity_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/support.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="RETAILSTORESTORE_FOODQUANTITY_SERVICE">
+<service:presents rdf:resource="#RETAILSTORESTORE_FOODQUANTITY_PROFILE"/>
+<service:describedBy rdf:resource="#RETAILSTORESTORE_FOODQUANTITY_PROCESS"/>
+<service:supports rdf:resource="#RETAILSTORESTORE_FOODQUANTITY_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="RETAILSTORESTORE_FOODQUANTITY_PROFILE">
+<service:isPresentedBy rdf:resource="#RETAILSTORESTORE_FOODQUANTITY_SERVICE"/>
+<profile:serviceName xml:lang="en">
+RetailStore Food Quantity Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service informs you about food items which are available in a given retail store and its quantity.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_RETAILSTORESTORE"/>
+<profile:hasOutput rdf:resource="#_FOOD"/>
+<profile:hasOutput rdf:resource="#_QUANTITY"/>
+
+<profile:has_process rdf:resource="RETAILSTORESTORE_FOODQUANTITY_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="RETAILSTORESTORE_FOODQUANTITY_PROCESS_MODEL">
+<service:describes rdf:resource="#RETAILSTORESTORE_FOODQUANTITY_SERVICE"/>
+<process:hasProcess rdf:resource="#RETAILSTORESTORE_FOODQUANTITY_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="RETAILSTORESTORE_FOODQUANTITY_PROCESS">
+<service:describes rdf:resource="#RETAILSTORESTORE_FOODQUANTITY_SERVICE"/>
+<process:hasInput  rdf:resource="#_RETAILSTORESTORE"/>
+<process:hasOutput rdf:resource="#_FOOD"/>
+<process:hasOutput rdf:resource="#_QUANTITY"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_RETAILSTORESTORE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#RetailStore</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_FOOD">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#Food</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_QUANTITY">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/support.owl#Quantity</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="RETAILSTORESTORE_FOODQUANTITY_GROUNDING">
+<service:supportedBy rdf:resource="#RETAILSTORESTORE_FOODQUANTITY_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="RETAILSTORESTORE_FOODQUANTITY_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#RETAILSTORESTORE_FOODQUANTITY_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/retailstore_foodquantity_service.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#RETAILSTORESTORE_FOODQUANTITY_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/RetailstorestoreFoodquantity#get_FOOD_QUANTITY</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/RetailstorestoreFoodquantity#RetailstorestoreFoodquantitySoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/RetailstorestoreFoodquantity#get_FOOD_QUANTITYRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/RetailstorestoreFoodquantity#get_FOOD_QUANTITYResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_RETAILSTORESTORE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/RetailstorestoreFoodquantity#_RETAILSTORESTORE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_FOOD"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/RetailstorestoreFoodquantity#_FOOD</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_QUANTITY"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/RetailstorestoreFoodquantity#_QUANTITY</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

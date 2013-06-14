@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/bookpersoncreditaccount__Beaservice.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="CREDITACCOUNTBOOKPERSON__SERVICE">
+<service:presents rdf:resource="#CREDITACCOUNTBOOKPERSON__PROFILE"/>
+<service:describedBy rdf:resource="#CREDITACCOUNTBOOKPERSON__PROCESS_MODEL"/>
+<service:supports rdf:resource="#CREDITACCOUNTBOOKPERSON__GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="CREDITACCOUNTBOOKPERSON__PROFILE">
+<service:isPresentedBy rdf:resource="#CREDITACCOUNTBOOKPERSON__SERVICE"/>
+<profile:serviceName xml:lang="en">
+Bea BookShopping
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+Bea service checks credit account of an authorised person and adds the selected book in his shopping cart.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_PERSON"/>
+<profile:hasInput  rdf:resource="#_BOOK"/>
+<profile:hasInput  rdf:resource="#_CREDITACCOUNT"/>
+
+<profile:has_process rdf:resource="CREDITACCOUNTBOOKPERSON__PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="CREDITACCOUNTBOOKPERSON__PROCESS_MODEL">
+<service:describes rdf:resource="#CREDITACCOUNTBOOKPERSON__SERVICE"/>
+<process:hasProcess rdf:resource="#CREDITACCOUNTBOOKPERSON__PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="CREDITACCOUNTBOOKPERSON__PROCESS">
+<process:hasInput  rdf:resource="#_PERSON"/>
+<process:hasInput  rdf:resource="#_BOOK"/>
+<process:hasInput  rdf:resource="#_CREDITACCOUNT"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_PERSON">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/books.owl#Person" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_BOOK">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/books.owl#Book" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_CREDITACCOUNT">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl#CreditAccount" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<grounding:WsdlGrounding rdf:ID="CREDITACCOUNTBOOKPERSON__GROUNDING">
+<service:supportedBy rdf:resource="#CREDITACCOUNTBOOKPERSON__SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

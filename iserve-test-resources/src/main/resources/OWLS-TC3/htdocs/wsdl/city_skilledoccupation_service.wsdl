@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns="http://127.0.0.1/wsdl/CitySkilledoccupation" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://127.0.0.1/wsdl/CitySkilledoccupation" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  name="CitySkilledoccupation" targetNamespace="http://127.0.0.1/wsdl/CitySkilledoccupation">
+    <wsdl:types>
+        <xsd:schema version="OWLS2WSDL Sat Jun 06 15:54:18 CEST 2009"
+                    targetNamespace="http://127.0.0.1/wsdl/CitySkilledoccupation"
+                    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:annotation>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-ComplexType) of http://127.0.0.1/ontology/SUMO.owl#City"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/Mid-level-ontology.owl#SkilledOccupation"/>
+            </xsd:annotation>
+            <xsd:element name="SkilledOccupation" type="SkilledOccupationType"/>
+            <xsd:element name="City" type="CityType"/>
+            <xsd:complexType name="Physical">
+                <xsd:sequence>
+                    <xsd:element name="hasPurpose" type="Formula"/>
+                    <xsd:element name="date" type="Day"/>
+                    <xsd:element name="WhenFn" type="TimeInterval"/>
+                    <xsd:element name="cooccur" type="Physical"/>
+                    <xsd:element name="monetaryValue" type="CurrencyMeasure"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="TimeInterval">
+                <xsd:sequence>
+                    <xsd:element name="starts" type="TimeInterval"/>
+                    <xsd:element name="finishes" type="TimeInterval"/>
+                    <xsd:element name="BeginFn" type="TimePoint"/>
+                    <xsd:element name="duration" type="TimeDuration"/>
+                    <xsd:element name="during" type="TimeInterval"/>
+                    <xsd:element name="EndFn" type="TimePoint"/>
+                    <xsd:element name="earlier" type="TimeInterval"/>
+                    <xsd:element name="meetsTemporally" type="TimeInterval"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="GeopoliticalArea">
+                <xsd:sequence>
+                    <xsd:element name="JudiciaryFn" type="JudicialOrganization"/>
+                    <xsd:element name="dependentGeopoliticalArea" type="GeopoliticalArea"/>
+                    <xsd:element name="totalGDP" type="CurrencyMeasure"/>
+                    <xsd:element name="CitizenryFn" type="GroupOfPeople"/>
+                    <xsd:element name="GovernmentFn" type="Government"/>
+                    <xsd:element name="currencyType" type="CurrencyMeasure"/>
+                    <xsd:element name="legalSystemType" type="LegalSystemAttribute"/>
+                    <xsd:element name="primaryGeopoliticalSubdivision" type="GeopoliticalArea"/>
+                    <xsd:element name="LegislatureFn" type="LegislativeOrganization"/>
+                    <xsd:element name="industryOfArea" type="Physical"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="CityType">
+                <xsd:sequence>
+                    <xsd:element name="capitalCity" type="GeopoliticalArea"/>
+                    <xsd:element name="cityAddress" type="Address"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="TimePoint">
+                <xsd:sequence>
+                    <xsd:element name="before" type="TimePoint"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Formula">
+                <xsd:sequence>
+                    <xsd:element name="ProbabilityFn" type="xsd:anyURI"/>
+                    <xsd:element name="decreasesLikelihood" type="Formula"/>
+                    <xsd:element name="independentProbability" type="Formula"/>
+                    <xsd:element name="increasesLikelihood" type="Formula"/>
+                    <xsd:element name="modalAttribute" type="NormativeAttribute"/>
+                    <xsd:element name="entails" type="Formula"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="GroupOfPeople">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="CurrencyMeasure">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="TimeDuration">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="LegislativeOrganization">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="Address">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="NormativeAttribute">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="Government">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="SkilledOccupationType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="JudicialOrganization">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="Day">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="LegalSystemAttribute">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="get_SKILLEDOCCUPATIONRequest">
+        <wsdl:part name="_CITY" type="tns:CityType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="get_SKILLEDOCCUPATIONResponse">
+        <wsdl:part name="_SKILLEDOCCUPATION" type="tns:SkilledOccupationType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="CitySkilledoccupationSoap">
+        <wsdl:operation name="get_SKILLEDOCCUPATION">
+            <wsdl:input message="tns:get_SKILLEDOCCUPATIONRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:get_SKILLEDOCCUPATIONResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="CitySkilledoccupationSoapBinding" type="CitySkilledoccupationSoap">
+        <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="get_SKILLEDOCCUPATION">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/CitySkilledoccupation"/>
+            </wsdl:input>
+            <wsdl:output>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/CitySkilledoccupation"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="CitySkilledoccupationService">
+        <wsdl:port name="CitySkilledoccupationSoap" binding="CitySkilledoccupationSoapBinding">
+            <wsdlsoap:address location="http://127.0.0.1/wsdl/CitySkilledoccupation"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

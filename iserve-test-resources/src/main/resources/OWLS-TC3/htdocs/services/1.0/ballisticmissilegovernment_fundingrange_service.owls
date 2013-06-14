@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/ballisticmissilegovernment_fundingrange_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/extendedCamera.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="BALLISTICMISSILEGOVERNMENT_FUNDINGRANGE_SERVICE">
+<service:presents rdf:resource="#BALLISTICMISSILEGOVERNMENT_FUNDINGRANGE_PROFILE"/>
+<service:describedBy rdf:resource="#BALLISTICMISSILEGOVERNMENT_FUNDINGRANGE_PROCESS_MODEL"/>
+<service:supports rdf:resource="#BALLISTICMISSILEGOVERNMENT_FUNDINGRANGE_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="BALLISTICMISSILEGOVERNMENT_FUNDINGRANGE_PROFILE">
+<service:isPresentedBy rdf:resource="#BALLISTICMISSILEGOVERNMENT_FUNDINGRANGE_SERVICE"/>
+<profile:serviceName xml:lang="en">
+GovBllisticMissileFundingService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service informs you funding for the ballistic Missile provided by the government, and target range of the missile.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_GOVERNMENT"/>
+<profile:hasInput  rdf:resource="#_BALLISTICMISSILE"/>
+<profile:hasOutput rdf:resource="#_FUNDING"/>
+<profile:hasOutput rdf:resource="#_RANGE"/>
+
+<profile:has_process rdf:resource="BALLISTICMISSILEGOVERNMENT_FUNDINGRANGE_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="BALLISTICMISSILEGOVERNMENT_FUNDINGRANGE_PROCESS_MODEL">
+<service:describes rdf:resource="#BALLISTICMISSILEGOVERNMENT_FUNDINGRANGE_SERVICE"/>
+<process:hasProcess rdf:resource="#BALLISTICMISSILEGOVERNMENT_FUNDINGRANGE_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="BALLISTICMISSILEGOVERNMENT_FUNDINGRANGE_PROCESS">
+<process:hasInput  rdf:resource="#_GOVERNMENT"/>
+<process:hasInput  rdf:resource="#_BALLISTICMISSILE"/>
+<process:hasOutput rdf:resource="#_FUNDING"/>
+<process:hasOutput rdf:resource="#_RANGE"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_GOVERNMENT">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/SUMO.owl#Government" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_BALLISTICMISSILE">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl#BallisticMissile" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_FUNDING">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/SUMO.owl#Funding" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_RANGE">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/extendedCamera.owl#Range" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="BALLISTICMISSILEGOVERNMENT_FUNDINGRANGE_GROUNDING">
+<service:supportedBy rdf:resource="#BALLISTICMISSILEGOVERNMENT_FUNDINGRANGE_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

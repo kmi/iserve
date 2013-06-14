@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/title_filmmaxpricequality_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/finance_th_web.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="TITLE_FILMMAXPRICEQUALITY_SERVICE">
+<service:presents rdf:resource="#TITLE_FILMMAXPRICEQUALITY_PROFILE"/>
+<service:describedBy rdf:resource="#TITLE_FILMMAXPRICEQUALITY_PROCESS"/>
+<service:supports rdf:resource="#TITLE_FILMMAXPRICEQUALITY_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="TITLE_FILMMAXPRICEQUALITY_PROFILE">
+<service:isPresentedBy rdf:resource="#TITLE_FILMMAXPRICEQUALITY_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Title Film MaxPrice Quality service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service searches films for the given title, and also returns
+its max price and quality.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_TITLE"/>
+<profile:hasOutput rdf:resource="#_FILM"/>
+<profile:hasOutput rdf:resource="#_MAXPRICE"/>
+<profile:hasOutput rdf:resource="#_QUALITY"/>
+
+<profile:has_process rdf:resource="TITLE_FILMMAXPRICEQUALITY_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="TITLE_FILMMAXPRICEQUALITY_PROCESS_MODEL">
+<service:describes rdf:resource="#TITLE_FILMMAXPRICEQUALITY_SERVICE"/>
+<process:hasProcess rdf:resource="#TITLE_FILMMAXPRICEQUALITY_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="TITLE_FILMMAXPRICEQUALITY_PROCESS">
+<service:describes rdf:resource="#TITLE_FILMMAXPRICEQUALITY_SERVICE"/>
+<process:hasInput  rdf:resource="#_TITLE"/>
+<process:hasOutput rdf:resource="#_FILM"/>
+<process:hasOutput rdf:resource="#_MAXPRICE"/>
+<process:hasOutput rdf:resource="#_QUALITY"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_TITLE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/books.owl#Title</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_FILM">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/my_ontology.owl#Film</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_MAXPRICE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/concept.owl#MaxPrice</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_QUALITY">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/finance_th_web.owl#quality</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="TITLE_FILMMAXPRICEQUALITY_GROUNDING">
+<service:supportedBy rdf:resource="#TITLE_FILMMAXPRICEQUALITY_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="TITLE_FILMMAXPRICEQUALITY_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#TITLE_FILMMAXPRICEQUALITY_AtomicProcessGrounding">
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_TITLE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleFilmmaxpricequality#_TITLE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleFilmmaxpricequality#get_FILM_MAXPRICE_QUALITY</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleFilmmaxpricequality#TitleFilmmaxpricequalitySoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_FILM"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleFilmmaxpricequality#_FILM</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_MAXPRICE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleFilmmaxpricequality#_MAXPRICE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/TitleFilmmaxpricequality#get_FILM_MAXPRICE_QUALITYResponse</grounding:wsdlOutputMessage>
+    <grounding:owlsProcess rdf:resource="#TITLE_FILMMAXPRICEQUALITY_PROCESS"/>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_QUALITY"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleFilmmaxpricequality#_QUALITY</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/title_filmmaxpricequality_service.wsdl</grounding:wsdlDocument>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/TitleFilmmaxpricequality#get_FILM_MAXPRICE_QUALITYRequest</grounding:wsdlInputMessage>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

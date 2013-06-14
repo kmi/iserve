@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/publicationperson__service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="PUBLICATIONPERSON__SERVICE">
+<service:presents rdf:resource="#PUBLICATIONPERSON__PROFILE"/>
+<service:describedBy rdf:resource="#PUBLICATIONPERSON__PROCESS_MODEL"/>
+<service:supports rdf:resource="#PUBLICATIONPERSON__GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="PUBLICATIONPERSON__PROFILE">
+<service:isPresentedBy rdf:resource="#PUBLICATIONPERSON__SERVICE"/>
+<profile:serviceName xml:lang="en">
+PublicationShopping
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service adds a publication material as an item in the session of a authorised person.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_PERSON"/>
+<profile:hasInput  rdf:resource="#_PUBLICATION"/>
+
+<profile:has_process rdf:resource="PUBLICATIONPERSON__PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="PUBLICATIONPERSON__PROCESS_MODEL">
+<service:describes rdf:resource="#PUBLICATIONPERSON__SERVICE"/>
+<process:hasProcess rdf:resource="#PUBLICATIONPERSON__PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="PUBLICATIONPERSON__PROCESS">
+<process:hasInput  rdf:resource="#_PERSON"/>
+<process:hasInput  rdf:resource="#_PUBLICATION"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_PERSON">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/books.owl#Person" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_PUBLICATION">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/books.owl#Publication" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<grounding:WsdlGrounding rdf:ID="PUBLICATIONPERSON__GROUNDING">
+<service:supportedBy rdf:resource="#PUBLICATIONPERSON__SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

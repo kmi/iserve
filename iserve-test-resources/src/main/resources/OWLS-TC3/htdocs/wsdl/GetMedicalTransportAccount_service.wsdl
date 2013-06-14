@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns="http://127.0.0.1/wsdl/Getmedicaltransportaccount" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://127.0.0.1/wsdl/Getmedicaltransportaccount"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  name="Getmedicaltransportaccount" targetNamespace="http://127.0.0.1/wsdl/Getmedicaltransportaccount">
+    <wsdl:types>
+        <xsd:schema version="OWLS2WSDL Mon May 25 23:41:12 CEST 2009"
+                    targetNamespace="http://127.0.0.1/wsdl/Getmedicaltransportaccount"
+                    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:annotation>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/MedicalTransportCompanyOntology.owl#Diagnosis"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/MedicalTransportCompanyOntology.owl#AccountPassword"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/MedicalTransportCompanyOntology.owl#DateTime"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/MedicalTransportCompanyOntology.owl#DateTime"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/MedicalTransportCompanyOntology.owl#Address"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/MedicalTransportCompanyOntology.owl#CreditCardNumber"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/MedicalTransportCompanyOntology.owl#AccountName"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/MedicalTransportCompanyOntology.owl#PersonName"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/MedicalTransportCompanyOntology.owl#Account"/>
+            </xsd:annotation>
+            <xsd:element name="CreditCardNumber" type="CreditCardNumberType"/>
+            <xsd:element name="AccountPassword" type="AccountPasswordType"/>
+            <xsd:element name="Diagnosis" type="DiagnosisType"/>
+            <xsd:element name="Account" type="AccountType"/>
+            <xsd:element name="PersonName" type="PersonNameType"/>
+            <xsd:element name="AccountName" type="AccountNameType"/>
+            <xsd:element name="DateTime" type="DateTimeType"/>
+            <xsd:element name="Address" type="AddressType"/>
+            <xsd:simpleType name="PersonNameType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="AccountPasswordType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="CreditCardNumberType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="DiagnosisType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="AddressType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="AccountNameType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="AccountType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="DateTimeType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="getGetMedicalTransportAccount_AccountResponse">
+        <wsdl:part name="GetMedicalTransportAccount_Account" type="tns:AccountType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getGetMedicalTransportAccount_AccountRequest">
+        <wsdl:part name="ProvideMedicalTransportInformation_Diagnosis" type="tns:DiagnosisType">
+        </wsdl:part>
+        <wsdl:part name="GetMedicalTransportAccount_CustomerDesiredPassword" type="tns:AccountPasswordType">
+        </wsdl:part>
+        <wsdl:part name="ProvideMedicalTransportInformation_DesiredDepartureDateTime" type="tns:DateTimeType">
+        </wsdl:part>
+        <wsdl:part name="GetMedicalTransportAccount_CustomerCreditCardExpDate" type="tns:DateTimeType">
+        </wsdl:part>
+        <wsdl:part name="GetMedicalTransportAccount_CustomerAddress" type="tns:AddressType">
+        </wsdl:part>
+        <wsdl:part name="GetMedicalTransportAccount_CustomerCreditCardNumber" type="tns:CreditCardNumberType">
+        </wsdl:part>
+        <wsdl:part name="GetMedicalTransportAccount_CustomerDesiredAccountName" type="tns:AccountNameType">
+        </wsdl:part>
+        <wsdl:part name="GetMedicalTransportAccount_CustomerName" type="tns:PersonNameType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="GetmedicaltransportaccountSoap">
+        <wsdl:operation name="getGetMedicalTransportAccount_Account">
+            <wsdl:input message="tns:getGetMedicalTransportAccount_AccountRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:getGetMedicalTransportAccount_AccountResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="GetmedicaltransportaccountSoapBinding" type="GetmedicaltransportaccountSoap">
+        <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getGetMedicalTransportAccount_Account">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/Getmedicaltransportaccount"/>
+            </wsdl:input>
+            <wsdl:output>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/Getmedicaltransportaccount"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="GetmedicaltransportaccountService">
+        <wsdl:port name="GetmedicaltransportaccountSoap" binding="GetmedicaltransportaccountSoapBinding">
+            <wsdlsoap:address location="http://127.0.0.1/wsdl/Getmedicaltransportaccount"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

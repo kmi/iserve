@@ -1,0 +1,168 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:process="http://www.daml.org/services/owl-s/1.1/Process.owl#"
+    xmlns="http://127.0.0.1/services/1.1/PatientTransport_service.owls"
+    xmlns:service="http://www.daml.org/services/owl-s/1.1/Service.owl#"
+    xmlns:list="http://www.daml.org/services/owl-s/1.1/generic/ObjectList.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:profile="http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+    xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+    xmlns:grounding="http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns:expression="http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://127.0.0.1/services/1.1/PatientTransport_service.owls">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.1/Service.owl"/>
+    <owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.1/Process.owl"/>
+    <owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.1/Profile.owl"/>
+    <owl:imports rdf:resource="/ontology/HospitalPhysicianOntology.owl"/>
+    <owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.1/Grounding.owl"/>
+  </owl:Ontology>
+  <service:Service rdf:ID="PatientTransportService">
+    <service:presents>
+      <profile:Profile rdf:ID="PatientTransportProfile"/>
+    </service:presents>
+    <service:describedBy>
+      <process:AtomicProcess rdf:ID="PatientTransportProcess"/>
+    </service:describedBy>
+    <service:supports>
+      <grounding:WsdlGrounding rdf:ID="PatientTransportGrounding"/>
+    </service:supports>
+  </service:Service>
+  <profile:Profile rdf:about="#PatientTransportProfile">
+    <profile:hasInput>
+      <process:Input rdf:ID="PatientTransport_PatientGpsPosition">
+        <rdfs:label>PatientTransport_PatientGpsPosition</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#GpsPosition</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasInput>
+      <process:Input rdf:ID="PatientTransport_ChosenHospital">
+        <rdfs:label>PatientTransport_ChosenHospital</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#Hospital</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasOutput>
+      <process:Output rdf:ID="PatientTransport_Acknowledgement">
+        <rdfs:label>PatientTransport_Acknowledgement</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#Acknowledgement</process:parameterType>
+      </process:Output>
+    </profile:hasOutput>
+    <profile:hasInput>
+      <process:Input rdf:ID="PatientTransport_Diagnosis">
+        <rdfs:label>PatientTransport_Diagnosis</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#Diagnosis</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasInput>
+      <process:Input rdf:ID="SeePatientMedicalRecords_PhysicianPassword">
+        <rdfs:label>SeePatientMedicalRecords_PhysicianPassword</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#AccountPassword</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:serviceName>PatientTransport</profile:serviceName>
+    <profile:textDescription>If a hospital is not capable of treating a patient, his relocation has to be set up. With this service, the hospital physician can make a transport proposal for delivering the patient to the new hospital.</profile:textDescription>
+    <service:presentedBy rdf:resource="#PatientTransportService"/>
+    <profile:hasOutput>
+      <process:Output rdf:ID="SeePatientMedicalRecords_PatientMedicalRecords">
+        <rdfs:label>SeePatientMedicalRecords_PatientMedicalRecords</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#MedicalRecords</process:parameterType>
+      </process:Output>
+    </profile:hasOutput>
+  </profile:Profile>
+  <process:AtomicProcess rdf:about="#PatientTransportProcess">
+    <rdfs:label>PatientTransportProcess</rdfs:label>
+    <service:describes rdf:resource="#PatientTransportService"/>
+    <process:hasInput rdf:resource="#PatientTransport_PatientGpsPosition"/>
+    <process:hasInput rdf:resource="#SeePatientMedicalRecords_PhysicianPassword"/>
+    <process:hasInput rdf:resource="#PatientTransport_Diagnosis"/>
+    <process:hasInput rdf:resource="#PatientTransport_ChosenHospital"/>
+    <process:hasOutput rdf:resource="#SeePatientMedicalRecords_PatientMedicalRecords"/>
+    <process:hasOutput rdf:resource="#PatientTransport_Acknowledgement"/>
+  </process:AtomicProcess>
+  <grounding:WsdlGrounding rdf:about="#PatientTransportGrounding">
+    <service:supportedBy rdf:resource="#PatientTransportService"/>
+    <grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="PatientTransportAtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#PatientTransportAtomicProcessGrounding">
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#PatientTransport_Diagnosis"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Patienttransport#PatientTransport_Diagnosis</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Patienttransport#getSeePatientMedicalRecords_PatientMedicalRecordsPatientTransport_Acknowledgement</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Patienttransport#PatienttransportSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#PatientTransport_ChosenHospital"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Patienttransport#PatientTransport_ChosenHospital</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/PatientTransport_service.wsdl</grounding:wsdlDocument>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Patienttransport#getSeePatientMedicalRecords_PatientMedicalRecordsPatientTransport_AcknowledgementResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#SeePatientMedicalRecords_PhysicianPassword"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Patienttransport#SeePatientMedicalRecords_PhysicianPassword</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Patienttransport#getSeePatientMedicalRecords_PatientMedicalRecordsPatientTransport_AcknowledgementRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#PatientTransport_Acknowledgement"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Patienttransport#PatientTransport_Acknowledgement</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:owlsProcess rdf:resource="#PatientTransportProcess"/>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#PatientTransport_PatientGpsPosition"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Patienttransport#PatientTransport_PatientGpsPosition</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#SeePatientMedicalRecords_PatientMedicalRecords"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Patienttransport#SeePatientMedicalRecords_PatientMedicalRecords</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+  <owl:Class rdf:about="/ontology/HospitalPhysicianOntology.owl#Hospital"/>
+  <owl:Class rdf:about="/ontology/HospitalPhysicianOntology.owl#GpsPosition"/>
+  <owl:Class rdf:about="/ontology/HospitalPhysicianOntology.owl#MedicalRecords"/>
+  <owl:Class rdf:about="/ontology/HospitalPhysicianOntology.owl#Acknowledgement"/>
+  <owl:Class rdf:about="/ontology/HospitalPhysicianOntology.owl#AccountPassword"/>
+  <owl:Class rdf:about="/ontology/HospitalPhysicianOntology.owl#Diagnosis"/>
+</rdf:RDF>

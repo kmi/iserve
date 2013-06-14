@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<definitions xmlns:sawsdl="http://www.w3.org/ns/sawsdl" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema"
+             xmlns:s0="http://www.hopstop.com/ws/"
+             xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" targetNamespace="http://www.hopstop.com/ws/"
+             xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <types>
+        <s:schema elementFormDefault="qualified" targetNamespace="http://www.hopstop.com/ws/">
+
+            <s:element name="GetMap"
+                       sawsdl:modelReference="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#RawAddress">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="licenseKey" type="s:string"/>
+                        <s:element minOccurs="0" maxOccurs="1" name="city" type="s:string"/>
+                        <s:element minOccurs="0" maxOccurs="1" name="county" type="s:string"/>
+                        <s:element minOccurs="0" maxOccurs="1" name="zip" type="s:string"/>
+                        <s:element minOccurs="1" maxOccurs="1" name="address" type="s:string"/>
+                        <s:element minOccurs="0" maxOccurs="1" name="showNearby" type="s:string"/>
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+
+            <s:element name="GetMapResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="1" maxOccurs="1" name="ResponseStatus" type="s0:ResponseStatus"/>
+                        <s:element minOccurs="0" maxOccurs="1" name="MapInfo" type="s0:MapData"/>
+                        <s:element minOccurs="0" maxOccurs="1" name="Thumbnails" type="s0:ArrayOfThumbnailData"/>
+                        <s:element minOccurs="0" maxOccurs="1" name="Disclaimer" type="s:string"/>
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+
+            <s:complexType name="ResponseStatus">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="ResultCode" type="s:int"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="ResultString" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="FaultCode" type="s:int"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="FaultString" type="s:string"/>
+                </s:sequence>
+            </s:complexType>
+
+            <s:complexType name="MapData"
+                           sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#Map http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#SpecificAddress">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="Id" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Title" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="URL" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="X" type="s:double"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Y" type="s:double"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="City" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="County" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Address" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="AddressMessage" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="CreatedByModule" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Number" type="s:int"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="State" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Zip" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Width" type="s:int"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Height" type="s:int"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="TitleFrom" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="TitleTo" type="s:string"/>
+                </s:sequence>
+            </s:complexType>
+
+            <s:complexType name="ThumbnailData">
+                <s:sequence>
+                    <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:string"/>
+                    <s:element minOccurs="1" maxOccurs="1" name="Title" type="s:string"/>
+                    <s:element minOccurs="1" maxOccurs="1" name="URL" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="AddressId" type="s:int"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Width" type="s:int"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Height" type="s:int"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="City" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="County" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Address" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="X" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Y" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Zip" type="s:string"/>
+                </s:sequence>
+            </s:complexType>
+
+            <s:complexType name="ArrayOfThumbnailData">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="unbounded" name="ThumbnailData" nillable="true"
+                               type="s0:ThumbnailData"/>
+                </s:sequence>
+            </s:complexType>
+
+        </s:schema>
+    </types>
+
+    <message name="GetMapSoapIn">
+        <part name="parameters" element="s0:GetMap"/>
+    </message>
+
+    <message name="GetMapSoapOut">
+        <part name="parameters" element="s0:GetMapResponse"/>
+    </message>
+
+    <message name="GetMapHttpGetIn">
+        <part name="licenseKey" type="s:string"/>
+        <part name="city" type="s:string"
+              sawsdl:modelReference="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#RawAddress"/>
+        <part name="county" type="s:string"/>
+        <part name="zip" type="s:string"/>
+        <part name="address" type="s:string"/>
+        <part name="showNearby" type="s:string"/>
+    </message>
+
+    <message name="GetMapHttpGetOut">
+        <part name="Body" element="s0:GetMapResponse"/>
+    </message>
+
+    <message name="GetMapHttpPostIn">
+        <part name="licenseKey" type="s:string"/>
+        <part name="city" type="s:string"
+              sawsdl:modelReference="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#RawAddress"/>
+        <part name="county" type="s:string"/>
+        <part name="zip" type="s:string"/>
+        <part name="address" type="s:string"/>
+        <part name="showNearby" type="s:string"/>
+    </message>
+
+    <message name="GetMapHttpPostOut">
+        <part name="Body" element="s0:GetMapResponse"/>
+    </message>
+
+    <portType name="HopStopSoap">
+        <operation name="GetMap" sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <documentation>To get a map for an address. Returns either map info, or preview thumbnails if several
+                matches found for the address.
+            </documentation>
+            <input message="s0:GetMapSoapIn"/>
+            <output message="s0:GetMapSoapOut"/>
+        </operation>
+    </portType>
+
+    <portType name="HopStopHttpGet">
+        <operation name="GetMap" sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <documentation>To get a map for an address. Returns either map info, or preview thumbnails if several
+                matches found for the address.
+            </documentation>
+            <input message="s0:GetMapHttpGetIn"/>
+            <output message="s0:GetMapHttpGetOut"/>
+        </operation>
+    </portType>
+
+    <portType name="HopStopHttpPost">
+        <operation name="GetMap" sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <documentation>To get a map for an address. Returns either map info, or preview thumbnails if several
+                matches found for the address.
+            </documentation>
+            <input message="s0:GetMapHttpPostIn"/>
+            <output message="s0:GetMapHttpPostOut"/>
+        </operation>
+    </portType>
+
+    <binding name="HopStopSoap" type="s0:HopStopSoap">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <operation name="GetMap">
+            <soap:operation soapAction="http://www.hopstop.com/ws/#GetMap" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+
+    <binding name="HopStopHttpGet" type="s0:HopStopHttpGet">
+        <http:binding verb="GET"/>
+        <operation name="GetMap">
+            <http:operation location="/GetMap"/>
+            <input>
+                <http:urlEncoded/>
+            </input>
+            <output>
+                <mime:mimeXml part="Body"/>
+            </output>
+        </operation>
+    </binding>
+
+    <binding name="HopStopHttpPost" type="s0:HopStopHttpPost">
+        <http:binding verb="POST"/>
+        <operation name="GetMap">
+            <http:operation location="/GetMap"/>
+            <input>
+                <mime:content type="application/x-www-form-urlencoded"/>
+            </input>
+            <output>
+                <mime:mimeXml part="Body"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service sawsdl:modelReference=" http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#MappingService"
+             name="HopStop">
+        <documentation>Door-to-Door Subway and Walking Directions uk.ac.open.kmi.iserve.commons.model.Service
+        </documentation>
+        <port name="HopStopSoap" binding="s0:HopStopSoap">
+            <soap:address location="http://www.hopstop.com/ws"/>
+        </port>
+        <port name="HopStopHttpGet" binding="s0:HopStopHttpGet">
+            <soap:address location="http://www.hopstop.com/ws"/>
+        </port>
+        <port name="HopStopHttpPost" binding="s0:HopStopHttpPost">
+            <soap:address location="http://www.hopstop.com/ws"/>
+        </port>
+    </service>
+
+</definitions>
+

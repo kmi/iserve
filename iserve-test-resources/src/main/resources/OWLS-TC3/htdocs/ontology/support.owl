@@ -1,0 +1,431 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE owl [
+<!ENTITY owl "http://www.w3.org/2002/07/owl#">
+<!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
+<!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+<!ENTITY support "http://127.0.0.1/ontology/support.owl#">
+<!ENTITY base "http://127.0.0.1/ontology/support.owl">
+]>
+<rdf:RDF xmlns:owl="&owl;"
+xmlns:rdf="&rdf;"
+xmlns:rdfs="&rdfs;"
+xmlns:xsd="&xsd;"
+xmlns:support="&support;"
+xml:base="&base;"
+xmlns="&support;">
+
+<owl:Ontology rdf:about="">
+<rdfs:label>AKT Reference Ontology (Support Ontology)</rdfs:label>
+<owl:versionInfo>2.0</owl:versionInfo>
+</owl:Ontology>
+
+<owl:Class rdf:ID="Thing">
+<rdfs:label>Thing</rdfs:label>
+<rdfs:comment>This is the top-level concept in the AKT reference ontology</rdfs:comment>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:Class>
+
+<owl:DatatypeProperty rdf:ID="has-pretty-name">
+<rdfs:label>has pretty name</rdfs:label>
+<rdfs:comment>A human readable name</rdfs:comment>
+<rdfs:domain rdf:resource="#Thing"/>
+<rdfs:range rdf:resource="&xsd;string"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:ID="has-variant-name">
+<rdfs:label>has variant name</rdfs:label>
+<rdfs:comment>Other variants of the human readable name</rdfs:comment>
+<rdfs:domain rdf:resource="#Thing"/>
+<rdfs:range rdf:resource="&xsd;string"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:DatatypeProperty>
+
+<owl:Class rdf:ID="Intangible-Thing">
+<rdfs:label>Intangible Thing</rdfs:label>
+<rdfs:comment>This comes from HPKB upper level. The collection of things that are not physical - are not made of, or encoded in, matter. Every Collection is an Intangible (even if its instances are tangible), and so are some Individuals. Caution: do not confuse `tangibility' with `perceivability' - humans can perceive light even though it's intangible - at least in a sense.</rdfs:comment>
+<rdfs:subClassOf rdf:resource="#Thing"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:Class>
+
+<owl:Class rdf:ID="Temporal-Thing">
+<rdfs:label>Temporal Thing</rdfs:label>
+<rdfs:comment>Like in Cyc, this is something which has a temporal extent.</rdfs:comment>
+<rdfs:subClassOf rdf:resource="#Thing"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:Class>
+
+<owl:ObjectProperty rdf:ID="has-time-interval">
+<rdfs:label>has time interval</rdfs:label>
+<rdfs:domain rdf:resource="#Temporal-Thing"/>
+<rdfs:range rdf:resource="#Time-Interval"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:ObjectProperty>
+
+<owl:Class rdf:ID="Tangible-Thing">
+<rdfs:label>Tangible Thing</rdfs:label>
+<rdfs:comment>Something which is not intangible, something which is physical, made of matter. It does not matter whether things are real of imaginary.  Therefore we consider Mickey Mouse's car and a hippogriff as  tangible things</rdfs:comment>
+<rdfs:subClassOf rdf:resource="#Temporal-Thing"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:Class>
+
+<owl:Class rdf:ID="Quantity">
+<rdfs:label>Quantity</rdfs:label>
+<rdfs:comment>From SUO: Any specification of how many or how much of something there is. Accordingly, there are two subclasses of Quantity: Number (how many) and Physical-Quantity (how much).</rdfs:comment>
+<rdfs:subClassOf rdf:resource="#Intangible-Thing"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:Class>
+
+<owl:Class rdf:ID="Physical-Quantity">
+<rdfs:label>Physical Quantity</rdfs:label>
+<rdfs:comment>SUO: Physical Quantities are distinguished from Numbers by the fact that the former are associated with a dimension of measurement.</rdfs:comment>
+<rdfs:subClassOf rdf:resource="#Quantity"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:Class>
+
+<owl:DatatypeProperty rdf:ID="has-magnitude">
+<rdfs:label>has magnitude</rdfs:label>
+<rdfs:domain rdf:resource="#Physical-Quantity"/>
+<rdfs:range rdf:resource="&xsd;decimal"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:DatatypeProperty>
+
+<owl:ObjectProperty rdf:ID="has-unit-of-measure">
+<rdfs:label>has unit of measure</rdfs:label>
+<rdfs:domain rdf:resource="#Physical-Quantity"/>
+<rdfs:range rdf:resource="#Unit-Of-Measure"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:ObjectProperty>
+
+<owl:Class rdf:ID="Unit-Of-Measure">
+<rdfs:label>Unit of Measure</rdfs:label>
+<rdfs:comment>Any kind of unit of measure, metre, dollar, kilogram, etc.</rdfs:comment>
+<rdfs:subClassOf rdf:resource="#Intangible-Thing"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:Class>
+
+<!-- TIME -->
+<!-- Excluded entities: Year-In-Time
+Month-In-Time
+Day-In-Time
+Hour-In-Time
+Minute-In-Time
+Second-In-Time
+Timezone
+DURATION-IS-BEGIN-TIME-MINUS-END-TIME (axiom)
+TIME-DIFFERENCE (function)
+-->
+
+<owl:Class rdf:ID="Time-Position">
+<rdfs:label>Time Position</rdfs:label>
+<rdfs:comment>A time position is either a time interval or a time point. Any time position is relative to a time zone</rdfs:comment>
+<rdfs:subClassOf rdf:resource="#Intangible-Thing"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:Class>
+
+<owl:DatatypeProperty rdf:ID="in-timezone">
+<rdfs:label>in timezone</rdfs:label>
+<rdfs:domain rdf:resource="#Time-Position"/>
+<rdfs:range rdf:resource="&xsd;integer"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:DatatypeProperty>
+
+<owl:Class rdf:ID="Time-Point">
+<rdfs:label>Time Point</rdfs:label>
+<rdfs:comment>A point in time</rdfs:comment>
+<rdfs:subClassOf rdf:resource="#Time-Position"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="#second-of"/>
+<owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="#minute-of"/>
+<owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="#hour-of"/>
+<owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="#day-of"/>
+<owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="#month-of"/>
+<owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="#year-of"/>
+<owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:Class>
+
+<owl:DatatypeProperty rdf:ID="second-of">
+<rdfs:label>second of</rdfs:label>
+<rdfs:domain rdf:resource="#Time-Point"/>
+<rdfs:range rdf:resource="&xsd;nonNegativeInteger"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:ID="minute-of">
+<rdfs:label>minute of</rdfs:label>
+<rdfs:domain rdf:resource="#Time-Point"/>
+<rdfs:range rdf:resource="&xsd;nonNegativeInteger"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:ID="hour-of">
+<rdfs:label>hour of</rdfs:label>
+<rdfs:domain rdf:resource="#Time-Point"/>
+<rdfs:range rdf:resource="&xsd;nonNegativeInteger"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:ID="day-of">
+<rdfs:label>day of</rdfs:label>
+<rdfs:domain rdf:resource="#Time-Point"/>
+<rdfs:range rdf:resource="&xsd;nonNegativeInteger"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:ID="month-of">
+<rdfs:label>month of</rdfs:label>
+<rdfs:domain rdf:resource="#Time-Point"/>
+<rdfs:range rdf:resource="&xsd;nonNegativeInteger"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:ID="year-of">
+<rdfs:label>year of</rdfs:label>
+<rdfs:domain rdf:resource="#Time-Point"/>
+<rdfs:range rdf:resource="&xsd;nonNegativeInteger"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:DatatypeProperty>
+
+<owl:Class rdf:ID="Calendar-Date">
+<rdfs:label>Calendar Date</rdfs:label>
+<rdfs:comment>A point in time</rdfs:comment>
+<rdfs:subClassOf rdf:resource="#Time-Point"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="#second-of"/>
+<owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">0</owl:maxCardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="#minute-of"/>
+<owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">0</owl:maxCardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="#hour-of"/>
+<owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">0</owl:maxCardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="#day-of"/>
+<owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="#month-of"/>
+<owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="#year-of"/>
+<owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:Class>
+
+<owl:Class rdf:ID="Time-Interval">
+<rdfs:label>Time Interval</rdfs:label>
+<rdfs:comment>An interval is defined by two time points or a duration. Classes of intervals, e.g., a day, can be defined by specifying only a duration.  A time interval has no gaps</rdfs:comment>
+<rdfs:subClassOf rdf:resource="#Time-Position"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:Class>
+
+<owl:ObjectProperty rdf:ID="begins-at-time-point">
+<rdfs:label>begins at time point</rdfs:label>
+<rdfs:domain rdf:resource="#Time-Interval"/>
+<rdfs:range rdf:resource="#Time-Point"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:ID="ends-at-time-point">
+<rdfs:label>ends at time point</rdfs:label>
+<rdfs:domain rdf:resource="#Time-Interval"/>
+<rdfs:range rdf:resource="#Time-Point"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:ID="has-duration">
+<rdfs:label>has duration</rdfs:label>
+<rdfs:domain rdf:resource="#Time-Interval"/>
+<rdfs:range rdf:resource="#Duration"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:ObjectProperty>
+
+<owl:Class rdf:ID="Day">
+<rdfs:label>Day</rdfs:label>
+<rdfs:subClassOf rdf:resource="#Time-Interval"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="#has-duration"/>
+<owl:hasValue rdf:resource="#twentyfour-hour-duration"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:Class>
+
+<owl:Class rdf:ID="Week">
+<rdfs:label>Week</rdfs:label>
+<rdfs:subClassOf rdf:resource="#Time-Interval"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="#has-duration"/>
+<owl:hasValue rdf:resource="#seven-day-duration"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:Class>
+
+<owl:Class rdf:ID="Month">
+<rdfs:label>Month</rdfs:label>
+<rdfs:subClassOf rdf:resource="#Time-Interval"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:Class>
+
+<owl:Class rdf:ID="Year">
+<rdfs:label>Year</rdfs:label>
+<rdfs:subClassOf rdf:resource="#Time-Interval"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="#has-duration"/>
+<owl:hasValue rdf:resource="#twelve-month-duration"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:Class>
+
+<owl:Class rdf:ID="Duration">
+<rdfs:label>Duration</rdfs:label>
+<rdfs:comment>A measure of time, e.g., 5 hours</rdfs:comment>
+<rdfs:subClassOf rdf:resource="#Physical-Quantity"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="#has-unit-of-measure"/>
+<owl:allValuesFrom rdf:resource="#Time-Measure"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:Class>
+
+<support:Duration rdf:ID="twentyfour-hour-duration">
+<rdfs:label>24 hour duration</rdfs:label>
+<has-unit-of-measure rdf:resource="#time-measure-hour"/>
+<has-magnitude rdf:datatype="&xsd;decimal">24</has-magnitude>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</support:Duration>
+
+<support:Duration rdf:ID="seven-day-duration">
+<rdfs:label>7 day duration</rdfs:label>
+<has-unit-of-measure rdf:resource="#time-measure-day"/>
+<has-magnitude rdf:datatype="&xsd;decimal">7</has-magnitude>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</support:Duration>
+
+<support:Duration rdf:ID="twentyeight-day-duration">
+<rdfs:label>28 day duration</rdfs:label>
+<has-unit-of-measure rdf:resource="#time-measure-day"/>
+<has-magnitude rdf:datatype="&xsd;decimal">28</has-magnitude>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</support:Duration>
+
+<support:Duration rdf:ID="twentynine-day-duration">
+<rdfs:label>29 day duration</rdfs:label>
+<has-unit-of-measure rdf:resource="#time-measure-day"/>
+<has-magnitude rdf:datatype="&xsd;decimal">29</has-magnitude>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</support:Duration>
+
+<support:Duration rdf:ID="thirty-day-duration">
+<rdfs:label>30 day duration</rdfs:label>
+<has-unit-of-measure rdf:resource="#time-measure-day"/>
+<has-magnitude rdf:datatype="&xsd;decimal">30</has-magnitude>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</support:Duration>
+
+<support:Duration rdf:ID="thirtyone-day-duration">
+<rdfs:label>31 day duration</rdfs:label>
+<has-unit-of-measure rdf:resource="#time-measure-day"/>
+<has-magnitude rdf:datatype="&xsd;decimal">31</has-magnitude>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</support:Duration>
+
+<support:Duration rdf:ID="twelve-month-duration">
+<rdfs:label>12 month duration</rdfs:label>
+<has-unit-of-measure rdf:resource="#time-measure-month"/>
+<has-magnitude rdf:datatype="&xsd;decimal">12</has-magnitude>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</support:Duration>
+
+<owl:Class rdf:ID="Time-Measure">
+<rdfs:label>Time Measure</rdfs:label>
+<rdfs:comment>The class of all unit of measures used to measure time, e.g., minute, second, hour, etc.</rdfs:comment>
+<rdfs:subClassOf rdf:resource="#Unit-Of-Measure"/>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</owl:Class>
+
+<support:Time-Measure rdf:ID="time-measure-second">
+<rdfs:label>second</rdfs:label>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</support:Time-Measure>
+
+<support:Time-Measure rdf:ID="time-measure-minute">
+<rdfs:label>minute</rdfs:label>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</support:Time-Measure>
+
+<support:Time-Measure rdf:ID="time-measure-hour">
+<rdfs:label>hour</rdfs:label>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</support:Time-Measure>
+
+<support:Time-Measure rdf:ID="time-measure-day">
+<rdfs:label>day</rdfs:label>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</support:Time-Measure>
+
+<support:Time-Measure rdf:ID="time-measure-month">
+<rdfs:label>month</rdfs:label>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</support:Time-Measure>
+
+<support:Time-Measure rdf:ID="time-measure-year">
+<rdfs:label>year</rdfs:label>
+<rdfs:isDefinedBy rdf:resource="&base;"/>
+</support:Time-Measure>
+
+</rdf:RDF>

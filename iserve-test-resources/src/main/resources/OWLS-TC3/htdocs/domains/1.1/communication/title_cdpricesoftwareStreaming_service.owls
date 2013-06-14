@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/title_cdpricesoftwareStreaming_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/univ-bench.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="TITLE_CDPRICESOFTWARE_SERVICE">
+<service:presents rdf:resource="#TITLE_CDPRICESOFTWARE_PROFILE"/>
+<service:describedBy rdf:resource="#TITLE_CDPRICESOFTWARE_PROCESS"/>
+<service:supports rdf:resource="#TITLE_CDPRICESOFTWARE_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="TITLE_CDPRICESOFTWARE_PROFILE">
+<service:isPresentedBy rdf:resource="#TITLE_CDPRICESOFTWARE_SERVICE"/>
+<profile:serviceName xml:lang="en">
+CD Price Software Title
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+Self-service solution for video creation and encoding into streaming format.
+This service finds a software for a title, it also returns its availability as CD and price.
+</profile:textDescription>
+<profile:hasOutput rdf:resource="#_CD"/>
+<profile:hasOutput rdf:resource="#_PRICE"/>
+<profile:hasOutput rdf:resource="#_SOFTWARE"/>
+<profile:hasInput  rdf:resource="#_TITLE"/>
+
+<profile:has_process rdf:resource="TITLE_CDPRICESOFTWARE_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="TITLE_CDPRICESOFTWARE_PROCESS_MODEL">
+<service:describes rdf:resource="#TITLE_CDPRICESOFTWARE_SERVICE"/>
+<process:hasProcess rdf:resource="#TITLE_CDPRICESOFTWARE_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="TITLE_CDPRICESOFTWARE_PROCESS">
+<service:describes rdf:resource="#TITLE_CDPRICESOFTWARE_SERVICE"/>
+<process:hasOutput rdf:resource="#_CD"/>
+<process:hasOutput rdf:resource="#_PRICE"/>
+<process:hasOutput rdf:resource="#_SOFTWARE"/>
+<process:hasInput  rdf:resource="#_TITLE"/>
+</process:AtomicProcess>
+
+<process:Output  rdf:ID="_CD">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/my_ontology.owl#CD</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_PRICE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/concept.owl#Price</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_SOFTWARE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/univ-bench.owl#Software</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Input rdf:ID="_TITLE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/books.owl#Title</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<grounding:WsdlGrounding rdf:ID="TITLE_CDPRICESOFTWARE_GROUNDING">
+<service:supportedBy rdf:resource="#TITLE_CDPRICESOFTWARE_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="TITLE_CDPRICESOFTWARE_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+</grounding:WsdlGrounding>
+
+<grounding:WsdlAtomicProcessGrounding rdf:about="#TITLE_CDPRICESOFTWARE_AtomicProcessGrounding">
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_CD"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleCdpricesoftware#_CD</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_SOFTWARE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleCdpricesoftware#_SOFTWARE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/TitleCdpricesoftware#get_CD_PRICE_SOFTWARERequest</grounding:wsdlInputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_TITLE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleCdpricesoftware#_TITLE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/TitleCdpricesoftware.wsdl</grounding:wsdlDocument>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/TitleCdpricesoftware#get_CD_PRICE_SOFTWAREResponse</grounding:wsdlOutputMessage>
+    <grounding:owlsProcess rdf:resource="#TITLE_CDPRICESOFTWARE_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleCdpricesoftware#get_CD_PRICE_SOFTWARE</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleCdpricesoftware#TitleCdpricesoftwareSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_PRICE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleCdpricesoftware#_PRICE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

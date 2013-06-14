@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/citygovernment_lending_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="CITYGOVERNMENT_LENDING_SERVICE">
+<service:presents rdf:resource="#CITYGOVERNMENT_LENDING_PROFILE"/>
+<service:describedBy rdf:resource="#CITYGOVERNMENT_LENDING_PROCESS_MODEL"/>
+<service:supports rdf:resource="#CITYGOVERNMENT_LENDING_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="CITYGOVERNMENT_LENDING_PROFILE">
+<service:isPresentedBy rdf:resource="#CITYGOVERNMENT_LENDING_SERVICE"/>
+<profile:serviceName xml:lang="en">
+CityGovernement Lending Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service gives you acknowledgement for the lending as a special offer from the given city government.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_CITYGOVERNMENT"/>
+<profile:hasOutput rdf:resource="#_LENDING"/>
+
+<profile:has_process rdf:resource="CITYGOVERNMENT_LENDING_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="CITYGOVERNMENT_LENDING_PROCESS_MODEL">
+<service:describes rdf:resource="#CITYGOVERNMENT_LENDING_SERVICE"/>
+<process:hasProcess rdf:resource="#CITYGOVERNMENT_LENDING_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="CITYGOVERNMENT_LENDING_PROCESS">
+<process:hasInput  rdf:resource="#_CITYGOVERNMENT"/>
+<process:hasOutput rdf:resource="#_LENDING"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_CITYGOVERNMENT">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl#CityGovernment" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_LENDING">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/SUMO.owl#Lending" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="CITYGOVERNMENT_LENDING_GROUNDING">
+<service:supportedBy rdf:resource="#CITYGOVERNMENT_LENDING_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/corporation_apple_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="CORPORATION_APPLE_SERVICE">
+<service:presents rdf:resource="#CORPORATION_APPLE_PROFILE"/>
+<service:describedBy rdf:resource="#CORPORATION_APPLE_PROCESS"/>
+<service:supports rdf:resource="#CORPORATION_APPLE_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="CORPORATION_APPLE_PROFILE">
+<service:isPresentedBy rdf:resource="#CORPORATION_APPLE_SERVICE"/>
+<profile:serviceName xml:lang="en">
+AppleProducerService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service informs you about the certain type of apple grown under
+supervising of given corporation.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_CORPORATION"/>
+<profile:hasOutput rdf:resource="#_APPLE"/>
+
+<profile:has_process rdf:resource="CORPORATION_APPLE_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="CORPORATION_APPLE_PROCESS_MODEL">
+<service:describes rdf:resource="#CORPORATION_APPLE_SERVICE"/>
+<process:hasProcess rdf:resource="#CORPORATION_APPLE_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="CORPORATION_APPLE_PROCESS">
+<service:describes rdf:resource="#CORPORATION_APPLE_SERVICE"/>
+<process:hasInput  rdf:resource="#_CORPORATION"/>
+<process:hasOutput rdf:resource="#_APPLE"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_CORPORATION">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#Corporation</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_APPLE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#Apple</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="CORPORATION_APPLE_GROUNDING">
+<service:supportedBy rdf:resource="#CORPORATION_APPLE_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="CORPORATION_APPLE_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+</grounding:WsdlGrounding>
+
+<grounding:WsdlAtomicProcessGrounding rdf:about="#CORPORATION_APPLE_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/CorporationApple.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#CORPORATION_APPLE_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/CorporationApple/get_APPLE</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/CorporationApple/CorporationAppleSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/CorporationApple/get_APPLERequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/CorporationApple/get_APPLEResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_CORPORATION"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/CorporationApple/_CORPORATION</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_APPLE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/CorporationApple/_APPLE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

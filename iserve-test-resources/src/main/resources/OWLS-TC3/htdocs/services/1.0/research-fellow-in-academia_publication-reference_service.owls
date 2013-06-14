@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/research-fellow-in-academia_publication-reference_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="RESEARCH-FELLOW-IN-ACADEMIA_PUBLICATION-REFERENCE_SERVICE">
+<service:presents rdf:resource="#RESEARCH-FELLOW-IN-ACADEMIA_PUBLICATION-REFERENCE_PROFILE"/>
+<service:describedBy rdf:resource="#RESEARCH-FELLOW-IN-ACADEMIA_PUBLICATION-REFERENCE_PROCESS_MODEL"/>
+<service:supports rdf:resource="#RESEARCH-FELLOW-IN-ACADEMIA_PUBLICATION-REFERENCE_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="RESEARCH-FELLOW-IN-ACADEMIA_PUBLICATION-REFERENCE_PROFILE">
+<service:isPresentedBy rdf:resource="#RESEARCH-FELLOW-IN-ACADEMIA_PUBLICATION-REFERENCE_SERVICE"/>
+<profile:serviceName xml:lang="en">
+ResearchFellowPublicationReferences  service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns publication references of a research fellow.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_RESEARCH-FELLOW-IN-ACADEMIA"/>
+<profile:hasOutput rdf:resource="#_PUBLICATION-REFERENCE"/>
+
+<profile:has_process rdf:resource="RESEARCH-FELLOW-IN-ACADEMIA_PUBLICATION-REFERENCE_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="RESEARCH-FELLOW-IN-ACADEMIA_PUBLICATION-REFERENCE_PROCESS_MODEL">
+<service:describes rdf:resource="#RESEARCH-FELLOW-IN-ACADEMIA_PUBLICATION-REFERENCE_SERVICE"/>
+<process:hasProcess rdf:resource="#RESEARCH-FELLOW-IN-ACADEMIA_PUBLICATION-REFERENCE_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="RESEARCH-FELLOW-IN-ACADEMIA_PUBLICATION-REFERENCE_PROCESS">
+<process:hasInput  rdf:resource="#_RESEARCH-FELLOW-IN-ACADEMIA"/>
+<process:hasOutput rdf:resource="#_PUBLICATION-REFERENCE"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_RESEARCH-FELLOW-IN-ACADEMIA">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/portal.owl#Research-Fellow-In-Academia" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_PUBLICATION-REFERENCE">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/portal.owl#Publication-Reference" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="RESEARCH-FELLOW-IN-ACADEMIA_PUBLICATION-REFERENCE_GROUNDING">
+<service:supportedBy rdf:resource="#RESEARCH-FELLOW-IN-ACADEMIA_PUBLICATION-REFERENCE_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

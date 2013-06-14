@@ -1,0 +1,51 @@
+@prefix hr:      <http://iserve.kmi.open.ac.uk/ns/hrests#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix wl:      <http://www.wsmo.org/ns/wsmo-lite#> .
+@prefix sawsdl:  <http://www.w3.org/ns/sawsdl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix msm:     <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix msm-wsdl:  <http://iserve.kmi.open.ac.uk/ns/msm-wsdl#> .
+@prefix dcterms:  <http://purl.org/dc/elements/1.1/> .
+
+<http://127.0.0.1/services/1.1/novel_authortime_service.owls#_TIME>
+      a       msm:MessagePart ;
+      sawsdl:modelReference
+              <http://127.0.0.1/ontology/books.owl#Time> .
+
+<http://127.0.0.1/services/1.1/novel_authortime_service.owls#_NOVEL>
+      a       msm:MessagePart ;
+      sawsdl:modelReference
+              <http://127.0.0.1/ontology/books.owl#Novel> .
+
+<http://127.0.0.1/services/1.1/novel_authortime_service.owls#NOVEL_AUTHORTIME_PROCESS_Input>
+      a       msm:MessageContent , msm:MessagePart ;
+      msm:hasMandatoryPart
+              <http://127.0.0.1/services/1.1/novel_authortime_service.owls#_NOVEL> ;
+      msm-wsdl:isGroundedIn
+              <http://127.0.0.1/wsdl/NovelAuthortime#get_AUTHOR_TIMERequest> .
+
+<http://127.0.0.1/services/1.1/novel_authortime_service.owls#NOVEL_AUTHORTIME_PROCESS>
+      a       msm:Operation ;
+      msm:hasInput <http://127.0.0.1/services/1.1/novel_authortime_service.owls#NOVEL_AUTHORTIME_PROCESS_Input> ;
+      msm:hasOutput <http://127.0.0.1/services/1.1/novel_authortime_service.owls#NOVEL_AUTHORTIME_PROCESS_Output> ;
+      dcterms:source <http://127.0.0.1/services/1.1/novel_authortime_service.owls#NOVEL_AUTHORTIME_PROCESS> .
+
+<http://127.0.0.1/services/1.1/novel_authortime_service.owls#NOVEL_AUTHORTIME_SERVICE>
+      a       msm:Service ;
+      msm:hasOperation <http://127.0.0.1/services/1.1/novel_authortime_service.owls#NOVEL_AUTHORTIME_PROCESS> ;
+      msm-wsdl:isGroundedIn
+              <http://127.0.0.1/wsdl/novel_authortime_service.wsdl> ;
+      dcterms:source <http://127.0.0.1/services/1.1/novel_authortime_service.owls#NOVEL_AUTHORTIME_SERVICE> .
+
+<http://127.0.0.1/services/1.1/novel_authortime_service.owls#_AUTHOR>
+      a       msm:MessagePart ;
+      sawsdl:modelReference
+              <http://127.0.0.1/ontology/books.owl#Author> .
+
+<http://127.0.0.1/services/1.1/novel_authortime_service.owls#NOVEL_AUTHORTIME_PROCESS_Output>
+      a       msm:MessageContent , msm:MessagePart ;
+      msm:hasMandatoryPart
+              <http://127.0.0.1/services/1.1/novel_authortime_service.owls#_TIME> , <http://127.0.0.1/services/1.1/novel_authortime_service.owls#_AUTHOR> ;
+      msm-wsdl:isGroundedIn
+              <http://127.0.0.1/wsdl/NovelAuthortime#get_AUTHOR_TIMEResponse> .

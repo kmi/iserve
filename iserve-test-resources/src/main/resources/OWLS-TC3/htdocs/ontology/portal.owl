@@ -1,0 +1,2352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+  <!ENTITY owl "http://www.w3.org/2002/07/owl#">
+  <!ENTITY portal "http://127.0.0.1/ontology/portal.owl#">
+  <!ENTITY portal.owl "http://127.0.0.1/ontology/portal.owl">
+  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
+  <!ENTITY support.owl "http://127.0.0.1/ontology/support.owl">
+  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+]>
+<rdf:RDF xml:base="&portal.owl;"
+         xmlns:owl="&owl;"
+         xmlns:portal="&portal;"
+         xmlns:rdf="&rdf;"
+         xmlns:rdfs="&rdfs;">
+
+<!-- Ontology Information -->
+  <owl:Ontology rdf:about=""
+                owl:versionInfo="2.0">
+    <rdfs:label>AKT Reference Ontology (Portal Ontology)</rdfs:label>
+    <rdfs:seeAlso rdf:resource="http://d3e.open.ac.uk/akt/2002/ref-onto.html"/>
+    <owl:imports>
+      <owl:Ontology rdf:about="&support.owl;"/>
+    </owl:imports>
+  </owl:Ontology>
+
+<!-- Classes -->
+  <owl:Class rdf:about="#Abstract-Information">
+    <rdfs:comment>Information in general, independent of an object in which it is encoded. Whatever is transferred in an information-transfer event. It is clearly an intangible thing</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Intangible-Thing"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Academic">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Educational-Employee"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Higher-Educational-Organization"/>
+        <owl:onProperty rdf:resource="#works-for"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Academic-Degree">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Degree"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Academic-Item-Number">
+    <rdfs:subClassOf rdf:resource="#Publication-Number"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Academic-Support-Staff">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Educational-Employee"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Higher-Educational-Organization"/>
+        <owl:onProperty rdf:resource="#works-for"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Academic-Support-Unit">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Educational-Organization-Unit"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Academic-Unit">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Educational-Organization-Unit"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#University"/>
+        <owl:onProperty rdf:resource="#unit-of-organization"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Activity">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Temporal-Thing"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Address">
+    <rdfs:comment>A generic class for addresses, whether email or postal. We see an address as abstract information and therefore it is an intangible thing</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Abstract-Information"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Affiliated-Person">
+    <rdfs:comment>A person which has an affiliation with some organization. For instance employees are affiliated to the organization they work for, students to the institution where they are studying, etc. A person can have multiple affiliations, which means that there is no constraint relating the values of slot has-affiliation-to-unit to the values of slot has-affiliation</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Person"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+        <owl:onProperty rdf:resource="#has-affiliation"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Amount-Of-Money">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Physical-Quantity"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Currency"/>
+        <owl:onProperty rdf:resource="&support.owl;#has-unit-of-measure"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Appellation">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Intangible-Thing"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Article-In-A-Composite-Publication">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Publication"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Composite-Publication"/>
+        <owl:onProperty rdf:resource="#included-in-publication"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Article-Reference">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Publication-Reference"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Attending-A-Conference">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Attending-An-Event"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Conference"/>
+        <owl:onProperty rdf:resource="#event-attended"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Attending-An-Event">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Event"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Award">
+    <rdfs:comment>An award is an intangible thing, even if the piece of paper which is often associated with an award is tangible.  What about the virtual piece of paper in the virtual degree ceremony?  I guess that ought to be an intangible</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Intangible-Thing"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Awarding-Body">
+    <rdfs:comment>Legal agents can be either organizations or people. An awarding body is normally an organization, an individual, or a bunch of people</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Legal-Agent"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Book">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Publication"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Book-Reference"/>
+        <owl:onProperty rdf:resource="#has-publication-reference"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+        <owl:onProperty rdf:resource="#has-publication-reference"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Book-Publishing">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Publication-Type-Event"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Book-Reference">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Publication-Reference"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Publishing-House"/>
+        <owl:onProperty rdf:resource="#published-by"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="&xsd;string"/>
+        <owl:onProperty rdf:resource="#has-ISBN-number"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Book-Section-Reference">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Publication-Reference"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Business-Area">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Generic-Area-Of-Interest"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Capital-City">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#City"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Charitable-Organization">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Non-Profit-Organization"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#City">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Municipal-Unit"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Civil-Service">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Government-Organization"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Company">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Profit-Organization"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Composite-Publication">
+    <rdfs:comment>A publication which contains items which cane be themselves referenced through a publication reference.  Composite publications include newspapers, magazines and journals. A book which is a collection of articles is a composite publication, a monograph is not</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Publication"/>
+        <owl:onProperty rdf:resource="#contains-publication"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+        <owl:onProperty rdf:resource="#contains-publication"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Computing-Technology">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Technology"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Conference">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Meeting-Taking-Place"/>
+    <rdfs:subClassOf rdf:resource="#Publication-Type-Event"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Conference-Proceedings-Reference"/>
+        <owl:onProperty rdf:resource="#published-proceedings"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Conference-Proceedings-Reference">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Publication-Reference"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Conferring-An-Award">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Generalized-Transfer"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Country">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Geopolitical-Entity"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Currency">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Information-Bearing-Object"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#DIN-A4"
+             rdfs:label="DIN-A4 page size">
+    <rdfs:subClassOf rdf:resource="#Page-Size"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Daily-Newspaper">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Newspaper"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:hasValue rdf:resource="&support.owl;#twentyfour-hour-duration"/>
+        <owl:onProperty rdf:resource="#has-periodicity"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Degree"
+             rdfs:comment="A degree is type of award">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Award"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Distance-Teaching-University">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#University"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Edited-Book">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Publication"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+        <owl:onProperty rdf:resource="#has-publication-reference"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Edited-Book-Reference"/>
+        <owl:onProperty rdf:resource="#has-publication-reference"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Edited-Book-Reference">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Book-Reference"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Person"/>
+        <owl:onProperty rdf:resource="#edited-by"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Editor">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Implemented-System"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Educational-Employee">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Employee"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Educational-Organization"/>
+        <owl:onProperty rdf:resource="#works-for"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+        <owl:onProperty rdf:resource="#works-for"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Educational-Organization">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Learning-Centred-Organization"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Educational-Organization-Unit">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Organization-Unit"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Educational-Organization"/>
+        <owl:onProperty rdf:resource="#unit-of-organization"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Email-Message">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Message"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Employee">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Affiliated-Person"/>
+    <rdfs:subClassOf rdf:resource="#Working-Person"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Employment-Contract-Type">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Intangible-Thing"/>
+    <owl:oneOf rdf:parseType="Collection">
+      <rdf:Description rdf:about="#Permanent-Contract"/>
+      <rdf:Description rdf:about="#Temporary-Contract"/>
+    </owl:oneOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Event">
+    <rdfs:comment>This is a minimalist definition of class event.  We start with the very basic and we will then add slots as we specialise this definition for specific classes of events. The fillers of slots has-other-agents-involved and has-main-agent should not intersect</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Temporal-Thing"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Event-Involving-Movement">
+    <rdfs:comment>This is an event in which the main agent (plus maybe others) goes from some place to another</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Event"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+        <owl:onProperty rdf:resource="#location-at-end"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+        <owl:onProperty rdf:resource="#location-at-start"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Event-Involving-Production"
+             rdfs:comment="When something is produced">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Event"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Financial-Award">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Award"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Gender">
+    <rdfs:comment>HPKB says that genders are intangible..Uhm...</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Intangible-Thing"/>
+    <owl:oneOf rdf:parseType="Collection">
+      <rdf:Description rdf:about="#Female-Gender"/>
+      <rdf:Description rdf:about="#Male-Gender"/>
+    </owl:oneOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Generalised-Means-Of-Transport">
+    <rdfs:comment>This is a generic class to catch all sorts of borderline and metaphorical ways to carry things from A to B</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Thing"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Generalized-Transfer">
+    <rdfs:comment>An event in which the main agent transfers something (the thing-acted-on, tangible or intangible) to one or more recipient agents. Note that we do not say anything about whether the original agent still retain the thing-acted-on.  In some cases this is clearly true ('I pass my wisdom on to my daughter'), in other cases it is not (I give you my wallet).</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Event-Involving-Movement"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Generic-Agent"
+             rdfs:label="Generic Agent">
+    <rdfs:comment>This is a generic notion, an agent can be an organization, a person an animal, a software agent, etc</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Temporal-Thing"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Generic-Area-Of-Interest">
+    <rdfs:comment>A generic class to specify generic areas for research or business initiatives. For instance, the area in which a project is situated</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Intangible-Thing"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Geographical-Region"
+             rdfs:comment="'Real' geographical regions">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Location"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Tangible-Thing"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Geopolitical-Entity">
+    <rdfs:comment>A geopolitical entity is a geographical area which is associated with some sort of political structure. For instance, Russia, Italy, The-city-of-Messina, etc. A geopolitical entity can be also seen as an agent - e.g., France declared war to Spain</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Generic-Agent"/>
+    <rdfs:subClassOf rdf:resource="#Geographical-Region"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Giving-A-Talk">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Information-Transfer-Event"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Government">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Government-Organization"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Government-Organization">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Non-Profit-Organization"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Graphic-Designer">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Employee"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Hardware-Platform">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Hardware-Technology"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Hardware-Technology">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Computing-Technology"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Higher-Educational-Organization">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Educational-Organization"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#ISBN">
+    <rdfs:subClassOf rdf:resource="#Publication-Number"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Implemented-System">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Software-Technology"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Industrial-Organization">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Profit-Organization"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Information-Bearing-Object">
+    <rdfs:comment>This notion comes from Cyc.  It is useful to group together all information bearing entities, including video, audio and documents. An information bearing object may have an author (a generic agent) and may be owned by a legal agent. It is a tangible object</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Tangible-Thing"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Legal-Agent"/>
+        <owl:onProperty rdf:resource="#owned-by"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Generic-Agent"/>
+        <owl:onProperty rdf:resource="#has-author"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Information-Transfer-Event">
+    <rdfs:comment>A generalized transfer in which information is passed from main agent to one or more recipient agents.  Examples include giving a tutorial.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Generalized-Transfer"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Information-Transfer-Medium">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Generalised-Means-Of-Transport"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Int"/>
+  <owl:Class rdf:about="#Item-Number">
+    <rdfs:subClassOf rdf:resource="#Publication-Number"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Journal">
+    <rdfs:subClassOf rdf:resource="#Composite-Publication"/>
+    <rdfs:subClassOf rdf:resource="#Serial-Publication"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Publication"/>
+        <owl:onProperty rdf:resource="#contains-article"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:disjointWith rdf:resource="#Magazine"/>
+    <owl:disjointWith rdf:resource="#Newspaper"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Learning-Centred-Organization">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Organization"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Lecturer-In-Academia">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Academic"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Legal-Agent"
+             rdfs:label="Legal Agent">
+    <rdfs:comment>Some agents have legal status: definitely organizations and people, anybody else?</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Generic-Agent"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Letter">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Message"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Local-District">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Geopolitical-Entity"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Location">
+    <rdfs:comment>A generic class for locations.  It includes both real and fantastic places</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Tangible-Thing"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Magazine">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Composite-Publication"/>
+    <rdfs:subClassOf rdf:resource="#Serial-Publication"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Publication"/>
+        <owl:onProperty rdf:resource="#contains-article"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:disjointWith rdf:resource="#Journal"/>
+    <owl:disjointWith rdf:resource="#Newspaper"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Meeting-Taking-Place">
+    <rdfs:comment>A meeting type of event. Note that both attendee and organizer have multiple cardinality</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Social-Gathering"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Message">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Information-Bearing-Object"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Method">
+    <rdfs:comment>Merrian-Webster has a good set of definitions for a method. They say it is 'a systematic procedure, technique, or mode of inquiry employed by or proper to a particular discipline or art;  a systematic plan followed in presenting material for instruction; a way, technique, or process of or for doing something; a body of skills or techniques'. This is very much also what we mean by method.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Intangible-Thing"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Person"/>
+        <owl:onProperty rdf:resource="#has-author"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Organization"/>
+        <owl:onProperty rdf:resource="#owned-by"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Multimedia-Designer">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Employee"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Municipal-Unit">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Geopolitical-Entity"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#News-Item">
+    <rdfs:subClassOf rdf:resource="#Article-In-A-Composite-Publication"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Newspaper">
+    <rdfs:subClassOf rdf:resource="#Composite-Publication"/>
+    <rdfs:subClassOf rdf:resource="#Periodical-Publication"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#News-Item"/>
+        <owl:onProperty rdf:resource="#contains-news-item"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:disjointWith rdf:resource="#Journal"/>
+    <owl:disjointWith rdf:resource="#Magazine"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Non-Profit-Organization">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Organization"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Operating-System">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Implemented-System"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Organization"
+             rdfs:label="Organization">
+    <rdfs:comment>An organization is a type of legal agent</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Legal-Agent"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Organization"/>
+        <owl:onProperty rdf:resource="#organization-part-of"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
+        <owl:onProperty rdf:resource="#has-size"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Affiliated-Person"/>
+        <owl:onProperty rdf:resource="#headed-by"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Organization-Size"/>
+        <owl:onProperty rdf:resource="#has-size"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Affiliated-Person"/>
+        <owl:onProperty rdf:resource="#affiliated-person"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Organization-Unit"/>
+        <owl:onProperty rdf:resource="#has-sub-unit"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Organization-Size"
+             rdfs:label="Organization Size">
+    <rdfs:comment>We use EU guidelines to distinguish between different organization sizes</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Intangible-Thing"/>
+    <owl:oneOf rdf:parseType="Collection">
+      <rdf:Description rdf:about="#large-size"/>
+      <rdf:Description rdf:about="#medium-size"/>
+      <rdf:Description rdf:about="#micro-size"/>
+      <rdf:Description rdf:about="#small-size"/>
+      <rdf:Description rdf:about="#very-large-size"/>
+    </owl:oneOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Organization-Unit">
+    <rdfs:comment>An organization may have a number of units. Units may themselves have sub-units</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Generic-Agent"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Page-Number">
+    <rdfs:subClassOf rdf:resource="&support.owl;#Intangible-Thing"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="http://127.0.0.1/ontology/Int"/>
+        <owl:onProperty rdf:resource="#has-number"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Page-Size"
+             rdfs:label="Possible page Sizes"/>
+  <owl:Class rdf:about="#Partnership">
+    <rdfs:comment>A partnership is not necessarily a company, e.g. a consultancy firm is not a company</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Profit-Organization"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Periodical-Publication">
+    <rdfs:comment>This comes from the ontolingua library. A periodical-publication is published regularly, such as once every week.  Strictly speaking, the noun 'periodical' is used by librarians to refer to things published at intervals of greater than a day.  We use the phase periodical-publication to include newspapers and other daily publications, since they share many bibliographic features. The periodicity indicates how often the publication comes out. Note that this is a duration, rather than a time interval. A time interval indicates a specific time interval on the time continuum, so we need to model periodicity as a time quantity</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Serial-Publication"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="&support.owl;#Duration"/>
+        <owl:onProperty rdf:resource="#has-periodicity"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
+        <owl:onProperty rdf:resource="#has-periodicity"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Person">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Legal-Agent"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Tangible-Thing"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#PhD-Student">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Student"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Higher-Educational-Organization"/>
+        <owl:onProperty rdf:resource="#studies-at"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Political-Organization"
+             rdfs:label="Political Organization">
+    <rdfs:comment>An organization which has a political connotation</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Organization"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Postal-Address">
+    <rdfs:comment>Modified to allow addresses to be given as strings, with no structure</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Address"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Private-Company">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Company"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Proceedings-Paper-Reference">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Publication-Reference"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Professor-In-Academia">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Academic"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Profit-Organization">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Organization"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Programming-Environment">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Implemented-System"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Programming-Language"/>
+        <owl:onProperty rdf:resource="#supports-language"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Programming-Language">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Specification-Or-Computing-Language"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Project">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Activity"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+        <owl:onProperty rdf:resource="#has-project-member"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+        <owl:onProperty rdf:resource="#involves-organization"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:unionOf rdf:parseType="Collection">
+              <rdf:Description rdf:about="#Event"/>
+              <rdf:Description rdf:about="#Information-Bearing-Object"/>
+              <rdf:Description rdf:about="#Method"/>
+              <rdf:Description rdf:about="#Organization"/>
+              <rdf:Description rdf:about="#Technology"/>
+            </owl:unionOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+        <owl:onProperty rdf:resource="#produces-output"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Project-Officer-In-Academia">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Academic-Support-Staff"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Public-Company">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Company"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Publication">
+    <rdfs:comment>A publication is something which has one or more publication references. A publication can be both an article in a journal or a journal itself. The distinction between publication and publication-reference makes it possible to distinguish between multiple occurrences of the sam publication, for instance in different media</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Information-Bearing-Object"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Publication-Reference"/>
+        <owl:onProperty rdf:resource="#cites-publication-reference"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+        <owl:onProperty rdf:resource="#has-publication-reference"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Publication-Reference"/>
+        <owl:onProperty rdf:resource="#has-publication-reference"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Publication-Number"/>
+  <owl:Class rdf:about="#Publication-Reference">
+    <rdfs:comment>we have decided that a publication reference is an intangible, abstract information</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Abstract-Information"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="&support.owl;#Calendar-Date"/>
+        <owl:onProperty rdf:resource="#has-date"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Generic-Agent"/>
+        <owl:onProperty rdf:resource="#has-author"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="&xsd;string"/>
+        <owl:onProperty rdf:resource="#has-title"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Location"/>
+        <owl:onProperty rdf:resource="#has-place-of-publication"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Publication-Type-Event">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Event-Involving-Production"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Publication"/>
+        <owl:onProperty rdf:resource="#event-product"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Publishing-House">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Organization"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#R-And-D-Institute">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Learning-Centred-Organization"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#R-And-D-Institute-Within-Larger-Institute">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Organization-Unit"/>
+    <rdfs:subClassOf rdf:resource="#R-And-D-Institute"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Reader-In-Academia">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Academic"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Recorded-Audio">
+    <rdfs:comment>Any kind of recorded audio, which is tangible.  This also includes a audio file on a machine</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Information-Bearing-Object"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Recorded-Video">
+    <rdfs:comment>Any kind of recorded video, which is tangible.  This also includes a mpeg file on a machine</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Information-Bearing-Object"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Research-Area">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Generic-Area-Of-Interest"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Research-Area"/>
+        <owl:onProperty rdf:resource="#sub-area-of"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Research-Assistant-In-Academia">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Researcher-In-Academia"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Research-Fellow-In-Academia">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Researcher-In-Academia"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Researcher">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Working-Person"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Researcher-In-Academia">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Academic"/>
+    <rdfs:subClassOf rdf:resource="#Researcher"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#School">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Educational-Organization"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Scripting-Language">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Specification-Or-Computing-Language"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Secretary">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Employee"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Self-Employed-Person">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Working-Person"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Sending-An-Email">
+    <rdfs:comment>a generalized transfer in which information is passed from main agent to one or more recipient agents.  examples include giving a tutorial.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Information-Transfer-Event"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:hasValue rdf:resource="#Email-Medium"/>
+        <owl:onProperty rdf:resource="#information-transfer-medium-used"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Email-Message"/>
+        <owl:onProperty rdf:resource="#information-object-being-transferred"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Senior-Lecturer-In-Academia">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Lecturer-In-Academia"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Senior-Research-Fellow-In-Academia">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Researcher-In-Academia"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Serial-Publication">
+    <rdfs:comment>This used to be called periodical publication.  However, many periodicals do not appear at fixed intervals, which is why librarians refer to them as serials. So, we now use the concept of serial publication and the has-periodicity slot has been removed</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Publication"/>
+    <owl:unionOf rdf:parseType="Collection">
+      <rdf:Description rdf:about="#Journal"/>
+      <rdf:Description rdf:about="#Magazine"/>
+      <rdf:Description rdf:about="#Newspaper"/>
+    </owl:unionOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Small-Or-Medium-Sized-Organization"
+             rdfs:label="Small or Medium-sized Organization">
+    <rdfs:comment>SME are important, so we define a class to represent them explicitly. In some case we might not know or we do not want to bother specifying excatly whether something is a small-organization or a medium-organization. Hence, we can just say 'x is a SME' without going into further detail.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Organization"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom>
+          <rdf:Description>
+            <owl:oneOf rdf:parseType="Collection">
+              <rdf:Description rdf:about="#medium-size"/>
+              <rdf:Description rdf:about="#small-size"/>
+            </owl:oneOf>
+          </rdf:Description>
+        </owl:allValuesFrom>
+        <owl:onProperty rdf:resource="#has-size"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Social-Gathering">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Event"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Software-Status">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Intangible-Thing"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Software-Technology">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Computing-Technology"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Specification-Language">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Specification-Or-Computing-Language"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Specification-Or-Computing-Language">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Software-Technology"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Student">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Affiliated-Person"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Educational-Organization"/>
+        <owl:onProperty rdf:resource="#studies-at"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+        <owl:onProperty rdf:resource="#studies-in-unit"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Educational-Organization-Unit"/>
+        <owl:onProperty rdf:resource="#studies-in-unit"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+        <owl:onProperty rdf:resource="#studies-at"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#System-Administrator">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Employee"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Technical-Report-Reference">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Publication-Reference"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Technology">
+    <rdfs:comment>By technology we mean engineered applications of science. I guess we are probably confining ourselves to tangible things but as I am not sure I will use thing as the direct superclass - e.g., an algorithm is an intangible thing, but it could be seen as a technology, if we give a broad interpretation of the term</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Thing"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Generic-Agent"/>
+        <owl:onProperty rdf:resource="#has-author"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Thesis-Reference">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Publication-Reference"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Thing"/>
+  <owl:Class rdf:about="#Town">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Municipal-Unit"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Transportation-Device">
+    <rdfs:comment>Something tangible designed to transport people, animals, objects from A to B. For instance a bycicle, a car, a boat, etc.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Generalised-Means-Of-Transport"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Tangible-Thing"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#US-Letter"
+             rdfs:label="US-Letter page Sizes">
+    <rdfs:subClassOf rdf:resource="#Page-Size"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#University">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Higher-Educational-Organization"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#University-Faculty">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Academic-Unit"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Village">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Municipal-Unit"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Visiting-Researcher">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Affiliated-Person"/>
+    <rdfs:subClassOf rdf:resource="#Researcher"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Web-Based-Editor">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Editor"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Web-Based-System">
+    <rdfs:comment>A system which is accessible through the web</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Implemented-System"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Web-Browser">
+    <rdfs:comment>A web browser is not a web-based system!</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Implemented-System"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Web-Reference">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Publication-Reference"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="&xsd;string"/>
+        <owl:onProperty rdf:resource="#has-URL"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Web-Site">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Implemented-System"/>
+    <rdfs:subClassOf rdf:resource="#Information-Bearing-Object"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Work-Status">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="&support.owl;#Intangible-Thing"/>
+    <owl:oneOf rdf:parseType="Collection">
+      <rdf:Description rdf:about="#Full-Time"/>
+      <rdf:Description rdf:about="#Part-Time"/>
+    </owl:oneOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Working-Person">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Person"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Workshop">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Meeting-Taking-Place"/>
+    <rdfs:subClassOf rdf:resource="#Publication-Type-Event"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:allValuesFrom rdf:resource="#Workshop-Proceedings-Reference"/>
+        <owl:onProperty rdf:resource="#published-proceedings"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#Workshop-Proceedings-Reference">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subClassOf rdf:resource="#Publication-Reference"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="http://127.0.0.1/ontology/Int"/>
+  <owl:Class rdf:about="&support.owl;#Calendar-Date"/>
+  <owl:Class rdf:about="&support.owl;#Duration"/>
+  <owl:Class rdf:about="&support.owl;#Intangible-Thing"/>
+  <owl:Class rdf:about="&support.owl;#Physical-Quantity"/>
+  <owl:Class rdf:about="&support.owl;#Tangible-Thing"/>
+  <owl:Class rdf:about="&support.owl;#Temporal-Thing"/>
+  <owl:Class rdf:about="&support.owl;#Thing"/>
+  <owl:Class rdf:about="&support.owl;#Time-Point"/>
+  <rdfs:Datatype rdf:about="&xsd;string">
+    <rdf:type rdf:resource="&owl;Class"/>
+  </rdfs:Datatype>
+
+  <owl:Class rdf:nodeID="b75">
+    <owl:unionOf rdf:parseType="Collection">
+      <rdf:Description rdf:about="#Editor"/>
+      <rdf:Description rdf:about="#Programming-Environment"/>
+    </owl:unionOf>
+  </owl:Class>
+
+  <owl:Class rdf:nodeID="b74">
+    <owl:unionOf rdf:parseType="Collection">
+      <rdf:Description rdf:about="#Information-Bearing-Object"/>
+      <rdf:Description rdf:about="#Method"/>
+      <rdf:Description rdf:about="#Technology"/>
+    </owl:unionOf>
+  </owl:Class>
+
+  <owl:Class rdf:nodeID="b70">
+    <owl:unionOf rdf:parseType="Collection">
+      <rdf:Description rdf:about="#Web-Reference"/>
+      <rdf:Description rdf:about="#Web-Site"/>
+    </owl:unionOf>
+  </owl:Class>
+
+  <owl:Class rdf:nodeID="b73">
+    <owl:unionOf rdf:parseType="Collection">
+      <rdf:Description rdf:about="#Organization"/>
+      <rdf:Description rdf:about="#Organization-Unit"/>
+      <rdf:Description rdf:about="#Person"/>
+    </owl:unionOf>
+  </owl:Class>
+
+  <owl:Class rdf:nodeID="b72">
+    <owl:unionOf rdf:parseType="Collection">
+      <rdf:Description rdf:about="#Method"/>
+      <rdf:Description rdf:about="#Project"/>
+      <rdf:Description rdf:about="#Technology"/>
+    </owl:unionOf>
+  </owl:Class>
+
+  <owl:Class rdf:nodeID="b71">
+    <owl:unionOf rdf:parseType="Collection">
+      <rdf:Description rdf:about="#Information-Bearing-Object"/>
+      <rdf:Description rdf:about="#Method"/>
+      <rdf:Description rdf:about="#Publication-Reference"/>
+      <rdf:Description rdf:about="#Technology"/>
+    </owl:unionOf>
+  </owl:Class>
+
+<!-- Datatypes -->
+  <rdfs:Datatype rdf:about="&xsd;decimal"/>
+  <rdfs:Datatype rdf:about="&xsd;nonNegativeInteger"/>
+
+<!-- Datatype Properties -->
+  <owl:DatatypeProperty rdf:about="#address-building">
+    <rdfs:domain rdf:resource="#Address"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#address-number">
+    <rdfs:domain rdf:resource="#Address"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;nonNegativeInteger"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#address-postcode">
+    <rdfs:domain rdf:resource="#Address"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#address-pretty-label">
+    <rdfs:domain rdf:resource="#Address"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+    <rdfs:subPropertyOf rdf:resource="&support.owl;#has-pretty-name"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#address-street">
+    <rdfs:domain rdf:resource="#Address"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#family-name">
+    <rdfs:domain rdf:resource="#Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#full-name">
+    <rdfs:domain rdf:resource="#Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+    <rdfs:subPropertyOf rdf:resource="&support.owl;#has-pretty-name"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#given-name">
+    <rdfs:domain rdf:resource="#Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#has-URL">
+    <rdfs:domain rdf:nodeID="b70"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#has-amount">
+    <rdfs:domain rdf:resource="#Amount-Of-Money"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#has-award-rationale">
+    <rdfs:domain rdf:resource="#Conferring-An-Award"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#has-email-address"
+                        rdfs:label="has email address">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#has-fax-number">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#has-goals">
+    <rdfs:domain rdf:resource="#Project"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#has-job-title">
+    <rdfs:domain rdf:resource="#Employee"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#has-magnitude"
+                        rdfs:label="has magnitude">
+    <rdfs:domain rdf:resource="&support.owl;#Physical-Quantity"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;decimal"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#has-page-numbers">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#has-pretty-name"
+                        rdfs:comment="A human readable name"
+                        rdfs:label="has pretty name">
+    <rdfs:domain rdf:resource="#Thing"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#has-telephone-number">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#has-title">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="#has-web-address"
+                        rdfs:label="has web address">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="&support.owl;#has-pretty-name"/>
+
+<!-- Object Properties -->
+  <owl:ObjectProperty rdf:about="#address-area">
+    <rdfs:domain rdf:resource="#Address"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Local-District"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#address-city-or-village">
+    <rdfs:domain rdf:resource="#Address"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Municipal-Unit"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#address-country">
+    <rdfs:domain rdf:resource="#Address"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Country"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#address-region">
+    <rdfs:domain rdf:resource="#Address"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Geographical-Region"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#addresses-generic-area-of-interest">
+    <rdfs:domain rdf:nodeID="b72"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Generic-Area-Of-Interest"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#affiliated-people">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Affiliated-Person"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#affiliated-person">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#cites-publication-reference"/>
+  <owl:ObjectProperty rdf:about="#confers-award">
+    <rdfs:domain rdf:resource="#Conferring-An-Award"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Award"/>
+    <rdfs:subPropertyOf rdf:resource="#thing-acted-on"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#contains-article"/>
+  <owl:ObjectProperty rdf:about="#contains-news-item"/>
+  <owl:ObjectProperty rdf:about="#contains-publication"/>
+  <owl:ObjectProperty rdf:about="#edited-by">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subPropertyOf rdf:resource="#has-author"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#event-attended">
+    <rdfs:domain rdf:resource="#Attending-An-Event"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Event"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#event-product">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Event-Involving-Production"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#funding-source">
+    <rdfs:domain rdf:resource="#Project"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Organization"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#government-of-country">
+    <rdfs:domain rdf:resource="#Government"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Country"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-ISBN-number">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-academic-degree">
+    <rdfs:domain rdf:resource="#Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Academic-Degree"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-academic-unit">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Academic-Unit"/>
+    <rdfs:subPropertyOf rdf:resource="#has-sub-unit"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-affiliation">
+    <rdfs:domain rdf:resource="#Affiliated-Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Organization"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-affiliation-to-unit">
+    <rdfs:domain rdf:resource="#Affiliated-Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Organization-Unit"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-appellation">
+    <rdfs:domain rdf:resource="#Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Appellation"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-author">
+    <rdfs:domain rdf:nodeID="b71"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Generic-Agent"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-awarding-body">
+    <rdfs:domain rdf:resource="#Conferring-An-Award"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Awarding-Body"/>
+    <rdfs:subPropertyOf rdf:resource="#has-main-agent"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-capital">
+    <rdfs:domain rdf:resource="#Country"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Capital-City"/>
+    <owl:inverseOf rdf:resource="#is-capital-of"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-contract-type">
+    <rdfs:domain rdf:resource="#Employee"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Employment-Contract-Type"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-currency">
+    <rdfs:domain rdf:resource="#Country"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Currency"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-date"/>
+  <owl:ObjectProperty rdf:about="#has-faculty">
+    <rdfs:domain rdf:resource="#University"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#University-Faculty"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-gender">
+    <rdfs:domain rdf:resource="#Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Gender"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-government">
+    <rdfs:domain rdf:resource="#Country"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Government"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-leading-organization">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subPropertyOf rdf:resource="#involves-organization"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-location">
+    <rdfs:comment>The location at which an event takes place</rdfs:comment>
+    <rdfs:domain rdf:resource="#Event"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Location"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-main-agent">
+    <rdfs:comment>The agents causing the event to happen, if they are known.</rdfs:comment>
+    <rdfs:domain rdf:resource="#Event"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Generic-Agent"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-number">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-other-agents-involved"
+                      rdfs:comment="Other agents involved in the event">
+    <rdfs:domain rdf:resource="#Event"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Generic-Agent"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-periodicity"/>
+  <owl:ObjectProperty rdf:about="#has-place-of-publication">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-postal-address">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Postal-Address"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-project-leader">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subPropertyOf rdf:resource="#has-project-member"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-project-member">
+    <rdfs:domain rdf:resource="#Project"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Person"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-publication-reference"/>
+  <owl:ObjectProperty rdf:about="#has-research-interest">
+    <rdfs:comment>People and in general even organizations and organization units may have research interests.  This relation shoudl be used to specify them</rdfs:comment>
+    <rdfs:domain rdf:nodeID="b73"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Research-Area"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-size">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Organization-Size"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-speaker">
+    <rdfs:domain rdf:resource="#Giving-A-Talk"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Person"/>
+    <rdfs:subPropertyOf rdf:resource="#sender-of-information"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-status">
+    <rdfs:comment>Whether the software is released, alpha or beta</rdfs:comment>
+    <rdfs:domain rdf:resource="#Implemented-System"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Software-Status"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-sub-activity">
+    <rdfs:domain rdf:resource="#Activity"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Activity"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-sub-unit">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Organization-Unit"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-supervisor">
+    <rdfs:domain rdf:resource="#PhD-Student"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Person"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-support-unit">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Academic-Support-Unit"/>
+    <rdfs:subPropertyOf rdf:resource="#has-sub-unit"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#has-vice-chancellor">
+    <rdfs:domain rdf:resource="#University"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Educational-Employee"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#headed-by">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Affiliated-Person"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#included-in-publication"/>
+  <owl:ObjectProperty rdf:about="#information-being-transferred">
+    <rdfs:domain rdf:resource="#Information-Transfer-Event"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Abstract-Information"/>
+    <rdfs:subPropertyOf rdf:resource="#thing-acted-on"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#information-object-being-transferred">
+    <rdfs:domain rdf:resource="#Information-Transfer-Event"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Information-Bearing-Object"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#information-transfer-medium-used">
+    <rdfs:domain rdf:resource="#Information-Transfer-Event"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Information-Transfer-Medium"/>
+    <rdfs:subPropertyOf rdf:resource="#means-of-transport-used"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#involves-organization">
+    <rdfs:domain rdf:resource="#Project"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Organization"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#is-capital-of">
+    <rdfs:domain rdf:resource="#Capital-City"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Country"/>
+    <owl:inverseOf rdf:resource="#has-capital"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#issued-by">
+    <rdfs:domain rdf:resource="#Currency"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Government"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#location-at-end">
+    <rdfs:domain rdf:resource="#Event-Involving-Movement"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Location"/>
+    <rdfs:subPropertyOf rdf:resource="#has-location"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#location-at-start">
+    <rdfs:domain rdf:resource="#Event-Involving-Movement"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Location"/>
+    <rdfs:subPropertyOf rdf:resource="#has-location"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#means-of-transport-used">
+    <rdfs:domain rdf:resource="#Event-Involving-Movement"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Generalised-Means-Of-Transport"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#meeting-attendee">
+    <rdfs:domain rdf:resource="#Meeting-Taking-Place"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Person"/>
+    <rdfs:subPropertyOf rdf:resource="#has-other-agents-involved"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#meeting-organizer">
+    <rdfs:domain rdf:resource="#Meeting-Taking-Place"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Person"/>
+    <rdfs:subPropertyOf rdf:resource="#has-main-agent"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#method-builds-on">
+    <rdfs:domain rdf:resource="#Method"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Method"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#organization-being-visited">
+    <rdfs:domain rdf:resource="#Visiting-Researcher"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Organization"/>
+    <rdfs:subPropertyOf rdf:resource="#has-affiliation"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#organization-part-of">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#organization-unit-being-visited">
+    <rdfs:domain rdf:resource="#Visiting-Researcher"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Organization-Unit"/>
+    <rdfs:subPropertyOf rdf:resource="#has-affiliation-to-unit"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#owned-by">
+    <rdfs:domain rdf:nodeID="b74"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Legal-Agent"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#person-being-visited">
+    <rdfs:domain rdf:resource="#Visiting-Researcher"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Person"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#produces-output">
+    <rdfs:domain rdf:resource="#Activity"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&support.owl;#Thing"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#project-involves-organization-unit">
+    <rdfs:comment>It is sufficient that somebody in unit ?u works in project ?p</rdfs:comment>
+    <rdfs:domain rdf:resource="#Project"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Organization-Unit"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#published-book">
+    <rdfs:domain rdf:resource="#Book-Publishing"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Book"/>
+    <rdfs:subPropertyOf rdf:resource="#event-product"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#published-by">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#published-proceedings">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subPropertyOf rdf:resource="#event-product"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#recipient-agents">
+    <rdfs:comment>The agents which receive the thing-acted-on</rdfs:comment>
+    <rdfs:domain rdf:resource="#Generalized-Transfer"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Generic-Agent"/>
+    <rdfs:subPropertyOf rdf:resource="#has-other-agents-involved"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#recipient-of-message">
+    <rdfs:domain rdf:resource="#Message"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Generic-Agent"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#requires-hardware-platform">
+    <rdfs:domain rdf:resource="#Implemented-System"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Hardware-Platform"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#requires-hardware-platform-on-client-side">
+    <rdfs:domain rdf:resource="#Web-Based-System"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Hardware-Platform"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#requires-hardware-platform-on-server-side">
+    <rdfs:domain rdf:resource="#Web-Based-System"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Hardware-Platform"/>
+    <rdfs:subPropertyOf rdf:resource="#requires-hardware-platform"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#requires-software-technology">
+    <rdfs:domain rdf:resource="#Implemented-System"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Software-Technology"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#requires-software-technology-on-client-side">
+    <rdfs:domain rdf:resource="#Web-Based-System"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Software-Technology"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#requires-software-technology-on-server-side">
+    <rdfs:domain rdf:resource="#Web-Based-System"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Software-Technology"/>
+    <rdfs:subPropertyOf rdf:resource="#requires-software-technology"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#runs-on-operating-system">
+    <rdfs:domain rdf:resource="#Implemented-System"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Operating-System"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#runs-on-operating-system-on-client-side">
+    <rdfs:domain rdf:resource="#Web-Based-System"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Operating-System"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#runs-on-operating-system-on-server-side">
+    <rdfs:domain rdf:resource="#Web-Based-System"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Operating-System"/>
+    <rdfs:subPropertyOf rdf:resource="#runs-on-operating-system"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#sender-of-information">
+    <rdfs:domain rdf:resource="#Information-Transfer-Event"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Generic-Agent"/>
+    <rdfs:subPropertyOf rdf:resource="#has-main-agent"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#sender-of-message">
+    <rdfs:domain rdf:resource="#Message"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Generic-Agent"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#studies-at">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subPropertyOf rdf:resource="#has-affiliation"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#studies-in-unit">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:subPropertyOf rdf:resource="#has-affiliation-to-unit"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#sub-area-of">
+    <rdfs:domain rdf:resource="#Generic-Area-Of-Interest"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Generic-Area-Of-Interest"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#sub-unit-of-organization-unit">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Organization-Unit"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#subsidiary-of">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Profit-Organization"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#supports-language">
+    <rdfs:domain rdf:nodeID="b75"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Specification-Or-Computing-Language"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#supports-method">
+    <rdfs:domain rdf:resource="#Technology"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Method"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#technology-builds-on">
+    <rdfs:domain rdf:resource="#Technology"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Technology"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#thing-acted-on"
+                      rdfs:comment="What is being transferred">
+    <rdfs:domain rdf:resource="#Generalized-Transfer"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#time-of-message">
+    <rdfs:domain rdf:resource="#Message"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&support.owl;#Time-Point"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#unit-of-organization">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Organization"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#uses-resource">
+    <rdfs:domain rdf:resource="#Activity"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="&support.owl;#Thing"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#works-for">
+    <rdfs:domain rdf:resource="#Employee"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Organization"/>
+    <rdfs:subPropertyOf rdf:resource="#has-affiliation"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="#works-in-unit">
+    <rdfs:domain rdf:resource="#Employee"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+    <rdfs:range rdf:resource="#Organization-Unit"/>
+    <rdfs:subPropertyOf rdf:resource="#has-affiliation-to-unit"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="&support.owl;#has-unit-of-measure"/>
+
+<!-- Instances -->
+  <portal:Research-Area rdf:about="#Adaptive-Hypermedia">
+    <portal:sub-area-of rdf:resource="#Hypermedia"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Agent-Based-Computing">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Software-Status rdf:about="#Alpha-Version">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Software-Status>
+
+  <portal:Research-Area rdf:about="#Artificial-Intelligence-Research-Area">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Academic-Degree rdf:about="#BA">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Academic-Degree>
+
+  <portal:Academic-Degree rdf:about="#BSc">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Academic-Degree>
+
+  <portal:Software-Status rdf:about="#Beta-Version">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Software-Status>
+
+  <portal:Software-Status rdf:about="#Broken-Version">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Software-Status>
+
+  <portal:Research-Area rdf:about="#Cognitive-Modelling-Research-Area">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Collaborative-Hypermedia">
+    <portal:sub-area-of rdf:resource="#Hypermedia"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Computing-Research-Area">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Academic-Degree rdf:about="#DEng">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Academic-Degree>
+
+  <portal:Appellation rdf:about="#Dr">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Appellation>
+
+  <portal:Research-Area rdf:about="#Dynamic-Linking">
+    <portal:sub-area-of rdf:resource="#Hypermedia"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#E-Commerce-Research-Area">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Information-Transfer-Medium rdf:about="#Email-Medium">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Information-Transfer-Medium>
+
+  <portal:Software-Status rdf:about="#Experimental-Version">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Software-Status>
+
+  <portal:Gender rdf:about="#Female-Gender">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Gender>
+
+  <portal:Work-Status rdf:about="#Full-Time">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Work-Status>
+
+  <portal:Research-Area rdf:about="#Human-Computer-Interaction">
+    <portal:sub-area-of rdf:resource="#Computing-Research-Area"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Hypermedia">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Incidental-KA">
+    <portal:sub-area-of rdf:resource="#Knowledge-Acquisition"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Information-Extraction">
+    <portal:sub-area-of rdf:resource="#Language-Engineering"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Information-Retrieval">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Knowledge-Acquisition">
+    <portal:sub-area-of rdf:resource="#Knowledge-Management"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Knowledge-Lifecycle">
+    <portal:sub-area-of rdf:resource="#Knowledge-Management"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Knowledge-Maintenance">
+    <portal:sub-area-of rdf:resource="#Knowledge-Management"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Knowledge-Management">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Knowledge-Modelling">
+    <portal:sub-area-of rdf:resource="#Knowledge-Management"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Knowledge-Publishing">
+    <portal:sub-area-of rdf:resource="#Knowledge-Management"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Knowledge-Retrieval">
+    <portal:sub-area-of rdf:resource="#Knowledge-Management"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Knowledge-Reuse">
+    <portal:sub-area-of rdf:resource="#Knowledge-Management"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Appellation rdf:about="#Lady">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Appellation>
+
+  <portal:Research-Area rdf:about="#Language-Engineering">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Learning-Research-Area">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Academic-Degree rdf:about="#MA">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Academic-Degree>
+
+  <portal:Academic-Degree rdf:about="#MSc">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Academic-Degree>
+
+  <portal:Gender rdf:about="#Male-Gender">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Gender>
+
+  <portal:Appellation rdf:about="#Miss">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Appellation>
+
+  <portal:Appellation rdf:about="#Mr">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Appellation>
+
+  <portal:Appellation rdf:about="#Mrs">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Appellation>
+
+  <portal:Appellation rdf:about="#Ms">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Appellation>
+
+  <portal:Research-Area rdf:about="#Multimedia-Research-Area">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Ontologies">
+    <portal:sub-area-of rdf:resource="#Knowledge-Modelling"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Organizational-Learning">
+    <portal:sub-area-of rdf:resource="#Learning-Research-Area"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Work-Status rdf:about="#Part-Time">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Work-Status>
+
+  <portal:Employment-Contract-Type rdf:about="#Permanent-Contract">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Employment-Contract-Type>
+
+  <portal:Academic-Degree rdf:about="#PhD">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Academic-Degree>
+
+  <portal:Research-Area rdf:about="#Problem-Solving-Methods">
+    <portal:sub-area-of rdf:resource="#Knowledge-Modelling"/>
+    <portal:sub-area-of rdf:resource="#Knowledge-Reuse"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Appellation rdf:about="#Prof">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Appellation>
+
+  <portal:Software-Status rdf:about="#Released-Version">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Software-Status>
+
+  <portal:Research-Area rdf:about="#Semantic-Web-Area">
+    <portal:sub-area-of rdf:resource="#Web-Research-Area"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Appellation rdf:about="#Sir">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Appellation>
+
+  <portal:Research-Area rdf:about="#Software-Visualization">
+    <portal:sub-area-of rdf:resource="#Human-Computer-Interaction"/>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Research-Area rdf:about="#Telepresence-Research-Area">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Employment-Contract-Type rdf:about="#Temporary-Contract">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Employment-Contract-Type>
+
+  <portal:Research-Area rdf:about="#Web-Research-Area">
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Research-Area>
+
+  <portal:Organization-Size rdf:about="#large-size"
+                            rdfs:label="large">
+    <rdfs:comment>An organization with more than 250 employees</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Organization-Size>
+
+  <portal:Organization-Size rdf:about="#medium-size"
+                            rdfs:label="medium">
+    <rdfs:comment>An organization with no more than 250 employees.  It also has to be independent, i.e., less than 25% owned by one enterprise (or jointly by several enterprises) falling outside the definition of medium-sized enterprise. Finally, either the turnover total must be less than 40M Euros or the balance sheet total must be less than 27M Euros.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Organization-Size>
+
+  <portal:Organization-Size rdf:about="#micro-size"
+                            rdfs:label="micro">
+    <rdfs:comment>An organization with no more than 10 employees.  It also has to be independent, i.e., less than 25% owned by one enterprise (or jointly by several enterprises) falling outside the definition of micro-sized enterprise.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Organization-Size>
+
+  <portal:Organization-Size rdf:about="#small-size"
+                            rdfs:label="small">
+    <rdfs:comment>An organization with no more than 50 employees.  It also has to be independent, i.e., less than 25% owned by one enterprise (or jointly by several enterprises) falling outside the definition of small-sized enterprise. Finally, either the turnover total must be less than 7M Euros or the balance sheet total must be less than 5M Euros.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Organization-Size>
+
+  <portal:Organization-Size rdf:about="#very-large-size"
+                            rdfs:label="very large">
+    <rdfs:comment>An organization with over 10000 employees</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource="http://127.0.0.1/ontology/"/>
+  </portal:Organization-Size>
+</rdf:RDF>

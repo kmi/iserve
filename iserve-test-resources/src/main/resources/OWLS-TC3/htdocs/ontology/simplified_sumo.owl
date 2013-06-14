@@ -1,0 +1,925 @@
+<rdf:RDF
+xmlns:rdf 	="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:rdfs	="http://www.w3.org/2000/01/rdf-schema#"
+xmlns:owl	="http://www.w3.org/2002/07/owl#"
+xmlns:base	="http://127.0.0.1/ontology/simplified_sumo.owl#"
+xmlns     	="http://127.0.0.1/ontology/simplified_sumo.owl#"
+>
+
+<owl:Class rdf:ID= "AgriculturalProduct">
+<rdfs:subClassOf rdf:resource ="#Product"/>
+<rdfs:subClassOf rdf:resource ="#OrganicObject"/>
+<rdfs:comment>AgriculturalProduct is the
+subclass of Product that comprises the products of agricultural
+activity.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "Product">
+<rdfs:subClassOf rdf:resource ="#Artifact"/>
+<rdfs:comment>An Artifact that is produced by Manufacture and
+that is intended to be sold.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Artifact">
+<rdfs:subClassOf rdf:resource ="#CorpuscularObject"/>
+<rdfs:comment>A CorpuscularObject that is the product of a
+Making.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "CorpuscularObject">
+<rdfs:subClassOf rdf:resource ="#SelfConnectedObject"/>
+<rdfs:comment>A SelfConnectedObject whose parts have
+properties that are not shared by the whole.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "SelfConnectedObject">
+<rdfs:subClassOf rdf:resource ="#Object"/>
+<rdfs:comment>A SelfConnectedObject is any
+Object that does not consist of two or more disconnected parts.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Object">
+<rdfs:subClassOf rdf:resource ="#Physical"/>
+<rdfs:comment>Corresponds roughly to the class of ordinary
+objects.  Examples include normal physical objects, geographical regions,
+and locations of Processes, the complement of Objects in the Physical
+class.  In a 4D ontology, an Object is something whose spatiotemporal
+extent is thought of as dividing into spatial parts roughly parallel to the
+time-axis.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Physical">
+<rdfs:subClassOf rdf:resource ="#Entity"/>
+<rdfs:comment>An entity that has a location in space-time.
+Note that locations are themselves understood to have a location in
+space-time.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Entity">
+<rdfs:comment>The universal class of individuals.  This is the root
+node of the ontology.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "OrganicObject">
+<rdfs:subClassOf rdf:resource ="#CorpuscularObject"/>
+<rdfs:comment>This class encompasses Organisms,
+CorpuscularObjects that are parts of Organisms, i.e. BodyParts,
+and CorpuscularObjects that are nonintentionally produced by
+Organisms, e.g. ReproductiveBodies.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "ManufacturedProduct">
+<rdfs:subClassOf rdf:resource ="#Product"/>
+<rdfs:comment>ManufacturedProduct is
+the subclass of Product that includes goods that are produced
+or assembled in factories or other manufacturing processes,
+in contrast to AgriculturalProducts.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "CanadianDollar">
+<rdfs:subClassOf rdf:resource ="#CurrencyMeasure"/>
+<rdfs:subClassOf rdf:resource = "#UnitOfMeasure"/>
+<rdfs:comment>CanadianDollar represents the basic unit of
+currency of Canada.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:about= "#EuroDollar">
+<rdfs:subClassOf rdf:resource ="#CurrencyMeasure"/>
+<rdfs:subClassOf rdf:resource = "#UnitOfMeasure"/>
+<rdfs:comment>EuroDollar represents the basic unit of
+currency of the EuropeanUnion.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "FrenchFranc">
+<rdfs:subClassOf rdf:resource ="#CurrencyMeasure"/>
+<rdfs:subClassOf rdf:resource = "#UnitOfMeasure"/>
+<rdfs:comment>FrenchFranc represents the basic unit of
+currency of France.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "GermanMark">
+<rdfs:subClassOf rdf:resource ="#CurrencyMeasure"/>
+<rdfs:subClassOf rdf:resource = "#UnitOfMeasure"/>
+<rdfs:comment>GermanMark represents the basic unit of
+currency of Germany.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "ItalianLire">
+<rdfs:subClassOf rdf:resource ="#CurrencyMeasure"/>
+<rdfs:subClassOf rdf:resource = "#UnitOfMeasure"/>
+<rdfs:comment>ItalianLire represents the basic unit of
+currency of Italy.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "JapaneseYen">
+<rdfs:subClassOf rdf:resource ="#CurrencyMeasure"/>
+<rdfs:subClassOf rdf:resource = "#UnitOfMeasure"/>
+<rdfs:comment>JapaneseYen represents the basic unit of
+currency of Japan.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "OldTajikSomoni">
+<rdfs:subClassOf rdf:resource ="#CurrencyMeasure"/>
+<rdfs:subClassOf rdf:resource = "#UnitOfMeasure"/>
+<rdfs:comment>OldTajikSomoni represents a former unit of
+currency of Tajikistan.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "TajikSomoni">
+<rdfs:subClassOf rdf:resource ="#CurrencyMeasure"/>
+<rdfs:subClassOf rdf:resource = "#UnitOfMeasure"/>
+<rdfs:comment>TajikSomoni represents the basic unit of
+currency of Tajikistan.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "AfghanAfghani">
+<rdfs:subClassOf rdf:resource ="#CurrencyMeasure"/>
+<rdfs:subClassOf rdf:resource = "#UnitOfMeasure"/>
+<rdfs:comment>AfghanAfghani represents the basic unit of
+currency of Afghanistan.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "BritishPound">
+<rdfs:subClassOf rdf:resource ="#CurrencyMeasure"/>
+<rdfs:subClassOf rdf:resource = "#UnitOfMeasure"/>
+<rdfs:comment>BritishPound represents the basic unit of
+currency of the UnitedKingdomOfGreatBritainAndNorthernIreland.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "CurrencyMeasure">
+<rdfs:subClassOf rdf:resource ="#ConstantQuantity"/>
+<rdfs:comment>Includes all standard measures of monetary
+value, including UnitedStatesDollar, UnitedStatesCent, Lire, Yen, etc.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "ConstantQuantity">
+<rdfs:subClassOf rdf:resource ="#PhysicalQuantity"/>
+<rdfs:comment>A ConstantQuantity is a
+PhysicalQuantity which has a constant value, e.g. 3 meters and 5 hours.
+The magnitude (see MagnitudeFn) of every ConstantQuantity is a
+RealNumber.  ConstantQuantities are distinguished from
+FunctionQuantities, which map ConstantQuantities to other
+ConstantQuantities.  All ConstantQuantites are expressed with the
+BinaryFunction MeasureFn, which takes a Number and a UnitOfMeasure
+as arguments.  For example, 3 Meters can be expressed as (MeasureFn 3
+Meter).  ConstantQuantities form a partial order (see
+PartialOrderingRelation) with the lessThan relation, since lessThan
+is a RelationExtendedToQuantities and lessThan is defined over the
+RealNumbers.  The lessThan relation is not a total order (see
+TotalOrderingRelation) over the class ConstantQuantity since elements
+of some subclasses of ConstantQuantity (such as length quantities)
+are incomparable to elements of other subclasses of ConstantQuantity
+(such as mass quantities).</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "PhysicalQuantity">
+<rdfs:subClassOf rdf:resource ="#Quantity"/>
+<rdfs:comment>A PhysicalQuantity is a measure of
+some quantifiable aspect of the modeled world, such as 'the earth's
+diameter' (a constant length) and 'the stress in a loaded deformable
+solid' (a measure of stress, which is a function of three spatial
+coordinates).  All PhysicalQuantities are either ConstantQuantities
+or FunctionQuantities.  Instances of ConstantQuantity are dependent
+on a UnitOfMeasure, while instances of FunctionQuantity are
+Functions that map instances of ConstantQuantity to other instances
+of ConstantQuantity (e.g., TimeDependentQuantities are
+FunctionQuantities).  Although the name and definition of
+PhysicalQuantity is borrowed from physics, PhysicalQuantities need
+not be material.  Aside from the dimensions of length, time, velocity,
+etc., nonphysical dimensions such as currency are also possible.
+Accordingly, amounts of money would be instances of PhysicalQuantity.
+PhysicalQuantities are distinguished from Numbers by the fact that
+the former are associated with a dimension of measurement.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Quantity">
+<rdfs:subClassOf rdf:resource ="#Abstract"/>
+<rdfs:comment>Any specification of how many or how much of
+something there is.  Accordingly, there are two subclasses of Quantity:
+Number (how many) and PhysicalQuantity (how much).</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Abstract">
+<rdfs:subClassOf rdf:resource ="#Entity"/>
+<rdfs:comment>Properties or qualities as distinguished from any
+particular embodiment of the properties/qualities in a physical medium.
+Instances of Abstract can be said to exist in the same sense as mathematical
+objects such as sets and relations, but they cannot exist at a particular
+place and time without some physical encoding or embodiment.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "ClothesDrier">
+<rdfs:subClassOf rdf:resource ="#MajorAppliance"/>
+<rdfs:comment>ClothesDrier is the class of automatic clothes
+driers.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "ClothesWashingMachine">
+<rdfs:subClassOf rdf:resource ="#MajorAppliance"/>
+<rdfs:comment>ClothesWashingMachine is the class of
+washing machines.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "CookingOven">
+<rdfs:subClassOf rdf:resource ="#MajorAppliance"/>
+<rdfs:comment>CookingOven is the class of ovens for cooking.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "CookingRange">
+<rdfs:subClassOf rdf:resource ="#MajorAppliance"/>
+<rdfs:comment>CookingRange is the class of cooktops or
+ranges.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Dishwasher">
+<rdfs:subClassOf rdf:resource ="#MajorAppliance"/>
+<rdfs:comment>Dishwasher is the class of automatic dishwashers.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Freezer">
+<rdfs:subClassOf rdf:resource ="#MajorAppliance"/>
+<rdfs:comment>Freezer is the class of household freezers.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "HotWaterHeater">
+<rdfs:subClassOf rdf:resource ="#MajorAppliance"/>
+<rdfs:comment>HotWaterHeater is the class of hot water
+heaters.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Refrigerator">
+<rdfs:subClassOf rdf:resource ="#MajorAppliance"/>
+<rdfs:comment>Refrigerator is the class of refrigerators.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "MajorAppliance">
+<rdfs:subClassOf rdf:resource ="#"/>
+<rdfs:subClassOf rdf:resource ="#ElectricDevice"/>
+<rdfs:comment>MajorAppliance is the subclass of
+ElectricDevices that are large s manufactured for use
+in household tasks.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "">
+<rdfs:subClassOf rdf:resource ="#ManufacturedProduct"/>
+<rdfs:comment> is the subclass of
+ManufacturedProducts which are designed to last for three years
+or more.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "ManufacturedProduct">
+<rdfs:subClassOf rdf:resource ="#Product"/>
+<rdfs:comment>ManufacturedProduct is
+the subclass of Product that includes goods that are produced
+or assembled in factories or other manufacturing processes,
+in contrast to AgriculturalProducts.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "ElectricDevice">
+<rdfs:subClassOf rdf:resource ="#Device"/>
+<rdfs:comment>Any Device that is powered by electricity.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Device">
+<rdfs:subClassOf rdf:resource ="#Artifact"/>
+<rdfs:comment>A Device is an Artifact whose purpose is to
+serve as an instrument in a specific subclass of Process.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "KilowattHour">
+<rdfs:subClassOf rdf:resource = "#UnitOfMeasure"/>
+<rdfs:subClassOf rdf:resource ="#FunctionQuantity"/>
+<rdfs:comment>KilowattHour is a UnitOfMeasure for
+energy that represents 1000 Watts (1 kW) of power expended over one
+hour (1 h) of time.  This is the unit commonly used in commercial
+power contexts.  It is equivalent to 3,600,000 Joules.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "UnitOfMeasure">
+<rdfs:subClassOf rdf:resource ="#PhysicalQuantity"/>
+<rdfs:comment>A standard of measurement for some dimension.
+For example, the Meter is a UnitOfMeasure for the dimension of length,
+as is the Inch.  There is no intrinsic property of a UnitOfMeasure that
+makes it primitive or fundamental; rather, a system of units (e.g.
+SystemeInternationalUnit) defines a set of orthogonal dimensions and
+assigns units for each.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "FunctionQuantity">
+<rdfs:subClassOf rdf:resource ="#PhysicalQuantity"/>
+<rdfs:comment>A FunctionQuantity is a PhysicalQuantity
+that is returned by a Function that maps from one or more instances of
+ConstantQuantity to another instance of ConstantQuantity.  For example,
+the velocity of a particle would be represented by a FunctionQuantity
+relating values of time (which are ConstantQuantities) to values of distance
+(also ConstantQuantities).  Note that all elements of the range of the
+Function corresponding to a FunctionQuantity have the same physical
+dimension as the FunctionQuantity itself.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "CompoundSubstance">
+<rdfs:subClassOf rdf:resource ="#PureSubstance"/>
+<rdfs:comment>The Class of Substances that contain
+two or more elements (ElementalSubstances), in definite proportion by weight.
+The composition of a pure compound will be invariant, regardless of the method
+of preparation. Compounds are composed of more than one kind of atom (element).
+The term molecule is often used for the smallest unit of a compound that still
+retains all of the properties of the compound.  Examples: Table salt (sodium
+chloride, NaCl), sugar (sucrose, C_{12}H_{22}O_{11}), and water (H_2O). </rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "PureSubstance">
+<rdfs:subClassOf rdf:resource ="#Substance"/>
+<rdfs:comment>The Class of Substances with constant
+composition.  A PureSubstance can be either an element (ElementalSubstance)
+or a compound of elements (CompoundSubstance).  Examples: Table salt
+(sodium chloride, NaCl), sugar (sucrose, C_{12}H_{22}O_{11}), water (H_2O),
+iron (Fe), copper (Cu), and oxygen (O_2).</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Substance">
+<rdfs:subClassOf rdf:resource ="#SelfConnectedObject"/>
+<rdfs:comment>An Object in which every part is similar to
+every other in every relevant respect.  More precisely, something is a
+Substance when it has only arbitrary pieces as parts - any parts have
+properties which are similar to those of the whole.  Note that a Substance
+may nonetheless have physical properties that vary.  For example, the
+temperature, chemical constitution, density, etc. may change from one part
+to another.  An example would be a body of water.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "CropProduction">
+<rdfs:subClassOf rdf:resource = "#IndustryAttribute"/>
+<subAttribute rdf:resource = "#AgriculturalSector" />
+<industryProductType rdf:resource = "#Plant" />
+<rdfs:comment>CropProduction is the IndustryAttribute
+that describes crop farming operations.</rdfs:comment>
+</owl:Class>
+
+<owl:Property   rdf:ID= "subAttribute">
+<rdfs:comment>Means that the second argument can be
+ascribed to everything which has the first argument ascribed to it.</rdfs:comment>
+<rdfs:domain rdf:resource="#Attribute"/>
+<rdfs:range rdf:resource = "#Attribute"/>
+</owl:Property>
+
+
+<owl:Class rdf:ID= "Attribute">
+<rdfs:subClassOf rdf:resource ="#Abstract"/>
+<rdfs:comment>Qualities which we cannot or choose not to
+reify into subclasses of Object.</rdfs:comment>
+</owl:Class>
+
+<owl:Property   rdf:ID= "industryProductType">
+<rdfs:comment>(industryProductType ?INDUSTRY ?TYPE) means that the Industry ?INDUSTRY
+produces products of the kind ?TYPE.</rdfs:comment>
+<rdfs:domain rdf:resource="#Industry"/>
+<rdfs:range rdf:resource = "#Product"/>
+</owl:Property>
+
+<owl:Class rdf:ID= "Industry">
+<rdfs:subClassOf rdf:resource ="#Collection"/>
+<rdfs:comment>The class of Collections of Corporations
+which are in the same line of business.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Collection">
+<rdfs:subClassOf rdf:resource ="#Object"/>
+<rdfs:comment>Collections have members like Classes, but,
+unlike Classes, they have a position in space-time and members can be
+added and subtracted without thereby changing the identity of the
+Collection.  Some examples are toolkits, football teams, and flocks
+of sheep.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "IndustryAttribute">
+<rdfs:subClassOf rdf:resource ="#RelationalAttribute"/>
+<rdfs:comment>IndustryAttribute is a class of
+Attributes which identify an Organization as belonging to a particular
+industry type.  For example, the company Hallmark has the attribute
+of GreetingCardPublishers.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "RelationalAttribute">
+<rdfs:subClassOf rdf:resource ="#Attribute"/>
+<rdfs:comment>Any Attribute that an Entity has by
+virtue of a relationship that it bears to another Entity or set of Entities,
+e.g. SocialRoles and PositionalAttributes.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "AgriculturalSector">
+<rdfs:subClassOf rdf:resource = "#EconomicSector"/>
+<rdfs:comment>AgriculturalSector is an attribute
+that describes commercial organizations or agents whose business is in
+the agricultural sector of the economy.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "EconomicSector">
+<rdfs:subClassOf rdf:resource ="#IndustryAttribute"/>
+<rdfs:comment>EconomicSector is the subclass of
+IndustryAttributes that describe broad characterizations of different
+kinds of business activities; e.g., manufacturing; services; retail trade;
+wholesale trade; finance, insurance, and real estate; transportation and
+utilities; construction; mining; agriculture, forestry, and fishing.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Plant">
+<rdfs:subClassOf rdf:resource ="#Organism"/>
+<rdfs:comment>An Organism having cellulose cell walls, growing
+by synthesis of Substances, generally distinguished by the presence of
+chlorophyll, and lacking the power of locomotion.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Organism">
+<rdfs:subClassOf rdf:resource ="#OrganicObject"/>
+<rdfs:subClassOf rdf:resource ="#Agent"/>
+<rdfs:comment>Generally, a living individual, including all
+Plants and Animals.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Agent">
+<rdfs:subClassOf rdf:resource ="#Object"/>
+<rdfs:comment>Something or someone that can act on its own and
+produce changes in the world.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "OrganicObject">
+<rdfs:subClassOf rdf:resource ="#CorpuscularObject"/>
+<disjoint rdf:resource = "#Artifact" />
+<rdfs:comment>This class encompasses Organisms,
+CorpuscularObjects that are parts of Organisms, i.e. BodyParts,
+and CorpuscularObjects that are nonintentionally produced by
+Organisms, e.g. ReproductiveBodies.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Vegetable">
+<rdfs:subClassOf rdf:resource ="#FruitOrVegetable"/>
+</owl:Class>
+
+<owl:Class rdf:ID= "FruitOrVegetable">
+<rdfs:subClassOf rdf:resource ="#PlantAnatomicalStructure"/>
+<rdfs:subClassOf rdf:resource ="#ReproductiveBody"/>
+<rdfs:comment>Any fruit or vegetable, i.e. a
+ripened ReproductiveBody of a Plant.  Note that FruitOrVegetable
+is not a subclass of Food, because some fruits, e.g. poisonous
+berries, are not edible.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "PlantAnatomicalStructure">
+<rdfs:subClassOf rdf:resource ="#AnatomicalStructure"/>
+<rdfs:comment>AnatomicalStructures that
+are possessed exclusively by Plants.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "AnatomicalStructure">
+<rdfs:subClassOf rdf:resource ="#OrganicObject"/>
+<rdfs:comment>A normal or pathological part
+of the anatomy or structural organization of an Organism.  This
+class covers BodyParts, as well as structures that are given off
+by Organisms, e.g. ReproductiveBodies.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "ReproductiveBody">
+<rdfs:subClassOf rdf:resource ="#BodyPart"/>
+<rdfs:comment>Reproductive structure of Organisms.
+Consists of an Embryonic Object and a nutritive/protective envelope.
+Note that this class includes seeds, spores, and FruitOrVegetables, as
+well as the eggs produced by Animals.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "BodyPart">
+<rdfs:subClassOf rdf:resource ="#AnatomicalStructure"/>
+<rdfs:comment>A collection of Cells and Tissues which
+are localized to a specific area of an Organism and which are not
+pathological. The instances of this Class range from gross structures
+to small components of complex Organs.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "FinancialTransaction">
+<rdfs:subClassOf rdf:resource ="#Transaction"/>
+<rdfs:comment>A Transaction where an instance
+of Currency is exchanged for something else.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Transaction">
+<rdfs:subClassOf rdf:resource ="#ChangeOfPossession"/>
+<rdfs:subClassOf rdf:resource ="#DualObjectProcess"/>
+<rdfs:comment>The subclass of ChangeOfPossession where
+something is exchanged for something else.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "ChangeOfPossession">
+<rdfs:subClassOf rdf:resource ="#SocialInteraction"/>
+<relatedInternalConcept rdf:resource = "#possesses" />
+<rdfs:comment>The Class of Processes where
+ownership of something is transferred from one Agent to another.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "SocialInteraction">
+<rdfs:subClassOf rdf:resource ="#IntentionalProcess"/>
+<rdfs:comment>The subclass of
+IntentionalProcess that involves interactions between
+CognitiveAgents.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "IntentionalProcess">
+<rdfs:subClassOf rdf:resource ="#Process"/>
+<rdfs:comment>A Process that has a specific
+purpose for the CognitiveAgent who performs it.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "Process">
+<rdfs:subClassOf rdf:resource ="#Physical"/>
+<rdfs:comment>Intuitively, the class of things that happen
+and have temporal parts or stages.  Examples include extended events
+like a football match or a race, actions like Pursuing and Reading,
+and biological processes. The formal definition is: anything that lasts
+for a time but is not an Object.  Note that a Process may have
+participants 'inside' it which are Objects, such as the players
+in a football match.  In a 4D ontology, a Process is something whose
+spatiotemporal extent is thought of as dividing into temporal stages
+roughly perpendicular to the time-axis.</rdfs:comment>
+</owl:Class>
+
+<owl:Property   rdf:ID= "relatedInternalConcept">
+<rdfs:comment>Means that the two arguments are
+related concepts within the SUMO, i.e. there is a significant similarity
+of meaning between them.  To indicate a meaning relation between a SUMO
+concept and a concept from another source, use the Predicate
+relatedExternalConcept.</rdfs:comment>
+<rdfs:domain rdf:resource="#Entity"/>
+<rdfs:range rdf:resource = "#Entity"/>
+</owl:Property>
+
+<owl:Property   rdf:ID= "possesses">
+<rdfs:comment>Relation that holds between an Agent and
+an Object when the Agent has ownership of the Object.</rdfs:comment>
+<rdfs:domain rdf:resource="#Agent"/>
+<rdfs:range rdf:resource = "#Object"/>
+</owl:Property>
+
+
+<owl:Class rdf:ID= "Gemstone">
+<rdfs:subClassOf rdf:resource ="#Object"/>
+<rdfs:comment>Gemstone is the subclass of Minerals or
+petrified organic substances that are especially valued for use in
+jewelry and other decorative items; some Gemstones are also valuable
+for mechanical or industrial applications.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "ProductPackage">
+<rdfs:subClassOf rdf:resource ="#Object"/>
+<rdfs:comment>ProductPackage is the class of objects
+designed to contain Products for shipping and sale.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "IndependentState">
+<rdfs:subClassOf rdf:resource ="#GeopoliticalArea"/>
+<rdfs:subClassOf rdf:resource ="#Nation"/>
+<rdfs:comment>IndependentState is a subclass of
+GeopoliticalArea, representing the classification 'Independent State'
+used by the CIA World Fact Book.  Cf.
+DependencyOrSpecialSovereigntyArea.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "GeopoliticalArea">
+<rdfs:subClassOf rdf:resource ="#GeographicArea"/>
+<rdfs:subClassOf rdf:resource ="#Agent"/>
+<rdfs:comment>Any GeographicArea which is associated
+with some sort of political structure.  This class includes Lands,
+Cities, districts of cities, counties, etc.  Note that the identity
+of a GeopoliticalArea may remain constant after a change in borders.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "GeographicArea">
+<rdfs:subClassOf rdf:resource ="#Region"/>
+<rdfs:comment>A geographic location, generally having
+definite boundaries.  Note that this differs from its immediate superclass
+Region in that a GeographicArea is a three-dimensional Region of the
+earth.  Accordingly, all astronomical objects other than earth and all
+one-dimensional and two-dimensional Regions are not classed under
+GeographicArea.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Region">
+<rdfs:subClassOf rdf:resource ="#Object"/>
+<rdfs:comment>A topographic location.  Regions encompass
+surfaces of Objects, imaginary places, and GeographicAreas.  Note
+that a Region is the only kind of Object which can be located at
+itself.  Note too that Region is not a subclass of SelfConnectedObject,
+because some Regions, e.g. archipelagos, have parts which are not
+connected with one another.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Nation">
+<rdfs:subClassOf rdf:resource ="#GeopoliticalArea"/>
+<rdfs:subClassOf rdf:resource ="#LandArea"/>
+<rdfs:comment>The broadest GeopoliticalArea, i.e. Nations are
+GeopoliticalAreas that are not part of any other overarching and
+comprehensive governance structure (excepting commonwealths and other sorts
+of loose international organizations).</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "LandArea">
+<rdfs:subClassOf rdf:resource ="#GeographicArea"/>
+<rdfs:comment>An area which is predominantly solid ground,
+e.g. a Nation, a mountain, a desert, etc.  Note that a LandArea may
+contain some relatively small WaterAreas.  For example, Australia is
+a LandArea even though it contains various rivers and lakes.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "Petroleum">
+<rdfs:subClassOf rdf:resource ="#PetroleumProduct"/>
+<rdfs:comment>Also known as crude oil.  It can be converted into
+RefinedPetroleumProducts.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "PetroleumProduct">
+<rdfs:subClassOf rdf:resource ="#OrganicCompound"/>
+<rdfs:comment>PetroleumProduct is a broad class that
+includes both crude oil (Petroleum) and RefinedPetroleumProducts.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "OrganicCompound">
+<rdfs:subClassOf rdf:resource ="#CompoundSubstance"/>
+<rdfs:comment>Any CompoundSubstance that has a Carbon
+base.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "RefinedPetroleumProduct">
+<rdfs:subClassOf rdf:resource ="#PetroleumProduct"/>
+<rdfs:comment>RefinedPetroleumProduct is the
+subclass of PetroleumProducts that are refined from Petroleum (crude oil).</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Livestock">
+<rdfs:subClassOf rdf:resource ="#AnimalAgriculturalProduct"/>
+<rdfs:comment>Livestock is the class of live animals
+raised as AgriculturalProducts.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "AnimalAgriculturalProduct">
+<rdfs:subClassOf rdf:resource ="#AgriculturalProduct"/>
+<rdfs:comment>AnimalAgriculturalProduct is the class of AgriculturalProducts
+that are animal in nature, including meat, fish, dairy products,
+hides, furs, animal fats and oils, etc.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Beverage">
+<rdfs:subClassOf rdf:resource ="#Food"/>
+<rdfs:comment>Any Food that is ingested by Drinking.
+Note that this class is disjoint with the other subclasses of Food,
+i.e. Meat and FruitOrVegetable.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "Food">
+<rdfs:subClassOf rdf:resource ="#SelfConnectedObject"/>
+<rdfs:comment>Any SelfConnectedObject containing Nutrients,
+such as carbohydrates, proteins, and fats, that can be ingested by a
+living Animal and metabolized into energy and body tissue.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "GroceryProduce">
+<rdfs:subClassOf rdf:resource ="#PlantAgriculturalProduct"/>
+<rdfs:subClassOf rdf:resource ="#FruitOrVegetable"/>
+</owl:Class>
+
+<owl:Class rdf:ID= "PlantAgriculturalProduct">
+<rdfs:subClassOf rdf:resource ="#AgriculturalProduct"/>
+<rdfs:comment>PlantAgriculturalProduct
+is the class of AgriculturalProducts that are vegetable in nature,
+in the widest sense, e.g., fruits, grains, green vegetables, cotton,
+linen, flowers, wine grapes, hops.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "TropicalFruit">
+<rdfs:subClassOf rdf:resource ="#Fruit"/>
+<rdfs:subClassOf rdf:resource ="#GroceryProduce"/>
+</owl:Class>
+
+<owl:Class rdf:ID= "Fruit">
+<rdfs:subClassOf rdf:resource ="#FruitOrVegetable"/>
+</owl:Class>
+
+<owl:Class rdf:ID= "ChickenMeat">
+<rdfs:subClassOf rdf:resource ="#Meat"/>
+<rdfs:comment>Meat that was originally part of a Chicken.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "Meat">
+<rdfs:subClassOf rdf:resource ="#Food"/>
+<rdfs:comment>Any Food which was originally part of an
+Animal and is not ingested by drinking, including eggs and animal
+blood that is eaten as food.  Note that this class covers both raw
+meat and meat that has been prepared in some way, e.g. by cooking.
+Note too that preparations involving Meat and FruitOrVegetable
+are classed directly under Food.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "CitrusFruit">
+<rdfs:subClassOf rdf:resource ="#Fruit"/>
+<rdfs:subClassOf rdf:resource ="#GroceryProduce"/>
+</owl:Class>
+
+<owl:Class rdf:ID= "BeverageProduct">
+<rdfs:subClassOf rdf:resource ="#Product"/>
+<rdfs:comment>BeverageProduct is the class of products
+that are Beverages, packaged or unpackaged.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "Crayfish">
+<rdfs:subClassOf rdf:resource ="#Shellfish"/>
+</owl:Class>
+
+<owl:Class rdf:ID= "Shellfish">
+<rdfs:subClassOf rdf:resource ="#Seafood"/>
+</owl:Class>
+
+<owl:Class rdf:ID= "Shrimp">
+<rdfs:subClassOf rdf:resource ="#Shellfish"/>
+</owl:Class>
+
+<owl:Class rdf:ID= "Seafood">
+<rdfs:subClassOf rdf:resource ="#Meat"/>
+</owl:Class>
+
+<owl:Class rdf:ID= "FoodFish">
+<rdfs:subClassOf rdf:resource ="#Seafood"/>
+</owl:Class>
+
+<owl:Class rdf:ID= "ControlledSubstance">
+<rdfs:subClassOf rdf:resource ="#BiologicallyActiveSubstance"/>
+<rdfs:comment>ControlledSubstance is
+the subclass of BiologicallyActiveSubstances whose distribution
+and use is controlled by government regulation.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "BiologicallyActiveSubstance">
+<rdfs:subClassOf rdf:resource ="#Substance"/>
+<rdfs:comment>A Substance that is
+capable of inducing a change in the structure or functioning of an
+Organism.  This Class includes Substances used in the treatment,
+diagnosis, prevention or analysis of normal and abnormal body function.
+This Class also includes Substances that occur naturally in the body
+and are administered therapeutically.  Finally, BiologicallyActiveSubstance
+includes Nutrients, most drugs of abuse, and agents that require special
+handling because of their toxicity.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "LambMeat">
+<rdfs:subClassOf rdf:resource ="#MeatOfLandAnimal"/>
+</owl:Class>
+
+<owl:Class rdf:ID= "MeatOfLandAnimal">
+<rdfs:subClassOf rdf:resource ="#Meat"/>
+</owl:Class>
+
+<owl:Class rdf:ID= "HoofedMammal">
+<rdfs:subClassOf rdf:resource ="#Mammal"/>
+<rdfs:comment>The Class of quadruped Mammals with hooves.
+Includes horses, cows, sheep, pigs, antelope, etc.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Mammal">
+<rdfs:subClassOf rdf:resource ="#WarmBloodedVertebrate"/>
+<rdfs:comment>A Vertebrate having a constant body temperature
+and characterized by the presence of hair, mammary glands, and sweat
+glands.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "WarmBloodedVertebrate">
+<rdfs:subClassOf rdf:resource ="#Vertebrate"/>
+<disjoint rdf:resource = "#ColdBloodedVertebrate" />
+<rdfs:comment>Vertebrates whose body temperature
+is internally regulated.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "ColdBloodedVertebrate">
+<rdfs:subClassOf rdf:resource ="#Vertebrate"/>
+<rdfs:comment>Vertebrates whose body temperature
+is not internally regulated.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Vertebrate">
+<rdfs:subClassOf rdf:resource ="#Animal"/>
+<rdfs:comment>An Animal which has a spinal column.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Animal">
+<rdfs:subClassOf rdf:resource ="#Organism"/>
+<rdfs:comment>An Organism with eukaryotic Cells, and lacking
+stiff cell walls, plastids, and photosynthetic pigments.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Milk">
+<rdfs:subClassOf rdf:resource ="#LiquidBodySubstance"/>
+<rdfs:subClassOf rdf:resource ="#Beverage"/>
+<rdfs:comment>A nutritious BodySubstance produced by Mammals.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "LiquidBodySubstance">
+<rdfs:subClassOf rdf:resource ="#BodySubstance"/>
+<rdfs:comment>Any BodySubstance which is Liquid
+under normal circumstances.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "BodySubstance">
+<rdfs:subClassOf rdf:resource ="#Mixture"/>
+<rdfs:comment>Extracellular material and mixtures of
+cells and extracellular material that are produced, excreted or accreted
+by an Organism.  Included here are Substances such as saliva, dental
+enamel, sweat, and gastric acid.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Mixture">
+<rdfs:subClassOf rdf:resource ="#Substance"/>
+<rdfs:comment>A Mixture is two or more PureSubstances,
+combined in varying proportions - each retaining its own specific properties.
+The components of a Mixture can be separated by physical means, i.e. without
+the making and breaking of chemical bonds. Examples: Air, table salt thoroughly
+dissolved in water, milk, wood, and concrete. </rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Salmon">
+<rdfs:subClassOf rdf:resource ="#FoodFish"/>
+</owl:Class>
+
+<owl:Class rdf:ID= "Seafood">
+<rdfs:subClassOf rdf:resource ="#Meat"/>
+</owl:Class>
+
+<owl:Class rdf:ID= "TurkeyMeat">
+<rdfs:subClassOf rdf:resource ="#MeatOfLandAnimal"/>
+</owl:Class>
+
+<owl:Class rdf:ID= "WaterBuffaloMeat">
+<rdfs:subClassOf rdf:resource ="#MeatOfLandAnimal"/>
+</owl:Class>
+
+<owl:Class rdf:ID= "Wine">
+<rdfs:subClassOf rdf:resource ="#AlcoholicBeverage"/>
+<rdfs:comment>An AlcoholicBeverage that is prepared by fermenting
+the juice of grapes.</rdfs:comment>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "AlcoholicBeverage">
+<rdfs:subClassOf rdf:resource ="#Beverage"/>
+<rdfs:subClassOf rdf:resource ="#Depressant"/>
+<rdfs:comment>Any Beverage that contains Alcohol.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Depressant">
+<rdfs:subClassOf rdf:resource ="#BiologicallyActiveSubstance"/>
+<rdfs:comment>Any BiologicallyActiveSubstance which has
+the effect of depressing the central nervous system, i.e. decreasing
+function or activity in the Brain or SpinalCord.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Pork">
+<rdfs:subClassOf rdf:resource ="#MeatOfLandAnimal"/>
+</owl:Class>
+
+<owl:Class rdf:ID= "Beef">
+<rdfs:subClassOf rdf:resource ="#Meat"/>
+<rdfs:comment>Meat that was originally part of a Cow.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:ID= "Cheese">
+<rdfs:subClassOf rdf:resource ="#DairyProduct"/>
+</owl:Class>
+
+<owl:Class rdf:ID= "DairyProduct">
+<rdfs:subClassOf rdf:resource ="#AnimalAgriculturalProduct"/>
+</owl:Class>
+
+
+<owl:Class rdf:ID= "ChemicalProduct">
+<rdfs:subClassOf rdf:resource ="#ManufacturedProduct"/>
+<rdfs:subClassOf rdf:resource ="#CompoundSubstance"/>
+<rdfs:comment>ChemicalProduct is the subclass
+of Product comprising all chemical compounds that are end products
+or industrial products used in the manufacture of end products.</rdfs:comment>
+</owl:Class>
+
+</rdf:RDF>

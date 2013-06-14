@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns="http://127.0.0.1/services/1.1/HealthInsurance_service.owls"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:process="http://www.daml.org/services/owl-s/1.1/Process.owl#"
+    xmlns:service="http://www.daml.org/services/owl-s/1.1/Service.owl#"
+    xmlns:list="http://www.daml.org/services/owl-s/1.1/generic/ObjectList.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:profile="http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+    xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+    xmlns:grounding="http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns:expression="http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://127.0.0.1/services/1.1/HealthInsurance_service.owls">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/HealthInsuranceOntology.owl"/>
+  </owl:Ontology>
+  <service:Service rdf:ID="SendEMAPhoneNumberService">
+    <service:presents>
+      <profile:Profile rdf:ID="SendEMAPhoneNumberProfile"/>
+    </service:presents>
+    <service:describedBy>
+      <process:AtomicProcess rdf:ID="SendEMAPhoneNumberProcess"/>
+    </service:describedBy>
+    <service:supports>
+      <grounding:WsdlGrounding rdf:ID="SendEMAPhoneNumberGrounding"/>
+    </service:supports>
+  </service:Service>
+  <profile:Profile rdf:about="#SendEMAPhoneNumberProfile">
+    <service:presentedBy rdf:resource="#SendEMAPhoneNumberService"/>
+    <profile:serviceName>SendEMAPhoneNumber</profile:serviceName>
+    <profile:textDescription>This service of a patient's health insurance send the calling patient a telephone number of the nearest emergency center (EMA)</profile:textDescription>
+    <profile:hasInput>
+      <process:Input rdf:ID="SendEMAPhoneNumber_PatientGpsPosition">
+        <rdfs:label>SendEMAPhoneNumber_PatientGpsPosition</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HealthInsuranceOntology.owl#GpsPosition</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasOutput>
+      <process:Output rdf:ID="SendEMAPhoneNumber_EMAPhoneNumber">
+        <rdfs:label>SendEMAPhoneNumber_EMAPhoneNumber</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HealthInsuranceOntology.owl#TelephoneNumber</process:parameterType>
+      </process:Output>
+    </profile:hasOutput>
+  </profile:Profile>
+  <process:AtomicProcess rdf:about="#SendEMAPhoneNumberProcess">
+    <rdfs:label>SendEMAPhoneNumberProcess</rdfs:label>
+    <service:describes rdf:resource="#SendEMAPhoneNumberService"/>
+    <process:hasInput rdf:resource="#SendEMAPhoneNumber_PatientGpsPosition"/>
+    <process:hasOutput rdf:resource="#SendEMAPhoneNumber_EMAPhoneNumber"/>
+  </process:AtomicProcess>
+  <grounding:WsdlGrounding rdf:about="#SendEMAPhoneNumberGrounding">
+    <service:supportedBy rdf:resource="#SendEMAPhoneNumberService"/>
+    <grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="SendEMAPhoneNumberAtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#SendEMAPhoneNumberAtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/HealthInsurance_service.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#SendEMAPhoneNumberProcess"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Sendemaphonenumber#getSendEMAPhoneNumber_EMAPhoneNumber</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Sendemaphonenumber#SendemaphonenumberSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Sendemaphonenumber#getSendEMAPhoneNumber_EMAPhoneNumberRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Sendemaphonenumber#getSendEMAPhoneNumber_EMAPhoneNumberResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#SendEMAPhoneNumber_PatientGpsPosition"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Sendemaphonenumber#SendEMAPhoneNumber_PatientGpsPosition</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#SendEMAPhoneNumber_EMAPhoneNumber"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Sendemaphonenumber#SendEMAPhoneNumber_EMAPhoneNumber</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+  <owl:Class rdf:about="/ontology/HealthInsuranceOntology.owl#GpsPosition"/>
+  <owl:Class rdf:about="/ontology/HealthInsuranceOntology.owl#TelephoneNumber"/>
+</rdf:RDF>

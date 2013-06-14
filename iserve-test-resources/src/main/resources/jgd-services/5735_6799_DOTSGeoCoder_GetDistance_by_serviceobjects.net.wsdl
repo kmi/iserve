@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns:sawsdl="http://www.w3.org/ns/sawsdl" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema"
+                  xmlns:tns="http://www.serviceobjects.com/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  targetNamespace="http://www.serviceobjects.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <wsdl:types>
+        <s:schema elementFormDefault="qualified" targetNamespace="http://www.serviceobjects.com/">
+
+            <s:complexType name="Err">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="Desc" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Number" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Location" type="s:string"/>
+                </s:sequence>
+            </s:complexType>
+
+            <s:element name="GetDistance"
+                       sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protont#Location">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="FromLatitude" type="s:string"/>
+                        <s:element minOccurs="0" maxOccurs="1" name="FromLongitude" type="s:string"/>
+                        <s:element minOccurs="0" maxOccurs="1" name="ToLatitude" type="s:string"/>
+                        <s:element minOccurs="0" maxOccurs="1" name="ToLongitude" type="s:string"/>
+                        <s:element minOccurs="0" maxOccurs="1" name="LicenseKey" type="s:string"/>
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+
+            <s:element name="GetDistanceResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="GetDistanceResult" type="tns:DistanceBetweenInfo"/>
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+
+            <s:complexType name="DistanceBetweenInfo"
+                           sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#GeographicDistance">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="Error" type="tns:Err"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="MilesBetween" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="KilometersBetween" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="FeetBetween" type="s:string"/>
+                </s:sequence>
+            </s:complexType>
+
+            <s:element name="DistanceBetweenInfo" nillable="true" type="tns:DistanceBetweenInfo"/>
+        </s:schema>
+    </wsdl:types>
+
+    <wsdl:message name="GetDistanceSoapIn">
+        <wsdl:part name="parameters" element="tns:GetDistance"/>
+    </wsdl:message>
+
+    <wsdl:message name="GetDistanceSoapOut">
+        <wsdl:part name="parameters" element="tns:GetDistanceResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="GetDistanceHttpGetIn">
+        <wsdl:part name="FromLatitude" type="s:string"
+                   sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protont#Location"/>
+        <wsdl:part name="FromLongitude" type="s:string"/>
+        <wsdl:part name="ToLatitude" type="s:string"/>
+        <wsdl:part name="ToLongitude" type="s:string"/>
+        <wsdl:part name="LicenseKey" type="s:string"/>
+    </wsdl:message>
+
+    <wsdl:message name="GetDistanceHttpGetOut">
+        <wsdl:part name="Body" element="tns:DistanceBetweenInfo"/>
+    </wsdl:message>
+
+    <wsdl:message name="GetDistanceHttpPostIn">
+        <wsdl:part name="FromLatitude" type="s:string"
+                   sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protont#Location"/>
+        <wsdl:part name="FromLongitude" type="s:string"/>
+        <wsdl:part name="ToLatitude" type="s:string"/>
+        <wsdl:part name="ToLongitude" type="s:string"/>
+        <wsdl:part name="LicenseKey" type="s:string"/>
+    </wsdl:message>
+
+    <wsdl:message name="GetDistanceHttpPostOut">
+        <wsdl:part name="Body" element="tns:DistanceBetweenInfo"/>
+    </wsdl:message>
+
+    <wsdl:portType name="DOTSGeoCoderSoap">
+        <wsdl:operation name="GetDistance" sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">Returns an estimated distance between two given
+                locations.
+            </documentation>
+            <wsdl:input message="tns:GetDistanceSoapIn"/>
+            <wsdl:output message="tns:GetDistanceSoapOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:portType name="DOTSGeoCoderHttpGet">
+        <wsdl:operation name="GetDistance" sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">Returns an estimated distance between two given
+                locations.
+            </documentation>
+            <wsdl:input message="tns:GetDistanceHttpGetIn"/>
+            <wsdl:output message="tns:GetDistanceHttpGetOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:portType name="DOTSGeoCoderHttpPost">
+        <wsdl:operation name="GetDistance" sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">Returns an estimated distance between two given
+                locations.
+            </documentation>
+            <wsdl:input message="tns:GetDistanceHttpPostIn"/>
+            <wsdl:output message="tns:GetDistanceHttpPostOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="DOTSGeoCoderSoap" type="tns:DOTSGeoCoderSoap">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="GetDistance">
+            <soap:operation soapAction="http://www.serviceobjects.com/GetDistance" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:binding name="DOTSGeoCoderHttpGet" type="tns:DOTSGeoCoderHttpGet">
+        <http:binding verb="GET"/>
+        <wsdl:operation name="GetDistance">
+            <http:operation location="/GetDistance"/>
+            <wsdl:input>
+                <http:urlEncoded/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:mimeXml part="Body"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:binding name="DOTSGeoCoderHttpPost" type="tns:DOTSGeoCoderHttpPost">
+        <http:binding verb="POST"/>
+        <wsdl:operation name="GetDistance">
+            <http:operation location="/GetDistance"/>
+            <wsdl:input>
+                <mime:content type="application/x-www-form-urlencoded"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:mimeXml part="Body"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service sawsdl:modelReference=" http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#LocationDistanceLookup"
+                  name="DOTSGeoCoder">
+        <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">For more information on our web services, visit us at
+            <a href='http://www.serviceobjects.com/products/default.asp' target='new'>our website</a>
+            <br/>
+            <br/>
+            <a href='http://www.serviceobjects.com' target='new'>
+                <img src='http://www.serviceobjects.com/images/so_logo_2_inside.gif' border='0'/>
+            </a>
+        </documentation>
+        <wsdl:port name="DOTSGeoCoderSoap" binding="tns:DOTSGeoCoderSoap">
+            <soap:address location="http://ws2.serviceobjects.net/gcr/GeoCoder.asmx"/>
+        </wsdl:port>
+        <wsdl:port name="DOTSGeoCoderHttpGet" binding="tns:DOTSGeoCoderHttpGet">
+            <http:address location="http://ws2.serviceobjects.net/gcr/GeoCoder.asmx"/>
+        </wsdl:port>
+        <wsdl:port name="DOTSGeoCoderHttpPost" binding="tns:DOTSGeoCoderHttpPost">
+            <http:address location="http://ws2.serviceobjects.net/gcr/GeoCoder.asmx"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

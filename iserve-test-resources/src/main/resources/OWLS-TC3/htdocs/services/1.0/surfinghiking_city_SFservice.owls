@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/surfinghiking_city_SFservice.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="SURFINGHIKING_CITY_SERVICE">
+<service:presents rdf:resource="#SURFINGHIKING_CITY_PROFILE"/>
+<service:describedBy rdf:resource="#SURFINGHIKING_CITY_PROCESS_MODEL"/>
+<service:supports rdf:resource="#SURFINGHIKING_CITY_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="SURFINGHIKING_CITY_PROFILE">
+<service:isPresentedBy rdf:resource="#SURFINGHIKING_CITY_SERVICE"/>
+<profile:serviceName xml:lang="en">
+SFCityService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+A pioneer service to know about the city for both sports hiking and surfing.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_SURFING"/>
+<profile:hasInput  rdf:resource="#_HIKING"/>
+<profile:hasOutput rdf:resource="#_CITY"/>
+
+<profile:has_process rdf:resource="SURFINGHIKING_CITY_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="SURFINGHIKING_CITY_PROCESS_MODEL">
+<service:describes rdf:resource="#SURFINGHIKING_CITY_SERVICE"/>
+<process:hasProcess rdf:resource="#SURFINGHIKING_CITY_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="SURFINGHIKING_CITY_PROCESS">
+<process:hasInput  rdf:resource="#_SURFING"/>
+<process:hasInput  rdf:resource="#_HIKING"/>
+<process:hasOutput rdf:resource="#_CITY"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_SURFING">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/travel.owl#Surfing" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_HIKING">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/travel.owl#Hiking" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_CITY">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/travel.owl#City" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="SURFINGHIKING_CITY_GROUNDING">
+<service:supportedBy rdf:resource="#SURFINGHIKING_CITY_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

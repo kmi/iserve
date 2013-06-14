@@ -1,0 +1,532 @@
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<html>
+
+
+<meta name="generator" content="HTML Tidy, see www.w3.org">
+<link rel="stylesheet" type="text/css" href="http://www.earthtools.org///earthtools.css" title="Style">
+<meta name="comment"
+      content="Web services for finding time zone, local time and sunrise/sunset times for anywhere in the world using latitude and longitude.">
+<meta name="keywords"
+      content="web, service, webservice, rest, soap, xml, xslt, webservices, services, sunrise, sunset, times, time, sun, rise, set, twilight, morning, evening, civil, nautical, astronomical, elevation, altitude, height, above, sea, level, height above sea level, altitude, metres, meters, feet, meter, foot, local, time, local time, time zone, zone, utc, gmt, pst, cet, est, mst, cst, places, find, finder, locate, locator, place, search, uk, england, wales, scotland, ireland, europe, america, us, usa, map, easy, quick, click, point">
+<title>EarthTools: Webservices</title>
+
+<div style="width: 100%; height: 70px;">
+    <table style="width: 100%;">
+        <tbody>
+        <tr>
+            <td style="width: 70px; text-align: left;"><img src="http://www.earthtools.org///logo60.jpg"
+                                                            style="width: 59px; height: 60px;" alt="EarthTools"></td>
+            <td style="text-align: left;"><a name="top"></a>
+
+                <h1 style="color: rgb(170, 170, 255); font-size: 22pt; font-weight: bold; font-family: Trebuchet MS,Trebuchet,Verdana,Arial,sans-serif; letter-spacing: 1pt; background-color: rgb(255, 255, 255);">
+                    Webservices</h1>
+            </td>
+            <td style="text-align: right;">
+                <script type="text/javascript">
+                    <!--
+                    google_ad_client = "pub-4658648503842987";
+                    google_ad_width = 468;
+                    google_ad_height = 60;
+                    google_ad_format = "468x60_as";
+                    google_ad_type = "text_image";
+                    google_ad_channel = "8353246118";
+                    google_color_border = "000000";
+                    google_color_bg = "E8E8FF";
+                    google_color_link = "0000FF";
+                    google_color_url = "0080FF";
+                    google_color_text = "000000";
+                    //-->
+                </script>
+
+
+                <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+                </script>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div style="background-color: rgb(238, 238, 255); font-size: 9pt; padding: 5px;"><a
+        href="javascript:callProxy('http://www.jstott.me.uk/')">jstott.me.uk</a>
+    &gt; <a href="javascript:callProxy('http://www.earthtools.org/')">EarthTools</a>
+    &gt; Webservices
+</div>
+
+<div style="margin-top: 10px; margin-right: 10px;">
+<p>Here's a collection of webservices for finding out
+    geographical-related information. There are currently three
+    services available for finding the <a href="javascript:callProxy('http://www.earthtools.org///#timezone')">time
+        zone or local time</a>, the <a href="javascript:callProxy('http://www.earthtools.org///#sun')">sunrise
+        and sunset times</a>, and the <a href="javascript:callProxy('http://www.earthtools.org///#height')">elevation/height
+        above sea level</a> at a given latitude and longitude.</p>
+
+<p>Note that due to abuse, the height webservice is currently
+    disabled. At one point on August 1, someone was making 35 requests
+    per second. The service will remain disabled until I can implement
+    a system to guard against this.</p>
+
+<p style="font-size: 10pt; background-color: rgb(238, 238, 255); border: 2px solid rgb(132, 132, 255); padding: 10px 20px; margin: 0px 30px 10px; text-align: center;">
+    Are you just looking for the <a href="javascript:callProxy('http://www.earthtools.org/')">sunrise or
+    sunset time</a>, <a href="javascript:callProxy('http://www.earthtools.org/')">time zone and
+    local time</a> or <a href="javascript:callProxy('http://www.earthtools.org/')">height/elevation</a>
+    for somewhere in the world?<br>
+    The main <a href="javascript:callProxy('http://www.earthtools.org/')">EarthTools</a>
+    site uses a point-and-click map interface or the ability to <a
+        href="javascript:callProxy('http://www.earthtools.org/')">search
+    for a particular place</a> from a database of nearly 7.5 million
+    place names.</p>
+
+<p><b>Updated</b> 27th July 2008. Added a crossdomain.xml policy to
+    allow cross-domain requests to be made on the web services from
+    Flash applications.<br>
+    <b>Updated</b> 18th February 2007. <span style="color: red; font-weight: bold;">Important new <a
+            href="javascript:callProxy('http://www.earthtools.org///#usage')">usage
+        restrictions</a></span>.<br>
+    <b>Updated</b> 6th May 2006. Added <code>dst</code> elements to
+    the time zone XML response. Daylight saving time information is
+    currently available for Western Europe.<br>
+    <b>Updated</b> 29th December 2005. Added <a href="javascript:callProxy('http://www.earthtools.org///#height')">Height
+        Above Sea Level</a> webservice.<br>
+    <b>Updated</b> 8 December 2005. Added <code>version</code>,
+    <code>isotime</code> and <code>utctime</code> elements to the time
+    zone XML response. Also made available time zone data covering the
+    entire world.</p>
+
+<p><b>Keep up to date</b> by sending an e-mail to <a
+        href="javascript:callProxy('http://www.earthtools.org///mailto:webservices@earthtools.org')">
+    the author</a>. I'm keen to know where the webservices are being
+    used! I can also send you updates whenever changes are made to how
+    to access services or the data that can be accessed. Ideas for
+    improvement, notifications of significant error in the data or just
+    general comments are also more than welcome.</p>
+
+<p>Although these services are free, you are more than welcome to
+    make a donation using PayPal to support the running costs of the
+    site.</p>
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" style="margin: 0px; padding: 0px;"><input name="cmd"
+                                                                                                             value="_s-xclick"
+                                                                                                             style="margin: 0px; padding: 0px;"
+                                                                                                             type="hidden"><input
+        src="https://www.paypal.com/en_US/i/btn/x-click-but21.gif" name="submit"
+        alt="Make payments with PayPal - it's fast, free and secure!" style="margin: 0px; padding: 0px;" type="image"
+        border="0"><img alt="" src="https://www.paypal.com/en_GB/i/scr/pixel.gif" style="margin: 0px; padding: 0px;"
+                        border="0" height="1" width="1"><input name="encrypted"
+                                                               value="-----BEGIN PKCS7-----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-----END PKCS7-----"
+                                                               style="margin-top: 10px; margin-left: 5px; padding: 0px 0px 0px 5px;"
+                                                               type="hidden"></form>
+
+<br>
+<br>
+
+
+<p><b>Disclaimer:</b> The data obtained by using these webservices
+    is provided "as is". I can not make any guarantees over its
+    accuracy. Use of the data is entirely at your own risk.</p>
+
+<p><b>Contact the author:</b> If you have an comments or queries,
+    feel free to contact me by e-mail: <a
+            href="javascript:callProxy('http://www.earthtools.org///mailto:webservices@earthtools.org')">
+        webservices@earthtools.org</a>.</p>
+
+<ul>
+    <li><a href="javascript:callProxy('http://www.earthtools.org///#usage')" style="color: red; font-weight: bold;">Usage
+        Restrictions</a></li>
+
+    <li><a href="javascript:callProxy('http://www.earthtools.org///#timezone')">Time
+        Zone and Local Time</a></li>
+
+    <li><a href="javascript:callProxy('http://www.earthtools.org///#sun')">Sunrise
+        and Sunset Times</a></li>
+
+    <li><a href="javascript:callProxy('http://www.earthtools.org///#height')">Elevation/Height
+        Above Sea Level</a></li>
+</ul>
+
+<a name="usage"></a>
+
+<h2>Usage Restrictions</h2>
+
+<p>Usage of these services is currently free of charge. However,
+    there are two important rules to follow when using these
+    webservices:</p>
+
+<ol>
+    <li>You must not make more than one request per second to these
+        webservices.
+    </li>
+
+    <li>You must cache results if you believe that you will need to
+        make another identical request within any 24-hour period.
+    </li>
+
+    <li>You must delete any cached data when you no longer need it and
+        in any case after 14 days. You should then make a new request for
+        the data in line with the previous two rules. If you wish to keep
+        access to data I am able to license the data for use in this
+        way.
+    </li>
+</ol>
+
+<br>
+<br>
+
+
+<p>Usage is logged and anyone not complying with these rules may
+    find their usage of the webservices restricted or removed without
+    warning. Some people may want to make a one-off run of a batch of
+    requests - if you wish to do this, contact me to find out when best
+    to do this.</p>
+
+<p>These restrictions were introduced on 18th February 2007
+    following a significant increase in the use of the webservices. At
+    present, approximately one million requests per week are being
+    made. I want to continue providing these services for free, but the
+    cost of providing them may become prohibitive in the future.</p>
+
+<p><a href="javascript:callProxy('http://www.earthtools.org///mailto:webservices@earthtools.org')">
+    Contact me</a> if you are concerned about your use of these
+    webservices.</p>
+
+<a name="timezone"></a>
+
+<h2>Time Zone and Local Time</h2>
+
+<p>This service responds with the time zone and local time at the
+    given latitude and longitude. Daylight Saving Time is currently
+    taken into account for Western Europe (areas covered by the UTC+0
+    and UTC+1 time zones). To access the service, use:</p>
+
+<pre>http://www.earthtools.org/timezone/&lt;latitude&gt;/&lt;longitude&gt;
+</pre>
+
+<p>where <code>&lt;latitude&gt;</code> and
+    <code>&lt;longitude&gt;</code> should be replaced with the latitude
+    and longitude of the place to query. Note that the query should be
+    entered without the &lt;s or &gt;s (as shown in the example
+    below).</p>
+
+<p>Here's an <a href="javascript:callProxy('http://www.earthtools.org/timezone-1.1/40.71417/-74.00639')">
+    example for New York</a>:</p>
+
+<pre>http://www.earthtools.org/timezone/40.71417/-74.00639
+</pre>
+
+<p>which returns the following XML:</p>
+
+<pre>&lt;?xml version="1.0" encoding="ISO-8859-1" ?&gt;
+&lt;timezone xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.earthtools.org/timezone.xsd"&gt;
+    &lt;version&gt;1.1&lt;/version&gt;
+    &lt;location&gt;
+        &lt;latitude&gt;40.71417&lt;/latitude&gt;
+        &lt;longitude&gt;-74.00639&lt;/longitude&gt;
+    &lt;/location&gt;
+    &lt;offset&gt;-5&lt;/offset&gt;
+    &lt;suffix&gt;R&lt;/suffix&gt;
+    &lt;localtime&gt;4 Dec 2005 12:06:56&lt;/localtime&gt;
+    &lt;isotime&gt;2005-12-04 12:06:56 -0500&lt;/isotime&gt;
+    &lt;utctime&gt;2005-12-04 17:06:56&lt;/utctime&gt;
+    &lt;dst&gt;False&lt;/dst&gt;
+&lt;/timezone&gt;
+</pre>
+
+<p>To request different versions of the service, append the service
+    name part with the relevant version number. This guarantees that
+    the response will always be in the expected format. If you don't
+    specify the version number, the latest version of the service will
+    respond. Here is an example of how to modify the above request to
+    include the version number:</p>
+
+<pre>http://www.earthtools.org/timezone<b>-1.1</b>/40.71417/-74.00639
+</pre>
+
+<p>The latest version of this service is 1.1.</p>
+
+<p>Here is a detailed comment of each element in the
+    response:</p>
+
+<ul>
+    <li><code>version</code><br>
+        The version number of the response that was requested.<br>
+        Since: 1.0
+    </li>
+
+    <li><code>location</code><br>
+        Since: 1.0
+    </li>
+
+    <li style="list-style: none outside none;">
+        <ul>
+            <li><code>latitude</code><br>
+                The latitude that was requested in decimal form.<br>
+                Since: 1.0
+            </li>
+
+            <li><code>longitude</code><br>
+                The longitude that was requested in decimal form.<br>
+                Since: 1.0
+            </li>
+        </ul>
+    </li>
+
+    <li><code>offset</code><br>
+        The number of hours offset from UTC disregarding any correction
+        for daylight saving time.<br>
+        Since: 1.0
+    </li>
+
+    <li><code>suffix</code><br>
+        The nautical suffix for the time zone.<br>
+        Since: 1.0
+    </li>
+
+    <li><code>localtime</code><br>
+        The local time taking into account the time zone offset and any
+        local daylight saving time in effect. In version 1.0, this element
+        never took into account daylight saving time - this was only added
+        in version 1.1.<br>
+        Since: 1.0
+    </li>
+
+    <li><code>isotime</code><br>
+        The same value as <code>localtime</code> but in ISO 8601 format
+        instead.<br>
+        Since: 1.0
+    </li>
+
+    <li><code>utctime</code><br>
+        The reference UTC time.<br>
+        Since: 1.0
+    </li>
+
+    <li><code>dst</code><br>
+        Whether or not the <code>localtime</code> and <code>isotime</code>
+        elements include daylight saving time. If they do, the value of
+        this element will be <code>True</code>. If they do not, the value
+        will be <code>False</code>. If it can't be determined whether or
+        not daylight saving time should be used, the value will be
+        <code>Unknown</code>.<br>
+        Since: 1.1
+    </li>
+</ul>
+
+<h3>Data Coverage</h3>
+
+<p>Time zone data is available covering the entire world. Daylight
+    saving time data is more limited but is gradually improving.
+    Daylight saving time information is known about for those parts of
+    Western Europe that are covered by the UTC+0 and UTC+1 time
+    zones.</p>
+
+<h3>Resolution and Accuracy</h3>
+
+<p>Data is provided at a resolution of 2.5 arc minutes per data
+    point. Accuracy is good but errors may be apparent close to the
+    boundaries between time zones owing to the manner in which the data
+    was sourced.</p>
+
+<a name="sun"></a>
+
+<h2>Sunrise and Sunset Times</h2>
+
+<p>This service responds with the sunrise, sunset and twilight
+    times for the specified latitude and longitude and date. To access
+    the service, use:</p>
+
+<pre>http://www.earthtools.org/sun/&lt;latitude&gt;/&lt;longitude&gt;/&lt;day&gt;/&lt;month&gt;/&lt;timezone&gt;/&lt;dst&gt;
+</pre>
+
+<p>where:<br>
+    <b><code>latitude</code></b> - decimal latitude of the point to
+    query (from -90 to 90).<br>
+    <b><code>longitude</code></b> - decimal longitude of the point to
+    query (from -180 to 180).<br>
+    <b><code>day</code></b> - day to query (from 1 through 31).<br>
+    <b><code>month</code></b> - month to query (from 1 through
+    12).<br>
+    <b><code>timezone</code></b> - hours offset from UTC (from -12 to
+    14). Alternatively, use '99' as the timezone in order to
+    automatically work out the timezone based on the given
+    latitude/longitude.<br>
+    <b><code>dst</code></b> - whether daylight saving time should be
+    taken into account (either 0 for no or 1 for yes).<br>
+    Note that the query should be entered without the &lt;s or &gt;s
+    (as in the example below).</p>
+
+<p>Here's an <a href="javascript:callProxy('http://www.earthtools.org/sun/40.71417/-74.00639/4/12/-5/0')">
+    example for New York</a> for the 4th December:</p>
+
+<pre>http://www.earthtools.org/sun/40.71417/-74.00639/4/12/-5/0
+</pre>
+
+<p>which returns the following XML:</p>
+
+<pre>&lt;?xml version="1.0" encoding="ISO-8859-1" ?&gt;
+&lt;sun xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.earthtools.org/sun.xsd"&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;location&gt;
+        &lt;latitude&gt;40.71417&lt;/latitude&gt;
+        &lt;longitude&gt;-74.00639&lt;/longitude&gt;
+    &lt;/location&gt;
+    &lt;date&gt;
+        &lt;day&gt;4&lt;/day&gt;
+        &lt;month&gt;12&lt;/month&gt;
+        &lt;timezone&gt;-5&lt;/timezone&gt;
+        &lt;dst&gt;0&lt;/dst&gt;
+    &lt;/date&gt;
+    &lt;morning&gt;
+        &lt;sunrise&gt;07:05:34&lt;/sunrise&gt;
+        &lt;twilight&gt;
+            &lt;civil&gt;06:34:51&lt;/civil&gt;
+            &lt;nautical&gt;06:00:36&lt;/nautical&gt;
+            &lt;astronomical&gt;05:27:25&lt;/astronomical&gt;
+        &lt;/twilight&gt;
+    &lt;/morning&gt;
+    &lt;evening&gt;
+        &lt;sunset&gt;16:27:01&lt;/sunset&gt;
+        &lt;twilight&gt;
+            &lt;civil&gt;16:57:44&lt;/civil&gt;
+            &lt;nautical&gt;17:31:59&lt;/nautical&gt;
+            &lt;astronomical&gt;18:05:10&lt;/astronomical&gt;
+        &lt;/twilight&gt;
+    &lt;/evening&gt;
+&lt;/sun&gt;
+</pre>
+
+<p>To request different versions of the service, append the service
+    name part with the relevant version number. This guarantees that
+    the response will always be in the expected format. If you don't
+    specify the version number, the latest version of the service will
+    respond. Here is an example of how to modify the above request to
+    include the version number:</p>
+
+<pre>http://www.earthtools.org/sun<b>-1.0</b>/40.71417/-74.00639/4/12/-5/0
+</pre>
+
+<p>The latest version of this service is 1.0.</p>
+
+<p><code>version</code> gives the version number of the request -
+    this is currently always 1.0 but may change if modifications to the
+    output are required.</p>
+
+<h3>About the Sunrise and Sunset Time Calculations</h3>
+
+<p>Sunrise and sunset times are calculated using a PHP script using
+    formulae from <a href="javascript:callProxy('http://www.srrb.noaa.gov/highlights/sunrise/sunrise.html')">
+        www.srrb.noaa.gov</a>. There might be errors when using latitudes
+    which are close to the poles.</p>
+
+<a name="height"></a>
+
+<div class="service" id="EarthTools_Elevation_Height_Above_Sea_Level"
+     href="http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#InformationAboutLocationLookup" rel="model">
+    <div class="operation" id="operation1" href="http://www.w3.org/ns/wsdl-extensions#SafeInteraction" rel="model"><h2>
+        <span class="label" id="label1">EarthTools_Elevation_Height_Above_Sea_Level</span></h2>
+
+        <p>This service responds with the height above sea level at the
+            given latitude and longitude. To access the service, use:</p>
+
+<pre><span class="address" id="address1">http://www.earthtools.org/height/</span>&lt;latitude&gt;/&lt;longitude&gt;
+</pre>
+
+        <p>
+
+        <div class="input" id="input1" href="http://proton.semanticweb.org/2005/04/protont#Location" rel="model">where
+            <code>&lt;<span
+                    href="http://kmi-web05.open.ac.uk:81/cache/8/d9a/a4a4/c9d8b/872633e41e/fb7d75e68da08ca58#LatLong"
+                    rel="model">latitude</span>&gt;</code> and
+            <code>&lt;longitude&gt;</code> should be replaced with the latitude
+            and longitude of the place to query.
+        </div>
+        Note that the query should be
+        entered without the &lt;s or &gt;s (as shown in the example
+        below).</p>
+
+        <p>Here's an <a href="javascript:callProxy('http://www.earthtools.org/height/52.4822/-1.8946')">
+            example for Birmingham, UK</a>:</p>
+
+<pre>http://www.earthtools.org/height/52.4822/-1.8946
+</pre>
+
+        <p>which returns the following XML:</p>
+
+<pre><div class="output" id="output1">&lt;?xml version="1.0" encoding="ISO-8859-1" ?&gt;
+    &lt;height xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://www.earthtools.org/height.xsd"&gt;
+    &lt;version&gt;1.0&lt;/version&gt;
+<span href="http://proton.semanticweb.org/2005/04/protont#Location" rel="model">&lt;location&gt;
+        &lt;latitude&gt;52.4822&lt;/latitude&gt;
+        &lt;longitude&gt;-1.8946&lt;/longitude&gt;
+    &lt;/location&gt;<span>
+<span href="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#Elevation" rel="model">&lt;meters&gt;141&lt;/meters&gt;<span>
+    &lt;feet&gt;462.6&lt;/feet&gt;
+&lt;/height&gt;
+</div></pre>
+
+        <p>To request different versions of the service, append the service
+            name part with the relevant version number. This guarantees that
+            the response will always be in the expected format. If you don't
+            specify the version number, the latest version of the service will
+            respond. Here is an example of how to modify the above request to
+            include the version number:</p>
+
+<pre>http://www.earthtools.org/height<b>-1.0</b>/52.4822/-1.8946
+</pre>
+
+        <p>The latest version of this service is 1.0.</p>
+
+        <p>The given latitude and longitude are repeated in the
+            <code>location</code> element. The <code>meters</code> element
+            gives the height above sea level in metres and the
+            <code>feet</code> element gives the height above sea level in feet
+            (rounded to one decimal place). If the requested point is outside
+            the area of coverage, both the <code>meters</code> and
+            <code>feet</code> elements will contain 'Unknown'. If the point is
+            within the area of coverage but over sea, then the
+            <code>meters</code> and <code>feet</code> elements may contain
+            'Unknown' or '-9999'. <code>version</code> gives the version number
+            of the request - this is currently always 1.0 but may change if
+            modifications to the output are required.</p></div>
+</div>
+
+<h3>Data Coverage</h3>
+
+<p>Data is available covering all of mainland Europe and the United
+    States of America. European coverage covers the area bounded by
+    35°N and 60°N and 15°W and 35°E. American coverage
+    covers the area bounded by 20°N and 50°N and 65°W and
+    125°W. I intend to extend the coverage of that data to the rest
+    of the world (as and when the space available for hosting increases
+    to hold the data!).</p>
+
+<h3>Resolution and Accuracy</h3>
+
+<p>The terrain model used to find heights above sealevel is from
+    the Shuttle Radar Topography Mission (SRTM) which was a joint
+    project between the US National Geospatial-Intelligence Agency
+    (NGA) and the National Aeronautics and Space Administration (NASA).
+    Data was recorded for 11 days from the Space Shuttle Endevour from
+    11th February 2000. The data used here is at a resolution of 3 arc
+    seconds (approximately 90m).</p>
+
+<hr>
+<p>© 2005-06, <a href="javascript:callProxy('http://www.jstott.me.uk')">Jonathan
+    Stott</a>.</p>
+</div>
+</html>

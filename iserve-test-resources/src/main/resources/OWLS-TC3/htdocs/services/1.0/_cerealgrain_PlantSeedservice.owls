@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/_cerealgrain_PlantSeedservice.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="_CEREALGRAIN_SERVICE">
+<service:presents rdf:resource="#_CEREALGRAIN_PROFILE"/>
+<service:describedBy rdf:resource="#_CEREALGRAIN_PROCESS_MODEL"/>
+<service:supports rdf:resource="#_CEREALGRAIN_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="_CEREALGRAIN_PROFILE">
+<service:isPresentedBy rdf:resource="#_CEREALGRAIN_SERVICE"/>
+<profile:serviceName xml:lang="en">
+TheFinestSeedProviderService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This serive provides the finest seed which is produced by the cereal grasses,
+e.g. rice, corn, wheat, etc. The government agriculture department is responsible to grow them.
+</profile:textDescription>
+<profile:hasOutput rdf:resource="#_CEREALGRAIN"/>
+
+<profile:has_process rdf:resource="_CEREALGRAIN_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="_CEREALGRAIN_PROCESS_MODEL">
+<service:describes rdf:resource="#_CEREALGRAIN_SERVICE"/>
+<process:hasProcess rdf:resource="#_CEREALGRAIN_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="_CEREALGRAIN_PROCESS">
+<process:hasOutput rdf:resource="#_CEREALGRAIN"/>
+</process:AtomicProcess>
+
+<process:Output  rdf:ID="_CEREALGRAIN">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl#CerealGrain" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="_CEREALGRAIN_GROUNDING">
+<service:supportedBy rdf:resource="#_CEREALGRAIN_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

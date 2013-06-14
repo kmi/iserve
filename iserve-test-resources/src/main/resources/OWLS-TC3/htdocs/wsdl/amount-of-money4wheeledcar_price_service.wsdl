@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns="http://127.0.0.1/wsdl/Amount-of-money4wheeledcarPrice"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://127.0.0.1/wsdl/Amount-of-money4wheeledcarPrice"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  name="Amount-of-money4wheeledcarPrice"
+                  targetNamespace="http://127.0.0.1/wsdl/Amount-of-money4wheeledcarPrice">
+    <wsdl:types>
+        <xsd:schema version="OWLS2WSDL Mon Jun 08 18:02:20 CEST 2009"
+                    targetNamespace="http://127.0.0.1/wsdl/Amount-of-money4wheeledcarPrice"
+                    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:annotation>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/my_ontology.owl#FourWheeledCar"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-ComplexType) of http://127.0.0.1/ontology/portal.owl#Amount-Of-Money"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-ComplexType) of http://127.0.0.1/ontology/concept.owl#Price"/>
+            </xsd:annotation>
+            <xsd:element name="Price" type="PriceType"/>
+            <xsd:element name="Amount-Of-Money" type="Amount-Of-MoneyType"/>
+            <xsd:element name="FourWheeledCar" type="FourWheeledCarType"/>
+            <xsd:complexType name="Government">
+                <xsd:sequence>
+                    <xsd:element name="government-of-country" type="Country"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Currency">
+                <xsd:sequence>
+                    <xsd:element name="issued-by" type="Government"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="PriceType">
+                <xsd:sequence>
+                    <xsd:element name="currency" type="Currency"/>
+                    <xsd:element name="amount" type="xsd:float"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Capital-City">
+                <xsd:sequence>
+                    <xsd:element name="is-capital-of" type="Country"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Country">
+                <xsd:sequence>
+                    <xsd:element name="has-government" type="Government"/>
+                    <xsd:element name="has-currency" type="Currency"/>
+                    <xsd:element name="has-capital" type="Capital-City"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Amount-Of-MoneyType">
+                <xsd:sequence>
+                    <xsd:element name="has-unit-of-measure" type="Currency"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="FourWheeledCarType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="get_PRICEResponse">
+        <wsdl:part name="_PRICE" type="tns:PriceType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="get_PRICERequest">
+        <wsdl:part name="_4WHEELEDCAR" type="tns:FourWheeledCarType">
+        </wsdl:part>
+        <wsdl:part name="_AMOUNT-OF-MONEY" type="tns:Amount-Of-MoneyType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="Amount-of-money4wheeledcarPriceSoap">
+        <wsdl:operation name="get_PRICE">
+            <wsdl:input message="tns:get_PRICERequest">
+            </wsdl:input>
+            <wsdl:output message="tns:get_PRICEResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="Amount-of-money4wheeledcarPriceSoapBinding" type="Amount-of-money4wheeledcarPriceSoap">
+        <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="get_PRICE">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/Amount-of-money4wheeledcarPrice"/>
+            </wsdl:input>
+            <wsdl:output>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/Amount-of-money4wheeledcarPrice"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="Amount-of-money4wheeledcarPriceService">
+        <wsdl:port name="Amount-of-money4wheeledcarPriceSoap" binding="Amount-of-money4wheeledcarPriceSoapBinding">
+            <wsdlsoap:address location="http://127.0.0.1/wsdl/Amount-of-money4wheeledcarPrice"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

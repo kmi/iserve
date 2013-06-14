@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/hiking_town_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="HIKING_TOWN_SERVICE">
+<service:presents rdf:resource="#HIKING_TOWN_PROFILE"/>
+<service:describedBy rdf:resource="#HIKING_TOWN_PROCESS_MODEL"/>
+<service:supports rdf:resource="#HIKING_TOWN_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="HIKING_TOWN_PROFILE">
+<service:isPresentedBy rdf:resource="#HIKING_TOWN_SERVICE"/>
+<profile:serviceName xml:lang="en">
+HikingTownService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns town for hiking.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_HIKING"/>
+<profile:hasOutput rdf:resource="#_TOWN"/>
+
+<profile:has_process rdf:resource="HIKING_TOWN_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="HIKING_TOWN_PROCESS_MODEL">
+<service:describes rdf:resource="#HIKING_TOWN_SERVICE"/>
+<process:hasProcess rdf:resource="#HIKING_TOWN_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="HIKING_TOWN_PROCESS">
+<process:hasInput  rdf:resource="#_HIKING"/>
+<process:hasOutput rdf:resource="#_TOWN"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_HIKING">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/travel.owl#Hiking" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_TOWN">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/travel.owl#Town" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="HIKING_TOWN_GROUNDING">
+<service:supportedBy rdf:resource="#HIKING_TOWN_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

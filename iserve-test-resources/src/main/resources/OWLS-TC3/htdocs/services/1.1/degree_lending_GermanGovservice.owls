@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/degree_lending_GermanGovservice.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="DEGREE_LENDING_SERVICE">
+<service:presents rdf:resource="#DEGREE_LENDING_PROFILE"/>
+<service:describedBy rdf:resource="#DEGREE_LENDING_PROCESS"/>
+<service:supports rdf:resource="#DEGREE_LENDING_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="DEGREE_LENDING_PROFILE">
+<service:isPresentedBy rdf:resource="#DEGREE_LENDING_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Degree Lending Germangov Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+It is an attractive service to know about the lending offered for the degree by the german government.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_DEGREE"/>
+<profile:hasOutput rdf:resource="#_LENDING"/>
+
+<profile:has_process rdf:resource="DEGREE_LENDING_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="DEGREE_LENDING_PROCESS_MODEL">
+<service:describes rdf:resource="#DEGREE_LENDING_SERVICE"/>
+<process:hasProcess rdf:resource="#DEGREE_LENDING_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="DEGREE_LENDING_PROCESS">
+<service:describes rdf:resource="#DEGREE_LENDING_SERVICE"/>
+<process:hasInput  rdf:resource="#_DEGREE"/>
+<process:hasOutput rdf:resource="#_LENDING"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_DEGREE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/portal.owl#Degree</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_LENDING">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#Lending</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="DEGREE_LENDING_GROUNDING">
+<service:supportedBy rdf:resource="#DEGREE_LENDING_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="DEGREE_LENDING_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+</grounding:WsdlGrounding>
+
+<grounding:WsdlAtomicProcessGrounding rdf:about="#DEGREE_LENDING_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/DegreeLending.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#DEGREE_LENDING_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/DegreeLending#get_LENDING</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/DegreeLending#DegreeLendingSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/DegreeLending#get_LENDINGRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/DegreeLending#get_LENDINGResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_DEGREE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/DegreeLending#_DEGREE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_LENDING"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/DegreeLending#_LENDING</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

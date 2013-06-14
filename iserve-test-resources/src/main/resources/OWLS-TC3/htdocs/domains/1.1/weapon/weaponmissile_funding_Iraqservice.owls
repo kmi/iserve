@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/weaponmissile_funding_Iraqservice.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="WEAPONMISSILE_FUNDING_SERVICE">
+<service:presents rdf:resource="#WEAPONMISSILE_FUNDING_PROFILE"/>
+<service:describedBy rdf:resource="#WEAPONMISSILE_FUNDING_PROCESS"/>
+<service:supports rdf:resource="#WEAPONMISSILE_FUNDING_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="WEAPONMISSILE_FUNDING_PROFILE">
+<service:isPresentedBy rdf:resource="#WEAPONMISSILE_FUNDING_SERVICE"/>
+<profile:serviceName xml:lang="en">
+IraqMissilesAndMassDestructionWeaponsFundingService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns the funds used for the missile and
+mass destruction weapons by the Iraqi government.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_MISSILE"/>
+<profile:hasInput  rdf:resource="#_WEAPONOFMASSDESTRUCTION"/>
+<profile:hasOutput rdf:resource="#_FUNDING"/>
+
+<profile:has_process rdf:resource="WEAPONMISSILE_FUNDING_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="WEAPONMISSILE_FUNDING_PROCESS_MODEL">
+<service:describes rdf:resource="#WEAPONMISSILE_FUNDING_SERVICE"/>
+<process:hasProcess rdf:resource="#WEAPONMISSILE_FUNDING_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="WEAPONMISSILE_FUNDING_PROCESS">
+<service:describes rdf:resource="#WEAPONMISSILE_FUNDING_SERVICE"/>
+<process:hasInput  rdf:resource="#_MISSILE"/>
+<process:hasInput  rdf:resource="#_WEAPONOFMASSDESTRUCTION"/>
+<process:hasOutput rdf:resource="#_FUNDING"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_MISSILE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#Missile</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_WEAPONOFMASSDESTRUCTION">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#Weapon</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_FUNDING">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#Funding</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="WEAPONMISSILE_FUNDING_GROUNDING">
+<service:supportedBy rdf:resource="#WEAPONMISSILE_FUNDING_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="WEAPONMISSILE_FUNDING_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#WEAPONMISSILE_FUNDING_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/weaponmissile_funding_Iraqservice.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#WEAPONMISSILE_FUNDING_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/WeaponmissileFunding#get_FUNDING</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/WeaponmissileFunding#WeaponmissileFundingSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/WeaponmissileFunding#get_FUNDINGRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/WeaponmissileFunding#get_FUNDINGResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_MISSILE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/WeaponmissileFunding#_MISSILE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_WEAPONOFMASSDESTRUCTION"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/WeaponmissileFunding#_WEAPONOFMASSDESTRUCTION</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_FUNDING"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/WeaponmissileFunding#_FUNDING</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

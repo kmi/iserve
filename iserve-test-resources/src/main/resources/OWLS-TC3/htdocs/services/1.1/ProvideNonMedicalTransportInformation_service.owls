@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns="http://127.0.0.1/services/1.1/ProvideNonMedicalTransportInformation_service.owls"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:process="http://www.daml.org/services/owl-s/1.1/Process.owl#"
+    xmlns:service="http://www.daml.org/services/owl-s/1.1/Service.owl#"
+    xmlns:list="http://www.daml.org/services/owl-s/1.1/generic/ObjectList.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:profile="http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+    xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+    xmlns:grounding="http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns:expression="http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://127.0.0.1/services/1.1/ProvideNonMedicalTransportInformation_service.owls">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/NonMedicalTransportCompanyOntology.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl"/>
+  </owl:Ontology>
+  <service:Service rdf:ID="ProvideNonMedicalTransportInformationService">
+    <service:presents>
+      <profile:Profile rdf:ID="ProvideNonMedicalTransportInformationProfile"/>
+    </service:presents>
+    <service:describedBy>
+      <process:AtomicProcess rdf:ID="ProvideNonMedicalTransportInformationProcess"/>
+    </service:describedBy>
+    <service:supports>
+      <grounding:WsdlGrounding rdf:ID="ProvideNonMedicalTransportInformationGrounding"/>
+    </service:supports>
+  </service:Service>
+  <profile:Profile rdf:about="#ProvideNonMedicalTransportInformationProfile">
+    <service:presentedBy rdf:resource="#ProvideNonMedicalTransportInformationService"/>
+    <profile:serviceName>ProvideNonMedicalTransportInformation</profile:serviceName>
+    <profile:textDescription>The service returns a list of transport options that match the given criteria.</profile:textDescription>
+    <profile:hasInput>
+      <process:Input rdf:ID="ProvideNonMedicalTransportInformation_DesiredTransportVehicle">
+        <rdfs:label>ProvideNonMedicalTransportInformation_DesiredTransportVehicle</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/NonMedicalTransportCompanyOntology.owl#Vehicle</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasInput>
+      <process:Input rdf:ID="ProvideNonMedicalTransportInformation_DestinationGpsPosition">
+        <rdfs:label>ProvideNonMedicalTransportInformation_DestinationGpsPosition</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/NonMedicalTransportCompanyOntology.owl#GpsPosition</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasInput>
+      <process:Input rdf:ID="ProvideNonMedicalTransportInformation_DesiredDepartureDateTime">
+        <rdfs:label>ProvideNonMedicalTransportInformation_DesiredDepartureDateTime</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/NonMedicalTransportCompanyOntology.owl#DateTime</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasInput>
+      <process:Input rdf:ID="ProvideNonMedicalTransportInformation_DepartureGpsPosition">
+        <rdfs:label>ProvideNonMedicalTransportInformation_DepartureGpsPosition</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/NonMedicalTransportCompanyOntology.owl#GpsPosition</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasOutput>
+      <process:Output rdf:ID="ProvideNonMedicalTransportInformation_ListOfTransports">
+        <rdfs:label>ProvideNonMedicalTransportInformation_ListOfTransports</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/NonMedicalTransportCompanyOntology.owl#ListOfTransports</process:parameterType>
+      </process:Output>
+    </profile:hasOutput>
+  </profile:Profile>
+  <process:AtomicProcess rdf:about="#ProvideNonMedicalTransportInformationProcess">
+    <rdfs:label>ProvideNonMedicalTransportInformationProcess</rdfs:label>
+    <service:describes rdf:resource="#ProvideNonMedicalTransportInformationService"/>
+    <process:hasInput rdf:resource="#ProvideNonMedicalTransportInformation_DesiredTransportVehicle"/>
+    <process:hasInput rdf:resource="#ProvideNonMedicalTransportInformation_DestinationGpsPosition"/>
+    <process:hasInput rdf:resource="#ProvideNonMedicalTransportInformation_DesiredDepartureDateTime"/>
+    <process:hasInput rdf:resource="#ProvideNonMedicalTransportInformation_DepartureGpsPosition"/>
+    <process:hasOutput rdf:resource="#ProvideNonMedicalTransportInformation_ListOfTransports"/>
+  </process:AtomicProcess>
+  <grounding:WsdlGrounding rdf:about="#ProvideNonMedicalTransportInformationGrounding">
+    <service:supportedBy rdf:resource="#ProvideNonMedicalTransportInformationService"/>
+    <grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="ProvideNonMedicalTransportInformationAtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#ProvideNonMedicalTransportInformationAtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/ProvideNonMedicalTransportInformation_service.wsdl</grounding:wsdlDocument>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#ProvideNonMedicalTransportInformation_ListOfTransports"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Providenonmedicaltransportinformation#ProvideNonMedicalTransportInformation_ListOfTransports</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#ProvideNonMedicalTransportInformation_DesiredTransportVehicle"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Providenonmedicaltransportinformation#ProvideNonMedicalTransportInformation_DesiredTransportVehicle</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:owlsProcess rdf:resource="#ProvideNonMedicalTransportInformationProcess"/>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#ProvideNonMedicalTransportInformation_DepartureGpsPosition"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Providenonmedicaltransportinformation#ProvideNonMedicalTransportInformation_DepartureGpsPosition</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#ProvideNonMedicalTransportInformation_DesiredDepartureDateTime"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Providenonmedicaltransportinformation#ProvideNonMedicalTransportInformation_DesiredDepartureDateTime</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Providenonmedicaltransportinformation#getProvideNonMedicalTransportInformation_ListOfTransportsResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Providenonmedicaltransportinformation#getProvideNonMedicalTransportInformation_ListOfTransports</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Providenonmedicaltransportinformation#ProvidenonmedicaltransportinformationSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#ProvideNonMedicalTransportInformation_DestinationGpsPosition"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Providenonmedicaltransportinformation#ProvideNonMedicalTransportInformation_DestinationGpsPosition</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Providenonmedicaltransportinformation#getProvideNonMedicalTransportInformation_ListOfTransportsRequest</grounding:wsdlInputMessage>
+  </grounding:WsdlAtomicProcessGrounding>
+  <owl:Class rdf:about="/ontology/NonMedicalTransportCompanyOntology.owl#ListOfTransports"/>
+  <owl:Class rdf:about="/ontology/NonMedicalTransportCompanyOntology.owl#DateTime"/>
+  <owl:Class rdf:about="/ontology/NonMedicalTransportCompanyOntology.owl#Vehicle"/>
+  <owl:Class rdf:about="/ontology/NonMedicalTransportCompanyOntology.owl#GpsPosition"/>
+</rdf:RDF>

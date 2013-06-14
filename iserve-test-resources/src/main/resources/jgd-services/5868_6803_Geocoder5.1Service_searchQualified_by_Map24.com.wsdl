@@ -1,0 +1,716 @@
+<?xml version="1.0" ?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!-- (c) 2006 Mapsolute GmbH, all rights reserved -->
+<definitions name="Map24Geocoder51" targetNamespace="urn:Map24Geocoder51" xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:sawsdl="http://www.w3.org/ns/sawsdl" xmlns:tns="urn:Map24Geocoder51"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <!-- The Map24 Geocoder 5.1 is software for matching addresses to the correct location (latitude and longitude) on the map. -->
+    <!-- It is based on a fuzzy text search and therefore can find addresses even if they are incomplete or misspelled. -->
+    <!-- Multiple rated search results are provided. Such geocoding is needed in almost every mapping application for finding spots  -->
+    <!-- on the map based on user input or for coding complete address databases into the map. -->
+    <types>
+        <xsd:schema elementFormDefault="qualified" xmlns:tns="urn:Map24Geocoder51" targetNamespace="urn:Map24Geocoder51"
+                    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:complexType name="RequestHeader.CustomerKeyValuePair">
+                <xsd:sequence>
+                    <xsd:element name="Key" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="Value" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ArrayOfCustomerKeyValuePair">
+                <xsd:complexContent>
+                    <xsd:restriction base="soapenc:Array">
+                        <xsd:attribute ref="soapenc:arrayType"
+                                       wsdl:arrayType="tns:RequestHeader.CustomerKeyValuePair[]"/>
+                    </xsd:restriction>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="ResponseHeader">
+                <xsd:annotation>
+
+                    <xsd:documentation>The ResponseHeader element is part of any response from the Map24 Web Services.
+                    </xsd:documentation>
+                    <xsd:documentation>ResponseHeader returns the elements that were sent in the RequestHeader of the
+                        corresponding request.
+                    </xsd:documentation>
+                    <xsd:documentation>Map24ID: ID of the customer that uses the Map24 Web services.</xsd:documentation>
+                    <xsd:documentation>ClientID: ID of the client that has initiated the request.</xsd:documentation>
+                    <xsd:documentation>RequestID: ID of the request. Can be used for logging and debugging the
+                        request.
+                    </xsd:documentation>
+                    <xsd:documentation>AuthenticationKey: May contain some encrypted code that will be evaluated
+                    </xsd:documentation>
+
+                    <xsd:documentation>depending on the customer's settings (MD-5, RSA, etc.)</xsd:documentation>
+                    <xsd:documentation>CustomerHashtable: May contain customer-specific data that was set in the
+                        request.
+                    </xsd:documentation>
+                    <xsd:documentation>This data will not be interpreted by the Map24 Web services.</xsd:documentation>
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="Map24ID" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="ClientID" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+
+                    <xsd:element name="RequestID" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="ResponseID" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="CustomerHashtable" type="tns:ArrayOfCustomerKeyValuePair" nillable="true"
+                                 minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Coordinate">
+                <xsd:annotation>
+                    <xsd:documentation>A Coordinate is defined by its Longitude and Latitude.</xsd:documentation>
+                    <xsd:documentation>In the MapTP world longitudes and latitudes are represented</xsd:documentation>
+
+                    <xsd:documentation>in decimal degrees and minutes (WGS 84 format).</xsd:documentation>
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="Longitude" type="xsd:double" minOccurs="1" maxOccurs="1"/>
+                    <xsd:element name="Latitude" type="xsd:double" minOccurs="1" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Property">
+                <xsd:annotation>
+
+                    <xsd:documentation>Property is used for setting a request parameter that</xsd:documentation>
+                    <xsd:documentation>is not explicitely specified in the WSDL interface.</xsd:documentation>
+                    <xsd:documentation>For information on existing properties refer to the documentation
+                    </xsd:documentation>
+                    <xsd:documentation>of the respective Web service.</xsd:documentation>
+                    <xsd:documentation>Key: ID of the property in the Map24 Web
+                        uk.ac.open.kmi.iserve.commons.model.Service.
+                    </xsd:documentation>
+                    <xsd:documentation>Value: The value of the property.</xsd:documentation>
+
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="Key" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="Value" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ArrayOfProperty">
+                <xsd:complexContent>
+                    <xsd:restriction base="soapenc:Array">
+                        <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="tns:Property[]"/>
+
+                    </xsd:restriction>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="MapSearchAlternative.Crossing">
+                <xsd:sequence>
+                    <xsd:element name="Coordinate" type="tns:Coordinate" nillable="true" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ArrayOfMapSearchAlternative.Crossing">
+                <xsd:complexContent>
+                    <xsd:restriction base="soapenc:Array">
+
+                        <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="tns:MapSearchAlternative.Crossing[]"/>
+                    </xsd:restriction>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="MapSearchAlternative.Housenumber">
+                <xsd:sequence>
+                    <xsd:element name="Housenumber" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="Coordinate" type="tns:Coordinate" nillable="true" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="ArrayOfMapSearchAlternative.Housenumber">
+                <xsd:complexContent>
+                    <xsd:restriction base="soapenc:Array">
+                        <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="tns:MapSearchAlternative.Housenumber[]"/>
+                    </xsd:restriction>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:simpleType name="MapSearchAlternative.Quality">
+                <xsd:annotation>
+                    <xsd:documentation>The Quality of an Alternative of a GeocodedAddress:</xsd:documentation>
+
+                    <xsd:documentation>Mismatch: No result found.</xsd:documentation>
+                    <xsd:documentation>Exact: Result exactly matches Address up to HouseNumber.</xsd:documentation>
+                    <xsd:documentation>Street: Result matches center of street-polygon.</xsd:documentation>
+                    <xsd:documentation>ZIP: Result matches center of surrounding ZIP-Code area.</xsd:documentation>
+                    <xsd:documentation>District: Result matches center of surrounding City-District.</xsd:documentation>
+                    <xsd:documentation>City: Result matches center of surrounding City.</xsd:documentation>
+
+                    <xsd:documentation>State: Result matches center of surrounding State.</xsd:documentation>
+                    <xsd:documentation>Country: Result matches center of surrounding Country.</xsd:documentation>
+                    <xsd:documentation>The Hierarchy of Qualities (from best to worst) is:</xsd:documentation>
+                    <xsd:documentation>Exact, Street, ZIP, District, City, State, Country, Mismatch.</xsd:documentation>
+                </xsd:annotation>
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="Mismatch"/>
+
+                    <xsd:enumeration value="Exact"/>
+                    <xsd:enumeration value="Street"/>
+                    <xsd:enumeration value="ZIP"/>
+                    <xsd:enumeration value="District"/>
+                    <xsd:enumeration value="City"/>
+                    <xsd:enumeration value="State"/>
+                    <xsd:enumeration value="Country"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+
+            <xsd:complexType name="Bounds">
+                <xsd:annotation>
+                    <xsd:documentation>The bounds of a map clipping.</xsd:documentation>
+                    <xsd:documentation>NorthWest: A coordinate defining the upper-left corner of the map clipping.
+                    </xsd:documentation>
+                    <xsd:documentation>SouthEast: A coordinate defining the lower-right corner of the map clipping.
+                    </xsd:documentation>
+                    <xsd:documentation>The coordinates must comply to WGS 84 (see the Coordinate element).
+                    </xsd:documentation>
+                </xsd:annotation>
+
+                <xsd:sequence>
+                    <xsd:element name="NorthWest" type="tns:Coordinate" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="SouthEast" type="tns:Coordinate" nillable="true" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="MapSearchAlternative">
+                <xsd:annotation>
+                    <xsd:documentation>Type characterizes the SearchAlternative: for Address-like</xsd:documentation>
+                    <xsd:documentation>Alternatives this may be "City" "Street" or "PostalCode".The Types are defined
+                        when filling the Search-Databases
+                    </xsd:documentation>
+
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="Coordinate" type="tns:Coordinate" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="Hierarchy" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+                    <xsd:element name="PropertiesMajor" type="tns:ArrayOfProperty" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+                    <xsd:element name="PropertiesMinor" type="tns:ArrayOfProperty" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+                    <xsd:element name="Type" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="Crossings" type="tns:ArrayOfMapSearchAlternative.Crossing" nillable="true"
+                                 minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="Housenumbers" type="tns:ArrayOfMapSearchAlternative.Housenumber" nillable="true"
+                                 minOccurs="0" maxOccurs="1"/>
+
+                    <xsd:element name="Quality" type="tns:MapSearchAlternative.Quality" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+                    <xsd:element name="Similarity" type="xsd:float" minOccurs="1" maxOccurs="1"/>
+                    <xsd:element name="Bounds" type="tns:Bounds" nillable="true" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ArrayOfMapSearchAlternative">
+                <xsd:complexContent>
+                    <xsd:restriction base="soapenc:Array">
+                        <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="tns:MapSearchAlternative[]"/>
+                    </xsd:restriction>
+
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="MapSearchResponse"
+                             sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protont#Location">
+                <xsd:annotation>
+                    <xsd:documentation>MapSearchResponse is the response of the MapSearch-Services method search(...).
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="ResponseHeader" type="tns:ResponseHeader" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+                    <xsd:element name="Alternatives" type="tns:ArrayOfMapSearchAlternative" nillable="true"
+                                 minOccurs="0" maxOccurs="1"/>
+
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="RequestHeader">
+                <xsd:annotation>
+                    <xsd:documentation>Every request to the Map24 Web services must enclose a RequestHeader.
+                    </xsd:documentation>
+                    <xsd:documentation>The information that is passed in the RequestHeader is used for authenticating
+                    </xsd:documentation>
+                    <xsd:documentation>the request and associating it with a Map24 session.</xsd:documentation>
+                    <xsd:documentation>Map24ID: ID of the customer that uses the Map24 Web services.</xsd:documentation>
+
+                    <xsd:documentation>ClientID: ID of the client that has initiated the request.</xsd:documentation>
+                    <xsd:documentation>RequestID: ID of the request. Can be used for logging and debugging the
+                        request.
+                    </xsd:documentation>
+                    <xsd:documentation>AuthenticationKey: May contain some encrypted code that will be evaluated
+                    </xsd:documentation>
+                    <xsd:documentation>depending on the customer's settings (MD-5, RSA, etc.)</xsd:documentation>
+                    <xsd:documentation>CustomerHashtable: You may fill this hashtable with customer-specific data.
+                    </xsd:documentation>
+                    <xsd:documentation>This data will not be interpreted by the Map24 Web services and will be
+                    </xsd:documentation>
+
+                    <xsd:documentation>returned in the response.</xsd:documentation>
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="Map24ID" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="ClientID" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="RequestID" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="AuthenticationKey" type="xsd:string" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+                    <xsd:element name="CustomerHashtable" type="tns:ArrayOfCustomerKeyValuePair" nillable="true"
+                                 minOccurs="0" maxOccurs="1"/>
+
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="MapSearchRequest.SearchOption">
+                <xsd:annotation>
+                    <xsd:documentation>SearchOption is either of: Crossings Housenumbers</xsd:documentation>
+                </xsd:annotation>
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="Crossings"/>
+                    <xsd:enumeration value="Housenumbers"/>
+
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:complexType name="ArrayOfMapSearchRequest.SearchOption">
+                <xsd:complexContent>
+                    <xsd:restriction base="soapenc:Array">
+                        <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="tns:MapSearchRequest.SearchOption[]"/>
+                    </xsd:restriction>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="MapSearchFreeRequest">
+                <xsd:annotation>
+
+                    <xsd:documentation>MapSearchFreeRequest holds the parameters for the searchFree operation.
+                    </xsd:documentation>
+                    <xsd:documentation>MaxNoOfAlternatives: The maximum number of results (Alternative elements) to be
+                        retrieved for the given address.
+                    </xsd:documentation>
+                    <xsd:documentation>SearchText: Input string for defining the address to be geocoded. The parts of
+                        the text string can be in any order.
+                    </xsd:documentation>
+                    <xsd:documentation>The Properties are:</xsd:documentation>
+                    <xsd:documentation>- CTRY (Mandatory): Restricts the result set to addresses or POIs that are
+                        located in the specified country.
+                    </xsd:documentation>
+                    <xsd:documentation>- COUNTRY: Returns the addresses or POIs that are located in the specified
+                        country as first results in the result list. In contrast to the Ctry key all found addresses are
+                        returned in the result list.
+                    </xsd:documentation>
+
+                    <xsd:documentation>- STA: Restricts the result set to addresses or POIs that are located in the
+                        specified state.
+                    </xsd:documentation>
+                    <xsd:documentation>- CTY: Restricts the result set to addresses or POIs that are located in the
+                        specified county.
+                    </xsd:documentation>
+                    <xsd:documentation>- CITY: Restricts the result set to addresses or POIs that are located in the
+                        specified city.
+                    </xsd:documentation>
+                    <xsd:documentation>- DISTRICT: Restricts the result set to addresses or POIs that are located in the
+                        specified district.
+                    </xsd:documentation>
+                    <xsd:documentation>- STREET: Restricts the result set to addresses or POIs that are located in the
+                        specified street.
+                    </xsd:documentation>
+                    <xsd:documentation>- NAME: Restricts the result set to the name of a POI.</xsd:documentation>
+
+                    <xsd:documentation>- Brand: Restricts the result set to POIs of a specific brand.
+                    </xsd:documentation>
+                    <xsd:documentation>- ZIP: Restricts the result set to addresses that are located within the given
+                        ZIP code area.
+                    </xsd:documentation>
+                    <xsd:documentation>- Type: Restricts the result set to addresses of the following types:
+                    </xsd:documentation>
+                    <xsd:documentation>4: The result is a city; 5: The result is a city district; 6: The result is a
+                        street;
+                    </xsd:documentation>
+                    <xsd:documentation>7: The result is a POI; 8: The result is a ZIP code area.</xsd:documentation>
+
+                    <xsd:documentation>-PoiThemeID: Restricts the result to POIs of a certain type.</xsd:documentation>
+                    <xsd:documentation>ResponseStyle: Not used.</xsd:documentation>
+                    <xsd:documentation>Options: Optional parameter that can be used for specifying if the search should
+                        only be performed on crossings or house numbers.
+                    </xsd:documentation>
+                    <xsd:documentation>Possible values are Crossings and Housenumbers.</xsd:documentation>
+                    <xsd:documentation>Database: For future use.</xsd:documentation>
+                </xsd:annotation>
+
+                <xsd:sequence>
+                    <xsd:element name="MaxNoOfAlternatives" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+                    <xsd:element name="ResponseStyle" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="Options" type="tns:ArrayOfMapSearchRequest.SearchOption" nillable="true"
+                                 minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="Database" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="Properties" type="tns:ArrayOfProperty" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+                    <xsd:element name="SearchText" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="AsyncResponse">
+                <xsd:annotation>
+                    <xsd:documentation>An instance of AsyncResponse contains the unique ID that must be used to refer to
+                        an asynchronous job initiated via the _async_* Methods of services that are capable of
+                        performing asynchronous operations.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="JobID" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="JobStatus">
+                <xsd:annotation>
+
+                    <xsd:documentation>An instance of BatchInitResponse contains the unique ID that must be used to
+                        refer to a batch job initiated via the __batc_init* Methods of certain services.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="Status" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="JobID" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ArrayOfSearchProperty">
+                <xsd:complexContent>
+
+                    <xsd:restriction base="soapenc:Array">
+                        <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="tns:Property[]"/>
+                    </xsd:restriction>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="MapSearchQualifiedRequest"
+                             sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protonu#Country http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#PointOfInterest http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#ResultsCountLimit">
+                <xsd:annotation>
+                    <xsd:documentation>MapSearchRequest holds the parameters for the MapSerach-services method
+                        searchQualfied.
+                    </xsd:documentation>
+                    <xsd:documentation>SearchProperties (Key-value pairs):</xsd:documentation>
+
+                    <xsd:documentation>- CTRY (Mandatory): Restricts the result set to addresses or POIs that are
+                        located in the specified country.
+                    </xsd:documentation>
+                    <xsd:documentation>- STA: Restricts the result set to addresses or POIs that are located in the
+                        specified state.
+                    </xsd:documentation>
+                    <xsd:documentation>- CTY: Restricts the result set to addresses or POIs that are located in the
+                        specified county.
+                    </xsd:documentation>
+                    <xsd:documentation>- CITY: Restricts the result set to addresses or POIs that are located in the
+                        specified city.
+                    </xsd:documentation>
+                    <xsd:documentation>- DISTRICT: Restricts the result set to addresses or POIs that are located in the
+                        specified district.
+                    </xsd:documentation>
+                    <xsd:documentation>- STREET: Restricts the result set to addresses or POIs that are located in the
+                        specified street.
+                    </xsd:documentation>
+
+                    <xsd:documentation>- NAME: Restricts the result set to the name of a POI.</xsd:documentation>
+                    <xsd:documentation>- Brand: Restricts the result set to POIs of a specific brand.
+                    </xsd:documentation>
+                    <xsd:documentation>- HNRS: for the Housenumber of the POI / Address to search</xsd:documentation>
+                    <xsd:documentation>- ZIP: Restricts the result set to addresses that are located within the given
+                        ZIP code area.
+                    </xsd:documentation>
+                    <xsd:documentation>- Type: Restricts the result set to addresses of the following types:
+                    </xsd:documentation>
+                    <xsd:documentation>4: The result is a city; 5: The result is a city district; 6: The result is a
+                        street;
+                    </xsd:documentation>
+
+                    <xsd:documentation>7: The result is a POI; 8: The result is a ZIP code area.</xsd:documentation>
+                    <xsd:documentation>-PoiThemeID: Restricts the result to POIs of a certain type.</xsd:documentation>
+                    <xsd:documentation>MaxNoOfAlternatives: The maximum number of results (Alternative elements) to be
+                        retrieved for the given address.
+                    </xsd:documentation>
+                    <xsd:documentation>ResponseStyle: Not used.</xsd:documentation>
+                    <xsd:documentation>Options: Optional parameter that can be used for specifying if the search should
+                        only be performed on crossings or house numbers.
+                    </xsd:documentation>
+                    <xsd:documentation>Possible values are Crossings and Housenumbers.</xsd:documentation>
+
+                    <xsd:documentation>Database: For future use.</xsd:documentation>
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="MaxNoOfAlternatives" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+                    <xsd:element name="ResponseStyle" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="Options" type="tns:ArrayOfMapSearchRequest.SearchOption" nillable="true"
+                                 minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="Database" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="Properties" type="tns:ArrayOfProperty" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+
+                    <xsd:element name="SearchProperties" type="tns:ArrayOfSearchProperty" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="GeocodedAddress.Quality">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="Mismatch"/>
+                    <xsd:enumeration value="Exact"/>
+                    <xsd:enumeration value="Street"/>
+                    <xsd:enumeration value="ZIP"/>
+                    <xsd:enumeration value="District"/>
+
+                    <xsd:enumeration value="City"/>
+                    <xsd:enumeration value="State"/>
+                    <xsd:enumeration value="Country"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:complexType name="GeocodedAddress.Alternative">
+                <xsd:annotation>
+                    <xsd:documentation>A single geocoding result to a given address.</xsd:documentation>
+                    <xsd:documentation>The address is taken from the address entries of the geocoder's database.
+                    </xsd:documentation>
+
+                    <xsd:documentation>This means, that even if the address was misspelled in the request, the address
+                        in the result set is spelled correctly.
+                    </xsd:documentation>
+                    <xsd:documentation>The geocoded address contains the street, city, zip code, and country.
+                    </xsd:documentation>
+                    <xsd:documentation>Quality: The quality of the result.</xsd:documentation>
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="ID" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="HouseNo" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+
+                    <xsd:element name="Street" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="ZIP" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="City" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="District" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="County" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="State" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="Country" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="Quality" type="tns:GeocodedAddress.Quality" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+                    <xsd:element name="Similarity" type="xsd:float" minOccurs="1" maxOccurs="1"/>
+
+                    <xsd:element name="Coordinate" type="tns:Coordinate" nillable="true" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ArrayOfAlternative">
+                <xsd:complexContent>
+                    <xsd:restriction base="soapenc:Array">
+                        <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="tns:GeocodedAddress.Alternative[]"/>
+                    </xsd:restriction>
+                </xsd:complexContent>
+            </xsd:complexType>
+
+            <xsd:complexType name="GeocodedAddress">
+                <xsd:annotation>
+                    <xsd:documentation>Quality levels of a geocoded address (Alternative), sorted from best to worst:
+                    </xsd:documentation>
+                    <xsd:documentation>Exact: Result matches the given address up to house number.</xsd:documentation>
+                    <xsd:documentation>Street: Result matches on street level.</xsd:documentation>
+                    <xsd:documentation>ZIP: Result matches on ZIP code area level.</xsd:documentation>
+                    <xsd:documentation>District: Result matches on city district level.</xsd:documentation>
+
+                    <xsd:documentation>City: Result matches on city level.</xsd:documentation>
+                    <xsd:documentation>State: Result matches on state level.</xsd:documentation>
+                    <xsd:documentation>Country: Result matches on country level.</xsd:documentation>
+                    <xsd:documentation>Mismatch: No result found.</xsd:documentation>
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="ID" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+
+                    <xsd:element name="HouseNo" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="Street" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="ZIP" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="City" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="District" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="County" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="State" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="Country" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="Alternatives" type="tns:ArrayOfAlternative" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ArrayOfGeocodedAddress">
+                <xsd:complexContent>
+                    <xsd:restriction base="soapenc:Array">
+                        <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="tns:GeocodedAddress[]"/>
+                    </xsd:restriction>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="GeocodeAddressesResponse">
+                <xsd:annotation>
+
+                    <xsd:documentation>GeocodeAddressesResponse is the response of the geocodeAddresses operation.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="ResponseHeader" type="tns:ResponseHeader" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+                    <xsd:element name="GeocodedAddresses" type="tns:ArrayOfGeocodedAddress" nillable="true"
+                                 minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Address">
+                <xsd:annotation>
+
+                    <xsd:documentation>A common non-geocoded address.</xsd:documentation>
+                    <xsd:documentation>An Address element contains the subelements Country,</xsd:documentation>
+                    <xsd:documentation>State, County, City, ZIP, Street and HouseNo.</xsd:documentation>
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="ID" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="HouseNo" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+
+                    <xsd:element name="Street" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="ZIP" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="City" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="District" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="County" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="State" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="Country" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="ArrayOfAddress">
+                <xsd:complexContent>
+                    <xsd:restriction base="soapenc:Array">
+                        <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="tns:Address[]"/>
+                    </xsd:restriction>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="GeocodeAddressesRequest">
+                <xsd:annotation>
+                    <xsd:documentation>GeocodeAddressesRequest provides the parameters for the geocodeAddresses
+                        operation.
+                    </xsd:documentation>
+
+                    <xsd:documentation>Addresses: The addresses to be geocoded. These are common non-geocoded
+                        addresses.
+                    </xsd:documentation>
+                    <xsd:documentation>MaxNoOfAlternatives: The maximum number of Alternative elements (geocoded
+                        addresses) tobe returned for a single given address. Default value: 1. Values less than 1 and
+                        greater than 100 will be ignored.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="Addresses" type="tns:ArrayOfAddress" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+                    <xsd:element name="MaxNoOfAlternatives" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+                    <xsd:element name="SynchronizeClient" type="xsd:boolean" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+                    <xsd:element name="SearchProperties" type="tns:ArrayOfSearchProperty" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ArrayOfCoordinate">
+                <xsd:complexContent>
+                    <xsd:restriction base="soapenc:Array">
+                        <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="tns:Coordinate[]"/>
+                    </xsd:restriction>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="ReverseGeocodeAddressesRequest">
+                <xsd:annotation>
+
+                    <xsd:documentation>ReverseGeocodeAddressesRequest provides the parameters for the
+                        reverseGeocodeAddresses operation.
+                    </xsd:documentation>
+                    <xsd:documentation>Coordinates: The coordinates for which the addresses should be searched.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="Coordinates" type="tns:ArrayOfCoordinate" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+                    <xsd:element name="SynchronizeClient" type="xsd:boolean" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="ArrayOfCountry">
+                <xsd:complexContent>
+                    <xsd:restriction base="soapenc:Array">
+                        <xsd:attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+                    </xsd:restriction>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="Configuration">
+                <xsd:annotation>
+                    <xsd:documentation>Configuration contains the ISO codes of the countries in which addresses can be
+                        geocoded.
+                    </xsd:documentation>
+
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="Countries" type="tns:ArrayOfCountry" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ConfigurationResponse">
+                <xsd:annotation>
+                    <xsd:documentation>ConfigurationResponse is the response of the getConfiguration operation.
+                    </xsd:documentation>
+                </xsd:annotation>
+
+                <xsd:sequence>
+                    <xsd:element name="ResponseHeader" type="tns:ResponseHeader" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+                    <xsd:element name="Configuration" type="tns:Configuration" nillable="true" minOccurs="0"
+                                 maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ConfigurationRequest">
+                <xsd:annotation>
+                    <xsd:documentation>ConfigurationRequest is the request for the getConfiguration operation.
+                    </xsd:documentation>
+                </xsd:annotation>
+
+                <xsd:sequence>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </types>
+
+    <message name="searchQualifiedRequest">
+        <part name="RequestHeader" type="tns:RequestHeader"/>
+        <part name="MapSearchQualifiedRequest" type="tns:MapSearchQualifiedRequest"/>
+    </message>
+
+    <message name="searchQualifiedResponse">
+        <part name="MapSearchResponse" type="tns:MapSearchResponse"/>
+    </message>
+
+    <portType name="Map24Geocoder51PortType">
+        <operation name="searchQualified" sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <input message="tns:searchQualifiedRequest"/>
+            <output message="tns:searchQualifiedResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="Map24Geocoder51Binding" type="tns:Map24Geocoder51PortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="searchQualified">
+            <soap:operation soapAction="urn:Map24Geocoder51#searchQualified"/>
+            <input>
+                <soap:body namespace="urn:Map24Geocoder51" use="encoded"
+                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body namespace="urn:Map24Geocoder51" use="encoded"
+                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service
+            sawsdl:modelReference=" http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#LocationLookup http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#EntityLocationService"
+            name="Map24Geocoder51">
+        <port name="Map24Geocoder51Port" binding="tns:Map24Geocoder51Binding">
+            <soap:address location="http://maptp11.map24.com/map24/webservices1.5?soap=Map24Geocoder51"/>
+        </port>
+    </service>
+</definitions>

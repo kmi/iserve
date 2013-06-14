@@ -1,0 +1,218 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns="http://127.0.0.1/services/1.1/GetNonMedicalFlightAccount_service.owls"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:process="http://www.daml.org/services/owl-s/1.1/Process.owl#"
+    xmlns:service="http://www.daml.org/services/owl-s/1.1/Service.owl#"
+    xmlns:list="http://www.daml.org/services/owl-s/1.1/generic/ObjectList.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:profile="http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+    xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+    xmlns:grounding="http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns:expression="http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://127.0.0.1/services/1.1/GetNonMedicalFlightAccount_service.owls">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="/ontology/NonMedicalFlightCompanyOntology.owl"/>
+    <owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.1/Process.owl"/>
+    <owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.1/Service.owl"/>
+    <owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.1/Profile.owl"/>
+    <owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.1/Grounding.owl"/>
+  </owl:Ontology>
+  <service:Service rdf:ID="GetNonMedicalFlightAccountService">
+    <service:presents>
+      <profile:Profile rdf:ID="GetNonMedicalFlightAccountProfile"/>
+    </service:presents>
+    <service:describedBy>
+      <process:AtomicProcess rdf:ID="GetNonMedicalFlightAccountProcess"/>
+    </service:describedBy>
+    <service:supports>
+      <grounding:WsdlGrounding rdf:ID="GetNonMedicalFlightAccountGrounding"/>
+    </service:supports>
+  </service:Service>
+  <profile:Profile rdf:about="#GetNonMedicalFlightAccountProfile">
+    <profile:hasInput>
+      <process:Input rdf:ID="GetNonMedicalFlightAccount_CustomerAddress">
+        <rdfs:label>GetNonMedicalFlightAccount_CustomerAddress</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/NonMedicalFlightCompanyOntology.owl#Address</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasInput>
+      <process:Input rdf:ID="BookNonMedicalFlight_Account">
+        <rdfs:label>BookNonMedicalFlight_Account</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/NonMedicalFlightCompanyOntology.owl#Account</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasOutput>
+      <process:Output rdf:ID="GetNonMedicalFlightAccount_Account">
+        <rdfs:label>GetNonMedicalFlightAccount_Account</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/NonMedicalFlightCompanyOntology.owl#Account</process:parameterType>
+      </process:Output>
+    </profile:hasOutput>
+    <profile:hasInput>
+      <process:Input rdf:ID="GetNonMedicalFlightAccount_CustomerDesiredPassword">
+        <rdfs:label>GetNonMedicalFlightAccount_CustomerDesiredPassword</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/NonMedicalFlightCompanyOntology.owl#AccountPassword</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasInput>
+      <process:Input rdf:ID="BookNonMedicalFlight_FlightNumber">
+        <rdfs:label>BookNonMedicalFlight_FlightNumber</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/NonMedicalFlightCompanyOntology.owl#FlightNumber</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasInput>
+      <process:Input rdf:ID="GetNonMedicalFlightAccount_CustomerCreditCardNumber">
+        <rdfs:label>GetNonMedicalFlightAccount_CustomerCreditCardNumber</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/NonMedicalFlightCompanyOntology.owl#CreditCardNumber</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasInput>
+      <process:Input rdf:ID="GetNonMedicalFlightAccount_CustomerDesiredAccountName">
+        <rdfs:label>GetNonMedicalFlightAccount_CustomerDesiredAccountName</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/NonMedicalFlightCompanyOntology.owl#AccountName</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasInput>
+      <process:Input rdf:ID="GetNonMedicalFlightAccount_CustomerCreditCardExpDate">
+        <rdfs:label>GetNonMedicalFlightAccount_CustomerCreditCardExpDate</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/NonMedicalFlightCompanyOntology.owl#DateTime</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <service:presentedBy rdf:resource="#GetNonMedicalFlightAccountService"/>
+    <profile:textDescription>The service creates an customer account for further flight bookings.</profile:textDescription>
+    <profile:hasInput>
+      <process:Input rdf:ID="GetNonMedicalFlightAccount_CustomerName">
+        <rdfs:label>GetNonMedicalFlightAccount_CustomerName</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/NonMedicalFlightCompanyOntology.owl#PersonName</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:serviceName>GetNonMedicalFlightAccount</profile:serviceName>
+  </profile:Profile>
+  <process:AtomicProcess rdf:about="#GetNonMedicalFlightAccountProcess">
+    <process:hasInput rdf:resource="#BookNonMedicalFlight_Account"/>
+    <process:hasInput rdf:resource="#GetNonMedicalFlightAccount_CustomerAddress"/>
+    <process:hasInput rdf:resource="#GetNonMedicalFlightAccount_CustomerCreditCardExpDate"/>
+    <process:hasInput rdf:resource="#GetNonMedicalFlightAccount_CustomerCreditCardNumber"/>
+    <service:describes rdf:resource="#GetNonMedicalFlightAccountService"/>
+    <process:hasInput rdf:resource="#BookNonMedicalFlight_FlightNumber"/>
+    <process:hasInput rdf:resource="#GetNonMedicalFlightAccount_CustomerName"/>
+    <process:hasInput rdf:resource="#GetNonMedicalFlightAccount_CustomerDesiredAccountName"/>
+    <rdfs:label>GetNonMedicalFlightAccountProcess</rdfs:label>
+    <process:hasOutput rdf:resource="#GetNonMedicalFlightAccount_Account"/>
+    <process:hasInput rdf:resource="#GetNonMedicalFlightAccount_CustomerDesiredPassword"/>
+  </process:AtomicProcess>
+  <grounding:WsdlGrounding rdf:about="#GetNonMedicalFlightAccountGrounding">
+    <service:supportedBy rdf:resource="#GetNonMedicalFlightAccountService"/>
+    <grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="GetNonMedicalFlightAccountAtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#GetNonMedicalFlightAccountAtomicProcessGrounding">
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetNonMedicalFlightAccount_CustomerName"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getnonmedicalflightaccount#GetNonMedicalFlightAccount_CustomerName</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetNonMedicalFlightAccount_CustomerDesiredPassword"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getnonmedicalflightaccount#GetNonMedicalFlightAccount_CustomerDesiredPassword</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetNonMedicalFlightAccount_CustomerCreditCardExpDate"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getnonmedicalflightaccount#GetNonMedicalFlightAccount_CustomerCreditCardExpDate</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetNonMedicalFlightAccount_CustomerDesiredAccountName"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getnonmedicalflightaccount#GetNonMedicalFlightAccount_CustomerDesiredAccountName</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#BookNonMedicalFlight_Account"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getnonmedicalflightaccount#BookNonMedicalFlight_Account</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/GetNonMedicalFlightAccount_service.wsdl</grounding:wsdlDocument>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Getnonmedicalflightaccount#getGetNonMedicalFlightAccount_AccountResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetNonMedicalFlightAccount_CustomerAddress"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getnonmedicalflightaccount#GetNonMedicalFlightAccount_CustomerAddress</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetNonMedicalFlightAccount_CustomerCreditCardNumber"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getnonmedicalflightaccount#GetNonMedicalFlightAccount_CustomerCreditCardNumber</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:owlsProcess rdf:resource="#GetNonMedicalFlightAccountProcess"/>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#BookNonMedicalFlight_FlightNumber"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getnonmedicalflightaccount#BookNonMedicalFlight_FlightNumber</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Getnonmedicalflightaccount#getGetNonMedicalFlightAccount_AccountRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getnonmedicalflightaccount#getGetNonMedicalFlightAccount_Account</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getnonmedicalflightaccount#GetnonmedicalflightaccountSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetNonMedicalFlightAccount_Account"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getnonmedicalflightaccount#GetNonMedicalFlightAccount_Account</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+  <owl:Class rdf:about="/ontology/NonMedicalFlightCompanyOntology.owl#PersonName"/>
+  <owl:Class rdf:about="/ontology/NonMedicalFlightCompanyOntology.owl#FlightNumber"/>
+  <owl:Class rdf:about="/ontology/NonMedicalFlightCompanyOntology.owl#AccountName"/>
+  <owl:Class rdf:about="/ontology/NonMedicalFlightCompanyOntology.owl#AccountPassword"/>
+  <owl:Class rdf:about="/ontology/NonMedicalFlightCompanyOntology.owl#CreditCardNumber"/>
+  <owl:Class rdf:about="/ontology/NonMedicalFlightCompanyOntology.owl#Account"/>
+  <owl:Class rdf:about="/ontology/NonMedicalFlightCompanyOntology.owl#Address"/>
+  <owl:Class rdf:about="/ontology/NonMedicalFlightCompanyOntology.owl#DateTime"/>
+</rdf:RDF>

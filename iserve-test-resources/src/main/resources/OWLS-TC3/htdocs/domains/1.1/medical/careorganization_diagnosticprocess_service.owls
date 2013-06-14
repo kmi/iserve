@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/careorganization_diagnosticprocess_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="CAREORGANIZATION_DIAGNOSTICPROCESS_SERVICE">
+<service:presents rdf:resource="#CAREORGANIZATION_DIAGNOSTICPROCESS_PROFILE"/>
+<service:describedBy rdf:resource="#CAREORGANIZATION_DIAGNOSTICPROCESS_PROCESS"/>
+<service:supports rdf:resource="#CAREORGANIZATION_DIAGNOSTICPROCESS_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="CAREORGANIZATION_DIAGNOSTICPROCESS_PROFILE">
+<service:isPresentedBy rdf:resource="#CAREORGANIZATION_DIAGNOSTICPROCESS_SERVICE"/>
+<profile:serviceName xml:lang="en">
+CareOrganization DiagnosticProcess Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns certain type diagnostic process available in the certain care organization.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_CAREORGANIZATION"/>
+<profile:hasOutput rdf:resource="#_DIAGNOSTICPROCESS"/>
+
+<profile:has_process rdf:resource="CAREORGANIZATION_DIAGNOSTICPROCESS_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="CAREORGANIZATION_DIAGNOSTICPROCESS_PROCESS_MODEL">
+<service:describes rdf:resource="#CAREORGANIZATION_DIAGNOSTICPROCESS_SERVICE"/>
+<process:hasProcess rdf:resource="#CAREORGANIZATION_DIAGNOSTICPROCESS_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="CAREORGANIZATION_DIAGNOSTICPROCESS_PROCESS">
+<service:describes rdf:resource="#CAREORGANIZATION_DIAGNOSTICPROCESS_SERVICE"/>
+<process:hasInput  rdf:resource="#_CAREORGANIZATION"/>
+<process:hasOutput rdf:resource="#_DIAGNOSTICPROCESS"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_CAREORGANIZATION">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#CareOrganization</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_DIAGNOSTICPROCESS">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#DiagnosticProcess</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="CAREORGANIZATION_DIAGNOSTICPROCESS_GROUNDING">
+<service:supportedBy rdf:resource="#CAREORGANIZATION_DIAGNOSTICPROCESS_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="CAREORGANIZATION_DIAGNOSTICPROCESS_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+</grounding:WsdlGrounding>
+
+<grounding:WsdlAtomicProcessGrounding rdf:about="#CAREORGANIZATION_DIAGNOSTICPROCESS_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/CareorganizationDiagnosticprocess.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#CAREORGANIZATION_DIAGNOSTICPROCESS_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/CareorganizationDiagnosticprocess#get_DIAGNOSTICPROCESS</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/CareorganizationDiagnosticprocess#CareorganizationDiagnosticprocessSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/CareorganizationDiagnosticprocess#get_DIAGNOSTICPROCESSRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/CareorganizationDiagnosticprocess#get_DIAGNOSTICPROCESSResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_CAREORGANIZATION"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/CareorganizationDiagnosticprocess#_CAREORGANIZATION</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_DIAGNOSTICPROCESS"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/CareorganizationDiagnosticprocess#_DIAGNOSTICPROCESS</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

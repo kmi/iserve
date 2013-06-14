@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://127.0.0.1/wsdl/AutobicycleTaxedprice" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  name="AutobicycleTaxedprice" targetNamespace="http://127.0.0.1/wsdl/AutobicycleTaxedprice">
+    <wsdl:types>
+        <xsd:schema version="OWLS2WSDL Tue Apr 28 13:17:50 CEST 2009"
+                    targetNamespace="http://127.0.0.1/wsdl/AutobicycleTaxedprice"
+                    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:annotation>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-ComplexType) of http://127.0.0.1/ontology/my_ontology.owl#Bicycle"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-ComplexType) of http://127.0.0.1/ontology/my_ontology.owl#Auto"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-ComplexType) of http://127.0.0.1/ontology/concept.owl#TaxedPrice"/>
+            </xsd:annotation>
+            <xsd:element name="TaxedPrice" type="tns:TaxedPriceType"/>
+            <xsd:element name="Auto" type="tns:AutoType"/>
+            <xsd:element name="Bicycle" type="tns:BicycleType"/>
+            <xsd:complexType name="TaxedPriceType">
+                <xsd:sequence>
+                    <xsd:element name="Fine" type="tns:Thing"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="AutoType">
+                <xsd:sequence>
+                    <xsd:element name="Power" type="tns:MoveableThing"/>
+                    <xsd:element name="Shape" type="tns:DesignedThing"/>
+                    <xsd:element name="madeBy" type="tns:Company"/>
+                    <xsd:element name="Rigid" type="tns:DesignedThing"/>
+                    <xsd:element name="hasValue" type="tns:Thing"/>
+                    <xsd:element maxOccurs="5" name="Person"/>
+                    <xsd:element name="belongsTo" type="tns:Person"/>
+                    <xsd:element name="Profitable" type="tns:DesignedThing"/>
+                    <xsd:element name="Color"/>
+                    <xsd:element name="Model" type="tns:DesignedThing"/>
+                    <xsd:element name="LifeTime" type="tns:DesignedThing"/>
+                    <xsd:element name="Engine"/>
+                    <xsd:element maxOccurs="4" name="Wheel"/>
+                    <xsd:element name="Speed" type="tns:MoveableThing"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="BicycleType">
+                <xsd:sequence>
+                    <xsd:element name="Wheel"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="DesignedThing">
+                <xsd:sequence>
+                    <xsd:element name="designedBy" type="tns:Designer"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="MoveableThing">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="Person">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="Designer">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="Thing">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="Company">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="get_TAXEDPRICEResponse">
+        <wsdl:part name="_TAXEDPRICE" type="tns:TaxedPriceType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="get_TAXEDPRICERequest">
+        <wsdl:part name="_BICYCLE" type="tns:BicycleType">
+        </wsdl:part>
+        <wsdl:part name="_AUTO" type="tns:AutoType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="AutobicycleTaxedpriceSoap">
+        <wsdl:operation name="get_TAXEDPRICE">
+            <wsdl:input message="tns:get_TAXEDPRICERequest">
+            </wsdl:input>
+            <wsdl:output message="tns:get_TAXEDPRICEResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="AutobicycleTaxedpriceSoapBinding" type="tns:AutobicycleTaxedpriceSoap">
+        <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="get_TAXEDPRICE">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/AutobicycleTaxedprice"/>
+            </wsdl:input>
+            <wsdl:output>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/AutobicycleTaxedprice"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="AutobicycleTaxedpriceService">
+        <wsdl:port name="AutobicycleTaxedpriceSoap" binding="tns:AutobicycleTaxedpriceSoapBinding">
+            <wsdlsoap:address location="http://127.0.0.1/wsdl/AutobicycleTaxedprice"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

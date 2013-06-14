@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/activity_familydestination_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="ACTIVITY_FAMILYDESTINATION_SERVICE">
+<service:presents rdf:resource="#ACTIVITY_FAMILYDESTINATION_PROFILE"/>
+<service:describedBy rdf:resource="#ACTIVITY_FAMILYDESTINATION_PROCESS"/>
+<service:supports rdf:resource="#ACTIVITY_FAMILYDESTINATION_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="ACTIVITY_FAMILYDESTINATION_PROFILE">
+<service:isPresentedBy rdf:resource="#ACTIVITY_FAMILYDESTINATION_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Activity FamilyDestination Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns familydestination for a given activity.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_ACTIVITY"/>
+<profile:hasOutput rdf:resource="#_FAMILYDESTINATION"/>
+
+<profile:has_process rdf:resource="ACTIVITY_FAMILYDESTINATION_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="ACTIVITY_FAMILYDESTINATION_PROCESS_MODEL">
+<service:describes rdf:resource="#ACTIVITY_FAMILYDESTINATION_SERVICE"/>
+<process:hasProcess rdf:resource="#ACTIVITY_FAMILYDESTINATION_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="ACTIVITY_FAMILYDESTINATION_PROCESS">
+<service:describes rdf:resource="#ACTIVITY_FAMILYDESTINATION_SERVICE"/>
+<process:hasInput  rdf:resource="#_ACTIVITY"/>
+<process:hasOutput rdf:resource="#_FAMILYDESTINATION"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_ACTIVITY">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/travel.owl#Activity</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_FAMILYDESTINATION">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/travel.owl#FamilyDestination</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="ACTIVITY_FAMILYDESTINATION_GROUNDING">
+<service:supportedBy rdf:resource="#ACTIVITY_FAMILYDESTINATION_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="ACTIVITY_FAMILYDESTINATION_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+</grounding:WsdlGrounding>
+
+<grounding:WsdlAtomicProcessGrounding rdf:about="#ACTIVITY_FAMILYDESTINATION_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/ActivityFamilydestination.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#ACTIVITY_FAMILYDESTINATION_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ActivityFamilydestination/get_FAMILYDESTINATION</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ActivityFamilydestination/ActivityFamilydestinationSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/ActivityFamilydestination/get_FAMILYDESTINATIONRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/ActivityFamilydestination/get_FAMILYDESTINATIONResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_ACTIVITY"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ActivityFamilydestination/_ACTIVITY</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_FAMILYDESTINATION"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ActivityFamilydestination/_FAMILYDESTINATION</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

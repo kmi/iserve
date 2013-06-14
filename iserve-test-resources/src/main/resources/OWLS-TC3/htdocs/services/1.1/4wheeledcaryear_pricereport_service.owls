@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/4wheeledcaryear_pricereport_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="4WHEELEDCARYEAR_PRICEREPORT_SERVICE">
+<service:presents rdf:resource="#4WHEELEDCARYEAR_PRICEREPORT_PROFILE"/>
+<service:describedBy rdf:resource="#4WHEELEDCARYEAR_PRICEREPORT_PROCESS"/>
+<service:supports rdf:resource="#4WHEELEDCARYEAR_PRICEREPORT_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="4WHEELEDCARYEAR_PRICEREPORT_PROFILE">
+<service:isPresentedBy rdf:resource="#4WHEELEDCARYEAR_PRICEREPORT_SERVICE"/>
+<profile:serviceName xml:lang="en">
+4wheeledcar year price report service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+You can inquire a price of a four wheeled car given the model year. This service returns also a short report
+about the car's recommendation.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_4WHEELEDCAR"/>
+<profile:hasOutput rdf:resource="#_PRICE"/>
+<profile:hasInput  rdf:resource="#_YEAR"/>
+<profile:hasOutput rdf:resource="#_REPORT"/>
+
+<profile:has_process rdf:resource="4WHEELEDCARYEAR_PRICEREPORT_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="4WHEELEDCARYEAR_PRICEREPORT_PROCESS_MODEL">
+<service:describes rdf:resource="#4WHEELEDCARYEAR_PRICEREPORT_SERVICE"/>
+<process:hasProcess rdf:resource="#4WHEELEDCARYEAR_PRICEREPORT_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="4WHEELEDCARYEAR_PRICEREPORT_PROCESS">
+<service:describes rdf:resource="#4WHEELEDCARYEAR_PRICEREPORT_SERVICE"/>
+<process:hasInput  rdf:resource="#_4WHEELEDCAR"/>
+<process:hasInput  rdf:resource="#_YEAR"/>
+<process:hasOutput rdf:resource="#_PRICE"/>
+<process:hasOutput rdf:resource="#_REPORT"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_4WHEELEDCAR">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/my_ontology.owl#FourWheeledCar</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_PRICE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/concept.owl#Price</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Input rdf:ID="_YEAR">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#Year</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_REPORT">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#Report</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="4WHEELEDCARYEAR_PRICEREPORT_GROUNDING">
+<service:supportedBy rdf:resource="#4WHEELEDCARYEAR_PRICEREPORT_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:about="#4WHEELEDCARYEAR_PRICEREPORT_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#4WHEELEDCARYEAR_PRICEREPORT_AtomicProcessGrounding">
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_YEAR"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/FourwheeledcaryearPricereport#_YEAR</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_PRICE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/FourwheeledcaryearPricereport#_PRICE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/4wheeledcaryear_pricereport_service.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#4WHEELEDCARYEAR_PRICEREPORT_PROCESS"/>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/FourwheeledcaryearPricereport#get_PRICE_REPORTResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_REPORT"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/FourwheeledcaryearPricereport#_REPORT</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/FourwheeledcaryearPricereport#get_PRICE_REPORTRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/FourwheeledcaryearPricereport#get_PRICE_REPORT</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/FourwheeledcaryearPricereport#4wheeledcaryearPricereportSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_4WHEELEDCAR"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/FourwheeledcaryearPricereport#_4WHEELEDCAR</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

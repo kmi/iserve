@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/shoppingmall_compacttaxedprice_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/extendedCamera.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="SHOPPINGMALL_COMPACTTAXEDPRICE_SERVICE">
+<service:presents rdf:resource="#SHOPPINGMALL_COMPACTTAXEDPRICE_PROFILE"/>
+<service:describedBy rdf:resource="#SHOPPINGMALL_COMPACTTAXEDPRICE_PROCESS"/>
+<service:supports rdf:resource="#SHOPPINGMALL_COMPACTTAXEDPRICE_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="SHOPPINGMALL_COMPACTTAXEDPRICE_PROFILE">
+<service:isPresentedBy rdf:resource="#SHOPPINGMALL_COMPACTTAXEDPRICE_SERVICE"/>
+<profile:serviceName xml:lang="en">
+ShoppingMall Compact TaxedPrice service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service informs you the taxed price for a compact camera available in a given shoppingmall.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_SHOPPINGMALL"/>
+<profile:hasOutput rdf:resource="#_COMPACT"/>
+<profile:hasOutput rdf:resource="#_TAXEDPRICE"/>
+
+<profile:has_process rdf:resource="SHOPPINGMALL_COMPACTTAXEDPRICE_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="SHOPPINGMALL_COMPACTTAXEDPRICE_PROCESS_MODEL">
+<service:describes rdf:resource="#SHOPPINGMALL_COMPACTTAXEDPRICE_SERVICE"/>
+<process:hasProcess rdf:resource="#SHOPPINGMALL_COMPACTTAXEDPRICE_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="SHOPPINGMALL_COMPACTTAXEDPRICE_PROCESS">
+<service:describes rdf:resource="#SHOPPINGMALL_COMPACTTAXEDPRICE_SERVICE"/>
+<process:hasInput  rdf:resource="#_SHOPPINGMALL"/>
+<process:hasOutput rdf:resource="#_COMPACT"/>
+<process:hasOutput rdf:resource="#_TAXEDPRICE"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_SHOPPINGMALL">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#ShoppingMall</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_COMPACT">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/extendedCamera.owl#Compact</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_TAXEDPRICE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/concept.owl#TaxedPrice</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="SHOPPINGMALL_COMPACTTAXEDPRICE_GROUNDING">
+<service:supportedBy rdf:resource="#SHOPPINGMALL_COMPACTTAXEDPRICE_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="SHOPPINGMALL_COMPACTTAXEDPRICE_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#SHOPPINGMALL_COMPACTTAXEDPRICE_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/shoppingmall_compacttaxedprice_service.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#SHOPPINGMALL_COMPACTTAXEDPRICE_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ShoppingmallCompacttaxedprice#get_COMPACT_TAXEDPRICE</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ShoppingmallCompacttaxedprice#ShoppingmallCompacttaxedpriceSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/ShoppingmallCompacttaxedprice#get_COMPACT_TAXEDPRICERequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/ShoppingmallCompacttaxedprice#get_COMPACT_TAXEDPRICEResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_SHOPPINGMALL"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ShoppingmallCompacttaxedprice#_SHOPPINGMALL</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_COMPACT"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ShoppingmallCompacttaxedprice#_COMPACT</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_TAXEDPRICE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ShoppingmallCompacttaxedprice#_TAXEDPRICE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

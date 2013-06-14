@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/missile_financing_Chinaservice.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="MISSILE_FINANCING_SERVICE">
+<service:presents rdf:resource="#MISSILE_FINANCING_PROFILE"/>
+<service:describedBy rdf:resource="#MISSILE_FINANCING_PROCESS"/>
+<service:supports rdf:resource="#MISSILE_FINANCING_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="MISSILE_FINANCING_PROFILE">
+<service:isPresentedBy rdf:resource="#MISSILE_FINANCING_SERVICE"/>
+<profile:serviceName xml:lang="en">
+ChinaMissilesFinancingService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service informs you financing for the Missiles by the Chinees government.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_MISSILE"/>
+<profile:hasOutput rdf:resource="#_FINANCING"/>
+
+<profile:has_process rdf:resource="MISSILE_FINANCING_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="MISSILE_FINANCING_PROCESS_MODEL">
+<service:describes rdf:resource="#MISSILE_FINANCING_SERVICE"/>
+<process:hasProcess rdf:resource="#MISSILE_FINANCING_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="MISSILE_FINANCING_PROCESS">
+<service:describes rdf:resource="#MISSILE_FINANCING_SERVICE"/>
+<process:hasInput  rdf:resource="#_MISSILE"/>
+<process:hasOutput rdf:resource="#_FINANCING"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_MISSILE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#Missile</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_FINANCING">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#Financing</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="MISSILE_FINANCING_GROUNDING">
+<service:supportedBy rdf:resource="#MISSILE_FINANCING_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="MISSILE_FINANCING_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+</grounding:WsdlGrounding>
+
+<grounding:WsdlAtomicProcessGrounding rdf:about="#MISSILE_FINANCING_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/MissileFinancing.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#MISSILE_FINANCING_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MissileFinancing#get_FINANCING</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MissileFinancing#MissileFinancingSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/MissileFinancing#get_FINANCINGRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/MissileFinancing#get_FINANCINGResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_MISSILE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MissileFinancing#_MISSILE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_FINANCING"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MissileFinancing#_FINANCING</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

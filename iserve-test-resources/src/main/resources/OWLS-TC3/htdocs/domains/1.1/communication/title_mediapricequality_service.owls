@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/title_mediapricequality_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/finance_th_web.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="TITLE_MEDIAPRICEQUALITY_SERVICE">
+<service:presents rdf:resource="#TITLE_MEDIAPRICEQUALITY_PROFILE"/>
+<service:describedBy rdf:resource="#TITLE_MEDIAPRICEQUALITY_PROCESS"/>
+<service:supports rdf:resource="#TITLE_MEDIAPRICEQUALITY_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="TITLE_MEDIAPRICEQUALITY_PROFILE">
+<service:isPresentedBy rdf:resource="#TITLE_MEDIAPRICEQUALITY_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Title Media Price Quality service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service searches media for the given title, and also returns
+its price and quality.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_TITLE"/>
+<profile:hasOutput rdf:resource="#_MEDIA"/>
+<profile:hasOutput rdf:resource="#_PRICE"/>
+<profile:hasOutput rdf:resource="#_QUALITY"/>
+
+<profile:has_process rdf:resource="TITLE_MEDIAPRICEQUALITY_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="TITLE_MEDIAPRICEQUALITY_PROCESS_MODEL">
+<service:describes rdf:resource="#TITLE_MEDIAPRICEQUALITY_SERVICE"/>
+<process:hasProcess rdf:resource="#TITLE_MEDIAPRICEQUALITY_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="TITLE_MEDIAPRICEQUALITY_PROCESS">
+<service:describes rdf:resource="#TITLE_MEDIAPRICEQUALITY_SERVICE"/>
+<process:hasInput  rdf:resource="#_TITLE"/>
+<process:hasOutput rdf:resource="#_MEDIA"/>
+<process:hasOutput rdf:resource="#_PRICE"/>
+<process:hasOutput rdf:resource="#_QUALITY"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_TITLE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/books.owl#Title</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_MEDIA">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/my_ontology.owl#Media</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_PRICE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/concept.owl#Price</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_QUALITY">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/finance_th_web.owl#quality</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="TITLE_MEDIAPRICEQUALITY_GROUNDING">
+<service:supportedBy rdf:resource="#TITLE_MEDIAPRICEQUALITY_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="TITLE_MEDIAPRICEQUALITY_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#TITLE_MEDIAPRICEQUALITY_AtomicProcessGrounding">
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_TITLE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleMediapricequality#_TITLE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/TitleMediapricequality#get_MEDIA_PRICE_QUALITYRequest</grounding:wsdlInputMessage>
+    <grounding:owlsProcess rdf:resource="#TITLE_MEDIAPRICEQUALITY_PROCESS"/>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_MEDIA"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleMediapricequality#_MEDIA</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleMediapricequality#get_MEDIA_PRICE_QUALITY</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleMediapricequality#TitleMediapricequalitySoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/TitleMediapricequality#get_MEDIA_PRICE_QUALITYResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/title_mediapricequality_service.wsdl</grounding:wsdlDocument>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_PRICE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleMediapricequality#_PRICE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_QUALITY"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleMediapricequality#_QUALITY</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/linguisticexpression_videomedia_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="LINGUISTICEXPRESSION_VIDEOMEDIA_SERVICE">
+<service:presents rdf:resource="#LINGUISTICEXPRESSION_VIDEOMEDIA_PROFILE"/>
+<service:describedBy rdf:resource="#LINGUISTICEXPRESSION_VIDEOMEDIA_PROCESS"/>
+<service:supports rdf:resource="#LINGUISTICEXPRESSION_VIDEOMEDIA_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="LINGUISTICEXPRESSION_VIDEOMEDIA_PROFILE">
+<service:isPresentedBy rdf:resource="#LINGUISTICEXPRESSION_VIDEOMEDIA_SERVICE"/>
+<profile:serviceName xml:lang="en">
+AvailableVideoService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+You can use this service to get video media for the given name.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_LINGUISTICEXPRESSION"/>
+<profile:hasOutput rdf:resource="#_VIDEOMEDIA"/>
+
+<profile:has_process rdf:resource="LINGUISTICEXPRESSION_VIDEOMEDIA_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="LINGUISTICEXPRESSION_VIDEOMEDIA_PROCESS_MODEL">
+<service:describes rdf:resource="#LINGUISTICEXPRESSION_VIDEOMEDIA_SERVICE"/>
+<process:hasProcess rdf:resource="#LINGUISTICEXPRESSION_VIDEOMEDIA_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="LINGUISTICEXPRESSION_VIDEOMEDIA_PROCESS">
+<service:describes rdf:resource="#LINGUISTICEXPRESSION_VIDEOMEDIA_SERVICE"/>
+<process:hasInput  rdf:resource="#_LINGUISTICEXPRESSION"/>
+<process:hasOutput rdf:resource="#_VIDEOMEDIA"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_LINGUISTICEXPRESSION">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/books.owl#LinguisticExpression</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_VIDEOMEDIA">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/my_ontology.owl#VideoMedia</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="LINGUISTICEXPRESSION_VIDEOMEDIA_GROUNDING">
+<service:supportedBy rdf:resource="#LINGUISTICEXPRESSION_VIDEOMEDIA_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="LINGUISTICEXPRESSION_VIDEOMEDIA_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+</grounding:WsdlGrounding>
+
+<grounding:WsdlAtomicProcessGrounding rdf:about="#LINGUISTICEXPRESSION_VIDEOMEDIA_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/LinguisticexpressionVideomedia.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#LINGUISTICEXPRESSION_VIDEOMEDIA_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/LinguisticexpressionVideomedia#get_VIDEOMEDIA</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/LinguisticexpressionVideomedia#LinguisticexpressionVideomediaSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/LinguisticexpressionVideomedia#get_VIDEOMEDIARequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/LinguisticexpressionVideomedia#get_VIDEOMEDIAResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_LINGUISTICEXPRESSION"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/LinguisticexpressionVideomedia#_LINGUISTICEXPRESSION</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_VIDEOMEDIA"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/LinguisticexpressionVideomedia#_VIDEOMEDIA</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

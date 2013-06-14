@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/DJob_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="COUNTRY_SKILLEDOCCUPATIONTIMEDURATION_SERVICE">
+<service:presents rdf:resource="#COUNTRY_SKILLEDOCCUPATIONTIMEDURATION_PROFILE"/>
+<service:describedBy rdf:resource="#COUNTRY_SKILLEDOCCUPATIONTIMEDURATION_PROCESS_MODEL"/>
+<service:supports rdf:resource="#COUNTRY_SKILLEDOCCUPATIONTIMEDURATION_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="COUNTRY_SKILLEDOCCUPATIONTIMEDURATION_PROFILE">
+<service:isPresentedBy rdf:resource="#COUNTRY_SKILLEDOCCUPATIONTIMEDURATION_SERVICE"/>
+<profile:serviceName xml:lang="en">
+DJob service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+DJob service returns skilled occupation job in a given company and its time duration.
+This service can be used only by DJob users (its precondition).
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_COUNTRY"/>
+<profile:hasOutput rdf:resource="#_SKILLEDOCCUPATION"/>
+<profile:hasOutput rdf:resource="#_TIMEDURATION"/>
+
+<profile:has_process rdf:resource="COUNTRY_SKILLEDOCCUPATIONTIMEDURATION_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="COUNTRY_SKILLEDOCCUPATIONTIMEDURATION_PROCESS_MODEL">
+<service:describes rdf:resource="#COUNTRY_SKILLEDOCCUPATIONTIMEDURATION_SERVICE"/>
+<process:hasProcess rdf:resource="#COUNTRY_SKILLEDOCCUPATIONTIMEDURATION_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="COUNTRY_SKILLEDOCCUPATIONTIMEDURATION_PROCESS">
+<process:hasInput  rdf:resource="#_COUNTRY"/>
+<process:hasOutput rdf:resource="#_SKILLEDOCCUPATION"/>
+<process:hasOutput rdf:resource="#_TIMEDURATION"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_COUNTRY">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/portal.owl#Country" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_SKILLEDOCCUPATION">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl#SkilledOccupation" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_TIMEDURATION">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/SUMO.owl#TimeDuration" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="COUNTRY_SKILLEDOCCUPATIONTIMEDURATION_GROUNDING">
+<service:supportedBy rdf:resource="#COUNTRY_SKILLEDOCCUPATIONTIMEDURATION_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

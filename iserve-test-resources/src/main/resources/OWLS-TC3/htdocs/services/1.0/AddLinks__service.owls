@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/AddLinks__service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="GEOPOLITICAL-ENTITYGEOPOLITICAL-ENTITY__SERVICE">
+<service:presents rdf:resource="#GEOPOLITICAL-ENTITYGEOPOLITICAL-ENTITY__PROFILE"/>
+<service:describedBy rdf:resource="#GEOPOLITICAL-ENTITYGEOPOLITICAL-ENTITY__PROCESS_MODEL"/>
+<service:supports rdf:resource="#GEOPOLITICAL-ENTITYGEOPOLITICAL-ENTITY__GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="GEOPOLITICAL-ENTITYGEOPOLITICAL-ENTITY__PROFILE">
+<service:isPresentedBy rdf:resource="#GEOPOLITICAL-ENTITYGEOPOLITICAL-ENTITY__SERVICE"/>
+<profile:serviceName xml:lang="en">
+TranslocationService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service adds a link into database from given one geopolitical entity to the other geopolitical entity.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_GEOPOLITICAL-ENTITY"/>
+<profile:hasInput  rdf:resource="#_GEOPOLITICAL-ENTITY"/>
+
+<profile:has_process rdf:resource="GEOPOLITICAL-ENTITYGEOPOLITICAL-ENTITY__PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="GEOPOLITICAL-ENTITYGEOPOLITICAL-ENTITY__PROCESS_MODEL">
+<service:describes rdf:resource="#GEOPOLITICAL-ENTITYGEOPOLITICAL-ENTITY__SERVICE"/>
+<process:hasProcess rdf:resource="#GEOPOLITICAL-ENTITYGEOPOLITICAL-ENTITY__PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="GEOPOLITICAL-ENTITYGEOPOLITICAL-ENTITY__PROCESS">
+<process:hasInput  rdf:resource="#_GEOPOLITICAL-ENTITY"/>
+<process:hasInput  rdf:resource="#_GEOPOLITICAL-ENTITY"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_GEOPOLITICAL-ENTITY">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/portal.owl#Geopolitical-Entity" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_GEOPOLITICAL-ENTITY">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/portal.owl#Geopolitical-Entity" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<grounding:WsdlGrounding rdf:ID="GEOPOLITICAL-ENTITYGEOPOLITICAL-ENTITY__GROUNDING">
+<service:supportedBy rdf:resource="#GEOPOLITICAL-ENTITYGEOPOLITICAL-ENTITY__SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

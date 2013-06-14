@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/geopolitical-entity_lightning_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="GEOPOLITICAL-ENTITY_LIGHTNING_SERVICE">
+<service:presents rdf:resource="#GEOPOLITICAL-ENTITY_LIGHTNING_PROFILE"/>
+<service:describedBy rdf:resource="#GEOPOLITICAL-ENTITY_LIGHTNING_PROCESS"/>
+<service:supports rdf:resource="#GEOPOLITICAL-ENTITY_LIGHTNING_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="GEOPOLITICAL-ENTITY_LIGHTNING_PROFILE">
+<service:isPresentedBy rdf:resource="#GEOPOLITICAL-ENTITY_LIGHTNING_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Geopolitica-Entity Lightning Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service informs about lightnings of a given geopolitical entity.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_GEOPOLITICAL-ENTITY"/>
+<profile:hasOutput rdf:resource="#_LIGHTNING"/>
+
+<profile:has_process rdf:resource="GEOPOLITICAL-ENTITY_LIGHTNING_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="GEOPOLITICAL-ENTITY_LIGHTNING_PROCESS_MODEL">
+<service:describes rdf:resource="#GEOPOLITICAL-ENTITY_LIGHTNING_SERVICE"/>
+<process:hasProcess rdf:resource="#GEOPOLITICAL-ENTITY_LIGHTNING_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="GEOPOLITICAL-ENTITY_LIGHTNING_PROCESS">
+<service:describes rdf:resource="#GEOPOLITICAL-ENTITY_LIGHTNING_SERVICE"/>
+<process:hasInput  rdf:resource="#_GEOPOLITICAL-ENTITY"/>
+<process:hasOutput rdf:resource="#_LIGHTNING"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_GEOPOLITICAL-ENTITY">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/portal.owl#Geopolitical-Entity</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_LIGHTNING">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#Lightning</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="GEOPOLITICAL-ENTITY_LIGHTNING_GROUNDING">
+<service:supportedBy rdf:resource="#GEOPOLITICAL-ENTITY_LIGHTNING_SERVICE"/>
+	<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="GEOPOLITICAL-ENTITY_LIGHTNING_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+</grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#GEOPOLITICAL-ENTITY_LIGHTNING_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/geopolitical-entity_lightning_service.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#GEOPOLITICAL-ENTITY_LIGHTNING_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Geopolitical-entityLightning#get_LIGHTNING</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Geopolitical-entityLightning#Geopolitical-entityLightningSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Geopolitical-entityLightning#get_LIGHTNINGRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Geopolitical-entityLightning#get_LIGHTNINGResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_GEOPOLITICAL-ENTITY"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Geopolitical-entityLightning#_GEOPOLITICAL-ENTITY</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_LIGHTNING"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Geopolitical-entityLightning#_LIGHTNING</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

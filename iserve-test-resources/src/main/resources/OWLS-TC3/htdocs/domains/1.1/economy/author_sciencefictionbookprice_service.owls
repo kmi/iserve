@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/author_sciencefictionbookprice_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="AUTHOR_SCIENCEFICTIONBOOKPRICE_SERVICE">
+<service:presents rdf:resource="#AUTHOR_SCIENCEFICTIONBOOKPRICE_PROFILE"/>
+<service:describedBy rdf:resource="#AUTHOR_SCIENCEFICTIONBOOKPRICE_PROCESS"/>
+<service:supports rdf:resource="#AUTHOR_SCIENCEFICTIONBOOKPRICE_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="AUTHOR_SCIENCEFICTIONBOOKPRICE_PROFILE">
+<service:isPresentedBy rdf:resource="#AUTHOR_SCIENCEFICTIONBOOKPRICE_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Author ScienceFictionBook Price Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns science fiction books written by the given author
+and their price as well.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_AUTHOR"/>
+<profile:hasOutput rdf:resource="#_SCIENCEFICTIONBOOK"/>
+<profile:hasOutput rdf:resource="#_PRICE"/>
+
+<profile:has_process rdf:resource="AUTHOR_SCIENCEFICTIONBOOKPRICE_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="AUTHOR_SCIENCEFICTIONBOOKPRICE_PROCESS_MODEL">
+<service:describes rdf:resource="#AUTHOR_SCIENCEFICTIONBOOKPRICE_SERVICE"/>
+<process:hasProcess rdf:resource="#AUTHOR_SCIENCEFICTIONBOOKPRICE_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="AUTHOR_SCIENCEFICTIONBOOKPRICE_PROCESS">
+<service:describes rdf:resource="#AUTHOR_SCIENCEFICTIONBOOKPRICE_SERVICE"/>
+<process:hasInput  rdf:resource="#_AUTHOR"/>
+<process:hasOutput rdf:resource="#_SCIENCEFICTIONBOOK"/>
+<process:hasOutput rdf:resource="#_PRICE"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_AUTHOR">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/books.owl#Author</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_SCIENCEFICTIONBOOK">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/books.owl#ScienceFictionBook</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_PRICE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/concept.owl#Price</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="AUTHOR_SCIENCEFICTIONBOOKPRICE_GROUNDING">
+<service:supportedBy rdf:resource="#AUTHOR_SCIENCEFICTIONBOOKPRICE_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="AUTHOR_SCIENCEFICTIONBOOKPRICE_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+</grounding:WsdlGrounding>
+
+<grounding:WsdlAtomicProcessGrounding rdf:about="#AUTHOR_SCIENCEFICTIONBOOKPRICE_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/AuthorSciencefictionbookprice.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#AUTHOR_SCIENCEFICTIONBOOKPRICE_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/AuthorSciencefictionbookprice#get_SCIENCEFICTIONBOOK_PRICE</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/AuthorSciencefictionbookprice#AuthorSciencefictionbookpriceSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/AuthorSciencefictionbookprice#get_SCIENCEFICTIONBOOK_PRICERequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/AuthorSciencefictionbookprice#get_SCIENCEFICTIONBOOK_PRICEResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_AUTHOR"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/AuthorSciencefictionbookprice#_AUTHOR</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_SCIENCEFICTIONBOOK"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/AuthorSciencefictionbookprice#_SCIENCEFICTIONBOOK</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_PRICE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/AuthorSciencefictionbookprice#_PRICE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+<!ENTITY books.owl "http://127.0.0.1/ontology/books.owl">
+<!ENTITY owl "http://www.w3.org/2002/07/owl#">
+<!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
+<!ENTITY simplified_sumo.owl "http://127.0.0.1/ontology/simplified_sumo.owl">
+<!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+]>
+<rdf:RDF xml:base="&books.owl;"
+xmlns:owl="&owl;"
+xmlns:rdf="&rdf;"
+xmlns:rdfs="&rdfs;">
+
+<!-- Ontology Information -->
+<owl:Ontology rdf:about=""
+rdfs:label="Book Ontology"
+owl:versionInfo="1.0">
+<rdfs:comment>An ontology containing information about books</rdfs:comment>
+<owl:imports>
+<owl:Ontology rdf:about="&simplified_sumo.owl;"/>
+</owl:imports>
+</owl:Ontology>
+
+<!-- Classes -->
+<owl:Class rdf:about="#A">
+<rdfs:subClassOf rdf:resource="#Grade"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Article">
+<rdfs:subClassOf rdf:resource="#Text"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Author">
+<rdfs:subClassOf rdf:resource="#Person"/>
+</owl:Class>
+
+<owl:Class rdf:about="#B">
+<rdfs:subClassOf rdf:resource="#Grade"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Book">
+<rdfs:subClassOf rdf:resource="#Monograph"/>
+<rdfs:subClassOf>
+<owl:Restriction rdf:nodeID="b10">
+<owl:allValuesFrom rdf:resource="#Author"/>
+<owl:onProperty rdf:resource="#writtenBy"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#Book-Type"/>
+<owl:onProperty rdf:resource="#hasType"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#Title"/>
+<owl:onProperty rdf:resource="#isTitled"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#Book-Type"/>
+<owl:Class rdf:about="#C">
+<rdfs:subClassOf rdf:resource="#Grade"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Comic">
+<rdfs:subClassOf rdf:resource="#Genre"/>
+</owl:Class>
+
+<owl:Class rdf:about="#D">
+<rdfs:subClassOf rdf:resource="#Grade"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Daily">
+<rdfs:subClassOf rdf:resource="#Time"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Date"/>
+<owl:Class rdf:about="#Encyclopedia">
+<rdfs:subClassOf rdf:resource="#Book"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#Very-Large"/>
+<owl:onProperty rdf:resource="#hasSize"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#Every-Year">
+<rdfs:subClassOf rdf:resource="#Time"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ExpressionContent"/>
+<owl:Class rdf:about="#F">
+<rdfs:subClassOf rdf:resource="#Grade"/>
+</owl:Class>
+
+<owl:Class rdf:about="#FantansyNovel">
+<rdfs:subClassOf rdf:resource="#Novel"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Fantasy">
+<rdfs:subClassOf rdf:resource="#Genre"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Genre"/>
+<owl:Class rdf:about="#Grade"/>
+<owl:Class rdf:about="#Hard-Cover">
+<rdfs:subClassOf rdf:resource="#Book-Type"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Journals">
+<rdfs:subClassOf rdf:resource="#Serial-Publications"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Large">
+<rdfs:subClassOf rdf:resource="#Size"/>
+</owl:Class>
+
+<owl:Class rdf:about="#LinguisticExpression">
+<rdfs:subClassOf rdf:resource="#ExpressionContent"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Magazine">
+<rdfs:subClassOf rdf:resource="#Serial-Publications"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Medium">
+<rdfs:subClassOf rdf:resource="#Size"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Monograph">
+<rdfs:subClassOf rdf:resource="#Publication"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#Once"/>
+<owl:onProperty rdf:resource="#timePublished"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#Monthly">
+<rdfs:subClassOf rdf:resource="#Time"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Newspaper">
+<rdfs:subClassOf rdf:resource="#Serial-Publications"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Novel">
+<rdfs:subClassOf rdf:resource="#Book"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#Medium"/>
+<owl:onProperty rdf:resource="#hasSize"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#Once">
+<rdfs:subClassOf rdf:resource="#Time"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Paper-Back">
+<rdfs:subClassOf rdf:resource="#Book-Type"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Person"/>
+<owl:Class rdf:about="#PrintedMaterial">
+<rdfs:subClassOf rdf:resource="&simplified_sumo.owl;#Object"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Publication">
+<rdfs:subClassOf rdf:resource="#PrintedMaterial"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#Date"/>
+<owl:onProperty rdf:resource="#datePublished"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#Publisher"/>
+<owl:onProperty rdf:resource="#publishedBy"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#Publisher">
+<rdfs:subClassOf rdf:resource="#Person"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Reader">
+<rdfs:subClassOf rdf:resource="#Person"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Recommanded-Science-Fiction-Short-Story">
+<rdfs:subClassOf rdf:resource="#Recommended-Short-Story"/>
+<rdfs:subClassOf rdf:resource="#Science-Fiction-Short-Story"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Recommended-Short-Story">
+<rdfs:subClassOf rdf:resource="#ReviewedObject"/>
+<rdfs:subClassOf rdf:resource="#Short-Story"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#A"/>
+<owl:onProperty rdf:resource="#hasGrade"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#Review"/>
+<owl:Class rdf:about="#ReviewedObject">
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#Grade"/>
+<owl:onProperty rdf:resource="#hasGrade"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#RomanticNovel">
+<rdfs:subClassOf rdf:resource="#Novel"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Science-Fiction">
+<rdfs:subClassOf rdf:resource="#Genre"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Science-Fiction-Novel">
+<rdfs:subClassOf rdf:resource="#Novel"/>
+<rdfs:subClassOf rdf:resource="#ScienceFictionBook"/>
+<rdfs:subClassOf>
+<owl:Restriction rdf:nodeID="b6">
+<owl:allValuesFrom rdf:resource="#Science-Fiction"/>
+<owl:onProperty rdf:resource="#hasGenre"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#Science-Fiction-Short-Story">
+<rdfs:subClassOf rdf:resource="#Short-Story"/>
+<rdfs:subClassOf rdf:nodeID="b6"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ScienceFictionBook">
+<rdfs:subClassOf rdf:resource="#Book"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Serial-Publications">
+<rdfs:subClassOf rdf:resource="#Publication"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#Article"/>
+<owl:onProperty rdf:resource="#contains"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#Short-Story">
+<rdfs:subClassOf rdf:resource="#Book"/>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#Paper-Back"/>
+<owl:onProperty rdf:resource="#hasType"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:allValuesFrom rdf:resource="#Small"/>
+<owl:onProperty rdf:resource="#hasSize"/>
+</owl:Restriction>
+</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#Size"/>
+<owl:Class rdf:about="#Small">
+<rdfs:subClassOf rdf:resource="#Size"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Text">
+<rdfs:subClassOf rdf:resource="#LinguisticExpression"/>
+<rdfs:subClassOf rdf:nodeID="b10"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Thesis">
+<rdfs:subClassOf rdf:resource="#PrintedMaterial"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Time"/>
+<owl:Class rdf:about="#Title">
+<rdfs:subClassOf rdf:resource="#LinguisticExpression"/>
+</owl:Class>
+
+<owl:Class rdf:about="#User">
+<rdfs:subClassOf rdf:resource="#Person"/>
+</owl:Class>
+
+<owl:Class rdf:about="#UserReview">
+<rdfs:subClassOf rdf:resource="#Review"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Very-Large">
+<rdfs:subClassOf rdf:resource="#Size"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Very-Small">
+<rdfs:subClassOf rdf:resource="#Size"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Weekly">
+<rdfs:subClassOf rdf:resource="#Time"/>
+</owl:Class>
+
+<owl:Class rdf:about="&simplified_sumo.owl;#CorpuscularObject"/>
+<owl:Class rdf:about="&simplified_sumo.owl;#Object"/>
+
+<!-- Object Properties -->
+<owl:ObjectProperty rdf:about="#contains"/>
+<owl:ObjectProperty rdf:about="#datePublished"/>
+<owl:ObjectProperty rdf:about="#hasGenre"/>
+<owl:ObjectProperty rdf:about="#hasGrade"/>
+<owl:ObjectProperty rdf:about="#hasName"/>
+<owl:ObjectProperty rdf:about="#hasSize"/>
+<owl:ObjectProperty rdf:about="#hasType"/>
+<owl:ObjectProperty rdf:about="#isTitled"/>
+<owl:ObjectProperty rdf:about="#publishedBy"/>
+<owl:ObjectProperty rdf:about="#timePublished"/>
+<owl:ObjectProperty rdf:about="#writtenBy"/>
+</rdf:RDF>

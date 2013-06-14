@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/price_cola_Gudduservice.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="PRICE_COLA_SERVICE">
+<service:presents rdf:resource="#PRICE_COLA_PROFILE"/>
+<service:describedBy rdf:resource="#PRICE_COLA_PROCESS_MODEL"/>
+<service:supports rdf:resource="#PRICE_COLA_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="PRICE_COLA_PROFILE">
+<service:isPresentedBy rdf:resource="#PRICE_COLA_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Guddu ColaService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+Guddu service is used to receive cola for a price.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_PRICE"/>
+<profile:hasOutput rdf:resource="#_COLA"/>
+
+<profile:has_process rdf:resource="PRICE_COLA_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="PRICE_COLA_PROCESS_MODEL">
+<service:describes rdf:resource="#PRICE_COLA_SERVICE"/>
+<process:hasProcess rdf:resource="#PRICE_COLA_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="PRICE_COLA_PROCESS">
+<process:hasInput  rdf:resource="#_PRICE"/>
+<process:hasOutput rdf:resource="#_COLA"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_PRICE">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/concept.owl#Price" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_COLA">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/my_ontology.owl#Cola" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="PRICE_COLA_GROUNDING">
+<service:supportedBy rdf:resource="#PRICE_COLA_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

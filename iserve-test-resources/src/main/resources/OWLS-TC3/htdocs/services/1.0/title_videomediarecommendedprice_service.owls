@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/title_videomediarecommendedprice_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="TITLE_VIDEOMEDIARECOMMENDEDPRICE_SERVICE">
+<service:presents rdf:resource="#TITLE_VIDEOMEDIARECOMMENDEDPRICE_PROFILE"/>
+<service:describedBy rdf:resource="#TITLE_VIDEOMEDIARECOMMENDEDPRICE_PROCESS_MODEL"/>
+<service:supports rdf:resource="#TITLE_VIDEOMEDIARECOMMENDEDPRICE_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="TITLE_VIDEOMEDIARECOMMENDEDPRICE_PROFILE">
+<service:isPresentedBy rdf:resource="#TITLE_VIDEOMEDIARECOMMENDEDPRICE_SERVICE"/>
+<profile:serviceName xml:lang="en">
+videoMedia finder service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service is a helpful service to find an available video media with its
+recommended price.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_TITLE"/>
+<profile:hasOutput rdf:resource="#_VIDEOMEDIA"/>
+<profile:hasOutput rdf:resource="#_RECOMMENDEDPRICE"/>
+
+<profile:has_process rdf:resource="TITLE_VIDEOMEDIARECOMMENDEDPRICE_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="TITLE_VIDEOMEDIARECOMMENDEDPRICE_PROCESS_MODEL">
+<service:describes rdf:resource="#TITLE_VIDEOMEDIARECOMMENDEDPRICE_SERVICE"/>
+<process:hasProcess rdf:resource="#TITLE_VIDEOMEDIARECOMMENDEDPRICE_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="TITLE_VIDEOMEDIARECOMMENDEDPRICE_PROCESS">
+<process:hasInput  rdf:resource="#_TITLE"/>
+<process:hasOutput rdf:resource="#_VIDEOMEDIA"/>
+<process:hasOutput rdf:resource="#_RECOMMENDEDPRICE"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_TITLE">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/books.owl#Title" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_VIDEOMEDIA">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/my_ontology.owl#VideoMedia" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_RECOMMENDEDPRICE">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/concept.owl#RecommendedPrice" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="TITLE_VIDEOMEDIARECOMMENDEDPRICE_GROUNDING">
+<service:supportedBy rdf:resource="#TITLE_VIDEOMEDIARECOMMENDEDPRICE_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

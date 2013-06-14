@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns:sawsdl="http://www.w3.org/ns/sawsdl" xmlns:s="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://ws.cdyne.com/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://ws.cdyne.com/"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">This service corrects U.S. addresses, provides
+        geocoding (U.S. down to address level and Canadian to Postal Code Level), and allows you to convert zip codes
+        (and Canadian Postal Codes) to city and state names. We also offer PMSA, CMSA, and various other codes.
+        <b>BE SURE TO USE A LICENSE KEY OF 0 FOR TESTING.</b>
+    </wsdl:documentation>
+    <wsdl:types>
+        <s:schema elementFormDefault="qualified" targetNamespace="http://ws.cdyne.com/">
+            <s:element name="CalculateDistanceInMiles"
+                       sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protont#Location">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="1" maxOccurs="1" name="latitude1" type="s:double"/>
+                        <s:element minOccurs="1" maxOccurs="1" name="longitude1" type="s:double"/>
+                        <s:element minOccurs="1" maxOccurs="1" name="latitude2" type="s:double"/>
+                        <s:element minOccurs="1" maxOccurs="1" name="longitude2" type="s:double"/>
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="CalculateDistanceInMilesResponse"
+                       sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#GeographicDistance">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="1" maxOccurs="1" name="CalculateDistanceInMilesResult" type="s:double"/>
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="double" type="s:double"/>
+        </s:schema>
+
+    </wsdl:types>
+
+    <wsdl:message name="CalculateDistanceInMilesSoapIn">
+        <wsdl:part name="parameters" element="tns:CalculateDistanceInMiles"/>
+    </wsdl:message>
+    <wsdl:message name="CalculateDistanceInMilesSoapOut">
+        <wsdl:part name="parameters" element="tns:CalculateDistanceInMilesResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="CalculateDistanceInMilesHttpGetIn">
+        <wsdl:part name="latitude1" type="s:string"
+                   sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protont#Location"/>
+        <wsdl:part name="longitude1" type="s:string"/>
+        <wsdl:part name="latitude2" type="s:string"/>
+        <wsdl:part name="longitude2" type="s:string"/>
+    </wsdl:message>
+
+    <wsdl:message name="CalculateDistanceInMilesHttpGetOut">
+        <wsdl:part name="Body" element="tns:double"
+                   sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#GeographicDistance"/>
+    </wsdl:message>
+
+    <wsdl:message name="CalculateDistanceInMilesHttpPostIn">
+        <wsdl:part name="latitude1" type="s:string"
+                   sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protont#Location"/>
+        <wsdl:part name="longitude1" type="s:string"/>
+        <wsdl:part name="latitude2" type="s:string"/>
+        <wsdl:part name="longitude2" type="s:string"/>
+    </wsdl:message>
+
+    <wsdl:message name="CalculateDistanceInMilesHttpPostOut">
+        <wsdl:part name="Body" element="tns:double"
+                   sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#GeographicDistance"/>
+    </wsdl:message>
+
+    <wsdl:portType name="AddressLookupSoap">
+        <wsdl:operation name="CalculateDistanceInMiles"
+                        sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Calculates the distance between two areas
+                using longitude and latitude. This is calculated using spherical geometry. This is a free function. You
+                can get the calculations behind this function via support@cdyne.com .
+            </wsdl:documentation>
+            <wsdl:input message="tns:CalculateDistanceInMilesSoapIn"/>
+            <wsdl:output message="tns:CalculateDistanceInMilesSoapOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:portType name="AddressLookupHttpGet">
+        <wsdl:operation name="CalculateDistanceInMiles"
+                        sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Calculates the distance between two areas
+                using longitude and latitude. This is calculated using spherical geometry. This is a free function. You
+                can get the calculations behind this function via support@cdyne.com .
+            </wsdl:documentation>
+            <wsdl:input message="tns:CalculateDistanceInMilesHttpGetIn"/>
+            <wsdl:output message="tns:CalculateDistanceInMilesHttpGetOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:portType name="AddressLookupHttpPost">
+        <wsdl:operation name="CalculateDistanceInMiles"
+                        sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Calculates the distance between two areas
+                using longitude and latitude. This is calculated using spherical geometry. This is a free function. You
+                can get the calculations behind this function via support@cdyne.com .
+            </wsdl:documentation>
+            <wsdl:input message="tns:CalculateDistanceInMilesHttpPostIn"/>
+            <wsdl:output message="tns:CalculateDistanceInMilesHttpPostOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="AddressLookupSoap" type="tns:AddressLookupSoap">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="CalculateDistanceInMiles">
+            <soap:operation soapAction="http://ws.cdyne.com/CalculateDistanceInMiles" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:binding name="AddressLookupSoap12" type="tns:AddressLookupSoap">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="CalculateDistanceInMiles">
+            <soap12:operation soapAction="http://ws.cdyne.com/CalculateDistanceInMiles" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:binding name="AddressLookupHttpGet" type="tns:AddressLookupHttpGet">
+        <http:binding verb="GET"/>
+        <wsdl:operation name="CalculateDistanceInMiles">
+            <http:operation location="/CalculateDistanceInMiles"/>
+            <wsdl:input>
+                <http:urlEncoded/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:mimeXml part="Body"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:binding name="AddressLookupHttpPost" type="tns:AddressLookupHttpPost">
+        <http:binding verb="POST"/>
+        <wsdl:operation name="CalculateDistanceInMiles">
+            <http:operation location="/CalculateDistanceInMiles"/>
+            <wsdl:input>
+                <mime:content type="application/x-www-form-urlencoded"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:mimeXml part="Body"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+
+    <wsdl:service sawsdl:modelReference=" http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#LocationDistanceLookup"
+                  name="AddressLookup">
+        <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">This service corrects U.S. addresses, provides
+            geocoding (U.S. down to address level and Canadian to Postal Code Level), and allows you to convert zip
+            codes (and Canadian Postal Codes) to city and state names. We also offer PMSA, CMSA, and various other
+            codes.
+            <b>BE SURE TO USE A LICENSE KEY OF 0 FOR TESTING.</b>
+        </wsdl:documentation>
+
+        <wsdl:port name="AddressLookupSoap" binding="tns:AddressLookupSoap">
+            <soap:address location="http://ws.cdyne.com/psaddress/addresslookup.asmx"/>
+        </wsdl:port>
+        <wsdl:port name="AddressLookupSoap12" binding="tns:AddressLookupSoap12">
+            <soap12:address location="http://ws.cdyne.com/psaddress/addresslookup.asmx"/>
+        </wsdl:port>
+        <wsdl:port name="AddressLookupHttpGet" binding="tns:AddressLookupHttpGet">
+            <http:address location="http://ws.cdyne.com/psaddress/addresslookup.asmx"/>
+        </wsdl:port>
+
+        <wsdl:port name="AddressLookupHttpPost" binding="tns:AddressLookupHttpPost">
+            <http:address location="http://ws.cdyne.com/psaddress/addresslookup.asmx"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

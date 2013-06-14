@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/geographical-region_companyprofession_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/finance_th_web.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="GEOGRAPHICAL-REGION_COMPANYPROFESSION_SERVICE">
+<service:presents rdf:resource="#GEOGRAPHICAL-REGION_COMPANYPROFESSION_PROFILE"/>
+<service:describedBy rdf:resource="#GEOGRAPHICAL-REGION_COMPANYPROFESSION_PROCESS"/>
+<service:supports rdf:resource="#GEOGRAPHICAL-REGION_COMPANYPROFESSION_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="GEOGRAPHICAL-REGION_COMPANYPROFESSION_PROFILE">
+<service:isPresentedBy rdf:resource="#GEOGRAPHICAL-REGION_COMPANYPROFESSION_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Geographical-Region Company Profession Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service finds profession positions in a given geopolitical regions and also returns company who offers that job.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_GEOGRAPHICAL-REGION"/>
+<profile:hasOutput rdf:resource="#_COMPANY"/>
+<profile:hasOutput rdf:resource="#_PROFESSION"/>
+
+<profile:has_process rdf:resource="GEOGRAPHICAL-REGION_COMPANYPROFESSION_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="GEOGRAPHICAL-REGION_COMPANYPROFESSION_PROCESS_MODEL">
+<service:describes rdf:resource="#GEOGRAPHICAL-REGION_COMPANYPROFESSION_SERVICE"/>
+<process:hasProcess rdf:resource="#GEOGRAPHICAL-REGION_COMPANYPROFESSION_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="GEOGRAPHICAL-REGION_COMPANYPROFESSION_PROCESS">
+<service:describes rdf:resource="#GEOGRAPHICAL-REGION_COMPANYPROFESSION_SERVICE"/>
+<process:hasInput  rdf:resource="#_GEOGRAPHICAL-REGION"/>
+<process:hasOutput rdf:resource="#_COMPANY"/>
+<process:hasOutput rdf:resource="#_PROFESSION"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_GEOGRAPHICAL-REGION">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/portal.owl#Geographical-Region</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_COMPANY">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/finance_th_web.owl#company</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_PROFESSION">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#Profession</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="GEOGRAPHICAL-REGION_COMPANYPROFESSION_GROUNDING">
+<service:supportedBy rdf:resource="#GEOGRAPHICAL-REGION_COMPANYPROFESSION_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="GEOGRAPHICAL-REGION_COMPANYPROFESSION_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+</grounding:WsdlGrounding>
+
+<grounding:WsdlAtomicProcessGrounding rdf:about="#GEOGRAPHICAL-REGION_COMPANYPROFESSION_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Geographical-regionCompanyprofession.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#GEOGRAPHICAL-REGION_COMPANYPROFESSION_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Geographical-regionCompanyprofession#get_COMPANY_PROFESSION</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Geographical-regionCompanyprofession#Geographical-regionCompanyprofessionSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Geographical-regionCompanyprofession#get_COMPANY_PROFESSIONRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Geographical-regionCompanyprofession#get_COMPANY_PROFESSIONResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_GEOGRAPHICAL-REGION"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Geographical-regionCompanyprofession#_GEOGRAPHICAL-REGION</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_COMPANY"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Geographical-regionCompanyprofession#_COMPANY</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_PROFESSION"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Geographical-regionCompanyprofession#_PROFESSION</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

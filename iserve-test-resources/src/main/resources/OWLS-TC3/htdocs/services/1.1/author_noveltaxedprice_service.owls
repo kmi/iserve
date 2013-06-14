@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:process="http://www.daml.org/services/owl-s/1.1/Process.owl#"
+    xmlns="http://127.0.0.1/services/1.1/author_noveltaxedprice_service.owls"
+    xmlns:service="http://www.daml.org/services/owl-s/1.1/Service.owl#"
+    xmlns:list="http://www.daml.org/services/owl-s/1.1/generic/ObjectList.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:profile="http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+    xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+    xmlns:grounding="http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns:expression="http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://127.0.0.1/services/1.1/author_noveltaxedprice_service.owls">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl"/>
+  </owl:Ontology>
+  <service:Service rdf:ID="AUTHOR_NOVELTAXEDPRICE_Service">
+    <service:presents>
+      <profile:Profile rdf:ID="AUTHOR_NOVELTAXEDPRICE_Profile"/>
+    </service:presents>
+    <service:describedBy>
+      <process:AtomicProcess rdf:ID="AUTHOR_NOVELTAXEDPRICE_Process"/>
+    </service:describedBy>
+    <service:supports>
+      <grounding:WsdlGrounding rdf:ID="AUTHOR_NOVELTAXEDPRICE_Grounding"/>
+    </service:supports>
+  </service:Service>
+  <profile:Profile rdf:about="#AUTHOR_NOVELTAXEDPRICE_Profile">
+    <service:presentedBy rdf:resource="#AUTHOR_NOVELTAXEDPRICE_Service"/>
+    <profile:serviceName>Author Novel TaxedPrice Service</profile:serviceName>
+    <profile:textDescription>This service returns novels written by the given author. Their taxed price is also informed.</profile:textDescription>
+    <profile:hasInput>
+      <process:Input rdf:ID="_AUTHOR">
+        <rdfs:label>_AUTHOR</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/books.owl#Author</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasOutput>
+      <process:Output rdf:ID="_NOVEL">
+        <rdfs:label>_NOVEL</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/books.owl#Novel</process:parameterType>
+      </process:Output>
+    </profile:hasOutput>
+    <profile:hasOutput>
+      <process:Output rdf:ID="_TAXEDPRICE">
+        <rdfs:label>_TAXEDPRICE</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/concept.owl#TaxedPrice</process:parameterType>
+      </process:Output>
+    </profile:hasOutput>
+  </profile:Profile>
+  <process:AtomicProcess rdf:about="#AUTHOR_NOVELTAXEDPRICE_Process">
+    <rdfs:label>AUTHOR_NOVELTAXEDPRICE_Process</rdfs:label>
+    <service:describes rdf:resource="#AUTHOR_NOVELTAXEDPRICE_Service"/>
+    <process:hasInput rdf:resource="#_AUTHOR"/>
+    <process:hasOutput rdf:resource="#_NOVEL"/>
+    <process:hasOutput rdf:resource="#_TAXEDPRICE"/>
+  </process:AtomicProcess>
+  <grounding:WsdlGrounding rdf:about="#AUTHOR_NOVELTAXEDPRICE_Grounding">
+    <service:supportedBy rdf:resource="#AUTHOR_NOVELTAXEDPRICE_Service"/>
+    <grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="AUTHOR_NOVELTAXEDPRICE_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#AUTHOR_NOVELTAXEDPRICE_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/author_noveltaxedprice_service.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#AUTHOR_NOVELTAXEDPRICE_Process"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/AuthorNoveltaxedprice#get_NOVEL_TAXEDPRICE</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/AuthorNoveltaxedprice#AuthorNoveltaxedpriceSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/AuthorNoveltaxedprice#get_NOVEL_TAXEDPRICERequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/AuthorNoveltaxedprice#get_NOVEL_TAXEDPRICEResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_AUTHOR"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/AuthorNoveltaxedprice#_AUTHOR</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_NOVEL"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/AuthorNoveltaxedprice#_NOVEL</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_TAXEDPRICE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/AuthorNoveltaxedprice#_TAXEDPRICE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+  <owl:Class rdf:about="/ontology/concept.owl#TaxedPrice"/>
+  <owl:Class rdf:about="/ontology/books.owl#Novel"/>
+  <owl:Class rdf:about="/ontology/books.owl#Author"/>
+</rdf:RDF>

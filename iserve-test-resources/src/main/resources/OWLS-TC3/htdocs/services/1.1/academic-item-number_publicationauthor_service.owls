@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/academic-item-number_publicationauthor_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="ACADEMIC-ITEM-NUMBER_PUBLICATIONAUTHOR_SERVICE">
+<service:presents rdf:resource="#ACADEMIC-ITEM-NUMBER_PUBLICATIONAUTHOR_PROFILE"/>
+<service:describedBy rdf:resource="#ACADEMIC-ITEM-NUMBER_PUBLICATIONAUTHOR_PROCESS"/>
+<service:supports rdf:resource="#ACADEMIC-ITEM-NUMBER_PUBLICATIONAUTHOR_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="ACADEMIC-ITEM-NUMBER_PUBLICATIONAUTHOR_PROFILE">
+<service:isPresentedBy rdf:resource="#ACADEMIC-ITEM-NUMBER_PUBLICATIONAUTHOR_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Academic-Number Publication Author Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+
+Returns a publication and its author using the academic item number.
+
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_ACADEMIC-ITEM-NUMBER"/>
+<profile:hasOutput rdf:resource="#_PUBLICATION"/>
+<profile:hasOutput rdf:resource="#_AUTHOR"/>
+<profile:has_process rdf:resource="ACADEMIC-ITEM-NUMBER_PUBLICATIONAUTHOR_PROCESS" />
+</profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="ACADEMIC-ITEM-NUMBER_PUBLICATIONAUTHOR_PROCESS_MODEL">
+<service:describes rdf:resource="#ACADEMIC-ITEM-NUMBER_PUBLICATIONAUTHOR_SERVICE"/>
+<process:hasProcess rdf:resource="#ACADEMIC-ITEM-NUMBER_PUBLICATIONAUTHOR_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="ACADEMIC-ITEM-NUMBER_PUBLICATIONAUTHOR_PROCESS">
+<service:describes rdf:resource="#ACADEMIC-ITEM-NUMBER_PUBLICATIONAUTHOR_SERVICE"/>
+<process:hasInput  rdf:resource="#_ACADEMIC-ITEM-NUMBER"/>
+<process:hasOutput rdf:resource="#_PUBLICATION"/>
+<process:hasOutput rdf:resource="#_AUTHOR"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_ACADEMIC-ITEM-NUMBER">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/portal.owl#Academic-Item-Number</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_PUBLICATION">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/portal.owl#Publication</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_AUTHOR">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/books.owl#Author</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="ACADEMIC-ITEM-NUMBER_PUBLICATIONAUTHOR_GROUNDING">
+<service:supportedBy rdf:resource="#ACADEMIC-ITEM-NUMBER_PUBLICATIONAUTHOR_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="ACADEMIC-ITEM-NUMBER_PUBLICATIONAUTHOR_AtomicProcessGrounding"/>
+</grounding:hasAtomicProcessGrounding>
+</grounding:WsdlGrounding>
+
+<grounding:WsdlAtomicProcessGrounding rdf:about="#ACADEMIC-ITEM-NUMBER_PUBLICATIONAUTHOR_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Academic-item-numberPublicationauthor.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#ACADEMIC-ITEM-NUMBER_PUBLICATIONAUTHOR_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Academic-item-numberPublicationauthor/get_PUBLICATION_AUTHOR</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Academic-item-numberPublicationauthor/Academic-item-numberPublicationauthorSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Academic-item-numberPublicationauthor/get_PUBLICATION_AUTHORRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Academic-item-numberPublicationauthor/get_PUBLICATION_AUTHORResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_ACADEMIC-ITEM-NUMBER"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Academic-item-numberPublicationauthor/_ACADEMIC-ITEM-NUMBER</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_PUBLICATION"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Academic-item-numberPublicationauthor/_PUBLICATION</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_AUTHOR"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Academic-item-numberPublicationauthor/_AUTHOR</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

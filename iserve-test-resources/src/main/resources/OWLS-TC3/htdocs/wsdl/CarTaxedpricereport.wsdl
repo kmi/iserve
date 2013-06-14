@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://127.0.0.1/wsdl/CarTaxedpricereport" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  name="CarTaxedpricereport" targetNamespace="http://127.0.0.1/wsdl/CarTaxedpricereport">
+    <wsdl:types>
+        <xsd:schema version="OWLS2WSDL Wed May 06 23:48:31 CEST 2009"
+                    targetNamespace="http://127.0.0.1/wsdl/CarTaxedpricereport"
+                    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:annotation>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/my_ontology.owl#Car"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-ComplexType) of http://127.0.0.1/ontology/concept.owl#TaxedPrice"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/Mid-level-ontology.owl#Report"/>
+            </xsd:annotation>
+            <xsd:element name="Report" type="tns:ReportType"/>
+            <xsd:element name="TaxedPrice" type="tns:TaxedPriceType"/>
+            <xsd:element name="Car" type="tns:CarType"/>
+            <xsd:complexType name="TaxedPriceType">
+                <xsd:sequence>
+                    <xsd:element name="Fine" type="tns:Thing"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="CarType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="ReportType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="Thing">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="get_TAXEDPRICE_REPORTRequest">
+        <wsdl:part name="_CAR" type="tns:CarType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="get_TAXEDPRICE_REPORTResponse">
+        <wsdl:part name="_TAXEDPRICE" type="tns:TaxedPriceType">
+        </wsdl:part>
+        <wsdl:part name="_REPORT" type="tns:ReportType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="CarTaxedpricereportSoap">
+        <wsdl:operation name="get_TAXEDPRICE_REPORT">
+            <wsdl:input message="tns:get_TAXEDPRICE_REPORTRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:get_TAXEDPRICE_REPORTResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="CarTaxedpricereportSoapBinding" type="tns:CarTaxedpricereportSoap">
+        <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="get_TAXEDPRICE_REPORT">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/CarTaxedpricereport"/>
+            </wsdl:input>
+            <wsdl:output>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/CarTaxedpricereport"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="CarTaxedpricereportService">
+        <wsdl:port name="CarTaxedpricereportSoap" binding="tns:CarTaxedpricereportSoapBinding">
+            <wsdlsoap:address location="http://127.0.0.1/wsdl/CarTaxedpricereport"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

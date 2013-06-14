@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/item-number_letter_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="ITEM-NUMBER_LETTER_SERVICE">
+<service:presents rdf:resource="#ITEM-NUMBER_LETTER_PROFILE"/>
+<service:describedBy rdf:resource="#ITEM-NUMBER_LETTER_PROCESS"/>
+<service:supports rdf:resource="#ITEM-NUMBER_LETTER_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="ITEM-NUMBER_LETTER_PROFILE">
+<service:isPresentedBy rdf:resource="#ITEM-NUMBER_LETTER_SERVICE"/>
+<profile:serviceName xml:lang="en">
+LetterFounderService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service finds letter on the item number.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_ITEM-NUMBER"/>
+<profile:hasOutput rdf:resource="#_LETTER"/>
+
+<profile:has_process rdf:resource="ITEM-NUMBER_LETTER_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="ITEM-NUMBER_LETTER_PROCESS_MODEL">
+<service:describes rdf:resource="#ITEM-NUMBER_LETTER_SERVICE"/>
+<process:hasProcess rdf:resource="#ITEM-NUMBER_LETTER_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="ITEM-NUMBER_LETTER_PROCESS">
+<service:describes rdf:resource="#ITEM-NUMBER_LETTER_SERVICE"/>
+<process:hasInput  rdf:resource="#_ITEM-NUMBER"/>
+<process:hasOutput rdf:resource="#_LETTER"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_ITEM-NUMBER">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/portal.owl#Item-Number</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_LETTER">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/portal.owl#Letter</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="ITEM-NUMBER_LETTER_GROUNDING">
+<service:supportedBy rdf:resource="#ITEM-NUMBER_LETTER_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="ITEM-NUMBER_LETTER_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#ITEM-NUMBER_LETTER_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/item-number_letter_service.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#ITEM-NUMBER_LETTER_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Item-numberLetter#get_LETTER</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Item-numberLetter#Item-numberLetterSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Item-numberLetter#get_LETTERRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Item-numberLetter#get_LETTERResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_ITEM-NUMBER"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Item-numberLetter#_ITEM-NUMBER</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_LETTER"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Item-numberLetter#_LETTER</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

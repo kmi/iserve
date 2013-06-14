@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/durationcountrycity_hotel_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/support.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="DURATIONCOUNTRYCITY_HOTEL_SERVICE">
+<service:presents rdf:resource="#DURATIONCOUNTRYCITY_HOTEL_PROFILE"/>
+<service:describedBy rdf:resource="#DURATIONCOUNTRYCITY_HOTEL_PROCESS_MODEL"/>
+<service:supports rdf:resource="#DURATIONCOUNTRYCITY_HOTEL_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="DURATIONCOUNTRYCITY_HOTEL_PROFILE">
+<service:isPresentedBy rdf:resource="#DURATIONCOUNTRYCITY_HOTEL_SERVICE"/>
+<profile:serviceName xml:lang="en">
+HotelInfoService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service tells you that is there any availability of hotel in a city of
+the country during the given duration, the duration is obligatory input.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_CITY"/>
+<profile:hasInput  rdf:resource="#_COUNTRY"/>
+<profile:hasInput  rdf:resource="#_DURATION"/>
+<profile:hasOutput rdf:resource="#_HOTEL"/>
+
+<profile:has_process rdf:resource="DURATIONCOUNTRYCITY_HOTEL_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="DURATIONCOUNTRYCITY_HOTEL_PROCESS_MODEL">
+<service:describes rdf:resource="#DURATIONCOUNTRYCITY_HOTEL_SERVICE"/>
+<process:hasProcess rdf:resource="#DURATIONCOUNTRYCITY_HOTEL_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="DURATIONCOUNTRYCITY_HOTEL_PROCESS">
+<process:hasInput  rdf:resource="#_CITY"/>
+<process:hasInput  rdf:resource="#_COUNTRY"/>
+<process:hasInput  rdf:resource="#_DURATION"/>
+<process:hasOutput rdf:resource="#_HOTEL"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_CITY">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/travel.owl#City" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_COUNTRY">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/portal.owl#Country" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_DURATION">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/support.owl#Duration" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_HOTEL">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/travel.owl#Hotel" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="DURATIONCOUNTRYCITY_HOTEL_GROUNDING">
+<service:supportedBy rdf:resource="#DURATIONCOUNTRYCITY_HOTEL_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

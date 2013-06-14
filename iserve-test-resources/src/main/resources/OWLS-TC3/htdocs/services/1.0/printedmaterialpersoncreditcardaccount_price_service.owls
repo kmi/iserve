@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/printedmaterialpersoncreditcardaccount_price_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="CREDITCARDACCOUNTPRINTEDMATERIALPERSON_PRICE_SERVICE">
+<service:presents rdf:resource="#CREDITCARDACCOUNTPRINTEDMATERIALPERSON_PRICE_PROFILE"/>
+<service:describedBy rdf:resource="#CREDITCARDACCOUNTPRINTEDMATERIALPERSON_PRICE_PROCESS_MODEL"/>
+<service:supports rdf:resource="#CREDITCARDACCOUNTPRINTEDMATERIALPERSON_PRICE_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="CREDITCARDACCOUNTPRINTEDMATERIALPERSON_PRICE_PROFILE">
+<service:isPresentedBy rdf:resource="#CREDITCARDACCOUNTPRINTEDMATERIALPERSON_PRICE_SERVICE"/>
+<profile:serviceName xml:lang="en">
+AuthorisedPersonPrintedMaterialPriceService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service varify account of an authorised person and
+returns recommended price of a printed materail.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_PERSON"/>
+<profile:hasInput  rdf:resource="#_PRINTEDMATERIAL"/>
+<profile:hasInput  rdf:resource="#_CREDITCARDACCOUNT"/>
+<profile:hasOutput rdf:resource="#_PRICE"/>
+
+<profile:has_process rdf:resource="CREDITCARDACCOUNTPRINTEDMATERIALPERSON_PRICE_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="CREDITCARDACCOUNTPRINTEDMATERIALPERSON_PRICE_PROCESS_MODEL">
+<service:describes rdf:resource="#CREDITCARDACCOUNTPRINTEDMATERIALPERSON_PRICE_SERVICE"/>
+<process:hasProcess rdf:resource="#CREDITCARDACCOUNTPRINTEDMATERIALPERSON_PRICE_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="CREDITCARDACCOUNTPRINTEDMATERIALPERSON_PRICE_PROCESS">
+<process:hasInput  rdf:resource="#_PERSON"/>
+<process:hasInput  rdf:resource="#_PRINTEDMATERIAL"/>
+<process:hasInput  rdf:resource="#_CREDITCARDACCOUNT"/>
+<process:hasOutput rdf:resource="#_PRICE"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_PERSON">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/books.owl#Person" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_PRINTEDMATERIAL">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/books.owl#PrintedMaterial" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_CREDITCARDACCOUNT">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl#CreditCardAccount" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_PRICE">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/concept.owl#Price" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="CREDITCARDACCOUNTPRINTEDMATERIALPERSON_PRICE_GROUNDING">
+<service:supportedBy rdf:resource="#CREDITCARDACCOUNTPRINTEDMATERIALPERSON_PRICE_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

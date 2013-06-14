@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/price_drinks_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="PRICE_DRINKS_SERVICE">
+<service:presents rdf:resource="#PRICE_DRINKS_PROFILE"/>
+<service:describedBy rdf:resource="#PRICE_DRINKS_PROCESS_MODEL"/>
+<service:supports rdf:resource="#PRICE_DRINKS_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="PRICE_DRINKS_PROFILE">
+<service:isPresentedBy rdf:resource="#PRICE_DRINKS_SERVICE"/>
+<profile:serviceName xml:lang="en">
+DP service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns drinks, whiskey or coffee, for a given price.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_PRICE"/>
+<profile:hasOutput rdf:resource="#_DRINKS"/>
+
+<profile:has_process rdf:resource="PRICE_DRINKS_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="PRICE_DRINKS_PROCESS_MODEL">
+<service:describes rdf:resource="#PRICE_DRINKS_SERVICE"/>
+<process:hasProcess rdf:resource="#PRICE_DRINKS_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="PRICE_DRINKS_PROCESS">
+<process:hasInput  rdf:resource="#_PRICE"/>
+<process:hasOutput rdf:resource="#_DRINKS"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_PRICE">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/concept.owl#Price" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_DRINKS">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/my_ontology.owl#Drinks" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="PRICE_DRINKS_GROUNDING">
+<service:supportedBy rdf:resource="#PRICE_DRINKS_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

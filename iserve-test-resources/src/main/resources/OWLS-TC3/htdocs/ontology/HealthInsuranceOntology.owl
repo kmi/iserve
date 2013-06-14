@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns="http://127.0.0.1/ontology/HealthInsuranceOntology.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://127.0.0.1/ontology/HealthInsuranceOntology.owl">
+  <owl:Ontology rdf:about=""/>
+  <owl:Class rdf:ID="PhysicianID">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Number"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Symptom"/>
+  <owl:Class rdf:ID="CostAndHealingPlan" >
+  	<rdfs:comment> CostAndHealingPlan </rdfs:comment>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="DateTime"/>
+  <owl:Class rdf:ID="GpsPosition">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Position"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="PublicOrganisation">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Organisation"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Drug"/>
+  <owl:Class rdf:ID="Person"/>
+  <owl:Class rdf:ID="MedicalOrganisation">
+    <rdfs:subClassOf rdf:resource="#PublicOrganisation"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Disease"/>
+  <owl:Class rdf:ID="EmergencyStation">
+    <owl:disjointWith>
+      <owl:Class rdf:ID="Hospital"/>
+    </owl:disjointWith>
+    <rdfs:subClassOf rdf:resource="#MedicalOrganisation"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Physician">
+    <rdfs:subClassOf rdf:resource="#Person"/>
+  </owl:Class>
+  <owl:Class rdf:ID="PersonName">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Name"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Costs"/>
+  <owl:Class rdf:about="#Hospital">
+    <rdfs:subClassOf rdf:resource="#MedicalOrganisation"/>
+    <owl:disjointWith rdf:resource="#EmergencyStation"/>
+  </owl:Class>
+  <owl:Class rdf:ID="EmergencyPhysician">
+    <rdfs:subClassOf rdf:resource="#Physician"/>
+  </owl:Class>
+  <owl:Class rdf:ID="AccidentInformation"/>
+  <owl:Class rdf:ID="HospitalPhysician">
+    <rdfs:subClassOf rdf:resource="#Physician"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Ward">
+    <rdfs:subClassOf rdf:resource="#Hospital"/>
+  </owl:Class>
+  <owl:Class rdf:ID="OperatingRoom">
+    <rdfs:subClassOf rdf:resource="#Ward"/>
+  </owl:Class>
+  <owl:Class rdf:ID="TelephoneNumber">
+    <rdfs:subClassOf rdf:resource="#Number"/>
+    <owl:disjointWith>
+      <owl:Class rdf:ID="HealthInsuranceNumber"/>
+    </owl:disjointWith>
+  </owl:Class>
+  <owl:Class rdf:ID="Patient">
+    <rdfs:subClassOf rdf:resource="#Person"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Diagnosis"/>
+  <owl:Class rdf:about="#HealthInsuranceNumber">
+    <rdfs:subClassOf rdf:resource="#Number"/>
+    <owl:disjointWith rdf:resource="#TelephoneNumber"/>
+  </owl:Class>
+  <owl:Class rdf:ID="AcceptanceAnswer">
+  	<rdfs:comment> AcceptanceAnswer </rdfs:comment>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="Treatment"/>
+  <owl:Class rdf:ID="Room">
+    <rdfs:subClassOf rdf:resource="#Ward"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="Drug_treatDisease">
+    <rdfs:domain rdf:resource="#Drug"/>
+    <rdfs:range rdf:resource="#Disease"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="ListOfHospitals_consistsOf">
+    <rdfs:range rdf:resource="#Hospital"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_medicatedByTreatment">
+    <rdfs:domain rdf:resource="#Disease"/>
+    <rdfs:range rdf:resource="#Treatment"/>
+  </owl:ObjectProperty>
+  <owl:FunctionalProperty rdf:ID="Person_hasName">
+    <rdfs:range rdf:resource="#PersonName"/>
+    <rdfs:domain rdf:resource="#Person"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="Patient_hasDisease">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#Patient"/>
+    <rdfs:range rdf:resource="#Disease"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="Organisation_isAt">
+    <rdfs:domain rdf:resource="#Organisation"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="Organisation_hasTelephoneNumber">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#TelephoneNumber"/>
+    <rdfs:domain rdf:resource="#Organisation"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="Disease_hasSymptom">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#Disease"/>
+    <rdfs:range rdf:resource="#Symptom"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="Drug_hasCosts">
+    <rdfs:domain rdf:resource="#Drug"/>
+    <rdfs:range rdf:resource="#Costs"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:ID="Physician_hasID">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#PhysicianID"/>
+    <rdfs:domain rdf:resource="#Physician"/>
+  </owl:FunctionalProperty>
+</rdf:RDF>
+
+<!-- Created with Protege (with OWL Plugin 3.3.1, Build 430)  http://protege.stanford.edu -->

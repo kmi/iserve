@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://127.0.0.1/wsdl/Geopolitical-entityInternalchange"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  name="Geopolitical-entityInternalchange"
+                  targetNamespace="http://127.0.0.1/wsdl/Geopolitical-entityInternalchange">
+    <wsdl:types>
+        <xsd:schema version="OWLS2WSDL Thu May 21 20:52:24 CEST 2009"
+                    targetNamespace="http://127.0.0.1/wsdl/Geopolitical-entityInternalchange"
+                    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:annotation>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/portal.owl#Geopolitical-Entity"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/SUMO.owl#InternalChange"/>
+            </xsd:annotation>
+            <xsd:element name="Geopolitical-Entity" type="tns:Geopolitical-EntityType"/>
+            <xsd:element name="InternalChange" type="tns:InternalChangeType"/>
+            <xsd:simpleType name="InternalChangeType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="Geopolitical-EntityType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="get_INTERNALCHANGEResponse">
+        <wsdl:part name="_INTERNALCHANGE" type="tns:InternalChangeType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="get_INTERNALCHANGERequest">
+        <wsdl:part name="_GEOPOLITICAL-ENTITY" type="tns:Geopolitical-EntityType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="Geopolitical-entityInternalchangeSoap">
+        <wsdl:operation name="get_INTERNALCHANGE">
+            <wsdl:input message="tns:get_INTERNALCHANGERequest">
+            </wsdl:input>
+            <wsdl:output message="tns:get_INTERNALCHANGEResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="Geopolitical-entityInternalchangeSoapBinding" type="tns:Geopolitical-entityInternalchangeSoap">
+        <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="get_INTERNALCHANGE">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/Geopolitical-entityInternalchange"/>
+            </wsdl:input>
+            <wsdl:output>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/Geopolitical-entityInternalchange"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="Geopolitical-entityInternalchangeService">
+        <wsdl:port name="Geopolitical-entityInternalchangeSoap"
+                   binding="tns:Geopolitical-entityInternalchangeSoapBinding">
+            <wsdlsoap:address location="http://127.0.0.1/wsdl/Geopolitical-entityInternalchange"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

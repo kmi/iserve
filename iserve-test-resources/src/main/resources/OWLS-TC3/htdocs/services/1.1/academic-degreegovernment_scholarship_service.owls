@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/academic-degreegovernment_scholarship_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="ACADEMIC-DEGREEGOVERNMENT_SCHOLARSHIP_SERVICE">
+<service:presents rdf:resource="#ACADEMIC-DEGREEGOVERNMENT_SCHOLARSHIP_PROFILE"/>
+<service:describedBy rdf:resource="#ACADEMIC-DEGREEGOVERNMENT_SCHOLARSHIP_PROCESS"/>
+<service:supports rdf:resource="#ACADEMIC-DEGREEGOVERNMENT_SCHOLARSHIP_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="ACADEMIC-DEGREEGOVERNMENT_SCHOLARSHIP_PROFILE">
+<service:isPresentedBy rdf:resource="#ACADEMIC-DEGREEGOVERNMENT_SCHOLARSHIP_SERVICE"/>
+<profile:serviceName xml:lang="en">
+GovernmentAcademicDegreeScholarshipService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+It is an attractive service to know about the scholarship offered for the academic degree by the given government.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_GOVERNMENT"/>
+<profile:hasInput  rdf:resource="#_ACADEMIC-DEGREE"/>
+<profile:hasOutput rdf:resource="#_SCHOLARSHIP"/>
+
+<profile:has_process rdf:resource="ACADEMIC-DEGREEGOVERNMENT_SCHOLARSHIP_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="ACADEMIC-DEGREEGOVERNMENT_SCHOLARSHIP_PROCESS_MODEL">
+<service:describes rdf:resource="#ACADEMIC-DEGREEGOVERNMENT_SCHOLARSHIP_SERVICE"/>
+<process:hasProcess rdf:resource="#ACADEMIC-DEGREEGOVERNMENT_SCHOLARSHIP_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="ACADEMIC-DEGREEGOVERNMENT_SCHOLARSHIP_PROCESS">
+<service:describes rdf:resource="#ACADEMIC-DEGREEGOVERNMENT_SCHOLARSHIP_SERVICE"/>
+<process:hasInput  rdf:resource="#_GOVERNMENT"/>
+<process:hasInput  rdf:resource="#_ACADEMIC-DEGREE"/>
+<process:hasOutput rdf:resource="#_SCHOLARSHIP"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_GOVERNMENT">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#Government</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_ACADEMIC-DEGREE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/portal.owl#Academic-Degree</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_SCHOLARSHIP">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#Scholarship</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="ACADEMIC-DEGREEGOVERNMENT_SCHOLARSHIP_GROUNDING">
+<service:supportedBy rdf:resource="#ACADEMIC-DEGREEGOVERNMENT_SCHOLARSHIP_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="ACADEMIC-DEGREEGOVERNMENT_SCHOLARSHIP_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#ACADEMIC-DEGREEGOVERNMENT_SCHOLARSHIP_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/academic-degreegovernment_scholarship_service.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#ACADEMIC-DEGREEGOVERNMENT_SCHOLARSHIP_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Academic-degreegovernmentScholarship#get_SCHOLARSHIP</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Academic-degreegovernmentScholarship#Academic-degreegovernmentScholarshipSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Academic-degreegovernmentScholarship#get_SCHOLARSHIPRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Academic-degreegovernmentScholarship#get_SCHOLARSHIPResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_GOVERNMENT"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Academic-degreegovernmentScholarship#_GOVERNMENT</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_ACADEMIC-DEGREE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Academic-degreegovernmentScholarship#_ACADEMIC-DEGREE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_SCHOLARSHIP"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Academic-degreegovernmentScholarship#_SCHOLARSHIP</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

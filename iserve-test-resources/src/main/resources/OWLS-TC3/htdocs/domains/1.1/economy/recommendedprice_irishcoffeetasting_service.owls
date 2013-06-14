@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/recommendedprice_irishcoffeetasting_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="RECOMMENDEDPRICE_IRISHCOFFEETASTING_SERVICE">
+<service:presents rdf:resource="#RECOMMENDEDPRICE_IRISHCOFFEETASTING_PROFILE"/>
+<service:describedBy rdf:resource="#RECOMMENDEDPRICE_IRISHCOFFEETASTING_PROCESS"/>
+<service:supports rdf:resource="#RECOMMENDEDPRICE_IRISHCOFFEETASTING_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="RECOMMENDEDPRICE_IRISHCOFFEETASTING_PROFILE">
+<service:isPresentedBy rdf:resource="#RECOMMENDEDPRICE_IRISHCOFFEETASTING_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Ana IrishCoffeeforPrice Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+Ana service returns not only an irish coffee for the given recommended price, but also taste of the coffee.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_RECOMMENDEDPRICE"/>
+<profile:hasOutput rdf:resource="#_IRISHCOFFEE"/>
+<profile:hasOutput rdf:resource="#_TASTING"/>
+
+<profile:has_process rdf:resource="RECOMMENDEDPRICE_IRISHCOFFEETASTING_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="RECOMMENDEDPRICE_IRISHCOFFEETASTING_PROCESS_MODEL">
+<service:describes rdf:resource="#RECOMMENDEDPRICE_IRISHCOFFEETASTING_SERVICE"/>
+<process:hasProcess rdf:resource="#RECOMMENDEDPRICE_IRISHCOFFEETASTING_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="RECOMMENDEDPRICE_IRISHCOFFEETASTING_PROCESS">
+<service:describes rdf:resource="#RECOMMENDEDPRICE_IRISHCOFFEETASTING_SERVICE"/>
+<process:hasInput  rdf:resource="#_RECOMMENDEDPRICE"/>
+<process:hasOutput rdf:resource="#_IRISHCOFFEE"/>
+<process:hasOutput rdf:resource="#_TASTING"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_RECOMMENDEDPRICE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/concept.owl#RecommendedPrice</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_IRISHCOFFEE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/my_ontology.owl#IrishCoffee</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_TASTING">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#Tasting</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="RECOMMENDEDPRICE_IRISHCOFFEETASTING_GROUNDING">
+<service:supportedBy rdf:resource="#RECOMMENDEDPRICE_IRISHCOFFEETASTING_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="RECOMMENDEDPRICE_IRISHCOFFEETASTING_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+</grounding:WsdlGrounding>
+
+<grounding:WsdlAtomicProcessGrounding rdf:about="#RECOMMENDEDPRICE_IRISHCOFFEETASTING_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/RecommendedpriceIrishcoffeetasting.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#RECOMMENDEDPRICE_IRISHCOFFEETASTING_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/RecommendedpriceIrishcoffeetasting#get_IRISHCOFFEE_TASTING</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/RecommendedpriceIrishcoffeetasting#RecommendedpriceIrishcoffeetastingSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/RecommendedpriceIrishcoffeetasting#get_IRISHCOFFEE_TASTINGRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/RecommendedpriceIrishcoffeetasting#get_IRISHCOFFEE_TASTINGResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_RECOMMENDEDPRICE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/RecommendedpriceIrishcoffeetasting#_RECOMMENDEDPRICE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_IRISHCOFFEE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/RecommendedpriceIrishcoffeetasting#_IRISHCOFFEE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_TASTING"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/RecommendedpriceIrishcoffeetasting#_TASTING</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

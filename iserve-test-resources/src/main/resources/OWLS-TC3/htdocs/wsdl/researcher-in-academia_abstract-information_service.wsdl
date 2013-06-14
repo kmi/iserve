@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns="http://127.0.0.1/wsdl/Researcher-in-academiaAbstract-information"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://127.0.0.1/wsdl/Researcher-in-academiaAbstract-information"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  name="Researcher-in-academiaAbstract-information"
+                  targetNamespace="http://127.0.0.1/wsdl/Researcher-in-academiaAbstract-information">
+    <wsdl:types>
+        <xsd:schema version="OWLS2WSDL Fri Jun 05 16:40:33 CEST 2009"
+                    targetNamespace="http://127.0.0.1/wsdl/Researcher-in-academiaAbstract-information"
+                    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:annotation>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/portal.owl#Researcher-In-Academia"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/portal.owl#Abstract-Information"/>
+            </xsd:annotation>
+            <xsd:element name="Abstract-Information" type="Abstract-InformationType"/>
+            <xsd:element name="Researcher-In-Academia" type="Researcher-In-AcademiaType"/>
+            <xsd:simpleType name="Researcher-In-AcademiaType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="Abstract-InformationType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="get_ABSTRACT-INFORMATIONRequest">
+        <wsdl:part name="_RESEARCHER-IN-ACADEMIA" type="tns:Researcher-In-AcademiaType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="get_ABSTRACT-INFORMATIONResponse">
+        <wsdl:part name="_ABSTRACT-INFORMATION" type="tns:Abstract-InformationType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="Researcher-in-academiaAbstract-informationSoap">
+        <wsdl:operation name="get_ABSTRACT-INFORMATION">
+            <wsdl:input message="tns:get_ABSTRACT-INFORMATIONRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:get_ABSTRACT-INFORMATIONResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="Researcher-in-academiaAbstract-informationSoapBinding"
+                  type="Researcher-in-academiaAbstract-informationSoap">
+        <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="get_ABSTRACT-INFORMATION">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/Researcher-in-academiaAbstract-information"/>
+            </wsdl:input>
+            <wsdl:output>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/Researcher-in-academiaAbstract-information"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="Researcher-in-academiaAbstract-informationService">
+        <wsdl:port name="Researcher-in-academiaAbstract-informationSoap"
+                   binding="Researcher-in-academiaAbstract-informationSoapBinding">
+            <wsdlsoap:address location="http://127.0.0.1/wsdl/Researcher-in-academiaAbstract-information"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

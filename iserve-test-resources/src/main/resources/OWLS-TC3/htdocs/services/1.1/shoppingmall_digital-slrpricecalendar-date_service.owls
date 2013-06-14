@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/shoppingmall_digital-slrpricecalendar-date_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/extendedCamera.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/support.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="SHOPPINGMALL_DIGITAL-SLRPRICECALENDAR-DATE_SERVICE">
+<service:presents rdf:resource="#SHOPPINGMALL_DIGITAL-SLRPRICECALENDAR-DATE_PROFILE"/>
+<service:describedBy rdf:resource="#SHOPPINGMALL_DIGITAL-SLRPRICECALENDAR-DATE_PROCESS"/>
+<service:supports rdf:resource="#SHOPPINGMALL_DIGITAL-SLRPRICECALENDAR-DATE_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="SHOPPINGMALL_DIGITAL-SLRPRICECALENDAR-DATE_PROFILE">
+<service:isPresentedBy rdf:resource="#SHOPPINGMALL_DIGITAL-SLRPRICECALENDAR-DATE_SERVICE"/>
+<profile:serviceName xml:lang="en">
+DigitalSLRPriceService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service informs you about available digital SLR, its price and availability time in the certain shoppingmall.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_SHOPPINGMALL"/>
+<profile:hasOutput rdf:resource="#_DIGITAL-SLR"/>
+<profile:hasOutput rdf:resource="#_PRICE"/>
+<profile:hasOutput rdf:resource="#_CALENDAR-DATE"/>
+
+<profile:has_process rdf:resource="SHOPPINGMALL_DIGITAL-SLRPRICECALENDAR-DATE_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="SHOPPINGMALL_DIGITAL-SLRPRICECALENDAR-DATE_PROCESS_MODEL">
+<service:describes rdf:resource="#SHOPPINGMALL_DIGITAL-SLRPRICECALENDAR-DATE_SERVICE"/>
+<process:hasProcess rdf:resource="#SHOPPINGMALL_DIGITAL-SLRPRICECALENDAR-DATE_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="SHOPPINGMALL_DIGITAL-SLRPRICECALENDAR-DATE_PROCESS">
+<service:describes rdf:resource="#SHOPPINGMALL_DIGITAL-SLRPRICECALENDAR-DATE_SERVICE"/>
+<process:hasInput  rdf:resource="#_SHOPPINGMALL"/>
+<process:hasOutput rdf:resource="#_DIGITAL-SLR"/>
+<process:hasOutput rdf:resource="#_PRICE"/>
+<process:hasOutput rdf:resource="#_CALENDAR-DATE"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_SHOPPINGMALL">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#ShoppingMall</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_DIGITAL-SLR">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/extendedCamera.owl#Digital-SLR</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_PRICE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/concept.owl#Price</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_CALENDAR-DATE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/support.owl#Calendar-Date</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="SHOPPINGMALL_DIGITAL-SLRPRICECALENDAR-DATE_GROUNDING">
+<service:supportedBy rdf:resource="#SHOPPINGMALL_DIGITAL-SLRPRICECALENDAR-DATE_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="SHOPPINGMALL_DIGITAL-SLRPRICECALENDAR-DATE_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+</grounding:WsdlGrounding>
+
+<grounding:WsdlAtomicProcessGrounding rdf:about="#SHOPPINGMALL_DIGITAL-SLRPRICECALENDAR-DATE_AtomicProcessGrounding">
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/ShoppingmallDigital-slrpricecalendar-date#get_DIGITAL-SLR_PRICE_CALENDAR-DATERequest</grounding:wsdlInputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_SHOPPINGMALL"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ShoppingmallDigital-slrpricecalendar-date#_SHOPPINGMALL</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:owlsProcess rdf:resource="#SHOPPINGMALL_DIGITAL-SLRPRICECALENDAR-DATE_PROCESS"/>
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/ShoppingmallDigital-slrpricecalendar-date.wsdl</grounding:wsdlDocument>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_PRICE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ShoppingmallDigital-slrpricecalendar-date#_PRICE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_CALENDAR-DATE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ShoppingmallDigital-slrpricecalendar-date#_CALENDAR-DATE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ShoppingmallDigital-slrpricecalendar-date#get_DIGITAL-SLR_PRICE_CALENDAR-DATE</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ShoppingmallDigital-slrpricecalendar-date#ShoppingmallDigital-slrpricecalendar-dateSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_DIGITAL-SLR"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ShoppingmallDigital-slrpricecalendar-date#_DIGITAL-SLR</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/ShoppingmallDigital-slrpricecalendar-date#get_DIGITAL-SLR_PRICE_CALENDAR-DATEResponse</grounding:wsdlOutputMessage>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

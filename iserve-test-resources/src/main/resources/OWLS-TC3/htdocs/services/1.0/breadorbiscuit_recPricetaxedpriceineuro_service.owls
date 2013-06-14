@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/breadorbiscuit_recPricetaxedpriceineuro_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_SERVICE">
+<service:presents rdf:resource="#BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_PROFILE"/>
+<service:describedBy rdf:resource="#BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_PROCESS_MODEL"/>
+<service:supports rdf:resource="#BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_PROFILE">
+<service:isPresentedBy rdf:resource="#BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_SERVICE"/>
+<profile:serviceName xml:lang="en">
+BreadBiscuitPriceService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns recommended price and tax price (in euros) of certain bread or biscuit..
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_BREADORBISCUIT"/>
+<profile:hasOutput rdf:resource="#_RECOMMENDEDPRICEINEURO"/>
+<profile:hasOutput rdf:resource="#_TAXEDPRICEINEURO"/>
+
+<profile:has_process rdf:resource="BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_PROCESS_MODEL">
+<service:describes rdf:resource="#BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_SERVICE"/>
+<process:hasProcess rdf:resource="#BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_PROCESS">
+<process:hasInput  rdf:resource="#_BREADORBISCUIT"/>
+<process:hasOutput rdf:resource="#_RECOMMENDEDPRICEINEURO"/>
+<process:hasOutput rdf:resource="#_TAXEDPRICEINEURO"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_BREADORBISCUIT">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl#BreadOrBiscuit" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_RECOMMENDEDPRICEINEURO">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/concept.owl#RecommendedPriceInEuro" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_TAXEDPRICEINEURO">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/concept.owl#TaxedPriceInEuro" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_GROUNDING">
+<service:supportedBy rdf:resource="#BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/surfingorganizationperson_destination_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="SURFINGORGANIZATIONPERSON_DESTINATION_SERVICE">
+<service:presents rdf:resource="#SURFINGORGANIZATIONPERSON_DESTINATION_PROFILE"/>
+<service:describedBy rdf:resource="#SURFINGORGANIZATIONPERSON_DESTINATION_PROCESS"/>
+<service:supports rdf:resource="#SURFINGORGANIZATIONPERSON_DESTINATION_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="SURFINGORGANIZATIONPERSON_DESTINATION_PROFILE">
+<service:isPresentedBy rdf:resource="#SURFINGORGANIZATIONPERSON_DESTINATION_SERVICE"/>
+<profile:serviceName xml:lang="en">
+SurfingOrganizationDestinationService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns city of a reputable generic agent who is responsible
+for sports especially surfing. The registered person is an optional input.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_PERSON"/>
+<profile:hasInput  rdf:resource="#_ORGANIZATION"/>
+<profile:hasInput  rdf:resource="#_SURFING"/>
+<profile:hasOutput rdf:resource="#_DESTINATION"/>
+
+<profile:has_process rdf:resource="SURFINGORGANIZATIONPERSON_DESTINATION_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="SURFINGORGANIZATIONPERSON_DESTINATION_PROCESS_MODEL">
+<service:describes rdf:resource="#SURFINGORGANIZATIONPERSON_DESTINATION_SERVICE"/>
+<process:hasProcess rdf:resource="#SURFINGORGANIZATIONPERSON_DESTINATION_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="SURFINGORGANIZATIONPERSON_DESTINATION_PROCESS">
+<service:describes rdf:resource="#SURFINGORGANIZATIONPERSON_DESTINATION_SERVICE"/>
+<process:hasInput  rdf:resource="#_PERSON"/>
+<process:hasInput  rdf:resource="#_ORGANIZATION"/>
+<process:hasInput  rdf:resource="#_SURFING"/>
+<process:hasOutput rdf:resource="#_DESTINATION"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_PERSON">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/portal.owl#Person</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_ORGANIZATION">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/portal.owl#Organization</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_SURFING">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/travel.owl#Surfing</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_DESTINATION">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/travel.owl#Destination</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="SURFINGORGANIZATIONPERSON_DESTINATION_GROUNDING">
+<service:supportedBy rdf:resource="#SURFINGORGANIZATIONPERSON_DESTINATION_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="SURFINGORGANIZATIONPERSON_DESTINATION_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#SURFINGORGANIZATIONPERSON_DESTINATION_AtomicProcessGrounding">
+    <grounding:owlsProcess rdf:resource="#SURFINGORGANIZATIONPERSON_DESTINATION_PROCESS"/>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/SurfingorganizationpersonDestination#get_DESTINATIONResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_DESTINATION"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/SurfingorganizationpersonDestination#_DESTINATION</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/SurfingorganizationpersonDestination#get_DESTINATION</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/SurfingorganizationpersonDestination#SurfingorganizationpersonDestinationSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/SurfingorganizationpersonDestination#get_DESTINATIONRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_ORGANIZATION"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/SurfingorganizationpersonDestination#_ORGANIZATION</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_SURFING"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/SurfingorganizationpersonDestination#_SURFING</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/surfingorganizationperson_destination_service.wsdl</grounding:wsdlDocument>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_PERSON"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/SurfingorganizationpersonDestination#_PERSON</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

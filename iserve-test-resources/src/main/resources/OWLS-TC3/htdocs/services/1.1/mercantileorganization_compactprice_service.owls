@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/mercantileorganization_compactprice_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/extendedCamera.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="MERCANTILEORGANIZATION_COMPACTPRICE_SERVICE">
+<service:presents rdf:resource="#MERCANTILEORGANIZATION_COMPACTPRICE_PROFILE"/>
+<service:describedBy rdf:resource="#MERCANTILEORGANIZATION_COMPACTPRICE_PROCESS"/>
+<service:supports rdf:resource="#MERCANTILEORGANIZATION_COMPACTPRICE_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="MERCANTILEORGANIZATION_COMPACTPRICE_PROFILE">
+<service:isPresentedBy rdf:resource="#MERCANTILEORGANIZATION_COMPACTPRICE_SERVICE"/>
+<profile:serviceName xml:lang="en">
+MercantileOrganization Compact Price service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service informs you the price for a compact camera available in a given mercantile organization.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_MERCANTILEORGANIZATION"/>
+<profile:hasOutput rdf:resource="#_COMPACT"/>
+<profile:hasOutput rdf:resource="#_PRICE"/>
+
+<profile:has_process rdf:resource="MERCANTILEORGANIZATION_COMPACTPRICE_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="MERCANTILEORGANIZATION_COMPACTPRICE_PROCESS_MODEL">
+<service:describes rdf:resource="#MERCANTILEORGANIZATION_COMPACTPRICE_SERVICE"/>
+<process:hasProcess rdf:resource="#MERCANTILEORGANIZATION_COMPACTPRICE_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="MERCANTILEORGANIZATION_COMPACTPRICE_PROCESS">
+<service:describes rdf:resource="#MERCANTILEORGANIZATION_COMPACTPRICE_SERVICE"/>
+<process:hasInput  rdf:resource="#_MERCANTILEORGANIZATION"/>
+<process:hasOutput rdf:resource="#_COMPACT"/>
+<process:hasOutput rdf:resource="#_PRICE"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_MERCANTILEORGANIZATION">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#MercantileOrganization</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_COMPACT">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/extendedCamera.owl#Compact</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_PRICE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/concept.owl#Price</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="MERCANTILEORGANIZATION_COMPACTPRICE_GROUNDING">
+<service:supportedBy rdf:resource="#MERCANTILEORGANIZATION_COMPACTPRICE_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="MERCANTILEORGANIZATION_COMPACTPRICE_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#MERCANTILEORGANIZATION_COMPACTPRICE_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/mercantileorganization_compactprice_service.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#MERCANTILEORGANIZATION_COMPACTPRICE_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MercantileorganizationCompactprice#get_COMPACT_PRICE</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MercantileorganizationCompactprice#MercantileorganizationCompactpriceSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/MercantileorganizationCompactprice#get_COMPACT_PRICERequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/MercantileorganizationCompactprice#get_COMPACT_PRICEResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_MERCANTILEORGANIZATION"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MercantileorganizationCompactprice#_MERCANTILEORGANIZATION</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_COMPACT"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MercantileorganizationCompactprice#_COMPACT</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_PRICE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MercantileorganizationCompactprice#_PRICE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

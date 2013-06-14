@@ -1,0 +1,271 @@
+<?xml version="1.0"?>
+<!DOCTYPE owl [
+<!ENTITY owl "http://www.w3.org/2002/07/owl#">
+<!ENTITY languages "http://www.daml.org/2003/09/factbook/languages#">
+<!ENTITY factbook-ont "http://www.daml.org/2003/09/factbook/factbook-ont#">
+<!ENTITY concept "http://127.0.0.1/ontology/concept.owl#">
+<!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
+<!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<!ENTITY currency "http://www.daml.ecs.soton.ac.uk/ont/currency.owl#">
+<!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+<!ENTITY dc "http://purl.org/dc/elements/1.1/">
+]>
+<rdf:RDF
+xmlns:owl="http://www.w3.org/2002/07/owl#"
+xmlns:languages="http://www.daml.org/2003/09/factbook/languages#"
+xmlns:factbook-ont="http://www.daml.org/2003/09/factbook/factbook-ont#"
+xmlns:concept="http://127.0.0.1/ontology/concept.owl#"
+xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:currency="http://www.daml.ecs.soton.ac.uk/ont/currency.owl#"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xml:base="http://127.0.0.1/ontology/concept.owl"
+>
+<owl:Ontology rdf:about="http://127.0.0.1/ontology/concept.owl">
+</owl:Ontology>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#EuropeTaxedPrice">
+<rdfs:subClassOf>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#TaxedPrice">
+</owl:Class>
+</rdfs:subClassOf>
+</owl:Class>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#GermanTaxedPrice">
+<rdfs:subClassOf>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#TaxedPrice">
+</owl:Class>
+</rdfs:subClassOf>
+</owl:Class>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#MaxPrice">
+<rdfs:subClassOf>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#Price">
+</owl:Class>
+</rdfs:subClassOf>
+</owl:Class>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#Price">
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="http://127.0.0.1/ontology/concept.owl#amount" />
+<owl:someValuesFrom>
+<rdfs:Datatype rdf:about="http://www.w3.org/2001/XMLSchema#float"/>
+</owl:someValuesFrom>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="http://127.0.0.1/ontology/concept.owl#currency" />
+<owl:someValuesFrom>
+<owl:Class rdf:about="http://www.daml.ecs.soton.ac.uk/ont/currency.owl#Currency">
+</owl:Class>
+</owl:someValuesFrom>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#UntangibleObjects">
+</owl:Class>
+</rdfs:subClassOf>
+<rdfs:comment>This is a simple class to represent the price of objects.</rdfs:comment>
+</owl:Class>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#RecommendedPrice">
+<rdfs:subClassOf>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#Price">
+</owl:Class>
+</rdfs:subClassOf>
+</owl:Class>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#RecommendedPriceInDollar">
+<rdfs:subClassOf>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#RecommendedPrice">
+</owl:Class>
+</rdfs:subClassOf>
+</owl:Class>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#RecommendedPriceInEuro">
+<rdfs:subClassOf>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#RecommendedPrice">
+</owl:Class>
+</rdfs:subClassOf>
+</owl:Class>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#RecommendedTaxedPrice">
+<rdfs:subClassOf>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#TaxedPrice">
+</owl:Class>
+</rdfs:subClassOf>
+</owl:Class>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#SupportedLanguage">
+<owl:oneOf rdf:parseType="Collection">
+<owl:Thing rdf:about="http://www.daml.org/2003/09/factbook/languages#Italian">
+</owl:Thing>
+<owl:Thing rdf:about="http://www.daml.org/2003/09/factbook/languages#English">
+</owl:Thing>
+<owl:Thing rdf:about="http://www.daml.org/2003/09/factbook/languages#Russian">
+</owl:Thing>
+<owl:Thing rdf:about="http://www.daml.org/2003/09/factbook/languages#German">
+</owl:Thing>
+<owl:Thing rdf:about="http://www.daml.org/2003/09/factbook/languages#French">
+</owl:Thing>
+<owl:Thing rdf:about="http://www.daml.org/2003/09/factbook/languages#Korean">
+</owl:Thing>
+<owl:Thing rdf:about="http://www.daml.org/2003/09/factbook/languages#Portuguese">
+</owl:Thing>
+<owl:Thing rdf:about="http://www.daml.org/2003/09/factbook/languages#Chinese">
+</owl:Thing>
+<owl:Thing rdf:about="http://www.daml.org/2003/09/factbook/languages#Spanish">
+</owl:Thing>
+</owl:oneOf>
+<rdfs:comment>Languages supported by the BabelFish translator is an enumerated set of the following languages</rdfs:comment>
+</owl:Class>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#TaxFreePrice">
+<rdfs:subClassOf>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#Price">
+</owl:Class>
+</rdfs:subClassOf>
+</owl:Class>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#TaxedPrice">
+<rdfs:subClassOf>
+<owl:Restriction>
+<owl:onProperty rdf:resource="http://127.0.0.1/ontology/concept.owl#Fine" />
+<owl:someValuesFrom>
+<owl:Class rdf:about="http://www.w3.org/2002/07/owl#Thing">
+</owl:Class>
+</owl:someValuesFrom>
+</owl:Restriction>
+</rdfs:subClassOf>
+<rdfs:subClassOf>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#Price">
+</owl:Class>
+</rdfs:subClassOf>
+</owl:Class>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#TaxedPriceInDollar">
+<rdfs:subClassOf>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#TaxedPrice">
+</owl:Class>
+</rdfs:subClassOf>
+</owl:Class>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#TaxedPriceInEuro">
+<rdfs:subClassOf>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#TaxedPrice">
+</owl:Class>
+</rdfs:subClassOf>
+</owl:Class>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#USTaxedPrice">
+<rdfs:subClassOf>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#TaxedPrice">
+</owl:Class>
+</rdfs:subClassOf>
+</owl:Class>
+<owl:Class rdf:about="http://127.0.0.1/ontology/concept.owl#UntangibleObjects">
+</owl:Class>
+<owl:Class rdf:about="http://www.daml.ecs.soton.ac.uk/ont/currency.owl#Currency">
+</owl:Class>
+<owl:Class rdf:about="http://www.daml.org/2003/09/factbook/factbook-ont#Language">
+</owl:Class>
+<owl:Class rdf:about="http://www.w3.org/2002/07/owl#Thing">
+</owl:Class>
+<owl:ObjectProperty rdf:about="http://127.0.0.1/ontology/concept.owl#Charges">
+</owl:ObjectProperty>
+<owl:ObjectProperty rdf:about="http://127.0.0.1/ontology/concept.owl#Fine">
+</owl:ObjectProperty>
+<owl:ObjectProperty rdf:about="http://127.0.0.1/ontology/concept.owl#currency">
+</owl:ObjectProperty>
+
+<owl:DatatypeProperty rdf:about="http://127.0.0.1/ontology/concept.owl#amount">
+</owl:DatatypeProperty>
+
+<rdf:Description rdf:about="http://www.daml.org/2003/09/factbook/languages#Chinese">
+<rdf:type>
+<owl:Class rdf:about="http://www.w3.org/2002/07/owl#Thing">
+</owl:Class>
+</rdf:type>
+<rdf:type>
+<owl:Class rdf:about="http://www.daml.org/2003/09/factbook/factbook-ont#Language">
+</owl:Class>
+</rdf:type>
+</rdf:Description>
+<rdf:Description rdf:about="http://www.daml.org/2003/09/factbook/languages#English">
+<rdf:type>
+<owl:Class rdf:about="http://www.w3.org/2002/07/owl#Thing">
+</owl:Class>
+</rdf:type>
+<rdf:type>
+<owl:Class rdf:about="http://www.daml.org/2003/09/factbook/factbook-ont#Language">
+</owl:Class>
+</rdf:type>
+</rdf:Description>
+<rdf:Description rdf:about="http://www.daml.org/2003/09/factbook/languages#French">
+<rdf:type>
+<owl:Class rdf:about="http://www.w3.org/2002/07/owl#Thing">
+</owl:Class>
+</rdf:type>
+<rdf:type>
+<owl:Class rdf:about="http://www.daml.org/2003/09/factbook/factbook-ont#Language">
+</owl:Class>
+</rdf:type>
+</rdf:Description>
+<rdf:Description rdf:about="http://www.daml.org/2003/09/factbook/languages#German">
+<rdf:type>
+<owl:Class rdf:about="http://www.w3.org/2002/07/owl#Thing">
+</owl:Class>
+</rdf:type>
+<rdf:type>
+<owl:Class rdf:about="http://www.daml.org/2003/09/factbook/factbook-ont#Language">
+</owl:Class>
+</rdf:type>
+</rdf:Description>
+<rdf:Description rdf:about="http://www.daml.org/2003/09/factbook/languages#Italian">
+<rdf:type>
+<owl:Class rdf:about="http://www.w3.org/2002/07/owl#Thing">
+</owl:Class>
+</rdf:type>
+<rdf:type>
+<owl:Class rdf:about="http://www.daml.org/2003/09/factbook/factbook-ont#Language">
+</owl:Class>
+</rdf:type>
+</rdf:Description>
+<rdf:Description rdf:about="http://www.daml.org/2003/09/factbook/languages#Korean">
+<rdf:type>
+<owl:Class rdf:about="http://www.w3.org/2002/07/owl#Thing">
+</owl:Class>
+</rdf:type>
+<rdf:type>
+<owl:Class rdf:about="http://www.daml.org/2003/09/factbook/factbook-ont#Language">
+</owl:Class>
+</rdf:type>
+</rdf:Description>
+<rdf:Description rdf:about="http://www.daml.org/2003/09/factbook/languages#Portuguese">
+<rdf:type>
+<owl:Class rdf:about="http://www.w3.org/2002/07/owl#Thing">
+</owl:Class>
+</rdf:type>
+<rdf:type>
+<owl:Class rdf:about="http://www.daml.org/2003/09/factbook/factbook-ont#Language">
+</owl:Class>
+</rdf:type>
+</rdf:Description>
+<rdf:Description rdf:about="http://www.daml.org/2003/09/factbook/languages#Russian">
+<rdf:type>
+<owl:Class rdf:about="http://www.w3.org/2002/07/owl#Thing">
+</owl:Class>
+</rdf:type>
+<rdf:type>
+<owl:Class rdf:about="http://www.daml.org/2003/09/factbook/factbook-ont#Language">
+</owl:Class>
+</rdf:type>
+</rdf:Description>
+<rdf:Description rdf:about="http://www.daml.org/2003/09/factbook/languages#Spanish">
+<rdf:type>
+<owl:Class rdf:about="http://www.w3.org/2002/07/owl#Thing">
+</owl:Class>
+</rdf:type>
+<rdf:type>
+<owl:Class rdf:about="http://www.daml.org/2003/09/factbook/factbook-ont#Language">
+</owl:Class>
+</rdf:type>
+</rdf:Description>
+
+<owl:ObjectProperty rdf:about="http://127.0.0.1/ontology/concept.owl#Charges">
+<rdfs:subPropertyOf>
+<owl:ObjectProperty rdf:about="http://127.0.0.1/ontology/concept.owl#Fine">
+</owl:ObjectProperty>
+</rdfs:subPropertyOf>
+</owl:ObjectProperty>
+
+</rdf:RDF>

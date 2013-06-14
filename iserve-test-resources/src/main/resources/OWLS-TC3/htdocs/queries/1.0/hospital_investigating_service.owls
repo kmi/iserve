@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?> 
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#" 
+          xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"  
+          xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+          xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#" 
+          xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#" 
+          xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#" 
+          xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#" 
+          xml:base        = "http://127.0.0.1/queries/1.0/hospital_investigating_service.owls"> 
+ 
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="HOSPITAL_INVESTIGATING_SERVICE"> 
+   <service:presents rdf:resource="#HOSPITAL_INVESTIGATING_PROFILE"/> 
+   <service:describedBy rdf:resource="#HOSPITAL_INVESTIGATING_PROCESS_MODEL"/> 
+   <service:supports rdf:resource="#HOSPITAL_INVESTIGATING_GROUNDING"/> 
+</service:Service>
+
+<profile:Profile rdf:ID="HOSPITAL_INVESTIGATING_PROFILE">
+   <service:isPresentedBy rdf:resource="#HOSPITAL_INVESTIGATING_SERVICE"/>
+   <profile:serviceName xml:lang="en">
+      HospitalInvestigatingService
+   </profile:serviceName>
+   <profile:textDescription xml:lang="en">
+      returns investigating of hospital
+   </profile:textDescription>
+   <profile:hasInput  rdf:resource="#_HOSPITAL"/>
+   <profile:hasOutput rdf:resource="#_INVESTIGATING"/>
+
+<profile:has_process rdf:resource="HOSPITAL_INVESTIGATING_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="HOSPITAL_INVESTIGATING_PROCESS_MODEL">
+   <service:describes rdf:resource="#HOSPITAL_INVESTIGATING_SERVICE"/>
+   <process:hasProcess rdf:resource="#HOSPITAL_INVESTIGATING_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="HOSPITAL_INVESTIGATING_PROCESS">
+   <process:hasInput  rdf:resource="#_HOSPITAL"/>
+   <process:hasOutput rdf:resource="#_INVESTIGATING"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_HOSPITAL">
+   <process:parameterType rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl#Hospital" />
+</process:Input>
+
+<process:Output  rdf:ID="_INVESTIGATING">
+   <process:parameterType rdf:resource="http://127.0.0.1/ontology/SUMO.owl#Investigating" />
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="HOSPITAL_INVESTIGATING_GROUNDING">
+   <service:supportedBy rdf:resource="#HOSPITAL_INVESTIGATING_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

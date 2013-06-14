@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/geographical-region_weatherprocess_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="GEOGRAPHICAL-REGION_WEATHERPROCESS_SERVICE">
+<service:presents rdf:resource="#GEOGRAPHICAL-REGION_WEATHERPROCESS_PROFILE"/>
+<service:describedBy rdf:resource="#GEOGRAPHICAL-REGION_WEATHERPROCESS_PROCESS_MODEL"/>
+<service:supports rdf:resource="#GEOGRAPHICAL-REGION_WEATHERPROCESS_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="GEOGRAPHICAL-REGION_WEATHERPROCESS_PROFILE">
+<service:isPresentedBy rdf:resource="#GEOGRAPHICAL-REGION_WEATHERPROCESS_SERVICE"/>
+<profile:serviceName xml:lang="en">
+GRWeatherProcessService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns the weather condition in a given region.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_GEOGRAPHICAL-REGION"/>
+<profile:hasOutput rdf:resource="#_WEATHERPROCESS"/>
+
+<profile:has_process rdf:resource="GEOGRAPHICAL-REGION_WEATHERPROCESS_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="GEOGRAPHICAL-REGION_WEATHERPROCESS_PROCESS_MODEL">
+<service:describes rdf:resource="#GEOGRAPHICAL-REGION_WEATHERPROCESS_SERVICE"/>
+<process:hasProcess rdf:resource="#GEOGRAPHICAL-REGION_WEATHERPROCESS_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="GEOGRAPHICAL-REGION_WEATHERPROCESS_PROCESS">
+<process:hasInput  rdf:resource="#_GEOGRAPHICAL-REGION"/>
+<process:hasOutput rdf:resource="#_WEATHERPROCESS"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_GEOGRAPHICAL-REGION">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/portal.owl#Geographical-Region" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_WEATHERPROCESS">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/SUMO.owl#WeatherProcess" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="GEOGRAPHICAL-REGION_WEATHERPROCESS_GROUNDING">
+<service:supportedBy rdf:resource="#GEOGRAPHICAL-REGION_WEATHERPROCESS_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

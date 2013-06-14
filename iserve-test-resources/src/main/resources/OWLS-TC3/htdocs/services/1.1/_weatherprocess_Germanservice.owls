@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/_weatherprocess_Germanservice.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="_WEATHERPROCESS_SERVICE">
+<service:presents rdf:resource="#_WEATHERPROCESS_PROFILE"/>
+<service:describedBy rdf:resource="#_WEATHERPROCESS_PROCESS"/>
+<service:supports rdf:resource="#_WEATHERPROCESS_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="_WEATHERPROCESS_PROFILE">
+<service:isPresentedBy rdf:resource="#_WEATHERPROCESS_SERVICE"/>
+<profile:serviceName xml:lang="en">
+GermanWeatherProcessService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns weather process condition of Germany.
+</profile:textDescription>
+<profile:hasOutput rdf:resource="#_WEATHERPROCESS"/>
+
+<profile:has_process rdf:resource="_WEATHERPROCESS_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="_WEATHERPROCESS_PROCESS_MODEL">
+<service:describes rdf:resource="#_WEATHERPROCESS_SERVICE"/>
+<process:hasProcess rdf:resource="#_WEATHERPROCESS_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="_WEATHERPROCESS_PROCESS">
+<service:describes rdf:resource="#_WEATHERPROCESS_SERVICE"/>
+<process:hasOutput rdf:resource="#_WEATHERPROCESS"/>
+</process:AtomicProcess>
+
+<process:Output  rdf:ID="_WEATHERPROCESS">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#WeatherProcess</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="_WEATHERPROCESS_GROUNDING">
+<service:supportedBy rdf:resource="#_WEATHERPROCESS_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="_WEATHERPROCESS_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#_WEATHERPROCESS_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/_weatherprocess_Germanservice.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#_WEATHERPROCESS_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Weatherprocess#get_WEATHERPROCESS</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Weatherprocess#WeatherprocessSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Weatherprocess#get_WEATHERPROCESSRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Weatherprocess#get_WEATHERPROCESSResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_WEATHERPROCESS"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Weatherprocess#_WEATHERPROCESS</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

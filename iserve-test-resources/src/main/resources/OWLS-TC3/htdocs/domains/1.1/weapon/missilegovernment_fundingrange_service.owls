@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/missilegovernment_fundingrange_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/extendedCamera.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="MISSILEGOVERNMENT_FUNDINGRANGE_SERVICE">
+<service:presents rdf:resource="#MISSILEGOVERNMENT_FUNDINGRANGE_PROFILE"/>
+<service:describedBy rdf:resource="#MISSILEGOVERNMENT_FUNDINGRANGE_PROCESS"/>
+<service:supports rdf:resource="#MISSILEGOVERNMENT_FUNDINGRANGE_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="MISSILEGOVERNMENT_FUNDINGRANGE_PROFILE">
+<service:isPresentedBy rdf:resource="#MISSILEGOVERNMENT_FUNDINGRANGE_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Government Missile Funding Range Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service informs you funding for the Missile provided by the government, and target range of the missile.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_GOVERNMENT"/>
+<profile:hasInput  rdf:resource="#_MISSILE"/>
+<profile:hasOutput rdf:resource="#_FUNDING"/>
+<profile:hasOutput rdf:resource="#_RANGE"/>
+
+<profile:has_process rdf:resource="MISSILEGOVERNMENT_FUNDINGRANGE_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="MISSILEGOVERNMENT_FUNDINGRANGE_PROCESS_MODEL">
+<service:describes rdf:resource="#MISSILEGOVERNMENT_FUNDINGRANGE_SERVICE"/>
+<process:hasProcess rdf:resource="#MISSILEGOVERNMENT_FUNDINGRANGE_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="MISSILEGOVERNMENT_FUNDINGRANGE_PROCESS">
+<service:describes rdf:resource="#MISSILEGOVERNMENT_FUNDINGRANGE_SERVICE"/>
+<process:hasInput  rdf:resource="#_GOVERNMENT"/>
+<process:hasInput  rdf:resource="#_MISSILE"/>
+<process:hasOutput rdf:resource="#_FUNDING"/>
+<process:hasOutput rdf:resource="#_RANGE"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_GOVERNMENT">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#Government</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_MISSILE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#Missile</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_FUNDING">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#Funding</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_RANGE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/extendedCamera.owl#Range</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="MISSILEGOVERNMENT_FUNDINGRANGE_GROUNDING">
+<service:supportedBy rdf:resource="#MISSILEGOVERNMENT_FUNDINGRANGE_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="MISSILEGOVERNMENT_FUNDINGRANGE_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#MISSILEGOVERNMENT_FUNDINGRANGE_AtomicProcessGrounding">
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_FUNDING"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MissilegovernmentFundingrange#_FUNDING</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_GOVERNMENT"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MissilegovernmentFundingrange#_GOVERNMENT</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/MissilegovernmentFundingrange#get_FUNDING_RANGEResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_RANGE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MissilegovernmentFundingrange#_RANGE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/MissilegovernmentFundingrange#get_FUNDING_RANGERequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MissilegovernmentFundingrange#get_FUNDING_RANGE</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MissilegovernmentFundingrange#MissilegovernmentFundingrangeSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_MISSILE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MissilegovernmentFundingrange#_MISSILE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/missilegovernment_fundingrange_service.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#MISSILEGOVERNMENT_FUNDINGRANGE_PROCESS"/>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

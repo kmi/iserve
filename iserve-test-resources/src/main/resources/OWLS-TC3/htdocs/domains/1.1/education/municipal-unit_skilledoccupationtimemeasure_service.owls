@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/municipal-unit_skilledoccupationtimemeasure_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="MUNICIPAL-UNIT_SKILLEDOCCUPATIONTIMEMEASURE_SERVICE">
+<service:presents rdf:resource="#MUNICIPAL-UNIT_SKILLEDOCCUPATIONTIMEMEASURE_PROFILE"/>
+<service:describedBy rdf:resource="#MUNICIPAL-UNIT_SKILLEDOCCUPATIONTIMEMEASURE_PROCESS"/>
+<service:supports rdf:resource="#MUNICIPAL-UNIT_SKILLEDOCCUPATIONTIMEMEASURE_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="MUNICIPAL-UNIT_SKILLEDOCCUPATIONTIMEMEASURE_PROFILE">
+<service:isPresentedBy rdf:resource="#MUNICIPAL-UNIT_SKILLEDOCCUPATIONTIMEMEASURE_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Municipal-Unit SkilledOcupation TimeMeasure service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns skilled occupation job in a given municipal-unit and its timemeasure (duration).
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_MUNICIPAL-UNIT"/>
+<profile:hasOutput rdf:resource="#_SKILLEDOCCUPATION"/>
+<profile:hasOutput rdf:resource="#_TIMEMEASURE"/>
+
+<profile:has_process rdf:resource="MUNICIPAL-UNIT_SKILLEDOCCUPATIONTIMEMEASURE_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="MUNICIPAL-UNIT_SKILLEDOCCUPATIONTIMEMEASURE_PROCESS_MODEL">
+<service:describes rdf:resource="#MUNICIPAL-UNIT_SKILLEDOCCUPATIONTIMEMEASURE_SERVICE"/>
+<process:hasProcess rdf:resource="#MUNICIPAL-UNIT_SKILLEDOCCUPATIONTIMEMEASURE_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="MUNICIPAL-UNIT_SKILLEDOCCUPATIONTIMEMEASURE_PROCESS">
+<service:describes rdf:resource="#MUNICIPAL-UNIT_SKILLEDOCCUPATIONTIMEMEASURE_SERVICE"/>
+<process:hasInput  rdf:resource="#_MUNICIPAL-UNIT"/>
+<process:hasOutput rdf:resource="#_SKILLEDOCCUPATION"/>
+<process:hasOutput rdf:resource="#_TIMEMEASURE"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_MUNICIPAL-UNIT">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/portal.owl#Municipal-Unit</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_SKILLEDOCCUPATION">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#SkilledOccupation</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_TIMEMEASURE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#TimeMeasure</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="MUNICIPAL-UNIT_SKILLEDOCCUPATIONTIMEMEASURE_GROUNDING">
+<service:supportedBy rdf:resource="#MUNICIPAL-UNIT_SKILLEDOCCUPATIONTIMEMEASURE_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="MUNICIPAL-UNIT_SKILLEDOCCUPATIONTIMEMEASURE_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#MUNICIPAL-UNIT_SKILLEDOCCUPATIONTIMEMEASURE_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/municipal-unit_skilledoccupationtimemeasure_service.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#MUNICIPAL-UNIT_SKILLEDOCCUPATIONTIMEMEASURE_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Municipal-unitSkilledoccupationtimemeasure#get_SKILLEDOCCUPATION_TIMEMEASURE</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Municipal-unitSkilledoccupationtimemeasure#Municipal-unitSkilledoccupationtimemeasureSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Municipal-unitSkilledoccupationtimemeasure#get_SKILLEDOCCUPATION_TIMEMEASURERequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Municipal-unitSkilledoccupationtimemeasure#get_SKILLEDOCCUPATION_TIMEMEASUREResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_MUNICIPAL-UNIT"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Municipal-unitSkilledoccupationtimemeasure#_MUNICIPAL-UNIT</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_SKILLEDOCCUPATION"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Municipal-unitSkilledoccupationtimemeasure#_SKILLEDOCCUPATION</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_TIMEMEASURE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Municipal-unitSkilledoccupationtimemeasure#_TIMEMEASURE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

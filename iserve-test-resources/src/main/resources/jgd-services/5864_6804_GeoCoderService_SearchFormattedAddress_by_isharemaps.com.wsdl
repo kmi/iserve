@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<definitions xmlns:sawsdl="http://www.w3.org/ns/sawsdl"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+             xmlns:tns="http://www.astuntechnology.com/locate42"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+             xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://www.astuntechnology.com/locate42">
+    <types>
+        <xsd:schema targetNamespace="http://www.astuntechnology.com/locate42">
+            <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+            <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/"/>
+            <xsd:complexType name="AddressResult">
+                <xsd:all>
+                    <xsd:element name="address" type="xsd:string"/>
+                    <xsd:element name="city" type="xsd:string"/>
+                    <xsd:element name="county" type="xsd:string"/>
+
+                    <xsd:element name="country" type="xsd:string"/>
+                    <xsd:element name="postcode" type="xsd:string"/>
+                </xsd:all>
+            </xsd:complexType>
+
+            <xsd:complexType name="LocationResult"
+                             sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protont#Location">
+                <xsd:all>
+                    <xsd:element name="EntityName" type="xsd:string"/>
+                    <xsd:element name="x" type="xsd:string"/>
+                    <xsd:element name="y" type="xsd:string"/>
+                    <xsd:element name="z" type="xsd:string"/>
+                    <xsd:element name="score" type="xsd:string"/>
+                </xsd:all>
+            </xsd:complexType>
+
+            <xsd:complexType name="LocationResultCollection"
+                             sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protont#Location">
+                <xsd:complexContent>
+                    <xsd:restriction base="SOAP-ENC:Array">
+                        <xsd:attribute ref="SOAP-ENC:arrayType"
+                                       wsdl:arrayType="tns:LocationResult[]"/>
+                    </xsd:restriction>
+                </xsd:complexContent>
+            </xsd:complexType>
+
+
+            <xsd:complexType name="SingleFormatAddressSpec"
+                             sawsdl:modelReference="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#SpecificAddress http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#ResultsCountLimit">
+                <xsd:all>
+                    <xsd:element name="formatAddress" type="tns:AddressResult"/>
+                    <xsd:element name="count" type="xsd:int"/>
+                    <xsd:element name="threshold" type="xsd:double"/>
+                    <xsd:element name="licensekey" type="xsd:string"/>
+                    <xsd:element name="coordsys" type="xsd:int"/>
+                </xsd:all>
+            </xsd:complexType>
+
+        </xsd:schema>
+    </types>
+
+    <message name="SearchFormattedAddressRequest">
+        <part name="formatted" type="tns:SingleFormatAddressSpec"/>
+    </message>
+    <message name="SearchFormattedAddressResponse">
+        <part name="return" type="tns:LocationResultCollection"/>
+    </message>
+
+    <portType name="GeoCoderServicePortType">
+        <operation name="SearchFormattedAddress"
+                   sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <input message="tns:SearchFormattedAddressRequest"/>
+            <output message="tns:SearchFormattedAddressResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="GeoCoderServiceBinding" type="tns:GeoCoderServicePortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="SearchFormattedAddress">
+            <soap:operation
+                    soapAction="http://www.astuntechnology.com/isharemaps_on_demand/v2_1/geocoder.php/SearchFormattedAddress"
+                    style="rpc"/>
+            <input>
+                <soap:body use="encoded" namespace="http://www.astuntechnology.com/locate42"
+                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="http://www.astuntechnology.com/locate42"
+                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+    <service sawsdl:modelReference=" http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#LocationLookup"
+             name="GeoCoderService">
+        <port name="GeoCoderServicePort" binding="tns:GeoCoderServiceBinding">
+            <soap:address location="http://www.astuntechnology.com/isharemaps_on_demand/v2_1/geocoder.php"/>
+        </port>
+    </service>
+</definitions>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/_videomediaSaturn_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="_VIDEOMEDIA_SERVICE">
+<service:presents rdf:resource="#_VIDEOMEDIA_PROFILE"/>
+<service:describedBy rdf:resource="#_VIDEOMEDIA_PROCESS"/>
+<service:supports rdf:resource="#_VIDEOMEDIA_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="_VIDEOMEDIA_PROFILE">
+<service:isPresentedBy rdf:resource="#_VIDEOMEDIA_SERVICE"/>
+<profile:serviceName xml:lang="en">
+SaturnVideoMediaService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+SaturnVideo is an official service of Saturn store to return list of available video media.
+</profile:textDescription>
+<profile:hasOutput rdf:resource="#_VIDEOMEDIA"/>
+
+<profile:has_process rdf:resource="_VIDEOMEDIA_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="_VIDEOMEDIA_PROCESS_MODEL">
+<service:describes rdf:resource="#_VIDEOMEDIA_SERVICE"/>
+<process:hasProcess rdf:resource="#_VIDEOMEDIA_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="_VIDEOMEDIA_PROCESS">
+<service:describes rdf:resource="#_VIDEOMEDIA_SERVICE"/>
+<process:hasOutput rdf:resource="#_VIDEOMEDIA"/>
+</process:AtomicProcess>
+
+<process:Output  rdf:ID="_VIDEOMEDIA">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/my_ontology.owl#VideoMedia</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="_VIDEOMEDIA_GROUNDING">
+<service:supportedBy rdf:resource="#_VIDEOMEDIA_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="_VIDEOMEDIA_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#_VIDEOMEDIA_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/_videomediaSaturn_service.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#_VIDEOMEDIA_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Videomedia#get_VIDEOMEDIA</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Videomedia#VideomediaSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Videomedia#get_VIDEOMEDIARequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Videomedia#get_VIDEOMEDIAResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_VIDEOMEDIA"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Videomedia#_VIDEOMEDIA</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

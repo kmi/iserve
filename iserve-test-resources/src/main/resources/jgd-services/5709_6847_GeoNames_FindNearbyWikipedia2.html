@@ -1,0 +1,120 @@
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<html>
+
+
+<meta name="generator" content="HTML Tidy, see www.w3.org">
+<title>Wikipedia Webservice</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="http://www.geonames.org/geonames.ico" rel="shortcut icon">
+<link type="text/css" rel="stylesheet" href="http://www.geonames.org/geonames.css">
+
+<table id="topmenutable">
+    <tbody>
+    <tr>
+        <td class="topmenu">&nbsp;<a href="javascript:callProxy('http://www.geonames.org/')">GeoNames
+            Home</a>&nbsp;|&nbsp;<a href="javascript:callProxy('http://www.geonames.org/postal-codes/')">Postal
+            Codes</a>&nbsp;|&nbsp;<a href="javascript:callProxy('http://www.geonames.org/export/')">Download
+            / Webservice</a>&nbsp;|&nbsp;<a href="javascript:callProxy('http://www.geonames.org/about.html')">About</a>&nbsp;|
+        </td>
+        <td class="topsearch">
+            <form class="topsearch" name="searchForm" method="post" action="/servlet/geonames"
+                  onsubmit="javascript:fulltextsearch();return false;">search <input class="topmenu" name="q" size="20"
+                                                                                     value="" type="text"> <input
+                    name="srv" value="1" type="hidden"></form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="margin: auto; width: 600px; text-align: left;">
+    <h3>Wikipedia Geocoding Webservice</h3>
+
+    The wikipedia webservices give access to <a href="javascript:callProxy('http://www.geonames.org/wikipedia/')">georeferenced
+    wikipedia articles</a> in 240 languages. For the largest languages
+    (English, German, French, Spanish, Italian and Polish) full text
+    and a summary is also available.<br>
+    <br>
+    <br>
+    <br>
+
+    <div class="service" id="GeoNames_FindNearbyWikipedia2HttpGet"
+         href="http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#EntityLocationService" rel="model">
+        <div class="operation" id="operation1" href="http://www.w3.org/ns/wsdl-extensions#SafeInteraction" rel="model">
+            <h5><span class="label" id="label1">GeoNames_FindNearbyWikipedia2HttpGet</span> / reverse geocoding</h5>
+
+            This service comes in two flavors. You can either pass the lat/long
+            or a postalcode/placename.
+
+            <p>Webservice Type : XML,JSON or RSS<br>
+                Url : <span class="address" id="address1">ws.geonames.org/findNearbyWikipedia?</span><br>
+                ws.geonames.org/findNearbyWikipediaJSON?<br>
+                ws.geonames.org/findNearbyWikipediaRSS?<br>
+                Parameters :<br>
+
+            <div class="input" id="input1">lang : language code (<a
+                    href="javascript:callProxy('http://www.geonames.org/wikipedia.html')">around
+                240 languages</a>) (default = en)<br>
+                lat,lng,
+                <span href="http://fusion.cs.uni-jena.de/geographydataset.owl#CircularGeographicArea"
+                      rel="model">radius</span>
+                (in km), maxRows (default = 5),
+                <span href="http://proton.semanticweb.org/2005/04/protonu#Country" rel="model">country_code</span>
+                (default =
+                all countries)<br>
+                or<br>
+                <span href="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#PostalCodeArea" rel="model">postal_code</span>,country,
+                radius (in Km),
+                <span href="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#ResultsCountLimit" rel="model">maxRows (default = 5)</span>
+            </div>
+            <br>
+            Result :
+            <div class="output" id="output1"
+                 href="http://fusion.cs.uni-jena.de/geographydataset.owl#GeographicDistance http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#GeolocatedWikipediaArticle"
+                 rel="model">returns a list of wikipedia entries as xml document
+            </div>
+            <br>
+            Example:<br>
+            <a href="javascript:callProxy('http://ws.geonames.org/findNearbyWikipedia?lat=47&amp;lng=9')"
+               target="_blank">http://ws.geonames.org/findNearbyWikipedia?lat=47&amp;lng=9</a><br>
+            or<br>
+            <a href="javascript:callProxy('http://ws.geonames.org/findNearbyWikipedia?postalcode=8775&amp;country=CH&amp;radius=10')"
+               target="_blank">ws.geonames.org/findNearbyWikipedia?postalcode=8775&amp;country=CH&amp;radius=10</a></p>
+
+            <p>
+                <small>[<a href="javascript:callProxy('http://www.geonames.org/export/reverse-geocoding.html')">
+                    more reverse geocoding</a>]
+                </small>
+                <br>
+                <br>
+                </a></p>
+        </div>
+    </div>
+
+    <div id="pageFooter">info@geonames.org <img src="http://www.geonames.org/img/smallant.gif" alt="ant" align="middle"
+                                                border="0" hspace="40">
+
+        <p><a href="javascript:callProxy('http://www.geonames.org/')">GeoNames
+            Home</a> <span class="separator">•</span> <a
+                href="javascript:callProxy('http://www.geonames.org/postal-codes/')">Postal
+            Codes</a> <span class="separator">•</span> <a
+                href="javascript:callProxy('http://www.geonames.org/export/')">Download
+            / Webservice</a> <span class="separator">•</span> <a
+                href="javascript:callProxy('http://forum.geonames.org')">Forum</a> <span class="separator">•</span> <a
+                href="javascript:callProxy('http://www.geonames.org/sitemap.html')">Sitemap</a></p>
+    </div>
+</html>

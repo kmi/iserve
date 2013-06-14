@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/Renaultyear_recommendedpriceineuro_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="YEAR_RECOMMENDEDPRICEINEURO_SERVICE">
+<service:presents rdf:resource="#YEAR_RECOMMENDEDPRICEINEURO_PROFILE"/>
+<service:describedBy rdf:resource="#YEAR_RECOMMENDEDPRICEINEURO_PROCESS_MODEL"/>
+<service:supports rdf:resource="#YEAR_RECOMMENDEDPRICEINEURO_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="YEAR_RECOMMENDEDPRICEINEURO_PROFILE">
+<service:isPresentedBy rdf:resource="#YEAR_RECOMMENDEDPRICEINEURO_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Recommended price of Renault car
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service provides information of recommended price in Euro
+for a Renault car whose model year is given.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_YEAR"/>
+<profile:hasOutput rdf:resource="#_RECOMMENDEDPRICEINEURO"/>
+
+<profile:has_process rdf:resource="YEAR_RECOMMENDEDPRICEINEURO_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="YEAR_RECOMMENDEDPRICEINEURO_PROCESS_MODEL">
+<service:describes rdf:resource="#YEAR_RECOMMENDEDPRICEINEURO_SERVICE"/>
+<process:hasProcess rdf:resource="#YEAR_RECOMMENDEDPRICEINEURO_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="YEAR_RECOMMENDEDPRICEINEURO_PROCESS">
+<process:hasInput  rdf:resource="#_YEAR"/>
+<process:hasOutput rdf:resource="#_RECOMMENDEDPRICEINEURO"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_YEAR">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/SUMO.owl#Year" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_RECOMMENDEDPRICEINEURO">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/concept.owl#RecommendedPriceInEuro" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="YEAR_RECOMMENDEDPRICEINEURO_GROUNDING">
+<service:supportedBy rdf:resource="#YEAR_RECOMMENDEDPRICEINEURO_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

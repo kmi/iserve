@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/car_pricecolor_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/finance_th_web.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="CAR_PRICECOLOR_SERVICE">
+<service:presents rdf:resource="#CAR_PRICECOLOR_PROFILE"/>
+<service:describedBy rdf:resource="#CAR_PRICECOLOR_PROCESS_MODEL"/>
+<service:supports rdf:resource="#CAR_PRICECOLOR_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="CAR_PRICECOLOR_PROFILE">
+<service:isPresentedBy rdf:resource="#CAR_PRICECOLOR_SERVICE"/>
+<profile:serviceName xml:lang="en">
+T-car price service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+T-service analysed car market value and deduced that color is
+one of the main issue in its popularity, so this service provides
+list of price of car with its color.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_CAR"/>
+<profile:hasOutput rdf:resource="#_PRICE"/>
+<profile:hasOutput rdf:resource="#_COLOR"/>
+
+<profile:has_process rdf:resource="CAR_PRICECOLOR_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="CAR_PRICECOLOR_PROCESS_MODEL">
+<service:describes rdf:resource="#CAR_PRICECOLOR_SERVICE"/>
+<process:hasProcess rdf:resource="#CAR_PRICECOLOR_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="CAR_PRICECOLOR_PROCESS">
+<process:hasInput  rdf:resource="#_CAR"/>
+<process:hasOutput rdf:resource="#_PRICE"/>
+<process:hasOutput rdf:resource="#_COLOR"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_CAR">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/my_ontology.owl#Car" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_PRICE">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/concept.owl#Price" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_COLOR">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/my_ontology.owl#Color" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="CAR_PRICECOLOR_GROUNDING">
+<service:supportedBy rdf:resource="#CAR_PRICECOLOR_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

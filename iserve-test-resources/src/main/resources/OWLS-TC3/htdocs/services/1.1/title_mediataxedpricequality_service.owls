@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/title_mediataxedpricequality_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/finance_th_web.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="TITLE_MEDIATAXEDPRICEQUALITY_SERVICE">
+<service:presents rdf:resource="#TITLE_MEDIATAXEDPRICEQUALITY_PROFILE"/>
+<service:describedBy rdf:resource="#TITLE_MEDIATAXEDPRICEQUALITY_PROCESS"/>
+<service:supports rdf:resource="#TITLE_MEDIATAXEDPRICEQUALITY_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="TITLE_MEDIATAXEDPRICEQUALITY_PROFILE">
+<service:isPresentedBy rdf:resource="#TITLE_MEDIATAXEDPRICEQUALITY_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Title Media TaxedPrice Quality service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service searches media for the given title, and also returns
+its taxed price and quality.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_TITLE"/>
+<profile:hasOutput rdf:resource="#_MEDIA"/>
+<profile:hasOutput rdf:resource="#_TAXEDPRICE"/>
+<profile:hasOutput rdf:resource="#_QUALITY"/>
+
+<profile:has_process rdf:resource="TITLE_MEDIATAXEDPRICEQUALITY_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="TITLE_MEDIATAXEDPRICEQUALITY_PROCESS_MODEL">
+<service:describes rdf:resource="#TITLE_MEDIATAXEDPRICEQUALITY_SERVICE"/>
+<process:hasProcess rdf:resource="#TITLE_MEDIATAXEDPRICEQUALITY_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="TITLE_MEDIATAXEDPRICEQUALITY_PROCESS">
+<service:describes rdf:resource="#TITLE_MEDIATAXEDPRICEQUALITY_SERVICE"/>
+<process:hasInput  rdf:resource="#_TITLE"/>
+<process:hasOutput rdf:resource="#_MEDIA"/>
+<process:hasOutput rdf:resource="#_TAXEDPRICE"/>
+<process:hasOutput rdf:resource="#_QUALITY"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_TITLE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/books.owl#Title</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_MEDIA">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/my_ontology.owl#Media</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_TAXEDPRICE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/concept.owl#TaxedPrice</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_QUALITY">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/finance_th_web.owl#quality</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="TITLE_MEDIATAXEDPRICEQUALITY_GROUNDING">
+<service:supportedBy rdf:resource="#TITLE_MEDIATAXEDPRICEQUALITY_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="TITLE_MEDIATAXEDPRICEQUALITY_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#TITLE_MEDIATAXEDPRICEQUALITY_AtomicProcessGrounding">
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_TAXEDPRICE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleMediataxedpricequality#_TAXEDPRICE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_MEDIA"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleMediataxedpricequality#_MEDIA</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/TitleMediataxedpricequality#get_MEDIA_TAXEDPRICE_QUALITYRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleMediataxedpricequality#get_MEDIA_TAXEDPRICE_QUALITY</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleMediataxedpricequality#TitleMediataxedpricequalitySoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/TitleMediataxedpricequality#get_MEDIA_TAXEDPRICE_QUALITYResponse</grounding:wsdlOutputMessage>
+    <grounding:owlsProcess rdf:resource="#TITLE_MEDIATAXEDPRICEQUALITY_PROCESS"/>
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/title_mediataxedpricequality_service.wsdl</grounding:wsdlDocument>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_QUALITY"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleMediataxedpricequality#_QUALITY</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_TITLE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/TitleMediataxedpricequality#_TITLE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

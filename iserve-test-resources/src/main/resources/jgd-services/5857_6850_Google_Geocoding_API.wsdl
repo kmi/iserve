@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns:sawsdl="http://www.w3.org/ns/sawsdl" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://maps.google.com/maps/" targetNamespace="http://maps.google.com/maps/">
+    <wsdl:documentation>This is a WSDL 1.1 comment that has been created for a RESTful service for evaluation and
+        testing purposes.
+        It is not guaranteed to be correct or appropriate.
+    </wsdl:documentation>
+    <wsdl:types>
+        <xsd:schema elementFormDefault="qualified" targetNamespace="http://maps.google.com/maps/">
+            <xsd:annotation>This type information has been semi-automatically generated. It properly represents the
+                semantics of the service's parameters, but is not guaranteed to precisely match the schema actually used
+                by the service.
+            </xsd:annotation>
+            <xsd:complexType name="Output"
+                             sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protont#Location">
+                <xsd:sequence>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="address" type="xsd:anyType"
+                                 sawsdl:modelReference="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#SpecificAddress">
+                        <xsd:annotation>The (maybe completed) address parsed from the input (including country, province
+                            or administrative area, district, town, street and street number, and postal code)
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="coordinates" type="xsd:anyType">
+                        <xsd:annotation>The geographic coordinates of the address.</xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="accuracy" type="xsd:string"
+                                 sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#AccuracyMeasure">
+                        <xsd:annotation>The accuracy at which a match was detected (i.e. country level, city level,
+                            street level, etc.)
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="Output" nillable="true" type="tns:Output"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="Google_Geocoding_APIHttpGetIn">
+        <wsdl:part name="key" type="xsd:string">
+            <wsdl:documentation>(required) identifies the Maps API key for the domain on which this URL request takes
+                place.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="q" type="xsd:string"
+                   sawsdl:modelReference="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#RawAddress">
+            <wsdl:documentation>The address to geocode. Partial addresses (e.g. containing only a city) are ok.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="output" type="xsd:string">
+            <wsdl:documentation>Optional. The format in which the output should be generated. The options are xml, kml,
+                csv, or (default) json.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="ll" type="xsd:string"
+                   sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#RectangularGeographicArea">
+            <wsdl:documentation>Optional. The {latitude,longitude} of the viewport center expressed as a comma-separated
+                string (e.g. "ll=40.479581,-117.773438" ). This parameter only has meaning if the spn parameter is also
+                passed to the geocoder.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="spn" type="xsd:string">
+            <wsdl:documentation>Optional. The "span" of the viewport expressed as a comma-separated string of
+                {latitude,longitude} (e.g. "spn=11.1873,22.5" ). This parameter only has meaning if the ll parameter is
+                also passed to the geocoder.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="gl" type="xsd:string"
+                   sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protonu#Country">
+            <wsdl:documentation>Optional. The country code, specified as a ccTLD ("top-level domain") two-character
+                value.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="sensor" type="xsd:string">
+            <wsdl:documentation>Mandatory. Indicates whether or not the geocoding request comes from a device with a
+                location sensor. This value must be either true or false.
+            </wsdl:documentation>
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="Google_Geocoding_APIHttpGetOut">
+        <wsdl:part name="Body" element="tns:Output">
+            <wsdl:documentation></wsdl:documentation>
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="Google_Geocoding_APIHttpGet">
+        <wsdl:operation name="Google_Geocoding_API"
+                        sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <wsdl:documentation>Geocoding is the process of converting addresses (like "1600 Amphitheatre Parkway,
+                Mountain View, CA") into geographic coordinates (like latitude 37.423021 and longitude -122.083739),
+                which you can use to place markers or position the map. The Google Maps API includes a Geocoding service
+                that can be accessed directly via an HTTP request or by using a GClientGeocoder object.
+                The Google Geocoding API works for the US and many other countries worldwide!
+            </wsdl:documentation>
+            <wsdl:input message="tns:Google_Geocoding_APIHttpGetIn"/>
+            <wsdl:output message="tns:Google_Geocoding_APIHttpGetOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="Google_Geocoding_APIHttpGet" type="tns:Google_Geocoding_APIHttpGet">
+        <http:binding verb="GET"/>
+        <wsdl:operation name="Google_Geocoding_API">
+            <http:operation location="geo"/>
+            <wsdl:input>
+                <http:urlEncoded/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:mimeXml part="Body"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service sawsdl:modelReference=" http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#LocationLookup"
+                  name="Google_Geocoding_API">
+        <wsdl:port name="Google_Geocoding_APIHttpGet" binding="tns:Google_Geocoding_APIHttpGet">
+            <http:address location="http://maps.google.com/maps/"/>
+        </wsdl:port>
+
+    </wsdl:service>
+</wsdl:definitions>

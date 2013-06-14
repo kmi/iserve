@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/objectperson__service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/simplified_sumo.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="PERSONOBJECT__SERVICE">
+<service:presents rdf:resource="#PERSONOBJECT__PROFILE"/>
+<service:describedBy rdf:resource="#PERSONOBJECT__PROCESS_MODEL"/>
+<service:supports rdf:resource="#PERSONOBJECT__GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="PERSONOBJECT__PROFILE">
+<service:isPresentedBy rdf:resource="#PERSONOBJECT__SERVICE"/>
+<profile:serviceName xml:lang="en">
+Shopping
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service adds any object as an item in the shopping cart of a authorised person.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_OBJECT"/>
+<profile:hasInput  rdf:resource="#_PERSON"/>
+
+<profile:has_process rdf:resource="PERSONOBJECT__PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="PERSONOBJECT__PROCESS_MODEL">
+<service:describes rdf:resource="#PERSONOBJECT__SERVICE"/>
+<process:hasProcess rdf:resource="#PERSONOBJECT__PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="PERSONOBJECT__PROCESS">
+<process:hasInput  rdf:resource="#_OBJECT"/>
+<process:hasInput  rdf:resource="#_PERSON"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_OBJECT">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/simplified_sumo.owl#Object" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_PERSON">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/books.owl#Person" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<grounding:WsdlGrounding rdf:ID="PERSONOBJECT__GROUNDING">
+<service:supportedBy rdf:resource="#PERSONOBJECT__SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

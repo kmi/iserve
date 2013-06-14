@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns="http://127.0.0.1/wsdl/PersoncountrycitySportshotel"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://127.0.0.1/wsdl/PersoncountrycitySportshotel"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  name="PersoncountrycitySportshotel"
+                  targetNamespace="http://127.0.0.1/wsdl/PersoncountrycitySportshotel">
+    <wsdl:types>
+        <xsd:schema version="OWLS2WSDL Fri Jun 05 00:24:30 CEST 2009"
+                    targetNamespace="http://127.0.0.1/wsdl/PersoncountrycitySportshotel"
+                    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:annotation>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-ComplexType) of http://127.0.0.1/ontology/travel.owl#City"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-ComplexType) of http://127.0.0.1/ontology/portal.owl#Country"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-ComplexType) of http://127.0.0.1/ontology/portal.owl#Person"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/travel.owl#Sports"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/travel.owl#Hotel"/>
+            </xsd:annotation>
+            <xsd:element name="Person" type="PersonType"/>
+            <xsd:element name="Hotel" type="HotelType"/>
+            <xsd:element name="Sports" type="SportsType"/>
+            <xsd:element name="City" type="CityType"/>
+            <xsd:element name="Country" type="CountryType"/>
+            <xsd:complexType name="PersonType">
+                <xsd:sequence>
+                    <xsd:element name="family-name" type="xsd:string"/>
+                    <xsd:element name="full-name" type="xsd:string"/>
+                    <xsd:element name="given-name" type="xsd:string"/>
+                    <xsd:element name="has-gender" type="Gender"/>
+                    <xsd:element name="has-appellation" type="Appellation"/>
+                    <xsd:element name="has-academic-degree" type="Academic-Degree"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="CityType">
+                <xsd:choice>
+                    <xsd:element name="cityID" type="CityDATA"/>
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" name="name" type="xsd:string"/>
+                        <xsd:element name="hasAccommodation" type="LuxuryHotel"/>
+                    </xsd:sequence>
+                </xsd:choice>
+            </xsd:complexType>
+            <xsd:complexType name="LuxuryHotel">
+                <xsd:choice>
+                    <xsd:element name="luxuryHotelID" type="LuxuryHotelDATA"/>
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" name="name" type="xsd:string"/>
+                        <xsd:element name="hasRating" type="LuxuryHotelAccommodationRating"/>
+                    </xsd:sequence>
+                </xsd:choice>
+            </xsd:complexType>
+            <xsd:complexType name="LuxuryHotelAccommodationRating">
+                <xsd:complexContent>
+                    <xsd:restriction base="AccommodationRating">
+                        <xsd:choice>
+                            <xsd:element name="accommodationRatingID" type="LuxuryHotelAccommodationRatingDATA"/>
+                            <xsd:sequence>
+                                <xsd:element minOccurs="0" name="name" type="xsd:string"/>
+                            </xsd:sequence>
+                        </xsd:choice>
+                    </xsd:restriction>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="Currency">
+                <xsd:sequence>
+                    <xsd:element name="issued-by" type="Government"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="CountryType">
+                <xsd:sequence>
+                    <xsd:element name="has-government" type="Government"/>
+                    <xsd:element name="has-currency" type="Currency"/>
+                    <xsd:element name="has-capital" type="Capital-City"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Government">
+                <xsd:sequence>
+                    <xsd:element name="government-of-country" type="CountryType"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="AccommodationRating">
+                <xsd:choice>
+                    <xsd:element name="accommodationRatingID" type="AccommodationRatingDATA"/>
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" name="name" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:choice>
+            </xsd:complexType>
+            <xsd:complexType name="Capital-City">
+                <xsd:sequence>
+                    <xsd:element name="is-capital-of" type="CountryType"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="LuxuryHotelDATA">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="FourSeasons"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="CityDATA">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="Cairns"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="AccommodationRatingDATA">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="TwoStarRating"/>
+                    <xsd:enumeration value="OneStarRating"/>
+                    <xsd:enumeration value="ThreeStarRating"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="HotelType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="LuxuryHotelAccommodationRatingDATA">
+                <xsd:restriction base="AccommodationRatingDATA">
+                    <xsd:enumeration value="ThreeStarRating"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="Gender">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="Male-Gender"/>
+                    <xsd:enumeration value="Female-Gender"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="Appellation">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="Mrs"/>
+                    <xsd:enumeration value="Dr"/>
+                    <xsd:enumeration value="Ms"/>
+                    <xsd:enumeration value="Mr"/>
+                    <xsd:enumeration value="Lady"/>
+                    <xsd:enumeration value="Sir"/>
+                    <xsd:enumeration value="Miss"/>
+                    <xsd:enumeration value="Prof"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="Academic-Degree">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="BA"/>
+                    <xsd:enumeration value="MA"/>
+                    <xsd:enumeration value="PhD"/>
+                    <xsd:enumeration value="BSc"/>
+                    <xsd:enumeration value="MSc"/>
+                    <xsd:enumeration value="DEng"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="SportsType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="get_SPORTS_HOTELResponse">
+        <wsdl:part name="_SPORTS" type="tns:SportsType">
+        </wsdl:part>
+        <wsdl:part name="_HOTEL" type="tns:HotelType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="get_SPORTS_HOTELRequest">
+        <wsdl:part name="_CITY" type="tns:CityType">
+        </wsdl:part>
+        <wsdl:part name="_COUNTRY" type="tns:CountryType">
+        </wsdl:part>
+        <wsdl:part name="_PERSON" type="tns:PersonType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="PersoncountrycitySportshotelSoap">
+        <wsdl:operation name="get_SPORTS_HOTEL">
+            <wsdl:input message="tns:get_SPORTS_HOTELRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:get_SPORTS_HOTELResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="PersoncountrycitySportshotelSoapBinding" type="PersoncountrycitySportshotelSoap">
+        <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="get_SPORTS_HOTEL">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/PersoncountrycitySportshotel"/>
+            </wsdl:input>
+            <wsdl:output>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/PersoncountrycitySportshotel"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="PersoncountrycitySportshotelService">
+        <wsdl:port name="PersoncountrycitySportshotelSoap" binding="PersoncountrycitySportshotelSoapBinding">
+            <wsdlsoap:address location="http://127.0.0.1/wsdl/PersoncountrycitySportshotel"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

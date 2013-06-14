@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/academic_address_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="ACADEMIC_ADDRESS_SERVICE">
+<service:presents rdf:resource="#ACADEMIC_ADDRESS_PROFILE"/>
+<service:describedBy rdf:resource="#ACADEMIC_ADDRESS_PROCESS"/>
+<service:supports rdf:resource="#ACADEMIC_ADDRESS_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="ACADEMIC_ADDRESS_PROFILE">
+<service:isPresentedBy rdf:resource="#ACADEMIC_ADDRESS_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Academic Address Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns an address of an academic of a university.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_ACADEMIC"/>
+<profile:hasOutput rdf:resource="#_ADDRESS"/>
+
+</profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="ACADEMIC_ADDRESS_PROCESS_MODEL">
+<service:describes rdf:resource="#ACADEMIC_ADDRESS_SERVICE"/>
+<process:hasProcess rdf:resource="#ACADEMIC_ADDRESS_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="ACADEMIC_ADDRESS_PROCESS">
+<service:describes rdf:resource="#ACADEMIC_ADDRESS_SERVICE" />
+<process:hasInput  rdf:resource="#_ACADEMIC"/>
+<process:hasOutput rdf:resource="#_ADDRESS"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_ACADEMIC">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/portal.owl#Academic</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_ADDRESS">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/portal.owl#Address</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="ACADEMIC_ADDRESS_GROUNDING">
+	<service:supportedBy rdf:resource="#ACADEMIC_ADDRESS_SERVICE"/>
+	<grounding:hasAtomicProcessGrounding rdf:resource="#ACADEMIC_ADDRESS_AtomicProcessGrounding" />
+</grounding:WsdlGrounding>
+
+<grounding:WsdlAtomicProcessGrounding rdf:ID="ACADEMIC_ADDRESS_AtomicProcessGrounding">
+	<grounding:owlsProcess rdf:resource="#ACADEMIC_ADDRESS_PROCESS"/>
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/wsdl/AcademicAddress.wsdl</grounding:wsdlDocument>   
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/wsdl/AcademicAddress#get_ADDRESS</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/wsdl/AcademicAddress#AcademicAddressSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/wsdl/AcademicAddress#get_ADDRESSRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/wsdl/AcademicAddress#get_ADDRESSResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_ACADEMIC"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/wsdl/AcademicAddress#_ACADEMIC</grounding:wsdlMessagePart>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_ADDRESS"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/wsdl/AcademicAddress#_ADDRESS</grounding:wsdlMessagePart>	
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+</rdf:RDF>

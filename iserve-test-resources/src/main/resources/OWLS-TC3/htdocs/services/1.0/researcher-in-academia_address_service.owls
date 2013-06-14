@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/researcher-in-academia_address_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="RESEARCHER-IN-ACADEMIA_ADDRESS_SERVICE">
+<service:presents rdf:resource="#RESEARCHER-IN-ACADEMIA_ADDRESS_PROFILE"/>
+<service:describedBy rdf:resource="#RESEARCHER-IN-ACADEMIA_ADDRESS_PROCESS_MODEL"/>
+<service:supports rdf:resource="#RESEARCHER-IN-ACADEMIA_ADDRESS_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="RESEARCHER-IN-ACADEMIA_ADDRESS_PROFILE">
+<service:isPresentedBy rdf:resource="#RESEARCHER-IN-ACADEMIA_ADDRESS_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Researcher address service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns an addresses, whether email or postal, of a researcher.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_RESEARCHER-IN-ACADEMIA"/>
+<profile:hasOutput rdf:resource="#_ADDRESS"/>
+
+<profile:has_process rdf:resource="RESEARCHER-IN-ACADEMIA_ADDRESS_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="RESEARCHER-IN-ACADEMIA_ADDRESS_PROCESS_MODEL">
+<service:describes rdf:resource="#RESEARCHER-IN-ACADEMIA_ADDRESS_SERVICE"/>
+<process:hasProcess rdf:resource="#RESEARCHER-IN-ACADEMIA_ADDRESS_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="RESEARCHER-IN-ACADEMIA_ADDRESS_PROCESS">
+<process:hasInput  rdf:resource="#_RESEARCHER-IN-ACADEMIA"/>
+<process:hasOutput rdf:resource="#_ADDRESS"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_RESEARCHER-IN-ACADEMIA">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/portal.owl#Researcher-In-Academia" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_ADDRESS">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/portal.owl#Address" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="RESEARCHER-IN-ACADEMIA_ADDRESS_GROUNDING">
+<service:supportedBy rdf:resource="#RESEARCHER-IN-ACADEMIA_ADDRESS_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

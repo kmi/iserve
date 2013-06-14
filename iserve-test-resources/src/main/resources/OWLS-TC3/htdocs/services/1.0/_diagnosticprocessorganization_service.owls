@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/_diagnosticprocessorganization_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="_DIAGNOSTICPROCESSORGANIZATION_SERVICE">
+<service:presents rdf:resource="#_DIAGNOSTICPROCESSORGANIZATION_PROFILE"/>
+<service:describedBy rdf:resource="#_DIAGNOSTICPROCESSORGANIZATION_PROCESS_MODEL"/>
+<service:supports rdf:resource="#_DIAGNOSTICPROCESSORGANIZATION_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="_DIAGNOSTICPROCESSORGANIZATION_PROFILE">
+<service:isPresentedBy rdf:resource="#_DIAGNOSTICPROCESSORGANIZATION_SERVICE"/>
+<profile:serviceName xml:lang="en">
+DiagP service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+DiagP service returns diagnostic process system, especially for fever, and the organization who offer this facility.
+</profile:textDescription>
+<profile:hasOutput rdf:resource="#_DIAGNOSTICPROCESS"/>
+<profile:hasOutput rdf:resource="#_ORGANIZATION"/>
+
+<profile:has_process rdf:resource="_DIAGNOSTICPROCESSORGANIZATION_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="_DIAGNOSTICPROCESSORGANIZATION_PROCESS_MODEL">
+<service:describes rdf:resource="#_DIAGNOSTICPROCESSORGANIZATION_SERVICE"/>
+<process:hasProcess rdf:resource="#_DIAGNOSTICPROCESSORGANIZATION_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="_DIAGNOSTICPROCESSORGANIZATION_PROCESS">
+<process:hasOutput rdf:resource="#_DIAGNOSTICPROCESS"/>
+<process:hasOutput rdf:resource="#_ORGANIZATION"/>
+</process:AtomicProcess>
+
+<process:Output  rdf:ID="_DIAGNOSTICPROCESS">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/SUMO.owl#DiagnosticProcess" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_ORGANIZATION">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/SUMO.owl#Organization" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="_DIAGNOSTICPROCESSORGANIZATION_GROUNDING">
+<service:supportedBy rdf:resource="#_DIAGNOSTICPROCESSORGANIZATION_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

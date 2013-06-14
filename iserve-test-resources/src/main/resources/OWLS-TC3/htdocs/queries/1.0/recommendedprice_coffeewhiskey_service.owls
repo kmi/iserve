@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?> 
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#" 
+          xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"  
+          xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+          xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#" 
+          xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#" 
+          xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#" 
+          xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#" 
+          xml:base        = "http://127.0.0.1/queries/1.0/recommendedprice_coffeewhiskey_service.owls"> 
+ 
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="RECOMMENDEDPRICE_COFFEEWHISKEY_SERVICE"> 
+   <service:presents rdf:resource="#RECOMMENDEDPRICE_COFFEEWHISKEY_PROFILE"/> 
+   <service:describedBy rdf:resource="#RECOMMENDEDPRICE_COFFEEWHISKEY_PROCESS_MODEL"/> 
+   <service:supports rdf:resource="#RECOMMENDEDPRICE_COFFEEWHISKEY_GROUNDING"/> 
+</service:Service>
+
+<profile:Profile rdf:ID="RECOMMENDEDPRICE_COFFEEWHISKEY_PROFILE">
+   <service:isPresentedBy rdf:resource="#RECOMMENDEDPRICE_COFFEEWHISKEY_SERVICE"/>
+   <profile:serviceName xml:lang="en">
+      RecommendedPriceCoffeeWhiskey Service
+   </profile:serviceName>
+   <profile:textDescription xml:lang="en">
+      returns coffee and whiskey for recommendedprice
+   </profile:textDescription>
+   <profile:hasInput  rdf:resource="#_RECOMMENDEDPRICE"/>
+   <profile:hasOutput rdf:resource="#_COFFEE"/>
+   <profile:hasOutput rdf:resource="#_WHISKEY"/>
+
+<profile:has_process rdf:resource="RECOMMENDEDPRICE_COFFEEWHISKEY_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="RECOMMENDEDPRICE_COFFEEWHISKEY_PROCESS_MODEL">
+   <service:describes rdf:resource="#RECOMMENDEDPRICE_COFFEEWHISKEY_SERVICE"/>
+   <process:hasProcess rdf:resource="#RECOMMENDEDPRICE_COFFEEWHISKEY_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="RECOMMENDEDPRICE_COFFEEWHISKEY_PROCESS">
+   <process:hasInput  rdf:resource="#_RECOMMENDEDPRICE"/>
+   <process:hasOutput rdf:resource="#_COFFEE"/>
+   <process:hasOutput rdf:resource="#_WHISKEY"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_RECOMMENDEDPRICE">
+   <process:parameterType rdf:resource="http://127.0.0.1/ontology/concept.owl#RecommendedPrice" />
+</process:Input>
+
+<process:Output  rdf:ID="_COFFEE">
+   <process:parameterType rdf:resource="http://127.0.0.1/ontology/my_ontology.owl#Coffee" />
+</process:Output>
+
+<process:Output  rdf:ID="_WHISKEY">
+   <process:parameterType rdf:resource="http://127.0.0.1/ontology/my_ontology.owl#Whiskey" />
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="RECOMMENDEDPRICE_COFFEEWHISKEY_GROUNDING">
+   <service:supportedBy rdf:resource="#RECOMMENDEDPRICE_COFFEEWHISKEY_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/breadorbiscuit_recPricetaxedpriceineuro_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_SERVICE">
+<service:presents rdf:resource="#BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_PROFILE"/>
+<service:describedBy rdf:resource="#BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_PROCESS"/>
+<service:supports rdf:resource="#BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_PROFILE">
+<service:isPresentedBy rdf:resource="#BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_SERVICE"/>
+<profile:serviceName xml:lang="en">
+BreadBiscuitPriceService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns recommended price and tax price (in euros) of certain bread or biscuit..
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_BREADORBISCUIT"/>
+<profile:hasOutput rdf:resource="#_RECOMMENDEDPRICEINEURO"/>
+<profile:hasOutput rdf:resource="#_TAXEDPRICEINEURO"/>
+
+<profile:has_process rdf:resource="BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_PROCESS_MODEL">
+<service:describes rdf:resource="#BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_SERVICE"/>
+<process:hasProcess rdf:resource="#BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_PROCESS">
+<service:describes rdf:resource="#BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_SERVICE"/>
+<process:hasInput  rdf:resource="#_BREADORBISCUIT"/>
+<process:hasOutput rdf:resource="#_RECOMMENDEDPRICEINEURO"/>
+<process:hasOutput rdf:resource="#_TAXEDPRICEINEURO"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_BREADORBISCUIT">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#BreadOrBiscuit</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_RECOMMENDEDPRICEINEURO">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/concept.owl#RecommendedPriceInEuro</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_TAXEDPRICEINEURO">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/concept.owl#TaxedPriceInEuro</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_GROUNDING">
+<service:supportedBy rdf:resource="#BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+</grounding:WsdlGrounding>
+
+<grounding:WsdlAtomicProcessGrounding rdf:about="#BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/BreadorbiscuitRecommendedpriceineurotaxedpriceineuro.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#BREADORBISCUIT_RECOMMENDEDPRICEINEUROTAXEDPRICEINEURO_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/BreadorbiscuitRecommendedpriceineurotaxedpriceineuro#get_RECOMMENDEDPRICEINEURO_TAXEDPRICEINEURO</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/BreadorbiscuitRecommendedpriceineurotaxedpriceineuro#BreadorbiscuitRecommendedpriceineurotaxedpriceineuroSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/BreadorbiscuitRecommendedpriceineurotaxedpriceineuro#get_RECOMMENDEDPRICEINEURO_TAXEDPRICEINEURORequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/BreadorbiscuitRecommendedpriceineurotaxedpriceineuro#get_RECOMMENDEDPRICEINEURO_TAXEDPRICEINEUROResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_BREADORBISCUIT"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/BreadorbiscuitRecommendedpriceineurotaxedpriceineuro#_BREADORBISCUIT</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_RECOMMENDEDPRICEINEURO"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/BreadorbiscuitRecommendedpriceineurotaxedpriceineuro#_RECOMMENDEDPRICEINEURO</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_TAXEDPRICEINEURO"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/BreadorbiscuitRecommendedpriceineurotaxedpriceineuro#_TAXEDPRICEINEURO</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

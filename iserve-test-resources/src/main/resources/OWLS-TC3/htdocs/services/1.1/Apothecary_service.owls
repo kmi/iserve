@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:process="http://www.daml.org/services/owl-s/1.1/Process.owl#"
+    xmlns="http://127.0.0.1/services/1.1/Apothecary_service.owls"
+    xmlns:service="http://www.daml.org/services/owl-s/1.1/Service.owl#"
+    xmlns:list="http://www.daml.org/services/owl-s/1.1/generic/ObjectList.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:profile="http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+    xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+    xmlns:grounding="http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns:expression="http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://127.0.0.1/services/1.1/Apothecary_service.owls">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/ApothecaryOntology.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl"/>
+  </owl:Ontology>
+  <service:Service rdf:ID="GetDrugInformationService">
+    <service:presents>
+      <profile:Profile rdf:ID="GetDrugInformationProfile"/>
+    </service:presents>
+    <service:describedBy>
+      <process:AtomicProcess rdf:ID="GetDrugInformationProcess"/>
+    </service:describedBy>
+    <service:supports>
+      <grounding:WsdlGrounding rdf:ID="GetDrugInformationGrounding"/>
+    </service:supports>
+  </service:Service>
+  <profile:Profile rdf:about="#GetDrugInformationProfile">
+    <service:presentedBy rdf:resource="#GetDrugInformationService"/>
+    <profile:serviceName>GetDrugInformation</profile:serviceName>
+    <profile:textDescription>Delivers the needed drug names for a treatment</profile:textDescription>
+    <profile:hasInput>
+      <process:Input rdf:ID="GetDrugInformation_TreatmentIInformation">
+        <rdfs:label>GetDrugInformation_TreatmentIInformation</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/ApothecaryOntology.owl#Treatment</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasOutput>
+      <process:Output rdf:ID="GetDrugInformation_RequiredDrugs">
+        <rdfs:label>GetDrugInformation_RequiredDrugs</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/ApothecaryOntology.owl#Drug</process:parameterType>
+      </process:Output>
+    </profile:hasOutput>
+  </profile:Profile>
+  <process:AtomicProcess rdf:about="#GetDrugInformationProcess">
+    <rdfs:label>GetDrugInformationProcess</rdfs:label>
+    <service:describes rdf:resource="#GetDrugInformationService"/>
+    <process:hasInput rdf:resource="#GetDrugInformation_TreatmentIInformation"/>
+    <process:hasOutput rdf:resource="#GetDrugInformation_RequiredDrugs"/>
+  </process:AtomicProcess>
+  <grounding:WsdlGrounding rdf:about="#GetDrugInformationGrounding">
+    <service:supportedBy rdf:resource="#GetDrugInformationService"/>
+    <grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="GetDrugInformationAtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#GetDrugInformationAtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Apothecary_service.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#GetDrugInformationProcess"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getdruginformation#getGetDrugInformation_RequiredDrugs</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getdruginformation#GetdruginformationSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Getdruginformation#getGetDrugInformation_RequiredDrugsRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Getdruginformation#getGetDrugInformation_RequiredDrugsResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetDrugInformation_TreatmentIInformation"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getdruginformation#GetDrugInformation_TreatmentIInformation</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetDrugInformation_RequiredDrugs"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getdruginformation#GetDrugInformation_RequiredDrugs</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+  <owl:Class rdf:about="/ontology/ApothecaryOntology.owl#Drug"/>
+  <owl:Class rdf:about="/ontology/ApothecaryOntology.owl#Treatment"/>
+</rdf:RDF>

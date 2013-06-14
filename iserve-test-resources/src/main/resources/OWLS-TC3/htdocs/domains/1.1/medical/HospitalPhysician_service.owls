@@ -1,0 +1,202 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:process="http://www.daml.org/services/owl-s/1.1/Process.owl#"
+    xmlns:service="http://www.daml.org/services/owl-s/1.1/Service.owl#"
+    xmlns:list="http://www.daml.org/services/owl-s/1.1/generic/ObjectList.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns="http://127.0.0.1/services/1.1/HospitalPhysician_service.owls"
+    xmlns:profile="http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+    xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+    xmlns:grounding="http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns:expression="http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://127.0.0.1/services/1.1/HospitalPhysician_service.owls">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.1/Process.owl"/>
+    <owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.1/Service.owl"/>
+    <owl:imports rdf:resource="/ontology/HospitalPhysicianOntology.owl"/>
+    <owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.1/Profile.owl"/>
+    <owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.1/Grounding.owl"/>
+  </owl:Ontology>
+  <service:Service rdf:ID="GetPatientMedicalRecordsService">
+    <service:presents>
+      <profile:Profile rdf:ID="GetPatientMedicalRecordsProfile"/>
+    </service:presents>
+    <service:describedBy>
+      <process:AtomicProcess rdf:ID="GetPatientMedicalRecordsProcess"/>
+    </service:describedBy>
+    <service:supports>
+      <grounding:WsdlGrounding rdf:ID="GetPatientMedicalRecordsGrounding"/>
+    </service:supports>
+  </service:Service>
+  <profile:Profile rdf:about="#GetPatientMedicalRecordsProfile">
+    <profile:hasInput>
+      <process:Input rdf:ID="GetPatientMedicalRecords_AuthorizationEndTime">
+        <rdfs:label>GetPatientMedicalRecords_AuthorizationEndTime</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#DateTime</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:serviceName>GetPatientMedicalRecords</profile:serviceName>
+    <profile:hasInput>
+      <process:Input rdf:ID="UpdatePatientMedicalRecords_Treatment">
+        <rdfs:label>UpdatePatientMedicalRecords_Treatment</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#Treatment</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasOutput>
+      <process:Output rdf:ID="GetPatientMedicalRecords_AuthorizedMedicalRecords">
+        <rdfs:label>GetPatientMedicalRecords_AuthorizedMedicalRecords</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#MedicalRecords</process:parameterType>
+      </process:Output>
+    </profile:hasOutput>
+    <profile:hasOutput>
+      <process:Output rdf:ID="UpdatePatientMedicalRecords_Acknowledgement">
+        <rdfs:label>UpdatePatientMedicalRecords_Acknowledgement</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#Acknowledgement</process:parameterType>
+      </process:Output>
+    </profile:hasOutput>
+    <profile:hasInput>
+      <process:Input rdf:ID="PatientTransport_PatientGpsPosition">
+        <rdfs:label>PatientTransport_PatientGpsPosition</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#GpsPosition</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <service:presentedBy rdf:resource="#GetPatientMedicalRecordsService"/>
+    <profile:hasInput>
+      <process:Input rdf:ID="GetPatientMedicalRecords_PatientHealthInsuranceNumber">
+        <rdfs:label>GetPatientMedicalRecords_PatientHealthInsuranceNumber</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#HealthInsuranceNumber</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasInput>
+      <process:Input rdf:ID="GetPatientMedicalRecords_PhysicianPassword">
+        <rdfs:label>GetPatientMedicalRecords_PhysicianPassword</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#AccountPassword</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:textDescription>This service retrieves the medical records of a patient. An authorization of the physician is required for that task.</profile:textDescription>
+    <profile:hasInput>
+      <process:Input rdf:ID="GetPatientMedicalRecords_PhysicianID">
+        <rdfs:label>GetPatientMedicalRecords_PhysicianID</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#PhysicianID</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+  </profile:Profile>
+  <process:AtomicProcess rdf:about="#GetPatientMedicalRecordsProcess">
+    <process:hasInput rdf:resource="#GetPatientMedicalRecords_PhysicianPassword"/>
+    <process:hasInput rdf:resource="#PatientTransport_PatientGpsPosition"/>
+    <rdfs:label>GetPatientMedicalRecordsProcess</rdfs:label>
+    <process:hasInput rdf:resource="#GetPatientMedicalRecords_PatientHealthInsuranceNumber"/>
+    <process:hasOutput rdf:resource="#GetPatientMedicalRecords_AuthorizedMedicalRecords"/>
+    <process:hasInput rdf:resource="#GetPatientMedicalRecords_PhysicianID"/>
+    <service:describes rdf:resource="#GetPatientMedicalRecordsService"/>
+    <process:hasOutput rdf:resource="#UpdatePatientMedicalRecords_Acknowledgement"/>
+    <process:hasInput rdf:resource="#UpdatePatientMedicalRecords_Treatment"/>
+    <process:hasInput rdf:resource="#GetPatientMedicalRecords_AuthorizationEndTime"/>
+  </process:AtomicProcess>
+  <grounding:WsdlGrounding rdf:about="#GetPatientMedicalRecordsGrounding">
+    <service:supportedBy rdf:resource="#GetPatientMedicalRecordsService"/>
+    <grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="GetPatientMedicalRecordsAtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#GetPatientMedicalRecordsAtomicProcessGrounding">
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getpatientmedicalrecords#getUpdatePatientMedicalRecords_AcknowledgementGetPatientMedicalRecords_AuthorizedMedicalRecords</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getpatientmedicalrecords#GetpatientmedicalrecordsSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetPatientMedicalRecords_PatientHealthInsuranceNumber"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getpatientmedicalrecords#GetPatientMedicalRecords_PatientHealthInsuranceNumber</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:owlsProcess rdf:resource="#GetPatientMedicalRecordsProcess"/>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#UpdatePatientMedicalRecords_Acknowledgement"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getpatientmedicalrecords#UpdatePatientMedicalRecords_Acknowledgement</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Getpatientmedicalrecords#getUpdatePatientMedicalRecords_AcknowledgementGetPatientMedicalRecords_AuthorizedMedicalRecordsRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetPatientMedicalRecords_PhysicianID"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getpatientmedicalrecords#GetPatientMedicalRecords_PhysicianID</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Getpatientmedicalrecords#getUpdatePatientMedicalRecords_AcknowledgementGetPatientMedicalRecords_AuthorizedMedicalRecordsResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/HospitalPhysician_service.wsdl</grounding:wsdlDocument>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetPatientMedicalRecords_PhysicianPassword"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getpatientmedicalrecords#GetPatientMedicalRecords_PhysicianPassword</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#PatientTransport_PatientGpsPosition"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getpatientmedicalrecords#PatientTransport_PatientGpsPosition</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetPatientMedicalRecords_AuthorizationEndTime"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getpatientmedicalrecords#GetPatientMedicalRecords_AuthorizationEndTime</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#GetPatientMedicalRecords_AuthorizedMedicalRecords"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getpatientmedicalrecords#GetPatientMedicalRecords_AuthorizedMedicalRecords</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#UpdatePatientMedicalRecords_Treatment"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Getpatientmedicalrecords#UpdatePatientMedicalRecords_Treatment</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+  </grounding:WsdlAtomicProcessGrounding>
+  <owl:Class rdf:about="/ontology/HospitalPhysicianOntology.owl#HealthInsuranceNumber"/>
+  <owl:Class rdf:about="/ontology/HospitalPhysicianOntology.owl#GpsPosition"/>
+  <owl:Class rdf:about="/ontology/HospitalPhysicianOntology.owl#PhysicianID"/>
+  <owl:Class rdf:about="/ontology/HospitalPhysicianOntology.owl#MedicalRecords"/>
+  <owl:Class rdf:about="/ontology/HospitalPhysicianOntology.owl#Acknowledgement"/>
+  <owl:Class rdf:about="/ontology/HospitalPhysicianOntology.owl#AccountPassword"/>
+  <owl:Class rdf:about="/ontology/HospitalPhysicianOntology.owl#DateTime"/>
+  <owl:Class rdf:about="/ontology/HospitalPhysicianOntology.owl#Treatment"/>
+</rdf:RDF>

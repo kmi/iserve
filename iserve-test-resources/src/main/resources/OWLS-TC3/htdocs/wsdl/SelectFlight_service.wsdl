@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns="http://127.0.0.1/wsdl/Selectflight" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://127.0.0.1/wsdl/Selectflight" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  name="Selectflight" targetNamespace="http://127.0.0.1/wsdl/Selectflight">
+    <wsdl:types>
+        <xsd:schema version="OWLS2WSDL Fri Jun 05 23:58:10 CEST 2009"
+                    targetNamespace="http://127.0.0.1/wsdl/Selectflight" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:annotation>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-ComplexType) of http://127.0.0.1/ontology/EMAOntology.owl#ListOfFlights"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/EMAOntology.owl#FlightNumber"/>
+            </xsd:annotation>
+            <xsd:element name="ListOfFlights" type="ListOfFlightsType"/>
+            <xsd:element name="FlightNumber" type="FlightNumberType"/>
+            <xsd:complexType name="ListOfFlightsType">
+                <xsd:sequence>
+                    <xsd:element name="ListOfFlights_consistsOf" type="Flight"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="FlightNumberType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="Flight">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="getSelectFlight_FlightNumberResponse">
+        <wsdl:part name="SelectFlight_FlightNumber" type="tns:FlightNumberType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getSelectFlight_FlightNumberRequest">
+        <wsdl:part name="SelectFlight_LiftOfFlights" type="tns:ListOfFlightsType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="SelectflightSoap">
+        <wsdl:operation name="getSelectFlight_FlightNumber">
+            <wsdl:input message="tns:getSelectFlight_FlightNumberRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:getSelectFlight_FlightNumberResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="SelectflightSoapBinding" type="SelectflightSoap">
+        <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getSelectFlight_FlightNumber">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/Selectflight"/>
+            </wsdl:input>
+            <wsdl:output>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/Selectflight"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="SelectflightService">
+        <wsdl:port name="SelectflightSoap" binding="SelectflightSoapBinding">
+            <wsdlsoap:address location="http://127.0.0.1/wsdl/Selectflight"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,206 @@
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<html>
+
+
+<meta name="generator" content="HTML Tidy, see www.w3.org">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title>Location Finder API - MetaCarta Web Services</title>
+<link href="http://ondemand.metacarta.com/base/base.css" rel="stylesheet" type="text/css">
+
+<div id="body">
+    <div id="header">
+        <div id="title">
+            <table>
+                <tbody>
+                <tr>
+                    <td><img valign="top" alt="MetaCarta Web Services"
+                             src="http://ondemand.metacarta.com/images/MetaCarta-Web-Services.png"></td>
+                    <td width="100%"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="side">
+        <div id="menu">
+            <div class="item"><a href="javascript:callProxy('http://ondemand.metacarta.com/')">Home</a></div>
+
+            <div class="item"><a href="javascript:callProxy('http://developers.metacarta.com/')">Developers</a></div>
+
+            <!-- div class="item"><a href="http://developers.metacarta.com/tutorial/">API Tutorials</a></div -->
+            <!-- div class="item"><a href="http://developers.metacarta.com/gallery/">Gallery</a></div -->
+            <div class="item"><a href="javascript:callProxy('http://accounts2.metacarta.com/')">Manage
+                your account</a></div>
+
+            <div class="item"><a href="javascript:callProxy('http://developers.metacarta.com/trial/signup/')">
+                Sign up for an account</a></div>
+
+            <!-- div class="item">API Documentation:
+                       <ul>
+                         <li><a href="http://ondemand.metacarta.com/?method=LocationFinder">LocationFinder</a></li>
+                         <li><a href="http://ondemand.metacarta.com/?method=QueryParser">QueryParser</a></li>
+                         <li><a href="http://ondemand.metacarta.com/?method=GeoTagger">GeoTagger</a></li>
+                         <li><a href="http://ondemand.metacarta.com/?method=Search">Search</a></li>
+                       </ul>
+
+                         </div -->
+            <!-- div class="item">Auth Documentation:
+                        <ul>
+                         <li><a href="http://ondemand.metacarta.com/?auth=basic">Basic Auth</a></li>
+                         <li><a href="http://ondemand.metacarta.com/?auth=session">Session Auth</a></li>
+                        </ul>
+                      </div -->
+            <!-- div class="item">Clients:
+                        <ul>
+                         <li><a href="http://ondemand.metacarta.com/?client=js">Javascript</a></li>
+                         <li><a href="http://ondemand.metacarta.com/?client=python">Python</a></li>
+                        </ul>
+                      </div -->
+            <!-- div class="item"><a href="http://ondemand.metacarta.com/explorer/">API Explorer</a></div -->
+            <div class="item"><a href="javascript:callProxy('http://accounts.metacarta.com/terms-of-use.html')">
+                API Terms of Use</a></div>
+        </div>
+    </div>
+
+    <div id="main">
+        <h2>OnDemand Users - Please read <a href="javascript:callProxy('http://ondemand.metacarta.com/')">this
+            important announcement!</a></h2>
+
+        <div class="service" id="MetaCarta_Location_Finder"
+             href="http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#EntityLocationService http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#LocationLookup http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#EntityMappingService"
+             rel="model">
+            <div class="operation" id="operation1" href="http://www.w3.org/ns/wsdl-extensions#SafeInteraction"
+                 rel="model"><h2><span class="label" id="label1">MetaCarta_Location_Finder</span></h2>
+
+                <p>The Location Finder offers output in 3 formats:</p>
+
+                <ul>
+                    <div class="output" id="output1"
+                         href="http://proton.semanticweb.org/2005/04/protont#Location http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#SpecificAddress http://fusion.cs.uni-jena.de/geographydataset.owl#Map"
+                         rel="model">
+                        <li>JSON -- The most fully featured format, the JSON format
+                            includes all the available information about the locations.
+                        </li>
+
+                        <li>KML -- A more lightweight format, but suitable for use in
+                            applications which use KML.
+                        </li>
+
+                        <li>PNG -- An image output format, which will return an image with
+                            the locations returned displayed on the image.
+                        </li>
+                    </div>
+                </ul>
+
+                <p>To form a request URL:</p>
+
+                <ul>
+                    <li>Start with
+                        http://ondemand.metacarta.com/webservices/LocationFinder/
+                    </li>
+
+                    <li>Append the format, one of JSON, KML, or PNG:
+                        <tt><span class="address" id="address1">http://ondemand.metacarta.com/webservices/LocationFinder/</span>JSON</tt>
+                    </li>
+
+                    <li>Choose an authentication method: one of <a
+                            href="javascript:callProxy('http://ondemand.metacarta.com///?auth=session')">
+                        session</a> or <a href="javascript:callProxy('http://ondemand.metacarta.com///?auth=basic')">
+                        basic</a>:
+                        <tt>http://ondemand.metacarta.com/webservices/LocationFinder/JSON/basic</tt></li>
+
+                    <li>Append the appropriate parameters to the request, as described
+                        below.
+                    </li>
+                </ul>
+
+                <h3>Examples of Usage</h3>
+
+                <ul>
+                    <li>
+                        <a href="javascript:callProxy('http://ondemand.metacarta.com/client_samples/locationfinder.js.html')">
+                            Javascript API Client: LocationFinder Lookup</a></li>
+
+                    <li>The <a href="javascript:callProxy('http://ondemand.metacarta.com/?client=python')">
+                        Python Client</a> comes with a built in LocationFinder
+                        example.
+                    </li>
+                </ul>
+
+                <h3>Request Parameters</h3>
+
+                <dl>
+                    <div class="input" id="input1">
+                        <dt>version:</dt>
+
+                        <dd>Required<br>
+                            <b>default value:</b> input other than the allowed value raises an
+                            error message<br>
+                            <b>allowed values:</b> 1.0.0<br>
+                            <b>usage:</b> The requestor must specify the API version they wish
+                            to use. The API requires a valid version parameter.
+                        </dd>
+
+                        <dt><span href="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#RawAddress" rel="model">query:</span>
+                        </dt>
+
+                        <dd>Required<br>
+                            <b>default value:</b> ''<br>
+                            <b>allowed values:</b> string<br>
+                            <b>usage:</b> The query string is the input for which a
+                            LocationFinder search is initiated.
+                        </dd>
+
+                        <dt>geometry:</dt>
+
+                        <dd>Optional<br>
+                            <b>default value:</b> None<br>
+                            <b>allowed values:</b> true, false<br>
+                            <b>usage:</b> If this is set to true, the LocationFinder will
+                            return geometries for features when available.
+                        </dd>
+
+                        <dt>width:</dt>
+
+                        <dd>Optional<br>
+                            <b>default value:</b> 512<br>
+                            <b>allowed values:</b> positive integer<br>
+                            <b>usage:</b> Determines the width of the image returned by the
+                            PNG LocationFinder output.
+                        </dd>
+
+                        <dt>height:</dt>
+
+                        <dd>Optional<br>
+                            <b>default value:</b> 383<br>
+                            <b>allowed values:</b> positive integer<br>
+                            <b>usage:</b> Determines the height of the image returned by the
+                            PNG LocationFinder output.
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer">©2006-2010 MetaCarta <span class="noprint">-
+<a href="javascript:callProxy('http://www.metacarta.com/')">MetaCarta
+    Home</a></span></div>
+</div>
+</html>

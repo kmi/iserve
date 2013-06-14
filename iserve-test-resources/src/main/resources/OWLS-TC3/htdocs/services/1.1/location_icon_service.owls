@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/location_icon_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="LOCATION_ICON_SERVICE">
+<service:presents rdf:resource="#LOCATION_ICON_PROFILE"/>
+<service:describedBy rdf:resource="#LOCATION_ICON_PROCESS"/>
+<service:supports rdf:resource="#LOCATION_ICON_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="LOCATION_ICON_PROFILE">
+<service:isPresentedBy rdf:resource="#LOCATION_ICON_SERVICE"/>
+<profile:serviceName xml:lang="en">
+LocationTravelInfo Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns a set of icons reprsent roadway signs in the given location, and
+also photographs of the location.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_LOCATION"/>
+<profile:hasOutput rdf:resource="#_ICON"/>
+
+<profile:has_process rdf:resource="LOCATION_ICON_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="LOCATION_ICON_PROCESS_MODEL">
+<service:describes rdf:resource="#LOCATION_ICON_SERVICE"/>
+<process:hasProcess rdf:resource="#LOCATION_ICON_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="LOCATION_ICON_PROCESS">
+<service:describes rdf:resource="#LOCATION_ICON_SERVICE"/>
+<process:hasInput  rdf:resource="#_LOCATION"/>
+<process:hasOutput rdf:resource="#_ICON"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_LOCATION">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/portal.owl#Location</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_ICON">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#Icon</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="LOCATION_ICON_GROUNDING">
+<service:supportedBy rdf:resource="#LOCATION_ICON_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="LOCATION_ICON_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#LOCATION_ICON_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/location_icon_service.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#LOCATION_ICON_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/LocationIcon#get_ICON</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/LocationIcon#LocationIconSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/LocationIcon#get_ICONRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/LocationIcon#get_ICONResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_LOCATION"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/LocationIcon#_LOCATION</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_ICON"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/LocationIcon#_ICON</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

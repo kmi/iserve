@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/generic-agentsports_destination_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/travel.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="GENERIC-AGENTSPORTS_DESTINATION_SERVICE">
+<service:presents rdf:resource="#GENERIC-AGENTSPORTS_DESTINATION_PROFILE"/>
+<service:describedBy rdf:resource="#GENERIC-AGENTSPORTS_DESTINATION_PROCESS_MODEL"/>
+<service:supports rdf:resource="#GENERIC-AGENTSPORTS_DESTINATION_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="GENERIC-AGENTSPORTS_DESTINATION_PROFILE">
+<service:isPresentedBy rdf:resource="#GENERIC-AGENTSPORTS_DESTINATION_SERVICE"/>
+<profile:serviceName xml:lang="en">
+SurfingGenericAgentDestinationService
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service returns destination of a reputable generic agent who is responsible
+for sports especially surfing.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_SPORTS"/>
+<profile:hasInput  rdf:resource="#_GENERIC-AGENT"/>
+<profile:hasOutput rdf:resource="#_DESTINATION"/>
+
+<profile:has_process rdf:resource="GENERIC-AGENTSPORTS_DESTINATION_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="GENERIC-AGENTSPORTS_DESTINATION_PROCESS_MODEL">
+<service:describes rdf:resource="#GENERIC-AGENTSPORTS_DESTINATION_SERVICE"/>
+<process:hasProcess rdf:resource="#GENERIC-AGENTSPORTS_DESTINATION_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="GENERIC-AGENTSPORTS_DESTINATION_PROCESS">
+<process:hasInput  rdf:resource="#_SPORTS"/>
+<process:hasInput  rdf:resource="#_GENERIC-AGENT"/>
+<process:hasOutput rdf:resource="#_DESTINATION"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_SPORTS">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/travel.owl#Sports" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Input rdf:ID="_GENERIC-AGENT">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/portal.owl#Generic-Agent" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_DESTINATION">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/travel.owl#Destination" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="GENERIC-AGENTSPORTS_DESTINATION_GROUNDING">
+<service:supportedBy rdf:resource="#GENERIC-AGENTSPORTS_DESTINATION_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/expensivecar_pricecolor_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/finance_th_web.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="EXPENSIVECAR_PRICECOLOR_SERVICE">
+<service:presents rdf:resource="#EXPENSIVECAR_PRICECOLOR_PROFILE"/>
+<service:describedBy rdf:resource="#EXPENSIVECAR_PRICECOLOR_PROCESS"/>
+<service:supports rdf:resource="#EXPENSIVECAR_PRICECOLOR_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="EXPENSIVECAR_PRICECOLOR_PROFILE">
+<service:isPresentedBy rdf:resource="#EXPENSIVECAR_PRICECOLOR_SERVICE"/>
+<profile:serviceName xml:lang="en">
+ExpensiveCar Price Color service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service provides a list of price of expensive car with its color.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_EXPENSIVECAR"/>
+<profile:hasOutput rdf:resource="#_PRICE"/>
+<profile:hasOutput rdf:resource="#_COLOR"/>
+
+<profile:has_process rdf:resource="EXPENSIVECAR_PRICECOLOR_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="EXPENSIVECAR_PRICECOLOR_PROCESS_MODEL">
+<service:describes rdf:resource="#EXPENSIVECAR_PRICECOLOR_SERVICE"/>
+<process:hasProcess rdf:resource="#EXPENSIVECAR_PRICECOLOR_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="EXPENSIVECAR_PRICECOLOR_PROCESS">
+<service:describes rdf:resource="#EXPENSIVECAR_PRICECOLOR_SERVICE"/>
+<process:hasInput  rdf:resource="#_EXPENSIVECAR"/>
+<process:hasOutput rdf:resource="#_PRICE"/>
+<process:hasOutput rdf:resource="#_COLOR"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_EXPENSIVECAR">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/my_ontology.owl#ExpensiveCar</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_PRICE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/concept.owl#Price</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_COLOR">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/my_ontology.owl#Color</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="EXPENSIVECAR_PRICECOLOR_GROUNDING">
+<service:supportedBy rdf:resource="#EXPENSIVECAR_PRICECOLOR_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="EXPENSIVECAR_PRICECOLOR_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+</grounding:WsdlGrounding>
+
+<grounding:WsdlAtomicProcessGrounding rdf:about="#EXPENSIVECAR_PRICECOLOR_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/ExpensivecarPricecolor.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#EXPENSIVECAR_PRICECOLOR_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ExpensivecarPricecolor#get_PRICE_COLOR</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ExpensivecarPricecolor#ExpensivecarPricecolorSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/ExpensivecarPricecolor#get_PRICE_COLORRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/ExpensivecarPricecolor#get_PRICE_COLORResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_EXPENSIVECAR"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ExpensivecarPricecolor#_EXPENSIVECAR</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_PRICE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ExpensivecarPricecolor#_PRICE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_COLOR"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/ExpensivecarPricecolor#_COLOR</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

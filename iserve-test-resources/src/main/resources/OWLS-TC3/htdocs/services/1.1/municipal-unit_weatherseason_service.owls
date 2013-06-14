@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/municipal-unit_weatherseason_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/portal.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="MUNICIPAL-UNIT_WEATHERSEASON_SERVICE">
+<service:presents rdf:resource="#MUNICIPAL-UNIT_WEATHERSEASON_PROFILE"/>
+<service:describedBy rdf:resource="#MUNICIPAL-UNIT_WEATHERSEASON_PROCESS"/>
+<service:supports rdf:resource="#MUNICIPAL-UNIT_WEATHERSEASON_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="MUNICIPAL-UNIT_WEATHERSEASON_PROFILE">
+<service:isPresentedBy rdf:resource="#MUNICIPAL-UNIT_WEATHERSEASON_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Municipal-Unit WeatherSeason Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This service informs about weatherseason in a given municipal-unit.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_MUNICIPAL-UNIT"/>
+<profile:hasOutput rdf:resource="#_WEATHERSEASON"/>
+
+<profile:has_process rdf:resource="MUNICIPAL-UNIT_WEATHERSEASON_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="MUNICIPAL-UNIT_WEATHERSEASON_PROCESS_MODEL">
+<service:describes rdf:resource="#MUNICIPAL-UNIT_WEATHERSEASON_SERVICE"/>
+<process:hasProcess rdf:resource="#MUNICIPAL-UNIT_WEATHERSEASON_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="MUNICIPAL-UNIT_WEATHERSEASON_PROCESS">
+<service:describes rdf:resource="#MUNICIPAL-UNIT_WEATHERSEASON_SERVICE"/>
+<process:hasInput  rdf:resource="#_MUNICIPAL-UNIT"/>
+<process:hasOutput rdf:resource="#_WEATHERSEASON"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_MUNICIPAL-UNIT">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/portal.owl#Municipal-Unit</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_WEATHERSEASON">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/Mid-level-ontology.owl#WeatherSeason</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+<grounding:WsdlGrounding rdf:ID="MUNICIPAL-UNIT_WEATHERSEASON_GROUNDING">
+<service:supportedBy rdf:resource="#MUNICIPAL-UNIT_WEATHERSEASON_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="MUNICIPAL-UNIT_WEATHERSEASON_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#MUNICIPAL-UNIT_WEATHERSEASON_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/municipal-unit_weatherseason_service.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#MUNICIPAL-UNIT_WEATHERSEASON_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Municipal-unitWeatherseason#get_WEATHERSEASON</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Municipal-unitWeatherseason#Municipal-unitWeatherseasonSoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Municipal-unitWeatherseason#get_WEATHERSEASONRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Municipal-unitWeatherseason#get_WEATHERSEASONResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_MUNICIPAL-UNIT"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Municipal-unitWeatherseason#_MUNICIPAL-UNIT</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_WEATHERSEASON"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Municipal-unitWeatherseason#_WEATHERSEASON</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

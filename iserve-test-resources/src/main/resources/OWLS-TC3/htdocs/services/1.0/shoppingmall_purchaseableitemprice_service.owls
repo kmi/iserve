@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/shoppingmall_purchaseableitemprice_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/extendedCamera.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="SHOPPINGMALL_PURCHASEABLEITEMPRICE_SERVICE">
+<service:presents rdf:resource="#SHOPPINGMALL_PURCHASEABLEITEMPRICE_PROFILE"/>
+<service:describedBy rdf:resource="#SHOPPINGMALL_PURCHASEABLEITEMPRICE_PROCESS_MODEL"/>
+<service:supports rdf:resource="#SHOPPINGMALL_PURCHASEABLEITEMPRICE_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="SHOPPINGMALL_PURCHASEABLEITEMPRICE_PROFILE">
+<service:isPresentedBy rdf:resource="#SHOPPINGMALL_PURCHASEABLEITEMPRICE_SERVICE"/>
+<profile:serviceName xml:lang="en">
+PSPP Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+PSPP service informs you about purchaseable items, films, cameras etc with its price
+from the certain shoppingmall.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_SHOPPINGMALL"/>
+<profile:hasOutput rdf:resource="#_PURCHASEABLEITEM"/>
+<profile:hasOutput rdf:resource="#_PRICE"/>
+
+<profile:has_process rdf:resource="SHOPPINGMALL_PURCHASEABLEITEMPRICE_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="SHOPPINGMALL_PURCHASEABLEITEMPRICE_PROCESS_MODEL">
+<service:describes rdf:resource="#SHOPPINGMALL_PURCHASEABLEITEMPRICE_SERVICE"/>
+<process:hasProcess rdf:resource="#SHOPPINGMALL_PURCHASEABLEITEMPRICE_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="SHOPPINGMALL_PURCHASEABLEITEMPRICE_PROCESS">
+<process:hasInput  rdf:resource="#_SHOPPINGMALL"/>
+<process:hasOutput rdf:resource="#_PURCHASEABLEITEM"/>
+<process:hasOutput rdf:resource="#_PRICE"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_SHOPPINGMALL">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl#ShoppingMall" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_PURCHASEABLEITEM">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/extendedCamera.owl#PurchaseableItem" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_PRICE">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/concept.owl#Price" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="SHOPPINGMALL_PURCHASEABLEITEMPRICE_GROUNDING">
+<service:supportedBy rdf:resource="#SHOPPINGMALL_PURCHASEABLEITEMPRICE_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

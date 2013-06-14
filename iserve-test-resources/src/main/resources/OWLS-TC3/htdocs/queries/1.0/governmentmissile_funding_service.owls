@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?> 
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#" 
+          xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"  
+          xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+          xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#" 
+          xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#" 
+          xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#" 
+          xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#" 
+          xml:base        = "http://127.0.0.1/queries/1.0/governmentmissile_funding_service.owls"> 
+ 
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="GOVERNMENTMISSILE_FUNDING_SERVICE"> 
+   <service:presents rdf:resource="#GOVERNMENTMISSILE_FUNDING_PROFILE"/> 
+   <service:describedBy rdf:resource="#GOVERNMENTMISSILE_FUNDING_PROCESS_MODEL"/> 
+   <service:supports rdf:resource="#GOVERNMENTMISSILE_FUNDING_GROUNDING"/> 
+</service:Service>
+
+<profile:Profile rdf:ID="GOVERNMENTMISSILE_FUNDING_PROFILE">
+   <service:isPresentedBy rdf:resource="#GOVERNMENTMISSILE_FUNDING_SERVICE"/>
+   <profile:serviceName xml:lang="en">
+      GovernmentMissileFundingService
+   </profile:serviceName>
+   <profile:textDescription xml:lang="en">
+      returns funding for missile by government.
+   </profile:textDescription>
+   <profile:hasInput  rdf:resource="#_MISSILE"/>
+   <profile:hasInput  rdf:resource="#_GOVERNMENT"/>
+   <profile:hasOutput rdf:resource="#_FUNDING"/>
+
+<profile:has_process rdf:resource="GOVERNMENTMISSILE_FUNDING_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="GOVERNMENTMISSILE_FUNDING_PROCESS_MODEL">
+   <service:describes rdf:resource="#GOVERNMENTMISSILE_FUNDING_SERVICE"/>
+   <process:hasProcess rdf:resource="#GOVERNMENTMISSILE_FUNDING_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="GOVERNMENTMISSILE_FUNDING_PROCESS">
+   <process:hasInput  rdf:resource="#_MISSILE"/>
+   <process:hasInput  rdf:resource="#_GOVERNMENT"/>
+   <process:hasOutput rdf:resource="#_FUNDING"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_MISSILE">
+   <process:parameterType rdf:resource="http://127.0.0.1/ontology/Mid-level-ontology.owl#Missile" />
+</process:Input>
+
+<process:Input rdf:ID="_GOVERNMENT">
+   <process:parameterType rdf:resource="http://127.0.0.1/ontology/SUMO.owl#Government" />
+</process:Input>
+
+<process:Output  rdf:ID="_FUNDING">
+   <process:parameterType rdf:resource="http://127.0.0.1/ontology/SUMO.owl#Funding" />
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="GOVERNMENTMISSILE_FUNDING_GROUNDING">
+   <service:supportedBy rdf:resource="#GOVERNMENTMISSILE_FUNDING_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

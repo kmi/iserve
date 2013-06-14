@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns:sawsdl="http://www.w3.org/ns/sawsdl" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema"
+                  xmlns:tns="http://www.serviceobjects.com/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  targetNamespace="http://www.serviceobjects.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <wsdl:types>
+        <s:schema elementFormDefault="qualified" targetNamespace="http://www.serviceobjects.com/">
+
+            <s:complexType name="Err">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="Desc" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Number" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Location" type="s:string"/>
+                </s:sequence>
+            </s:complexType>
+
+            <s:element name="GetZipInfo"
+                       sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#PostalCode">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="PostalCode" type="s:string"/>
+                        <s:element minOccurs="0" maxOccurs="1" name="LicenseKey" type="s:string"/>
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+
+            <s:element name="GetZipInfoResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="GetZipInfoResult" type="tns:ZipCodeInfo"/>
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+
+            <s:complexType name="ZipCodeInfo">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="Error" type="tns:Err"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="City" type="s:string"
+                               sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protonu#City"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="State" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="County" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="AreaCode" type="s:string"
+                               sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#PhoneCode"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="CityAbbreviation" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="CityType" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="CountyFIPS" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="StateFIPS" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="TimeZone" type="s:string"
+                               sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protonu#TimeZone"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="DayLightSavings" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="MSA" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="MD" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="CBSA" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="PMSA" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="DMA" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Latitude" type="s:string"
+                               sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protont#Location"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Longitude" type="s:string"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="Zip" type="s:string"
+                               sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#PostalCode"/>
+                    <s:element minOccurs="0" maxOccurs="1" name="CityAlternativeName" type="tns:ArrayOfString"/>
+                </s:sequence>
+            </s:complexType>
+
+            <s:complexType name="ArrayOfString">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string"/>
+                </s:sequence>
+            </s:complexType>
+
+            <s:element name="ZipCodeInfo" nillable="true" type="tns:ZipCodeInfo"/>
+
+        </s:schema>
+    </wsdl:types>
+
+    <wsdl:message name="GetZipInfoSoapIn">
+        <wsdl:part name="parameters" element="tns:GetZipInfo"/>
+    </wsdl:message>
+
+    <wsdl:message name="GetZipInfoSoapOut">
+        <wsdl:part name="parameters" element="tns:GetZipInfoResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="GetZipInfoHttpGetIn">
+        <wsdl:part name="PostalCode" type="s:string"
+                   sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#PostalCode"/>
+        <wsdl:part name="LicenseKey" type="s:string"/>
+    </wsdl:message>
+
+    <wsdl:message name="GetZipInfoHttpGetOut">
+        <wsdl:part name="Body" element="tns:ZipCodeInfo"/>
+    </wsdl:message>
+
+    <wsdl:message name="GetZipInfoHttpPostIn">
+        <wsdl:part name="PostalCode" type="s:string"
+                   sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#PostalCode"/>
+        <wsdl:part name="LicenseKey" type="s:string"/>
+    </wsdl:message>
+
+    <wsdl:message name="GetZipInfoHttpPostOut">
+        <wsdl:part name="Body" element="tns:ZipCodeInfo"/>
+    </wsdl:message>
+
+    <wsdl:portType name="DOTSGeoCoderSoap">
+        <wsdl:operation name="GetZipInfo" sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">Returns general information about a given US Zip
+                Code.
+            </documentation>
+            <wsdl:input message="tns:GetZipInfoSoapIn"/>
+            <wsdl:output message="tns:GetZipInfoSoapOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:portType name="DOTSGeoCoderHttpGet">
+        <wsdl:operation name="GetZipInfo" sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">Returns general information about a given US Zip
+                Code.
+            </documentation>
+            <wsdl:input message="tns:GetZipInfoHttpGetIn"/>
+            <wsdl:output message="tns:GetZipInfoHttpGetOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:portType name="DOTSGeoCoderHttpPost">
+        <wsdl:operation name="GetZipInfo" sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">Returns general information about a given US Zip
+                Code.
+            </documentation>
+            <wsdl:input message="tns:GetZipInfoHttpPostIn"/>
+            <wsdl:output message="tns:GetZipInfoHttpPostOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="DOTSGeoCoderSoap" type="tns:DOTSGeoCoderSoap">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="GetZipInfo">
+            <soap:operation soapAction="http://www.serviceobjects.com/GetZipInfo" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:binding name="DOTSGeoCoderHttpGet" type="tns:DOTSGeoCoderHttpGet">
+        <http:binding verb="GET"/>
+        <wsdl:operation name="GetZipInfo">
+            <http:operation location="/GetZipInfo"/>
+            <wsdl:input>
+                <http:urlEncoded/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:mimeXml part="Body"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:binding name="DOTSGeoCoderHttpPost" type="tns:DOTSGeoCoderHttpPost">
+        <http:binding verb="POST"/>
+        <wsdl:operation name="GetZipInfo">
+            <http:operation location="/GetZipInfo"/>
+            <wsdl:input>
+                <mime:content type="application/x-www-form-urlencoded"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:mimeXml part="Body"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service sawsdl:modelReference=" http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#LocationLookup"
+                  name="DOTSGeoCoder">
+        <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">For more information on our web services, visit us at
+            <a href='http://www.serviceobjects.com/products/default.asp' target='new'>our website</a>
+            <br/>
+            <br/>
+            <a href='http://www.serviceobjects.com' target='new'>
+                <img src='http://www.serviceobjects.com/images/so_logo_2_inside.gif' border='0'/>
+            </a>
+        </documentation>
+        <wsdl:port name="DOTSGeoCoderSoap" binding="tns:DOTSGeoCoderSoap">
+            <soap:address location="http://ws2.serviceobjects.net/gcr/GeoCoder.asmx"/>
+        </wsdl:port>
+        <wsdl:port name="DOTSGeoCoderHttpGet" binding="tns:DOTSGeoCoderHttpGet">
+            <http:address location="http://ws2.serviceobjects.net/gcr/GeoCoder.asmx"/>
+        </wsdl:port>
+        <wsdl:port name="DOTSGeoCoderHttpPost" binding="tns:DOTSGeoCoderHttpPost">
+            <http:address location="http://ws2.serviceobjects.net/gcr/GeoCoder.asmx"/>
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>

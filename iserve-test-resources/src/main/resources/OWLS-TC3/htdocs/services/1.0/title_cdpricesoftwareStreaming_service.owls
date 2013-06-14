@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.0/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.0/Process.owl#"
+xmlns:profile   = "http://www.daml.org/services/owl-s/1.0/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.0/Grounding.owl#"
+xml:base        = "http://127.0.0.1/services/1.0/title_cdpricesoftwareStreaming_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Service.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Process.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Profile.owl" />
+<owl:imports rdf:resource="http://www.daml.org/services/owl-s/1.0/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/my_ontology.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/univ-bench.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/books.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="TITLE_CDPRICESOFTWARE_SERVICE">
+<service:presents rdf:resource="#TITLE_CDPRICESOFTWARE_PROFILE"/>
+<service:describedBy rdf:resource="#TITLE_CDPRICESOFTWARE_PROCESS_MODEL"/>
+<service:supports rdf:resource="#TITLE_CDPRICESOFTWARE_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="TITLE_CDPRICESOFTWARE_PROFILE">
+<service:isPresentedBy rdf:resource="#TITLE_CDPRICESOFTWARE_SERVICE"/>
+<profile:serviceName xml:lang="en">
+CD Price Software Title
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+Self-service solution for video creation and encoding into streaming format.
+This service finds a software for a title, it also returns its availability as CD and price.
+</profile:textDescription>
+<profile:hasOutput rdf:resource="#_CD"/>
+<profile:hasOutput rdf:resource="#_PRICE"/>
+<profile:hasOutput rdf:resource="#_SOFTWARE"/>
+<profile:hasInput  rdf:resource="#_TITLE"/>
+
+<profile:has_process rdf:resource="TITLE_CDPRICESOFTWARE_PROCESS" /></profile:Profile>
+
+<process:ProcessModel rdf:ID="TITLE_CDPRICESOFTWARE_PROCESS_MODEL">
+<service:describes rdf:resource="#TITLE_CDPRICESOFTWARE_SERVICE"/>
+<process:hasProcess rdf:resource="#TITLE_CDPRICESOFTWARE_PROCESS"/>
+</process:ProcessModel>
+
+<process:AtomicProcess rdf:ID="TITLE_CDPRICESOFTWARE_PROCESS">
+<process:hasOutput rdf:resource="#_CD"/>
+<process:hasOutput rdf:resource="#_PRICE"/>
+<process:hasOutput rdf:resource="#_SOFTWARE"/>
+<process:hasInput  rdf:resource="#_TITLE"/>
+</process:AtomicProcess>
+
+<process:Output  rdf:ID="_CD">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/my_ontology.owl#CD" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_PRICE">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/concept.owl#Price" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_SOFTWARE">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/univ-bench.owl#Software" />
+  <rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Input rdf:ID="_TITLE">
+<process:parameterType rdf:resource="http://127.0.0.1/ontology/books.owl#Title" />
+  <rdfs:label></rdfs:label>
+</process:Input>
+
+<grounding:WsdlGrounding rdf:ID="TITLE_CDPRICESOFTWARE_GROUNDING">
+<service:supportedBy rdf:resource="#TITLE_CDPRICESOFTWARE_SERVICE"/>
+</grounding:WsdlGrounding>
+
+</rdf:RDF>

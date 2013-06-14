@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://127.0.0.1/wsdl/EmployeeAddress" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  name="EmployeeAddress" targetNamespace="http://127.0.0.1/wsdl/EmployeeAddress">
+    <wsdl:types>
+        <xsd:schema version="OWLS2WSDL Fri May 15 20:39:09 CEST 2009"
+                    targetNamespace="http://127.0.0.1/wsdl/EmployeeAddress"
+                    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:annotation>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-ComplexType) of http://127.0.0.1/ontology/portal.owl#Employee"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-ComplexType) of http://127.0.0.1/ontology/portal.owl#Address"/>
+            </xsd:annotation>
+            <xsd:element name="Employee" type="tns:EmployeeType"/>
+            <xsd:element name="Address" type="tns:AddressType"/>
+            <xsd:complexType name="EmployeeType">
+                <xsd:sequence>
+                    <xsd:element name="has-job-title" type="xsd:string"/>
+                    <xsd:element name="has-contract-type" type="tns:Employment-Contract-Type"/>
+                    <xsd:element name="works-in-unit" type="tns:Organization-Unit"/>
+                    <xsd:element name="works-for" type="tns:Organization"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Government">
+                <xsd:sequence>
+                    <xsd:element name="government-of-country" type="tns:Country"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Currency">
+                <xsd:sequence>
+                    <xsd:element name="issued-by" type="tns:Government"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Organization">
+                <xsd:sequence>
+                    <xsd:element name="has-size" type="tns:OrganizationOrganization-Size"/>
+                    <xsd:element name="organization-part-of" type="tns:Organization"/>
+                    <xsd:element name="has-sub-unit" type="tns:Organization-Unit"/>
+                    <xsd:element name="affiliated-person" type="tns:Affiliated-Person"/>
+                    <xsd:element name="headed-by" type="tns:Affiliated-Person"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Capital-City">
+                <xsd:sequence>
+                    <xsd:element name="is-capital-of" type="tns:Country"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Affiliated-Person">
+                <xsd:sequence>
+                    <xsd:element name="has-affiliation" type="tns:Organization"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Country">
+                <xsd:sequence>
+                    <xsd:element name="has-government" type="tns:Government"/>
+                    <xsd:element name="has-currency" type="tns:Currency"/>
+                    <xsd:element name="has-capital" type="tns:Capital-City"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="AddressType">
+                <xsd:sequence>
+                    <xsd:element name="address-pretty-label" type="xsd:string"/>
+                    <xsd:element name="address-building" type="xsd:string"/>
+                    <xsd:element name="address-street" type="xsd:string"/>
+                    <xsd:element name="address-number" type="xsd:nonNegativeInteger"/>
+                    <xsd:element name="address-postcode" type="xsd:string"/>
+                    <xsd:element name="address-area" type="tns:Local-District"/>
+                    <xsd:element name="address-region" type="tns:Geographical-Region"/>
+                    <xsd:element name="address-country" type="tns:Country"/>
+                    <xsd:element name="address-city-or-village" type="tns:Municipal-Unit"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="Local-District">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="Municipal-Unit">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="Geographical-Region">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="OrganizationOrganization-Size">
+                <xsd:restriction base="tns:Organization-Size">
+                    <xsd:enumeration value="large-size"/>
+                    <xsd:enumeration value="medium-size"/>
+                    <xsd:enumeration value="micro-size"/>
+                    <xsd:enumeration value="small-size"/>
+                    <xsd:enumeration value="very-large-size"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="Organization-Size">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="medium-size"/>
+                    <xsd:enumeration value="small-size"/>
+                    <xsd:enumeration value="micro-size"/>
+                    <xsd:enumeration value="large-size"/>
+                    <xsd:enumeration value="very-large-size"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="Employment-Contract-Type">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="Temporary-Contract"/>
+                    <xsd:enumeration value="Permanent-Contract"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="Organization-Unit">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="get_ADDRESSRequest">
+        <wsdl:part name="_EMPLOYEE" type="tns:EmployeeType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="get_ADDRESSResponse">
+        <wsdl:part name="_ADDRESS" type="tns:AddressType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="EmployeeAddressSoap">
+        <wsdl:operation name="get_ADDRESS">
+            <wsdl:input message="tns:get_ADDRESSRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:get_ADDRESSResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="EmployeeAddressSoapBinding" type="tns:EmployeeAddressSoap">
+        <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="get_ADDRESS">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/EmployeeAddress"/>
+            </wsdl:input>
+            <wsdl:output>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/EmployeeAddress"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="EmployeeAddressService">
+        <wsdl:port name="EmployeeAddressSoap" binding="tns:EmployeeAddressSoapBinding">
+            <wsdlsoap:address location="http://127.0.0.1/wsdl/EmployeeAddress"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

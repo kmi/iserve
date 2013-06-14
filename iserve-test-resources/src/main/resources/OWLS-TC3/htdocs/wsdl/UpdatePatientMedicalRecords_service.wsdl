@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns="http://127.0.0.1/wsdl/Updatepatientmedicalrecords"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://127.0.0.1/wsdl/Updatepatientmedicalrecords"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  name="Updatepatientmedicalrecords"
+                  targetNamespace="http://127.0.0.1/wsdl/Updatepatientmedicalrecords">
+    <wsdl:types>
+        <xsd:schema version="OWLS2WSDL Sun Jun 07 19:24:53 CEST 2009"
+                    targetNamespace="http://127.0.0.1/wsdl/Updatepatientmedicalrecords"
+                    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:annotation>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#GpsPosition"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#Treatment"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#Authorization"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#AccountPassword"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#PhysicianID"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#HealthInsuranceNumber"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#Diagnosis"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#Drug"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#DateTime"/>
+                <xsd:documentation
+                        source="Translation (OWL2XSD-SimpleType) of http://127.0.0.1/ontology/HospitalPhysicianOntology.owl#Acknowledgement"/>
+            </xsd:annotation>
+            <xsd:element name="Acknowledgement" type="AcknowledgementType"/>
+            <xsd:element name="AccountPassword" type="AccountPasswordType"/>
+            <xsd:element name="GpsPosition" type="GpsPositionType"/>
+            <xsd:element name="Authorization" type="AuthorizationType"/>
+            <xsd:element name="Treatment" type="TreatmentType"/>
+            <xsd:element name="HealthInsuranceNumber" type="HealthInsuranceNumberType"/>
+            <xsd:element name="DateTime" type="DateTimeType"/>
+            <xsd:element name="Diagnosis" type="DiagnosisType"/>
+            <xsd:element name="Drug" type="DrugType"/>
+            <xsd:element name="PhysicianID" type="PhysicianIDType"/>
+            <xsd:simpleType name="GpsPositionType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="AcknowledgementType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="PhysicianIDType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="DiagnosisType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="DrugType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="AuthorizationType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="TreatmentType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="DateTimeType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="HealthInsuranceNumberType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="AccountPasswordType">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="getUpdatePatientMedicalRecords_AcknowledgementResponse">
+        <wsdl:part name="UpdatePatientMedicalRecords_Acknowledgement" type="tns:AcknowledgementType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getUpdatePatientMedicalRecords_AcknowledgementRequest">
+        <wsdl:part name="PatientTransport_PatientGpsPosition" type="tns:GpsPositionType">
+        </wsdl:part>
+        <wsdl:part name="UpdatePatientMedicalRecords_Treatment" type="tns:TreatmentType">
+        </wsdl:part>
+        <wsdl:part name="UpdatePatientMedicalRecords_PhysicianAuthorization" type="tns:AuthorizationType">
+        </wsdl:part>
+        <wsdl:part name="UpdatePatientMedicalRecords_PhysicianPassword" type="tns:AccountPasswordType">
+        </wsdl:part>
+        <wsdl:part name="UpdatePatientMedicalRecords_PhysicianID" type="tns:PhysicianIDType">
+        </wsdl:part>
+        <wsdl:part name="UpdatePatientMedicalRecords_PatientHealthInsuranceNumber" type="tns:HealthInsuranceNumberType">
+        </wsdl:part>
+        <wsdl:part name="UpdatePatientMedicalRecords_Diagnosis" type="tns:DiagnosisType">
+        </wsdl:part>
+        <wsdl:part name="UpdatePatientMedicalRecords_UsedDrugs" type="tns:DrugType">
+        </wsdl:part>
+        <wsdl:part name="UpdatePatientMedicalRecords_TreatmentDateTime" type="tns:DateTimeType">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="UpdatepatientmedicalrecordsSoap">
+        <wsdl:operation name="getUpdatePatientMedicalRecords_Acknowledgement">
+            <wsdl:input message="tns:getUpdatePatientMedicalRecords_AcknowledgementRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:getUpdatePatientMedicalRecords_AcknowledgementResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="UpdatepatientmedicalrecordsSoapBinding" type="UpdatepatientmedicalrecordsSoap">
+        <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getUpdatePatientMedicalRecords_Acknowledgement">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/Updatepatientmedicalrecords"/>
+            </wsdl:input>
+            <wsdl:output>
+                <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                               namespace="http://127.0.0.1/wsdl/Updatepatientmedicalrecords"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="UpdatepatientmedicalrecordsService">
+        <wsdl:port name="UpdatepatientmedicalrecordsSoap" binding="UpdatepatientmedicalrecordsSoapBinding">
+            <wsdlsoap:address location="http://127.0.0.1/wsdl/Updatepatientmedicalrecords"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

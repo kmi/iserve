@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<rdf:RDF  xmlns:owl       = "http://www.w3.org/2002/07/owl#"
+xmlns:rdfs      = "http://www.w3.org/2000/01/rdf-schema#"
+xmlns:rdf       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:service   = "http://www.daml.org/services/owl-s/1.1/Service.owl#"
+xmlns:process   = "http://www.daml.org/services/owl-s/1.1/Process.owl#"
+xmlns:profile    = "http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+xmlns:grounding = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+
+xml:base        = "http://127.0.0.1/services/1.1/meat_taxedpricequantity_service.owls">
+
+<owl:Ontology rdf:about="">
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/SUMO.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/concept.owl" />
+<owl:imports rdf:resource="http://127.0.0.1/ontology/support.owl" />
+</owl:Ontology>
+
+<service:Service rdf:ID="MEAT_TAXEDPRICEQUANTITY_SERVICE">
+<service:presents rdf:resource="#MEAT_TAXEDPRICEQUANTITY_PROFILE"/>
+<service:describedBy rdf:resource="#MEAT_TAXEDPRICEQUANTITY_PROCESS"/>
+<service:supports rdf:resource="#MEAT_TAXEDPRICEQUANTITY_GROUNDING"/>
+</service:Service>
+
+<profile:Profile rdf:ID="MEAT_TAXEDPRICEQUANTITY_PROFILE">
+<service:isPresentedBy rdf:resource="#MEAT_TAXEDPRICEQUANTITY_SERVICE"/>
+<profile:serviceName xml:lang="en">
+Meat TaxedPrice Quantity Service
+</profile:serviceName>
+<profile:textDescription xml:lang="en">
+This services informs the taxedprice and the quatity of a given meat item.
+</profile:textDescription>
+<profile:hasInput  rdf:resource="#_MEAT"/>
+<profile:hasOutput rdf:resource="#_TAXEDPRICE"/>
+<profile:hasOutput rdf:resource="#_QUANTITY"/>
+
+<profile:has_process rdf:resource="MEAT_TAXEDPRICEQUANTITY_PROCESS" /></profile:Profile>
+
+<!--<process:ProcessModel rdf:ID="MEAT_TAXEDPRICEQUANTITY_PROCESS_MODEL">
+<service:describes rdf:resource="#MEAT_TAXEDPRICEQUANTITY_SERVICE"/>
+<process:hasProcess rdf:resource="#MEAT_TAXEDPRICEQUANTITY_PROCESS"/>
+</process:ProcessModel>-->
+
+<process:AtomicProcess rdf:ID="MEAT_TAXEDPRICEQUANTITY_PROCESS">
+<service:describes rdf:resource="#MEAT_TAXEDPRICEQUANTITY_SERVICE"/>
+<process:hasInput  rdf:resource="#_MEAT"/>
+<process:hasOutput rdf:resource="#_TAXEDPRICE"/>
+<process:hasOutput rdf:resource="#_QUANTITY"/>
+</process:AtomicProcess>
+
+<process:Input rdf:ID="_MEAT">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/SUMO.owl#Meat</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Input>
+
+<process:Output  rdf:ID="_TAXEDPRICE">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/concept.owl#TaxedPrice</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<process:Output  rdf:ID="_QUANTITY">
+<process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://127.0.0.1/ontology/support.owl#Quantity</process:parameterType>
+<rdfs:label></rdfs:label>
+</process:Output>
+
+<grounding:WsdlGrounding rdf:ID="MEAT_TAXEDPRICEQUANTITY_GROUNDING">
+<service:supportedBy rdf:resource="#MEAT_TAXEDPRICEQUANTITY_SERVICE"/>
+<grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="MEAT_TAXEDPRICEQUANTITY_AtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#MEAT_TAXEDPRICEQUANTITY_AtomicProcessGrounding">
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/meat_taxedpricequantity_service.wsdl</grounding:wsdlDocument>
+    <grounding:owlsProcess rdf:resource="#MEAT_TAXEDPRICEQUANTITY_PROCESS"/>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MeatTaxedpricequantity#get_TAXEDPRICE_QUANTITY</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MeatTaxedpricequantity#MeatTaxedpricequantitySoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/MeatTaxedpricequantity#get_TAXEDPRICE_QUANTITYRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/MeatTaxedpricequantity#get_TAXEDPRICE_QUANTITYResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_MEAT"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MeatTaxedpricequantity#_MEAT</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_TAXEDPRICE"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MeatTaxedpricequantity#_TAXEDPRICE</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#_QUANTITY"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/MeatTaxedpricequantity#_QUANTITY</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+  </grounding:WsdlAtomicProcessGrounding>
+
+</rdf:RDF>

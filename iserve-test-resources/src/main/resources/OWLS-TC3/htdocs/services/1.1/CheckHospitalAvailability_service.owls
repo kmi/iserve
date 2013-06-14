@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:process="http://www.daml.org/services/owl-s/1.1/Process.owl#"
+    xmlns:service="http://www.daml.org/services/owl-s/1.1/Service.owl#"
+    xmlns:list="http://www.daml.org/services/owl-s/1.1/generic/ObjectList.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:profile="http://www.daml.org/services/owl-s/1.1/Profile.owl#"
+    xmlns="http://127.0.0.1/services/1.1/CheckHospitalAvailability_service.owls"
+    xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+    xmlns:grounding="http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns:expression="http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://127.0.0.1/services/1.1/CheckHospitalAvailability_service.owls">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Process.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/HospitalReceptionOntology.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Grounding.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Service.owl"/>
+    <owl:imports rdf:resource="http://127.0.0.1/ontology/Profile.owl"/>
+  </owl:Ontology>
+  <service:Service rdf:ID="CheckHospitalAvailabilityService">
+    <service:presents>
+      <profile:Profile rdf:ID="CheckHospitalAvailabilityProfile"/>
+    </service:presents>
+    <service:describedBy>
+      <process:AtomicProcess rdf:ID="CheckHospitalAvailabilityProcess"/>
+    </service:describedBy>
+    <service:supports>
+      <grounding:WsdlGrounding rdf:ID="CheckHospitalAvailabilityGrounding"/>
+    </service:supports>
+  </service:Service>
+  <profile:Profile rdf:about="#CheckHospitalAvailabilityProfile">
+    <service:presentedBy rdf:resource="#CheckHospitalAvailabilityService"/>
+    <profile:serviceName>CheckHospitalAvailability</profile:serviceName>
+    <profile:textDescription>The service checks, whether the hospital has capabilities to treat a patient on the given date with the desired treatment.</profile:textDescription>
+    <profile:hasInput>
+      <process:Input rdf:ID="CheckPersonnelAvailability_TreatmentRecomendation">
+        <rdfs:label>CheckPersonnelAvailability_TreatmentRecomendation</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HospitalReceptionOntology.owl#Treatment</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasInput>
+      <process:Input rdf:ID="CheckHospitalAvailability_TreatmentRecomendation">
+        <rdfs:label>CheckHospitalAvailability_TreatmentRecomendation</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HospitalReceptionOntology.owl#Treatment</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasInput>
+      <process:Input rdf:ID="CheckHospitalAvailability_TreatmentDate">
+        <rdfs:label>CheckHospitalAvailability_TreatmentDate</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HospitalReceptionOntology.owl#DateTime</process:parameterType>
+      </process:Input>
+    </profile:hasInput>
+    <profile:hasOutput>
+      <process:Output rdf:ID="CheckHospitalAvailability_AvailabilityResponse">
+        <rdfs:label>CheckHospitalAvailability_AvailabilityResponse</rdfs:label>
+        <process:parameterType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/ontology/HospitalReceptionOntology.owl#AvailabilityResponse</process:parameterType>
+      </process:Output>
+    </profile:hasOutput>
+  </profile:Profile>
+  <process:AtomicProcess rdf:about="#CheckHospitalAvailabilityProcess">
+    <rdfs:label>CheckHospitalAvailabilityProcess</rdfs:label>
+    <service:describes rdf:resource="#CheckHospitalAvailabilityService"/>
+    <process:hasInput rdf:resource="#CheckPersonnelAvailability_TreatmentRecomendation"/>
+    <process:hasInput rdf:resource="#CheckHospitalAvailability_TreatmentRecomendation"/>
+    <process:hasInput rdf:resource="#CheckHospitalAvailability_TreatmentDate"/>
+    <process:hasOutput rdf:resource="#CheckHospitalAvailability_AvailabilityResponse"/>
+  </process:AtomicProcess>
+  <grounding:WsdlGrounding rdf:about="#CheckHospitalAvailabilityGrounding">
+    <service:supportedBy rdf:resource="#CheckHospitalAvailabilityService"/>
+    <grounding:hasAtomicProcessGrounding>
+      <grounding:WsdlAtomicProcessGrounding rdf:ID="CheckHospitalAvailabilityAtomicProcessGrounding"/>
+    </grounding:hasAtomicProcessGrounding>
+  </grounding:WsdlGrounding>
+  <grounding:WsdlAtomicProcessGrounding rdf:about="#CheckHospitalAvailabilityAtomicProcessGrounding">
+    <grounding:owlsProcess rdf:resource="#CheckHospitalAvailabilityProcess"/>
+    <grounding:wsdlOutputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Checkhospitalavailability#getCheckHospitalAvailability_AvailabilityResponseResponse</grounding:wsdlOutputMessage>
+    <grounding:wsdlOutput>
+      <grounding:WsdlOutputMessageMap>
+        <grounding:owlsParameter rdf:resource="#CheckHospitalAvailability_AvailabilityResponse"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Checkhospitalavailability#CheckHospitalAvailability_AvailabilityResponse</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlOutputMessageMap>
+    </grounding:wsdlOutput>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#CheckHospitalAvailability_TreatmentDate"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Checkhospitalavailability#CheckHospitalAvailability_TreatmentDate</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlOperation>
+      <grounding:WsdlOperationRef>
+        <grounding:operation rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Checkhospitalavailability#getCheckHospitalAvailability_AvailabilityResponse</grounding:operation>
+        <grounding:portType rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Checkhospitalavailability#CheckhospitalavailabilitySoap</grounding:portType>
+      </grounding:WsdlOperationRef>
+    </grounding:wsdlOperation>
+    <grounding:wsdlInputMessage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Checkhospitalavailability#getCheckHospitalAvailability_AvailabilityResponseRequest</grounding:wsdlInputMessage>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#CheckPersonnelAvailability_TreatmentRecomendation"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Checkhospitalavailability#CheckPersonnelAvailability_TreatmentRecomendation</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+    <grounding:wsdlDocument rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+    >http://127.0.0.1/wsdl/Checkhospitalavailability.wsdl</grounding:wsdlDocument>
+    <grounding:wsdlInput>
+      <grounding:WsdlInputMessageMap>
+        <grounding:owlsParameter rdf:resource="#CheckHospitalAvailability_TreatmentRecomendation"/>
+        <grounding:wsdlMessagePart rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI"
+        >http://127.0.0.1/wsdl/Checkhospitalavailability#CheckHospitalAvailability_TreatmentRecomendation</grounding:wsdlMessagePart>
+        <grounding:xsltTransformationString>None (XSL)</grounding:xsltTransformationString>
+      </grounding:WsdlInputMessageMap>
+    </grounding:wsdlInput>
+  </grounding:WsdlAtomicProcessGrounding>
+  <owl:Class rdf:about="/ontology/HospitalReceptionOntology.owl#AvailabilityResponse"/>
+  <owl:Class rdf:about="/ontology/HospitalReceptionOntology.owl#Treatment"/>
+  <owl:Class rdf:about="/ontology/HospitalReceptionOntology.owl#DateTime"/>
+</rdf:RDF>
