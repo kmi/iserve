@@ -71,8 +71,8 @@ public class ServiceReaderImplTest {
         // Add all the test collections
         log.info("Reading test collections");
         for (URI testFolder : testFolders) {
-            File dir = new File(testFolder);
             log.info("Test collection: " + testFolder);
+            File dir = new File(testFolder);
 
             // Test reading services
             List<Service> services;
