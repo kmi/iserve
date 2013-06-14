@@ -16,27 +16,24 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.FileUtil;
-import uk.ac.open.kmi.iserve.commons.io.IOUtil;
 import uk.ac.open.kmi.iserve.sal.ServiceFormat;
 import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DocumentManagerFileSystem implements DocumentManager {
 
-    private static final Logger log = LoggerFactory.getLogger(ManagerSingleton.class);
+    private static final Logger log = LoggerFactory.getLogger(DocumentManagerFileSystem.class);
 
     private SystemConfiguration configuration;
 
@@ -162,9 +159,10 @@ public class DocumentManagerFileSystem implements DocumentManager {
         try {
             URI internalDocUri = this.getDocumentInternalUri(newDocUri);
             File file = new File(internalDocUri);
+            FileOutputStream out = new FileOutputStream(file);
             FileUtil.createDirIfNotExists(file.getParentFile());
-            IOUtil.writeStream(docContent, file);
-            log.info("Document created - " + file.getName());
+            int size = IOUtils.copy(docContent, out);
+            log.info("Document created - " + file.getName() + " - " + size + " bytes.");
             log.info("Document URI - " + internalDocUri.toASCIIString());
         } catch (IOException e) {
             throw new DocumentException("Unable to add document to service.", e);

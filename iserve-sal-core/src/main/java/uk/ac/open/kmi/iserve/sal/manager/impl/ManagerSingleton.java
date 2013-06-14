@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.ServiceReader;
 import uk.ac.open.kmi.iserve.commons.io.ServiceReaderImpl;
+import uk.ac.open.kmi.iserve.commons.io.Syntax;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.sal.ServiceFormat;
 import uk.ac.open.kmi.iserve.sal.ServiceFormatDetector;
@@ -32,7 +33,6 @@ import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.*;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -157,31 +157,32 @@ public class ManagerSingleton implements iServeManager {
             throw new ServiceException("Unable to import service. Format unsupported.");
         }
 
-        // Ensure we have a stream that we can read several times
-        InputStream stream = serviceContent.markSupported() ? serviceContent : new BufferedInputStream(serviceContent);
-
-        // We have a suitable importer
-        ServiceImporter importer = importerMap.get(format);
-
         URI sourceDocUri = null;
         URI serviceUri = null;
+        InputStream localStream = null;
         try {
             // 1st Store the document
-            stream.mark(HALF_MB); // mark the init
-            sourceDocUri = this.docManager.createDocument(stream, format);
-            stream.reset(); // reset the stream
+            sourceDocUri = this.docManager.createDocument(serviceContent, format);
             if (sourceDocUri == null)
                 throw new ServiceException("Unable to save service document. Operation aborted.");
 
             // 2nd Parse and Transform the document
+            // The original stream may be a one of stream so save it first and read locally
+            localStream = this.docManager.getDocument(sourceDocUri);
+            if (localStream == null)
+                throw new ServiceException("Unable to parse the saved document. Operation aborted.");
+
             List<Service> services;
             if (ServiceFormat.NATIVE_PARSERS_MAP.containsKey(format)) {
                 // Its a native format: parse it
                 ServiceReader reader = new ServiceReaderImpl();
-                services = reader.parse(stream, ServiceFormat.NATIVE_PARSERS_MAP.get(format));
+                Syntax syntax = ServiceFormat.NATIVE_PARSERS_MAP.get(format);
+                services = reader.parse(localStream, syntax);
             } else {
                 // Its an external format: use the appropriate importer
-                services = importer.transform(serviceContent);
+                // We should have a suitable importer
+                ServiceImporter importer = importerMap.get(format);
+                services = importer.transform(localStream);
             }
 
             // 3rd - Store the resulting MSM services. In principle it should be just one
@@ -194,16 +195,22 @@ public class ManagerSingleton implements iServeManager {
 
             // 4th Log it was all done correctly
             // TODO: log to the system and notify observers
-            log.info("Service imported: " + serviceUri.toASCIIString());
+            if (serviceUri != null)
+                log.info("Service imported: " + serviceUri.toASCIIString());
 
-        } catch (IOException e) {
-            log.error("Problems accessing service content", e);
         } finally {
             // Rollback if something went wrong
             if (serviceUri == null && sourceDocUri != null) {
                 this.docManager.deleteDocument(sourceDocUri);
                 log.warn("There were problems importing the service. Changes undone.");
             }
+
+            if (localStream != null)
+                try {
+                    localStream.close();
+                } catch (IOException e) {
+                    log.error("Error closing the service content stream", e);
+                }
         }
 
         return serviceUri;
@@ -348,7 +355,7 @@ public class ManagerSingleton implements iServeManager {
     }
 
     /* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#getServices(java.util.List)
+     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#getServices(java.util.List)
 	 */
     @Override
     public List<Service> getServices(List<URI> serviceUris) throws SalException {
