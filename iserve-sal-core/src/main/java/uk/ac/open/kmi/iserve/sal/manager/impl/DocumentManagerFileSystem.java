@@ -43,8 +43,16 @@ public class DocumentManagerFileSystem implements DocumentManager {
      *
      * @param configuration
      */
-    protected DocumentManagerFileSystem(SystemConfiguration configuration) {
+    protected DocumentManagerFileSystem(SystemConfiguration configuration) throws DocumentException {
         this.configuration = configuration;
+        File file = new File(getDocumentsInternalPath());
+        if (!file.exists()) {
+            if (file.mkdirs()) {
+                log.info("Created documents folder.");
+            } else {
+                throw new DocumentException("Unable to create documents folder.");
+            }
+        }
     }
 
     /**

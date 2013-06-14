@@ -28,6 +28,7 @@
     <artifactId>iserve-sal-core</artifactId>
     <version>1.1.0-SNAPSHOT</version>
     <name>iServe Storage Access Layer (SAL) Core API</name>
+    <url>http://iserve.kmi.open.ac.uk/</url>
 
     <developers>
         <developer>
@@ -120,7 +121,39 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Include Test Resources -->
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>iserve-test-resources</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
-    <url>http://iserve.kmi.open.ac.uk/</url>
+    <build>
+        <plugins>
+
+            <!-- Obtain shared test resources and unpack them -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.8</version>
+                <executions>
+                    <execution>
+                        <id>resource-dependencies</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeGroupIds>${project.parent.groupId}</includeGroupIds>
+                            <includeArtifactIds>iserve-test-resources</includeArtifactIds>
+                            <outputDirectory>${project.build.directory}/test-classes/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
