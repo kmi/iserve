@@ -84,7 +84,7 @@ public class ServiceReaderImplTest {
                     log.info("Parsing file: " + file.getName());
 
                     in = new FileInputStream(file);
-                    services = reader.parse(in, Syntax.TTL);
+                    services = reader.parse(in, null, Syntax.TTL);
                     // Run checks
                     Assert.assertNotNull("Service collection should not be null", services);
                     Assert.assertEquals(1, services.size());

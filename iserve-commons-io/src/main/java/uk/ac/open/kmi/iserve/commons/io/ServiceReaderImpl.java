@@ -54,11 +54,13 @@ public class ServiceReaderImpl implements ServiceReader {
      * Read a stream in RDF and return the corresponding set of services
      * as Java Objects
      *
-     * @param in The input stream of MSM services
+     * @param in      The input stream of MSM services
+     * @param baseUri Base URI to use for parsing
+     * @param syntax  used within the stream
      * @return The collection of Services parsed from the stream
      */
     @Override
-    public List<Service> parse(InputStream in, Syntax syntax) {
+    public List<Service> parse(InputStream in, String baseUri, Syntax syntax) {
 
         OntModel model = null;
         List<Service> result = new ArrayList<Service>();
@@ -66,7 +68,7 @@ public class ServiceReaderImpl implements ServiceReader {
             // create an empty model
             model = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM);
             // Parse the stream into a model
-            model.read(in, null, syntax.getName());
+            model.read(in, baseUri, syntax.getName());
             result = parseService(model);
         } finally {
             if (model != null)

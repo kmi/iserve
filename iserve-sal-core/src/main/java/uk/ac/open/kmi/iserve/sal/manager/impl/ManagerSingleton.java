@@ -177,7 +177,7 @@ public class ManagerSingleton implements iServeManager {
                 // Its a native format: parse it
                 ServiceReader reader = new ServiceReaderImpl();
                 Syntax syntax = ServiceFormat.NATIVE_PARSERS_MAP.get(format);
-                services = reader.parse(localStream, syntax);
+                services = reader.parse(localStream, null, syntax);
             } else {
                 // Its an external format: use the appropriate importer
                 // We should have a suitable importer
@@ -373,7 +373,7 @@ public class ManagerSingleton implements iServeManager {
     }
 
     // Delegate Methods
-	/*
+    /*
 	 *  Document Manager
 	 */
 

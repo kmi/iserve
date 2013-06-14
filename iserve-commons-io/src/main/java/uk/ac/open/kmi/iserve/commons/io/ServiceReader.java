@@ -22,8 +22,7 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * ServiceReader
- * TODO: Provide Description
+ * ServiceReader Interface
  * <p/>
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 04/06/2013
@@ -31,5 +30,14 @@ import java.util.List;
  */
 public interface ServiceReader {
 
-    public List<Service> parse(InputStream in, Syntax syntax);
+    /**
+     * Read a stream in RDF and return the corresponding set of services
+     * as Java Objects
+     *
+     * @param in      The input stream of MSM services
+     * @param baseUri Base URI to use for parsing
+     * @param syntax  used within the stream
+     * @return The collection of Services parsed from the stream
+     */
+    public List<Service> parse(InputStream in, String baseUri, Syntax syntax);
 }
