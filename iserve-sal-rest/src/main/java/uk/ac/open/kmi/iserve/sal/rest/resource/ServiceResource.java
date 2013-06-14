@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.sal.rest.resource;
 
 import com.sun.jersey.multipart.BodyPart;
@@ -53,14 +54,6 @@ public class ServiceResource {
 
     }
 
-
-//    @POST
-//	@Consumes({MediaType.TEXT_HTML, MediaType.TEXT_XML, MediaType.APPLICATION_XML, "application/rdf+xml",
-//		"text/turtle", "text/n3", "text/rdf+n3", MediaType.TEXT_PLAIN})
-//    @Produces({MediaType.TEXT_HTML})
-//    public Response addService(String serviceContent, @HeaderParam("Content-Location") String locationUri,
-//			@HeaderParam("Content-Type") String contentType) throws ServiceException, URISyntaxException, LogException {
-
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces({MediaType.TEXT_HTML})
@@ -99,7 +92,6 @@ public class ServiceResource {
         }
 
         ServiceFormat format = uk.ac.open.kmi.iserve.sal.MediaType.MEDIATYPE_FORMAT_MAP.get(mediaType);
-//        ServiceFormat format = ServiceFormat.MSM_TTL; //FIXME
         if (format == null) {
             format = ServiceFormat.UNSUPPORTED;
         }
