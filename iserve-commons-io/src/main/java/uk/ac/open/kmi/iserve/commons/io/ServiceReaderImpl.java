@@ -50,8 +50,6 @@ public class ServiceReaderImpl implements ServiceReader {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceReaderImpl.class);
 
-    OntModel model;
-
     /**
      * Read a stream in RDF and return the corresponding set of services
      * as Java Objects
@@ -62,16 +60,20 @@ public class ServiceReaderImpl implements ServiceReader {
     @Override
     public List<Service> parse(InputStream in, Syntax syntax) {
 
+        OntModel model = null;
+        List<Service> result = new ArrayList<Service>();
         try {
             // create an empty model
             model = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM);
             // Parse the stream into a model
             model.read(in, null, syntax.getName());
-            return parseService(model);
+            result = parseService(model);
         } finally {
             if (model != null)
                 model.close();
         }
+
+        return result;
     }
 
     public ArrayList<Service> parseService(OntModel model) {
