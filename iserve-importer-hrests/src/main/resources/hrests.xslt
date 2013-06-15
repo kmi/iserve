@@ -414,8 +414,8 @@
             <xsl:attribute name="rdf:resource">
                 <xsl:call-template name="replace">
                     <xsl:with-param name="data" select="@href"/>
-                    <xsl:with-param name="pattern" select="string(' ')"/>
-                    <xsl:with-param name="replacement" select="string('%20')"/>
+                    <xsl:with-param name="pattern" select="string('%20')"/>
+                    <xsl:with-param name="replacement" select="string(' ')"/>
                 </xsl:call-template>
             </xsl:attribute>
         </sawsdl:modelReference>
