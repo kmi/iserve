@@ -95,77 +95,77 @@ public class OwlsImporter implements ServiceImporter {
     // TODO: Use the constants automatically generated for resources
     private static final String QUERY_GLOBAL =
             "SELECT DISTINCT * WHERE {\n"
-            + "  ?" + SERVICE_VAR + " rdf:type service:Service .\n"
-            + "  ?" + SERVICE_VAR + " service:presents ?" + PROFILE_VAR + " .\n"
-            + "  OPTIONAL { \n"
-            + "    ?" + SERVICE_VAR + " service:describedBy ?" + PROCESS_MODEL_VAR + " .\n"
-            + "    ?" + PROCESS_MODEL_VAR + " process:hasProcess ?" + PROCESS_VAR + " .\n"
-            + "  }\n"
-            + "  OPTIONAL { ?" + SERVICE_VAR + " service:describedBy ?" + PROCESS_VAR + " . }\n"
-            + "  OPTIONAL { \n"
-            + "    ?" + PROCESS_VAR + " process:hasPrecondition ?" + CONDITION_VAR + " . \n"
-            + "    OPTIONAL { ?" + CONDITION_VAR + " rdfs:label ?" + CONDITION_LABEL_VAR + " . }\n"
-            + "    ?" + CONDITION_VAR + " expr:expressionLanguage ?" + CONDITION_EXPR_LANG_VAR + " .\n"
-            + "    ?" + CONDITION_VAR + " expr:expressionBody ?" + CONDITION_EXPR_BODY_VAR + " .\n"
-            + "  }\n"
-            + "  OPTIONAL {?" + PROFILE_VAR + " profile:serviceClassification ?" + CLASSIFICATION_VAR + " .}\n"
-            + "  OPTIONAL {?" + PROFILE_VAR + " profile:serviceProduct ?" + SVC_PRODUCT_VAR + " .}\n"
-            + "  OPTIONAL {\n"
-            + "    ?" + PROCESS_VAR + " process:hasResult ?" + RESULT_VAR + " .\n"
-            + "    OPTIONAL {\n"
-            + "      ?" + RESULT_VAR + " process:hasResultVar ?" + RESULT_VAR_VAR + " . \n"
-            + "      ?" + RESULT_VAR_VAR + " process:parameterType ?" + RESULT_VAR_TYPE_VAR + " . "
-            + "    }\n"
-            + "    OPTIONAL {\n"
-            + "      ?" + RESULT_VAR + " process:inCondition ?" + IN_CONDITION_VAR + ".\n"
-            + "      ?" + IN_CONDITION_VAR + " expr:expressionBody ?" + IN_CONDITION_EXPR_BODY_VAR + " .\n"
-            + "    }\n"
-            + "    ?" + RESULT_VAR + " process:hasEffect ?" + EFFECT_VAR + " .\n"
-            + "    ?" + EFFECT_VAR + " expr:expressionBody ?" + EFFECT_EXPR_BODY_VAR + " .\n"
-            + "  }\n"
-            + "  OPTIONAL {\n"
-            + "   ?" + PROCESS_GROUNDING_VAR + " grounding:owlsProcess ?" + PROCESS_VAR + " .\n"
-            + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlDocument ?" + WSDL_DOC_VAR + " .\n"
-            + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlOperation ?" + WSDL_GROUNDING_VAR + " .\n"
-            + "   ?" + WSDL_GROUNDING_VAR + " grounding:operation ?" + WSDL_11_OPERATION_VAR + " .\n"
-            + "   ?" + WSDL_GROUNDING_VAR + " grounding:portType ?" + WSDL_11_PORT_VAR + " .\n"
-            + "  }\n"
-            + "  OPTIONAL {\n"
-            + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlInputMessage ?" + INPUT_MESSAGE_VAR + " .\n"
-            + "  }\n"
-            + "  OPTIONAL {\n"
-            + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlOutputMessage ?" + OUTPUT_MESSAGE_VAR + " .\n"
-            + "  }\n"
-            + "}";
+                    + "  ?" + SERVICE_VAR + " rdf:type service:Service .\n"
+                    + "  ?" + SERVICE_VAR + " service:presents ?" + PROFILE_VAR + " .\n"
+                    + "  OPTIONAL { \n"
+                    + "    ?" + SERVICE_VAR + " service:describedBy ?" + PROCESS_MODEL_VAR + " .\n"
+                    + "    ?" + PROCESS_MODEL_VAR + " process:hasProcess ?" + PROCESS_VAR + " .\n"
+                    + "  }\n"
+                    + "  OPTIONAL { ?" + SERVICE_VAR + " service:describedBy ?" + PROCESS_VAR + " . }\n"
+                    + "  OPTIONAL { \n"
+                    + "    ?" + PROCESS_VAR + " process:hasPrecondition ?" + CONDITION_VAR + " . \n"
+                    + "    OPTIONAL { ?" + CONDITION_VAR + " rdfs:label ?" + CONDITION_LABEL_VAR + " . }\n"
+                    + "    ?" + CONDITION_VAR + " expr:expressionLanguage ?" + CONDITION_EXPR_LANG_VAR + " .\n"
+                    + "    ?" + CONDITION_VAR + " expr:expressionBody ?" + CONDITION_EXPR_BODY_VAR + " .\n"
+                    + "  }\n"
+                    + "  OPTIONAL {?" + PROFILE_VAR + " profile:serviceClassification ?" + CLASSIFICATION_VAR + " .}\n"
+                    + "  OPTIONAL {?" + PROFILE_VAR + " profile:serviceProduct ?" + SVC_PRODUCT_VAR + " .}\n"
+                    + "  OPTIONAL {\n"
+                    + "    ?" + PROCESS_VAR + " process:hasResult ?" + RESULT_VAR + " .\n"
+                    + "    OPTIONAL {\n"
+                    + "      ?" + RESULT_VAR + " process:hasResultVar ?" + RESULT_VAR_VAR + " . \n"
+                    + "      ?" + RESULT_VAR_VAR + " process:parameterType ?" + RESULT_VAR_TYPE_VAR + " . "
+                    + "    }\n"
+                    + "    OPTIONAL {\n"
+                    + "      ?" + RESULT_VAR + " process:inCondition ?" + IN_CONDITION_VAR + ".\n"
+                    + "      ?" + IN_CONDITION_VAR + " expr:expressionBody ?" + IN_CONDITION_EXPR_BODY_VAR + " .\n"
+                    + "    }\n"
+                    + "    ?" + RESULT_VAR + " process:hasEffect ?" + EFFECT_VAR + " .\n"
+                    + "    ?" + EFFECT_VAR + " expr:expressionBody ?" + EFFECT_EXPR_BODY_VAR + " .\n"
+                    + "  }\n"
+                    + "  OPTIONAL {\n"
+                    + "   ?" + PROCESS_GROUNDING_VAR + " grounding:owlsProcess ?" + PROCESS_VAR + " .\n"
+                    + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlDocument ?" + WSDL_DOC_VAR + " .\n"
+                    + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlOperation ?" + WSDL_GROUNDING_VAR + " .\n"
+                    + "   ?" + WSDL_GROUNDING_VAR + " grounding:operation ?" + WSDL_11_OPERATION_VAR + " .\n"
+                    + "   ?" + WSDL_GROUNDING_VAR + " grounding:portType ?" + WSDL_11_PORT_VAR + " .\n"
+                    + "  }\n"
+                    + "  OPTIONAL {\n"
+                    + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlInputMessage ?" + INPUT_MESSAGE_VAR + " .\n"
+                    + "  }\n"
+                    + "  OPTIONAL {\n"
+                    + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlOutputMessage ?" + OUTPUT_MESSAGE_VAR + " .\n"
+                    + "  }\n"
+                    + "}";
 
     private static final String QUERY_IO =
             "SELECT DISTINCT * WHERE {\n"
-            + "  {\n"
-            + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlInputMessage ?" + WSDL_MESSAGE_VAR + " .\n"
-            + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlInput ?" + MAP_VAR + " .\n"
-            + "   BIND (\"input\" AS ?" + TYPE_OF_MESSAGE_VAR + ") .\n"
-            + "  }\n"
-            + " UNION \n"
-            + "  {\n"
-            + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlOutputMessage ?" + WSDL_MESSAGE_VAR + " .\n"
-            + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlOutput ?" + MAP_VAR + " .\n"
-            + "   BIND (\"output\" AS ?" + TYPE_OF_MESSAGE_VAR + ") .\n"
-            + "  }\n"
-            + "   ?" + MAP_VAR + " grounding:wsdlMessagePart ?" + WSDL_PART_VAR + " .\n"
-            + "   ?" + MAP_VAR + " grounding:owlsParameter ?" + MESSAGE_PART_VAR + " .\n"
-            + "   ?" + MESSAGE_PART_VAR + " process:parameterType ?" + MESSAGE_PART_TYPE_VAR + " .\n"
-            + "   OPTIONAL {?" + MAP_VAR + " grounding:xsltTransformationString ?" + TRANSFORM_VAR + " . }\n"
-            + "}";
+                    + "  {\n"
+                    + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlInputMessage ?" + WSDL_MESSAGE_VAR + " .\n"
+                    + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlInput ?" + MAP_VAR + " .\n"
+                    + "   BIND (\"input\" AS ?" + TYPE_OF_MESSAGE_VAR + ") .\n"
+                    + "  }\n"
+                    + " UNION \n"
+                    + "  {\n"
+                    + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlOutputMessage ?" + WSDL_MESSAGE_VAR + " .\n"
+                    + "   ?" + PROCESS_GROUNDING_VAR + " grounding:wsdlOutput ?" + MAP_VAR + " .\n"
+                    + "   BIND (\"output\" AS ?" + TYPE_OF_MESSAGE_VAR + ") .\n"
+                    + "  }\n"
+                    + "   ?" + MAP_VAR + " grounding:wsdlMessagePart ?" + WSDL_PART_VAR + " .\n"
+                    + "   ?" + MAP_VAR + " grounding:owlsParameter ?" + MESSAGE_PART_VAR + " .\n"
+                    + "   ?" + MESSAGE_PART_VAR + " process:parameterType ?" + MESSAGE_PART_TYPE_VAR + " .\n"
+                    + "   OPTIONAL {?" + MAP_VAR + " grounding:xsltTransformationString ?" + TRANSFORM_VAR + " . }\n"
+                    + "}";
 
 
-	private static final String TEMP_NS = "http://owls-transformer.baseuri/8965949584020236497#";
+    private static final String TEMP_NS = "http://owls-transformer.baseuri/8965949584020236497#";
     private static final String PLUGIN_VERSION = "v0.2";
 
     private Map<String, String> prefixes;
 
     public OwlsImporter() {
         // Initialise prefixes
-        prefixes = new HashMap<String,String>(Vocabularies.prefixes);
+        prefixes = new HashMap<String, String>(Vocabularies.prefixes);
         // Add those specific for handling OWLS
         prefixes.put("service", "http://www.daml.org/services/owl-s/1.1/Service.owl#");
         prefixes.put("profile", "http://www.daml.org/services/owl-s/1.1/Profile.owl#");
@@ -174,17 +174,37 @@ public class OwlsImporter implements ServiceImporter {
         prefixes.put("expr", "http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#");
     }
 
-    /* (non-Javadoc)
-    * @see uk.ac.open.kmi.iserve.sal.ServiceImporter#transform(java.io.File)
-    */
-    @Override
-    public List<Service> transform(File file) throws ImporterException {
 
-        if (file != null && file.exists()) {
+    /**
+     * Parses and transforms a file with service description(s), e.g. SAWSDL, OWL-S, hRESTS, etc., and
+     * returns a list of Service objects defined in the file.
+     *
+     * @param originalDescription The file containing the semantic Web service description(s)
+     * @return A List with the services transformed conforming to MSM model
+     * @see uk.ac.open.kmi.iserve.sal.ServiceFormat for the list of supported formats
+     */
+    @Override
+    public List<Service> transform(File originalDescription) throws ImporterException {
+        return transform(originalDescription, null);
+    }
+
+    /**
+     * Parses and transforms a file with service description(s), e.g. SAWSDL, OWL-S, hRESTS, etc., and
+     * returns a list of Service objects defined in the file.
+     *
+     * @param originalDescription The file containing the semantic Web service description(s)
+     * @param baseUri             The base URI to use while transforming the service description
+     * @return A List with the services transformed conforming to MSM model
+     * @see uk.ac.open.kmi.iserve.sal.ServiceFormat for the list of supported formats
+     */
+    @Override
+    public List<Service> transform(File originalDescription, String baseUri) throws ImporterException {
+
+        if (originalDescription != null && originalDescription.exists()) {
             // Open the file and transform it
             InputStream in = null;
             try {
-                in = new FileInputStream(file);
+                in = new FileInputStream(originalDescription);
                 return transform(in);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -204,24 +224,42 @@ public class OwlsImporter implements ServiceImporter {
         return new ArrayList<Service>();
     }
 
-    /* (non-Javadoc)
-    * @see uk.ac.open.kmi.iserve.sal.ServiceImporter#transformStream(java.io.InputStream)
-    */
-	@Override
+    /**
+     * Parses and transforms a stream with service description(s), e.g. SAWSDL, OWL-S, hRESTS, etc., and
+     * returns a list of Service objects defined in the stream.
+     *
+     * @param originalDescription The semantic Web service description(s)
+     * @return A List with the services transformed conforming to MSM model
+     * @see uk.ac.open.kmi.iserve.sal.ServiceFormat for the list of supported formats
+     */
+    @Override
     public List<Service> transform(InputStream originalDescription) throws ImporterException {
+        return transform(originalDescription, null);
+    }
 
+    /**
+     * Parses and transforms a stream with service description(s), e.g. SAWSDL, OWL-S, hRESTS, etc., and
+     * returns a list of Service objects defined in the stream.
+     *
+     * @param originalDescription The semantic Web service description(s)
+     * @param baseUri             The base URI to use while transforming the service description
+     * @return A List with the services transformed conforming to MSM model
+     * @see uk.ac.open.kmi.iserve.sal.ServiceFormat for the list of supported formats
+     */
+    @Override
+    public List<Service> transform(InputStream originalDescription, String baseUri) throws ImporterException {
         // read the file
         // TODO: figure out the syntax?
         Model origModel = ModelFactory.createDefaultModel();
-        origModel.read(originalDescription, null);
+        origModel.read(originalDescription, baseUri);
 
         // Transform the original model (may have several service definitions)
-        List<Service> services = transform(origModel);
+        List<Service> services = transform(origModel, baseUri);
 
         return services;
     }
 
-    private List<Service> transform(Model model) {
+    private List<Service> transform(Model model, String baseUri) {
 
         List<Service> result = new ArrayList<Service>();
         // Exit early if empty
@@ -232,7 +270,7 @@ public class OwlsImporter implements ServiceImporter {
         // Query the model to obtain only services
         Query query = QueryFactory.create();
         query.setPrefixMapping(query.getPrefixMapping().setNsPrefixes(prefixes));
-        QueryFactory.parse(query, QUERY_GLOBAL, null, Syntax.syntaxSPARQL_11);
+        QueryFactory.parse(query, QUERY_GLOBAL, baseUri, Syntax.syntaxSPARQL_11);
         QueryExecution qexec = QueryExecutionFactory.create(query, model);
 
         log.debug("Querying model:");
@@ -244,7 +282,7 @@ public class OwlsImporter implements ServiceImporter {
             // Process the services found and generate the instances
             QuerySolution soln;
             Service svc;
-            while ( qResults.hasNext() ) {
+            while (qResults.hasNext()) {
                 soln = qResults.nextSolution();
                 try {
                     svc = obtainService(model, soln);
@@ -259,9 +297,9 @@ public class OwlsImporter implements ServiceImporter {
             // Return the result
             return result;
         } finally {
-          if (qexec != null) {
-              qexec.close();
-          }
+            if (qexec != null) {
+                qexec.close();
+            }
         }
     }
 
@@ -269,7 +307,7 @@ public class OwlsImporter implements ServiceImporter {
      * Given a query solution obtained by querying the model for OWL-S services
      * generates a Service instance capturing the information.
      * See constants for the variable names used.
-     *
+     * <p/>
      * TODO: This needs urgent restructuring
      *
      * @param model
