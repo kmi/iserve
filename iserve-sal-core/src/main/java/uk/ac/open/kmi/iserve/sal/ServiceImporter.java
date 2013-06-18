@@ -42,6 +42,17 @@ public interface ServiceImporter {
     public abstract List<Service> transform(InputStream originalDescription) throws ImporterException;
 
     /**
+     * Parses and transforms a stream with service description(s), e.g. SAWSDL, OWL-S, hRESTS, etc., and
+     * returns a list of Service objects defined in the stream.
+     *
+     * @param originalDescription The semantic Web service description(s)
+     * @param baseUri             The base URI to use while transforming the service description
+     * @return A List with the services transformed conforming to MSM model
+     * @see ServiceFormat for the list of supported formats
+     */
+    public abstract List<Service> transform(InputStream originalDescription, String baseUri) throws ImporterException;
+
+    /**
      * Parses and transforms a file with service description(s), e.g. SAWSDL, OWL-S, hRESTS, etc., and
      * returns a list of Service objects defined in the file.
      *
@@ -50,5 +61,16 @@ public interface ServiceImporter {
      * @see ServiceFormat for the list of supported formats
      */
     public abstract List<Service> transform(File originalDescription) throws ImporterException;
+
+    /**
+     * Parses and transforms a file with service description(s), e.g. SAWSDL, OWL-S, hRESTS, etc., and
+     * returns a list of Service objects defined in the file.
+     *
+     * @param originalDescription The file containing the semantic Web service description(s)
+     * @param baseUri             The base URI to use while transforming the service description
+     * @return A List with the services transformed conforming to MSM model
+     * @see ServiceFormat for the list of supported formats
+     */
+    public abstract List<Service> transform(File originalDescription, String baseUri) throws ImporterException;
 
 }
