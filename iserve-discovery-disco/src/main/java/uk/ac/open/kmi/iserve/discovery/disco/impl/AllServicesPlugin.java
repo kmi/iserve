@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.hp.hpl.jena.query.*;
@@ -51,7 +52,7 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDisco
 
     private static final Logger log = LoggerFactory.getLogger(AllServicesPlugin.class);
 
-    public static String NEW_LINE = System.getProperty("line.separator");
+    public static String NL = System.getProperty("line.separator");
 
     private int count;
 
@@ -138,20 +139,20 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDisco
         if (operationDiscovery) {
             queryBuffer.append("?op ?labelOp");
         }
-        queryBuffer.append(NEW_LINE);
-        queryBuffer.append("where {  ?svc a <" + MSM.Service.getURI() + "> ." + NEW_LINE);
+        queryBuffer.append(NL);
+        queryBuffer.append("where {  ?svc a <" + MSM.Service.getURI() + "> ." + NL);
 
         if (operationDiscovery) {
-            queryBuffer.append("?svc <" + MSM.hasOperation.getURI() + "> ?op ." + NEW_LINE).
-                    append("?op a <" + MSM.Operation.getURI() + "> ." + NEW_LINE);
+            queryBuffer.append("?svc <" + MSM.hasOperation.getURI() + "> ?op ." + NL).
+                    append("?op a <" + MSM.Operation.getURI() + "> ." + NL);
         }
-        queryBuffer.append("  optional { ?svc <" + RDFS.label.getURI() + "> ?labelSvc }" + NEW_LINE);
+        queryBuffer.append("  optional { ?svc <" + RDFS.label.getURI() + "> ?labelSvc }" + NL);
         if (operationDiscovery) {
-            queryBuffer.append("  optional { ?op <" + RDFS.label.getURI() + "> ?labelOp }" + NEW_LINE);
+            queryBuffer.append("  optional { ?op <" + RDFS.label.getURI() + "> ?labelOp }" + NL);
         }
         queryBuffer.append("}");
 
-        log.debug("Querying the backend: " + sparqlEndpoint + NEW_LINE + queryBuffer);
+        log.debug("Querying the backend: " + sparqlEndpoint + NL + queryBuffer);
 
         // Query the engine
         Query query = QueryFactory.create(queryBuffer.toString());
