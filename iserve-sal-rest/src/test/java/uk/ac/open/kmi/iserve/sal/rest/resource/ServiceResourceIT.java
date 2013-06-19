@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.sal.rest.resource;
 
 import com.jayway.restassured.RestAssured;
@@ -79,7 +80,7 @@ public class ServiceResourceIT {
     }
 
     /**
-     * Test method for .
+     * Test method for AddService.
      */
     @Test
     public final void testAddService() {

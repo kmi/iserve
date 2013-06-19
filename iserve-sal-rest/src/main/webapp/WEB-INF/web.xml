@@ -33,6 +33,10 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
 
+    <listener>
+        <listener-class>uk.ac.open.kmi.iserve.sal.rest.iServeContextListener</listener-class>
+    </listener>
+
     <!--
     <servlet-mapping>
 		<servlet-name>Jersey Web Application for Resources</servlet-name>
