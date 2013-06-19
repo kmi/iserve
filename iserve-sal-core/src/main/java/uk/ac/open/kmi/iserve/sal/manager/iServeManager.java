@@ -44,6 +44,12 @@ public interface iServeManager {
     public abstract SystemConfiguration getConfiguration();
 
     /**
+     * This method will be called when the server is being shutdown.
+     * Ensure a clean shutdown.
+     */
+    public abstract void shutdown();
+
+    /**
      * Register a new importer for a given file format
      *
      * @param format
@@ -178,7 +184,7 @@ public interface iServeManager {
 
 
 	/*
-	 *  Document Management Operations
+     *  Document Management Operations
 	 */
 
     // Create

@@ -60,6 +60,7 @@ public class ManagerSingleton implements iServeManager {
     private LogManager logManager;
     private ReviewManager reviewManager;
     private ServiceManager serviceManager;
+    private KnowledgeBaseManager kbManager;
     private TaxonomyManager taxonomyManager;
     private UserManager userManager;
     private KeyManager keyManager;
@@ -73,6 +74,7 @@ public class ManagerSingleton implements iServeManager {
         configuration = new SystemConfiguration(CONFIG_PROPERTIES_FILENAME);
         docManager = new DocumentManagerFileSystem(configuration);
         serviceManager = new ServiceManagerRdf(configuration);
+        kbManager = new KnowledgeBaseManager(configuration);
 
         //		logManager = new LogManagerRdf(configuration);
         //		reviewManager = new ReviewManagerLuf(configuration);
@@ -113,6 +115,16 @@ public class ManagerSingleton implements iServeManager {
      */
     public SystemConfiguration getConfiguration() {
         return this.configuration;
+    }
+
+    /**
+     * This method will be called when the server is being shutdown.
+     * Ensure a clean shutdown.
+     */
+    @Override
+    public void shutdown() {
+        // TODO: do proper generic implementation across managers
+        this.kbManager.shutdown();
     }
 
     /* (non-Javadoc)
@@ -186,7 +198,7 @@ public class ManagerSingleton implements iServeManager {
             }
 
             // 3rd - Store the resulting MSM services. In principle it should be just one
-            Service svc;
+            Service svc = null;
             if (services != null && !services.isEmpty()) {
                 svc = services.get(0);
                 svc.setSource(sourceDocUri); // The service is being imported -> update the source
@@ -195,8 +207,11 @@ public class ManagerSingleton implements iServeManager {
 
             // 4th Log it was all done correctly
             // TODO: log to the system and notify observers
-            if (serviceUri != null)
+            if (serviceUri != null) {
                 log.info("Service imported: " + serviceUri.toASCIIString());
+                // Update the knowledge base
+                this.kbManager.fetchModelsForService(svc);
+            }
 
         } finally {
             // Rollback if something went wrong
@@ -374,7 +389,7 @@ public class ManagerSingleton implements iServeManager {
 
     // Delegate Methods
     /*
-	 *  Document Manager
+     *  Document Manager
 	 */
 
 

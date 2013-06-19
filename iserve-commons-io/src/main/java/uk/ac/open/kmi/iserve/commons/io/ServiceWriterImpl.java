@@ -21,6 +21,8 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.commons.model.util.Vocabularies;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
@@ -33,14 +35,17 @@ import java.net.URI;
 
 /**
  * Service Writer Implementation
- *
+ * <p/>
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 22/05/2013
  * Time: 02:13
  */
 public class ServiceWriterImpl implements ServiceWriter {
 
-    public ServiceWriterImpl() {    }
+    private static final Logger log = LoggerFactory.getLogger(ServiceWriterImpl.class);
+
+    public ServiceWriterImpl() {
+    }
 
     @Override
     public void serialise(Service service, OutputStream out, Syntax syntax) {
@@ -81,7 +86,6 @@ public class ServiceWriterImpl implements ServiceWriter {
 
         return model;
     }
-
 
 
     private void addOperationToModel(Model model, Operation op) {
@@ -201,7 +205,7 @@ public class ServiceWriterImpl implements ServiceWriter {
             refResource.addProperty(RDF.type, WSMO_LITE.NonfunctionalParameter);
         }
 
-        if (annotableResource instanceof InvocableEntity ) {
+        if (annotableResource instanceof InvocableEntity) {
             InvocableEntity invEnt = (InvocableEntity) annotableResource;
             // Process Conditions
             for (Condition cond : invEnt.getConditions()) {
@@ -219,7 +223,6 @@ public class ServiceWriterImpl implements ServiceWriter {
                 refResource.addLiteral(RDF.value, effect.getTypedValue());
             }
         }
-
 
 
     }
@@ -252,7 +255,7 @@ public class ServiceWriterImpl implements ServiceWriter {
             current.addProperty(RDFS.label, label);
         }
 
-        String comment =  basicResource.getComment();
+        String comment = basicResource.getComment();
         if (label != null) {
             current.addProperty(RDFS.comment, comment);
         }

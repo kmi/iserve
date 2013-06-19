@@ -76,6 +76,7 @@ public class SystemConfiguration {
     private static final String SERVICES_REPOSITORY_NAME_PROP = "iserve.services.repository";
     private static final String SERVICES_REPOSITORY_SPARQL_PROP = "iserve.services.sparql.query";
     private static final String SERVICES_REPOSITORY_SPARQL_UPDATE_PROP = "iserve.services.sparql.update";
+    private static final String SERVICES_REPOSITORY_SPARQL_SERVICE_PROP = "iserve.services.sparql.service";
     // Logs data
     private static final String LOG_REPOSITORY_URL_PROP = "log.server";
     private static final String LOG_REPOSITORY_NAME_PROP = "log.repository";
@@ -85,8 +86,6 @@ public class SystemConfiguration {
     // Tagging, rating, etc
     private static final String LUF_URL_PROP = "lufURL";
 
-    private static final String XSLT_PATH_PROP = "xsltPath";
-
 
     // This should contain the URL to the base of iServe's server (thus including hostname and module path)
     private String dataRepositoryName;
@@ -95,19 +94,19 @@ public class SystemConfiguration {
     private String proxyHostName;
     private String proxyPort;
     private String docFolderPath;
-    private String microWsmoXsltPath;
     private String servicesPath;
     private String documentsPath;
 
     private URI iserveUri;
     private URI dataRepositoryUri;
     private URI dataSparqlUri;
-    private URI sparqlUpdateUri;
+    private URI dataSparqlUpdateUri;
     private URI logRepositoryUri;
     private URI usersRepositoryUri;
     private URI lufUri;
     private URI servicesUri;
     private URI documentsUri;
+    private URI dataSparqlServiceUri;
 
 
     public SystemConfiguration(String configFileUrl) throws ConfigurationException {
@@ -130,11 +129,11 @@ public class SystemConfiguration {
             this.dataRepositoryName = config.getString(SERVICES_REPOSITORY_NAME_PROP, DEFAULT_SERVICES_REPO);
             this.dataRepositoryUri = new URI(config.getString(SERVICES_REPOSITORY_URL_PROP));
             this.dataSparqlUri = new URI(config.getString(SERVICES_REPOSITORY_SPARQL_PROP));
-            this.sparqlUpdateUri = new URI(config.getString(SERVICES_REPOSITORY_SPARQL_UPDATE_PROP));
+            this.dataSparqlUpdateUri = new URI(config.getString(SERVICES_REPOSITORY_SPARQL_UPDATE_PROP));
+            this.dataSparqlServiceUri = new URI(config.getString(SERVICES_REPOSITORY_SPARQL_SERVICE_PROP));
             this.iserveUri = new URI(config.getString(ISERVE_URL_PROP));
             this.usersRepositoryName = config.getString(USERS_REPOSITORY_NAME_PROP, DEFAULT_USERS_REPO);
             this.usersRepositoryUri = new URI(config.getString(USERS_SERVER_URL_PROP));
-            this.microWsmoXsltPath = config.getString(XSLT_PATH_PROP, DEFAULT_XSLT_PATH);
             this.servicesPath = SERVICES_URL_PATH;
             this.documentsPath = DOCUMENTS_URL_PATH;
 
@@ -306,20 +305,6 @@ public class SystemConfiguration {
     }
 
     /**
-     * @return the xsltPath
-     */
-    public String getXsltPath() {
-        return this.microWsmoXsltPath;
-    }
-
-    /**
-     * @param xsltPath the xsltPath to set
-     */
-    public void setXsltPath(String xsltPath) {
-        this.microWsmoXsltPath = xsltPath;
-    }
-
-    /**
      * @return the servicesPath
      */
     public String getServicesPath() {
@@ -431,11 +416,20 @@ public class SystemConfiguration {
         this.dataSparqlUri = dataSparqlUri;
     }
 
-    public URI getSparqlUpdateUri() {
-        return sparqlUpdateUri;
+    public URI getDataSparqlUpdateUri() {
+        return dataSparqlUpdateUri;
     }
 
-    public void setSparqlUpdateUri(URI sparqlUpdateUri) {
-        this.sparqlUpdateUri = sparqlUpdateUri;
+    public void setDataSparqlUpdateUri(URI dataSparqlUpdateUri) {
+        this.dataSparqlUpdateUri = dataSparqlUpdateUri;
     }
+
+    public URI getDataSparqlServiceUri() {
+        return dataSparqlServiceUri;
+    }
+
+    public void setDataSparqlServiceUri(URI dataSparqlServiceUri) {
+        this.dataSparqlServiceUri = dataSparqlServiceUri;
+    }
+
 }

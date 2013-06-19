@@ -19,16 +19,7 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.modify.request.Target;
-import com.hp.hpl.jena.sparql.modify.request.UpdateCreate;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDrop;
-import com.hp.hpl.jena.update.UpdateExecutionFactory;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateProcessor;
-import com.hp.hpl.jena.update.UpdateRequest;
 import com.hp.hpl.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +27,6 @@ import uk.ac.open.kmi.iserve.commons.io.ServiceReaderImpl;
 import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.io.URIUtil;
 import uk.ac.open.kmi.iserve.commons.model.*;
-import uk.ac.open.kmi.iserve.commons.model.util.Vocabularies;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.sal.ServiceFormatDetector;
 import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
@@ -45,7 +35,6 @@ import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
-import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -133,19 +122,11 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         if (serviceUri == null)
             return null;
 
-        String queryStr = "CONSTRUCT { ?s ?p ?o } \n" +
-                "WHERE \n" +
-                "{ GRAPH <" + serviceUri.toASCIIString() + "> { ?s ?p ?o } } \n";
-
-        Query query = QueryFactory.create(queryStr);
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
-        OntModel resultModel = ModelFactory.createOntologyModel();
-        qexec.execConstruct(resultModel);
-        qexec.close();
+        OntModel model = this.getGraph(serviceUri.toASCIIString());
 
         // Parse the service. There should only be one in the response
         ServiceReaderImpl reader = new ServiceReaderImpl();
-        List<Service> services = reader.parseService(resultModel);
+        List<Service> services = reader.parseService(model);
         if (services != null && !services.isEmpty()) {
             return services.get(0);
         }
@@ -172,8 +153,10 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         if (service == null)
             throw new ServiceException("No service provided.");
 
-        if (this.getSparqlUpdateEndpoint() == null)
-            throw new ServiceException("No SPARQL Update endpoint provided. Unable to store the service.");
+        if (!this.canBeModified()) {
+            log.warn("The dataset cannot be modified. Unable to store the service.");
+            return null;
+        }
 
         URI newBaseServiceUri = this.generateUniqueServiceUri();
         // Replace URIs in service description
@@ -187,17 +170,8 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         // Store in backend
         ServiceWriterImpl writer = new ServiceWriterImpl();
         Model svcModel = writer.generateModel(service);
-
-        UpdateRequest request = UpdateFactory.create();
-        request.setPrefixMapping(PrefixMapping.Factory.create().setNsPrefixes(Vocabularies.prefixes));
-        request.add(new UpdateCreate(service.getUri().toASCIIString()));
-        request.add(generateUpdateRequest(service.getUri().toASCIIString(), svcModel));
-
         log.info("Adding service: " + service.getUri().toASCIIString());
-        log.debug("Sparql Update Query issued: " + request.toString());
-        // Use create form for Sesame-based engines. TODO: Generalise and push to config.
-        UpdateProcessor processor = UpdateExecutionFactory.createRemoteForm(request, this.getSparqlUpdateEndpoint().toASCIIString());
-        processor.execute(); // TODO: anyway to know if things went ok?
+        this.putGraph(service.getUri().toASCIIString(), svcModel);
         log.info("Service added.");
 
         return service.getUri();
@@ -205,22 +179,6 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
 
     private URI generateUniqueServiceUri() {
         return this.getConfiguration().getServicesUri().resolve(UriUtil.generateUniqueId());
-    }
-
-    private String generateUpdateRequest(String graphName, Model svcModel) {
-
-        StringWriter out = new StringWriter();
-        svcModel.write(out, uk.ac.open.kmi.iserve.commons.io.Syntax.TTL.getName());
-        StringBuilder updateSB = new StringBuilder();
-        updateSB.append("INSERT DATA { \n");
-        updateSB.append("GRAPH <").append(graphName).append("> { \n");
-        updateSB.append(out.getBuffer());
-        updateSB.append("}\n");
-        updateSB.append("}\n");
-
-        String result = updateSB.toString();
-
-        return result;
     }
 
     /**
@@ -334,19 +292,13 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
             throw new ServiceException("Service URI is null.");
         }
 
-        if (this.getSparqlUpdateEndpoint() == null)
-            throw new ServiceException("No SPARQL Update endpoint provided. Unable to delete the service.");
+        if (!this.canBeModified()) {
+            log.warn("The dataset cannot be modified.");
+            return false;
+        }
 
-        UpdateRequest request = UpdateFactory.create();
-        request.setPrefixMapping(PrefixMapping.Factory.create().setNsPrefixes(Vocabularies.prefixes));
-        request.add(new UpdateDrop(serviceUri.toASCIIString()));
-
-        // Use remote form for dealing sesame
         log.info("Deleting service: " + serviceUri.toASCIIString());
-        // Use create form for Sesame-based engines. TODO: Generalise and push to config.
-        UpdateProcessor processor = UpdateExecutionFactory.createRemoteForm(request, this.getSparqlUpdateEndpoint().toASCIIString());
-        processor.execute(); // TODO: anyway to know if things went ok?
-        log.info("Service deleted.");
+        this.deleteGraph(serviceUri.toASCIIString());
 
         return true;
     }
@@ -366,12 +318,14 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
      */
     @Override
     public boolean clearServices() throws ServiceException {
-        UpdateRequest request = UpdateFactory.create();
-        request.add(new UpdateDrop(Target.ALL));
-        UpdateProcessor processor = UpdateExecutionFactory.createRemoteForm(request,
-                this.getSparqlUpdateEndpoint().toASCIIString());
-        processor.execute(); // TODO: anyway to know if things went ok?
-        log.info("Services registry cleared.");
+
+        if (!this.canBeModified()) {
+            log.warn("The dataset cannot be modified.");
+            return false;
+        }
+
+        log.info("Clearing services registry.");
+        clearDataset();
         return true;
     }
 
@@ -386,7 +340,10 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
 
         Query query = QueryFactory.create(queryStr);
         QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
-        return qexec.execAsk();
+        try {
+            return qexec.execAsk();
+        } finally {
+            qexec.close();
+        }
     }
-
 }

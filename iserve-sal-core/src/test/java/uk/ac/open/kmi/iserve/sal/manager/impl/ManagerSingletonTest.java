@@ -16,13 +16,13 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
-import com.hp.hpl.jena.rdf.model.Model;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.commons.io.*;
+import uk.ac.open.kmi.iserve.commons.io.FilenameFilterBySyntax;
+import uk.ac.open.kmi.iserve.commons.io.Syntax;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.sal.ServiceFormat;
 
@@ -66,7 +66,7 @@ public class ManagerSingletonTest {
         numServices = msmTtlTcFiles.length;
         docUris = new ArrayList<URI>();
 
-        dataUpdateEndpoint = ManagerSingleton.getInstance().getConfiguration().getSparqlUpdateUri().toASCIIString();
+        dataUpdateEndpoint = ManagerSingleton.getInstance().getConfiguration().getDataSparqlUpdateUri().toASCIIString();
     }
 
 
@@ -184,10 +184,6 @@ public class ManagerSingletonTest {
     public void testGetService() throws Exception {
         // Ensure that reader and writer work fine
         // Also depends on obtaining the right document
-        ServiceReader reader = new ServiceReaderImpl();
-        ServiceWriterImpl writer = new ServiceWriterImpl();
-        Model obtainedModel;
-
         Service svc;
         InputStream docStream;
 
