@@ -28,6 +28,7 @@ import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
 import java.io.*;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,9 @@ public class DocumentManagerFileSystem implements DocumentManager {
 
     private static final Logger log = LoggerFactory.getLogger(DocumentManagerFileSystem.class);
 
-    private SystemConfiguration configuration;
+    private URI documentsInternalPath;
+
+    private URI documentsPublicUri;
 
     /**
      * Constructor for the Document Manager. Protected to avoid external access.
@@ -44,7 +47,21 @@ public class DocumentManagerFileSystem implements DocumentManager {
      * @param configuration
      */
     protected DocumentManagerFileSystem(SystemConfiguration configuration) throws DocumentException {
-        this.configuration = configuration;
+
+        this.documentsInternalPath = configuration.getDocumentsFolderUri();
+        if (!this.documentsInternalPath.isAbsolute()) {
+            // Obtain absolute URI
+            try {
+                log.warn("Configuring document manager with relative path. Documents may be deleted when the application is redeployed.");
+                this.documentsInternalPath = this.getClass().getResource(".").toURI().resolve(this.documentsInternalPath);
+            } catch (URISyntaxException e) {
+                throw new DocumentException("Incorrect URI for documents folder.");
+            }
+        }
+
+
+        this.documentsPublicUri = configuration.getDocumentsUri();
+
         File file = new File(getDocumentsInternalPath());
         if (!file.exists()) {
             if (file.mkdirs()) {
@@ -52,14 +69,19 @@ public class DocumentManagerFileSystem implements DocumentManager {
             } else {
                 throw new DocumentException("Unable to create documents folder.");
             }
+        } else {
+            if (!file.isDirectory()) {
+                throw new DocumentException("There already exists a file with the documents folder URI.");
+            }
         }
+
     }
 
     /**
      * @return
      */
     private URI getDocumentsInternalPath() {
-        return URI.create(configuration.getDocumentsFolder());
+        return this.documentsInternalPath;
     }
 
     /**
@@ -69,7 +91,7 @@ public class DocumentManagerFileSystem implements DocumentManager {
      * @return
      */
     private URI getDocumentRelativeUri(URI documentUri) {
-        return configuration.getDocumentsUri().relativize(documentUri);
+        return documentsPublicUri.relativize(documentUri);
     }
 
     /**
@@ -90,7 +112,7 @@ public class DocumentManagerFileSystem implements DocumentManager {
     private URI getDocumentPublicUri(File file) {
         URI relativeUri = this.getDocumentsInternalPath().
                 relativize(file.toURI());
-        return configuration.getDocumentsUri().resolve(relativeUri);
+        return documentsPublicUri.resolve(relativeUri);
     }
 
     /* (non-Javadoc)
@@ -170,8 +192,7 @@ public class DocumentManagerFileSystem implements DocumentManager {
             FileOutputStream out = new FileOutputStream(file);
             FileUtil.createDirIfNotExists(file.getParentFile());
             int size = IOUtils.copy(docContent, out);
-            log.info("Document created - " + file.getName() + " - " + size + " bytes.");
-            log.info("Document URI - " + internalDocUri.toASCIIString());
+            log.info("Document internal URI - " + internalDocUri.toASCIIString() + " - " + size + " bytes.");
         } catch (IOException e) {
             throw new DocumentException("Unable to add document to service.", e);
         }
@@ -192,7 +213,7 @@ public class DocumentManagerFileSystem implements DocumentManager {
             if (result) {
                 log.info("File deleted: " + file.getName());
             } else {
-                log.info("File does not exist. Unable to delete it: " + file.getAbsolutePath());
+                log.warn("File does not exist. Unable to delete it: " + file.getAbsolutePath());
             }
         }
         return result;
@@ -228,7 +249,7 @@ public class DocumentManagerFileSystem implements DocumentManager {
 
     private URI generateUniqueDocumentUri(ServiceFormat format) {
         String uid = UriUtil.generateUniqueId();
-        return configuration.getDocumentsUri().resolve(uid + "." + format.getFileExtension());
+        return documentsPublicUri.resolve(uid + "." + format.getFileExtension());
     }
 
 }

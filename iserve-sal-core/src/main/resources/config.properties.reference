@@ -22,6 +22,7 @@
 iserve.url = http://localhost:9090/iserve-sal-rest
 
 # Documents Server
+# It is recommended that you use absolute paths for storing documents as these may be deleted when redeploying the server otherwise
 iserve.documents.folder = file:///tmp/iserve/service-docs/
 
 # Core Data RDF Server

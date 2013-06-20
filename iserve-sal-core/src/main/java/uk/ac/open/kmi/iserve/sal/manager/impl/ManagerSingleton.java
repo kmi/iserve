@@ -209,6 +209,7 @@ public class ManagerSingleton implements iServeManager {
             // TODO: log to the system and notify observers
             if (serviceUri != null) {
                 log.info("Service imported: " + serviceUri.toASCIIString());
+                log.info("Source document imported: " + sourceDocUri.toASCIIString());
                 // Update the knowledge base
                 this.kbManager.fetchModelsForService(svc);
             }
@@ -307,6 +308,7 @@ public class ManagerSingleton implements iServeManager {
             // 4th Log it was all done correctly
             // TODO: log to the system and notify observers
             log.info("Service imported: " + serviceUri.toASCIIString());
+            log.info("Source document: " + sourceDocumentUri.toASCIIString());
 
         } catch (MalformedURLException e) {
             log.error("Error obtaining the source document. Incorrect URL. " + sourceDocumentUri.toString());

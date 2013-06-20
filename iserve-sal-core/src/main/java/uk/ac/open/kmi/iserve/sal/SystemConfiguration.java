@@ -35,8 +35,9 @@ public class SystemConfiguration {
 
     // Default path for service and documents URIs.
     // Note that any change here should also affect the REST API
-    private static final String SERVICES_URL_PATH = "/services/";
-    private static final String DOCUMENTS_URL_PATH = "/documents/";
+    // Keep the trailing slash
+    private static final String SERVICES_URL_PATH = "services/";
+    private static final String DOCUMENTS_URL_PATH = "documents/";
 
     /**
      * Default services repository name
@@ -82,17 +83,16 @@ public class SystemConfiguration {
     private static final String LUF_URL_PROP = "lufURL";
 
 
-    // This should contain the URL to the base of iServe's server (thus including hostname and module path)
     private String dataRepositoryName;
     private String logRepositoryName;
     private String usersRepositoryName;
     private String proxyHostName;
     private String proxyPort;
-    private String docFolderPath;
     private String servicesPath;
     private String documentsPath;
 
     private URI iserveUri;
+    private URI documentsFolderUri;
     private URI dataRepositoryUri;
     private URI dataSparqlUri;
     private URI dataSparqlUpdateUri;
@@ -115,7 +115,6 @@ public class SystemConfiguration {
 
         config = new PropertiesConfiguration(configFileUrl);
         try {
-            this.docFolderPath = config.getString(DOC_FOLDER_PATH_PROP);
             this.logRepositoryName = config.getString(LOG_REPOSITORY_NAME_PROP, DEFAULT_LOGS_REPO);
             this.logRepositoryUri = new URI(config.getString(LOG_REPOSITORY_URL_PROP));
             this.lufUri = new URI(config.getString(LUF_URL_PROP, DEFAULT_LUF_URL));
@@ -126,13 +125,22 @@ public class SystemConfiguration {
             this.dataSparqlUri = new URI(config.getString(SERVICES_REPOSITORY_SPARQL_PROP));
             this.dataSparqlUpdateUri = new URI(config.getString(SERVICES_REPOSITORY_SPARQL_UPDATE_PROP));
             this.dataSparqlServiceUri = new URI(config.getString(SERVICES_REPOSITORY_SPARQL_SERVICE_PROP));
-            this.iserveUri = new URI(config.getString(ISERVE_URL_PROP));
+
+            this.iserveUri = new URI(config.getString(ISERVE_URL_PROP) +
+                    (config.getString(ISERVE_URL_PROP).endsWith("/") ? "" : "/"));  // Ensure it has a final slash
+
+            this.documentsFolderUri = new URI(config.getString(DOC_FOLDER_PATH_PROP) +
+                    (config.getString(DOC_FOLDER_PATH_PROP).endsWith("/") ? "" : "/"));  // Ensure it has a final slash
+
             this.usersRepositoryName = config.getString(USERS_REPOSITORY_NAME_PROP, DEFAULT_USERS_REPO);
             this.usersRepositoryUri = new URI(config.getString(USERS_SERVER_URL_PROP));
             this.servicesPath = SERVICES_URL_PATH;
             this.documentsPath = DOCUMENTS_URL_PATH;
 
             // Create the services and documents base URIs
+//            this.servicesUri = new URI (this.iserveUri.toASCIIString() + this.servicesPath);
+//            this.documentsUri = new URI (this.iserveUri.toASCIIString() + this.documentsPath);
+
             this.servicesUri = this.iserveUri.resolve(this.servicesPath);
             this.documentsUri = this.iserveUri.resolve(this.documentsPath);
 
@@ -160,17 +168,17 @@ public class SystemConfiguration {
     }
 
     /**
-     * @return the docFolderPath
+     * @return the documentsFolderUri
      */
-    public String getDocumentsFolder() {
-        return this.docFolderPath;
+    public URI getDocumentsFolderUri() {
+        return this.documentsFolderUri;
     }
 
     /**
-     * @param docFolderPath the docFolderPath to set
+     * @param internalUri the internalUri of the documents folder to set
      */
-    public void setDocumentsFolder(String docFolderPath) {
-        this.docFolderPath = docFolderPath;
+    public void setDocumentsFolderUri(URI internalUri) {
+        this.documentsFolderUri = internalUri;
     }
 
     /**
@@ -367,20 +375,6 @@ public class SystemConfiguration {
      */
     public void setDataRepositoryName(String dataRepositoryName) {
         this.dataRepositoryName = dataRepositoryName;
-    }
-
-    /**
-     * @return the docFolderPath
-     */
-    public String getDocFolderPath() {
-        return this.docFolderPath;
-    }
-
-    /**
-     * @param docFolderPath the docFolderPath to set
-     */
-    public void setDocFolderPath(String docFolderPath) {
-        this.docFolderPath = docFolderPath;
     }
 
     /**
