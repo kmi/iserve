@@ -39,11 +39,6 @@ public class SystemConfiguration {
     private static final String DOCUMENTS_URL_PATH = "/documents/";
 
     /**
-     *
-     */
-    private static final String DEFAULT_XSLT_PATH = "../hrests.xslt";
-
-    /**
      * Default services repository name
      */
     private static final String DEFAULT_SERVICES_REPO = "iserve-services";
