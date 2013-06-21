@@ -122,7 +122,7 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         if (serviceUri == null)
             return null;
 
-        OntModel model = this.getGraph(serviceUri.toASCIIString());
+        OntModel model = this.getGraph(URIUtil.getNameSpace(serviceUri));
 
         // Parse the service. There should only be one in the response
         ServiceReaderImpl reader = new ServiceReaderImpl();
@@ -171,7 +171,8 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         ServiceWriterImpl writer = new ServiceWriterImpl();
         Model svcModel = writer.generateModel(service);
         log.info("Adding service: " + service.getUri().toASCIIString());
-        this.putGraph(service.getUri().toASCIIString(), svcModel);
+        // The graph id corresponds is the base id
+        this.putGraph(newBaseServiceUri.toASCIIString(), svcModel);
         log.info("Service added.");
 
         return service.getUri();
@@ -288,8 +289,9 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
     @Override
     public boolean deleteService(URI serviceUri) throws ServiceException {
 
-        if (serviceUri == null) {
-            throw new ServiceException("Service URI is null.");
+        if (serviceUri == null || !serviceUri.isAbsolute()) {
+            log.warn("The Service URI is either absent or relative. Provide an absolute URI");
+            return false;
         }
 
         if (!this.canBeModified()) {
@@ -298,7 +300,7 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         }
 
         log.info("Deleting service: " + serviceUri.toASCIIString());
-        this.deleteGraph(serviceUri.toASCIIString());
+        this.deleteGraph(URIUtil.getNameSpace(serviceUri.toASCIIString()));
 
         return true;
     }
@@ -334,9 +336,12 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
      */
     @Override
     public boolean serviceExists(URI serviceUri) throws ServiceException {
+        if (serviceUri == null)
+            return false;
+
         String queryStr = "ASK { \n" +
-                "GRAPH <" + serviceUri.toASCIIString() + "> {" +
-                "<" + serviceUri.toASCIIString() + "> " + RDF.type.getURI() + " " + MSM.Service + " }\n}";
+                "GRAPH <" + URIUtil.getNameSpace(serviceUri.toASCIIString()) + "> {" +
+                "<" + serviceUri.toASCIIString() + "> <" + RDF.type.getURI() + "> <" + MSM.Service + "> }\n}";
 
         Query query = QueryFactory.create(queryStr);
         QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);

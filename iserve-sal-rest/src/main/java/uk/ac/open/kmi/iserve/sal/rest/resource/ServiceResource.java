@@ -138,7 +138,7 @@ public class ServiceResource {
     }
 
     @DELETE
-    @Path("/{id}")
+    @Path("/{uniqueId}/{serviceName}")
     @Produces({MediaType.TEXT_HTML})
     public Response deleteService() {
 
@@ -152,9 +152,18 @@ public class ServiceResource {
 //
 //		String userFoafId = security.getUserPrincipal().getName();
 
-        URI serviceUri = uriInfo.getAbsolutePath();
+        URI serviceUri = uriInfo.getRequestUri();
+
         String response;
         try {
+            if (!ManagerSingleton.getInstance().serviceExists(serviceUri)) {
+                // The service doesn't exist
+                response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                        "  <body>\n The service " + serviceUri + " is not present in the registry.\n  </body>\n</html>";
+
+                return Response.status(Status.NOT_FOUND).contentLocation(serviceUri).entity(response).build();
+            }
+
             if (ManagerSingleton.getInstance().unregisterService(serviceUri)) {
                 // The service was deleted
                 response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +

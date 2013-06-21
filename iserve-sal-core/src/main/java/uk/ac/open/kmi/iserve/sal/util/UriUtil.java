@@ -69,7 +69,7 @@ public class UriUtil {
      * @return
      */
     public static boolean isResourceLocalToServer(URI resourceUri, URI serverUri) {
-        URI relativeUri = resourceUri.relativize(serverUri);
+        URI relativeUri = serverUri.relativize(resourceUri);
         return !relativeUri.isAbsolute();
     }
 

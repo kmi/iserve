@@ -93,8 +93,18 @@ public class URIUtil {
         return result;
     }
 
+    /**
+     * Replace the URIs with the newBase and make them instead slash URIs to allow finer grain access and modification
+     * of resources
+     *
+     * @param originalUri
+     * @param newNamespace
+     * @return
+     * @throws URISyntaxException
+     */
     public static URI replaceNamespace(URI originalUri, URI newNamespace) throws URISyntaxException {
-        return new URI(newNamespace.getScheme(), newNamespace.getSchemeSpecificPart(), getLocalName(originalUri));
+//        return new URI(newNamespace.getScheme(), newNamespace.getSchemeSpecificPart(), getLocalName(originalUri));
+        return new URI(newNamespace.getScheme(), newNamespace.getSchemeSpecificPart() + "/" + getLocalName(originalUri), null);
     }
 
 }

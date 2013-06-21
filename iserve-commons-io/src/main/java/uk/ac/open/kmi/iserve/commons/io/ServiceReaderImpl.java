@@ -249,7 +249,7 @@ public class ServiceReaderImpl implements ServiceReader {
     private MessagePart obtainMessagePart(RDFNode inputNode) throws URISyntaxException {
 
         MessagePart result = null;
-        if (inputNode == null && !inputNode.canAs(Individual.class)) {
+        if (inputNode == null || !inputNode.canAs(Individual.class)) {
             return result;
         }
 

@@ -149,6 +149,15 @@ public interface iServeManager {
      */
     public abstract List<URI> listServices() throws SalException;
 
+    /**
+     * Checks if a service exists in the repository
+     *
+     * @param serviceUri the URI of the service
+     * @return true if it exists in the registry, false otherwise
+     * @throws SalException
+     */
+    public abstract boolean serviceExists(URI serviceUri) throws SalException;
+
     // Delete
 
     /**

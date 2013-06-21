@@ -331,8 +331,7 @@ public class ManagerSingleton implements iServeManager {
 
         // Check the URI is correct and belongs to the server
         if (serviceUri == null ||
-                !UriUtil.isResourceLocalToServer(serviceUri, configuration.getIserveUri()) ||
-                !this.serviceManager.serviceExists(serviceUri)) {
+                !UriUtil.isResourceLocalToServer(serviceUri, configuration.getIserveUri())) {
             return false;
         }
 
@@ -377,6 +376,19 @@ public class ManagerSingleton implements iServeManager {
     @Override
     public List<Service> getServices(List<URI> serviceUris) throws SalException {
         return this.serviceManager.getServices(serviceUris);
+    }
+
+    /**
+     * Determines whether a service is known to the registry
+     *
+     * @param serviceUri the URI of the service being looked up
+     * @return True if it is registered in the server
+     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
+     *
+     */
+    @Override
+    public boolean serviceExists(URI serviceUri) throws ServiceException {
+        return serviceManager.serviceExists(serviceUri);
     }
 
     /* (non-Javadoc)

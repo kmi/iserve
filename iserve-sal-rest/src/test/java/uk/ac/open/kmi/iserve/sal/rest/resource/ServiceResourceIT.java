@@ -24,10 +24,12 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.FilenameFilterBySyntax;
 import uk.ac.open.kmi.iserve.commons.io.Syntax;
 import uk.ac.open.kmi.iserve.sal.MediaType;
+import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 import java.io.*;
 import java.net.URI;
+import java.util.List;
 
 import static com.jayway.restassured.RestAssured.given;
 
@@ -43,11 +45,14 @@ public class ServiceResourceIT {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceResourceIT.class);
 
-    private static final String BASE_URL = "http://localhost";
-    private static final String BASE_CONTEXT = "/iserve-sal-rest";
-    private static final String SERVICES_URI = BASE_URL + "/services";
+    private static final String HOST = "http://localhost";
     private static final int PORT = 9090;
-//    private static final int PORT = 10000;
+    //        private static final int PORT = 10000;
+    private static final String BASE_CONTEXT = "/iserve";
+    private static final String SERVICES_PATH = BASE_CONTEXT + "/services";
+    private static final String WEB_APP_URI = HOST + ":" + PORT + BASE_CONTEXT;
+    private static final String SERVICES_URI = WEB_APP_URI + "/services";
+
 
     private static final String OWLS_TC_SERVICES = "/OWLS-TC3-MSM";
     private static final String JGD_SERVICES = "/jgd-services";
@@ -63,9 +68,6 @@ public class ServiceResourceIT {
     @Before
     public void setUp() throws Exception {
 
-        // Clean the whole thing before testing
-        ManagerSingleton.getInstance().clearRegistry();
-
         testFolder = ServiceResourceIT.class.getResource(OWLS_TC_SERVICES).toURI();
         FilenameFilter ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
         File dir = new File(testFolder);
@@ -73,9 +75,9 @@ public class ServiceResourceIT {
         int numServices = msmTtlTcFiles.length;
 
         // Set default values for rest assured
-        RestAssured.baseURI = BASE_URL;
+        RestAssured.baseURI = HOST;
         RestAssured.port = PORT;
-        RestAssured.rootPath = BASE_CONTEXT;
+        RestAssured.basePath = BASE_CONTEXT;
 
     }
 
@@ -84,6 +86,13 @@ public class ServiceResourceIT {
      */
     @Test
     public final void testAddService() {
+        // Clean the whole thing before testing
+        try {
+            ManagerSingleton.getInstance().clearRegistry();
+        } catch (SalException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
         // Add all the test collections
         log.info("Uploading services");
         log.info("Test collection: " + testFolder);
@@ -113,4 +122,35 @@ public class ServiceResourceIT {
         }
     }
 
+    @Test
+    public void testDeleteService() throws Exception {
+
+        List<URI> existingServices = ManagerSingleton.getInstance().listServices();
+
+        log.info("Deleting services");
+        // Try to delete endpoint
+        given().expect().response().statusCode(405).
+                when().delete("/services");
+
+        // Try to delete non existing svcs (directly at the graph level)
+        for (int i = 0; i < 10; i++) {
+            given().expect().response().statusCode(404).
+                    when().delete("/services/" + i);
+        }
+
+        // Try to delete non existing svcs
+        for (int i = 0; i < 10; i++) {
+            given().expect().response().statusCode(404).
+                    when().delete("/services/" + i + "/serviceName");
+        }
+
+        // Try to delete services using their entire URIs
+        for (URI uri : existingServices) {
+            String relativeUri = URI.create(SERVICES_URI).relativize(uri).toASCIIString();
+            log.info("Deleting service id: " + uri);
+            given().expect().response().statusCode(410).
+                    when().delete("/services/" + relativeUri);
+        }
+
+    }
 }

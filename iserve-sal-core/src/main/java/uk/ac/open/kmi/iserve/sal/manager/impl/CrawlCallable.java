@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.Callable;
 
 
-public class CrawlCallable implements Callable {
+public class CrawlCallable implements Callable<Boolean> {
 
     private static final Logger log = LoggerFactory.getLogger(CrawlCallable.class);
     private KnowledgeBaseManager kbManager;
