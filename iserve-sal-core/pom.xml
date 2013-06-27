@@ -107,17 +107,18 @@
             <version>${httpclient.version}</version>
         </dependency>
 
-
+        <!-- Loging -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-        <!-- Use Log4j binding (replaceable) -->
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4j.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <!-- Test dependencies -->
         <dependency>

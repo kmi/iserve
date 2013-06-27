@@ -36,8 +36,6 @@ import java.util.List;
  *
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
-//public interface iServeManager extends LogManager, KeyManager,
-//		ReviewManager, TaxonomyManager, UserManager {
 
 public interface iServeManager {
 
