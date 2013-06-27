@@ -20,6 +20,7 @@ import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -52,9 +53,9 @@ import static com.jayway.restassured.RestAssured.given;
  *          $LastChangedDate$
  *          $LastChangedBy$
  */
-public class ServiceResourceIT {
+public class ServiceResourceTest extends AbstractContainerTest {
 
-    private static final Logger log = LoggerFactory.getLogger(ServiceResourceIT.class);
+    private static final Logger log = LoggerFactory.getLogger(ServiceResourceTest.class);
 
     private static final String HOST = "http://localhost";
     private static final int PORT = 9090;
@@ -80,12 +81,12 @@ public class ServiceResourceIT {
     private final WebClient webClient = new WebClient();
 
     /**
-     * @throws java.lang.Exception
+     * @throws Exception
      */
     @Before
     public void setUp() throws Exception {
 
-        testFolder = ServiceResourceIT.class.getResource(OWLS_TC_SERVICES).toURI();
+        testFolder = ServiceResourceTest.class.getResource(OWLS_TC_SERVICES).toURI();
         FilenameFilter ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
         File dir = new File(testFolder);
         msmTtlTcFiles = dir.listFiles(ttlFilter);
@@ -120,13 +121,22 @@ public class ServiceResourceIT {
     @Test
     public void logIn() throws FailingHttpStatusCodeException, MalformedURLException, IOException, InterruptedException {
 
+        HtmlPage page = performLogin(false);
+        // This'll throw an expection if not logged in
+        page.getAnchorByHref("/iserve/logout.jsp");
+
+    }
+
+    private HtmlPage performLogin(boolean rememberMe) throws IOException {
         HtmlPage page = webClient.getPage(WEB_APP_URI + "/login.jsp");
         HtmlForm form = page.getFormByName("loginform");
         form.<HtmlInput>getInputByName("username").setValueAttribute(ROOT_USER);
         form.<HtmlInput>getInputByName("password").setValueAttribute(ROOT_PASSWD);
-        page = form.<HtmlInput>getInputByName("submit").click();
-        // This'll throw an expection if not logged in
-        page.getAnchorByHref("/iserve/logout.jsp");
+        if (rememberMe) {
+            HtmlCheckBoxInput checkbox = form.getInputByName("rememberMe");
+            checkbox.setChecked(true);
+        }
+        return form.<HtmlInput>getInputByName("submit").click();
     }
 
     /**
@@ -155,22 +165,14 @@ public class ServiceResourceIT {
 
         log.info("Correctly redirected");
 
-        // Now log into Shiro with "rememberMe" set and try again
+        // Now log into Shiro and try again
         log.info("Now logging in");
-
-        HtmlPage page = webClient.getPage(WEB_APP_URI + "/login.jsp");
-        HtmlForm form = page.getFormByName("loginform");
-        form.<HtmlInput>getInputByName("username").setValueAttribute(ROOT_USER);
-        form.<HtmlInput>getInputByName("password").setValueAttribute(ROOT_PASSWD);
-//        HtmlCheckBoxInput checkbox = form.getInputByName("rememberMe");
-//        checkbox.setChecked(true);
-        page = form.<HtmlInput>getInputByName("submit").click();
+        performLogin(false);
         Cookie cookie = webClient.getCookieManager().getCookie("JSESSIONID");
         log.info("Cookie data: " + cookie.toString());
 
         // Test oriented towards individuals.
         // To be updated with application oriented logging.
-
 
         log.info("Uploading services");
         for (File file : msmTtlTcFiles) {
@@ -188,30 +190,61 @@ public class ServiceResourceIT {
     @Test
     public void testDeleteService() throws Exception {
 
+        String relativeUri;
         List<URI> existingServices = ManagerSingleton.getInstance().listServices();
+
+        log.info("Trying to delete prior to logging");
+        URI testUri = existingServices.get(0);
+        relativeUri = URI.create(SERVICES_URI).relativize(testUri).toASCIIString();
+        log.info("Trying to delete service id: " + testUri);
+        given().log().all().
+                expect().response().statusCode(302).
+                when().delete("/services/" + relativeUri);
+
+        // Now login and run the rest of the tests
+        log.info("Now logging in");
+        performLogin(false);
+        Cookie cookie = webClient.getCookieManager().getCookie("JSESSIONID");
+        log.info("Cookie data: " + cookie.toString());
 
         log.info("Deleting services");
         // Try to delete endpoint
-        given().expect().response().statusCode(405).
+        given().log().all().
+                sessionId(cookie.getValue()).
+                redirects().follow(true).
+                expect().log().all().
+                response().statusCode(405).
                 when().delete("/services");
 
         // Try to delete non existing svcs (directly at the graph level)
         for (int i = 0; i < 10; i++) {
-            given().expect().response().statusCode(404).
+            given().log().all().
+                    sessionId(cookie.getValue()).
+                    redirects().follow(true).
+                    expect().log().all().
+                    response().statusCode(404).
                     when().delete("/services/" + i);
         }
 
         // Try to delete non existing svcs
         for (int i = 0; i < 10; i++) {
-            given().expect().response().statusCode(404).
+            given().log().all().
+                    sessionId(cookie.getValue()).
+                    redirects().follow(true).
+                    expect().log().all().
+                    response().statusCode(404).
                     when().delete("/services/" + i + "/serviceName");
         }
 
         // Try to delete services using their entire URIs
         for (URI uri : existingServices) {
-            String relativeUri = URI.create(SERVICES_URI).relativize(uri).toASCIIString();
+            relativeUri = URI.create(SERVICES_URI).relativize(uri).toASCIIString();
             log.info("Deleting service id: " + uri);
-            given().expect().response().statusCode(410).
+            given().log().all().
+                    sessionId(cookie.getValue()).
+                    redirects().follow(true).
+                    expect().log().all().
+                    response().statusCode(200).
                     when().delete("/services/" + relativeUri);
         }
 

@@ -16,9 +16,10 @@
 
 package uk.ac.open.kmi.iserve.sal.rest.resource;
 
-import com.sun.jersey.multipart.BodyPart;
-import com.sun.jersey.multipart.BodyPartEntity;
-import com.sun.jersey.multipart.MultiPart;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.sal.ServiceFormat;
@@ -32,12 +33,12 @@ import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.List;
 
 /**
  * TODO: Refactor based on the Manager Singleton.
  *
  * @author Dong Liu (Knowledge Media Institute - The Open University)
+ * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
 @Path("/services")
 public class ServiceResource {
@@ -51,42 +52,33 @@ public class ServiceResource {
     SecurityContext security;
 
     public ServiceResource() {
-
     }
+
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces({MediaType.TEXT_HTML})
-    public Response addService(MultiPart content,
+    public Response addService(@FormDataParam("file") FormDataBodyPart bodyPart,
+                               @FormDataParam("file") InputStream file,
                                @HeaderParam("Content-Location") String locationUri) {
 
-        // TODO: implement again the security
-//		if ( security.getUserPrincipal() == null ) {
-//			throw new MappableContainerException(
-//					new AuthenticationException(
-//							"Authentication credentials are required\r\n",
-//							"iServe SAL RESTful API"));
-//		}
-//
-//		String userFoafId = security.getUserPrincipal().getName();
+        // Check first that the user is allowed to upload a service
+        Subject currentUser = SecurityUtils.getSubject();
+        if (!currentUser.isPermitted("services:create")) {
+            log.warn("User without the appropriate permissions attempted to create a service: " + currentUser.getPrincipal());
 
+            String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                    "  <body>\n You have not got the appropriate permissions for creating a service. Please login and ensure you have the correct permissions. </body>\n</html>";
 
-//        // Obtain content type and charset. Any reusable code for this?
-//        int index = contentType.indexOf(';');
-//        if (index > 0) {
-//            mediaType = contentType.substring(0,index).trim();
-//            String charsetPart = contentType.substring(index + 1);
-//            index = charsetPart.indexOf("=");
-//            charset = charsetPart.substring(index + 1).trim();
-//        }
+            return Response.status(Status.FORBIDDEN).entity(htmlString).build();
+        }
 
+        // The user is allowed to create services
         String mediaType = null;
         URI serviceUri;
-        InputStream input = null;
 
-        List<BodyPart> parts = content.getBodyParts();
-        if (parts != null && !parts.isEmpty()) {
-            mediaType = parts.get(0).getMediaType().getType() + "/" + parts.get(0).getMediaType().getSubtype();
+        if (bodyPart != null) {
+            mediaType = bodyPart.getMediaType().toString();
         } else {
             // TODO: we should obtain/guess the media type
         }
@@ -104,9 +96,7 @@ public class ServiceResource {
             } else {
                 // There is no location. Import the entire service
                 log.info("Importing the service");
-                BodyPartEntity bpe = (BodyPartEntity) parts.get(0).getEntity();
-                input = bpe.getInputStream();
-                serviceUri = ManagerSingleton.getInstance().importService(input, format);
+                serviceUri = ManagerSingleton.getInstance().importService(file, format);
             }
             //		String oauthConsumer = ((SecurityFilter.Authorizer) security).getOAuthConsumer();
 
@@ -127,9 +117,9 @@ public class ServiceResource {
             // TODO: Add logging
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
         } finally {
-            if (input != null) {
+            if (file != null) {
                 try {
-                    input.close();
+                    file.close();
                 } catch (IOException e) {
                     log.error("Problems while close the input stream with the service content", e);
                 }
@@ -137,20 +127,33 @@ public class ServiceResource {
         }
     }
 
+    /**
+     * Delete a given service
+     * <p/>
+     * From HTTP Method definition
+     * 9.7 DELETE
+     * A successful response SHOULD be
+     * 200 (OK) if the response includes an entity describing the status,
+     * 202 (Accepted) if the action has not yet been enacted, or
+     * 204 (No Content) if the action has been enacted but the response does not include an entity.
+     *
+     * @return
+     */
     @DELETE
     @Path("/{uniqueId}/{serviceName}")
     @Produces({MediaType.TEXT_HTML})
     public Response deleteService() {
 
-        // TODO: Get the actual format of the service description
-//        if ( security.getUserPrincipal() == null ) {
-//			throw new MappableContainerException(
-//					new AuthenticationException(
-//							"Authentication credentials are required\r\n",
-//							"iServe SAL RESTful API"));
-//		}
-//
-//		String userFoafId = security.getUserPrincipal().getName();
+        // Check first that the user is allowed to upload a service
+        Subject currentUser = SecurityUtils.getSubject();
+        if (!currentUser.isPermitted("services:delete")) {
+            log.warn("User without the appropriate permissions attempted to delete a service: " + currentUser.getPrincipal());
+
+            String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                    "  <body>\n You have not got the appropriate permissions for deleting a service. Please login and ensure you have the correct permissions. </body>\n</html>";
+
+            return Response.status(Status.FORBIDDEN).entity(htmlString).build();
+        }
 
         URI serviceUri = uriInfo.getRequestUri();
 
@@ -169,7 +172,7 @@ public class ServiceResource {
                 response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                         "  <body>\n The service <a href='" + serviceUri + "'>" + serviceUri + "</a> has been deleted from the server.\n  </body>\n</html>";
 
-                return Response.status(Status.GONE).contentLocation(serviceUri).entity(response).build();
+                return Response.status(Status.OK).contentLocation(serviceUri).entity(response).build();
             } else {
                 // The service was not deleted
                 response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
@@ -187,4 +190,11 @@ public class ServiceResource {
         }
 
     }
+
+//    @DELETE
+//    @Produces({MediaType.TEXT_HTML})
+//    public Response clearService() {
+//
+//    }
+
 }
