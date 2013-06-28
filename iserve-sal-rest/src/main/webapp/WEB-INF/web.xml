@@ -40,20 +40,6 @@
     </filter-mapping>
 
     <!--
-   <servlet>
-       <display-name>iServe Storage and Access Layer</display-name>
-       <servlet-name>iServe SAL REST</servlet-name>
-       <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
-
-       <init-param>
-           <param-name>com.sun.jersey.config.property.packages</param-name>
-           <param-value>uk.ac.open.kmi.iserve.sal.rest.resource</param-value>
-       </init-param>
-
-       <load-on-startup>1</load-on-startup>
-   </servlet>
-   -->
-
     <servlet>
         <display-name>iServe Storage and Access Layer</display-name>
         <servlet-name>iServe SAL REST</servlet-name>
@@ -65,6 +51,13 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
 
+    <servlet-mapping>
+        <servlet-name>iServe SAL REST</servlet-name>
+        <url-pattern>/services/*</url-pattern>
+        <url-pattern>/documents/*</url-pattern>
+        <url-pattern>/registry/*</url-pattern>
+    </servlet-mapping>
+    -->
 
     <!-- For Initialisation -->
     <listener>
@@ -81,13 +74,39 @@
 		<servlet-name>iServe SAL REST</servlet-name>
 		<url-pattern>/execute-query</url-pattern>
 	</servlet-mapping>
+
     -->
 
-    <servlet-mapping>
-        <servlet-name>iServe SAL REST</servlet-name>
-        <url-pattern>/services/*</url-pattern>
-        <url-pattern>/documents/*</url-pattern>
-    </servlet-mapping>
+
+    <filter>
+        <filter-name>iServe SAL REST</filter-name>
+        <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>uk.ac.open.kmi.iserve.sal.rest.iServeApp</param-value>
+        </init-param>
+        <!--
+        <init-param>
+            <param-name>jersey.config.server.mvc.templateBasePath.jsp</param-name>
+            <param-value>/WEB-INF/jsp</param-value>
+        </init-param>
+        -->
+        <init-param>
+            <param-name>com.sun.jersey.config.property.WebPageContentRegex</param-name>
+            <param-value>/(images|js|css|jsp)/.*</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>jersey.config.servlet.filter.forwardOn404</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+
+
+    <filter-mapping>
+        <filter-name>iServe SAL REST</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>

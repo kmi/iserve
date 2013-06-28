@@ -53,13 +53,13 @@
 %>
 <html>
 <head>
-    <link type="text/css" rel="stylesheet" href="<c:url value="style.css"/>"/>
+    <link type="text/css" rel="stylesheet" href="<c:url value="/css/style.css"/>"/>
 </head>
 <body>
 
 <h2>Log out</h2>
 
-<p>You have succesfully logged out. <a href="<c:url value="/home.jsp"/>">Return to the home page.</a></p>
+<p>You have succesfully logged out. <a href="<c:url value="home.jsp"/>">Return to the home page.</a></p>
 
 </body>
 </html>

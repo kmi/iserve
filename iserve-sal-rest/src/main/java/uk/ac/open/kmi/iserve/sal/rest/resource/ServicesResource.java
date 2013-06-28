@@ -41,9 +41,9 @@ import java.net.URI;
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
 @Path("/services")
-public class ServiceResource {
+public class ServicesResource {
 
-    private static final Logger log = LoggerFactory.getLogger(ServiceResource.class);
+    private static final Logger log = LoggerFactory.getLogger(ServicesResource.class);
 
     @Context
     UriInfo uriInfo;
@@ -51,7 +51,7 @@ public class ServiceResource {
     @Context
     SecurityContext security;
 
-    public ServiceResource() {
+    public ServicesResource() {
     }
 
 
@@ -191,10 +191,59 @@ public class ServiceResource {
 
     }
 
-//    @DELETE
-//    @Produces({MediaType.TEXT_HTML})
-//    public Response clearService() {
-//
-//    }
+    /**
+     * Clears the services registry
+     * <p/>
+     * From HTTP Method definition
+     * 9.7 DELETE
+     * A successful response SHOULD be
+     * 200 (OK) if the response includes an entity describing the status,
+     * 202 (Accepted) if the action has not yet been enacted, or
+     * 204 (No Content) if the action has been enacted but the response does not include an entity.
+     *
+     * @return
+     */
+    @DELETE
+    @Produces({MediaType.TEXT_HTML})
+    public Response clearServices() {
+
+        // Check first that the user is allowed to upload a service
+        Subject currentUser = SecurityUtils.getSubject();
+        if (!currentUser.isPermitted("services:delete")) {
+            log.warn("User without the appropriate permissions attempted to clear the services: " + currentUser.getPrincipal());
+
+            String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                    "  <body>\n You have not got the appropriate permissions for clearing the services. Please login and ensure you have the correct permissions. </body>\n</html>";
+
+            return Response.status(Response.Status.FORBIDDEN).entity(htmlString).build();
+        }
+
+        URI serviceUri = uriInfo.getRequestUri();
+
+        String response;
+        try {
+            if (ManagerSingleton.getInstance().clearServices()) {
+                // The registry was cleared
+                response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                        "  <body>\n The services have been cleared.\n  </body>\n</html>";
+
+                return Response.status(Response.Status.OK).contentLocation(serviceUri).entity(response).build();
+            } else {
+                // The registry was not cleared
+                response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                        "  <body>\n The services could not be cleared. Try again or contact a server administrator.\n  </body>\n</html>";
+
+                return Response.status(Response.Status.NOT_MODIFIED).contentLocation(serviceUri).entity(response).build();
+            }
+        } catch (SalException e) {
+            response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                    "  <body>\nThere was an error while clearing the services. Contact the system administrator. \n  </body>\n</html>";
+
+            // TODO: Add logging
+            log.error("SAL Exception while deleting service", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(response).build();
+        }
+
+    }
 
 }

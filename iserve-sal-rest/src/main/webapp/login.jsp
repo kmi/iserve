@@ -17,7 +17,7 @@
 
 <html>
 <head>
-    <link type="text/css" rel="stylesheet" href="<c:url value="/style.css"/>"/>
+    <link type="text/css" rel="stylesheet" href="<c:url value="/css/style.css"/>"/>
 </head>
 <body>
 

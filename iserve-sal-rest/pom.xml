@@ -82,24 +82,16 @@
             <artifactId>jersey-media-multipart</artifactId>
             <version>2.0</version>
         </dependency>
-        <!--
         <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-server</artifactId>
-            <version>${jersey.version}</version>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-mvc</artifactId>
+            <version>2.0</version>
         </dependency>
         <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-servlet</artifactId>
-            <version>${jersey.version}</version>
-            <scope>runtime</scope>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-mvc-jsp</artifactId>
+            <version>2.0</version>
         </dependency>
-        <dependency>
-            <groupId>com.sun.jersey.contribs</groupId>
-            <artifactId>jersey-multipart</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
-        -->
 
 
         <dependency>

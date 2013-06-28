@@ -28,7 +28,7 @@ import java.io.InputStream;
 import java.net.URI;
 
 @Path("/documents")
-public class DocumentResource {
+public class DocumentsResource {
 
     @Context
     UriInfo uriInfo;
@@ -36,7 +36,7 @@ public class DocumentResource {
     @Context
     SecurityContext security;
 
-    public DocumentResource() {
+    public DocumentsResource() {
     }
 
     @POST

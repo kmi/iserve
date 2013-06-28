@@ -18,7 +18,7 @@
 
 <html>
 <head>
-    <link type="text/css" rel="stylesheet" href="<c:url value="/style.css"/>"/>
+    <link type="text/css" rel="stylesheet" href="<c:url value="/css/style.css"/>"/>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script>
         function deleteUrl(url) {
@@ -26,13 +26,22 @@
                 url: url,
                 type: 'DELETE',
                 data: {submit: true}, // An object with the key 'submit' and value 'true;
-                success: function () {
-                    alert("Data has permanently been deleted.");
+                xhrFields: {  // send credentials
+                    withCredentials: true
                 },
-                error: function (result) {
-                    alert("Unable to delete the data. ");
+                complete: function (e, xhr, settings) {
+                    // Deleted
+                    if (e.status === 200 || e.status == 204) {
+                        alert("Data has been permanently deleted.");
+                    } else if (e.status === 403) {
+                        alert("Content was not deleted: you do not have the right permissions.");
+                    } else if (e.status === 500) {
+                        alert("Content was not deleted: there was an internal error.");
+                    } else {
+                        alert("Unable to delete the data. ");
+                    }
                 }
-            });
+            })
         }
 
         function clearResources(registry) {
@@ -40,21 +49,21 @@
                 case "registry":
                     var r = confirm("Are you sure you want to clear the entire registry?");
                     if (r == true) {
-                        deleteUrl("../");
+                        deleteUrl("registry");
                     }
                     break;
 
                 case "services":
                     var r = confirm("Are you sure you want to clear the services?");
                     if (r == true) {
-                        deleteUrl("../services");
+                        deleteUrl("services");
                     }
                     break;
 
                 case "documents":
                     var r = confirm("Are you sure you want to clear the documents?");
                     if (r == true) {
-                        deleteUrl("../documents");
+                        deleteUrl("documents");
                     }
                     break;
             }
