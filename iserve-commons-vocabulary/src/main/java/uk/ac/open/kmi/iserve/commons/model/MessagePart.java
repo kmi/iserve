@@ -18,22 +18,27 @@ package uk.ac.open.kmi.iserve.commons.model;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * Message Parts
- *
+ * <p/>
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 20/05/2013
  * Time: 17:43
  */
 public class MessagePart extends AnnotableResource {
 
-   private List<MessagePart> mandatoryParts;
+    private List<MessagePart> mandatoryParts;
     private List<MessagePart> optionalParts;
+    private Collection<URI> liftingSchemaMappings;
+    private Collection<URI> loweringSchemaMappings;
 
     public MessagePart(URI uri) {
         super(uri);
+        this.liftingSchemaMappings = new ArrayList<URI>();
+        this.loweringSchemaMappings = new ArrayList<URI>();
         this.mandatoryParts = new ArrayList<MessagePart>();
         this.optionalParts = new ArrayList<MessagePart>();
     }
@@ -79,6 +84,50 @@ public class MessagePart extends AnnotableResource {
     public boolean removeMandatoryPart(MessagePart part) {
         if (part != null) {
             return this.mandatoryParts.remove(part);
+        }
+        return false;
+    }
+
+    public Collection<URI> getLiftingSchemaMappings() {
+        return liftingSchemaMappings;
+    }
+
+    public void setLiftingSchemaMappings(Collection<URI> liftingSchemaMappings) {
+        this.liftingSchemaMappings = liftingSchemaMappings;
+    }
+
+    public Collection<URI> getLoweringSchemaMappings() {
+        return loweringSchemaMappings;
+    }
+
+    public void setLoweringSchemaMappings(Collection<URI> loweringSchemaMappings) {
+        this.loweringSchemaMappings = loweringSchemaMappings;
+    }
+
+    public boolean addLiftingSchemaMapping(URI mapping) {
+        if (mapping != null) {
+            return this.liftingSchemaMappings.add(mapping);
+        }
+        return false;
+    }
+
+    public boolean removeLiftingSchemaMapping(URI mapping) {
+        if (mapping != null) {
+            return this.liftingSchemaMappings.remove(mapping);
+        }
+        return false;
+    }
+
+    public boolean addLoweringSchemaMapping(URI mapping) {
+        if (mapping != null) {
+            return this.loweringSchemaMappings.add(mapping);
+        }
+        return false;
+    }
+
+    public boolean removeLoweringSchemaMapping(URI mapping) {
+        if (mapping != null) {
+            return this.loweringSchemaMappings.remove(mapping);
         }
         return false;
     }
