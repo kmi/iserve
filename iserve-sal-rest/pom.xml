@@ -215,6 +215,13 @@
             <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- ELDA dependencies -->
+        <dependency>
+            <groupId>com.epimorphics.lda</groupId>
+            <artifactId>elda-lda</artifactId>
+            <version>1.2.23</version>
+        </dependency>
     </dependencies>
 
     <build>
