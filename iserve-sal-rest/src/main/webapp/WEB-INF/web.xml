@@ -108,6 +108,45 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <!-- For Elda-->
+    <context-param>
+        <param-name>com.epimorphics.api.initialSpecFile</param-name>
+        <param-value>
+            iserve::specs/iserve.ttl
+        </param-value>
+    </context-param>
+
+    <filter>
+        <filter-name>Elda Web Application</filter-name>
+        <filter-class>com.sun.jersey.spi.container.servlet.ServletContainer</filter-class>
+
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>com.epimorphics.lda.restlets</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>com.sun.jersey.config.feature.FilterForwardOn404</param-name>
+            <param-value>true</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
+            <param-value>com.sun.jersey.api.container.filter.PostReplaceFilter</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>Elda Web Application</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <listener>
+        <listener-class>com.epimorphics.lda.restlets.RouterRestlet$Init</listener-class>
+    </listener>
+
+
+
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
