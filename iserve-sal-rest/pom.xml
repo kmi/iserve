@@ -341,4 +341,12 @@
         </plugins>
     </build>
     <url>http://iserve.kmi.open.ac.uk/</url>
+
+    <repositories>
+        <repository>
+            <id>epi-public-repo</id>
+            <name>Epimorphics Public Repository</name>
+            <url>http://repository.epimorphics.com</url>
+        </repository>
+    </repositories>
 </project>
