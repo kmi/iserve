@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.importer.sawsdl;
 
 import junit.framework.Assert;
@@ -38,7 +39,7 @@ import java.util.List;
 public class SawsdlImporterTest {
 
     private static final Logger log = LoggerFactory.getLogger(SawsdlImporterTest.class);
-    private static final String SAWSDL_TC3_SERVICES = "/SAWSDL-TC3/htdocs/services/sawsdl_wsdl11/";
+    private static final String SAWSDL_TC3_SERVICES = "/SAWSDL-TC3_WSDL11/htdocs/services/sawsdl_wsdl11/";
 
     private SawsdlImporter importer;
     private ServiceWriter writer;
