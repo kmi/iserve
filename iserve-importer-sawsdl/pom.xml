@@ -113,6 +113,7 @@
                             <includeGroupIds>${project.parent.groupId}</includeGroupIds>
                             <includeArtifactIds>iserve-test-resources</includeArtifactIds>
                             <outputDirectory>${project.build.directory}/test-classes/</outputDirectory>
+                            <includes>SAWSDL-TC3/htdocs/services/sawsdl_wsdl11/*.wsdl</includes>
                         </configuration>
                     </execution>
                 </executions>

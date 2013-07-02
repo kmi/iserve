@@ -62,8 +62,7 @@
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
         <junit.version>4.7</junit.version>
-        <gwtVersion>2.1.0</gwtVersion>
-        <jena.version>2.10.0</jena.version>
+        <jena.version>2.10.1</jena.version>
         <httpclient.version>4.2.3</httpclient.version>
         <slf4j.version>1.7.5</slf4j.version>
     </properties>
@@ -73,10 +72,9 @@
         <module>iserve-commons-io</module>
         <module>iserve-commons-vocabulary</module>
         <module>iserve-importer-api</module>
-        <!-- <module>iserve-importer-sawsdl</module> -->
+        <module>iserve-importer-sawsdl</module>
         <module>iserve-importer-hrests</module>
         <module>iserve-importer-owls</module>
-        <!-- <module>iserve-sal-model</module> -->
         <module>iserve-sal-core</module>
         <module>iserve-sal-rest</module>
         <module>iserve-discovery-api</module>
