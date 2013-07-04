@@ -131,15 +131,6 @@ public class DocumentManagerFileSystem implements DocumentManager {
     }
 
     /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#listDocumentsForService(java.net.URI)
-     */
-    @Override
-    public List<URI> listDocumentsForService(URI serviceURI) throws DocumentException {
-        //TODO: Implement
-        throw new DocumentException("Not yet implemented");
-    }
-
-    /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#getDocument(java.io.InputStream)
      */
     @Override

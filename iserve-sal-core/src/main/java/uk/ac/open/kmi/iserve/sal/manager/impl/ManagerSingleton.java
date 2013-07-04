@@ -397,8 +397,7 @@ public class ManagerSingleton implements iServeManager {
     @Override
     public boolean addRelatedDocumentToService(URI serviceUri,
                                                URI relatedDocument) throws SalException {
-        // TODO: Implement
-        throw new SalException("Not yet implemented");
+        return this.serviceManager.addRelatedDocumentToService(serviceUri, relatedDocument);
     }
 
     // Delegate Methods
@@ -436,7 +435,7 @@ public class ManagerSingleton implements iServeManager {
      */
     @Override
     public List<URI> listDocumentsForService(URI serviceURI) throws SalException {
-        return this.docManager.listDocumentsForService(serviceURI);
+        return this.serviceManager.listDocumentsForService(serviceURI);
     }
 
     /* (non-Javadoc)
