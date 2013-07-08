@@ -121,7 +121,7 @@ public class ServiceResourceTest extends AbstractContainerTest {
 
         HtmlPage page = performLogin(false);
         // This'll throw an expection if not logged in
-        page.getAnchorByHref("/iserve/logout.jsp");
+        page.getAnchorByHref("/logout.jsp");
 
     }
 

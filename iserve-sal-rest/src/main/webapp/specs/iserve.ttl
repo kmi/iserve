@@ -61,7 +61,7 @@ _:servicesSelect a api:Selector ;
 
 spec:serviceList a api:ListEndpoint ;
 	rdfs:label "Services List"@en ;
-	api:uriTemplate "/doc/services" ;
+	api:uriTemplate "/services" ;
 	api:selector _:servicesSelect .
 
 _:operationsSelect a api:Selector;
@@ -70,7 +70,7 @@ _:operationsSelect a api:Selector;
 		
 spec:operationsList a api:ListEndpoint ;
 	rdfs:label "Operations List"@en ;
-	api:uriTemplate "doc/operations" ;
+	api:uriTemplate "/operations" ;
 	api:selector _:operationsSelect .
 
 _:operationInputsSelect a api:Selector ;
@@ -81,7 +81,7 @@ _:operationInputsSelect a api:Selector ;
 	
 spec:operationInputsList a api:ListEndpoint ;
 	rdfs:label "Operation Inputs List"@en ;
-	api:uriTemplate "doc/operations/{opId}/inputs" ;
+	api:uriTemplate "/operations/{opId}/inputs" ;
 	# Define a variable that represents that actual operation ID.
 	# TODO: Adapt to new naming scheme
 	api:variable [
@@ -96,13 +96,13 @@ spec:operationInputsList a api:ListEndpoint ;
 spec:serviceItem
     a api:ItemEndpoint ;
     rdfs:label "Service"@en ;
-    api:uriTemplate "doc/services/{svcId}" ;
+    api:uriTemplate "/services/{svcId}" ;
     api:itemTemplate "http://iserve.kmi.open.ac.uk/id/services/{svcId}" .	
 	
 spec:operationItem
     a api:ItemEndpoint ;
     rdfs:label "Operation"@en ;
-    api:uriTemplate "doc/operations/{opId}" ;
+    api:uriTemplate "/operations/{opId}" ;
     api:itemTemplate "http://iserve.kmi.open.ac.uk/id/operations/{opId}" .		
 	
 #

@@ -39,7 +39,6 @@
         <dispatcher>ERROR</dispatcher>
     </filter-mapping>
 
-    <!--
     <servlet>
         <display-name>iServe Storage and Access Layer</display-name>
         <servlet-name>iServe SAL REST</servlet-name>
@@ -53,11 +52,10 @@
 
     <servlet-mapping>
         <servlet-name>iServe SAL REST</servlet-name>
-        <url-pattern>/services/*</url-pattern>
-        <url-pattern>/documents/*</url-pattern>
+        <url-pattern>/id/services/*</url-pattern>
+        <url-pattern>/id/documents/*</url-pattern>
         <url-pattern>/registry/*</url-pattern>
     </servlet-mapping>
-    -->
 
     <!-- For Initialisation -->
     <listener>
@@ -108,31 +106,31 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <!-- For Elda-->
+    <!-- For Elda -->
     <context-param>
         <param-name>com.epimorphics.api.initialSpecFile</param-name>
         <param-value>
-            iserve::specs/iserve.ttl
+            doc::specs/iserve.ttl
         </param-value>
     </context-param>
 
     <filter>
         <filter-name>Elda Web Application</filter-name>
-        <filter-class>com.sun.jersey.spi.container.servlet.ServletContainer</filter-class>
+        <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
 
         <init-param>
-            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-name>jersey.config.server.provider.packages</param-name>
             <param-value>com.epimorphics.lda.restlets</param-value>
         </init-param>
 
         <init-param>
-            <param-name>com.sun.jersey.config.feature.FilterForwardOn404</param-name>
+            <param-name>jersey.config.servlet.filter.forwardOn404</param-name>
             <param-value>true</param-value>
         </init-param>
 
         <init-param>
-            <param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
-            <param-value>com.sun.jersey.api.container.filter.PostReplaceFilter</param-value>
+            <param-name>org.glassfish.jersey.spi.container.ContainerRequestFilters</param-name>
+            <param-value>org.glassfish.jersey.api.container.filter.PostReplaceFilter</param-value>
         </init-param>
     </filter>
 
