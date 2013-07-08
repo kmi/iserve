@@ -147,6 +147,19 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         return services;
     }
 
+    /**
+     * Lists all documents related to a given service
+     *
+     * @param serviceUri the service URI
+     * @return the List of the URIs of all the documents related to the service
+     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
+     *
+     */
+    @Override
+    public List<URI> listDocumentsForService(URI serviceUri) throws ServiceException {
+        return new ArrayList<URI>();  //TODO: Implement
+    }
+
     public URI addService(Service service) throws ServiceException {
 
         // Check input and exit early
@@ -176,6 +189,20 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
         log.info("Service added.");
 
         return service.getUri();
+    }
+
+    /**
+     * Relates a given document to a service. The relationship is just a generic one.
+     *
+     * @param serviceUri      the service URI
+     * @param relatedDocument the related document URI
+     * @return True if successful or False otherwise
+     * @throws uk.ac.open.kmi.iserve.sal.exception.SalException
+     *
+     */
+    @Override
+    public boolean addRelatedDocumentToService(URI serviceUri, URI relatedDocument) throws ServiceException {
+        return false;  //TODO: Implement
     }
 
     private URI generateUniqueServiceUri() {

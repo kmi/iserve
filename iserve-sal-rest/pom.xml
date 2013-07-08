@@ -300,6 +300,7 @@
                             <includeGroupIds>${project.parent.groupId}</includeGroupIds>
                             <includeArtifactIds>iserve-test-resources</includeArtifactIds>
                             <outputDirectory>${project.build.directory}/test-classes/</outputDirectory>
+                            <includes>OWLS-TC3-MSM/*.ttl</includes>
                         </configuration>
                     </execution>
                 </executions>
@@ -311,9 +312,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <!--
                 <configuration>
                     <forkMode>never</forkMode>
                 </configuration>
+                -->
                 <executions>
                     <execution>
                         <id>surefire-it</id>

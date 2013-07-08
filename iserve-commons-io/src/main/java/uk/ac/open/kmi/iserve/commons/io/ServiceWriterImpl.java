@@ -256,7 +256,7 @@ public class ServiceWriterImpl implements ServiceWriter {
         }
 
         String comment = basicResource.getComment();
-        if (label != null) {
+        if (comment != null) {
             current.addProperty(RDFS.comment, comment);
         }
 

@@ -28,9 +28,55 @@
     <artifactId>iserve-test-resources</artifactId>
     <name>iServe Shared Test Resources</name>
 
-    <!-- Package shared resources -->
+
     <build>
         <plugins>
+
+            <!-- Obtain remote resources for testing purposes -->
+            <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>maven-download-plugin</artifactId>
+                <version>1.1.0</version>
+                <executions>
+                    <execution>
+                        <id>install-sawsdl-tc3</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>http://projects.semwebcentral.org/frs/download.php/489/SAWSDL-TC3_WSDL11.zip</url>
+                            <unpack>true</unpack>
+                            <outputDirectory>${project.build.resources[0].directory}</outputDirectory>
+                            <md5>56b8d50a1548d9bc92c068560a530a46</md5>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>maven-download-plugin</artifactId>
+                <version>1.1.0</version>
+                <executions>
+                    <execution>
+                        <id>install-owls-tc3</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>http://projects.semwebcentral.org/frs/download.php/460/OWLS-TC3.zip</url>
+                            <unpack>true</unpack>
+                            <outputDirectory>${project.build.resources[0].directory}</outputDirectory>
+                            <md5>e2a37cf78464fe8a07203390451afb1e</md5>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <!-- Package shared resources -->
             <plugin>
                 <artifactId>maven-remote-resources-plugin</artifactId>
                 <version>1.4</version>

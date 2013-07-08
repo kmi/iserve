@@ -31,13 +31,14 @@ import java.util.List;
  * Higher Level Access to Data management within iServe. Only a controlled subset
  * of the inner methods for data management are exposed at this level
  * <p/>
- * TODO: Registering import mechanisms should also be defined somewhere
- * TODO: Implement the Observer pattern so that we can update other software about changes
  *
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
 
 public interface iServeManager {
+
+    // TODO: Registering import mechanisms should also be defined somewhere
+    // TODO: Implement the Observer pattern so that we can update other software about changes
 
     public abstract SystemConfiguration getConfiguration();
 
@@ -110,9 +111,10 @@ public interface iServeManager {
 
     // Read
 
+    // TODO: Syntax and ServiceFormat are sort overlapping here
+
     /**
      * Obtains the Service in a particular syntax
-     * TODO: Syntax and ServiceFormat are sort overlapping here
      *
      * @param serviceUri the URI of the service to retrieve
      * @param format     the format to use for the serialisation
@@ -156,6 +158,15 @@ public interface iServeManager {
      */
     public abstract boolean serviceExists(URI serviceUri) throws SalException;
 
+    /**
+     * Lists all documents related to a given service
+     *
+     * @param serviceUri the service URI
+     * @return the List of the URIs of all the documents related to the service
+     * @throws SalException
+     */
+    public abstract List<URI> listDocumentsForService(URI serviceUri) throws SalException;
+
     // Delete
 
     /**
@@ -189,7 +200,6 @@ public interface iServeManager {
      */
     public abstract boolean addRelatedDocumentToService(URI serviceUri, URI relatedDocument) throws SalException;
 
-
 	/*
      *  Document Management Operations
 	 */
@@ -217,15 +227,6 @@ public interface iServeManager {
      * @throws SalException
      */
     public abstract List<URI> listDocuments() throws SalException;
-
-    /**
-     * Lists all documents related to a given service
-     *
-     * @param serviceUri the service URI
-     * @return the List of the URIs of all the documents related to the service
-     * @throws SalException
-     */
-    public abstract List<URI> listDocumentsForService(URI serviceUri) throws SalException;
 
     /**
      * Obtains a particular document

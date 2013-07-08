@@ -106,6 +106,7 @@
                             <includeGroupIds>${project.parent.groupId}</includeGroupIds>
                             <includeArtifactIds>iserve-test-resources</includeArtifactIds>
                             <outputDirectory>${project.build.directory}/test-classes/</outputDirectory>
+                            <includes>jgd-services/*.html</includes>
                         </configuration>
                     </execution>
                 </executions>

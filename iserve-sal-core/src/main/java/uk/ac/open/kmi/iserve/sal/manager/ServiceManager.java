@@ -43,6 +43,19 @@ public interface ServiceManager {
      */
     public URI addService(Service service) throws ServiceException;
 
+    // Update Methods
+
+    /**
+     * Relates a given document to a service. The relationship is just a generic one.
+     *
+     * @param serviceUri      the service URI
+     * @param relatedDocument the related document URI
+     * @return True if successful or False otherwise
+     * @throws uk.ac.open.kmi.iserve.sal.exception.SalException
+     *
+     */
+    public abstract boolean addRelatedDocumentToService(URI serviceUri, URI relatedDocument) throws ServiceException;
+
     // Read Methods
 
     /**
@@ -56,6 +69,13 @@ public interface ServiceManager {
             throws ServiceException;
 
     /**
+     * Obtains a list of service URIs with all the services known to the system
+     *
+     * @return list of URIs with all the services in the registry
+     */
+    public abstract List<URI> listServices();
+
+    /**
      * Obtains the service descriptions for all the services identified by the URI List
      *
      * @param serviceUris the URIs of the service to obtain
@@ -64,6 +84,15 @@ public interface ServiceManager {
      */
     public abstract List<Service> getServices(List<URI> serviceUris)
             throws ServiceException;
+
+    /**
+     * Lists all documents related to a given service
+     *
+     * @param serviceUri the service URI
+     * @return the List of the URIs of all the documents related to the service
+     * @throws ServiceException
+     */
+    public abstract List<URI> listDocumentsForService(URI serviceUri) throws ServiceException;
 
     // Delete Methods
 
@@ -87,6 +116,8 @@ public interface ServiceManager {
     public abstract boolean deleteService(Service service)
             throws ServiceException;
 
+    // General Management Methods
+
     /**
      * Deletes all the services on the registry.
      * This operation cannot be undone. Use with care.
@@ -97,14 +128,6 @@ public interface ServiceManager {
     public abstract boolean clearServices()
             throws ServiceException;
 
-    // General Management Methods
-
-    /**
-     * Obtains a list of service URIs with all the services known to the system
-     *
-     * @return list of URIs with all the services in the registry
-     */
-    public abstract List<URI> listServices();
 
     /**
      * Determines whether a service is known to the registry

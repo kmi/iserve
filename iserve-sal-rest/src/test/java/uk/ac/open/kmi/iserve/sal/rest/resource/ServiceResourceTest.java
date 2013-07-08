@@ -1,20 +1,17 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package uk.ac.open.kmi.iserve.sal.rest.resource;
@@ -110,7 +107,7 @@ public class ServiceResourceTest extends AbstractContainerTest {
         // Make sure we are logged out
         final HtmlPage homePage = webClient.getPage(WEB_APP_URI);
         try {
-            homePage.getAnchorByHref("/logout.jsp").click();
+            homePage.getAnchorByHref("logout.jsp").click();
         } catch (ElementNotFoundException e) {
             //Ignore
         }
@@ -121,7 +118,7 @@ public class ServiceResourceTest extends AbstractContainerTest {
 
         HtmlPage page = performLogin(false);
         // This'll throw an expection if not logged in
-        page.getAnchorByHref("/logout.jsp");
+        page.getAnchorByHref("logout.jsp");
 
     }
 
@@ -196,23 +193,23 @@ public class ServiceResourceTest extends AbstractContainerTest {
         relativeUri = URI.create(SERVICES_URI).relativize(testUri).toASCIIString();
         log.info("Trying to delete service id: " + testUri);
         given().log().all().
-                expect().response().statusCode(302).
+                expect().response().statusCode(405).
                 when().delete("/services/" + relativeUri);
+
+        // Delete all without logging
+        log.info("Deleting services");
+        // Try to delete endpoint
+        given().log().all().
+                redirects().follow(true).
+                expect().log().all().
+                response().statusCode(405).
+                when().delete("/services");
 
         // Now login and run the rest of the tests
         log.info("Now logging in");
         performLogin(false);
         Cookie cookie = webClient.getCookieManager().getCookie("JSESSIONID");
         log.info("Cookie data: " + cookie.toString());
-
-        log.info("Deleting services");
-        // Try to delete endpoint
-        given().log().all().
-                sessionId(cookie.getValue()).
-                redirects().follow(true).
-                expect().log().all().
-                response().statusCode(405).
-                when().delete("/services");
 
         // Try to delete non existing svcs (directly at the graph level)
         for (int i = 0; i < 10; i++) {
@@ -234,8 +231,9 @@ public class ServiceResourceTest extends AbstractContainerTest {
                     when().delete("/services/" + i + "/serviceName");
         }
 
-        // Try to delete services using their entire URIs
-        for (URI uri : existingServices) {
+        // Try to delete 10 services using their entire URIs
+        for (int i = 0; i < 10; i++) {
+            URI uri = existingServices.get(i);
             relativeUri = URI.create(SERVICES_URI).relativize(uri).toASCIIString();
             log.info("Deleting service id: " + uri);
             given().log().all().
@@ -245,6 +243,14 @@ public class ServiceResourceTest extends AbstractContainerTest {
                     response().statusCode(200).
                     when().delete("/services/" + relativeUri);
         }
+
+        // Now try to delete the whole endpoint (i.e., clear)
+        given().log().all().
+                sessionId(cookie.getValue()).
+                redirects().follow(true).
+                expect().log().all().
+                response().statusCode(200).
+                when().delete("/services");
 
     }
 }

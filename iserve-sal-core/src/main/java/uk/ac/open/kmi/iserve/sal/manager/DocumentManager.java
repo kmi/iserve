@@ -56,8 +56,6 @@ public interface DocumentManager {
     // General Management Methods
     public abstract List<URI> listDocuments() throws DocumentException;
 
-    public abstract List<URI> listDocumentsForService(URI serviceURI)
-            throws DocumentException;
 
     public abstract boolean documentExists(URI documentUri)
             throws DocumentException;
