@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.importer.sawsdl;
 
+import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
+import uk.ac.open.kmi.iserve.commons.io.ServiceWriter;
+import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.sal.ServiceImporter;
 import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 
-import javax.wsdl.WSDLException;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +33,11 @@ import java.util.Properties;
 public class SawsdlImporter implements ServiceImporter {
 
     private static final Logger log = LoggerFactory.getLogger(SawsdlImporter.class);
-    private static final int vUnknown = -1;
 
-    private static final int v11 = 1;
+    private SawsdlTransformer transformer;
 
-    private static final int v20 = 2;
-
-    public SawsdlImporter() throws WSDLException, ParserConfigurationException {
+    public SawsdlImporter() throws ImporterException {
+        transformer = new SawsdlTransformer();
     }
 
     public void setProxy(String proxyHost, String proxyPort) {
@@ -47,28 +46,6 @@ public class SawsdlImporter implements ServiceImporter {
             prop.put("http.proxyHost", proxyHost);
             prop.put("http.proxyPort", proxyPort);
         }
-    }
-
-    private int getVersion(InputStream serviceDescription) throws IOException {
-        InputStreamReader reader = new InputStreamReader(serviceDescription);
-        BufferedReader br = null;
-        br = new BufferedReader(reader);
-        String line = null;
-        while ((line = br.readLine()) != null) {
-            line = line.toLowerCase();
-            if (line.contains("www.w3.org/ns/wsdl")) {
-                br.close();
-                return v20;
-            } else if (line.contains("schemas.xmlsoap.org/wsdl")) {
-                br.close();
-                return v11;
-            }
-        }
-        reader.close();
-        if (br != null) {
-            br.close();
-        }
-        return vUnknown;
     }
 
     /**
@@ -95,29 +72,7 @@ public class SawsdlImporter implements ServiceImporter {
      */
     @Override
     public List<Service> transform(InputStream originalDescription, String baseUri) throws ImporterException {
-        List<Service> result = null;
-        try {
-            int v = getVersion(originalDescription);
-            if (v == v11) {
-                result = new Sawsdl11Transformer().transform(originalDescription);
-            } else if (v == v20) {
-                result = new Sawsdl20Transformer().transform(originalDescription);
-            } else {
-                throw new ImporterException("Unknown version of WSDL, can not find either http://schemas.xmlsoap.org/wsdl or http://www.w3.org/ns/wsdl ");
-            }
-        } catch (IOException e) {
-            throw new ImporterException(e);
-        } catch (WSDLException e) {
-            throw new ImporterException(e);
-        } catch (org.apache.woden.WSDLException e) {
-            throw new ImporterException(e);
-        } catch (SAXException e) {
-            throw new ImporterException(e);
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        return result;
+        return transformer.transform(originalDescription, baseUri);
     }
 
     /**
@@ -167,4 +122,124 @@ public class SawsdlImporter implements ServiceImporter {
         // Return an empty array if it could not be transformed.
         return new ArrayList<Service>();
     }
+
+    public static void main(String[] args) throws ImporterException {
+
+        Options options = new Options();
+        // automatically generate the help statement
+        HelpFormatter formatter = new HelpFormatter();
+        // create the parser
+        CommandLineParser parser = new GnuParser();
+
+        options.addOption("h", "help", false, "print this message");
+        options.addOption("i", "input", true, "input directory or file to transform");
+        options.addOption("s", "save", false, "save result? (default: false)");
+        options.addOption("f", "format", true, "format to use when serialising. Default: TTL.");
+
+        // parse the command line arguments
+        CommandLine line = null;
+        String input = null;
+        File inputFile;
+        try {
+            line = parser.parse(options, args);
+            input = line.getOptionValue("i");
+            if (line.hasOption("help")) {
+                formatter.printHelp("SawsdlImporter", options);
+                return;
+            }
+            if (input == null) {
+                // The input should not be null
+                formatter.printHelp(80, "java " + SawsdlImporter.class.getCanonicalName(), "Options:", options, "You must provide an input", true);
+                return;
+            }
+        } catch (ParseException e) {
+            formatter.printHelp(80, "java " + SawsdlImporter.class.getCanonicalName(), "Options:", options, "Error parsing input", true);
+        }
+
+        inputFile = new File(input);
+        if (inputFile == null || !inputFile.exists()) {
+            formatter.printHelp(80, "java " + SawsdlImporter.class.getCanonicalName(), "Options:", options, "Input not found", true);
+            System.out.println(inputFile.getAbsolutePath());
+            return;
+        }
+
+        // Obtain input for transformation
+        File[] toTransform;
+        if (inputFile.isDirectory()) {
+            // Get potential files to transform based on extension
+            FilenameFilter owlsFilter = new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return (name.endsWith(".wsdl") || name.endsWith(".sawsdl"));
+                }
+            };
+
+            toTransform = inputFile.listFiles(owlsFilter);
+        } else {
+            toTransform = new File[1];
+            toTransform[0] = inputFile;
+        }
+
+        // Obtain details for saving results
+        File rdfDir = null;
+        boolean save = line.hasOption("s");
+        if (save) {
+            rdfDir = new File(inputFile.getAbsolutePath() + "/RDF");
+            rdfDir.mkdir();
+        }
+
+        // Obtain details for serialisation format
+        String format = line.getOptionValue("f", uk.ac.open.kmi.iserve.commons.io.Syntax.TTL.getName());
+        uk.ac.open.kmi.iserve.commons.io.Syntax syntax = uk.ac.open.kmi.iserve.commons.io.Syntax.valueOf(format);
+
+        SawsdlImporter importer;
+        ServiceWriter writer;
+
+        importer = new SawsdlImporter();
+        writer = new ServiceWriterImpl();
+
+        List<Service> services;
+        System.out.println("Transforming input");
+        for (File file : toTransform) {
+            try {
+                services = importer.transform(file);
+
+                if (services != null) {
+                    System.out.println("Services obtained: " + services.size());
+
+                    File resultFile = null;
+                    if (rdfDir != null) {
+                        String fileName = file.getName();
+                        String newFileName = fileName.substring(0, fileName.length() - 4) + syntax.getExtension();
+                        resultFile = new File(rdfDir.getAbsolutePath() + "/" + newFileName);
+                    }
+
+                    if (rdfDir != null) {
+                        OutputStream out = null;
+                        try {
+                            out = new FileOutputStream(resultFile);
+                            for (Service service : services) {
+                                if (out != null) {
+                                    writer.serialise(service, out, syntax);
+                                    System.out.println("Service saved at: " + resultFile.getAbsolutePath());
+                                } else {
+                                    writer.serialise(service, System.out, syntax);
+                                }
+                            }
+                        } finally {
+                            if (out != null)
+                                out.close();
+                        }
+                    }
+
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ImporterException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
