@@ -16,13 +16,12 @@
 
 package uk.ac.open.kmi.iserve.importer.hrests;
 
+import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.tidy.Tidy;
-import uk.ac.open.kmi.iserve.commons.io.ServiceReader;
-import uk.ac.open.kmi.iserve.commons.io.ServiceReaderImpl;
-import uk.ac.open.kmi.iserve.commons.io.Syntax;
+import uk.ac.open.kmi.iserve.commons.io.*;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.sal.ServiceImporter;
 import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
@@ -42,6 +41,7 @@ import java.util.List;
 public class HrestsImporter implements ServiceImporter {
 
     private static final Logger log = LoggerFactory.getLogger(HrestsImporter.class);
+
     private static final String XSLT = "/hrests.xslt";
 
     private Tidy parser;
@@ -56,6 +56,7 @@ public class HrestsImporter implements ServiceImporter {
             xsltFile = new File(HrestsImporter.class.getResource(XSLT).toURI());
             TransformerFactory xformFactory = TransformerFactory.newInstance();
             transformer = xformFactory.newTransformer(new StreamSource(this.xsltFile));
+
         } catch (URISyntaxException e) {
             log.error("Wrong URI for the XSLT transformation file.");
             throw new TransformerConfigurationException("Wrong URI for the XSLT transformation file.", e);
@@ -93,7 +94,8 @@ public class HrestsImporter implements ServiceImporter {
 
         ByteArrayInputStream istream = null;
 
-        Document document = parser.parseDOM(originalDescription, null);
+        Document document = parser.parseDOM(originalDescription, System.out);
+
         DOMSource source = new DOMSource(document);
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         StreamResult stream = new StreamResult(bout);
@@ -160,4 +162,123 @@ public class HrestsImporter implements ServiceImporter {
         }
     }
 
+
+    public static void main(String[] args) throws TransformerConfigurationException {
+
+        Options options = new Options();
+        // automatically generate the help statement
+        HelpFormatter formatter = new HelpFormatter();
+        // create the parser
+        CommandLineParser parser = new GnuParser();
+
+        options.addOption("h", "help", false, "print this message");
+        options.addOption("i", "input", true, "input directory or file to transform");
+        options.addOption("s", "save", false, "save result? (default: false)");
+        options.addOption("f", "format", true, "format to use when serialising. Default: TTL.");
+
+        // parse the command line arguments
+        CommandLine line = null;
+        String input = null;
+        File inputFile;
+        try {
+            line = parser.parse(options, args);
+            input = line.getOptionValue("i");
+            if (line.hasOption("help")) {
+                formatter.printHelp("OwlsImporter", options);
+                return;
+            }
+            if (input == null) {
+                // The input should not be null
+                formatter.printHelp(80, "java " + HrestsImporter.class.getCanonicalName(), "Options:", options, "You must provide an input", true);
+                return;
+            }
+        } catch (ParseException e) {
+            formatter.printHelp(80, "java " + HrestsImporter.class.getCanonicalName(), "Options:", options, "Error parsing input", true);
+        }
+
+        inputFile = new File(input);
+        if (inputFile == null || !inputFile.exists()) {
+            formatter.printHelp(80, "java " + HrestsImporter.class.getCanonicalName(), "Options:", options, "Input not found", true);
+            System.out.println(inputFile.getAbsolutePath());
+            return;
+        }
+
+        // Obtain input for transformation
+        File[] toTransform;
+        if (inputFile.isDirectory()) {
+            // Get potential files to transform based on extension
+            FilenameFilter owlsFilter = new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return (name.endsWith(".htm") || name.endsWith(".html"));
+                }
+            };
+
+            toTransform = inputFile.listFiles(owlsFilter);
+        } else {
+            toTransform = new File[1];
+            toTransform[0] = inputFile;
+        }
+
+        // Obtain details for saving results
+        File rdfDir = null;
+        boolean save = line.hasOption("s");
+        if (save) {
+            rdfDir = new File(inputFile.getAbsolutePath() + "/RDF");
+            rdfDir.mkdir();
+        }
+
+        // Obtain details for serialisation format
+        String format = line.getOptionValue("f", uk.ac.open.kmi.iserve.commons.io.Syntax.TTL.getName());
+        uk.ac.open.kmi.iserve.commons.io.Syntax syntax = uk.ac.open.kmi.iserve.commons.io.Syntax.valueOf(format);
+
+        HrestsImporter importer;
+        ServiceWriter writer;
+
+        importer = new HrestsImporter();
+        writer = new ServiceWriterImpl();
+
+        List<Service> services;
+        System.out.println("Transforming input");
+        for (File file : toTransform) {
+            try {
+                services = importer.transform(file);
+
+                if (services != null) {
+                    System.out.println("Services obtained: " + services.size());
+
+                    File resultFile = null;
+                    if (rdfDir != null) {
+                        String fileName = file.getName();
+                        String newFileName = fileName.substring(0, fileName.length() - 4) + syntax.getExtension();
+                        resultFile = new File(rdfDir.getAbsolutePath() + "/" + newFileName);
+                    }
+
+                    if (rdfDir != null) {
+                        OutputStream out = null;
+                        try {
+                            out = new FileOutputStream(resultFile);
+                            for (Service service : services) {
+                                if (out != null) {
+                                    writer.serialise(service, out, syntax);
+                                    System.out.println("Service saved at: " + resultFile.getAbsolutePath());
+                                } else {
+                                    writer.serialise(service, System.out, syntax);
+                                }
+                            }
+                        } finally {
+                            if (out != null)
+                                out.close();
+                        }
+                    }
+
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ImporterException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
