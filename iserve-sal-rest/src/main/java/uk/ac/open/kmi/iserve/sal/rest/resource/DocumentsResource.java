@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.sal.rest.resource;
 
 import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
@@ -27,7 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
 
-@Path("/documents")
+@Path("/id/documents")
 public class DocumentsResource {
 
     @Context

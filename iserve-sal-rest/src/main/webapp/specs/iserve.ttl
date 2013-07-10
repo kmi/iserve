@@ -32,7 +32,13 @@
 spec:api a api:API; 
 	rdfs:label "iServe API"@en ;
 	api:vocabulary "http://iserve.kmi.open.ac.uk/ns/msm#" ;
-	api:sparqlEndpoint <http://lwkm234549:8080/openrdf-sesame/repositories/iserve-test> ;
+	api:base "http://localhost:9090/iserve/" ;
+	api:variable [
+        	api:name "base" ;
+        	api:value "http://localhost:9090/iserve/" ;
+        	api:type rdfs:Resource ;
+       	] ;
+	api:sparqlEndpoint <http://localhost:8080/openrdf-sesame/repositories/Test> ;
 	# the page size can't be set higher than this 
 	api:maxPageSize 50 ;
 	# and this is the default page size
@@ -42,9 +48,13 @@ spec:api a api:API;
 	#api:defaultViewer api:labelledDescribeViewer ;
 	# the default formatter is the XSLT formatter defined above 
 	api:defaultFormatter spec:HtmlFormatter ;
-	api:endpoint 	spec:serviceList , spec:serviceItem ,
-					spec:operationsList , spec:operationItem ,
-					spec:operationInputsList .
+	api:endpoint
+	    spec:serviceList ,
+	    spec:serviceItem ,
+		spec:operationsList ,
+		spec:operationItem ,
+		spec:operationInputsList ,
+		spec:messageItem .
 	
 # Endpoint definition	
 					
@@ -61,7 +71,7 @@ _:servicesSelect a api:Selector ;
 
 spec:serviceList a api:ListEndpoint ;
 	rdfs:label "Services List"@en ;
-	api:uriTemplate "/services" ;
+	api:uriTemplate "/doc/services" ;
 	api:selector _:servicesSelect .
 
 _:operationsSelect a api:Selector;
@@ -70,7 +80,7 @@ _:operationsSelect a api:Selector;
 		
 spec:operationsList a api:ListEndpoint ;
 	rdfs:label "Operations List"@en ;
-	api:uriTemplate "/operations" ;
+	api:uriTemplate "/doc/operations" ;
 	api:selector _:operationsSelect .
 
 _:operationInputsSelect a api:Selector ;
@@ -81,14 +91,18 @@ _:operationInputsSelect a api:Selector ;
 	
 spec:operationInputsList a api:ListEndpoint ;
 	rdfs:label "Operation Inputs List"@en ;
-	api:uriTemplate "/operations/{opId}/inputs" ;
+	api:uriTemplate "/doc/services/{svcId}/{serviceName}/{opName}/messages" ;
 	# Define a variable that represents that actual operation ID.
-	# TODO: Adapt to new naming scheme
 	api:variable [
     	api:name "operation" ;
-    	api:value "http://vph-services.kmi.open.ac.uk/vph-iserve/resource/services/{opId}#wsdl.service(AffyArrayNormalizationService)/AffyArrayNormalization" ;
+    	api:value "{base}/id/services/{svcId}/{serviceName}/{opName}" ;
     	api:type rdfs:Resource ;
    	] ;
+   	api:variable [
+        	api:name "service" ;
+        	api:value "{base}/id/services/{svcId}/{serviceName}" ;
+        	api:type rdfs:Resource ;
+       	] ;
 	api:defaultViewer spec:viewerMedium ;
 	api:selector _:operationInputsSelect .	
 
@@ -96,15 +110,26 @@ spec:operationInputsList a api:ListEndpoint ;
 spec:serviceItem
     a api:ItemEndpoint ;
     rdfs:label "Service"@en ;
-    api:uriTemplate "/services/{svcId}" ;
-    api:itemTemplate "http://iserve.kmi.open.ac.uk/id/services/{svcId}" .	
+    api:uriTemplate "/doc/services/{svcId}/{serviceName}" ;
+    api:itemTemplate "http://localhost:9090/iserve/id/services/{svcId}/{serviceName}" .
 	
 spec:operationItem
     a api:ItemEndpoint ;
     rdfs:label "Operation"@en ;
-    api:uriTemplate "/operations/{opId}" ;
-    api:itemTemplate "http://iserve.kmi.open.ac.uk/id/operations/{opId}" .		
-	
+    api:uriTemplate "/doc/services/{svcId}/{serviceName}/{opName}" ;
+    api:itemTemplate "http://localhost:9090/iserve/id/services/{svcId}/{serviceName}/{opName}" ;
+    api:variable [
+            	api:name "service" ;
+            	api:value "http://localhost:9090/iserve/id/services/{svcId}/{serviceName}" ;
+            	api:type rdfs:Resource ;
+           	] .
+
+spec:messageItem
+    a api:ItemEndpoint ;
+    rdfs:label "Message Content"@en ;
+    api:uriTemplate "/doc/services/{svcId}/{serviceName}/{opName}/{messageName}" ;
+    api:itemTemplate "http://localhost:9090/iserve/id/services/{svcId}/{serviceName}/{opName}/{messageName}" .
+
 #
 # This XSLT formatter produces rich HTML from the viewer properties.
 #

@@ -40,7 +40,7 @@ import java.net.URI;
  * @author Dong Liu (Knowledge Media Institute - The Open University)
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
-@Path("/services")
+@Path("/id/services")
 public class ServicesResource {
 
     private static final Logger log = LoggerFactory.getLogger(ServicesResource.class);
