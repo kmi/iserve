@@ -36,8 +36,8 @@ public class SystemConfiguration {
     // Default path for service and documents URIs.
     // Note that any change here should also affect the REST API
     // Keep the trailing slash
-    private static final String SERVICES_URL_PATH = "services/";
-    private static final String DOCUMENTS_URL_PATH = "documents/";
+    private static final String SERVICES_URL_PATH = "id/services/";
+    private static final String DOCUMENTS_URL_PATH = "id/documents/";
 
     /**
      * Default services repository name

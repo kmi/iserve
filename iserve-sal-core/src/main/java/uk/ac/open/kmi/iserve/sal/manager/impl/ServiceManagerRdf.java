@@ -225,12 +225,13 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
 
         resource.setUri(URIUtil.replaceNamespace(resource.getUri(), newUriBase));
 
+        // Replace recursively each of the URLs of the inner elements
         // Handling of Service
         if (resource instanceof Service) {
             // Replace Operations
             List<Operation> operations = ((Service) resource).getOperations();
             for (Operation op : operations) {
-                replaceUris(op, newUriBase);
+                replaceUris(op, resource.getUri());
             }
         }
 
@@ -240,22 +241,22 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
             // Replace Inputs, Outputs, InFaults, and Outfaults
             mcs = ((Operation) resource).getInputs();
             for (MessageContent mc : mcs) {
-                replaceUris(mc, newUriBase);
+                replaceUris(mc, resource.getUri());
             }
 
             mcs = ((Operation) resource).getInputFaults();
             for (MessageContent mc : mcs) {
-                replaceUris(mc, newUriBase);
+                replaceUris(mc, resource.getUri());
             }
 
             mcs = ((Operation) resource).getOutputs();
             for (MessageContent mc : mcs) {
-                replaceUris(mc, newUriBase);
+                replaceUris(mc, resource.getUri());
             }
 
             mcs = ((Operation) resource).getOutputFaults();
             for (MessageContent mc : mcs) {
-                replaceUris(mc, newUriBase);
+                replaceUris(mc, resource.getUri());
             }
         }
 
@@ -265,12 +266,12 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
             List<MessagePart> mps;
             mps = ((MessagePart) resource).getMandatoryParts();
             for (MessagePart mp : mps) {
-                replaceUris(mp, newUriBase);
+                replaceUris(mp, resource.getUri());
             }
 
             mps = ((MessagePart) resource).getOptionalParts();
             for (MessagePart mp : mps) {
-                replaceUris(mp, newUriBase);
+                replaceUris(mp, resource.getUri());
             }
         }
 
@@ -279,13 +280,13 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
             // Replace Effects
             List<Effect> effects = ((InvocableEntity) resource).getEffects();
             for (Effect effect : effects) {
-                replaceUris(effect, newUriBase);
+                replaceUris(effect, resource.getUri());
             }
 
             // Replace Conditions
             List<Condition> conditions = ((InvocableEntity) resource).getConditions();
             for (Condition condition : conditions) {
-                replaceUris(condition, newUriBase);
+                replaceUris(condition, resource.getUri());
             }
         }
 
@@ -294,7 +295,7 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
             // Replace NFPs
             List<NonFunctionalProperty> nfps = ((AnnotableResource) resource).getNfps();
             for (NonFunctionalProperty nfp : nfps) {
-                replaceUris(nfp, newUriBase);
+                replaceUris(nfp, resource.getUri());
             }
         }
     }
