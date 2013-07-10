@@ -98,13 +98,15 @@ public class URIUtil {
      * of resources
      *
      * @param originalUri
-     * @param newNamespace
+     * @param newBaseUri
      * @return
      * @throws URISyntaxException
      */
-    public static URI replaceNamespace(URI originalUri, URI newNamespace) throws URISyntaxException {
-//        return new URI(newNamespace.getScheme(), newNamespace.getSchemeSpecificPart(), getLocalName(originalUri));
-        return new URI(newNamespace.getScheme(), newNamespace.getSchemeSpecificPart() + "/" + getLocalName(originalUri), null);
+    public static URI replaceNamespace(URI originalUri, URI newBaseUri) throws URISyntaxException {
+//        return new URI(newBaseUri.getScheme(), newBaseUri.getSchemeSpecificPart(), getLocalName(originalUri));
+//        return new URI(newBaseUri.getScheme(), newBaseUri.getPath() + "/" + getLocalName(originalUri), null);
+        return new URI(newBaseUri.getScheme(), newBaseUri.getUserInfo(), newBaseUri.getHost(), newBaseUri.getPort(),
+                newBaseUri.getPath() + "/" + getLocalName(originalUri), null, null);
     }
 
 }
