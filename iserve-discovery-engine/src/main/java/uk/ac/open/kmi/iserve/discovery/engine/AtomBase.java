@@ -1,27 +1,26 @@
 /*
-   Copyright ${year}  Knowledge Media Institute - The Open University
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
+ * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package uk.ac.open.kmi.iserve.discovery.engine;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.client.apache4.ApacheHttpClient4;
-import com.sun.jersey.client.apache4.config.ApacheHttpClient4Config;
-import com.sun.jersey.client.apache4.config.DefaultApacheHttpClient4Config;
+import org.apache.abdera.Abdera;
+import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.abdera.protocol.client.AbderaClient;
+import org.apache.abdera.protocol.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
@@ -30,6 +29,7 @@ import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.client.Client;
 import javax.ws.rs.core.*;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -38,15 +38,19 @@ import java.util.*;
 /**
  * provides base functionality for atom combinators
  * todo relative URIs in the atom feeds are currently not resolved against base
- * @author Jacek Kopecky
  *
+ * @author Jacek Kopecky
  */
 public abstract class AtomBase {
 
     private static final Logger log = LoggerFactory.getLogger(AtomBase.class);
-	
-	// Base URI for this resource
-	@Context  UriInfo uriInfo;
+
+    private final Abdera abdera;
+    private final AbderaClient abderaClient;
+
+    // Base URI for this resource
+    @Context
+    UriInfo uriInfo;
 
     /**
      * <p>HTTP header for sending authentication credentials.</p>
@@ -58,7 +62,7 @@ public abstract class AtomBase {
      */
     private String authentication = null;
 
-	private Client httpClient;
+    private Client httpClient;
 
     /**
      * <p>Default media type for content element.</p>
@@ -70,8 +74,9 @@ public abstract class AtomBase {
      * <p>Default media type for entry entities.</p>
      */
     private static final MediaType ENTRY_MEDIA_TYPE;
+
     static {
-        Map<String,String> params = new HashMap<String,String>(1);
+        Map<String, String> params = new HashMap<String, String>(1);
         params.put("type", "entry");
         ENTRY_MEDIA_TYPE = new MediaType("application", "xml", params);
     }
@@ -81,150 +86,153 @@ public abstract class AtomBase {
      */
     private static final MediaType FEED_MEDIA_TYPE;
 
-	private static final int MAX_CONNECTIONS_PER_HOST = 3;
+    private static final int MAX_CONNECTIONS_PER_HOST = 3;
 
-	private static final int MAX_TOTAL_CONNECTIONS = 10;
-	
+    private static final int MAX_TOTAL_CONNECTIONS = 10;
+
     static {
-        Map<String,String> params = new HashMap<String,String>(1);
+        Map<String, String> params = new HashMap<String, String>(1);
         params.put("type", "feed");
         FEED_MEDIA_TYPE = new MediaType("application", "xml", params);
     }
 
-    
+
     /**
      * <p>Construct a fully configured client instance.</p>
      */
     public AtomBase() {
-        MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager(); 
-        connectionManager.getParams().setDefaultMaxConnectionsPerHost(MAX_CONNECTIONS_PER_HOST); 
-        connectionManager.getParams().setMaxTotalConnections(MAX_TOTAL_CONNECTIONS); 
+//        MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
+//        connectionManager.getParams().setDefaultMaxConnectionsPerHost(MAX_CONNECTIONS_PER_HOST);
+//        connectionManager.getParams().setMaxTotalConnections(MAX_TOTAL_CONNECTIONS);
+//
+//        DefaultApacheHttpClient4Config config = new DefaultApacheHttpClient4Config();
+////    	config.getProperties().put(ApacheHttpClient4Config.PROPERTY_PREEMPTIVE_BASIC_AUTHENTICATION, Boolean.TRUE);
+//        config.getProperties().put(ApacheHttpClient4Config.PROPERTY_CONNECTION_MANAGER, connectionManager);
 
-        DefaultApacheHttpClient4Config config = new DefaultApacheHttpClient4Config();
-//    	config.getProperties().put(ApacheHttpClient4Config.PROPERTY_PREEMPTIVE_BASIC_AUTHENTICATION, Boolean.TRUE);
-        config.getProperties().put(ApacheHttpClient4Config.PROPERTY_CONNECTION_MANAGER, connectionManager);
+//        httpClient = ApacheHttpClient4.create(config);
 
-        httpClient = ApacheHttpClient4.create(config);
+        abdera = new Abdera();
+        abderaClient = new AbderaClient(abdera);
     }
 
     // ------------------------------------------------- Contacts Public Methods
 
-	@GET
-	@Produces ({MediaType.APPLICATION_ATOM_XML,
-		MediaType.APPLICATION_JSON,
-		MediaType.TEXT_XML})
-	public Response operate(@Context UriInfo ui) {
-		if ( ui.getAbsolutePath().toString().contains("data/atom/") ) {
-			MultivaluedMap<String, String> params = ui.getQueryParameters();
-			List<String> uris = params.get("f");
-			if ( uris.size() < 2 ) {
-				throw new WebApplicationException(new DiscoveryException("Atom feed combinators work with at least two f parameters (as feed URIs)"), 403);
-			}
+    @GET
+    @Produces({MediaType.APPLICATION_ATOM_XML,
+            MediaType.APPLICATION_JSON,
+            MediaType.TEXT_XML})
+    public Response operate(@Context UriInfo ui) {
+        if (ui.getAbsolutePath().toString().contains("data/atom/")) {
+            MultivaluedMap<String, String> params = ui.getQueryParameters();
+            List<String> uris = params.get("f");
+            if (uris.size() < 2) {
+                throw new WebApplicationException(new DiscoveryException("Atom feed combinators work with at least two f parameters (as feed URIs)"), 403);
+            }
 
-			// TODO: potential for misuse: with a single request to our server, a malicious client can make our server make multiple requests to other server(s)
-			// maybe limit the applicability of this atom union only to URIs on the same server?
-			Feed result;
-			try {
-				result = atomCombination(ui.getBaseUri().toString(), uris);
-			} catch (Exception e) {
-				throw new WebApplicationException(e, 403);
-			}
+            // TODO: potential for misuse: with a single request to our server, a malicious client can make our server make multiple requests to other server(s)
+            // maybe limit the applicability of this atom union only to URIs on the same server?
+            Feed result;
+            try {
+                result = atomCombination(ui.getBaseUri().toString(), uris);
+            } catch (Exception e) {
+                throw new WebApplicationException(e, 403);
+            }
 
-			return Response.ok(result).build();
-		}
-		return Response.status(404).build();
-	}
+            return Response.ok(result).build();
+        }
+        return Response.status(404).build();
+    }
 
-	/**
-	 * FIXME: This ignores that Substraction is order-dependent!
-	 * 
-	 * @param requestURI
-	 * @param uris
-	 * @return
-	 * @throws Exception
-	 */
-	private Feed atomCombination(String requestURI, List<String> uris) throws Exception {
-		
-		resolveAndCheckURIs(requestURI, uris);
+    /**
+     * FIXME: This ignores that Substraction is order-dependent!
+     *
+     * @param requestURI
+     * @param uris
+     * @return
+     * @throws Exception
+     */
+    private Feed atomCombination(String requestURI, List<String> uris) throws Exception {
 
-		// download the feeds
-		List<Feed> feeds = downloadFeeds(uris);
-		int feedCount = feeds.size();
+        resolveAndCheckURIs(requestURI, uris);
 
-		if ( feedCount == 0 ) {
-			throw new DiscoveryException("No supported feeds found");
-		} else if ( feedCount == 1 ) {
-			return feeds.get(0);
-		}
-		
-		//feedUpdated = extractFeedData(feeds, feedTitles, feedRights, entriesByFeed, entriesByID);
-		
-		Feed combinedFeed = DiscoveryUtil.getAbderaInstance().getFactory().newFeed();
-		combinedFeed.setId(requestURI);
-		combinedFeed.addLink(requestURI,"self");
-		UriBuilder ub = uriInfo.getAbsolutePathBuilder();
-		combinedFeed.setGenerator(ub.toString(), null, 
-				"iServe Atom " + combinatorName() + " combinator 2012/06/23"); 
-		
-		String rights = "The constituent feeds have the following rights statements (in no particular order): ";
-		
-		Iterator<Feed> iterator = feeds.iterator();
-		Set<Entry> combination = new HashSet(iterator.next().getEntries());
-		while ( iterator.hasNext() ) {
-			Feed feed = (Feed) iterator.next();
-			combination = combineResults(combination, feed.getEntries());
-			// FIXME: merge title etc
-			// feed.setTitle(plugin.getFeedTitle());
-			rights += "\"" + feed.getRights() + "\"";
-			if ( iterator.hasNext() ) {
-				rights += ", ";
-			} else {
-				rights += ".";
-			}
-		}
+        // download the feeds
+        List<Feed> feeds = downloadFeeds(uris);
+        int feedCount = feeds.size();
 
-		if ( combination != null ) {
-			for ( Entry result : combination ) {
-				combinedFeed.addEntry(result);
-			}
-		}
+        if (feedCount == 0) {
+            throw new DiscoveryException("No supported feeds found");
+        } else if (feedCount == 1) {
+            return feeds.get(0);
+        }
 
-		combinedFeed.setUpdated(new Date());
-		combinedFeed.setRights(rights);
-		return combinedFeed;
-	}
+        //feedUpdated = extractFeedData(feeds, feedTitles, feedRights, entriesByFeed, entriesByID);
 
-	/**
-	 * Given the results in the feeds to combine, generate the combination
-	 * according to the concrete Atom operator implemented
-	 * 
-	 * @param combination
-	 * @param entries
-	 * @return result of the combination
-	 */
-	abstract Set<Entry> combineResults(Set<Entry> combination, List<Entry> entries);
+        Feed combinedFeed = DiscoveryUtil.getAbderaInstance().getFactory().newFeed();
+        combinedFeed.setId(requestURI);
+        combinedFeed.addLink(requestURI, "self");
+        UriBuilder ub = uriInfo.getAbsolutePathBuilder();
+        combinedFeed.setGenerator(ub.toString(), null,
+                "iServe Atom " + combinatorName() + " combinator 2012/06/23");
 
-	private void resolveAndCheckURIs(String requestURI, List<String> uris) {
-		for ( int i = 0; i < uris.size(); i++ ) {
-			UriBuilder uriBuilder = UriBuilder.fromUri(requestURI);
-			UriBuilder properUriBuilder = uriBuilder.path(uris.get(i));
-			java.net.URI properuri = properUriBuilder.build("");
-			String scheme = properuri.getScheme();
-			if ( !"http".equalsIgnoreCase(scheme) && !"https".equalsIgnoreCase(scheme) ) {
-				System.err.println("only http and https schemes supported; bad URI: " + properuri.toString());
-				uris.remove(i);
-			} else {
+        String rights = "The constituent feeds have the following rights statements (in no particular order): ";
+
+        Iterator<Feed> iterator = feeds.iterator();
+        Set<Entry> combination = new HashSet(iterator.next().getEntries());
+        while (iterator.hasNext()) {
+            Feed feed = (Feed) iterator.next();
+            combination = combineResults(combination, feed.getEntries());
+            // FIXME: merge title etc
+            // feed.setTitle(plugin.getFeedTitle());
+            rights += "\"" + feed.getRights() + "\"";
+            if (iterator.hasNext()) {
+                rights += ", ";
+            } else {
+                rights += ".";
+            }
+        }
+
+        if (combination != null) {
+            for (Entry result : combination) {
+                combinedFeed.addEntry(result);
+            }
+        }
+
+        combinedFeed.setUpdated(new Date());
+        combinedFeed.setRights(rights);
+        return combinedFeed;
+    }
+
+    /**
+     * Given the results in the feeds to combine, generate the combination
+     * according to the concrete Atom operator implemented
+     *
+     * @param combination
+     * @param entries
+     * @return result of the combination
+     */
+    abstract Set<Entry> combineResults(Set<Entry> combination, List<Entry> entries);
+
+    private void resolveAndCheckURIs(String requestURI, List<String> uris) {
+        for (int i = 0; i < uris.size(); i++) {
+            UriBuilder uriBuilder = UriBuilder.fromUri(requestURI);
+            UriBuilder properUriBuilder = uriBuilder.path(uris.get(i));
+            java.net.URI properuri = properUriBuilder.build("");
+            String scheme = properuri.getScheme();
+            if (!"http".equalsIgnoreCase(scheme) && !"https".equalsIgnoreCase(scheme)) {
+                System.err.println("only http and https schemes supported; bad URI: " + properuri.toString());
+                uris.remove(i);
+            } else {
                 try {
                     uris.set(i, URLDecoder.decode(properuri.toString(), "UTF-8").replaceAll("#", "%23"));
                 } catch (UnsupportedEncodingException e) {
                     log.error("Unsupported encoding while decoding URL", e);
                 }
             }
-		}
-	}
+        }
+    }
 
 /*
-	private Date extractFeedData(Feed[] feeds, String[] feedTitles, Set<String> feedRights,
+    private Date extractFeedData(Feed[] feeds, String[] feedTitles, Set<String> feedRights,
 			List<Element>[] entriesByFeed, Map<String, Element[]> entriesByID) throws ParseException {
 		Date feedUpdated = null;
 		for ( int i = 0; i < feeds.length; i++ ) {
@@ -300,26 +308,32 @@ public abstract class AtomBase {
 		return feedUpdated;
 	}*/
 
-	/**
-	 * downloads feeds
-	 * @param uris array of uris of feeds to download
-	 * @return count of feeds actually successfully downloaded
-	 */
-	private List<Feed> downloadFeeds(List<String> uris) {
-		List<Feed> result = new ArrayList<Feed>();
-		
-		for ( int i = 0; i < uris.size(); i++ ) {
-			String uri = uris.get(i);
-			if ( uri == null ) {
-				continue;
-			}
+    /**
+     * downloads feeds
+     *
+     * @param uris array of uris of feeds to download
+     * @return count of feeds actually successfully downloaded
+     */
+    private List<Feed> downloadFeeds(List<String> uris) {
+        List<Feed> result = new ArrayList<Feed>();
 
-			result.add(httpClient.resource(uri).accept(
-					MediaType.APPLICATION_ATOM_XML).get(Feed.class));
-		}
-		
-		return result;
-	}
+        for (int i = 0; i < uris.size(); i++) {
+            String uri = uris.get(i);
+            if (uri == null) {
+                continue;
+            }
+
+            ClientResponse resp = abderaClient.get(uri);
+            if (resp.getType() == org.apache.abdera.protocol.Response.ResponseType.SUCCESS) {
+                Document<Feed> docFeed = resp.getDocument();
+                result.add(docFeed.getRoot());
+            } else {
+                log.warn("There was an error obtaining feed from {}", uri);
+            }
+        }
+
+        return result;
+    }
 /*
 	protected Element mergeEntries(Element[] entries, Document doc) throws ParseException {
 		Date entryUpdated = null; // newest
@@ -444,19 +458,19 @@ public abstract class AtomBase {
 		return retval;
 	}*/
 
-	private String combinatorEntryTitle(Set<String> entryTitles) {
-		String title = "";
-		for ( Iterator<String> it = entryTitles.iterator(); it.hasNext(); ) {
-			title += it.next();
-			if ( it.hasNext() ) {
-				title += " / ";
-			}
-		}
-		return title;
-	}
+    private String combinatorEntryTitle(Set<String> entryTitles) {
+        String title = "";
+        for (Iterator<String> it = entryTitles.iterator(); it.hasNext(); ) {
+            title += it.next();
+            if (it.hasNext()) {
+                title += " / ";
+            }
+        }
+        return title;
+    }
 
-	abstract String combinatorFeedTitle(String[] feedTitles);
+    abstract String combinatorFeedTitle(String[] feedTitles);
 
-	abstract String combinatorName();
+    abstract String combinatorName();
 
 }
