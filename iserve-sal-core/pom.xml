@@ -138,8 +138,14 @@
     </dependencies>
 
     <build>
+        <!-- Process Resource files to add version number -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
-
             <!-- Obtain shared test resources and unpack them -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

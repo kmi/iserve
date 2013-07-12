@@ -64,6 +64,7 @@ public class SystemConfiguration {
     private static final String PROXY_HOST_NAME_PROP = "http.proxyHost";
     private static final String PROXY_PORT_PROP = "http.proxyPort";
     private static final String ISERVE_URL_PROP = "iserve.url";
+    private static final String ISERVE_VERSION_PROP = "iserve.version";
 
     private static final String DOC_FOLDER_PATH_PROP = "iserve.documents.folder";
 
@@ -83,6 +84,7 @@ public class SystemConfiguration {
     private static final String LUF_URL_PROP = "lufURL";
 
 
+    private String iserveVersion;
     private String dataRepositoryName;
     private String logRepositoryName;
     private String usersRepositoryName;
@@ -95,6 +97,7 @@ public class SystemConfiguration {
     private URI documentsFolderUri;
     private URI dataRepositoryUri;
     private URI dataSparqlUri;
+
     private URI dataSparqlUpdateUri;
     private URI logRepositoryUri;
     private URI usersRepositoryUri;
@@ -115,6 +118,8 @@ public class SystemConfiguration {
 
         config = new PropertiesConfiguration(configFileUrl);
         try {
+            this.iserveVersion = config.getString(ISERVE_VERSION_PROP, "Unknown");
+
             this.logRepositoryName = config.getString(LOG_REPOSITORY_NAME_PROP, DEFAULT_LOGS_REPO);
             this.logRepositoryUri = new URI(config.getString(LOG_REPOSITORY_URL_PROP));
             this.lufUri = new URI(config.getString(LUF_URL_PROP, DEFAULT_LUF_URL));
@@ -419,6 +424,10 @@ public class SystemConfiguration {
 
     public void setDataSparqlServiceUri(URI dataSparqlServiceUri) {
         this.dataSparqlServiceUri = dataSparqlServiceUri;
+    }
+
+    public String getIserveVersion() {
+        return iserveVersion;
     }
 
 }
