@@ -51,14 +51,6 @@
                             <md5>56b8d50a1548d9bc92c068560a530a46</md5>
                         </configuration>
                     </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>com.googlecode.maven-download-plugin</groupId>
-                <artifactId>maven-download-plugin</artifactId>
-                <version>1.1.0</version>
-                <executions>
                     <execution>
                         <id>install-owls-tc3</id>
                         <phase>generate-resources</phase>
@@ -72,6 +64,28 @@
                             <md5>e2a37cf78464fe8a07203390451afb1e</md5>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>install-owls-tc4</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>http://www.semwebcentral.org/frs/download.php/487/OWLS-TC4_PDDL.zip</url>
+                            <unpack>true</unpack>
+                            <outputDirectory>${project.build.resources[0].directory}</outputDirectory>
+                            <md5>b59f272e5d036d00e47f3350eef4ce72</md5>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>maven-download-plugin</artifactId>
+                <version>1.1.0</version>
+                <executions>
+
                 </executions>
             </plugin>
 
