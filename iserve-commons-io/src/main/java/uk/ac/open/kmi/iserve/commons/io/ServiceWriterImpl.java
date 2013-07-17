@@ -209,7 +209,7 @@ public class ServiceWriterImpl implements ServiceWriter {
             InvocableEntity invEnt = (InvocableEntity) annotableResource;
             // Process Conditions
             for (Condition cond : invEnt.getConditions()) {
-                com.hp.hpl.jena.rdf.model.Resource refResource = model.createResource(cond.getUri().toASCIIString());
+                com.hp.hpl.jena.rdf.model.Resource refResource = createRdfResource(model, cond);
                 current.addProperty(SAWSDL.modelReference, refResource);
                 refResource.addProperty(RDF.type, WSMO_LITE.Condition);
                 refResource.addLiteral(RDF.value, cond.getTypedValue());
@@ -217,7 +217,7 @@ public class ServiceWriterImpl implements ServiceWriter {
 
             // Process Effects
             for (Effect effect : invEnt.getEffects()) {
-                com.hp.hpl.jena.rdf.model.Resource refResource = model.createResource(effect.getUri().toASCIIString());
+                com.hp.hpl.jena.rdf.model.Resource refResource = createRdfResource(model, effect);
                 current.addProperty(SAWSDL.modelReference, refResource);
                 refResource.addProperty(RDF.type, WSMO_LITE.Effect);
                 refResource.addLiteral(RDF.value, effect.getTypedValue());
@@ -225,6 +225,27 @@ public class ServiceWriterImpl implements ServiceWriter {
         }
 
 
+    }
+
+    /**
+     * Creates an RDF Resource in a given model. Takes care of dealing with nonUri resources
+     * and creates a blank node in these cases.
+     *
+     * @param model    the model
+     * @param resource the MSM resource to be mapped to Jena
+     * @return a URI resource or a blank node otherwise
+     */
+    private com.hp.hpl.jena.rdf.model.Resource createRdfResource(Model model, Resource resource) {
+
+        com.hp.hpl.jena.rdf.model.Resource result;
+        if (resource.getUri() != null) {
+            result = model.createResource(resource.getUri().toASCIIString());
+        } else {
+            // create blank node
+            result = model.createResource();
+        }
+
+        return result;
     }
 
     private void addGrounding(Model model, Resource resource) {
