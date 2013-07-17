@@ -16,18 +16,22 @@
 
 package uk.ac.open.kmi.iserve.importer.owls;
 
+import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import org.apache.commons.cli.*;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.ServiceWriter;
 import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.commons.model.util.Vocabularies;
+import uk.ac.open.kmi.iserve.importer.owls.extensionTypes.PddlType;
 import uk.ac.open.kmi.iserve.sal.ServiceImporter;
 import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 
@@ -58,6 +62,7 @@ public class OwlsImporter implements ServiceImporter {
     private static final String RESULT_VAR_TYPE_VAR = RESULT_VAR_VAR + "Type";
     private static final String IN_CONDITION_VAR = "inCondition";
     private static final String IN_CONDITION_EXPR_BODY_VAR = IN_CONDITION_VAR + "ExprBody";
+    private static final String IN_CONDITION_EXPR_LANG_VAR = IN_CONDITION_VAR + "ExprLang";
     private static final String EFFECT_VAR = "effect";
     private static final String EFFECT_EXPR_BODY_VAR = EFFECT_VAR + "ExprBody";
     private static final String EFFECT_EXPR_LANG_VAR = EFFECT_VAR + "ExprLang";
@@ -92,6 +97,7 @@ public class OwlsImporter implements ServiceImporter {
     private static final String OUTPUT_PARAMETER2_VAR = OUTPUT_PARAMETER_VAR + "2";
     private static final String OUTPUT_PARAMETER2_TYPE_VAR = OUTPUT_PARAMETER_TYPE_VAR + "2";
 
+
     // TODO: Use the constants automatically generated for resources
     private static final String QUERY_GLOBAL =
             "SELECT DISTINCT * WHERE {\n"
@@ -118,9 +124,11 @@ public class OwlsImporter implements ServiceImporter {
                     + "    }\n"
                     + "    OPTIONAL {\n"
                     + "      ?" + RESULT_VAR + " process:inCondition ?" + IN_CONDITION_VAR + ".\n"
+                    + "      ?" + IN_CONDITION_VAR + " expr:expressionLanguage ?" + IN_CONDITION_EXPR_LANG_VAR + " .\n"
                     + "      ?" + IN_CONDITION_VAR + " expr:expressionBody ?" + IN_CONDITION_EXPR_BODY_VAR + " .\n"
                     + "    }\n"
                     + "    ?" + RESULT_VAR + " process:hasEffect ?" + EFFECT_VAR + " .\n"
+                    + "    ?" + EFFECT_VAR + " expr:expressionLanguage ?" + EFFECT_EXPR_LANG_VAR + " .\n"
                     + "    ?" + EFFECT_VAR + " expr:expressionBody ?" + EFFECT_EXPR_BODY_VAR + " .\n"
                     + "  }\n"
                     + "  OPTIONAL {\n"
@@ -157,9 +165,11 @@ public class OwlsImporter implements ServiceImporter {
                     + "   OPTIONAL {?" + MAP_VAR + " grounding:xsltTransformationString ?" + TRANSFORM_VAR + " . }\n"
                     + "}";
 
-
-    private static final String TEMP_NS = "http://owls-transformer.baseuri/8965949584020236497#";
-    private static final String PLUGIN_VERSION = "v0.2";
+    // Include information about the software version
+    private static final String VERSION_PROP_FILE = "version.prop";
+    private static final String VERSION_PROP = "version";
+    private static final String VERSION_UNKNOWN = "Unknown";
+    private String version = VERSION_UNKNOWN;
 
     private Map<String, String> prefixes;
 
@@ -172,8 +182,20 @@ public class OwlsImporter implements ServiceImporter {
         prefixes.put("process", "http://www.daml.org/services/owl-s/1.1/Process.owl#");
         prefixes.put("grounding", "http://www.daml.org/services/owl-s/1.1/Grounding.owl#");
         prefixes.put("expr", "http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#");
+
+        log.info("Loading version information from {}", VERSION_PROP_FILE);
+        PropertiesConfiguration config = null;
+        try {
+            config = new PropertiesConfiguration(VERSION_PROP_FILE);
+            this.version = config.getString(VERSION_PROP, VERSION_UNKNOWN);
+        } catch (ConfigurationException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
+    public String getVersion() {
+        return version;
+    }
 
     /**
      * Parses and transforms a file with service description(s), e.g. SAWSDL, OWL-S, hRESTS, etc., and
@@ -250,11 +272,20 @@ public class OwlsImporter implements ServiceImporter {
     public List<Service> transform(InputStream originalDescription, String baseUri) throws ImporterException {
         // read the file
         // TODO: figure out the syntax?
+
+        // Register the expression types for conditions
+        RDFDatatype rtype = PddlType.TYPE;
+        TypeMapper.getInstance().registerDatatype(rtype);
+
         Model origModel = ModelFactory.createDefaultModel();
         origModel.read(originalDescription, baseUri);
 
+//        OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF, origModel);
+
+        InfModel infModel = ModelFactory.createInfModel(ReasonerRegistry.getOWLMicroReasoner(), origModel);
+
         // Transform the original model (may have several service definitions)
-        List<Service> services = transform(origModel, baseUri);
+        List<Service> services = transform(infModel, baseUri);
 
         return services;
     }
@@ -329,7 +360,7 @@ public class OwlsImporter implements ServiceImporter {
         // TODO: decide how to handle the URIs to be replaced when uploaded
         result = new Service(svcUri);
         result.setSource(svcUri); // Redundant here but not after the URL changes
-        result.setComment("Automatically transformed by OWL-S Importer " + PLUGIN_VERSION);
+        result.setComment("Automatically transformed by OWL-S Importer " + this.getVersion());
         // TODO: set label
         //result.setLabel();
         //TODO: set creator
@@ -379,12 +410,12 @@ public class OwlsImporter implements ServiceImporter {
         result.setSource(result.getUri()); // Redundant here but not after the URL changes
 
         // Process conditions
-        Condition cond = obtainCondition(querySolution);
+        Condition cond = obtainCondition(model, querySolution);
         if (cond != null)
             result.addCondition(cond);
 
         // Process effects
-        Effect effect = obtainEffect(querySolution);
+        Effect effect = obtainEffect(model, querySolution);
         if (effect != null)
             result.addEffect(effect);
 
@@ -477,7 +508,7 @@ public class OwlsImporter implements ServiceImporter {
     }
 
 
-    private LogicalAxiom obtainAxiom(QuerySolution querySolution, LogicalAxiom.Type type) {
+    private LogicalAxiom obtainAxiom(Model model, QuerySolution querySolution, LogicalAxiom.Type type) {
 
         LogicalAxiom result = null;
         Resource res;
@@ -489,9 +520,11 @@ public class OwlsImporter implements ServiceImporter {
         }
 
         if (res != null) {
-            URI axiomUri;
+            URI axiomUri = null;
             try {
-                axiomUri = new URI(res.getURI());
+                if (!res.isAnon()) {
+                    axiomUri = new URI(res.getURI());
+                }
 
                 // TODO: earlier version used to deal with labels on conditions. Keep this?
 
@@ -508,8 +541,8 @@ public class OwlsImporter implements ServiceImporter {
                     lang = querySolution.getLiteral(EFFECT_EXPR_LANG_VAR);
                 }
 
-                // TODO: Set the language
-                result.setTypedValue(body.getString());
+                Literal typedLiteral = model.createTypedLiteral(body.getString(), TypeMapper.getInstance().getTypeByName(lang.getString()));
+                result.setTypedValue(typedLiteral.getString());
 
             } catch (URISyntaxException e) {
                 log.error("Incorrect URI specified for Axiom", e);
@@ -519,12 +552,12 @@ public class OwlsImporter implements ServiceImporter {
 
     }
 
-    private Effect obtainEffect(QuerySolution querySolution) {
-        return (Effect) obtainAxiom(querySolution, LogicalAxiom.Type.EFFECT);
+    private Effect obtainEffect(Model model, QuerySolution querySolution) {
+        return (Effect) obtainAxiom(model, querySolution, LogicalAxiom.Type.EFFECT);
     }
 
-    private Condition obtainCondition(QuerySolution querySolution) {
-        return (Condition) obtainAxiom(querySolution, LogicalAxiom.Type.CONDITION);
+    private Condition obtainCondition(Model model, QuerySolution querySolution) {
+        return (Condition) obtainAxiom(model, querySolution, LogicalAxiom.Type.CONDITION);
     }
 
     public static void main(String[] args) {
@@ -602,13 +635,14 @@ public class OwlsImporter implements ServiceImporter {
         writer = new ServiceWriterImpl();
 
         List<Service> services;
-        System.out.println("Transforming input");
+        log.info("Launching a batch transformation of OWL-S services, parameters {}", line);
         for (File file : toTransform) {
+            log.info("Transforming file {}", file.getAbsolutePath());
             try {
                 services = importer.transform(file);
 
                 if (services != null) {
-                    System.out.println("Services obtained: " + services.size());
+                    log.info("Services obtained {}", services);
 
                     File resultFile = null;
                     if (rdfDir != null) {
@@ -624,7 +658,7 @@ public class OwlsImporter implements ServiceImporter {
                             for (Service service : services) {
                                 if (out != null) {
                                     writer.serialise(service, out, syntax);
-                                    System.out.println("Service saved at: " + resultFile.getAbsolutePath());
+                                    log.info("Service saved at {}", resultFile.getAbsolutePath());
                                 } else {
                                     writer.serialise(service, System.out, syntax);
                                 }

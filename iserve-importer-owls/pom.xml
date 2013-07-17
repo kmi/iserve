@@ -104,6 +104,16 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.prop</include>
+                </includes>
+            </resource>
+        </resources>
+
         <plugins>
 
             <!-- Obtain shared test resources and unpack them -->
@@ -122,7 +132,9 @@
                             <includeGroupIds>${project.parent.groupId}</includeGroupIds>
                             <includeArtifactIds>iserve-test-resources</includeArtifactIds>
                             <outputDirectory>${project.build.directory}/test-classes/</outputDirectory>
-                            <includes>OWLS-TC3/htdocs/services/**/*.owls,OWLS-TC3/htdocs/services/**/*.wsdl</includes>
+                            <includes>
+                                OWLS-TC3/htdocs/services/**/*.owls,OWLS-TC3/htdocs/services/**/*.wsdl,OWLS-TC4_PDDL/htdocs/services/**/*.owls,OWLS-TC4_PDDL/htdocs/services/**/*.wsdl
+                            </includes>
                         </configuration>
                     </execution>
                 </executions>

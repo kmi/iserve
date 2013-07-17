@@ -35,13 +35,14 @@ import java.util.List;
 
 /**
  * Test class for the OWLS Importer
- *
+ * <p/>
  * User: Carlos Pedrinaci (KMi - The Open University)
  * Date: 22/05/2013
  * Time: 16:49
  */
 public class OwlsImporterTest {
 
+    private static final String OWLS_TC4_PDDL = "/OWLS-TC4_PDDL/htdocs/services/1.1/";
     private static final String OWLS_TC3_SERVICES_1_1 = "/OWLS-TC3/htdocs/services/1.1/";
     private static final String OWLS_TC3_SERVICES_1_0 = "/OWLS-TC3/htdocs/services/1.0/";
 
@@ -60,7 +61,7 @@ public class OwlsImporterTest {
 
         owlsFilter = new FilenameFilter() {
             public boolean accept(File dir, String name) {
-                return (name.endsWith(".owl") || name.endsWith(".owls")) ;
+                return (name.endsWith(".owl") || name.endsWith(".owls"));
             }
         };
     }
