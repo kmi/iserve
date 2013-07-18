@@ -14,38 +14,28 @@
  * limitations under the License.
  */
 
-package uk.ac.open.kmi.iserve.commons.model;
-
-import java.net.URI;
+package uk.ac.open.kmi.iserve.commons.io.extensionTypes;
 
 /**
- * Logical Axiom.
- * Logical Axioms are Conditions and Effects which may be specified in any language
+ * PDDL is a simple wrapper for PDDL Expressions
+ * Should eventually be extended if necessary with validation, etc.
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
- * @since 22/05/2013
+ * @since 17/07/2013
  */
-public class LogicalAxiom extends Resource {
+public class PddlExpression {
 
-    /**
-     * Types of Logical Axioms.
-     */
-    public static enum Type {
-        CONDITION,
-        EFFECT
+    private String expressionContent;
+
+    public PddlExpression(String expressionContent) {
+        this.expressionContent = expressionContent;
     }
 
-    private Object typedValue;
-
-    public LogicalAxiom(URI uri) {
-        super(uri);
+    public String getExpressionContent() {
+        return expressionContent;
     }
 
-    public Object getTypedValue() {
-        return typedValue;
-    }
-
-    public void setTypedValue(Object typedValue) {
-        this.typedValue = typedValue;
+    public void setExpressionContent(String expressionContent) {
+        this.expressionContent = expressionContent;
     }
 }

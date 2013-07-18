@@ -312,13 +312,13 @@ public class ServiceReaderImpl implements ServiceReader {
                 if (axiomClass.equals(Condition.class)) {
                     Condition cond = new Condition(new URI(axiomIndiv.getURI()));
                     setResourceProperties(axiomIndiv, cond);
-                    cond.setTypedValue(getAxiomBody(axiomIndiv));
+                    cond.setTypedValue(getAxiom(axiomIndiv));
                     ((List<Condition>) result).add(cond);
 
                 } else {
                     Effect effect = new Effect(new URI(axiomIndiv.getURI()));
                     setResourceProperties(axiomIndiv, effect);
-                    effect.setTypedValue(getAxiomBody(axiomIndiv));
+                    effect.setTypedValue(getAxiom(axiomIndiv));
                     ((List<Effect>) result).add(effect);
                 }
             }
@@ -330,11 +330,11 @@ public class ServiceReaderImpl implements ServiceReader {
         return result;
     }
 
-    private String getAxiomBody(Individual axiomIndiv) {
+    private Object getAxiom(Individual axiomIndiv) {
 
         RDFNode value = axiomIndiv.getPropertyValue(RDF.value);
         if (value != null && value.isLiteral()) {
-            return value.asLiteral().getString();
+            return value.asLiteral().getValue();
         }
 
         return null;

@@ -29,9 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.ServiceWriter;
 import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
+import uk.ac.open.kmi.iserve.commons.io.extensionTypes.PddlType;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.commons.model.util.Vocabularies;
-import uk.ac.open.kmi.iserve.importer.owls.extensionTypes.PddlType;
 import uk.ac.open.kmi.iserve.sal.ServiceImporter;
 import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 
@@ -111,8 +111,13 @@ public class OwlsImporter implements ServiceImporter {
                     + "  OPTIONAL { \n"
                     + "    ?" + PROCESS_VAR + " process:hasPrecondition ?" + CONDITION_VAR + " . \n"
                     + "    OPTIONAL { ?" + CONDITION_VAR + " rdfs:label ?" + CONDITION_LABEL_VAR + " . }\n"
-                    + "    ?" + CONDITION_VAR + " expr:expressionLanguage ?" + CONDITION_EXPR_LANG_VAR + " .\n"
                     + "    ?" + CONDITION_VAR + " expr:expressionBody ?" + CONDITION_EXPR_BODY_VAR + " .\n"
+                    + "    OPTIONAL {\n"
+                    + "       ?" + CONDITION_VAR + " expr:expressionLanguage ?" + CONDITION_EXPR_LANG_VAR + " .\n"
+                    + "    }\n"
+                    + "    OPTIONAL {\n"
+                    + "       ?" + CONDITION_VAR + " <http://127.0.0.1/ontology/Expression.owl#expressionLanguage> ?" + CONDITION_EXPR_LANG_VAR + " .\n"            // Hack for OWL-S TC4
+                    + "    }\n"
                     + "  }\n"
                     + "  OPTIONAL {?" + PROFILE_VAR + " profile:serviceClassification ?" + CLASSIFICATION_VAR + " .}\n"
                     + "  OPTIONAL {?" + PROFILE_VAR + " profile:serviceProduct ?" + SVC_PRODUCT_VAR + " .}\n"
@@ -124,12 +129,22 @@ public class OwlsImporter implements ServiceImporter {
                     + "    }\n"
                     + "    OPTIONAL {\n"
                     + "      ?" + RESULT_VAR + " process:inCondition ?" + IN_CONDITION_VAR + ".\n"
-                    + "      ?" + IN_CONDITION_VAR + " expr:expressionLanguage ?" + IN_CONDITION_EXPR_LANG_VAR + " .\n"
                     + "      ?" + IN_CONDITION_VAR + " expr:expressionBody ?" + IN_CONDITION_EXPR_BODY_VAR + " .\n"
+                    + "      OPTIONAL {\n"
+                    + "         ?" + IN_CONDITION_VAR + " expr:expressionLanguage ?" + IN_CONDITION_EXPR_LANG_VAR + " .\n"
+                    + "      }\n"
+                    + "      OPTIONAL {\n"
+                    + "         ?" + IN_CONDITION_VAR + " <http://127.0.0.1/ontology/Expression.owl#expressionLanguage> ?" + IN_CONDITION_EXPR_LANG_VAR + " .\n"    // Hack for OWL-S TC4
+                    + "      }\n"
                     + "    }\n"
                     + "    ?" + RESULT_VAR + " process:hasEffect ?" + EFFECT_VAR + " .\n"
-                    + "    ?" + EFFECT_VAR + " expr:expressionLanguage ?" + EFFECT_EXPR_LANG_VAR + " .\n"
                     + "    ?" + EFFECT_VAR + " expr:expressionBody ?" + EFFECT_EXPR_BODY_VAR + " .\n"
+                    + "    OPTIONAL {\n"
+                    + "         ?" + EFFECT_VAR + " expr:expressionLanguage ?" + EFFECT_EXPR_LANG_VAR + " .\n"
+                    + "    }\n"
+                    + "    OPTIONAL {\n"
+                    + "         ?" + EFFECT_VAR + " <http://127.0.0.1/ontology/Expression.owl#expressionLanguage> ?" + EFFECT_EXPR_LANG_VAR + " .\n"                // Hack for OWL-S TC4
+                    + "    }\n"
                     + "  }\n"
                     + "  OPTIONAL {\n"
                     + "   ?" + PROCESS_GROUNDING_VAR + " grounding:owlsProcess ?" + PROCESS_VAR + " .\n"
@@ -166,7 +181,7 @@ public class OwlsImporter implements ServiceImporter {
                     + "}";
 
     // Include information about the software version
-    private static final String VERSION_PROP_FILE = "version.prop";
+    private static final String VERSION_PROP_FILE = "version.properties";
     private static final String VERSION_PROP = "version";
     private static final String VERSION_UNKNOWN = "Unknown";
     private String version = VERSION_UNKNOWN;
@@ -278,11 +293,12 @@ public class OwlsImporter implements ServiceImporter {
         TypeMapper.getInstance().registerDatatype(rtype);
 
         Model origModel = ModelFactory.createDefaultModel();
-        origModel.read(originalDescription, baseUri);
-
-//        OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF, origModel);
-
         InfModel infModel = ModelFactory.createInfModel(ReasonerRegistry.getOWLMicroReasoner(), origModel);
+        // Read also the PDDL file to obtain the right Literal Type with OWL-S TC4
+        infModel.read("http://127.0.0.1/ontology/PDDLExpression.owl");
+        infModel.read(originalDescription, baseUri);
+
+//        OntModel infModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF, origModel);
 
         // Transform the original model (may have several service definitions)
         List<Service> services = transform(infModel, baseUri);
@@ -360,7 +376,7 @@ public class OwlsImporter implements ServiceImporter {
         // TODO: decide how to handle the URIs to be replaced when uploaded
         result = new Service(svcUri);
         result.setSource(svcUri); // Redundant here but not after the URL changes
-        result.setComment("Automatically transformed by OWL-S Importer " + this.getVersion());
+        result.setComment("Automatically transformed by OWL-S Importer v" + this.getVersion());
         // TODO: set label
         //result.setLabel();
         //TODO: set creator
@@ -530,19 +546,29 @@ public class OwlsImporter implements ServiceImporter {
 
                 // Set the axiom
                 Literal body;
-                Literal lang;
+                Resource lang;
                 if (type == LogicalAxiom.Type.CONDITION) {
                     result = new Condition(axiomUri);
                     body = querySolution.getLiteral(CONDITION_EXPR_BODY_VAR);
-                    lang = querySolution.getLiteral(CONDITION_EXPR_LANG_VAR);
+                    lang = querySolution.getResource(CONDITION_EXPR_LANG_VAR);
                 } else {
                     result = new Effect(axiomUri);
                     body = querySolution.getLiteral(EFFECT_EXPR_BODY_VAR);
-                    lang = querySolution.getLiteral(EFFECT_EXPR_LANG_VAR);
+                    lang = querySolution.getResource(EFFECT_EXPR_LANG_VAR);
                 }
 
-                Literal typedLiteral = model.createTypedLiteral(body.getString(), TypeMapper.getInstance().getTypeByName(lang.getString()));
-                result.setTypedValue(typedLiteral.getString());
+                // Clean the body
+                String expression = body.getString().trim();
+                expression = expression.replaceAll("[\n\t]", "");
+
+                Literal exprLiteral;
+                if (lang != null) {
+                    exprLiteral = model.createTypedLiteral(expression, TypeMapper.getInstance().getTypeByName(lang.getURI()));
+                } else {
+                    exprLiteral = model.createLiteral(expression, null);
+                }
+
+                result.setTypedValue(exprLiteral.getValue());
 
             } catch (URISyntaxException e) {
                 log.error("Incorrect URI specified for Axiom", e);

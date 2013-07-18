@@ -16,6 +16,8 @@
 
 package uk.ac.open.kmi.iserve.commons.io;
 
+import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.vocabulary.DC;
@@ -23,6 +25,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.commons.io.extensionTypes.PddlType;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.commons.model.util.Vocabularies;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
@@ -51,11 +54,19 @@ public class ServiceWriterImpl implements ServiceWriter {
     public void serialise(Service service, OutputStream out, Syntax syntax) {
         Model model = generateModel(service);
         model.setNsPrefixes(Vocabularies.prefixes);
+        registerExtensionTypes(model);
+
         try {
             model.write(out, syntax.getName());
         } finally {
             model.close();
         }
+    }
+
+    private void registerExtensionTypes(Model model) {
+        // Register the expression types for conditions
+        RDFDatatype rtype = PddlType.TYPE;
+        TypeMapper.getInstance().registerDatatype(rtype);
     }
 
     public Model generateModel(Service service) {
