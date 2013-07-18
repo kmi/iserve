@@ -103,12 +103,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>uk.ac.open.kmi.iserve.import</groupId>
-            <artifactId>iserve-importer-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
         <!-- Include Test Resources -->
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
