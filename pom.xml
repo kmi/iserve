@@ -82,8 +82,6 @@
         <module>iserve-discovery-disco</module>
         <module>iserve-discovery-engine</module>
         <module>iserve-test-resources</module>
-        <!-- Disable iMatcher Plugin <module>iserve-discovery-imatcher</module>
-            <module>iserve-imatcher-api</module> -->
         <!-- <module>iserve-analysis-engine</module> -->
     </modules>
 
