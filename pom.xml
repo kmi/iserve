@@ -77,6 +77,7 @@
         <module>iserve-importer-sawsdl</module>
         <module>iserve-importer-hrests</module>
         <module>iserve-importer-owls</module>
+        <module>iserve-importer-wsc</module>
         <module>iserve-sal-core</module>
         <module>iserve-sal-rest</module>
         <module>iserve-discovery-api</module>

@@ -68,6 +68,7 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
 
         // If the SPARQL endpoint does not exist return immediately.
         if (this.getSparqlQueryEndpoint() == null) {
+            log.warn("SPARQL Endpoint does not exist");
             return result;
         }
 
@@ -75,6 +76,8 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
                 "?s " + "<" + RDF.type.getURI() + ">" + " " +
                 "<" + MSM.Service.getURI() + ">" +
                 " . }";
+
+        log.debug("listServices() query str: " + queryStr);
 
         // Query the engine
         Query query = QueryFactory.create(queryStr);

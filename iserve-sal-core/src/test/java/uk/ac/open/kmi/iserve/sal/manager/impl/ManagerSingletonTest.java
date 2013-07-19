@@ -17,6 +17,8 @@
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import junit.framework.Assert;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -59,6 +61,7 @@ public class ManagerSingletonTest {
 
     @Before
     public void setUp() throws Exception {
+        BasicConfigurator.configure();
         testFolder = ManagerSingletonTest.class.getResource(OWLS_TC3_SERVICES).toURI();
         ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
         File dir = new File(testFolder);
@@ -123,7 +126,6 @@ public class ManagerSingletonTest {
 
     @Test
     public void testImportService() throws Exception {
-
         ManagerSingleton.getInstance().clearRegistry();
         InputStream in;
         URI serviceUri;
