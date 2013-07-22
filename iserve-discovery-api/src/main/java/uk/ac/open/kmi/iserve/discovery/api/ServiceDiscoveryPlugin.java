@@ -15,11 +15,9 @@
 */
 package uk.ac.open.kmi.iserve.discovery.api;
 
+import javax.ws.rs.core.MultivaluedMap;
 import java.net.URL;
 import java.util.Map;
-import java.util.Set;
-
-import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * Interface that Service Discovery Plugins should implement

@@ -16,11 +16,6 @@
 package uk.ac.open.kmi.iserve.discovery.api;
 
 import java.util.Map;
-import java.util.Set;
-
-import javax.ws.rs.core.MultivaluedMap;
-
-import org.apache.abdera.model.Entry;
 
 /**
  * Interface that defined the core methods that Discovery Plugins should provide
