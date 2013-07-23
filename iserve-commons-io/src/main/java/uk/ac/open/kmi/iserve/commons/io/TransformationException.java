@@ -13,29 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.ac.open.kmi.iserve.commons.io;
 
-import java.io.File;
-import java.io.FilenameFilter;
+public class TransformationException extends Exception {
 
-/**
- * Filter filenames by Syntax
- * <p/>
- * Author: Carlos Pedrinaci (KMi - The Open University)
- * Date: 05/06/2013
- * Time: 22:12
- */
-public class FilenameFilterBySyntax implements FilenameFilter {
+    private static final long serialVersionUID = -2069203220017813003L;
 
-    private Syntax syntax;
-
-    public FilenameFilterBySyntax(Syntax syntax) {
-        this.syntax = syntax;
+    public TransformationException() {
+        super();
     }
 
-    @Override
-    public boolean accept(File file, String name) {
-        return (name.endsWith("." + syntax.getExtension()));
+    public TransformationException(String message) {
+        super(message);
     }
+
+    public TransformationException(Throwable cause) {
+        super(cause);
+    }
+
+    public TransformationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

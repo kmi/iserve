@@ -19,11 +19,11 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import uk.ac.open.kmi.iserve.commons.io.FilenameFilterBySyntax;
+import uk.ac.open.kmi.iserve.commons.io.MediaType;
 import uk.ac.open.kmi.iserve.commons.io.Syntax;
+import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterBySyntax;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
-import uk.ac.open.kmi.iserve.sal.ServiceFormat;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 import java.io.File;
@@ -73,7 +73,7 @@ public class AllServicesPluginTest {
         // Upload every document and obtain their URLs
         for (File ttlFile : msmTtlTcFiles) {
             in = new FileInputStream(ttlFile);
-            uri = ManagerSingleton.getInstance().importService(in, ServiceFormat.MSM_TTL);
+            uri = ManagerSingleton.getInstance().importService(in, MediaType.TEXT_TURTLE.getMediaType());
             svc = ManagerSingleton.getInstance().getService(uri);
             numServices++;
             numOperations += svc.getOperations().size();

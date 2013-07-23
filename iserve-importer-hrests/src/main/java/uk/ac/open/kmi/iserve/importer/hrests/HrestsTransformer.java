@@ -17,14 +17,14 @@
 package uk.ac.open.kmi.iserve.importer.hrests;
 
 import org.apache.commons.cli.*;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.tidy.Tidy;
 import uk.ac.open.kmi.iserve.commons.io.*;
 import uk.ac.open.kmi.iserve.commons.model.Service;
-import uk.ac.open.kmi.iserve.sal.ServiceImporter;
-import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -38,9 +38,14 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HrestsImporter implements ServiceImporter {
+/**
+ * @author <a href="mailto:jacek.kopecky@open.ac.uk">Jacek Kopecky</a> (KMi - The Open University)
+ * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
+ * @since 0.2
+ */
+public class HrestsTransformer implements ServiceTransformer {
 
-    private static final Logger log = LoggerFactory.getLogger(HrestsImporter.class);
+    private static final Logger log = LoggerFactory.getLogger(HrestsTransformer.class);
 
     private static final String XSLT = "/hrests.xslt";
 
@@ -50,30 +55,86 @@ public class HrestsImporter implements ServiceImporter {
 
     private Transformer transformer;
 
-    public HrestsImporter() throws TransformerConfigurationException {
+    // Include information about the software version
+    private static final String VERSION_PROP_FILE = "version.properties";
+    private static final String VERSION_PROP = "version";
+    private static final String VERSION_UNKNOWN = "Unknown";
+    private String version = VERSION_UNKNOWN;
+
+    // Supported Media Type
+    public static String mediaType = "text/html";
+
+    // Supported File Extensions
+    private static List<String> fileExtensions = new ArrayList<String>();
+
+    static {
+        fileExtensions.add("html");
+        fileExtensions.add("xhtml");
+        fileExtensions.add("hrests");
+    }
+
+    public HrestsTransformer() throws TransformerConfigurationException {
         parser = new Tidy();
         try {
-            xsltFile = new File(HrestsImporter.class.getResource(XSLT).toURI());
+            xsltFile = new File(HrestsTransformer.class.getResource(XSLT).toURI());
             TransformerFactory xformFactory = TransformerFactory.newInstance();
             transformer = xformFactory.newTransformer(new StreamSource(this.xsltFile));
+            obtainVersionInformation();
 
         } catch (URISyntaxException e) {
             log.error("Wrong URI for the XSLT transformation file.");
             throw new TransformerConfigurationException("Wrong URI for the XSLT transformation file.", e);
         }
+
+    }
+
+    private void obtainVersionInformation() {
+        log.info("Loading version information from {}", VERSION_PROP_FILE);
+        PropertiesConfiguration config = null;
+        try {
+            config = new PropertiesConfiguration(VERSION_PROP_FILE);
+            this.version = config.getString(VERSION_PROP, VERSION_UNKNOWN);
+        } catch (ConfigurationException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     /**
-     * Parses and transforms a stream with service description(s), e.g. SAWSDL, OWL-S, hRESTS, etc., and
-     * returns a list of Service objects defined in the stream.
+     * Obtains the Media Type this plugin supports for transformation.
+     * Although registered Media Types do not necessarily identify uniquely
+     * a given semantic service description format it is used for identification
+     * for now.
      *
-     * @param originalDescription The semantic Web service description(s)
-     * @return A List with the services transformed conforming to MSM model
-     * @see uk.ac.open.kmi.iserve.sal.ServiceFormat for the list of supported formats
+     * @return the media type covered
      */
     @Override
-    public List<Service> transform(InputStream originalDescription) throws ImporterException {
-        return transform(originalDescription, null);
+    public String getSupportedMediaType() {
+        return mediaType;
+    }
+
+    /**
+     * Obtains the different file extensions that this plugin can be applied to.
+     * Again this does not necessarily uniquely identify a format but helps filter the filesystem
+     * when doing batch transformation and may also be used as final solution in cases where we fail
+     * to identify a format.
+     *
+     * @return a List of file extensions supported
+     */
+    @Override
+    public List<String> getSupportedFileExtensions() {
+        return fileExtensions;
+    }
+
+    /**
+     * Obtains the version of the plugin used. Relevant as this is based on plugins and 3rd party may
+     * provide their own implementations. Having the version is useful for provenance information and debuggin
+     * purposes.
+     *
+     * @return a String with the version of the plugin.
+     */
+    @Override
+    public String getVersion() {
+        return this.version;
     }
 
     /**
@@ -83,10 +144,9 @@ public class HrestsImporter implements ServiceImporter {
      * @param originalDescription The semantic Web service description(s)
      * @param baseUri             The base URI to use while transforming the service description
      * @return A List with the services transformed conforming to MSM model
-     * @see uk.ac.open.kmi.iserve.sal.ServiceFormat for the list of supported formats
      */
     @Override
-    public List<Service> transform(InputStream originalDescription, String baseUri) throws ImporterException {
+    public List<Service> transform(InputStream originalDescription, String baseUri) throws TransformationException {
         // Exit early if no content is provided
         if (originalDescription == null) {
             return new ArrayList<Service>();
@@ -113,7 +173,7 @@ public class HrestsImporter implements ServiceImporter {
             ServiceReader reader = new ServiceReaderImpl();
             return reader.parse(istream, baseUri, Syntax.RDFXML);
         } catch (TransformerException e) {
-            throw new ImporterException(e);
+            throw new TransformationException(e);
         } finally {
             try {
                 bout.close();
@@ -130,38 +190,6 @@ public class HrestsImporter implements ServiceImporter {
         }
 
     }
-
-    /**
-     * Parses and transforms a file with service description(s), e.g. SAWSDL, OWL-S, hRESTS, etc., and
-     * returns a list of Service objects defined in the file.
-     *
-     * @param originalDescription The file containing the semantic Web service description(s)
-     * @return A List with the services transformed conforming to MSM model
-     * @see uk.ac.open.kmi.iserve.sal.ServiceFormat for the list of supported formats
-     */
-    @Override
-    public List<Service> transform(File originalDescription) throws ImporterException {
-        return transform(originalDescription, null);
-    }
-
-    /**
-     * Parses and transforms a file with service description(s), e.g. SAWSDL, OWL-S, hRESTS, etc., and
-     * returns a list of Service objects defined in the file.
-     *
-     * @param originalDescription The file containing the semantic Web service description(s)
-     * @param baseUri             The base URI to use while transforming the service description
-     * @return A List with the services transformed conforming to MSM model
-     * @see uk.ac.open.kmi.iserve.sal.ServiceFormat for the list of supported formats
-     */
-    @Override
-    public List<Service> transform(File originalDescription, String baseUri) throws ImporterException {
-        try {
-            return transform(new FileInputStream(originalDescription), baseUri);
-        } catch (FileNotFoundException e) {
-            throw new ImporterException("Unable to process input file", e);
-        }
-    }
-
 
     public static void main(String[] args) throws TransformerConfigurationException {
 
@@ -189,16 +217,16 @@ public class HrestsImporter implements ServiceImporter {
             }
             if (input == null) {
                 // The input should not be null
-                formatter.printHelp(80, "java " + HrestsImporter.class.getCanonicalName(), "Options:", options, "You must provide an input", true);
+                formatter.printHelp(80, "java " + HrestsTransformer.class.getCanonicalName(), "Options:", options, "You must provide an input", true);
                 return;
             }
         } catch (ParseException e) {
-            formatter.printHelp(80, "java " + HrestsImporter.class.getCanonicalName(), "Options:", options, "Error parsing input", true);
+            formatter.printHelp(80, "java " + HrestsTransformer.class.getCanonicalName(), "Options:", options, "Error parsing input", true);
         }
 
         inputFile = new File(input);
         if (inputFile == null || !inputFile.exists()) {
-            formatter.printHelp(80, "java " + HrestsImporter.class.getCanonicalName(), "Options:", options, "Input not found", true);
+            formatter.printHelp(80, "java " + HrestsTransformer.class.getCanonicalName(), "Options:", options, "Input not found", true);
             System.out.println(inputFile.getAbsolutePath());
             return;
         }
@@ -231,17 +259,17 @@ public class HrestsImporter implements ServiceImporter {
         String format = line.getOptionValue("f", uk.ac.open.kmi.iserve.commons.io.Syntax.TTL.getName());
         uk.ac.open.kmi.iserve.commons.io.Syntax syntax = uk.ac.open.kmi.iserve.commons.io.Syntax.valueOf(format);
 
-        HrestsImporter importer;
+        HrestsTransformer importer;
         ServiceWriter writer;
 
-        importer = new HrestsImporter();
+        importer = new HrestsTransformer();
         writer = new ServiceWriterImpl();
 
         List<Service> services;
         System.out.println("Transforming input");
         for (File file : toTransform) {
             try {
-                services = importer.transform(file);
+                services = importer.transform(new FileInputStream(file), null);
 
                 if (services != null) {
                     System.out.println("Services obtained: " + services.size());
@@ -276,7 +304,7 @@ public class HrestsImporter implements ServiceImporter {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (ImporterException e) {
+            } catch (TransformationException e) {
                 e.printStackTrace();
             }
         }

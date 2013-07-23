@@ -1,4 +1,5 @@
 <%@ page import="uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton" %>
+
 <%--
   ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
   ~
@@ -14,11 +15,12 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<%@ include file="../include.jsp" %>
+<%@ include file="./include.jsp" %>
 
 <html>
 <head>
-    <link type="text/css" rel="stylesheet" href="<c:url value="/css/style.css"/>"/>
+    <link type="text/css" rel="stylesheet" href="<c:url value="
+    /css/style.css"/>"/>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script>
         function deleteUrl(url) {
@@ -53,14 +55,14 @@
                     }
                     break;
 
-                case "services":
+                case "id/services":
                     var r = confirm("Are you sure you want to clear the services?");
                     if (r == true) {
                         deleteUrl("services");
                     }
                     break;
 
-                case "documents":
+                case "id/documents":
                     var r = confirm("Are you sure you want to clear the documents?");
                     if (r == true) {
                         deleteUrl("documents");
@@ -78,6 +80,8 @@
 <p>You are currently logged as root from <%= request.getRemoteHost() %>
 </p>
 
+<p>See <a href="<c:url value="/jsp/configuration.jsp"/>">Server's configuration.</a></p>
+
 <h2>Server Statistics</h2>
 
 <p>Services registered: <%= ManagerSingleton.getInstance().listServices().size() %>
@@ -85,6 +89,8 @@
 
 <p>Documents registered: <%= ManagerSingleton.getInstance().listDocuments().size() %>
 </p>
+
+<p>See <a href="<c:url value="/control/show-stats"/>">Elda's Statistics</a>.</p>
 
 <h2>Management Functions</h2>
 
@@ -94,20 +100,24 @@
     reverted!)
 </p>
 <p>
-    <button onclick="clearResources('services')">Clear Services</button>
+    <button onclick="clearResources('id/services')">Clear Services</button>
     This operation will clear the services in the registry. All the services registered will be deleted. (Warning: This
     operation cannot be reverted!)
 </p>
 <p>
-    <button onclick="clearResources('documents')">Clear Documents</button>
+    <button onclick="clearResources('id/documents')">Clear Documents</button>
     This operation will clear the documents in the registry. All the documents registered will be deleted. (Warning:
     This operation cannot be reverted!)
 </p>
 
+<p>
+    <button onClick="parent.location='/control/clear-cache'">Clear Elda's Cache</button>
+</p>
 
-<p><a href="<c:url value="../home.jsp"/>">Return to the home page.</a></p>
 
-<p><a href="<c:url value="../logout.jsp"/>">Log out.</a></p>
+<p><a href="<c:url value="/jsp/index.jsp"/>">Return to the home page.</a></p>
+
+<p><a href="<c:url value="/jsp/logout.jsp"/>">Log out.</a></p>
 
 </body>
 </html>

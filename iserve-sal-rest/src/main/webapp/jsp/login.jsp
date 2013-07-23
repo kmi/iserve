@@ -13,18 +13,22 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<%@ include file="include.jsp" %>
+
+<%@ include file="./include.jsp" %>
 
 <html>
 <head>
-    <link type="text/css" rel="stylesheet" href="<c:url value="/css/style.css"/>"/>
+    <link type="text/css" rel="stylesheet" href="<c:url value="
+    /css/style.css"/>"/>
 </head>
 <body>
 
 <h2>Please Log in</h2>
 
 <shiro:guest>
-    <p>Here are a few sample accounts to play with in the default text-based Realm.</p>
+    <p>Here are a few sample accounts to play with in the default text-based Realm.<br/>
+        You should change these as soon as possible, see file shiro.ini
+    </p>
 
 
     <style type="text/css">

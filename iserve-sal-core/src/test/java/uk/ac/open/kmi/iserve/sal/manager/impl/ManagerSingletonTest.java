@@ -21,10 +21,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.commons.io.FilenameFilterBySyntax;
+import uk.ac.open.kmi.iserve.commons.io.MediaType;
 import uk.ac.open.kmi.iserve.commons.io.Syntax;
+import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterBySyntax;
 import uk.ac.open.kmi.iserve.commons.model.Service;
-import uk.ac.open.kmi.iserve.sal.ServiceFormat;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -81,7 +81,8 @@ public class ManagerSingletonTest {
         for (File ttlFile : msmTtlTcFiles) {
             in = new FileInputStream(ttlFile);
             log.info("Adding document: " + ttlFile.getName());
-            docUri = ManagerSingleton.getInstance().createDocument(in, ServiceFormat.MSM_TTL);
+            String fileExt = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.get(MediaType.TEXT_TURTLE.getMediaType()).getExtension();
+            docUri = ManagerSingleton.getInstance().createDocument(in, fileExt);
             Assert.assertNotNull(docUri);
             log.info("Service added: " + docUri.toASCIIString());
             count++;
@@ -131,7 +132,7 @@ public class ManagerSingletonTest {
         for (File ttlFile : msmTtlTcFiles) {
             in = new FileInputStream(ttlFile);
             log.info("Adding service: " + ttlFile.getName());
-            serviceUri = ManagerSingleton.getInstance().importService(in, ServiceFormat.MSM_TTL);
+            serviceUri = ManagerSingleton.getInstance().importService(in, MediaType.TEXT_TURTLE.getMediaType());
             Assert.assertNotNull(serviceUri);
             log.info("Service added: " + serviceUri.toASCIIString());
             count++;

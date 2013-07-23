@@ -13,7 +13,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<%@ include file="include.jsp" %>
+
+<%@ include file="./include.jsp" %>
 <%
     /*
       NOTE:  In a web application using 'rememberMe'
@@ -53,13 +54,14 @@
 %>
 <html>
 <head>
-    <link type="text/css" rel="stylesheet" href="<c:url value="/css/style.css"/>"/>
+    <link type="text/css" rel="stylesheet" href="<c:url value="
+    /css/style.css"/>"/>
 </head>
 <body>
 
 <h2>Log out</h2>
 
-<p>You have succesfully logged out. <a href="<c:url value="home.jsp"/>">Return to the home page.</a></p>
+<p>You have succesfully logged out. <a href="<c:url value="/jsp/index.jsp"/>">Return to the main page.</a></p>
 
 </body>
 </html>

@@ -13,7 +13,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<%@ include file="../include.jsp" %>
+
+<%@ include file="./include.jsp" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <html>
@@ -27,7 +28,9 @@
 <p>You are currently logged as root from <%= request.getRemoteHost() %>
 </p>
 
-<h2>Server Configuration</h2>
+<h2>Registry Configuration</h2>
+
+<p>The server is currently running iServe version: ${it.iserveVersion} .</p>
 
 <c:if test="${it.proxyHostName != null}">
     <p>Proxy details: ${it.proxyHostName}, port: ${it.proxyPort} </p>
@@ -46,9 +49,15 @@
 
 <p>Data repository SPARQL Service URI: ${it.dataSparqlServiceUri}</p>
 
-<p><a href="<c:url value="../home.jsp"/>">Return to the home page.</a></p>
+<h2>Elda Configuration</h2>
 
-<p><a href="<c:url value="../logout.jsp"/>">Log out.</a></p>
+<p>See <a href="<c:url value="/api-config"/>">Elda's configuration</a>.</p>
+
+<p><a href="<c:url value="admin.jsp"/>">Return to the administration page.</a></p>
+
+<p><a href="<c:url value="index.jsp"/>">Return to the home page.</a></p>
+
+<p><a href="<c:url value="logout.jsp"/>">Log out.</a></p>
 
 </body>
 </html>

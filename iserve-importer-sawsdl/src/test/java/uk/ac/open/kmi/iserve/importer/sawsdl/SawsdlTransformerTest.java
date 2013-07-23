@@ -23,30 +23,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.ServiceWriter;
 import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
+import uk.ac.open.kmi.iserve.commons.io.TransformationException;
+import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.model.Service;
-import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FilenameFilter;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class SawsdlImporterTest {
+public class SawsdlTransformerTest {
 
-    private static final Logger log = LoggerFactory.getLogger(SawsdlImporterTest.class);
+    private static final Logger log = LoggerFactory.getLogger(SawsdlTransformerTest.class);
     private static final String SAWSDL_TC3_SERVICES = "/SAWSDL-TC3_WSDL11/htdocs/services/sawsdl_wsdl11/";
-    private static final String BIOPORTAL_SERVICES = "/WSDLs";
 
-    private SawsdlImporter importer;
+    private SawsdlTransformer importer;
     private ServiceWriter writer;
     private List<URI> testFolders;
     private FilenameFilter sawsdlFilter;
 
-    public SawsdlImporterTest() {
+    public SawsdlTransformerTest() {
         try {
-            importer = new SawsdlImporter();
-        } catch (ImporterException e) {
+            importer = new SawsdlTransformer();
+        } catch (TransformationException e) {
             log.error("Unable to initialise SAWSDL importer", e);
         }
     }
@@ -54,12 +56,10 @@ public class SawsdlImporterTest {
     @Before
     public void setUp() throws Exception {
 
-        importer = new SawsdlImporter();
-//        importer.setProxy("http://wwwcache.open.ac.uk", "80");
+        importer = new SawsdlTransformer();
         writer = new ServiceWriterImpl();
         testFolders = new ArrayList<URI>();
-        testFolders.add(SawsdlImporterTest.class.getResource(SAWSDL_TC3_SERVICES).toURI());
-//        testFolders.add(SawsdlImporterTest.class.getResource(BIOPORTAL_SERVICES).toURI());
+        testFolders.add(SawsdlTransformerTest.class.getResource(SAWSDL_TC3_SERVICES).toURI());
 
         sawsdlFilter = new FilenameFilter() {
             public boolean accept(File dir, String name) {
@@ -84,19 +84,18 @@ public class SawsdlImporterTest {
             for (File file : sawsdlFiles) {
                 log.info("Transforming service {}", file.getAbsolutePath());
                 try {
-                    services = importer.transform(file);
+                    services = importer.transform(new FileInputStream(file), null);
                     Assert.assertNotNull("Service collection should not be null", services);
                     Assert.assertTrue("There should be at least one service", 1 >= services.size());
                 } catch (Exception e) {
-                    log.warn("Problems transforming the service. Continuing", e);
+                    log.error("Problems transforming the service. Continuing", e);
                 }
             }
         }
     }
 
     @Test
-    public void testTransformInputStream() {
-
+    public void testPluginBasedTransformation() {
         // Add all the test collections
         log.info("Transforming test collections");
         for (URI testFolder : testFolders) {
@@ -109,21 +108,16 @@ public class SawsdlImporterTest {
             File[] owlsFiles = dir.listFiles(sawsdlFilter);
             for (File file : owlsFiles) {
                 log.info("Transforming service {}", file.getAbsolutePath());
-                InputStream in = null;
                 try {
-                    in = new FileInputStream(file);
-                    services = importer.transform(in);
+                    services = Transformer.getInstance().transform(file, null, SawsdlTransformer.mediaType);
                     Assert.assertNotNull("Service collection should not be null", services);
                     Assert.assertEquals(1, services.size());
-                } catch (FileNotFoundException e) {
-                    log.warn("File not found", e);
-                } catch (ImporterException e) {
-                    log.warn("Problems transforming the service", e);
+                } catch (Exception e) {
+                    log.error("Problems transforming the service. Continuing", e);
                 }
-
             }
         }
-    }
 
+    }
 
 }

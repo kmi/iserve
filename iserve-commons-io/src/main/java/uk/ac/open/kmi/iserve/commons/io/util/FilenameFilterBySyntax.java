@@ -14,41 +14,30 @@
  * limitations under the License.
  */
 
-package uk.ac.open.kmi.iserve.commons.io;
+package uk.ac.open.kmi.iserve.commons.io.util;
+
+import uk.ac.open.kmi.iserve.commons.io.Syntax;
+
+import java.io.File;
+import java.io.FilenameFilter;
 
 /**
- * Enum Type with the Syntaxes Supported
+ * Filter filenames by Syntax
  * <p/>
  * Author: Carlos Pedrinaci (KMi - The Open University)
- * Date: 22/05/2013
- * Time: 02:10
- * <p/>
- * TODO: Move to the proper package
+ * Date: 05/06/2013
+ * Time: 22:12
  */
-public enum Syntax {
+public class FilenameFilterBySyntax implements FilenameFilter {
 
-    RDFXML("RDF/XML", "rdf"),
-    RDFXML_ABBREV("RDF/XML-ABBREV", "rdf"),
-    N_TRIPLE("N-TRIPLE", "nt"),
-    N3("N3", "n3"),
-    TTL("TTL", "ttl"),
-    N_QUADS("N-Quads", "nq"),
-    RDF_JSON("RDF/JSON", "json"),
-    TRIG("TriG", "trig");
+    private Syntax syntax;
 
-    private final String name;
-    private final String extension;
-
-    Syntax(String name, String extension) {
-        this.name = name;
-        this.extension = extension;
+    public FilenameFilterBySyntax(Syntax syntax) {
+        this.syntax = syntax;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getExtension() {
-        return extension;
+    @Override
+    public boolean accept(File file, String name) {
+        return (name.endsWith("." + syntax.getExtension()));
     }
 }

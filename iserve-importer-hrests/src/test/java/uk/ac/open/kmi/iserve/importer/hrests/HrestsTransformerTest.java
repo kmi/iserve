@@ -23,9 +23,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.ServiceWriter;
 import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
+import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.net.URI;
 import java.util.ArrayList;
@@ -39,12 +41,12 @@ import java.util.List;
  * Date: 14/06/2013
  * Time: 19:29
  */
-public class HrestsImporterTest {
+public class HrestsTransformerTest {
 
-    private static final Logger log = LoggerFactory.getLogger(HrestsImporterTest.class);
+    private static final Logger log = LoggerFactory.getLogger(HrestsTransformerTest.class);
     private static final String JGD_SERVICES = "/jgd-services";
 
-    private HrestsImporter importer;
+    private HrestsTransformer transformer;
     private ServiceWriter writer;
     private List<URI> testFolders;
     private FilenameFilter htmlFilter;
@@ -52,10 +54,10 @@ public class HrestsImporterTest {
     @Before
     public void setUp() throws Exception {
 
-        importer = new HrestsImporter();
+        transformer = new HrestsTransformer();
         writer = new ServiceWriterImpl();
         testFolders = new ArrayList<URI>();
-        testFolders.add(HrestsImporterTest.class.getResource(JGD_SERVICES).toURI());
+        testFolders.add(HrestsTransformerTest.class.getResource(JGD_SERVICES).toURI());
 
         htmlFilter = new FilenameFilter() {
             public boolean accept(File dir, String name) {
@@ -66,12 +68,7 @@ public class HrestsImporterTest {
     }
 
     @Test
-    public void testTransformInputStream() throws Exception {
-        Assert.fail("Not implemented");
-    }
-
-    @Test
-    public void testTransformFile() throws Exception {
+    public void testTransform() throws Exception {
 
         // Add all the test collections
         log.info("Transforming test collections");
@@ -85,9 +82,34 @@ public class HrestsImporterTest {
             File[] servicesFile = dir.listFiles(htmlFilter);
             for (File file : servicesFile) {
                 log.info("Transforming file: " + file.getAbsolutePath());
-                services = importer.transform(file, file.toURI().toASCIIString());
+                services = transformer.transform(new FileInputStream(file), file.toURI().toASCIIString());
                 Assert.assertNotNull("Service collection should not be null", services);
                 Assert.assertEquals(1, services.size());
+            }
+        }
+    }
+
+    @Test
+    public void testPluginBasedTransformation() {
+        // Add all the test collections
+        log.info("Transforming test collections");
+        for (URI testFolder : testFolders) {
+            File dir = new File(testFolder);
+            log.info("Test collection: {} ", testFolder);
+
+            // Test services
+            Collection<Service> services;
+            log.info("Transforming services");
+            File[] owlsFiles = dir.listFiles(htmlFilter);
+            for (File file : owlsFiles) {
+                log.info("Transforming service {}", file.getAbsolutePath());
+                try {
+                    services = Transformer.getInstance().transform(file, file.toURI().toASCIIString(), HrestsTransformer.mediaType);
+                    Assert.assertNotNull("Service collection should not be null", services);
+                    Assert.assertEquals(1, services.size());
+                } catch (Exception e) {
+                    log.error("Problems transforming the service. Continuing", e);
+                }
             }
         }
 

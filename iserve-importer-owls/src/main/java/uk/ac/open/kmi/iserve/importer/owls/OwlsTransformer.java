@@ -27,13 +27,13 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.commons.io.ServiceTransformer;
 import uk.ac.open.kmi.iserve.commons.io.ServiceWriter;
 import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
+import uk.ac.open.kmi.iserve.commons.io.TransformationException;
 import uk.ac.open.kmi.iserve.commons.io.extensionTypes.PddlType;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.commons.model.util.Vocabularies;
-import uk.ac.open.kmi.iserve.sal.ServiceImporter;
-import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
 
 import java.io.*;
 import java.net.URI;
@@ -43,9 +43,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OwlsImporter implements ServiceImporter {
+public class OwlsTransformer implements ServiceTransformer {
 
-    private static final Logger log = LoggerFactory.getLogger(OwlsImporter.class);
+    private static final Logger log = LoggerFactory.getLogger(OwlsTransformer.class);
 
     private static final String SERVICE_VAR = "service";
     private static final String PROFILE_VAR = "profile";
@@ -186,9 +186,20 @@ public class OwlsImporter implements ServiceImporter {
     private static final String VERSION_UNKNOWN = "Unknown";
     private String version = VERSION_UNKNOWN;
 
+    // Supported Media Type
+    public static String mediaType = "application/owl+xml";
+
+    // Supported File Extensions
+    private static List<String> fileExtensions = new ArrayList<String>();
+
+    static {
+        fileExtensions.add("owl");
+        fileExtensions.add("owls");
+    }
+
     private Map<String, String> prefixes;
 
-    public OwlsImporter() {
+    public OwlsTransformer() {
         // Initialise prefixes
         prefixes = new HashMap<String, String>(Vocabularies.prefixes);
         // Add those specific for handling OWLS
@@ -198,6 +209,10 @@ public class OwlsImporter implements ServiceImporter {
         prefixes.put("grounding", "http://www.daml.org/services/owl-s/1.1/Grounding.owl#");
         prefixes.put("expr", "http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#");
 
+        obtainVersionInformation();
+    }
+
+    private void obtainVersionInformation() {
         log.info("Loading version information from {}", VERSION_PROP_FILE);
         PropertiesConfiguration config = null;
         try {
@@ -208,70 +223,42 @@ public class OwlsImporter implements ServiceImporter {
         }
     }
 
+    /**
+     * Obtains the Media Type this plugin supports for transformation.
+     * Although registered Media Types do not necessarily identify uniquely
+     * a given semantic service description format it is used for identification
+     * for now.
+     *
+     * @return the media type covered
+     */
+    @Override
+    public String getSupportedMediaType() {
+        return mediaType;
+    }
+
+    /**
+     * Obtains the different file extensions that this plugin can be applied to.
+     * Again this does not necessarily uniquely identify a format but helps filter the filesystem
+     * when doing batch transformation and may also be used as final solution in cases where we fail
+     * to identify a format.
+     *
+     * @return a List of file extensions supported
+     */
+    @Override
+    public List<String> getSupportedFileExtensions() {
+        return fileExtensions;
+    }
+
+    /**
+     * Obtains the version of the plugin used. Relevant as this is based on plugins and 3rd party may
+     * provide their own implementations. Having the version is useful for provenance information and debuggin
+     * purposes.
+     *
+     * @return a String with the version of the plugin.
+     */
+    @Override
     public String getVersion() {
-        return version;
-    }
-
-    /**
-     * Parses and transforms a file with service description(s), e.g. SAWSDL, OWL-S, hRESTS, etc., and
-     * returns a list of Service objects defined in the file.
-     *
-     * @param originalDescription The file containing the semantic Web service description(s)
-     * @return A List with the services transformed conforming to MSM model
-     * @see uk.ac.open.kmi.iserve.sal.ServiceFormat for the list of supported formats
-     */
-    @Override
-    public List<Service> transform(File originalDescription) throws ImporterException {
-        return transform(originalDescription, null);
-    }
-
-    /**
-     * Parses and transforms a file with service description(s), e.g. SAWSDL, OWL-S, hRESTS, etc., and
-     * returns a list of Service objects defined in the file.
-     *
-     * @param originalDescription The file containing the semantic Web service description(s)
-     * @param baseUri             The base URI to use while transforming the service description
-     * @return A List with the services transformed conforming to MSM model
-     * @see uk.ac.open.kmi.iserve.sal.ServiceFormat for the list of supported formats
-     */
-    @Override
-    public List<Service> transform(File originalDescription, String baseUri) throws ImporterException {
-
-        if (originalDescription != null && originalDescription.exists()) {
-            // Open the file and transform it
-            InputStream in = null;
-            try {
-                in = new FileInputStream(originalDescription);
-                return transform(in);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                throw new ImporterException("Unable to open input file", e);
-            } finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        throw new ImporterException("Error while closing input file", e);
-                    }
-                }
-            }
-        }
-        // Return an empty array if it could not be transformed.
-        return new ArrayList<Service>();
-    }
-
-    /**
-     * Parses and transforms a stream with service description(s), e.g. SAWSDL, OWL-S, hRESTS, etc., and
-     * returns a list of Service objects defined in the stream.
-     *
-     * @param originalDescription The semantic Web service description(s)
-     * @return A List with the services transformed conforming to MSM model
-     * @see uk.ac.open.kmi.iserve.sal.ServiceFormat for the list of supported formats
-     */
-    @Override
-    public List<Service> transform(InputStream originalDescription) throws ImporterException {
-        return transform(originalDescription, null);
+        return this.version;
     }
 
     /**
@@ -281,10 +268,9 @@ public class OwlsImporter implements ServiceImporter {
      * @param originalDescription The semantic Web service description(s)
      * @param baseUri             The base URI to use while transforming the service description
      * @return A List with the services transformed conforming to MSM model
-     * @see uk.ac.open.kmi.iserve.sal.ServiceFormat for the list of supported formats
      */
     @Override
-    public List<Service> transform(InputStream originalDescription, String baseUri) throws ImporterException {
+    public List<Service> transform(InputStream originalDescription, String baseUri) throws TransformationException {
         // read the file
         // TODO: figure out the syntax?
 
@@ -297,8 +283,6 @@ public class OwlsImporter implements ServiceImporter {
         // Read also the PDDL file to obtain the right Literal Type with OWL-S TC4
         infModel.read("http://127.0.0.1/ontology/PDDLExpression.owl");
         infModel.read(originalDescription, baseUri);
-
-//        OntModel infModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF, origModel);
 
         // Transform the original model (may have several service definitions)
         List<Service> services = transform(infModel, baseUri);
@@ -612,16 +596,16 @@ public class OwlsImporter implements ServiceImporter {
             }
             if (input == null) {
                 // The input should not be null
-                formatter.printHelp(80, "java " + OwlsImporter.class.getCanonicalName(), "Options:", options, "You must provide an input", true);
+                formatter.printHelp(80, "java " + OwlsTransformer.class.getCanonicalName(), "Options:", options, "You must provide an input", true);
                 return;
             }
         } catch (ParseException e) {
-            formatter.printHelp(80, "java " + OwlsImporter.class.getCanonicalName(), "Options:", options, "Error parsing input", true);
+            formatter.printHelp(80, "java " + OwlsTransformer.class.getCanonicalName(), "Options:", options, "Error parsing input", true);
         }
 
         inputFile = new File(input);
         if (inputFile == null || !inputFile.exists()) {
-            formatter.printHelp(80, "java " + OwlsImporter.class.getCanonicalName(), "Options:", options, "Input not found", true);
+            formatter.printHelp(80, "java " + OwlsTransformer.class.getCanonicalName(), "Options:", options, "Input not found", true);
             System.out.println(inputFile.getAbsolutePath());
             return;
         }
@@ -654,10 +638,10 @@ public class OwlsImporter implements ServiceImporter {
         String format = line.getOptionValue("f", uk.ac.open.kmi.iserve.commons.io.Syntax.TTL.getName());
         uk.ac.open.kmi.iserve.commons.io.Syntax syntax = uk.ac.open.kmi.iserve.commons.io.Syntax.valueOf(format);
 
-        OwlsImporter importer;
+        OwlsTransformer importer;
         ServiceWriter writer;
 
-        importer = new OwlsImporter();
+        importer = new OwlsTransformer();
         writer = new ServiceWriterImpl();
 
         List<Service> services;
@@ -665,7 +649,7 @@ public class OwlsImporter implements ServiceImporter {
         for (File file : toTransform) {
             log.info("Transforming file {}", file.getAbsolutePath());
             try {
-                services = importer.transform(file);
+                services = importer.transform(new FileInputStream(file), null);
 
                 if (services != null) {
                     log.info("Services obtained {}", services);
@@ -700,7 +684,7 @@ public class OwlsImporter implements ServiceImporter {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (ImporterException e) {
+            } catch (TransformationException e) {
                 e.printStackTrace();
             }
         }

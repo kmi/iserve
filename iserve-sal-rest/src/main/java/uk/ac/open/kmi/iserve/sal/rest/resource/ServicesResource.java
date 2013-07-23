@@ -22,7 +22,6 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.sal.ServiceFormat;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
@@ -35,12 +34,14 @@ import java.io.InputStream;
 import java.net.URI;
 
 /**
- * TODO: Refactor based on the Manager Singleton.
+ * Services Resource
+ * This Resource is effectively disabled for now given that {@link ReadWriteRouterServlet}
+ * catches all requests. It should be re-enabled in the REST Application configuration.
  *
  * @author Dong Liu (Knowledge Media Institute - The Open University)
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
-@Path("/id/services")
+//@Path("/id/services")
 public class ServicesResource {
 
     private static final Logger log = LoggerFactory.getLogger(ServicesResource.class);
@@ -61,6 +62,9 @@ public class ServicesResource {
     public Response addService(@FormDataParam("file") FormDataBodyPart bodyPart,
                                @FormDataParam("file") InputStream file,
                                @HeaderParam("Content-Location") String locationUri) {
+
+        log.debug("Invocation to addService - bodyPart {}, file {}, content-location {}",
+                bodyPart, file, locationUri);
 
         // Check first that the user is allowed to upload a service
         Subject currentUser = SecurityUtils.getSubject();
@@ -83,20 +87,15 @@ public class ServicesResource {
             // TODO: we should obtain/guess the media type
         }
 
-        ServiceFormat format = uk.ac.open.kmi.iserve.sal.MediaType.MEDIATYPE_FORMAT_MAP.get(mediaType);
-        if (format == null) {
-            format = ServiceFormat.UNSUPPORTED;
-        }
-
         try {
             if ((locationUri != null) && (!"".equalsIgnoreCase(locationUri))) {
                 // There is a location. Just register, don't import
                 log.info("Registering the service: " + locationUri);
-                serviceUri = ManagerSingleton.getInstance().registerService(URI.create(locationUri), format);
+                serviceUri = ManagerSingleton.getInstance().registerService(URI.create(locationUri), mediaType);
             } else {
                 // There is no location. Import the entire service
                 log.info("Importing the service");
-                serviceUri = ManagerSingleton.getInstance().importService(file, format);
+                serviceUri = ManagerSingleton.getInstance().importService(file, mediaType);
             }
             //		String oauthConsumer = ((SecurityFilter.Authorizer) security).getOAuthConsumer();
 

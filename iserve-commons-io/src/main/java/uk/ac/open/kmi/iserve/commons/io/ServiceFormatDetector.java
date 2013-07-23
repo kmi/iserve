@@ -13,45 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.open.kmi.iserve.sal;
+
+package uk.ac.open.kmi.iserve.commons.io;
 
 import org.apache.tika.Tika;
 import org.apache.tika.mime.MediaType;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * TODO: To be implemented
+ */
 public class ServiceFormatDetector {
 
     private Tika tika;
 
     public ServiceFormatDetector() {
         tika = new Tika();
-    }
-
-    public ServiceFormat detect(String serviceDescription) throws IOException {
-        InputStream stream = new ByteArrayInputStream(serviceDescription.getBytes());
-        String mediaType = tika.detect(stream);
-        if (mediaType.equalsIgnoreCase("text/html") || mediaType.equalsIgnoreCase("application/xhtml+xml")) {
-            return ServiceFormat.HRESTS;
-        } else if (mediaType.contains("rdf+xml")) {
-            if (serviceDescription.contains("http://www.daml.org/services/owl-s")) {
-                return ServiceFormat.OWLS;
-            } else {
-                return ServiceFormat.MSM_RDF;
-            }
-//		} else if ( mediaType.contains("xml") ) {
-//			return ServiceFormat.WSDL;
-//		}
-            // TODO: Remove this hack!
-        } else if (mediaType.contains("xml") || mediaType.equalsIgnoreCase("text/plain")) {
-            return ServiceFormat.SAWSDL;
-        }
-
-        //TODO: return the detected format instead
-        return ServiceFormat.UNSUPPORTED;
     }
 
     public MediaType getContentType(InputStream is, String fileName) {

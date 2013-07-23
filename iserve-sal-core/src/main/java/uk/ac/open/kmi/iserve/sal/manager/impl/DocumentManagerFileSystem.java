@@ -19,8 +19,7 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.commons.io.FileUtil;
-import uk.ac.open.kmi.iserve.sal.ServiceFormat;
+import uk.ac.open.kmi.iserve.commons.io.util.FileUtil;
 import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
@@ -171,12 +170,12 @@ public class DocumentManagerFileSystem implements DocumentManager {
 //	}
 
     /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#createDocument(java.io.InputStream, uk.ac.open.kmi.iserve.sal.ServiceFormat )
+     * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#createDocument(java.io.InputStream, java.lang.String )
      */
     @Override
-    public URI createDocument(InputStream docContent, ServiceFormat format) throws DocumentException {
+    public URI createDocument(InputStream docContent, String fileExtension) throws DocumentException {
 
-        URI newDocUri = this.generateUniqueDocumentUri(format);
+        URI newDocUri = this.generateUniqueDocumentUri(fileExtension);
         try {
             URI internalDocUri = this.getDocumentInternalUri(newDocUri);
             File file = new File(internalDocUri);
@@ -238,9 +237,9 @@ public class DocumentManagerFileSystem implements DocumentManager {
         return file.exists();
     }
 
-    private URI generateUniqueDocumentUri(ServiceFormat format) {
+    private URI generateUniqueDocumentUri(String fileExtension) {
         String uid = UriUtil.generateUniqueId();
-        return documentsPublicUri.resolve(uid + "." + format.getFileExtension());
+        return documentsPublicUri.resolve(uid + "." + fileExtension);
     }
 
 }

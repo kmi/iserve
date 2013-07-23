@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.open.kmi.iserve.commons.io;
+package uk.ac.open.kmi.iserve.commons.io.util;
 
 import java.net.URI;
 import java.net.URISyntaxException;

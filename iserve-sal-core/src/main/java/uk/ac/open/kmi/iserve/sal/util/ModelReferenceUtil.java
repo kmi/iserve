@@ -24,8 +24,8 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.commons.io.IOUtil;
-import uk.ac.open.kmi.iserve.commons.io.URIUtil;
+import uk.ac.open.kmi.iserve.commons.io.util.IOUtil;
+import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

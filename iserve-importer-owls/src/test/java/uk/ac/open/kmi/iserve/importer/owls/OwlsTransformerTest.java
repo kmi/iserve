@@ -20,8 +20,11 @@ package uk.ac.open.kmi.iserve.importer.owls;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.ServiceWriter;
 import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
+import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 
 import java.io.File;
@@ -36,17 +39,18 @@ import java.util.List;
 /**
  * Test class for the OWLS Importer
  * <p/>
- * User: Carlos Pedrinaci (KMi - The Open University)
- * Date: 22/05/2013
- * Time: 16:49
+ *
+ * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
+ * @since 18/07/2013
  */
-public class OwlsImporterTest {
+public class OwlsTransformerTest {
 
+    private static final Logger log = LoggerFactory.getLogger(OwlsTransformerTest.class);
     private static final String OWLS_TC4_PDDL = "/OWLS-TC4_PDDL/htdocs/services/1.1/";
     private static final String OWLS_TC3_SERVICES_1_1 = "/OWLS-TC3/htdocs/services/1.1/";
     private static final String OWLS_TC3_SERVICES_1_0 = "/OWLS-TC3/htdocs/services/1.0/";
 
-    private OwlsImporter importer;
+    private OwlsTransformer importer;
     private ServiceWriter writer;
     private List<URI> testFolders;
     private FilenameFilter owlsFilter;
@@ -54,10 +58,10 @@ public class OwlsImporterTest {
     @Before
     public void setUp() throws Exception {
 
-        importer = new OwlsImporter();
+        importer = new OwlsTransformer();
         writer = new ServiceWriterImpl();
         testFolders = new ArrayList<URI>();
-        testFolders.add(OwlsImporterTest.class.getResource(OWLS_TC3_SERVICES_1_1).toURI());
+        testFolders.add(OwlsTransformerTest.class.getResource(OWLS_TC3_SERVICES_1_1).toURI());
 
         owlsFilter = new FilenameFilter() {
             public boolean accept(File dir, String name) {
@@ -67,45 +71,53 @@ public class OwlsImporterTest {
     }
 
     @Test
-    public void testTransformFile() throws Exception {
-
-        // Add all the test collections
-        System.out.println("Transforming test collections");
-        for (URI testFolder : testFolders) {
-            File dir = new File(testFolder);
-            System.out.println("Test collection: " + testFolder);
-
-            // Test services
-            Collection<Service> services;
-            System.out.println("Transforming services");
-            File[] owlsFiles = dir.listFiles(owlsFilter);
-            for (File file : owlsFiles) {
-                services = importer.transform(file);
-                Assert.assertNotNull("Service collection should not be null", services);
-                Assert.assertEquals(1, services.size());
-            }
-        }
-
-    }
-
-    @Test
     public void testTransformInputStream() throws Exception {
 
         // Add all the test collections
-        System.out.println("Transforming test collections");
+        log.info("Transforming test collections");
         for (URI testFolder : testFolders) {
             File dir = new File(testFolder);
-            System.out.println("Test collection: " + testFolder);
+            log.info("Test collection: {} ", testFolder);
 
             // Test services
             Collection<Service> services;
-            System.out.println("Transforming services");
+            log.info("Transforming services");
             File[] owlsFiles = dir.listFiles(owlsFilter);
             for (File file : owlsFiles) {
-                InputStream in = new FileInputStream(file);
-                services = importer.transform(in);
-                Assert.assertNotNull("Service collection should not be null", services);
-                Assert.assertEquals(1, services.size());
+                log.info("Transforming service {}", file.getAbsolutePath());
+                try {
+                    InputStream in = new FileInputStream(file);
+                    services = importer.transform(in, null);
+                    Assert.assertNotNull("Service collection should not be null", services);
+                    Assert.assertEquals(1, services.size());
+                } catch (Exception e) {
+                    log.error("Problems transforming the service. Continuing", e);
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testPluginBasedTransformation() {
+        // Add all the test collections
+        log.info("Transforming test collections");
+        for (URI testFolder : testFolders) {
+            File dir = new File(testFolder);
+            log.info("Test collection: {} ", testFolder);
+
+            // Test services
+            Collection<Service> services;
+            log.info("Transforming services");
+            File[] owlsFiles = dir.listFiles(owlsFilter);
+            for (File file : owlsFiles) {
+                log.info("Transforming service {}", file.getAbsolutePath());
+                try {
+                    services = Transformer.getInstance().transform(file, null, OwlsTransformer.mediaType);
+                    Assert.assertNotNull("Service collection should not be null", services);
+                    Assert.assertEquals(1, services.size());
+                } catch (Exception e) {
+                    log.error("Problems transforming the service. Continuing", e);
+                }
             }
         }
 
