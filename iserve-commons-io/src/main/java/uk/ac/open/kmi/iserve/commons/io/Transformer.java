@@ -71,6 +71,16 @@ public class Transformer {
     }
 
     /**
+     * Obtains the loaded transformer for a given media type or null if no transformer can deal with this type.
+     *
+     * @param mediaType the media type we are interested in
+     * @return the corresponding Service Transformer or null if none is adequate.
+     */
+    public ServiceTransformer getTransformer(String mediaType) {
+        return this.loadedPluginsMap.get(mediaType);
+    }
+
+    /**
      * Gets the corresponding file extension to a given media type by checking with the appropriate transformer
      *
      * @param mediaType the media type for which to obtain the file extension
@@ -141,7 +151,7 @@ public class Transformer {
      * @return A List with the services transformed conforming to MSM model
      */
     public List<Service> transform(InputStream originalDescription, String mediaType) throws TransformationException {
-        return transform(originalDescription, null);
+        return transform(originalDescription, null, mediaType);
     }
 
     /**

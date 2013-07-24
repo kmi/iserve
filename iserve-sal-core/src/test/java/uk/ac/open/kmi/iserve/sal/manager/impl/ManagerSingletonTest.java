@@ -23,7 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.MediaType;
 import uk.ac.open.kmi.iserve.commons.io.Syntax;
+import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterBySyntax;
+import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterForTransformer;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 
 import java.io.File;
@@ -46,24 +48,32 @@ public class ManagerSingletonTest {
 
     private static final Logger log = LoggerFactory.getLogger(ManagerSingletonTest.class);
 
-    private static final String OWLS_TC3_SERVICES = "/OWLS-TC3-MSM";
+    private static final String OWLS_TC3_MSM = "/OWLS-TC3-MSM";
+    private static final String OWLS_TC4_PDDL = "/OWLS-TC4_PDDL/htdocs/services/1.1";
     private static final Syntax SYNTAX = Syntax.TTL;
+    private static final String OWLS_MEDIATYPE = "application/owl+xml";
 
-    private URI testFolder;
     private FilenameFilter ttlFilter;
+    private FilenameFilter owlsFilter;
     private List<URI> docUris;
 
     private int numServices;
     private String dataUpdateEndpoint;
     private File[] msmTtlTcFiles;
+    private File[] owlsTcFiles;
 
     @Before
     public void setUp() throws Exception {
-        testFolder = ManagerSingletonTest.class.getResource(OWLS_TC3_SERVICES).toURI();
+        URI msmTestFolder = ManagerSingletonTest.class.getResource(OWLS_TC3_MSM).toURI();
         ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
-        File dir = new File(testFolder);
+        File dir = new File(msmTestFolder);
         msmTtlTcFiles = dir.listFiles(ttlFilter);
-        numServices = msmTtlTcFiles.length;
+
+        URI owlsTestFolder = ManagerSingletonTest.class.getResource(OWLS_TC4_PDDL).toURI();
+        owlsFilter = new FilenameFilterForTransformer(Transformer.getInstance().getTransformer(OWLS_MEDIATYPE));
+        dir = new File(owlsTestFolder);
+        owlsTcFiles = dir.listFiles(owlsFilter);
+        numServices = msmTtlTcFiles.length + owlsTcFiles.length;
         docUris = new ArrayList<URI>();
 
         dataUpdateEndpoint = ManagerSingleton.getInstance().getConfiguration().getDataSparqlUpdateUri().toASCIIString();
@@ -87,7 +97,7 @@ public class ManagerSingletonTest {
             log.info("Service added: " + docUri.toASCIIString());
             count++;
         }
-        Assert.assertEquals(numServices, count);
+        Assert.assertEquals(msmTtlTcFiles.length, count);
 
         // TODO: We should check the content is correct
     }
@@ -129,6 +139,7 @@ public class ManagerSingletonTest {
         InputStream in;
         URI serviceUri;
         int count = 0;
+        log.info("Importing MSM TTL services");
         for (File ttlFile : msmTtlTcFiles) {
             in = new FileInputStream(ttlFile);
             log.info("Adding service: " + ttlFile.getName());
@@ -137,8 +148,20 @@ public class ManagerSingletonTest {
             log.info("Service added: " + serviceUri.toASCIIString());
             count++;
         }
-        Assert.assertEquals(numServices, count);
+        Assert.assertEquals(msmTtlTcFiles.length, count);
 
+        // Test exploiting import plugins
+        count = 0;
+        log.info("Importing OWLS services");
+        for (File owlsFile : owlsTcFiles) {
+            in = new FileInputStream(owlsFile);
+            log.info("Adding service: " + owlsFile.getName());
+            serviceUri = ManagerSingleton.getInstance().importService(in, OWLS_MEDIATYPE);
+            Assert.assertNotNull(serviceUri);
+            log.info("Service added: " + serviceUri.toASCIIString());
+            count++;
+        }
+        Assert.assertEquals(owlsTcFiles.length, count);
     }
 
     @Test

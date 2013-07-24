@@ -132,7 +132,9 @@ public class KnowledgeBaseManager extends BaseSemanticManager {
             NodeIterator modelRefs = svcModel.listObjectsOfProperty(SAWSDL.modelReference);
             while (modelRefs.hasNext()) {
                 node = modelRefs.next();
-                result.add(URIUtil.getNameSpace(node.asResource().getURI()));
+                if (!node.isAnon()) {
+                    result.add(URIUtil.getNameSpace(node.asResource().getURI()));
+                }
             }
         }
 

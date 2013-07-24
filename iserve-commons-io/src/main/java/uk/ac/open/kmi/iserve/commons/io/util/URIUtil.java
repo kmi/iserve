@@ -23,14 +23,23 @@ import java.net.URL;
 public class URIUtil {
 
     public static String getLocalName(URI uri) {
+        if (uri == null)
+            return null;
+
         return getLocalName(uri.toASCIIString());
     }
 
     public static String getLocalName(URL url) {
+        if (url == null)
+            return null;
         return getLocalName(url.toString());
     }
 
     public static String getLocalName(String uriString) {
+
+        if (uriString == null || uriString.equals(""))
+            return uriString;
+
         int len = uriString.length();
         if (uriString.endsWith("/")) {
             uriString = uriString.substring(0, len - 1);
@@ -40,6 +49,11 @@ public class URIUtil {
             uriString = uriString.substring(0, idx);
         }
         int localNameIdx = getLocalNameIndex(uriString);
+        if (localNameIdx == 0) {
+            // It's an absolute name
+            return uriString;
+        }
+
         return uriString.substring(localNameIdx);
     }
 
@@ -105,6 +119,11 @@ public class URIUtil {
     public static URI replaceNamespace(URI originalUri, URI newBaseUri) throws URISyntaxException {
 //        return new URI(newBaseUri.getScheme(), newBaseUri.getSchemeSpecificPart(), getLocalName(originalUri));
 //        return new URI(newBaseUri.getScheme(), newBaseUri.getPath() + "/" + getLocalName(originalUri), null);
+        // In case of blank nodes, don't try to generate a URI
+        if (originalUri == null) {
+            return originalUri;
+        }
+
         return new URI(newBaseUri.getScheme(), newBaseUri.getUserInfo(), newBaseUri.getHost(), newBaseUri.getPort(),
                 newBaseUri.getPath() + "/" + getLocalName(originalUri), null, null);
     }
