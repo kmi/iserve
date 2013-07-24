@@ -35,7 +35,6 @@ public enum Syntax {
     N_QUADS("N-Quads", "nq"),
     RDF_JSON("RDF/JSON", "json"),
     TRIG("TriG", "trig");
-//    OWLS ("OWLS");
 
     private final String name;
     private final String extension;

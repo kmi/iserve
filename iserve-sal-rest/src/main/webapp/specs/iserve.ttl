@@ -21,7 +21,7 @@
 
 # Prefix for example-local entities.
 @prefix msm:				<http://iserve.kmi.open.ac.uk/ns/msm#>.
-@prefix spec:               <http://localhost:8080/elda/api-config#> .
+@prefix spec:               <http://localhost:9090/iserve/elda/api-config#> .
 @prefix dc:					<http://purl.org/dc/elements/1.1/> .
 @prefix sawsdl:				<http://www.w3.org/ns/sawsdl#> .
 @prefix wl:					<http://www.wsmo.org/ns/wsmo-lite#> .
@@ -138,7 +138,7 @@ spec:messageItem
 spec:HtmlFormatter a api:XsltFormatter ; 
 	api:name "html" ;
 	api:mimeType "text/html; charset=utf-8" ;
-	api:stylesheet "lda-assets/xslt/result-osm-trimmed.xsl" .
+	api:stylesheet "xslt/result-osm-trimmed.xsl" .
 	
 # Vocabulary Definitions
 

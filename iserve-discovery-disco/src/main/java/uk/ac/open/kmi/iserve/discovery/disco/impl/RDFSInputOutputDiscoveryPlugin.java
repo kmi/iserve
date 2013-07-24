@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.common.collect.*;
@@ -483,7 +484,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
                     match.setMatchType(matchType);
                     toCombine.get(i).put(matchUrl, match);
                     log.debug("Adding match for " +
-                            match.getMatchUrl() + " of type " +
+                            match.getMatchedResource() + " of type " +
                             match.getMatchType().getShortName());
                 }
             }
@@ -609,7 +610,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
                     match.setMatchType(matchType);
                     toCombine.get(i).put(matchUrl, match);
                     log.debug("Adding match for " +
-                            match.getMatchUrl() + " of type " +
+                            match.getMatchedResource() + " of type " +
                             match.getMatchType().getShortName());
                 }
             }
@@ -742,7 +743,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
                 patterns.add(Util.generateMatchStrictSuperclassesPattern("mr", currClass, "su" + i));
             }
             // Match the modelRef of the input to exact matches for the class
-            patterns.add(Util.generateExactMatchPattern("mr", currClass, "ex" + i));
+
         }
 
         query.append(Util.generateUnionStatement(patterns));

@@ -73,6 +73,24 @@
         </dependency>
 
         <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <version>1.9</version>
+        </dependency>
+
+        <!--Add Guice for dependency injection -->
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-multibindings</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.ebmwebsourcing.easywsdl</groupId>
             <artifactId>easysawsdl10-api</artifactId>
             <version>v2013-03-11</version>
@@ -103,12 +121,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>uk.ac.open.kmi.iserve.import</groupId>
-            <artifactId>iserve-importer-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
         <!-- Include Test Resources -->
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
@@ -120,6 +132,24 @@
 
     <build>
         <plugins>
+            <!-- Generate the META-INF/services information for ServiceLoader -->
+            <plugin>
+                <groupId>eu.somatik.serviceloader-maven-plugin</groupId>
+                <artifactId>serviceloader-maven-plugin</artifactId>
+                <version>1.0.2</version>
+                <configuration>
+                    <services>
+                        <param>uk.ac.open.kmi.iserve.commons.io.TransformationPluginModule</param>
+                    </services>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- Obtain shared test resources and unpack them -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

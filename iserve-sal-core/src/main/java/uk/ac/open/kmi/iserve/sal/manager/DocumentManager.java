@@ -16,7 +16,6 @@
 
 package uk.ac.open.kmi.iserve.sal.manager;
 
-import uk.ac.open.kmi.iserve.sal.ServiceFormat;
 import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 
 import java.io.InputStream;
@@ -33,7 +32,7 @@ import java.util.List;
 public interface DocumentManager {
 
     // Create Methods
-    public abstract URI createDocument(InputStream docContent, ServiceFormat format)
+    public abstract URI createDocument(InputStream docContent, String fileExtension)
             throws DocumentException;
 
     // Read Methods

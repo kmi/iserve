@@ -17,8 +17,6 @@
 package uk.ac.open.kmi.iserve.sal.manager;
 
 import uk.ac.open.kmi.iserve.commons.model.Service;
-import uk.ac.open.kmi.iserve.sal.ServiceFormat;
-import uk.ac.open.kmi.iserve.sal.ServiceImporter;
 import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 
@@ -37,7 +35,6 @@ import java.util.List;
 
 public interface iServeManager {
 
-    // TODO: Registering import mechanisms should also be defined somewhere
     // TODO: Implement the Observer pattern so that we can update other software about changes
 
     public abstract SystemConfiguration getConfiguration();
@@ -47,26 +44,6 @@ public interface iServeManager {
      * Ensure a clean shutdown.
      */
     public abstract void shutdown();
-
-    /**
-     * Register a new importer for a given file format
-     *
-     * @param format
-     * @param importer
-     * @return
-     */
-    public abstract ServiceImporter registerImporter(ServiceFormat format,
-                                                     ServiceImporter importer);
-
-    /**
-     * Unregister a new importer for a given file format
-     *
-     * @param format
-     * @return
-     */
-    public abstract ServiceImporter unregisterImporter(ServiceFormat format);
-
-
 
 	/*
      * Service Management Methods
@@ -81,24 +58,24 @@ public interface iServeManager {
      * use @see importService instead.
      *
      * @param sourceDocumentUri
-     * @param format
+     * @param mediaType
      * @return
      * @throws SalException
      */
     public abstract URI registerService(URI sourceDocumentUri,
-                                        ServiceFormat format) throws SalException;
+                                        String mediaType) throws SalException;
 
     /**
      * Imports a new service within iServe. The original document is stored
      * in the server and the transformed version registered within iServe.
      *
      * @param serviceContent
-     * @param format
+     * @param mediaType
      * @return
      * @throws SalException
      */
     public abstract URI importService(InputStream serviceContent,
-                                      ServiceFormat format) throws SalException;
+                                      String mediaType) throws SalException;
 
     /**
      * Clears the registry entirely: all documents and services are deleted
@@ -117,11 +94,11 @@ public interface iServeManager {
      * Obtains the Service in a particular syntax
      *
      * @param serviceUri the URI of the service to retrieve
-     * @param format     the format to use for the serialisation
+     * @param mediaType  the format to use for the serialisation
      * @return the string representation of the service in the format requested
      * @throws SalException
      */
-    public abstract String exportService(URI serviceUri, ServiceFormat format) throws SalException;
+    public abstract String exportService(URI serviceUri, String mediaType) throws SalException;
 
     /**
      * Obtains the Service
@@ -210,13 +187,13 @@ public interface iServeManager {
      * Adds a document to the system. Documents are resources on their own
      * but are expected to be linked to services.
      *
-     * @param docContent content of the document
-     * @param format     the format of the service to add
+     * @param docContent    content of the document
+     * @param fileExtension the file extension to use for the document
      * @return
      * @throws SalException
      * @see
      */
-    public URI createDocument(InputStream docContent, ServiceFormat format) throws SalException;
+    public URI createDocument(InputStream docContent, String fileExtension) throws SalException;
 
     // Read
 

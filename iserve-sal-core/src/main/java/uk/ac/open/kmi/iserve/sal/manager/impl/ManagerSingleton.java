@@ -19,13 +19,8 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.commons.io.ServiceReader;
-import uk.ac.open.kmi.iserve.commons.io.ServiceReaderImpl;
-import uk.ac.open.kmi.iserve.commons.io.Syntax;
+import uk.ac.open.kmi.iserve.commons.io.*;
 import uk.ac.open.kmi.iserve.commons.model.Service;
-import uk.ac.open.kmi.iserve.sal.ServiceFormat;
-import uk.ac.open.kmi.iserve.sal.ServiceFormatDetector;
-import uk.ac.open.kmi.iserve.sal.ServiceImporter;
 import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
@@ -37,9 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -65,7 +58,6 @@ public class ManagerSingleton implements iServeManager {
     private UserManager userManager;
     private KeyManager keyManager;
     private ServiceFormatDetector formatDetector;
-    private Map<ServiceFormat, ServiceImporter> importerMap;
 
     private static ManagerSingleton _instance;
 
@@ -84,9 +76,6 @@ public class ManagerSingleton implements iServeManager {
 
         formatDetector = new ServiceFormatDetector();
         setProxy(configuration.getProxyHostName(), configuration.getProxyPort());
-
-        // TODO: Automatically locate and index the existing service importers
-        importerMap = new HashMap<ServiceFormat, ServiceImporter>();
     }
 
     private void setProxy(String proxyHost, String proxyPort) {
@@ -127,23 +116,6 @@ public class ManagerSingleton implements iServeManager {
         this.kbManager.shutdown();
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#registerImporter(uk.ac.open.kmi.iserve.sal.ServiceFormat, uk.ac.open.kmi.iserve.sal.ServiceImporter)
-     */
-    @Override
-    public ServiceImporter registerImporter(ServiceFormat format,
-                                            ServiceImporter importer) {
-        return this.importerMap.put(format, importer);
-    }
-
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#unregisterImporter(uk.ac.open.kmi.iserve.sal.ServiceFormat)
-     */
-    @Override
-    public ServiceImporter unregisterImporter(ServiceFormat format) {
-        return this.importerMap.remove(format);
-    }
-
 	/*
      * uk.ac.open.kmi.iserve.commons.model.Service Management
 	 */
@@ -157,45 +129,35 @@ public class ManagerSingleton implements iServeManager {
     }
 
     /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#importService(java.io.InputStream, uk.ac.open.kmi.iserve.sal.ServiceFormat)
+     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#importService(java.io.InputStream, java.lang.String)
      */
     @Override
     public URI importService(InputStream serviceContent,
-                             ServiceFormat format) throws SalException {
+                             String mediaType) throws SalException {
 
+        boolean isNativeFormat = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.containsKey(mediaType);
         // Throw error if Format Unsupported
-        if (format.equals(ServiceFormat.UNSUPPORTED) ||
-                (!ServiceFormat.NATIVE_PARSERS_MAP.containsKey(format) && !this.importerMap.containsKey(format))) {
+        if (!isNativeFormat && !Transformer.getInstance().canTransform(mediaType)) {
+            log.error("The media type {} is not natively supported and has no suitable transformer.", mediaType);
             throw new ServiceException("Unable to import service. Format unsupported.");
         }
+
+        // Obtain the file extension to use
+        String fileExtension = findFileExtensionToUse(mediaType, isNativeFormat);
 
         URI sourceDocUri = null;
         URI serviceUri = null;
         InputStream localStream = null;
         try {
             // 1st Store the document
-            sourceDocUri = this.docManager.createDocument(serviceContent, format);
+            sourceDocUri = this.docManager.createDocument(serviceContent, fileExtension);
             if (sourceDocUri == null)
                 throw new ServiceException("Unable to save service document. Operation aborted.");
 
             // 2nd Parse and Transform the document
-            // The original stream may be a one of stream so save it first and read locally
+            // The original stream may be a one-of stream so save it first and read locally
             localStream = this.docManager.getDocument(sourceDocUri);
-            if (localStream == null)
-                throw new ServiceException("Unable to parse the saved document. Operation aborted.");
-
-            List<Service> services;
-            if (ServiceFormat.NATIVE_PARSERS_MAP.containsKey(format)) {
-                // Its a native format: parse it
-                ServiceReader reader = new ServiceReaderImpl();
-                Syntax syntax = ServiceFormat.NATIVE_PARSERS_MAP.get(format);
-                services = reader.parse(localStream, null, syntax);
-            } else {
-                // Its an external format: use the appropriate importer
-                // We should have a suitable importer
-                ServiceImporter importer = importerMap.get(format);
-                services = importer.transform(localStream);
-            }
+            List<Service> services = getServicesFromStream(mediaType, isNativeFormat, localStream);
 
             // 3rd - Store the resulting MSM services. In principle it should be just one
             Service svc = null;
@@ -208,8 +170,8 @@ public class ManagerSingleton implements iServeManager {
             // 4th Log it was all done correctly
             // TODO: log to the system and notify observers
             if (serviceUri != null) {
-                log.info("Service imported: " + serviceUri.toASCIIString());
-                log.info("Source document imported: " + sourceDocUri.toASCIIString());
+                log.info("Service imported: {}", serviceUri.toASCIIString());
+                log.info("Source document imported: {}", sourceDocUri.toASCIIString());
                 // Update the knowledge base
                 this.kbManager.fetchModelsForService(svc);
             }
@@ -232,6 +194,42 @@ public class ManagerSingleton implements iServeManager {
         return serviceUri;
     }
 
+    private List<Service> getServicesFromStream(String mediaType, boolean nativeFormat, InputStream localStream) throws ServiceException {
+        if (localStream == null)
+            throw new ServiceException("Unable to parse the saved document. Operation aborted.");
+
+        List<Service> services;
+        if (nativeFormat) {
+            // Parse it directly
+            ServiceReader reader = new ServiceReaderImpl();
+            Syntax syntax = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.get(mediaType);
+            services = reader.parse(localStream, null, syntax);
+        } else {
+            // Its an external format: use the appropriate importer
+            // We should have a suitable importer
+            try {
+                services = Transformer.getInstance().transform(localStream, mediaType);
+            } catch (TransformationException e) {
+                throw new ServiceException("Errors transforming the service", e);
+            }
+        }
+        log.debug("Services parsed:", services);
+        return services;
+    }
+
+    private String findFileExtensionToUse(String mediaType, boolean nativeFormat) {
+        String fileExtension = null;
+        if (nativeFormat) {
+            fileExtension = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.get(mediaType).getExtension();
+            log.debug("The media type is natively supported. File extension {}", fileExtension);
+        } else {
+            // should not be null since it is supported
+            fileExtension = Transformer.getInstance().getFileExtension(mediaType);
+            log.debug("The media type is supported through transformations. File extension {}", fileExtension);
+        }
+        return fileExtension;
+    }
+
     /**
      * Clears the registry entirely: all documents and services are deleted
      * This operation cannot be undone. Use with care.
@@ -245,70 +243,33 @@ public class ManagerSingleton implements iServeManager {
         return this.clearServices() & this.clearDocuments();
     }
 
-    //	/**
-    //	 * @param serviceContent
-    //	 * @return
-    //	 * @throws ServiceException
-    //	 */
-    //	private ServiceFormat guessContentType(InputStream serviceContent)
-    //			throws ServiceException {
-    //		// detect type
-    //		ServiceFormat format = ServiceFormat.UNSUPPORTED;
-    //		try {
-    //			format = formatDetector.detect(serviceContent);
-    //		} catch (IOException e1) {
-    //			throw new ServiceException(e1);
-    //		}
-    //
-    //		// find corresponding importer
-    //		if ( format.equals(ServiceFormat.UNSUPPORTED) ) {
-    //			throw new ServiceException("The service is described in an unsupported format");
-    //		}
-    //		if ( fileName == null ) {
-    //			// determine file name
-    //			if ( format.equals(ServiceFormat.HTML) ) {
-    //				fileName = "service.html";
-    //			} else if ( format.equals(ServiceFormat.OWLS) ) {
-    //				fileName = "service.owls";
-    //			} else if ( format.equals(ServiceFormat.WSDL) ) {
-    //				fileName = "service.wsdl";
-    //			} else if ( format.equals(ServiceFormat.RDFXML) ) {
-    //				fileName = "service.rdf.xml";
-    //			}
-    //		}
-    //		return format;
-    //	}
-
-
     /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#registerService(java.net.URI, uk.ac.open.kmi.iserve.sal.ServiceFormat)
+     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#registerService(java.net.URI, java.lang.String)
      */
     @Override
-    public URI registerService(URI sourceDocumentUri, ServiceFormat format) throws SalException {
+    public URI registerService(URI sourceDocumentUri, String mediaType) throws SalException {
 
-        // Check first that we support the format
-        if (format.equals(ServiceFormat.UNSUPPORTED) ||
-                !this.importerMap.containsKey(format)) {
+        boolean isNativeFormat = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.containsKey(mediaType);
+        // Throw error if Format Unsupported
+        if (!isNativeFormat && !Transformer.getInstance().canTransform(mediaType)) {
+            log.error("The media type {} is not natively supported and has no suitable transformer.", mediaType);
             throw new ServiceException("Unable to import service. Format unsupported.");
         }
-        // We have a suitable importer
 
-        ServiceImporter importer;
         URI serviceUri = null;
         try {
-            // 1st Obtain the document and transform it
-            importer = importerMap.get(format);
+            // 1st Obtain the document and parse/transform it
             InputStream is = sourceDocumentUri.toURL().openStream();
+            List<Service> services = getServicesFromStream(mediaType, isNativeFormat, is);
 
-            List<Service> services = importer.transform(is);
-
+            // TODO: We assume there is just one service here..
             if (services != null && !services.isEmpty())
                 serviceUri = this.serviceManager.addService(services.get(0));
 
             // 4th Log it was all done correctly
             // TODO: log to the system and notify observers
-            log.info("Service imported: " + serviceUri.toASCIIString());
-            log.info("Source document: " + sourceDocumentUri.toASCIIString());
+            log.info("Service imported: {}", serviceUri.toASCIIString());
+            log.info("Source document: {}", sourceDocumentUri.toASCIIString());
 
         } catch (MalformedURLException e) {
             log.error("Error obtaining the source document. Incorrect URL. " + sourceDocumentUri.toString());
@@ -352,10 +313,10 @@ public class ManagerSingleton implements iServeManager {
     }
 
     /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#getService(java.net.URI, uk.ac.open.kmi.iserve.sal.ServiceFormat)
+     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#getService(java.net.URI, java.lang.String)
      */
     @Override
-    public String exportService(URI serviceUri, ServiceFormat format)
+    public String exportService(URI serviceUri, String mediaType)
             throws ServiceException {
         //		return this.serviceManager.getServiceSerialisation(serviceUri, syntax);
         // TODO
@@ -415,11 +376,11 @@ public class ManagerSingleton implements iServeManager {
     }
 
     /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#createDocument(java.io.InputStream, uk.ac.open.kmi.iserve.sal.ServiceFormat)
+     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#createDocument(java.io.InputStream, java.lang.String)
      */
     @Override
-    public URI createDocument(InputStream docContent, ServiceFormat format) throws SalException {
-        return this.docManager.createDocument(docContent, format);
+    public URI createDocument(InputStream docContent, String fileExtension) throws SalException {
+        return this.docManager.createDocument(docContent, fileExtension);
     }
 
     /* (non-Javadoc)

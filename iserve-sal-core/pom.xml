@@ -61,16 +61,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-core</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-parsers</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
             <version>1.8</version>
@@ -127,6 +117,24 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>uk.ac.open.kmi.iserve.import</groupId>
+            <artifactId>iserve-importer-hrests</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.open.kmi.iserve.import</groupId>
+            <artifactId>iserve-importer-owls</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.open.kmi.iserve.import</groupId>
+            <artifactId>iserve-importer-sawsdl</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
 
         <!-- Include Test Resources -->
         <dependency>
@@ -162,7 +170,9 @@
                             <includeGroupIds>${project.parent.groupId}</includeGroupIds>
                             <includeArtifactIds>iserve-test-resources</includeArtifactIds>
                             <outputDirectory>${project.build.directory}/test-classes/</outputDirectory>
-                            <includes>OWLS-TC3-MSM/*.ttl</includes>
+                            <includes>
+                                OWLS-TC3-MSM/*.ttl,OWLS-TC4_PDDL/htdocs/services/**/*.owls,OWLS-TC4_PDDL/htdocs/services/**/*.wsdl
+                            </includes>
                         </configuration>
                     </execution>
                 </executions>

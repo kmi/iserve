@@ -20,6 +20,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
+    <!-- IMPORTANT: Ordering is essential. 1st Shiro (security), then the rest -->
+
     <!-- For Security Management  -->
     <listener>
         <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
@@ -48,12 +50,27 @@
     </context-param>
 
     <filter>
-        <filter-name>Elda Web Application</filter-name>
+        <filter-name>iServe SAL REST</filter-name>
         <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
 
         <init-param>
-            <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>com.epimorphics.lda.restlets</param-value>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>uk.ac.open.kmi.iserve.sal.rest.iServeApp</param-value>
+        </init-param>
+
+        <!--<init-param>-->
+        <!--<param-name>jersey.config.server.provider.packages</param-name>-->
+        <!--<param-value>com.epimorphics.lda.restlets;uk.ac.open.kmi.iserve.sal.rest.resource</param-value>-->
+        <!--</init-param>-->
+
+        <!-- JSP -->
+        <!--<init-param>-->
+        <!--<param-name>jersey.config.server.mvc.templateBasepath.jsp</param-name>-->
+        <!--<param-value>/jsp</param-value>-->
+        <!--</init-param>-->
+        <init-param>
+            <param-name>com.sun.jersey.config.property.WebPageContentRegex</param-name>
+            <param-value>/(images|js|css|jsp)/.*</param-value>
         </init-param>
 
         <init-param>
@@ -68,7 +85,7 @@
     </filter>
 
     <filter-mapping>
-        <filter-name>Elda Web Application</filter-name>
+        <filter-name>iServe SAL REST</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
@@ -76,46 +93,12 @@
         <listener-class>com.epimorphics.lda.restlets.RouterRestlet$Init</listener-class>
     </listener>
 
-
-    <!-- For Initialisation -->
     <listener>
         <listener-class>uk.ac.open.kmi.iserve.sal.rest.iServeContextListener</listener-class>
     </listener>
 
-
-    <filter>
-        <filter-name>iServe SAL REST</filter-name>
-        <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
-        <init-param>
-            <param-name>javax.ws.rs.Application</param-name>
-            <param-value>uk.ac.open.kmi.iserve.sal.rest.iServeApp</param-value>
-        </init-param>
-        <!--
-        <init-param>
-            <param-name>jersey.config.server.mvc.templateBasePath.jsp</param-name>
-            <param-value>/WEB-INF/jsp</param-value>
-        </init-param>
-        -->
-        <init-param>
-            <param-name>com.sun.jersey.config.property.WebPageContentRegex</param-name>
-            <param-value>/(images|js|css|jsp)/.*</param-value>
-        </init-param>
-
-        <init-param>
-            <param-name>jersey.config.servlet.filter.forwardOn404</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </filter>
-
-
-    <filter-mapping>
-        <filter-name>iServe SAL REST</filter-name>
-        <url-pattern>/registry/*</url-pattern>
-        <url-pattern>/id/*</url-pattern>
-    </filter-mapping>
-
     <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>jsp/index.jsp</welcome-file>
     </welcome-file-list>
 
 </web-app>
