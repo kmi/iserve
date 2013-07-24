@@ -60,36 +60,36 @@
     </organization>
 
     <dependencies>
-        <dependency>
-            <groupId>org.glassfish.jersey.containers</groupId>
-            <artifactId>jersey-container-servlet-core</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.glassfish.jersey.containers</groupId>-->
+        <!--<artifactId>jersey-container-servlet-core</artifactId>-->
+        <!--<version>${jersey.version}</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.abdera</groupId>
-            <artifactId>abdera-core</artifactId>
-            <version>1.0</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.abdera</groupId>
-            <artifactId>abdera-parser</artifactId>
-            <version>1.0</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>uk.ac.open.kmi.iserve.commons</groupId>
-            <artifactId>iserve-commons-io</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.apache.abdera</groupId>-->
+        <!--<artifactId>abdera-core</artifactId>-->
+        <!--<version>1.0</version>-->
+        <!--<type>jar</type>-->
+        <!--<scope>compile</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--<groupId>org.apache.abdera</groupId>-->
+        <!--<artifactId>abdera-parser</artifactId>-->
+        <!--<version>1.0</version>-->
+        <!--<type>jar</type>-->
+        <!--<scope>compile</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--<groupId>uk.ac.open.kmi.iserve.commons</groupId>-->
+        <!--<artifactId>iserve-commons-io</artifactId>-->
+        <!--<version>${project.version}</version>-->
+        <!--</dependency>-->
     </dependencies>
     <url>http://iserve.kmi.open.ac.uk/</url>
 </project>

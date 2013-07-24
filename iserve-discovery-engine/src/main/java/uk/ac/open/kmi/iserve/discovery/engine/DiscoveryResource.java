@@ -23,12 +23,11 @@ import com.google.common.collect.Ordering;
 import org.apache.abdera.model.Feed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.discovery.api.*;
+import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.BasicScorer;
 import uk.ac.open.kmi.iserve.discovery.disco.impl.AllServicesPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.impl.RDFSClassificationDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.impl.RDFSInputOutputDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
 import uk.ac.open.kmi.iserve.discovery.util.MatchComparator;
 
 import javax.ws.rs.*;
