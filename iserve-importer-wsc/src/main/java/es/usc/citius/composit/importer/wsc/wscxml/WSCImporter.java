@@ -4,6 +4,11 @@ package es.usc.citius.composit.importer.wsc.wscxml;
 import es.usc.citius.composit.importer.wsc.wscxml.model.XMLInstance;
 import es.usc.citius.composit.importer.wsc.wscxml.model.services.XMLService;
 import es.usc.citius.composit.importer.wsc.wscxml.model.services.XMLServices;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.log4j.BasicConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.model.MessageContent;
 import uk.ac.open.kmi.iserve.commons.model.Operation;
 import uk.ac.open.kmi.iserve.commons.model.Resource;
@@ -18,6 +23,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Imports and transforms datasets from the Web Service Challenge 2008 (XML format)
@@ -26,25 +32,26 @@ import java.util.List;
  */
 public class WSCImporter implements ServiceImporter {
 
-    public static final String DEFAULT_NAMESPACE_URI = "http://www.ws-challenge.org/WSC08Services";
+    private static final Logger log = LoggerFactory.getLogger(WSCImporter.class);
     private WSCXMLSemanticReasoner reasoner;
     private String xmlTaxonomyURL;
-    private String ontologyName = "taxonomy.owl";
-    private String owlTaxonomyURL;
+    private String owlOntologyURL;
 
     /**
-     * By default, the WSC specification does not define the ontology URI of the concepts.
-     * Thus, the real URI of the ontology should be provided. Example: http://localhost/ontology/taxonomy.xml
-     * @param xmlTaxonomyURL URL of the ontology where the semantic concepts (inputs/outputs) are defined (XML format)
+     * The WSC specification does not define the ontology URI of the concepts.
+     * Thus, the real URI of the ontology should be provided using the config.properties
      */
-    public WSCImporter(String xmlTaxonomyURL) throws IOException {
+    public WSCImporter() throws IOException, ConfigurationException {
         // NOTE: The inputs and outputs of the services should be automatically translated from instances to
         // concepts using the XML Reasoner
+        PropertiesConfiguration props = new PropertiesConfiguration("config.properties");
+        this.xmlTaxonomyURL = (String) props.getProperty("taxonomy.url");
+        log.info("Using taxonomy {}", this.xmlTaxonomyURL);
+        this.owlOntologyURL = (String) props.getProperty("ontology.url");
         URL ontology = new URL(xmlTaxonomyURL);
+        log.info("Using ontology {}", this.owlOntologyURL);
         this.reasoner = new WSCXMLSemanticReasoner(ontology.openStream());
         // TODO Convert the ontology to OWL ??
-
-        this.xmlTaxonomyURL = xmlTaxonomyURL;
     }
 
     @Override
@@ -53,8 +60,9 @@ public class WSCImporter implements ServiceImporter {
     }
 
     private MessageContent transform(XMLInstance instance, String baseURI){
+        // TODO Handle baseURI in some way!
         String concept = this.reasoner.getConceptInstance(instance.getName());
-        URI uri = URI.create(baseURI + ontologyName + "#" + concept);
+        URI uri = URI.create(this.owlOntologyURL + "#" + concept);
         MessageContent content = new MessageContent(uri);
         content.setSource(uri);
         content.setWsdlGrounding(uri);
@@ -72,6 +80,7 @@ public class WSCImporter implements ServiceImporter {
         // Create the services following the iserve-commons-vocabulary model
         for(XMLService service : services.getServices()){
             URI srvURI = URI.create(uri+service.getName());
+            log.debug("Transforming {}", srvURI);
             Service modelService = new Service(srvURI);
             modelService.setSource(srvURI);
             modelService.setWsdlGrounding(srvURI);
@@ -85,7 +94,6 @@ public class WSCImporter implements ServiceImporter {
             }
             modelService.addOperation(operation);
             modelService.setLabel(service.getName());
-
             listServices.add(modelService);
         }
         return listServices;
@@ -121,9 +129,10 @@ public class WSCImporter implements ServiceImporter {
         return transform(originalDescription);
     }
 
-    /*
-    public static void main(String[] args) throws IOException, ImporterException {
-        WSCImporter imp = new WSCImporter(new File("/home/citius/KMi/iserve-project/http-server/htdocs/ontology/taxonomy.xml").toURI().toURL().toString());
+    // TODO Create a proper test
+    public static void main(String[] args) throws IOException, ImporterException, ConfigurationException {
+        BasicConfigurator.configure();
+        WSCImporter imp = new WSCImporter();
         imp.transform(new FileInputStream(new File("/home/citius/KMi/iserve-project/http-server/htdocs/services/services.xml")),"");
-    }*/
+    }
 }
