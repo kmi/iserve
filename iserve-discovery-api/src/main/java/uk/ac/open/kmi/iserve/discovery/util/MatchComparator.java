@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.discovery.util;
 
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
@@ -71,9 +72,7 @@ public enum MatchComparator implements Comparator<MatchResult> {
             if (type0 == null) return -1;
             if (type1 == null) return 1;
 
-            if (type0.ordinal() == type1.ordinal()) return 0;
-            if (type0.ordinal() > type1.ordinal()) return 1;
-            else return -1;
+            return type0.compareTo(type1);
 
         }
 
