@@ -250,7 +250,7 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
                     if (soln.contains("sssog0")) {
                         // Add the result as it is: SSSOG = PLUGIN
                         match.setMatchType(DiscoMatchType.PLUGIN);
-                        results.put(match.getMatchUrl(), match);
+                        results.put(match.getMatchedResource(), match);
 
                     }
 
@@ -267,13 +267,13 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 
                     if (!lacksGx) {
                         // The service is either GSSOS (Subsume), or Exact if it is SSOG too
-                        if (results.containsKey(match.getMatchUrl())) {
+                        if (results.containsKey(match.getMatchedResource())) {
                             // If it is there, it's a SSOG too -> Change to Exact
-                            results.get(match.getMatchUrl()).setMatchType(DiscoMatchType.EXACT);
+                            results.get(match.getMatchedResource()).setMatchType(DiscoMatchType.EXACT);
                         } else {
                             // Change to GSSOS and add to results
                             match.setMatchType(DiscoMatchType.SUBSUME);
-                            results.put(match.getMatchUrl(), match);
+                            results.put(match.getMatchedResource(), match);
                         }
                     }
 
@@ -284,7 +284,7 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
                     // match.setEngineUrl(engineUrl);
                     // match.setRequest(request);
                     // Add the result
-//					results.put(match.getMatchUrl(), match);
+//					results.put(match.getMatchedResource(), match);
                 }
             }
         } catch (MalformedURLException e) {

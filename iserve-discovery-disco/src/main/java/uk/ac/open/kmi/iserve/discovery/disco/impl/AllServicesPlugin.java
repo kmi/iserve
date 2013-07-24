@@ -200,7 +200,7 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDisco
                     // match.setEngineUrl(engineUrl);
                     // match.setRequest(request);
                     // Add the result
-                    results.put(match.getMatchUrl(), match);
+                    results.put(match.getMatchedResource(), match);
                 }
             }
         } catch (MalformedURLException e) {

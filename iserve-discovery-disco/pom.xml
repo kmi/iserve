@@ -191,46 +191,6 @@
                 </executions>
             </plugin>
 
-            <!--&lt;!&ndash; Enable rapid testing. Jetty will be launched and stopped automatically for testing &ndash;&gt;-->
-            <!--&lt;!&ndash; Enable rapid testing with Jetty: use 'mvn jetty:run' &ndash;&gt;-->
-            <!--<plugin>-->
-            <!--<groupId>org.mortbay.jetty</groupId>-->
-            <!--<artifactId>maven-jetty-plugin</artifactId>-->
-            <!--<version>${jetty.version}</version>-->
-            <!--<configuration>-->
-            <!--<contextPath>/iserve</contextPath>-->
-            <!--<scanIntervalSeconds>10</scanIntervalSeconds>-->
-            <!--<stopKey>foo</stopKey>-->
-            <!--<stopPort>9999</stopPort>-->
-            <!--<connectors>-->
-            <!--<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">-->
-            <!--<port>9090</port>-->
-            <!--<maxIdleTime>60000</maxIdleTime>-->
-            <!--</connector>-->
-            <!--</connectors>-->
-            <!--</configuration>-->
-            <!--&lt;!&ndash; Launch prior to testing &ndash;&gt;-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<id>start-jetty</id>-->
-            <!--<phase>pre-integration-test</phase>-->
-            <!--<goals>-->
-            <!--<goal>run-exploded</goal>-->
-            <!--</goals>-->
-            <!--<configuration>-->
-            <!--<scanIntervalSeconds>0</scanIntervalSeconds>-->
-            <!--<daemon>true</daemon>-->
-            <!--</configuration>-->
-            <!--</execution>-->
-            <!--<execution>-->
-            <!--<id>stop-jetty</id>-->
-            <!--<phase>post-integration-test</phase>-->
-            <!--<goals>-->
-            <!--<goal>stop</goal>-->
-            <!--</goals>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--</plugin>-->
         </plugins>
     </build>
 
