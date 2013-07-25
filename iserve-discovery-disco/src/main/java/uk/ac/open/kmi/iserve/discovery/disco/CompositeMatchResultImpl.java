@@ -22,6 +22,7 @@ import java.util.Set;
 import uk.ac.open.kmi.iserve.discovery.api.CompositeMatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
+import uk.ac.open.kmi.iserve.discovery.api.Matcher;
 
 /**
  * Class Description
@@ -78,7 +79,7 @@ public class CompositeMatchResultImpl extends MatchResultImpl implements Composi
 	}
 	
 	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.discovery.api.CompositeMatchResult#addInnerMatch(uk.ac.open.kmi.iserve.discovery.api.MatchResult)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.CompositeMatchResult#addInnerMatch(uk.ac.open.kmi.iserve.discovery.api.SingleMatch)
 	 */
 	public void addInnerMatch(MatchResult innerMatch) {
 		if (innerMatch != null) {
@@ -87,7 +88,7 @@ public class CompositeMatchResultImpl extends MatchResultImpl implements Composi
 	}
 	
 	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.discovery.api.CompositeMatchResult#removeInnerMatch(uk.ac.open.kmi.iserve.discovery.api.MatchResult)
+	 * @see uk.ac.open.kmi.iserve.discovery.api.CompositeMatchResult#removeInnerMatch(uk.ac.open.kmi.iserve.discovery.api.SingleMatch)
 	 */
 	public void removeInnerMatch(MatchResult innerMatch) {
 		if (innerMatch != null) {
@@ -95,9 +96,19 @@ public class CompositeMatchResultImpl extends MatchResultImpl implements Composi
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see MatchResult#getExplanation()
-	 */
+    @Override
+    public URL getResourceToMatch() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Matcher getMatcher() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    /* (non-Javadoc)
+         * @see SingleMatch#getExplanation()
+         */
 	@Override
 	public String getExplanation() {
 		StringBuilder result = new StringBuilder();

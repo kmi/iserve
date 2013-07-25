@@ -18,6 +18,7 @@ package uk.ac.open.kmi.iserve.discovery.disco;
 
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
+import uk.ac.open.kmi.iserve.discovery.api.Matcher;
 
 import java.net.URL;
 
@@ -39,7 +40,6 @@ public class MatchResultImpl implements MatchResult {
     /**
      * @param url
      * @param label
-     * @param matchType
      */
     public MatchResultImpl(URL url, String label) {
         super();
@@ -67,15 +67,20 @@ public class MatchResultImpl implements MatchResult {
     }
 
 
+    @Override
+    public URL getResourceToMatch() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     /* (non-Javadoc)
-     * @see MatchResult#getMatchedResource()
-     */
+         * @see SingleMatch#getMatchedResource()
+         */
     public URL getMatchedResource() {
         return this.matchUrl;
     }
 
     /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.discovery.api.MatchResult#getMatchLabel()
+     * @see uk.ac.open.kmi.iserve.discovery.api.SingleMatch#getMatchLabel()
      */
     public String getMatchLabel() {
         return this.matchLabel;
@@ -89,28 +94,28 @@ public class MatchResultImpl implements MatchResult {
     }
 
     /* (non-Javadoc)
-     * @see MatchResult#getScore()
+     * @see SingleMatch#getScore()
      */
     public Float getScore() {
         return this.score;
     }
 
     /* (non-Javadoc)
-     * @see MatchResult#getRequest()
+     * @see SingleMatch#getRequest()
      */
     public URL getRequest() {
         return this.request;
     }
 
     /* (non-Javadoc)
-     * @see MatchResult#getEngineUrl()
+     * @see SingleMatch#getEngineUrl()
      */
     public URL getEngineUrl() {
         return this.engineUrl;
     }
 
     /* (non-Javadoc)
-     * @see MatchResult#getExplanation()
+     * @see SingleMatch#getExplanation()
      */
     public String getExplanation() {
         return this.matchType.getLongName() + " match with a score of: " +
@@ -118,10 +123,15 @@ public class MatchResultImpl implements MatchResult {
     }
 
     /* (non-Javadoc)
-     * @see MatchResult#setScore()
+     * @see SingleMatch#setScore()
      */
     public void setScore(Float score) {
         this.score = score;
+    }
+
+    @Override
+    public Matcher getMatcher() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**
@@ -132,17 +142,15 @@ public class MatchResultImpl implements MatchResult {
     }
 
     /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.discovery.api.MatchResult#setRequest(java.net.URL)
+     * @see uk.ac.open.kmi.iserve.discovery.api.SingleMatch#setRequest(java.net.URL)
      */
-    @Override
     public void setRequest(URL request) {
         this.request = request;
     }
 
     /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.discovery.api.MatchResult#setEngineUrl(java.net.URL)
+     * @see uk.ac.open.kmi.iserve.discovery.api.SingleMatch#setEngineUrl(java.net.URL)
      */
-    @Override
     public void setEngineUrl(URL engineUrl) {
         this.engineUrl = engineUrl;
     }
