@@ -348,6 +348,7 @@ public class ServiceReaderImpl implements ServiceReader {
 
         setResourceProperties(individual, annotRes);
 
+        URI nodeUri = null;
         FilterByRdfType filter;
         NodeIterator nodeIter = null;
         ExtendedIterator<RDFNode> filteredIter;
@@ -365,8 +366,13 @@ public class ServiceReaderImpl implements ServiceReader {
             while (filteredIter.hasNext()) {
                 RDFNode node = filteredIter.next();
                 if (node.isResource()) {
+                    if (node.isAnon()) {
+                        nodeUri = null;
+                    } else {
+                        nodeUri = new URI(node.asResource().getURI());
+                    }
                     annotRes.addModelReference(
-                            new uk.ac.open.kmi.iserve.commons.model.Resource(new URI(node.asResource().getURI())));
+                            new uk.ac.open.kmi.iserve.commons.model.Resource(nodeUri));
                 }
             }
         } finally {
