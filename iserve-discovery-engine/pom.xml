@@ -128,10 +128,12 @@
             <!-- Enable rapid testing with Jetty: use 'mvn jetty:run' -->
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
-                <artifactId>maven-jetty-plugin</artifactId>
+                <artifactId>jetty-maven-plugin</artifactId>
                 <version>${jetty.version}</version>
                 <configuration>
-                    <contextPath>/iserve</contextPath>
+                    <webAppConfig>
+                        <contextPath>/iserve</contextPath>
+                    </webAppConfig>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
                     <stopKey>foo</stopKey>
                     <stopPort>9999</stopPort>
