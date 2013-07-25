@@ -16,6 +16,8 @@
 
 package uk.ac.open.kmi.iserve.importer.hrests;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import org.apache.commons.cli.*;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -35,6 +37,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +50,7 @@ public class HrestsTransformer implements ServiceTransformer {
 
     private static final Logger log = LoggerFactory.getLogger(HrestsTransformer.class);
 
-    private static final String XSLT = "/hrests.xslt";
+    private static final String XSLT = "hrests.xslt";
 
     private Tidy parser;
 
@@ -56,7 +59,7 @@ public class HrestsTransformer implements ServiceTransformer {
     private Transformer transformer;
 
     // Include information about the software version
-    private static final String VERSION_PROP_FILE = "version.properties";
+    private static final String VERSION_PROP_FILE = "plugin.properties";
     private static final String VERSION_PROP = "version";
     private static final String VERSION_UNKNOWN = "Unknown";
     private String version = VERSION_UNKNOWN;
@@ -68,18 +71,28 @@ public class HrestsTransformer implements ServiceTransformer {
     private static List<String> fileExtensions = new ArrayList<String>();
 
     static {
+        fileExtensions.add("hrests");
         fileExtensions.add("html");
         fileExtensions.add("xhtml");
-        fileExtensions.add("hrests");
     }
 
-    public HrestsTransformer() throws TransformerConfigurationException {
+    @Inject
+    public HrestsTransformer(@Named("version") String version) throws TransformerConfigurationException {
         parser = new Tidy();
         try {
-            xsltFile = new File(HrestsTransformer.class.getResource(XSLT).toURI());
+            URL xsltUrl = getClass().getResource(XSLT);
+            log.debug("Loading XSLT from {}", xsltUrl);
+            xsltFile = new File(xsltUrl.toURI());
+//            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+//            xsltFile = new File(loader.getResource(XSLT).toURI());
             TransformerFactory xformFactory = TransformerFactory.newInstance();
             transformer = xformFactory.newTransformer(new StreamSource(this.xsltFile));
-            obtainVersionInformation();
+
+            if (version == null) {
+                obtainVersionInformation();
+            } else {
+                this.version = version;
+            }
 
         } catch (URISyntaxException e) {
             log.error("Wrong URI for the XSLT transformation file.");
@@ -262,7 +275,7 @@ public class HrestsTransformer implements ServiceTransformer {
         HrestsTransformer importer;
         ServiceWriter writer;
 
-        importer = new HrestsTransformer();
+        importer = new HrestsTransformer(null);
         writer = new ServiceWriterImpl();
 
         List<Service> services;

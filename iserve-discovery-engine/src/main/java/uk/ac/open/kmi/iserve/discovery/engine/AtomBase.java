@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.discovery.engine;
 
 import org.apache.abdera.Abdera;
@@ -23,8 +24,6 @@ import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
-import uk.ac.open.kmi.iserve.discovery.util.DiscoveryUtil;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
@@ -335,7 +334,7 @@ public abstract class AtomBase {
         return result;
     }
 /*
-	protected Element mergeEntries(Element[] entries, Document doc) throws ParseException {
+    protected Element mergeEntries(Element[] entries, Document doc) throws ParseException {
 		Date entryUpdated = null; // newest
 		Set<String> entryTitles = new HashSet<String>(); // from all entries if different
 		Set<String> entryRights = new HashSet<String>(); // from all entries if different
