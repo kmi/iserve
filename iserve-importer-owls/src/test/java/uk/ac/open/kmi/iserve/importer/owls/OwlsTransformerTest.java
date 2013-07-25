@@ -58,7 +58,7 @@ public class OwlsTransformerTest {
     @Before
     public void setUp() throws Exception {
 
-        importer = new OwlsTransformer();
+        importer = new OwlsTransformer(null);
         writer = new ServiceWriterImpl();
         testFolders = new ArrayList<URI>();
         testFolders.add(OwlsTransformerTest.class.getResource(OWLS_TC3_SERVICES_1_1).toURI());

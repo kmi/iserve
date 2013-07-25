@@ -16,6 +16,8 @@
 
 package uk.ac.open.kmi.iserve.importer.owls;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.query.*;
@@ -181,7 +183,7 @@ public class OwlsTransformer implements ServiceTransformer {
                     + "}";
 
     // Include information about the software version
-    private static final String VERSION_PROP_FILE = "version.properties";
+    private static final String VERSION_PROP_FILE = "plugin.properties";
     private static final String VERSION_PROP = "version";
     private static final String VERSION_UNKNOWN = "Unknown";
     private String version = VERSION_UNKNOWN;
@@ -193,13 +195,14 @@ public class OwlsTransformer implements ServiceTransformer {
     private static List<String> fileExtensions = new ArrayList<String>();
 
     static {
-        fileExtensions.add("owl");
         fileExtensions.add("owls");
+        fileExtensions.add("owl");
     }
 
     private Map<String, String> prefixes;
 
-    public OwlsTransformer() {
+    @Inject
+    public OwlsTransformer(@Named("version") String version) {
         // Initialise prefixes
         prefixes = new HashMap<String, String>(Vocabularies.prefixes);
         // Add those specific for handling OWLS
@@ -209,7 +212,11 @@ public class OwlsTransformer implements ServiceTransformer {
         prefixes.put("grounding", "http://www.daml.org/services/owl-s/1.1/Grounding.owl#");
         prefixes.put("expr", "http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#");
 
-        obtainVersionInformation();
+        if (version == null) {
+            obtainVersionInformation();
+        } else {
+            this.version = version;
+        }
     }
 
     private void obtainVersionInformation() {
@@ -641,7 +648,7 @@ public class OwlsTransformer implements ServiceTransformer {
         OwlsTransformer importer;
         ServiceWriter writer;
 
-        importer = new OwlsTransformer();
+        importer = new OwlsTransformer(null);
         writer = new ServiceWriterImpl();
 
         List<Service> services;
