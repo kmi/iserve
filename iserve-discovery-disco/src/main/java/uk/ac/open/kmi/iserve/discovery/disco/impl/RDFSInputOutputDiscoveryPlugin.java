@@ -336,7 +336,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
                 inputMatches = matchInputs(operationDiscovery, inputClasses);
                 results = inputMatches;
                 // TEST
-                //				Map<URL, MatchResult> inputMatchesAlt = matchInputsAlternative(operationDiscovery, inputClasses);
+                //				Map<URL, SingleMatch> inputMatchesAlt = matchInputsAlternative(operationDiscovery, inputClasses);
             } else {
                 outputMatches = matchOutputs(operationDiscovery, outputClasses);
                 results = outputMatches;
