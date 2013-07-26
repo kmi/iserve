@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.discovery.api.impl;
 
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
@@ -22,7 +23,6 @@ import uk.ac.open.kmi.iserve.discovery.api.Matcher;
 import java.net.URL;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 /**
  * Composite Match Results capture detailed match results within inner matches.
@@ -34,21 +34,12 @@ import java.util.TreeSet;
  */
 public class CompositeMatchResult extends MatchResultImpl {
 
-    private SortedSet<MatchResult> innerMatches = new TreeSet<MatchResult>();
+    private SortedSet<MatchResult> innerMatches;
 
-    public CompositeMatchResult(URL resourceToMatch, URL matchedResource, Matcher matcher, MatchType matchType, String matchLabel, Float score) {
+    public CompositeMatchResult(URL resourceToMatch, URL matchedResource, Matcher matcher, MatchType matchType,
+                                String matchLabel, Float score, SortedSet<MatchResult> innerMatches) {
         super(resourceToMatch, matchedResource, matcher, matchType, matchLabel, score);
-    }
-
-    /**
-     * Adds an inner match to this composite object
-     *
-     * @param innerMatch the match to add
-     */
-    public void addInnerMatch(MatchResult innerMatch) {
-        if (innerMatch != null) {
-            this.innerMatches.add(innerMatch);
-        }
+        this.innerMatches = innerMatches;
     }
 
     /**
@@ -58,26 +49,6 @@ public class CompositeMatchResult extends MatchResultImpl {
      */
     public Set<MatchResult> getInnerMatches() {
         return this.innerMatches;
-    }
-
-    /**
-     * Set the inner matches for this composite object
-     *
-     * @param innerMatches
-     */
-    public void setInnerMatches(SortedSet<MatchResult> innerMatches) {
-        this.innerMatches = innerMatches;
-    }
-
-    /**
-     * Removes an inner match from this composite object
-     *
-     * @param innerMatch the match to remove
-     */
-    public void removeInnerMatch(MatchResult innerMatch) {
-        if (innerMatch != null) {
-            this.innerMatches.remove(innerMatch);
-        }
     }
 
     @Override
