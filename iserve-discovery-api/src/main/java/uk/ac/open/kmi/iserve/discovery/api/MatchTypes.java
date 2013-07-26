@@ -17,13 +17,20 @@
 package uk.ac.open.kmi.iserve.discovery.api;
 
 /**
- * Match Type Interface
+ * CarlosMatchTypes
+ * TODO: Provide Description
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @author <a href="mailto:pablo.rodriguez.mier@usc.es">Pablo Rodriguez Mier</a> (CITIUS - Universidad de Santiago de Compostela)
+ * @since 25/07/2013
  */
-public interface MatchType<T> extends Comparable<T> {
-    String name();
+public interface MatchTypes<T extends MatchType> {
 
-    String description();
+    public T getLowest();
+
+    public T getHighest();
+
+    public T getNext(T element);
+
+    public T getPrevious(T element);
 }
