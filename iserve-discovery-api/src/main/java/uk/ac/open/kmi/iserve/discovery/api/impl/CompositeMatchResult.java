@@ -32,13 +32,13 @@ import java.util.SortedSet;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @author <a href="mailto:pablo.rodriguez.mier@usc.es">Pablo Rodriguez Mier</a> (CITIUS - Universidad de Santiago de Compostela)
  */
-public class CompositeMatchResult extends MatchResultImpl {
+public class CompositeMatchResult extends AtomicMatchResult {
 
     private SortedSet<MatchResult> innerMatches;
 
     public CompositeMatchResult(URL resourceToMatch, URL matchedResource, Matcher matcher, MatchType matchType,
-                                String matchLabel, Float score, SortedSet<MatchResult> innerMatches) {
-        super(resourceToMatch, matchedResource, matcher, matchType, matchLabel, score);
+                                String matchLabel, SortedSet<MatchResult> innerMatches) {
+        super(resourceToMatch, matchedResource, matcher, matchType, matchLabel);
         this.innerMatches = innerMatches;
     }
 
@@ -56,9 +56,6 @@ public class CompositeMatchResult extends MatchResultImpl {
         StringBuilder result = new StringBuilder();
         result.append("Composite Match of type: ")
                 .append(this.getMatchType().name())
-                .append(". ").
-                append("Total Score: ")
-                .append(this.getScore())
                 .append(". ");
 
         for (MatchResult match : innerMatches) {
