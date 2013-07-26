@@ -24,7 +24,8 @@ import java.util.Comparator;
 /**
  * Reference implementation of basic Comparators methods for Match Results
  *
- * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
+ * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
+ * @author <a href="mailto:pablo.rodriguez.mier@usc.es">Pablo Rodriguez Mier</a> (CITIUS - Universidad de Santiago de Compostela)
  */
 public enum MatchComparator implements Comparator<MatchResult> {
 

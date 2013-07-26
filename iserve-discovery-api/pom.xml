@@ -40,18 +40,11 @@
             <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
         </developer>
         <developer>
-            <id>dong</id>
-            <name>Dong Liu</name>
-            <email>d.liu-{AT}-open.ac.uk</email>
-            <organization>Knowledge Media Institute - The Open University</organization>
-            <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
-        </developer>
-        <developer>
-            <id>jkopecky</id>
-            <name>Jacek Kopecky</name>
-            <email>j.kopecky-{AT}-open.ac.uk</email>
-            <organization>Knowledge Media Institute - The Open University</organization>
-            <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+            <id>pablo</id>
+            <name>Pablo Rodriguez Mier</name>
+            <email>pablo.rodriguez.mier-{AT}-usc.es</email>
+            <organization>CITIUS - Universidad de Santiago de Compostela</organization>
+            <organizationUrl>http://citius.usc.es</organizationUrl>
         </developer>
     </developers>
     <organization>
@@ -60,36 +53,12 @@
     </organization>
 
     <dependencies>
-        <!--<dependency>-->
-        <!--<groupId>org.glassfish.jersey.containers</groupId>-->
-        <!--<artifactId>jersey-container-servlet-core</artifactId>-->
-        <!--<version>${jersey.version}</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>org.apache.abdera</groupId>-->
-        <!--<artifactId>abdera-core</artifactId>-->
-        <!--<version>1.0</version>-->
-        <!--<type>jar</type>-->
-        <!--<scope>compile</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>org.apache.abdera</groupId>-->
-        <!--<artifactId>abdera-parser</artifactId>-->
-        <!--<version>1.0</version>-->
-        <!--<type>jar</type>-->
-        <!--<scope>compile</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>uk.ac.open.kmi.iserve.commons</groupId>-->
-        <!--<artifactId>iserve-commons-io</artifactId>-->
-        <!--<version>${project.version}</version>-->
-        <!--</dependency>-->
     </dependencies>
     <url>http://iserve.kmi.open.ac.uk/</url>
 </project>

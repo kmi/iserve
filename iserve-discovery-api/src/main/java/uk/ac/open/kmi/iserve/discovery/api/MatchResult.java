@@ -21,8 +21,8 @@ import java.net.URL;
 /**
  * Interface that match results obtained from discovery plugins should implement
  *
- * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
- * @author Pablo Rodriguez Mier (CITIUS - Universidad de Santiago de Compostela)
+ * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
+ * @author <a href="mailto:pablo.rodriguez.mier@usc.es">Pablo Rodriguez Mier</a> (CITIUS - Universidad de Santiago de Compostela)
  */
 public interface MatchResult {
 
