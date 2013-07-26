@@ -9,28 +9,26 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.BasicConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.commons.io.ServiceTransformer;
 import uk.ac.open.kmi.iserve.commons.model.MessageContent;
 import uk.ac.open.kmi.iserve.commons.model.Operation;
 import uk.ac.open.kmi.iserve.commons.model.Resource;
 import uk.ac.open.kmi.iserve.commons.model.Service;
-import uk.ac.open.kmi.iserve.sal.ServiceImporter;
-import uk.ac.open.kmi.iserve.sal.exception.ImporterException;
+
 
 import javax.xml.bind.JAXB;
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * Imports and transforms datasets from the Web Service Challenge 2008 (XML format)
  * Date: 7/18/13
  * @author Pablo Rodríguez Mier
  */
-public class WSCImporter implements ServiceImporter {
+public class WSCImporter implements ServiceTransformer {
 
     private static final Logger log = LoggerFactory.getLogger(WSCImporter.class);
     private WSCXMLSemanticReasoner reasoner;
@@ -54,10 +52,6 @@ public class WSCImporter implements ServiceImporter {
         // TODO Convert the ontology to OWL ??
     }
 
-    @Override
-    public List<Service> transform(InputStream originalDescription) throws ImporterException {
-        return transform(originalDescription, null);
-    }
 
     private MessageContent transform(XMLInstance instance, String baseURI){
         // TODO Handle baseURI in some way!
@@ -72,7 +66,7 @@ public class WSCImporter implements ServiceImporter {
     }
 
     @Override
-    public List<Service> transform(InputStream originalDescription, String baseUri) throws ImporterException {
+    public List<Service> transform(InputStream originalDescription, String baseUri) {
         // De-serialize from XML
         XMLServices services = JAXB.unmarshal(originalDescription, XMLServices.class);
         List<Service> listServices = new ArrayList<Service>(services.getServices().size());
@@ -100,6 +94,22 @@ public class WSCImporter implements ServiceImporter {
     }
 
     @Override
+    public String getSupportedMediaType() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public List<String> getSupportedFileExtensions() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getVersion() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    /*
+    @Override
     public List<Service> transform(File originalDescription) throws ImporterException {
         if (originalDescription != null && originalDescription.exists()) {
             // Open the file and transform it
@@ -122,15 +132,12 @@ public class WSCImporter implements ServiceImporter {
             }
         }
         return Collections.emptyList();
-    }
+    }*/
 
-    @Override
-    public List<Service> transform(File originalDescription, String baseUri) throws ImporterException {
-        return transform(originalDescription);
-    }
+
 
     // TODO Create a proper test
-    public static void main(String[] args) throws IOException, ImporterException, ConfigurationException {
+    public static void main(String[] args) throws IOException, ConfigurationException {
         BasicConfigurator.configure();
         WSCImporter imp = new WSCImporter();
         imp.transform(new FileInputStream(new File("/home/citius/KMi/iserve-project/http-server/htdocs/services/services.xml")),"");
