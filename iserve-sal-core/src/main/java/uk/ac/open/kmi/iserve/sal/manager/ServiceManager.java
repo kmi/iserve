@@ -69,13 +69,6 @@ public interface ServiceManager {
             throws ServiceException;
 
     /**
-     * Obtains a list of service URIs with all the services known to the system
-     *
-     * @return list of URIs with all the services in the registry
-     */
-    public abstract List<URI> listServices();
-
-    /**
      * Obtains the service descriptions for all the services identified by the URI List
      *
      * @param serviceUris the URIs of the service to obtain
@@ -84,6 +77,39 @@ public interface ServiceManager {
      */
     public abstract List<Service> getServices(List<URI> serviceUris)
             throws ServiceException;
+
+    // Listing Methods
+
+    /**
+     * Obtains a list of service URIs with all the services known to the system
+     *
+     * @return list of URIs with all the services in the registry
+     */
+    public abstract List<URI> listServices();
+
+    /**
+     * Obtains the list of operation URIs for a given Operation
+     *
+     * @param serviceUri the service URI
+     * @return a List of URIs with the operations provided by the service. If there are no operations, the List should be empty NOT null.
+     */
+    public abstract List<URI> listOperations(URI serviceUri);
+
+    /**
+     * Obtains the list of input URIs for a given Operation
+     *
+     * @param operationUri the operation URI
+     * @return a List of URIs with the inputs of the operation. If no input is necessary the List should be empty NOT null.
+     */
+    public abstract List<URI> listInputs(URI operationUri);
+
+    /**
+     * Obtains the list of output URIs for a given Operation
+     *
+     * @param operationUri the operation URI
+     * @return a List of URIs with the outputs of the operation. If no output is provided the List should be empty NOT null.
+     */
+    public abstract List<URI> listOutputs(URI operationUri);
 
     /**
      * Lists all documents related to a given service
