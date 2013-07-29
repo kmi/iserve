@@ -125,13 +125,4 @@ public class WSCImporter implements ServiceTransformer {
     public void setOwlOntologyURL(String owlOntologyURL) {
         this.owlOntologyURL = owlOntologyURL;
     }
-
-    // TODO Create a proper test
-    public static void main(String[] args) throws IOException, ConfigurationException {
-        BasicConfigurator.configure();
-        WSCImporter imp = new WSCImporter();
-        System.out.println("Args: " + args);
-        File f = new File("/home/citius/Dropbox/PFC-TESIS/Estancias/KMi/iserve-project/http-server/htdocs/services/services.xml");
-        imp.transform(new FileInputStream(f),f.toURI().toString());
-    }
 }
