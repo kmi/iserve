@@ -37,6 +37,7 @@ public class WSCImporter implements ServiceTransformer {
     private String owlOntologyURL;
     public static final String mediaType = "text/xml";
 
+
     /**
      * The WSC specification does not define the ontology URI of the concepts.
      * Thus, the real URI of the ontology should be provided using the config.properties
@@ -70,12 +71,15 @@ public class WSCImporter implements ServiceTransformer {
     @Override
     public List<Service> transform(InputStream originalDescription, String baseUri) {
         // De-serialize from XML
+        if (baseUri == null){
+            baseUri = "";
+        }
         XMLServices services = JAXB.unmarshal(originalDescription, XMLServices.class);
         List<Service> listServices = new ArrayList<Service>(services.getServices().size());
         String uri = baseUri.endsWith("#") ? baseUri : baseUri + "#";
         // Create the services following the iserve-commons-vocabulary model
         for(XMLService service : services.getServices()){
-            URI srvURI = URI.create(uri+service.getName());
+            URI srvURI = URI.create(xmlTaxonomyURL+"#"+service.getName());
             log.debug("Transforming {}", srvURI);
             Service modelService = new Service(srvURI);
             modelService.setSource(srvURI);
@@ -110,6 +114,17 @@ public class WSCImporter implements ServiceTransformer {
         return "WSC Importer 0.1";
     }
 
+    public void setReasoner(WSCXMLSemanticReasoner reasoner) {
+        this.reasoner = reasoner;
+    }
+
+    public void setXmlTaxonomyURL(String xmlTaxonomyURL) {
+        this.xmlTaxonomyURL = xmlTaxonomyURL;
+    }
+
+    public void setOwlOntologyURL(String owlOntologyURL) {
+        this.owlOntologyURL = owlOntologyURL;
+    }
 
     // TODO Create a proper test
     public static void main(String[] args) throws IOException, ConfigurationException {
