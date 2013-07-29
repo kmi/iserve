@@ -21,6 +21,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -34,6 +35,7 @@ public class WSCImporter implements ServiceTransformer {
     private WSCXMLSemanticReasoner reasoner;
     private String xmlTaxonomyURL;
     private String owlOntologyURL;
+    public static final String mediaType = "text/xml";
 
     /**
      * The WSC specification does not define the ontology URI of the concepts.
@@ -70,7 +72,7 @@ public class WSCImporter implements ServiceTransformer {
         // De-serialize from XML
         XMLServices services = JAXB.unmarshal(originalDescription, XMLServices.class);
         List<Service> listServices = new ArrayList<Service>(services.getServices().size());
-        String uri = baseUri.endsWith("/") ? baseUri : baseUri + "/";
+        String uri = baseUri.endsWith("#") ? baseUri : baseUri + "#";
         // Create the services following the iserve-commons-vocabulary model
         for(XMLService service : services.getServices()){
             URI srvURI = URI.create(uri+service.getName());
@@ -95,51 +97,26 @@ public class WSCImporter implements ServiceTransformer {
 
     @Override
     public String getSupportedMediaType() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return mediaType;
     }
 
     @Override
     public List<String> getSupportedFileExtensions() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return Arrays.asList("xml");
     }
 
     @Override
     public String getVersion() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "WSC Importer 0.1";
     }
-
-    /*
-    @Override
-    public List<Service> transform(File originalDescription) throws ImporterException {
-        if (originalDescription != null && originalDescription.exists()) {
-            // Open the file and transform it
-            InputStream in = null;
-            try {
-                in = new FileInputStream(originalDescription);
-                return transform(in);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                throw new ImporterException("Unable to open input file", e);
-            } finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        throw new ImporterException("Error while closing input file", e);
-                    }
-                }
-            }
-        }
-        return Collections.emptyList();
-    }*/
-
 
 
     // TODO Create a proper test
     public static void main(String[] args) throws IOException, ConfigurationException {
         BasicConfigurator.configure();
         WSCImporter imp = new WSCImporter();
-        imp.transform(new FileInputStream(new File("/home/citius/KMi/iserve-project/http-server/htdocs/services/services.xml")),"");
+        System.out.println("Args: " + args);
+        File f = new File("/home/citius/Dropbox/PFC-TESIS/Estancias/KMi/iserve-project/http-server/htdocs/services/services.xml");
+        imp.transform(new FileInputStream(f),f.toURI().toString());
     }
 }
