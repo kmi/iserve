@@ -86,6 +86,10 @@ public class ManagerSingleton implements iServeManager {
         }
     }
 
+    public URI addService(Service service) throws ServiceException {
+        return serviceManager.addService(service);
+    }
+
     public static ManagerSingleton getInstance() {
         if (_instance == null) {
             try {
