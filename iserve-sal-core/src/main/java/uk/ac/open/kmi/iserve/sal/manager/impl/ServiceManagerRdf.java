@@ -40,7 +40,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceManagerRdf extends BaseSemanticManager implements ServiceManager {
+public class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManager {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceManagerRdf.class);
 

@@ -38,9 +38,9 @@ import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import java.io.StringWriter;
 import java.net.URI;
 
-public class BaseSemanticManager {
+public class SparqlGraphStoreManager {
 
-    private static final Logger log = LoggerFactory.getLogger(BaseSemanticManager.class);
+    private static final Logger log = LoggerFactory.getLogger(SparqlGraphStoreManager.class);
 
     private SystemConfiguration configuration;
     private URI sparqlQueryEndpoint;
@@ -51,18 +51,18 @@ public class BaseSemanticManager {
 
     private DatasetAccessor datasetAccessor;
 
-    protected BaseSemanticManager(SystemConfiguration configuration) throws SalException {
+    protected SparqlGraphStoreManager(SystemConfiguration configuration) throws SalException {
         this.configuration = configuration;
         this.sparqlQueryEndpoint = configuration.getDataSparqlUri();
         this.sparqlUpdateEndpoint = configuration.getDataSparqlUpdateUri();
         this.sparqlServiceEndpoint = configuration.getDataSparqlServiceUri();
         if (this.sparqlQueryEndpoint == null) {
-            log.error(BaseSemanticManager.class.getSimpleName() + " requires a SPARQL Query endpoint.");
-            throw new SalException(BaseSemanticManager.class.getSimpleName() + " requires a SPARQL Query endpoint.");
+            log.error(SparqlGraphStoreManager.class.getSimpleName() + " requires a SPARQL Query endpoint.");
+            throw new SalException(SparqlGraphStoreManager.class.getSimpleName() + " requires a SPARQL Query endpoint.");
         }
 
         if (this.sparqlUpdateEndpoint == null && sparqlServiceEndpoint == null) {
-            log.warn(BaseSemanticManager.class.getSimpleName() + " requires a SPARQL Update endpoint to modify data.");
+            log.warn(SparqlGraphStoreManager.class.getSimpleName() + " requires a SPARQL Update endpoint to modify data.");
         }
 
         if (this.sparqlServiceEndpoint != null) {

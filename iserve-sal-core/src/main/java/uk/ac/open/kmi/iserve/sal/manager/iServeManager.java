@@ -30,7 +30,7 @@ import java.util.List;
  * of the inner methods for data management are exposed at this level
  * <p/>
  *
- * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
+ * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  */
 
 public interface iServeManager {
@@ -125,6 +125,30 @@ public interface iServeManager {
      * @throws SalException
      */
     public abstract List<URI> listServices() throws SalException;
+
+    /**
+     * Obtains the list of operation URIs for a given Operation
+     *
+     * @param serviceUri the service URI
+     * @return a List of URIs with the operations provided by the service. If there are no operations, the List should be empty NOT null.
+     */
+    public abstract List<URI> listOperations(URI serviceUri) throws SalException;
+
+    /**
+     * Obtains the list of input URIs for a given Operation
+     *
+     * @param operationUri the operation URI
+     * @return a List of URIs with the inputs of the operation. If no input is necessary the List should be empty NOT null.
+     */
+    public abstract List<URI> listInputs(URI operationUri) throws SalException;
+
+    /**
+     * Obtains the list of output URIs for a given Operation
+     *
+     * @param operationUri the operation URI
+     * @return a List of URIs with the outputs of the operation. If no output is provided the List should be empty NOT null.
+     */
+    public abstract List<URI> listOutputs(URI operationUri) throws SalException;
 
     /**
      * Checks if a service exists in the repository
@@ -233,6 +257,37 @@ public interface iServeManager {
      * @throws SalException
      */
     public abstract boolean clearDocuments() throws SalException;
+
+    // Knowledge Base Management
+
+    /**
+     * Answers a List all of URIs of the classes that are known to be equivalent to this class. Equivalence may be
+     * asserted in the model (using, for example, owl:equivalentClass, or may be inferred by the reasoner attached to
+     * the model. Note that the OWL semantics entails that every class is equivalent to itself, so when using a
+     * reasoning model clients should expect that this class will appear as a member of its own equivalent classes.
+     *
+     * @param classUri the URI of the class for which to list the equivalent classes
+     * @return the List of equivalent classes
+     */
+    public List<URI> listEquivalentClasses(URI classUri);
+
+    /**
+     * Answers a List of all the URIs of the classes that are declared to be sub-classes of this class.
+     *
+     * @param classUri the URI of the class for which to list the subclasses.
+     * @param direct   if true only the direct subclasses will be listed.
+     * @return the list of subclasses
+     */
+    public List<URI> listSubClasses(URI classUri, boolean direct);
+
+    /**
+     * Answers a List of all the URIs of the classes that are declared to be super-classes of this class.
+     *
+     * @param classUri the URI of the class for which to list the super-classes.
+     * @param direct   if true only the direct super-classes will be listed.
+     * @return the list of super-classes
+     */
+    public List<URI> listSuperClasses(URI classUri, boolean direct);
 
 }
 

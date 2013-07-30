@@ -27,7 +27,7 @@ import java.util.List;
  * If other implementations backed by different types of storage systems are
  * needed we should update this.
  *
- * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
+ * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  */
 public interface ServiceManager {
 

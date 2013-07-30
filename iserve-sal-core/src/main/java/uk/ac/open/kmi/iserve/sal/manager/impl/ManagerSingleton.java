@@ -54,7 +54,6 @@ public class ManagerSingleton implements iServeManager {
     private ReviewManager reviewManager;
     private ServiceManager serviceManager;
     private KnowledgeBaseManager kbManager;
-    private TaxonomyManager taxonomyManager;
     private UserManager userManager;
     private KeyManager keyManager;
     private ServiceFormatDetector formatDetector;
@@ -66,7 +65,7 @@ public class ManagerSingleton implements iServeManager {
         configuration = new SystemConfiguration(CONFIG_PROPERTIES_FILENAME);
         docManager = new DocumentManagerFileSystem(configuration);
         serviceManager = new ServiceManagerRdf(configuration);
-        kbManager = new KnowledgeBaseManager(configuration);
+        kbManager = new ConcurrentSparqlKnowledgeBaseManager(configuration);
 
         //		logManager = new LogManagerRdf(configuration);
         //		reviewManager = new ReviewManagerLuf(configuration);
@@ -126,6 +125,39 @@ public class ManagerSingleton implements iServeManager {
     @Override
     public List<java.net.URI> listServices() {
         return this.serviceManager.listServices();
+    }
+
+    /**
+     * Obtains the list of operation URIs for a given Operation
+     *
+     * @param serviceUri the service URI
+     * @return a List of URIs with the operations provided by the service. If there are no operations, the List should be empty NOT null.
+     */
+    @Override
+    public List<URI> listOperations(URI serviceUri) throws SalException {
+        return this.serviceManager.listOperations(serviceUri);
+    }
+
+    /**
+     * Obtains the list of input URIs for a given Operation
+     *
+     * @param operationUri the operation URI
+     * @return a List of URIs with the inputs of the operation. If no input is necessary the List should be empty NOT null.
+     */
+    @Override
+    public List<URI> listInputs(URI operationUri) throws SalException {
+        return this.serviceManager.listInputs(operationUri);
+    }
+
+    /**
+     * Obtains the list of output URIs for a given Operation
+     *
+     * @param operationUri the operation URI
+     * @return a List of URIs with the outputs of the operation. If no output is provided the List should be empty NOT null.
+     */
+    @Override
+    public List<URI> listOutputs(URI operationUri) throws SalException {
+        return this.serviceManager.listOutputs(operationUri);
     }
 
     /* (non-Javadoc)
@@ -418,6 +450,44 @@ public class ManagerSingleton implements iServeManager {
     @Override
     public boolean clearDocuments() throws SalException {
         return this.docManager.clearDocuments();
+    }
+
+    /**
+     * Answers a List all of URIs of the classes that are known to be equivalent to this class. Equivalence may be
+     * asserted in the model (using, for example, owl:equivalentClass, or may be inferred by the reasoner attached to
+     * the model. Note that the OWL semantics entails that every class is equivalent to itself, so when using a
+     * reasoning model clients should expect that this class will appear as a member of its own equivalent classes.
+     *
+     * @param classUri the URI of the class for which to list the equivalent classes
+     * @return the List of equivalent classes
+     */
+    @Override
+    public List<URI> listEquivalentClasses(URI classUri) {
+        return this.kbManager.listEquivalentClasses(classUri);
+    }
+
+    /**
+     * Answers a List of all the URIs of the classes that are declared to be sub-classes of this class.
+     *
+     * @param classUri the URI of the class for which to list the subclasses.
+     * @param direct   if true only the direct subclasses will be listed.
+     * @return the list of subclasses
+     */
+    @Override
+    public List<URI> listSubClasses(URI classUri, boolean direct) {
+        return this.kbManager.listSubClasses(classUri, direct);
+    }
+
+    /**
+     * Answers a List of all the URIs of the classes that are declared to be super-classes of this class.
+     *
+     * @param classUri the URI of the class for which to list the super-classes.
+     * @param direct   if true only the direct super-classes will be listed.
+     * @return the list of super-classes
+     */
+    @Override
+    public List<URI> listSuperClasses(URI classUri, boolean direct) {
+        return this.kbManager.listSuperClasses(classUri, direct);
     }
 
 }

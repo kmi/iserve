@@ -27,7 +27,7 @@ import java.util.List;
  * TODO: Distinguish between the metadata and the actual document and provide
  * methods for accessing both
  *
- * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
+ * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  */
 public interface DocumentManager {
 
