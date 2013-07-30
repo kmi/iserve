@@ -42,13 +42,6 @@ public interface MatchResult {
 
     public String getMatchLabel();
 
-    //TODO: Remove the score methods from here
-    // Could be added to a wrapper eventually if necessary
-    public Float getScore();
-
-    //TODO: Remove the score methods from here
-    public void setScore(Float score);
-
     /**
      * Gets the matcher that was used to generate this match
      *

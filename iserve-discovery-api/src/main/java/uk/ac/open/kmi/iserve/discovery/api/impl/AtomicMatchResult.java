@@ -23,29 +23,26 @@ import uk.ac.open.kmi.iserve.discovery.api.Matcher;
 import java.net.URL;
 
 /**
- * MatchResultImpl
- * TODO: Provide Description
+ * SingleMatchResult is a basic implementation of MatchResult for atomic matches.
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @author <a href="mailto:pablo.rodriguez.mier@usc.es">Pablo Rodriguez Mier</a> (CITIUS - Universidad de Santiago de Compostela)
  * @since 26/07/2013
  */
-public class MatchResultImpl implements MatchResult {
+public class AtomicMatchResult implements MatchResult {
 
     private URL resourceToMatch;
     private URL matchedResource;
     private String matchLabel;
-    private Float score;
     private Matcher matcher;
     private MatchType matchType;
 
-    public MatchResultImpl(URL resourceToMatch, URL matchedResource, Matcher matcher, MatchType matchType, String matchLabel, Float score) {
+    public AtomicMatchResult(URL resourceToMatch, URL matchedResource, Matcher matcher, MatchType matchType, String matchLabel) {
+        this.resourceToMatch = resourceToMatch;
         this.matchedResource = matchedResource;
         this.matcher = matcher;
         this.matchLabel = matchLabel;
         this.matchType = matchType;
-        this.resourceToMatch = resourceToMatch;
-        this.score = score;
     }
 
     /**
@@ -73,16 +70,6 @@ public class MatchResultImpl implements MatchResult {
         return matchLabel;
     }
 
-    @Override
-    public Float getScore() {
-        return score;
-    }
-
-    @Override
-    public void setScore(Float score) {
-        this.score = score;
-    }
-
     /**
      * Gets the matcher that was used to generate this match
      *
@@ -95,7 +82,7 @@ public class MatchResultImpl implements MatchResult {
 
     @Override
     public String getExplanation() {
-        return this.matchType.name() + " match with a score of: " + this.score;
+        return this.matchType.name() + " match.";
     }
 
     /**
