@@ -41,10 +41,11 @@ public class OwlsTransformationPlugin extends AbstractModule implements Transfor
     @Override
     protected void configure() {
         MapBinder<String, ServiceTransformer> binder = MapBinder.newMapBinder(binder(), String.class, ServiceTransformer.class);
+        //binder.addBinding(OwlsTransformer.mediaType).toInstance(new OwlsTransformer());
         binder.addBinding(OwlsTransformer.mediaType).to(OwlsTransformer.class);
 
         // Bind the configuration as well
-        Names.bindProperties(binder(), getProperties());
+        //Names.bindProperties(binder(), getProperties());
     }
 
     private Properties getProperties() {

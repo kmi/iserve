@@ -54,7 +54,7 @@ public class HrestsTransformerTest {
     @Before
     public void setUp() throws Exception {
 
-        transformer = new HrestsTransformer(null);
+        transformer = new HrestsTransformer();
         writer = new ServiceWriterImpl();
         testFolders = new ArrayList<URI>();
         testFolders.add(HrestsTransformerTest.class.getResource(JGD_SERVICES).toURI());
