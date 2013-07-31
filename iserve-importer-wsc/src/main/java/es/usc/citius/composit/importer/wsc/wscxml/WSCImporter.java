@@ -80,12 +80,12 @@ public class WSCImporter implements ServiceTransformer {
         // Create the services following the iserve-commons-vocabulary model
         for(XMLService service : services.getServices()){
             URI srvURI = URI.create(owlOntologyURL+"#"+service.getName());
-            log.debug("Transforming {}", srvURI);
+            log.debug("Transforming service (URI: {})", srvURI);
             Service modelService = new Service(srvURI);
             modelService.setSource(srvURI);
             modelService.setWsdlGrounding(srvURI);
 
-            Operation operation = new Operation(URI.create(baseUri + service.getName()));
+            Operation operation = new Operation(srvURI);
             for(XMLInstance input : service.getInputs().getInstances()){
                 operation.addInput(transform(input, baseUri));
             }
