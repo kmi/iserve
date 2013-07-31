@@ -45,17 +45,18 @@ public class OwlsTransformationPlugin extends AbstractModule implements Transfor
         binder.addBinding(OwlsTransformer.mediaType).to(OwlsTransformer.class);
 
         // Bind the configuration as well
-        //Names.bindProperties(binder(), getProperties());
+        Names.bindProperties(binder(), getProperties());
     }
 
     private Properties getProperties() {
         try {
             Properties properties = new Properties();
-            properties.load(new FileReader("plugin.properties"));
+            properties.load(this.getClass().getClassLoader().getResourceAsStream("plugin.properties"));
             return properties;
         } catch (IOException ex) {
             log.error("Error obtaining plugin properties", ex);
         }
-        return null;
+        // Return empty properties ?
+        return new Properties();
     }
 }

@@ -25,12 +25,11 @@ public class WSCTransformationPluginModule extends AbstractModule implements Tra
     private Properties getProperties() {
         try {
             Properties properties = new Properties();
-            properties.load(getClass().getClassLoader().getResource("config.properties").openStream());
+            properties.load(getClass().getClassLoader().getResourceAsStream("plugin.properties"));
             return properties;
         } catch (IOException ex) {
-
             //log.error("Error obtaining plugin properties", ex);
         }
-        return null;
+        return new Properties();
     }
 }

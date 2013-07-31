@@ -40,12 +40,12 @@ public class WSCImporter implements ServiceTransformer {
 
     /**
      * The WSC specification does not define the ontology URI of the concepts.
-     * Thus, the real URI of the ontology should be provided using the config.properties
+     * Thus, the real URI of the ontology should be provided using the plugin.properties
      */
     public WSCImporter() throws IOException, ConfigurationException {
         // NOTE: The inputs and outputs of the services should be automatically translated from instances to
         // concepts using the XML Reasoner
-        PropertiesConfiguration props = new PropertiesConfiguration("config.properties");
+        PropertiesConfiguration props = new PropertiesConfiguration("plugin.properties");
         this.xmlTaxonomyURL = (String) props.getProperty("taxonomy.url");
         log.info("Using taxonomy {}", this.xmlTaxonomyURL);
         this.owlOntologyURL = (String) props.getProperty("ontology.url");
