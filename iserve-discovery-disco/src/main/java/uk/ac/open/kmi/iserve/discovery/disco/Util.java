@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType.*;
+
 /**
  * Class Description
  *
@@ -332,15 +334,15 @@ public class Util {
         if (isSubsume) {
             if (isPlugin) {
                 // If plugin and subsume -> this is an exact match
-                return DiscoMatchType.EXACT;
+                return Exact;
             }
-            return DiscoMatchType.SUBSUME;
+            return Subsume;
         } else {
             if (isPlugin) {
-                return DiscoMatchType.PLUGIN;
+                return Plugin;
             }
         }
-        return DiscoMatchType.FAIL;
+        return Fail;
     }
 
     /**
@@ -357,38 +359,38 @@ public class Util {
                                                              DiscoMatchType worstMatch) {
 
         switch (worstMatch) {
-            case EXACT:
-                return DiscoMatchType.EXACT;
+            case Exact:
+                return Exact;
 
-            case PLUGIN:
-                return DiscoMatchType.PLUGIN;
+            case Plugin:
+                return Plugin;
 
-            case SUBSUME:
-                return DiscoMatchType.SUBSUME;
+            case Subsume:
+                return Subsume;
 
-            case FAIL:
+            case Fail:
                 switch (bestMatch) {
-                    case EXACT:
-                        return DiscoMatchType.PARTIAL_PLUGIN;
+                    case Exact:
+                        return PartialPlugin;
 
-                    case PLUGIN:
-                        return DiscoMatchType.PARTIAL_PLUGIN;
+                    case Plugin:
+                        return PartialPlugin;
 
-                    case SUBSUME:
-                        return DiscoMatchType.PARTIAL_SUBSUME;
+                    case Subsume:
+                        return PartialSubsume;
 
                     default:
                         log.warn("This match type is not supported: " +
-                                bestMatch.getShortName());
+                                bestMatch.name());
 
-                        return DiscoMatchType.FAIL;
+                        return Fail;
                 }
 
             default:
                 log.warn("This match type is not supported: " +
-                        worstMatch.getShortName());
+                        worstMatch.name());
 
-                return DiscoMatchType.FAIL;
+                return Fail;
         }
     }
 
@@ -528,11 +530,9 @@ public class Util {
 
             System.out.println("Match " + entry.getKey().toString());
             System.out.println("Left value details: ");
-            System.out.println("Match score: " + resultLeft.getScore());
             System.out.println("Match explanation: " + resultLeft.getExplanation());
 
             System.out.println("Right value details: ");
-            System.out.println("Match score: " + resultRight.getScore());
             System.out.println("Match explanation: " + resultRight.getExplanation());
         }
 
