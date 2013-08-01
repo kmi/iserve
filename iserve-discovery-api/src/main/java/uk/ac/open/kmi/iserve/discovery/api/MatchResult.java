@@ -16,7 +16,7 @@
 
 package uk.ac.open.kmi.iserve.discovery.api;
 
-import java.net.URL;
+import java.net.URI;
 
 /**
  * Interface that match results obtained from discovery plugins should implement
@@ -29,18 +29,23 @@ public interface MatchResult {
     /**
      * The resource we wanted to find matches for, i.e., the origin
      *
-     * @return the URL of the resource
+     * @return the URI of the resource
      */
-    public URL getResourceToMatch();
+    public URI getResourceToMatch();
 
     /**
      * The resource that was matched, i.e., the destination
      *
-     * @return the URL of the resource matched to
+     * @return the URI of the resource matched to
      */
-    public URL getMatchedResource();
+    public URI getMatchedResource();
 
-    public String getMatchLabel();
+    /**
+     * Get the match type that was assigned to this match result
+     *
+     * @return
+     */
+    public MatchType getMatchType();
 
     /**
      * Gets the matcher that was used to generate this match
@@ -51,11 +56,5 @@ public interface MatchResult {
 
     public String getExplanation();
 
-    /**
-     * Get the match type that was assigned to this match result
-     *
-     * @return
-     */
-    public MatchType getMatchType();
 
 }

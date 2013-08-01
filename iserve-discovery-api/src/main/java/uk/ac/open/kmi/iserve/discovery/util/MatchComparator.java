@@ -30,23 +30,11 @@ import java.util.Comparator;
 public enum MatchComparator implements Comparator<MatchResult> {
 
     /**
-     * Simple comparator for Match Results based on the score of the match results
+     * Simple comparator for Match Results based on the URIs of the match results
      *
      * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
      */
-    BY_SCORE {
-        @Override
-        public int compare(MatchResult arg0, MatchResult arg1) {
-            return arg0.getScore().compareTo(arg1.getScore());
-        }
-    },
-
-    /**
-     * Simple comparator for Match Results based on the URLs of the match results
-     *
-     * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
-     */
-    BY_URL {
+    BY_URI {
         @Override
         public int compare(MatchResult arg0, MatchResult arg1) {
             return arg0.getMatchedResource().toString().compareTo(arg1.getMatchedResource().toString());
