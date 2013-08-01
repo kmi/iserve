@@ -35,6 +35,7 @@ public class WSCImporter implements ServiceTransformer {
     private WSCXMLSemanticReasoner reasoner;
     private String xmlTaxonomyURL;
     private String owlOntologyURL;
+    private String fakeURL = "http://localhost/services/services.owl";
     public static final String mediaType = "text/xml";
 
 
@@ -59,12 +60,13 @@ public class WSCImporter implements ServiceTransformer {
     private MessageContent transform(XMLInstance instance, String baseURI){
         // TODO Handle baseURI in some way!
         String concept = this.reasoner.getConceptInstance(instance.getName());
-        URI uri = URI.create(this.owlOntologyURL + "#" + concept);
+        URI uri = URI.create(this.fakeURL + "#MessageContext_"+concept);
         MessageContent content = new MessageContent(uri);
-        content.setSource(uri);
-        content.setWsdlGrounding(uri);
-        content.setLabel(instance.getName());
-        content.addModelReference(new Resource(uri));
+        //content.setLabel("MessageContext");
+        //content.setSource(uri);
+        //content.setWsdlGrounding(uri);
+        //content.setLabel(instance.getName());
+        content.addModelReference(new Resource(URI.create(this.owlOntologyURL+"#"+concept)));
         return content;
     }
 
@@ -79,13 +81,14 @@ public class WSCImporter implements ServiceTransformer {
         String uri = baseUri.endsWith("#") ? baseUri : baseUri + "#";
         // Create the services following the iserve-commons-vocabulary model
         for(XMLService service : services.getServices()){
-            URI srvURI = URI.create(owlOntologyURL+"#"+service.getName());
+            URI srvURI = URI.create(fakeURL+"#"+service.getName());
+            URI opURI = URI.create(fakeURL+"/"+service.getName()+"#operation");
             log.debug("Transforming service (URI: {})", srvURI);
             Service modelService = new Service(srvURI);
-            modelService.setSource(srvURI);
-            modelService.setWsdlGrounding(srvURI);
+            //modelService.setSource(srvURI);
+            //modelService.setWsdlGrounding(srvURI);
 
-            Operation operation = new Operation(srvURI);
+            Operation operation = new Operation(opURI);
             for(XMLInstance input : service.getInputs().getInstances()){
                 operation.addInput(transform(input, baseUri));
             }
