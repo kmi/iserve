@@ -84,19 +84,18 @@ public class LogicConceptMatcherTest extends TestCase {
         return setup;
     }
 
-    @Test
-    public void testGetMatcherDescription() throws Exception {
-        Assert.fail("Not yet implemented");
-    }
-
-    @Test
-    public void testGetMatcherVersion() throws Exception {
-        Assert.fail("Not yet implemented");
-    }
-
-    @Test
     public void testMatch() throws Exception {
-        Assert.fail("Not yet implemented");
+
+        URI origin = URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar");
+        URI destination = URI.create("http://127.0.0.1/ontology/SUMO.owl#Quantity");
+
+        // Obtain matches
+        Stopwatch stopwatch = new Stopwatch().start();
+        MatchResult match = matcher.match(origin, destination);
+        stopwatch.stop();
+
+        log.info("Obtained match in {} \n {}", stopwatch, match);
+        Assert.assertEquals(match.getMatchType(), DiscoMatchType.Plugin);
     }
 
     @Test

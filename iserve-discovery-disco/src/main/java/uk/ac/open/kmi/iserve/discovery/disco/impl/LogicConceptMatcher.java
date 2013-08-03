@@ -186,7 +186,7 @@ public class LogicConceptMatcher implements ConceptMatcher {
                 .append(generateQueryFooter())
                 .toString();
 
-        log.info("SPARQL Query generated: \n {}", queryStr);
+        log.debug("SPARQL Query generated: \n {}", queryStr);
 
         return queryForMatchResults(queryStr);
     }
