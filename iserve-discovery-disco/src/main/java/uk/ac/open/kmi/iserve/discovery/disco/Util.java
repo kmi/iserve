@@ -29,6 +29,7 @@ import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -202,27 +203,79 @@ public class Util {
      * @return
      */
     public static String generateLabelPattern(String var, String labelVar) {
-        return "?" + var + " <" + RDFS.label.getURI() + "> ?" + labelVar + " . ";
+        return new StringBuilder()
+                .append("?").append(var).append(" ")
+                .append(sparqlWrapUri(RDFS.label.getURI())).append(" ")
+                .append("?").append(labelVar).append(". ")
+                .toString();
     }
 
     /**
-     * Generate a patter for matching var to the subclasses of clazz
+     * Generate a pattern for matching var to the subclasses of clazz
      *
-     * @param var
+     * @param origin
+     * @param matchVariable
      * @return
      */
-    public static String generateSubclassPattern(String var, String clazz) {
-        return "?" + var + " <" + RDFS.subClassOf.getURI() + "> <" + clazz.replace(">", "%3e") + "> .";
+    public static String generateSubclassPattern(URI origin, String matchVariable) {
+        return new StringBuilder()
+                .append("?").append(matchVariable).append(" ")
+                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append(" ")
+                .append(sparqlWrapUri(origin)).append(" .")
+                .toString();
+    }
+
+    /**
+     * Generate a pattern for checking if destination is a subclass of origin
+     *
+     * @param origin
+     * @param destination
+     * @return
+     */
+    public static String generateSubclassPattern(URI origin, URI destination) {
+        return new StringBuilder()
+                .append(sparqlWrapUri(destination)).append(" ")
+                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append(" ")
+                .append(sparqlWrapUri(origin)).append(" .")
+                .toString();
     }
 
     /**
      * Generate a pattern for matching var to the superclasses of clazz
      *
-     * @param var
+     * @param origin
+     * @param matchVariable
      * @return
      */
-    public static String generateSuperclassPattern(String var, String clazz) {
-        return "<" + clazz.replace(">", "%3e") + "> <" + RDFS.subClassOf.getURI() + "> ?" + var + " .";
+    public static String generateSuperclassPattern(URI origin, String matchVariable) {
+        return new StringBuilder()
+                .append(sparqlWrapUri(origin)).append(" ")
+                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append(" ")
+                .append("?").append(matchVariable).append(" .")
+                .toString();
+    }
+
+    private static String sparqlWrapUri(URI uri) {
+        return new StringBuilder().append("<").append(uri.toASCIIString().replace(">", "%3e")).append(">").toString();
+    }
+
+    private static String sparqlWrapUri(String uri) {
+        return new StringBuilder().append("<").append(uri.replace(">", "%3e")).append(">").toString();
+    }
+
+    /**
+     * Generate a pattern for checking if destination is a superclass of origin
+     *
+     * @param origin
+     * @param destination
+     * @return
+     */
+    public static String generateSuperclassPattern(URI origin, URI destination) {
+        return new StringBuilder()
+                .append(sparqlWrapUri(origin)).append(" ")
+                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append(" ")
+                .append(sparqlWrapUri(destination)).append(" .")
+                .toString();
     }
 
     /**
@@ -233,7 +286,7 @@ public class Util {
      */
     public static String generateUnionStatement(List<String> patterns) {
         // Check the input and exit immediately if null
-        if (patterns == null) {
+        if (patterns == null || patterns.isEmpty()) {
             return "";
         }
 
@@ -265,41 +318,118 @@ public class Util {
      * <p/>
      * TODO: Does not match if we don't know a certain element is a class!
      *
-     * @param modelRefVar the model reference variable
-     * @param currClass   the URL of the class we want to find exact matches for
-     * @param bindingVar  the name of the variable we will bind results to for
-     *                    ulterior inspection
+     * @param origin           the URL of the class we want to find exact matches for
+     * @param matchVariable    the name of the variable to bind the matches to
+     * @param bindingVar       the name of the variable we will bind results to for
+     *                         ulterior inspection
+     * @param includeUrisBound
      * @return the query pattern
      */
-    public static String generateExactMatchPattern(String modelRefVar,
-                                                   String currClass, String bindingVar) {
+    public static String generateExactMatchPattern(URI origin,
+                                                   String matchVariable,
+                                                   String bindingVar,
+                                                   boolean includeUrisBound) {
 
         StringBuffer query = new StringBuffer();
-        query.append(Util.generateSubclassPattern(modelRefVar, currClass) + NL);
-        query.append(Util.generateSuperclassPattern(modelRefVar, currClass) + NL);
+        query.append(Util.generateSubclassPattern(origin, matchVariable) + NL);
+        query.append(Util.generateSuperclassPattern(origin, matchVariable) + NL);
         // Bind a variable for inspection
         query.append("BIND (true as ?" + bindingVar + ") ." + NL);
+        // Include origin and destination in the returned bindings if requested
+        if (includeUrisBound) {
+            query.append("BIND (").append(sparqlWrapUri(origin)).append(" as ?origin) .").append(NL);
+            query.append("BIND (?").append(matchVariable).append(" as ?destination) .").append(NL);    // FIXME
+        }
         return query.toString();
     }
 
+    /**
+     * Generate a pattern for check if two concepts have an exact match.
+     * Basically we look for those that are subclasses and superclasses
+     * Uses BIND -> Requires SPARQL 1.1
+     * <p/>
+     * TODO: Does not match if we don't know a certain element is a class!
+     *
+     * @param origin           the URL of the class we want to find exact matches for
+     * @param destination      the URL of the class we are checking the match for
+     * @param bindingVar       the name of the variable we will bind results to for
+     *                         ulterior inspection
+     * @param includeUrisBound
+     * @return the query pattern
+     */
+    public static String generateExactMatchPattern(URI origin,
+                                                   URI destination, String bindingVar, boolean includeUrisBound) {
+
+        StringBuffer query = new StringBuffer();
+        query.append(Util.generateSubclassPattern(origin, destination) + NL);
+        query.append(Util.generateSuperclassPattern(origin, destination) + NL);
+        // Bind a variable for inspection
+        query.append("BIND (true as ?" + bindingVar + ") ." + NL);
+        // Include origin and destination in the returned bindings if requested
+        if (includeUrisBound) {
+            query.append("BIND (").append(sparqlWrapUri(origin)).append(" as ?origin) .").append(NL);
+            query.append("BIND (").append(sparqlWrapUri(destination)).append(" as ?destination) .").append(NL);    // FIXME
+        }
+        return query.toString();
+    }
 
     /**
      * Generate a pattern for obtaining the strict subclasses of a concept.
      * Uses BIND -> Requires SPARQL 1.1
      *
-     * @param modelRefVar the model reference variable
-     * @param currClass   the URL of the class we want to find subclasses for
-     * @param bindingVar  the name of the variable we will bind results to for
-     *                    ulterior inspection
+     * @param origin           the URL of the class we want to find subclasses for
+     * @param matchVariable    the model reference variable
+     * @param flagVar          the name of the variable we will bind results to for
+     *                         ulterior inspection
+     * @param includeUrisBound
      * @return the query pattern
      */
-    public static String generateMatchStrictSubclassesPattern(String modelRefVar,
-                                                              String currClass, String bindingVar) {
+    public static String generateMatchStrictSubclassesPattern(URI origin,
+                                                              String matchVariable,
+                                                              String flagVar,
+                                                              boolean includeUrisBound) {
         StringBuffer query = new StringBuffer();
-        query.append(Util.generateSubclassPattern(modelRefVar, currClass) + NL);
-        query.append("FILTER NOT EXISTS { " + Util.generateSuperclassPattern(modelRefVar, currClass) + "}" + NL);
+        query.append(Util.generateSubclassPattern(origin, matchVariable) + NL);
+        query.append("FILTER NOT EXISTS { ")
+                .append(Util.generateSuperclassPattern(origin, matchVariable))
+                .append("}")
+                .append(NL);
         // Bind a variable for inspection
-        query.append("BIND (true as ?" + bindingVar + ") ." + NL);
+        query.append("BIND (true as ?").append(flagVar).append(") .").append(NL);
+        // Include origin and destination in the returned bindings if requested
+        if (includeUrisBound) {
+            query.append("BIND (").append(sparqlWrapUri(origin)).append(" as ?origin) .").append(NL);
+            query.append("BIND (").append(matchVariable).append(" as ?destination) .").append(NL);    //FIXME
+        }
+        return query.toString();
+    }
+
+    /**
+     * Generate a pattern for obtaining the strict subclasses of a concept.
+     * Uses BIND -> Requires SPARQL 1.1
+     *
+     * @param origin           the URL of the class we want to find exact matches for
+     * @param destination      the URL of the class we are checking the match for
+     * @param flagVar          the name of the variable we will bind results to for
+     *                         ulterior inspection
+     * @param includeUrisBound
+     * @return the query pattern
+     */
+    public static String generateMatchStrictSubclassesPattern(URI origin,
+                                                              URI destination, String flagVar, boolean includeUrisBound) {
+        StringBuffer query = new StringBuffer();
+        query.append(Util.generateSubclassPattern(origin, destination) + NL);
+        query.append("FILTER NOT EXISTS { ")
+                .append(Util.generateSuperclassPattern(origin, destination))
+                .append("}")
+                .append(NL);
+        // Bind a variable for inspection
+        query.append("BIND (true as ?").append(flagVar).append(") .").append(NL);
+        // Include origin and destination in the returned bindings if requested
+        if (includeUrisBound) {
+            query.append("BIND (").append(sparqlWrapUri(origin)).append(" as ?origin) .").append(NL);
+            query.append("BIND (").append(sparqlWrapUri(destination)).append(" as ?destination) .").append(NL);    //FIXME
+        }
         return query.toString();
     }
 
@@ -307,19 +437,55 @@ public class Util {
      * Generate a pattern for obtaining the strict superclasses of a concept.
      * Uses BIND -> Requires SPARQL 1.1
      *
-     * @param modelRefVar the model reference variable
-     * @param currClass   the URL of the class we want to find superclasses for
-     * @param bindingVar  the name of the variable we will bind results to for
-     *                    ulterior inspection
+     * @param origin           the URL of the class we want to find superclasses for
+     * @param matchVariable    the model reference variable
+     * @param bindingVar       the name of the variable we will bind results to for
+     *                         ulterior inspection
+     * @param includeUrisBound
      * @return the query pattern
      */
-    public static String generateMatchStrictSuperclassesPattern(String modelRefVar,
-                                                                String currClass, String bindingVar) {
+    public static String generateMatchStrictSuperclassesPattern(URI origin,
+                                                                String matchVariable,
+                                                                String bindingVar,
+                                                                boolean includeUrisBound) {
         StringBuffer query = new StringBuffer();
-        query.append(Util.generateSuperclassPattern(modelRefVar, currClass) + NL);
-        query.append("FILTER NOT EXISTS { " + Util.generateSubclassPattern(modelRefVar, currClass) + "}" + NL);
+        query.append(Util.generateSuperclassPattern(origin, matchVariable) + NL);
+        query.append("FILTER NOT EXISTS { " + Util.generateSubclassPattern(origin, matchVariable) + "}" + NL);
         // Bind a variable for inspection
         query.append("BIND (true as ?" + bindingVar + ") ." + NL);
+        // Include origin and destination in the returned bindings if requested
+        if (includeUrisBound) {
+            query.append("BIND (").append(sparqlWrapUri(origin)).append(" as ?origin) .").append(NL);
+            query.append("BIND (").append(matchVariable).append(" as ?destination) .").append(NL);   // FIXME
+        }
+        return query.toString();
+    }
+
+    /**
+     * Generate a pattern for obtaining the strict superclasses of a concept.
+     * Uses BIND -> Requires SPARQL 1.1
+     *
+     * @param origin           the URL of the class we want to find exact matches for
+     * @param destination      the URL of the class we are checking the match for
+     * @param bindingVar       the name of the variable we will bind results to for
+     *                         ulterior inspection
+     * @param includeUrisBound
+     * @return the query pattern
+     */
+    public static String generateMatchStrictSuperclassesPattern(URI origin,
+                                                                URI destination,
+                                                                String bindingVar,
+                                                                boolean includeUrisBound) {
+        StringBuffer query = new StringBuffer();
+        query.append(Util.generateSuperclassPattern(origin, destination) + NL);
+        query.append("FILTER NOT EXISTS { " + Util.generateSubclassPattern(origin, destination) + "}" + NL);
+        // Bind a variable for inspection
+        query.append("BIND (true as ?" + bindingVar + ") ." + NL);
+        // Include origin and destination in the returned bindings if requested
+        if (includeUrisBound) {
+            query.append("BIND (").append(sparqlWrapUri(origin)).append(" as ?origin) .").append(NL);
+            query.append("BIND (").append(sparqlWrapUri(destination)).append(" as ?destination) .").append(NL);   // FIXME
+        }
         return query.toString();
     }
 

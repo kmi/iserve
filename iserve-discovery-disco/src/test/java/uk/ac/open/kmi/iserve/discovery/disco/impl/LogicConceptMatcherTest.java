@@ -16,6 +16,8 @@
 
 package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.Table;
 import junit.extensions.TestSetup;
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -27,19 +29,19 @@ import uk.ac.open.kmi.iserve.commons.io.MediaType;
 import uk.ac.open.kmi.iserve.commons.io.Syntax;
 import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterBySyntax;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
+import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.net.URI;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.Set;
 
 /**
  * DiscoMatcherTest
- * TODO: Provide Description
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 01/08/2013
@@ -93,49 +95,194 @@ public class LogicConceptMatcherTest extends TestCase {
     }
 
     @Test
-    public void testGetMatchTypesSupported() throws Exception {
-        Assert.fail("Not yet implemented");
-    }
-
-    @Test
     public void testMatch() throws Exception {
         Assert.fail("Not yet implemented");
     }
 
     @Test
     public void testMatchBySets() throws Exception {
-        Assert.fail("Not yet implemented");
+
+        Set<URI> origins = new HashSet<URI>();
+        origins.add(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"));
+        origins.add(URI.create("http://127.0.0.1/ontology/SUMO.owl#Abstract"));
+        origins.add(URI.create("http://127.0.0.1/ontology/SUMO.owl#TherapeuticProcess"));
+
+        Set<URI> destinations = new HashSet<URI>();
+        destinations.add(URI.create("http://127.0.0.1/ontology/SUMO.owl#Quantity"));
+        destinations.add(URI.create("http://127.0.0.1/ontology/SUMO.owl#IntentionalProcess"));
+        destinations.add(URI.create("http://127.0.0.1/ontology/SUMO.owl#Entity"));
+
+        // Obtain cross-matches
+        Stopwatch stopwatch = new Stopwatch().start();
+        Table<URI, URI, MatchResult> matches =
+                matcher.match(origins, destinations);
+        stopwatch.stop();
+
+        log.info("Obtained all cross matches ({}) in {} \n {}", matches.size(), stopwatch, matches);
+        Assert.assertEquals(matches.size(), 4);
+        stopwatch.reset();
+
     }
 
     @Test
     public void testListMatchesOfType() throws Exception {
-        Assert.fail("Not yet implemented");
+        // Obtain only exact
+        Stopwatch stopwatch = new Stopwatch().start();
+        Map<URI, MatchResult> matches =
+                matcher.listMatchesOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), DiscoMatchType.Exact);
+        stopwatch.stop();
+
+        log.info("Obtained all exact matches ({}) in {} \n", matches.size(), stopwatch, matches);
+        Assert.assertEquals(matches.size(), 1);
+        stopwatch.reset();
+
+        // Obtain only plugin
+        stopwatch.start();
+        matches = matcher.listMatchesOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), DiscoMatchType.Plugin);
+        stopwatch.stop();
+
+        log.info("Obtained all plugin matches ({}) in {} \n", matches.size(), stopwatch, matches);
+        Assert.assertEquals(matches.size(), 5);
+        stopwatch.reset();
+
+        // Obtain only plugin
+        stopwatch.start();
+        matches = matcher.listMatchesOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), DiscoMatchType.Subsume);
+        stopwatch.stop();
+
+        log.info("Obtained all plugin matches ({}) in {} \n", matches.size(), stopwatch, matches);
+        Assert.assertEquals(matches.size(), 0);
+        stopwatch.reset();
     }
 
     @Test
     public void testListMatchesAtLeastOfType() throws Exception {
-        Assert.fail("Not yet implemented");
+        // Obtain at least exact
+        Stopwatch stopwatch = new Stopwatch().start();
+        Map<URI, MatchResult> matches =
+                matcher.listMatchesAtLeastOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), DiscoMatchType.Exact);
+        stopwatch.stop();
+
+        log.info("Obtained at least Exact matches ({}) in {} \n", matches.size(), stopwatch, matches);
+        Assert.assertEquals(matches.size(), 1);
+        stopwatch.reset();
+
+        // Obtain at least plugin
+        stopwatch.start();
+        matches = matcher.listMatchesAtLeastOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), DiscoMatchType.Plugin);
+        stopwatch.stop();
+
+        log.info("Obtained at least Plugin matches ({}) in {} \n", matches.size(), stopwatch, matches);
+        Assert.assertEquals(matches.size(), 6);
+        stopwatch.reset();
+
+        // Obtain at least subsumes
+        stopwatch.start();
+        matches = matcher.listMatchesAtLeastOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), DiscoMatchType.Subsume);
+        stopwatch.stop();
+
+        log.info("Obtained at least Subsumes matches ({}) in {} \n", matches.size(), stopwatch, matches);
+        Assert.assertEquals(matches.size(), 6);
+        stopwatch.reset();
+
+        // Obtain at least fail
+        stopwatch.start();
+        matches = matcher.listMatchesAtLeastOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), DiscoMatchType.Fail);
+        stopwatch.stop();
+
+        log.info("Obtained at least Fail matches ({}) in {} \n", matches.size(), stopwatch, matches);
+        Assert.assertEquals(matches.size(), 6);
+        stopwatch.reset();
     }
 
     @Test
     public void testListMatchesAtMostOfType() throws Exception {
-        Assert.fail("Not yet implemented");
+        // Obtain at least exact
+        Stopwatch stopwatch = new Stopwatch().start();
+        Map<URI, MatchResult> matches =
+                matcher.listMatchesAtMostOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), DiscoMatchType.Exact);
+        stopwatch.stop();
+
+        log.info("Obtained at most Exact matches ({}) in {} \n", matches.size(), stopwatch, matches);
+        Assert.assertEquals(matches.size(), 6);
+        stopwatch.reset();
+
+        // Obtain at least plugin
+        stopwatch.start();
+        matches = matcher.listMatchesAtMostOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), DiscoMatchType.Plugin);
+        stopwatch.stop();
+
+        log.info("Obtained at most Plugin matches ({}) in {} \n", matches.size(), stopwatch, matches);
+        Assert.assertEquals(matches.size(), 5);
+        stopwatch.reset();
+
+        // Obtain at least subsumes
+        stopwatch.start();
+        matches = matcher.listMatchesAtMostOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), DiscoMatchType.Subsume);
+        stopwatch.stop();
+
+        log.info("Obtained at most Subsumes matches ({}) in {} \n", matches.size(), stopwatch, matches);
+        Assert.assertEquals(matches.size(), 0);
+        stopwatch.reset();
+
+        // Obtain at least fail
+        stopwatch.start();
+        matches = matcher.listMatchesAtMostOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), DiscoMatchType.Fail);
+        stopwatch.stop();
+
+        log.info("Obtained at most Fail matches ({}) in {} \n", matches.size(), stopwatch, matches);
+        Assert.assertEquals(matches.size(), 0);
+        stopwatch.reset();
     }
 
     @Test
     public void testListMatchesWithinRange() throws Exception {
-        Assert.fail("Not yet implemented");
-    }
 
-    @Test
-    public void testGenerateAllMatchesQuery() throws Exception {
+        // Obtain all matches
+        Stopwatch stopwatch = new Stopwatch().start();
+        Map<URI, MatchResult> matches =
+                matcher.listMatchesWithinRange(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), DiscoMatchType.Fail, DiscoMatchType.Exact);
+        stopwatch.stop();
 
-        SortedSet<URI> origins = new TreeSet<URI>();
-        origins.add(URI.create("http://127.0.0.1/ontology/concept.owl#UntangibleObjects"));
-//        origins.add(URI.create("http://127.0.0.1/ontology/SUMO.owl#Agent"));
-        origins.add(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"));
-        origins.add(URI.create("http://127.0.0.1/ontology/SUMO.owl#Repairing"));
-        Map<URI, MatchResult> matches = matcher.obtainAllMatchResults(origins);
-        Assert.fail("Not yet implemented");
+        log.info("Obtained all matches ({}) in {} \n", matches.size(), stopwatch, matches);
+        Assert.assertEquals(matches.size(), 6);
+        stopwatch.reset();
+
+        // Obtain only exact
+        stopwatch.start();
+        matches = matcher.listMatchesWithinRange(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), DiscoMatchType.Exact, DiscoMatchType.Exact);
+        stopwatch.stop();
+
+        log.info("Obtained exact matches ({}) in {} \n", matches.size(), stopwatch, matches);
+        Assert.assertEquals(matches.size(), 1);
+        stopwatch.reset();
+
+        // Obtain from Plugin up
+        stopwatch.start();
+        matches = matcher.listMatchesWithinRange(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), DiscoMatchType.Plugin, DiscoMatchType.Exact);
+        stopwatch.stop();
+
+        log.info("Obtained matches >= Plugin ({}) in {} \n", matches.size(), stopwatch, matches);
+        Assert.assertEquals(matches.size(), 6);
+        stopwatch.reset();
+
+        // Obtain Plugin and subsumes
+        stopwatch.start();
+        matches = matcher.listMatchesWithinRange(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), DiscoMatchType.Subsume, DiscoMatchType.Plugin);
+        stopwatch.stop();
+
+        log.info("Obtained Subsumes >= matches >= Plugin ({}) in {} \n", matches.size(), stopwatch, matches);
+        Assert.assertEquals(matches.size(), 5);
+        stopwatch.reset();
+
+        // Invert limits
+        stopwatch.start();
+        matches = matcher.listMatchesWithinRange(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), DiscoMatchType.Exact, DiscoMatchType.Plugin);
+        stopwatch.stop();
+
+        log.info("Obtained Exact >= matches >= Plugin ({}) in {} \n", matches.size(), stopwatch, matches);
+        Assert.assertEquals(matches.size(), 0);
+        stopwatch.reset();
+
     }
 }
