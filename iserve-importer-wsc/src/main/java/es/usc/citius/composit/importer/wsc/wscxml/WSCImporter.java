@@ -35,6 +35,7 @@ public class WSCImporter implements ServiceTransformer {
     private WSCXMLSemanticReasoner reasoner;
     private String xmlTaxonomyURL;
     private String owlOntologyURL;
+    private String exportOWLTo;
     private String fakeURL = "http://localhost/services/services.owl";
     public static final String mediaType = "text/xml";
 
@@ -43,7 +44,7 @@ public class WSCImporter implements ServiceTransformer {
      * The WSC specification does not define the ontology URI of the concepts.
      * Thus, the real URI of the ontology should be provided using the plugin.properties
      */
-    public WSCImporter() throws IOException, ConfigurationException {
+    public WSCImporter() throws Exception {
         // NOTE: The inputs and outputs of the services should be automatically translated from instances to
         // concepts using the XML Reasoner
         PropertiesConfiguration props = new PropertiesConfiguration("plugin.properties");
@@ -52,15 +53,21 @@ public class WSCImporter implements ServiceTransformer {
         this.owlOntologyURL = (String) props.getProperty("ontology.url");
         URL ontology = new URL(xmlTaxonomyURL);
         log.info("Using ontology {}", this.owlOntologyURL);
+        this.exportOWLTo = (String) props.getProperty("taxonomy.export");
+        log.info("Exporting xml taxonomy to owl in {}", this.exportOWLTo);
         this.reasoner = new WSCXMLSemanticReasoner(ontology.openStream());
-        // TODO Convert the ontology to OWL ??
+        // Convert the ontology to OWL
+        if (this.exportOWLTo != null){
+            File file = new File(this.exportOWLTo);
+            new OWLExporter(this.xmlTaxonomyURL, this.reasoner).exportTo(file);
+        }
     }
 
 
     private MessageContent transform(XMLInstance instance, String baseURI){
         // TODO Handle baseURI in some way!
         String concept = this.reasoner.getConceptInstance(instance.getName());
-        URI uri = URI.create(this.fakeURL + "#MessageContext_"+concept);
+        URI uri = URI.create(this.fakeURL + "#MessageContent_"+concept);
         MessageContent content = new MessageContent(uri);
         //content.setLabel("MessageContext");
         //content.setSource(uri);
@@ -82,7 +89,7 @@ public class WSCImporter implements ServiceTransformer {
         // Create the services following the iserve-commons-vocabulary model
         for(XMLService service : services.getServices()){
             URI srvURI = URI.create(fakeURL+"#"+service.getName());
-            URI opURI = URI.create(fakeURL+"/"+service.getName()+"#operation");
+            URI opURI = URI.create(fakeURL+"/"+service.getName()+"#Operation");
             log.debug("Transforming service (URI: {})", srvURI);
             Service modelService = new Service(srvURI);
             //modelService.setSource(srvURI);
