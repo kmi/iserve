@@ -250,7 +250,6 @@ public class LogicConceptMatcher implements ConceptMatcher {
      * @param type    the MatchType we want to obtain
      * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
      */
-    @Override
     public Table<URI, URI, MatchResult> listMatchesOfType(Set<URI> origins, MatchType type) {
         return null;  // TODO: implement
     }
@@ -276,7 +275,6 @@ public class LogicConceptMatcher implements ConceptMatcher {
      * @param minType the minimum MatchType we want to obtain
      * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
      */
-    @Override
     public Table<URI, URI, MatchResult> listMatchesAtLeastOfType(Set<URI> origins, MatchType minType) {
         return null;  // TODO: implement
     }
@@ -302,7 +300,6 @@ public class LogicConceptMatcher implements ConceptMatcher {
      * @param maxType the maximum MatchType we want to obtain
      * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
      */
-    @Override
     public Table<URI, URI, MatchResult> listMatchesAtMostOfType(Set<URI> origins, MatchType maxType) {
         return null;  // TODO: implement
     }
@@ -339,7 +336,6 @@ public class LogicConceptMatcher implements ConceptMatcher {
      * @param maxType the maximum MatchType we want to obtain
      * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
      */
-    @Override
     public Table<URI, URI, MatchResult> listMatchesWithinRange(Set<URI> origins, MatchType minType, MatchType maxType) {
         return null;  // TODO: implement
     }

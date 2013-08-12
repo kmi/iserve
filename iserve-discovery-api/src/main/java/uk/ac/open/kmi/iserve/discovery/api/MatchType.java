@@ -26,4 +26,6 @@ public interface MatchType<T> extends Comparable<T> {
     String name();
 
     String description();
+
+
 }

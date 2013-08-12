@@ -23,12 +23,8 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
-import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
-import uk.ac.open.kmi.iserve.discovery.disco.MatchResultImpl;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -38,7 +34,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDiscoveryPlugin {
+public class AllServicesPlugin {
 
     private static final String PLUGIN_NAME = "all-jena";
 
@@ -92,7 +88,6 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDisco
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin#getVersion()
      */
-    @Override
     public String getVersion() {
         return PLUGIN_VERSION;
     }
@@ -100,7 +95,6 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDisco
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getParametersDetails()
      */
-    @Override
     public Map<String, String> getParametersDetails() {
         return parameterDetails;
     }
@@ -109,23 +103,22 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDisco
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin#discoverServices(javax.ws.rs.core.MultivaluedMap)
      */
-    public Map<URL, MatchResult> discoverServices(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+    public Map<URL, MatchResult> discoverServices(MultivaluedMap<String, String> parameters) {
         return discover(false, parameters);
     }
 
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin#discoverOperations(javax.ws.rs.core.MultivaluedMap)
      */
-    @Override
-    public Map<URL, MatchResult> discoverOperations(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+    public Map<URL, MatchResult> discoverOperations(MultivaluedMap<String, String> parameters) {
         return discover(true, parameters);
     }
 
-    public Map<URL, MatchResult> discover(boolean operationDiscovery, MultivaluedMap<String, String> parameters) throws DiscoveryException {
+    public Map<URL, MatchResult> discover(boolean operationDiscovery, MultivaluedMap<String, String> parameters) {
 
         if (sparqlEndpoint == null) {
             log.error("Unable to perform discovery, no SPARQL endpoint available.");
-            throw new DiscoveryException(403, "Unable to perform discovery, no SPARQL endpoint available.");
+            throw new RuntimeException("(403) Unable to perform discovery, no SPARQL endpoint available.");
         }
 
         log.debug("Discover services: " + parameters);
@@ -194,13 +187,13 @@ public class AllServicesPlugin implements ServiceDiscoveryPlugin, OperationDisco
                     // Ensure we got a result before proceeding further
                     // Create a match result
                     MatchResultImpl match = new MatchResultImpl(matchUrl, matchLabel);
-                    match.setMatchType(DiscoMatchType.EXACT);
-                    match.setScore(Float.valueOf(0));
+                    match.setMatchType(DiscoMatchType.Exact);
                     // TODO: Add these
+                    // match.setScore(Float.valueOf(0));
                     // match.setEngineUrl(engineUrl);
                     // match.setRequest(request);
                     // Add the result
-                    results.put(match.getMatchedResource(), match);
+                    results.put(match.getMatchedResource().toURL(), match);
                 }
             }
         } catch (MalformedURLException e) {
