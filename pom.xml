@@ -68,6 +68,7 @@
         <shiro.version>1.2.2</shiro.version>
         <jetty.version>8.1.11.v20130520</jetty.version>
         <guice.version>3.0</guice.version>
+        <guava.version>14.0</guava.version>
     </properties>
 
 
