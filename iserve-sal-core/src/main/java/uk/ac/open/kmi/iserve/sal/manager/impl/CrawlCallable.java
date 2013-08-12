@@ -38,10 +38,10 @@ import java.util.concurrent.Callable;
 public class CrawlCallable implements Callable<Boolean> {
 
     private static final Logger log = LoggerFactory.getLogger(CrawlCallable.class);
-    private KnowledgeBaseManager kbManager;
+    private ConcurrentSparqlKnowledgeBaseManager kbManager;
     private String modelUri;
 
-    public CrawlCallable(KnowledgeBaseManager kbManager, String modelUri) {
+    public CrawlCallable(ConcurrentSparqlKnowledgeBaseManager kbManager, String modelUri) {
         this.kbManager = kbManager;
         this.modelUri = modelUri;
     }

@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.discovery.disco;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Ordering;
-import uk.ac.open.kmi.iserve.discovery.api.CompositeMatchResult;
+import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
+import uk.ac.open.kmi.iserve.discovery.api.impl.CompositeMatchResult;
+import uk.ac.open.kmi.iserve.discovery.util.MatchComparator;
 
-import java.net.URL;
+import java.net.URI;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * This Function supports merging two Match Results over the same item into one
@@ -33,7 +36,7 @@ import java.util.Iterator;
  * <p/>
  * TODO: Refactor it: there is considerable redundancy in the code here.
  *
- * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
+ * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  */
 public enum MatchResultsMerger implements Function<Collection<MatchResult>, MatchResult> {
 
@@ -41,8 +44,6 @@ public enum MatchResultsMerger implements Function<Collection<MatchResult>, Matc
      * Merge the results obtained from different matches by UNION.
      * This will basically merge all the matches into a composite one.
      * The type of the composite match will be the maximum of the matches found
-     *
-     * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
      */
     UNION {
         /* (non-Javadoc)
@@ -65,30 +66,23 @@ public enum MatchResultsMerger implements Function<Collection<MatchResult>, Matc
 
             // There are at least 2 results
             // Use the first one as reference and ignore matches for different items
-            URL matchUrl = match.getMatchedResource();
-            String matchLabel = match.getMatchLabel();
+            URI matchUri = match.getMatchedResource();
+            URI resourceToMatch = match.getResourceToMatch();
+            ConceptMatcher matcher = match.getMatcher();
 
-            CompositeMatchResult result = new CompositeMatchResultImpl(matchUrl, matchLabel);
-            result.addInnerMatch(match);
+            SortedSet<MatchResult> innerMatches = new TreeSet<MatchResult>(MatchComparator.BY_TYPE);
+            innerMatches.add(match);
 
             while (it.hasNext()) {
                 match = it.next();
-                if (match.getMatchedResource().equals(matchUrl)) {
-                    // Just in case check the matches are for the same item
-                    result.addInnerMatch(match);
+                if (match.getResourceToMatch().equals(resourceToMatch) && match.getMatchedResource().equals(matchUri)) {
+                    // Just in case check the matches are for the same origin and resource items
+                    innerMatches.add(match);
                 }
             }
 
-            Function<MatchResult, DiscoMatchType> getMatchType =
-                    new Function<MatchResult, DiscoMatchType>() {
-                        public DiscoMatchType apply(MatchResult match) {
-                            return (DiscoMatchType) match.getMatchType();
-                        }
-                    };
-
-            MatchType maxType = Ordering.natural().max(Iterables.transform(result.getInnerMatches(), getMatchType));
-            result.setMatchType(maxType);
-
+            MatchType maxType = innerMatches.first().getMatchType();
+            CompositeMatchResult result = new CompositeMatchResult(resourceToMatch, matchUri, maxType, matcher, innerMatches);
             return result;
         }
     },
@@ -99,8 +93,6 @@ public enum MatchResultsMerger implements Function<Collection<MatchResult>, Matc
      * a FAIL. In this case, if the best is EXACT or PLUGIN the composite match
      * will be PARTIAL_PLUGIN. If the best is SUBSUMES it is PARTIAL_SUBSUMES.
      * {@see Util}
-     *
-     * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
      */
     INTERSECTION {
         @Override
@@ -119,33 +111,25 @@ public enum MatchResultsMerger implements Function<Collection<MatchResult>, Matc
 
             // There are at least 2 results
             // Use the first one as reference and ignore matches for different items
-            URL matchUrl = match.getMatchedResource();
-            String matchLabel = match.getMatchLabel();
+            URI matchUri = match.getMatchedResource();
+            URI resourceToMatch = match.getResourceToMatch();
+            ConceptMatcher matcher = match.getMatcher();
 
-            CompositeMatchResult result = new CompositeMatchResultImpl(matchUrl, matchLabel);
-            result.addInnerMatch(match);
+            SortedSet<MatchResult> innerMatches = new TreeSet<MatchResult>(MatchComparator.BY_TYPE);
+            innerMatches.add(match);
 
             while (it.hasNext()) {
                 match = it.next();
-                if (match.getMatchedResource().equals(matchUrl)) {
+                if (match.getResourceToMatch().equals(resourceToMatch) && match.getMatchedResource().equals(matchUri)) {
                     // Just in case check the matches are for the same item
-                    result.addInnerMatch(match);
+                    innerMatches.add(match);
                 }
             }
 
-            Function<MatchResult, DiscoMatchType> getMatchType =
-                    new Function<MatchResult, DiscoMatchType>() {
-                        public DiscoMatchType apply(MatchResult match) {
-                            return (DiscoMatchType) match.getMatchType();
-                        }
-                    };
-
-
-            Iterable<DiscoMatchType> iter = Iterables.transform(result.getInnerMatches(), getMatchType);
-            DiscoMatchType maxType = Ordering.natural().max(iter);
-            DiscoMatchType minType = Ordering.natural().min(iter);
-
-            result.setMatchType(Util.calculateCompositeMatchType(maxType, minType));
+            MatchType maxType = innerMatches.first().getMatchType();
+            MatchType minType = innerMatches.last().getMatchType();
+            MatchType type = Util.calculateCompositeMatchType((DiscoMatchType) maxType, (DiscoMatchType) minType);
+            CompositeMatchResult result = new CompositeMatchResult(resourceToMatch, matchUri, type, matcher, innerMatches);
             return result;
 
         }

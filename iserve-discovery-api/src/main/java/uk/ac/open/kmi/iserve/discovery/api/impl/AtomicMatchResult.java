@@ -16,11 +16,11 @@
 
 package uk.ac.open.kmi.iserve.discovery.api.impl;
 
+import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
-import uk.ac.open.kmi.iserve.discovery.api.Matcher;
 
-import java.net.URL;
+import java.net.URI;
 
 /**
  * SingleMatchResult is a basic implementation of MatchResult for atomic matches.
@@ -31,43 +31,36 @@ import java.net.URL;
  */
 public class AtomicMatchResult implements MatchResult {
 
-    private URL resourceToMatch;
-    private URL matchedResource;
-    private String matchLabel;
-    private Matcher matcher;
+    private URI resourceToMatch;
+    private URI matchedResource;
+    private ConceptMatcher matcher;
     private MatchType matchType;
 
-    public AtomicMatchResult(URL resourceToMatch, URL matchedResource, Matcher matcher, MatchType matchType, String matchLabel) {
+    public AtomicMatchResult(URI resourceToMatch, URI matchedResource, MatchType matchType, ConceptMatcher matcher) {
         this.resourceToMatch = resourceToMatch;
         this.matchedResource = matchedResource;
         this.matcher = matcher;
-        this.matchLabel = matchLabel;
         this.matchType = matchType;
     }
 
     /**
      * The resource we wanted to find matches for, i.e., the origin
      *
-     * @return the URL of the resource
+     * @return the URI of the resource
      */
     @Override
-    public URL getResourceToMatch() {
+    public URI getResourceToMatch() {
         return resourceToMatch;
     }
 
     /**
      * The resource that was matched, i.e., the destination
      *
-     * @return the URL of the resource matched to
+     * @return the URI of the resource matched to
      */
     @Override
-    public URL getMatchedResource() {
+    public URI getMatchedResource() {
         return matchedResource;
-    }
-
-    @Override
-    public String getMatchLabel() {
-        return matchLabel;
     }
 
     /**
@@ -76,7 +69,7 @@ public class AtomicMatchResult implements MatchResult {
      * @return
      */
     @Override
-    public Matcher getMatcher() {
+    public ConceptMatcher getMatcher() {
         return this.matcher;
     }
 

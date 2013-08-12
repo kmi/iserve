@@ -16,11 +16,11 @@
 
 package uk.ac.open.kmi.iserve.discovery.api.impl;
 
+import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
-import uk.ac.open.kmi.iserve.discovery.api.Matcher;
 
-import java.net.URL;
+import java.net.URI;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -36,9 +36,9 @@ public class CompositeMatchResult extends AtomicMatchResult {
 
     private SortedSet<MatchResult> innerMatches;
 
-    public CompositeMatchResult(URL resourceToMatch, URL matchedResource, Matcher matcher, MatchType matchType,
-                                String matchLabel, SortedSet<MatchResult> innerMatches) {
-        super(resourceToMatch, matchedResource, matcher, matchType, matchLabel);
+    public CompositeMatchResult(URI resourceToMatch, URI matchedResource, MatchType matchType, ConceptMatcher matcher,
+                                SortedSet<MatchResult> innerMatches) {
+        super(resourceToMatch, matchedResource, matchType, matcher);
         this.innerMatches = innerMatches;
     }
 

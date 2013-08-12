@@ -40,7 +40,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceManagerRdf extends BaseSemanticManager implements ServiceManager {
+public class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManager {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceManagerRdf.class);
 
@@ -64,20 +64,91 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
      */
     @Override
     public List<URI> listServices() {
-        List<URI> result = new ArrayList<URI>();
 
-        // If the SPARQL endpoint does not exist return immediately.
-        if (this.getSparqlQueryEndpoint() == null) {
-            log.warn("SPARQL Endpoint does not exist");
-            return result;
+        String queryStr = new StringBuilder()
+                .append("select DISTINCT ?svc where { \n")
+                .append("?svc ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.Service.getURI()).append(">").append(" . }")
+                .toString();
+
+        return listResourcesByQuery(queryStr, "svc");
+    }
+
+    /**
+     * Obtains the list of operation URIs for a given Operation
+     *
+     * @param serviceUri the service URI
+     * @return a List of URIs with the operations provided by the service. If there are no operations, the List should be empty NOT null.
+     */
+    @Override
+    public List<URI> listOperations(URI serviceUri) {
+
+        if (serviceUri == null) {
+            return new ArrayList<URI>();
         }
 
-        String queryStr = "select DISTINCT ?s where { \n" +
-                "?s " + "<" + RDF.type.getURI() + ">" + " " +
-                "<" + MSM.Service.getURI() + ">" +
-                " . }";
+        String queryStr = new StringBuilder()
+                .append("select DISTINCT ?op where { \n")
+                .append("?s ").append("<").append(MSM.hasOperation.getURI()).append(">").append(" ?op .")
+                .append("?op ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.Operation.getURI()).append("> .")
+                .append(" }")
+                .toString();
 
-        log.debug("listServices() query str: " + queryStr);
+        return listResourcesByQuery(queryStr, "op");
+    }
+
+    /**
+     * Obtains the list of input URIs for a given Operation
+     *
+     * @param operationUri the operation URI
+     * @return a List of URIs with the inputs of the operation. If no input is necessary the List should be empty NOT null.
+     */
+    @Override
+    public List<URI> listInputs(URI operationUri) {
+
+        if (operationUri == null) {
+            return new ArrayList<URI>();
+        }
+
+        String queryStr = new StringBuilder()
+                .append("select DISTINCT ?input where { \n")
+                .append("?o ").append("<").append(MSM.hasInput.getURI()).append(">").append(" ?input .")
+                .append("?input ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.MessageContent.getURI()).append("> .")
+                .append(" }")
+                .toString();
+
+        return listResourcesByQuery(queryStr, "input");
+    }
+
+    /**
+     * Obtains the list of output URIs for a given Operation
+     *
+     * @param operationUri the operation URI
+     * @return a List of URIs with the outputs of the operation. If no output is provided the List should be empty NOT null.
+     */
+    @Override
+    public List<URI> listOutputs(URI operationUri) {
+
+        if (operationUri == null) {
+            return new ArrayList<URI>();
+        }
+
+        String queryStr = new StringBuilder()
+                .append("select DISTINCT ?output where { \n")
+                .append("?o ").append("<").append(MSM.hasOutput.getURI()).append(">").append(" ?output .")
+                .append("?output ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.MessageContent.getURI()).append("> .")
+                .append(" }")
+                .toString();
+
+        return listResourcesByQuery(queryStr, "output");
+    }
+
+    private List<URI> listResourcesByQuery(String queryStr, String variableName) {
+
+        List<URI> result = new ArrayList<URI>();
+        // If the SPARQL endpoint does not exist return immediately.
+        if (this.getSparqlQueryEndpoint() == null) {
+            return result;
+        }
 
         // Query the engine
         Query query = QueryFactory.create(queryStr);
@@ -101,7 +172,7 @@ public class ServiceManagerRdf extends BaseSemanticManager implements ServiceMan
                 QuerySolution soln = qResults.nextSolution();
 
                 // Get the match URL
-                resource = soln.getResource("s");
+                resource = soln.getResource(variableName);
 
                 if (resource != null && resource.isURIResource()) {
                     matchUri = new URI(resource.getURI());
