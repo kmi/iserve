@@ -130,6 +130,13 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <artifactId>iserve-importer-wsc</artifactId>
+            <groupId>uk.ac.open.kmi.iserve</groupId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Include Test Resources -->
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
@@ -143,6 +150,8 @@
             <version>2.0</version>
         </dependency>
     </dependencies>
+
+
 
     <build>
         <finalName>iserve-sal-rest</finalName>

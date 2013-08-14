@@ -71,15 +71,15 @@ public class DiscoveryResource {
 
         // Register all plugins manually for now
         DiscoveryPlugin plugin;
+        // TODO; Broken
+        // plugin = new AllServicesPlugin();
+        // registerPlugin(plugin);
 
-        plugin = new AllServicesPlugin();
-        registerPlugin(plugin);
+        // plugin = new RDFSInputOutputDiscoveryPlugin();
+        // registerPlugin(plugin);
 
-        plugin = new RDFSInputOutputDiscoveryPlugin();
-        registerPlugin(plugin);
-
-        plugin = new RDFSClassificationDiscoveryPlugin();
-        registerPlugin(plugin);
+        // plugin = new RDFSClassificationDiscoveryPlugin();
+        // registerPlugin(plugin);
 
         //		plugin = new IMatcherDiscoveryPlugin(connector);
         //		plugins.put(plugin.getName(), plugin);
@@ -320,9 +320,12 @@ public class DiscoveryResource {
                 };
 
         // Order the results by score and then by url
+        // TODO; Broken
+        Ordering<Map.Entry<URL, MatchResult>> entryOrdering = null;
+        /*
         Ordering<Map.Entry<URL, MatchResult>> entryOrdering =
                 Ordering.from(MatchComparator.BY_SCORE).onResultOf(getMatchResult).reverse().
-                        compound(Ordering.from(MatchComparator.BY_URL).onResultOf(getMatchResult));
+                        compound(Ordering.from(MatchComparator.BY_URL).onResultOf(getMatchResult)); */
 
         // First obtain the map with the values scored, then order it
         Map<URL, MatchResult> scoredMap = Maps.transformValues(matchingResults, new BasicScorer());
@@ -366,7 +369,7 @@ public class DiscoveryResource {
                     DiscoveryUtil.getAbderaInstance().newEntry();
             rssEntry.setId(entry.getKey().toString());
             rssEntry.addLink(entry.getKey().toString(), "alternate");
-            rssEntry.setTitle(entry.getValue().getMatchLabel());
+            //rssEntry.setTitle(entry.getValue().getMatchLabel());
             //			String content = "Matching degree: " + degree;
             //			ExtensibleElement e = rssEntry.addExtension(entry.getValue().);
             //			e.setAttributeValue("score", entry.getValue().getScore());

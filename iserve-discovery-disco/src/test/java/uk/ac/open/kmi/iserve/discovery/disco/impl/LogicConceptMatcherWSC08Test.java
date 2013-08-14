@@ -18,16 +18,20 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Table;
+import es.usc.citius.composit.importer.wsc.wscxml.WSCImporter;
 import junit.extensions.TestSetup;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.apache.log4j.BasicConfigurator;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.MediaType;
 import uk.ac.open.kmi.iserve.commons.io.Syntax;
+import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterBySyntax;
+import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
@@ -37,6 +41,7 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.net.URI;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,37 +51,40 @@ import java.util.Set;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 01/08/2013
  */
-public class LogicConceptMatcherTest extends TestCase {
+public class LogicConceptMatcherWSC08Test extends TestCase {
 
-    private static final Logger log = LoggerFactory.getLogger(LogicConceptMatcherTest.class);
-    private static final String OWLS_TC_SERVICES = "/OWLS-TC3-MSM";
-    private static final String WSC08_01_SERVICES = "/wsc08-dataset01/services";
-    private static final String JGD_SERVICES = "/jgd-services";
-    private static final String SOA4RE_SERVICES = "/soa4re";
+    private static final Logger log = LoggerFactory.getLogger(LogicConceptMatcherWSC08Test.class);
+    private static final String WSC08_01_SERVICES = "/wsc08-dataset01/services/services.xml";
+    private static final String MEDIATYPE = "text/xml";
 
     private LogicConceptMatcher matcher = new LogicConceptMatcher();
 
     public static TestSetup suite() {
 
-        TestSetup setup = new TestSetup(new TestSuite(LogicConceptMatcherTest.class)) {
+        TestSetup setup = new TestSetup(new TestSuite(LogicConceptMatcherWSC08Test.class)) {
             protected void setUp() throws Exception {
+                BasicConfigurator.configure();
                 // do your one-time setup here
 
                 // Clean the whole thing before testing
                 ManagerSingleton.getInstance().clearRegistry();
 
-                URI testFolder = LogicConceptMatcherTest.class.getResource(OWLS_TC_SERVICES).toURI();
-                FilenameFilter ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
-                File dir = new File(testFolder);
-                File[] msmTtlTcFiles = dir.listFiles(ttlFilter);
+                log.info("Importing WSC 2008 services");
+                String file =  LogicConceptMatcherWSC08Test.class.getResource(WSC08_01_SERVICES).getFile();
+                log.debug("Using " + file);
+                File services = new File(file);
 
-                FileInputStream in;
-                // Upload every document and obtain their URLs
-                for (File ttlFile : msmTtlTcFiles) {
-                    log.debug("Importing {}", ttlFile.getAbsolutePath());
-                    in = new FileInputStream(ttlFile);
-                    ManagerSingleton.getInstance().importService(in, MediaType.TEXT_TURTLE.getMediaType());
+                //List<Service> result = new WSCImporter().transform(new FileInputStream(services), null);
+                // Automatic plugin discovery
+                List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
+                // Import all services
+                for(Service s : result){
+                    URI uri = ManagerSingleton.getInstance().addService(s);
+                    Assert.assertNotNull(uri);
+                    log.info("Service added: " + uri.toASCIIString());
                 }
+
+
             }
 
             protected void tearDown() throws Exception {
@@ -88,8 +96,8 @@ public class LogicConceptMatcherTest extends TestCase {
 
     public void testMatch() throws Exception {
 
-        URI origin = URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar");
-        URI destination = URI.create("http://127.0.0.1/ontology/SUMO.owl#Quantity");
+        URI origin = URI.create("http://127.0.0.1/ontology/taxonomy.owl#con1981452129");
+        URI destination = URI.create("http://127.0.0.1/ontology/taxonomy.owl#con596084519");
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
@@ -97,9 +105,10 @@ public class LogicConceptMatcherTest extends TestCase {
         stopwatch.stop();
 
         log.info("Obtained match in {} \n {}", stopwatch, match);
-        Assert.assertEquals(match.getMatchType(), DiscoMatchType.Plugin);
+        Assert.assertEquals(DiscoMatchType.Plugin, match.getMatchType());
     }
 
+    /*
     @Test
     public void testMatchBySets() throws Exception {
 
@@ -285,5 +294,5 @@ public class LogicConceptMatcherTest extends TestCase {
         Assert.assertEquals(matches.size(), 0);
         stopwatch.reset();
 
-    }
+    }*/
 }

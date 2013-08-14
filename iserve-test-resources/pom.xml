@@ -65,6 +65,19 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>install-wsc08-01</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>http://localhost/datasets/wsc08-dataset01.zip</url>
+                            <unpack>true</unpack>
+                            <outputDirectory>${project.build.resources[0].directory}</outputDirectory>
+                            <md5>945071634ee34327dfa88a12e55c13bf</md5>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>install-owls-tc4</id>
                         <phase>generate-resources</phase>
                         <goals>
