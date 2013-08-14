@@ -79,12 +79,31 @@ public class LogicConceptMatcherWSC08Test extends TestCase {
                 List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
                 // Import all services
                 for(Service s : result){
-                    URI uri = ManagerSingleton.getInstance().addService(s);
+                    URI uri = ManagerSingleton.getInstance().importService(s);
                     Assert.assertNotNull(uri);
                     log.info("Service added: " + uri.toASCIIString());
                 }
 
+                /*
 
+                URI testFolder = LogicConceptMatcherWSC08Test.class.getResource(WSC08_01_SERVICES).toURI();
+                log.debug("Test folder {}", testFolder);
+                FilenameFilter ttlFilter = new FilenameFilter() {
+                    public boolean accept(File dir, String name) {
+                        return (name.endsWith(".owl") || name.endsWith(".owls"));
+                    }
+                };
+                File dir = new File(testFolder);
+                File[] msmTtlTcFiles = dir.listFiles(ttlFilter);
+                log.debug("Valid services detected: {}", msmTtlTcFiles);
+
+                FileInputStream in;
+                // Upload every document and obtain their URLs
+                for (File ttlFile : msmTtlTcFiles) {
+                    log.debug("Importing {}", ttlFile.getAbsolutePath());
+                    in = new FileInputStream(ttlFile);
+                    ManagerSingleton.getInstance().importService(in, OWLS_MEDIATYPE);
+                } */
             }
 
             protected void tearDown() throws Exception {

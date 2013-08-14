@@ -77,6 +77,7 @@ public class LogicConceptMatcherTest extends TestCase {
                     in = new FileInputStream(ttlFile);
                     ManagerSingleton.getInstance().importService(in, MediaType.TEXT_TURTLE.getMediaType());
                 }
+                log.debug("Ready");
             }
 
             protected void tearDown() throws Exception {

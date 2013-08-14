@@ -117,14 +117,25 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
         }
     }
 
+    // TODO; Using the flag wait to modify the behaviour may not be the best option
     @Override
-    public void fetchModelsForService(Service svc) {
+    public void fetchModelsForService(Service svc, boolean wait) {
         Set<String> modelUris = obtainReferencedModelUris(svc);
         for (String modelUri : modelUris) {
             if (!this.loadedModels.contains(modelUri)) {
                 Callable<Boolean> task = new CrawlCallable(this, modelUri);
-                Future<Boolean> future = this.executor.submit(task);
-                // We should eventually check these..
+                if (wait) {
+                    Future<Boolean> future = this.executor.submit(task);
+                    //TODO; We should eventually check these..
+                    try {
+                        future.get();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+                }
+
             }
         }
     }
