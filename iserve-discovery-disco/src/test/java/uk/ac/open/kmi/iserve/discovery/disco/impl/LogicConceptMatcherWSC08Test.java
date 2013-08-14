@@ -113,10 +113,38 @@ public class LogicConceptMatcherWSC08Test extends TestCase {
         return setup;
     }
 
-    public void testMatch() throws Exception {
+    public void testDirectPluginMatch() throws Exception {
 
-        URI origin = URI.create("http://127.0.0.1/ontology/taxonomy.owl#con1981452129");
-        URI destination = URI.create("http://127.0.0.1/ontology/taxonomy.owl#con596084519");
+        URI origin = URI.create("http://127.0.0.1/ontology/taxonomy.owl#con1655991159");
+        URI destination = URI.create("http://127.0.0.1/ontology/taxonomy.owl#con409488015");
+
+        // Obtain matches
+        Stopwatch stopwatch = new Stopwatch().start();
+        MatchResult match = matcher.match(origin, destination);
+        stopwatch.stop();
+
+        log.info("Obtained match in {} \n {}", stopwatch, match);
+        Assert.assertEquals(DiscoMatchType.Plugin, match.getMatchType());
+    }
+
+    public void testDirectSubsumeMatch() throws Exception {
+
+        URI origin = URI.create("http://127.0.0.1/ontology/taxonomy.owl#con1655991159");
+        URI destination = URI.create("http://127.0.0.1/ontology/taxonomy.owl#con409488015");
+
+        // Obtain matches
+        Stopwatch stopwatch = new Stopwatch().start();
+        MatchResult match = matcher.match(destination, origin);
+        stopwatch.stop();
+
+        log.info("Obtained match in {} \n {}", stopwatch, match);
+        Assert.assertEquals(DiscoMatchType.Subsume, match.getMatchType());
+    }
+
+    public void testIndirectPluginMatch() throws Exception {
+
+        URI origin = URI.create("http://127.0.0.1/ontology/taxonomy.owl#con1901563774");
+        URI destination = URI.create("http://127.0.0.1/ontology/taxonomy.owl#con241744282");
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
