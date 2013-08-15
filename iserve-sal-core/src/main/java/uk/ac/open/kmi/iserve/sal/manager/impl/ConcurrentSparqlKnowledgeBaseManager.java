@@ -122,26 +122,27 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
     @Override
     public void fetchModelsForService(Service svc, boolean wait) {
         Set<String> modelUris = obtainReferencedModelUris(svc);
+        Map<String, Future<Boolean>> concurrentTasks = new HashMap<String, Future<Boolean>>();
+
         for (String modelUri : modelUris) {
             if (!this.loadedModels.contains(modelUri) && !this.unreachableModels.contains(modelUri)) {
                 Callable<Boolean> task = new CrawlCallable(this, modelUri);
-                if (wait) {
-                    Future<Boolean> future = this.executor.submit(task);
-                    //TODO; We should eventually check these..
-                    boolean result;
-                    try {
-                        result = future.get();
-                        if (!result){
-                            this.unreachableModels.add(modelUri);
-                            log.error("Cannot load " + modelUri + ". Marked as invalid");
-                        }
-                    } catch (Exception e) {
-                        // Mark as invalid
-                        log.error(e.getMessage());
+                concurrentTasks.put(modelUri, this.executor.submit(task));
+            }
+        }
+        if (wait) {
+            for (String modelUri : concurrentTasks.keySet()) {
+                Future<Boolean> f = concurrentTasks.get(modelUri);
+                try {
+                    if (!f.get()){
                         this.unreachableModels.add(modelUri);
+                        log.error("Cannot load " + modelUri + ". Marked as invalid");
                     }
+                } catch (Exception e) {
+                    // Mark as invalid
+                    log.error(e.getMessage());
+                    this.unreachableModels.add(modelUri);
                 }
-
             }
         }
     }
