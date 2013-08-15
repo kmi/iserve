@@ -56,6 +56,7 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
 
     // Set backed by a ConcurrentHashMap to avoid race conditions
     private Set<String> loadedModels;
+    private Set<String> unreachableModels = new HashSet<String>();
     private int NUM_THREADS = 4;
 
     private ExecutorService executor;
@@ -122,17 +123,22 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
     public void fetchModelsForService(Service svc, boolean wait) {
         Set<String> modelUris = obtainReferencedModelUris(svc);
         for (String modelUri : modelUris) {
-            if (!this.loadedModels.contains(modelUri)) {
+            if (!this.loadedModels.contains(modelUri) && !this.unreachableModels.contains(modelUri)) {
                 Callable<Boolean> task = new CrawlCallable(this, modelUri);
                 if (wait) {
                     Future<Boolean> future = this.executor.submit(task);
                     //TODO; We should eventually check these..
+                    boolean result;
                     try {
-                        future.get();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        result = future.get();
+                        if (!result){
+                            this.unreachableModels.add(modelUri);
+                            log.error("Cannot load " + modelUri + ". Marked as invalid");
+                        }
+                    } catch (Exception e) {
+                        // Mark as invalid
+                        log.error(e.getMessage());
+                        this.unreachableModels.add(modelUri);
                     }
                 }
 

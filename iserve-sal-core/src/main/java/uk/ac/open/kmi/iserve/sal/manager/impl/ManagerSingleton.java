@@ -219,7 +219,7 @@ public class ManagerSingleton implements iServeManager {
                 log.info("Service imported: {}", serviceUri.toASCIIString());
                 log.info("Source document imported: {}", sourceDocUri.toASCIIString());
                 // Update the knowledge base
-                this.kbManager.fetchModelsForService(svc, false);
+                this.kbManager.fetchModelsForService(svc, true);
             }
 
         } finally {
