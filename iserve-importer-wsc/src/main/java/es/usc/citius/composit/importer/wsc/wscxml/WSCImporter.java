@@ -10,10 +10,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.ServiceTransformer;
-import uk.ac.open.kmi.iserve.commons.model.MessageContent;
-import uk.ac.open.kmi.iserve.commons.model.Operation;
-import uk.ac.open.kmi.iserve.commons.model.Resource;
-import uk.ac.open.kmi.iserve.commons.model.Service;
+import uk.ac.open.kmi.iserve.commons.model.*;
 
 
 import javax.xml.bind.JAXB;
@@ -23,6 +20,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Imports and transforms datasets from the Web Service Challenge 2008 (XML format)
@@ -77,6 +75,19 @@ public class WSCImporter implements ServiceTransformer {
         return content;
     }
 
+    private MessageContent transform(ArrayList<XMLInstance> instances, String fieldName){
+        URI uri = URI.create(this.fakeURL + "#MessageContent_" + fieldName);
+        MessageContent msg = new MessageContent(uri);
+        for(XMLInstance instance : instances){
+            String concept = this.reasoner.getConceptInstance(instance.getName());
+            URI partURI = URI.create(this.fakeURL + "#MessagePart_" + concept);
+            MessagePart part = new MessagePart(partURI);
+            part.addModelReference(new Resource(URI.create(this.owlOntologyURL+"#"+concept)));
+            msg.addMandatoryPart(part);
+        }
+        return msg;
+    }
+
     @Override
     public List<Service> transform(InputStream originalDescription, String baseUri) {
         // De-serialize from XML
@@ -88,20 +99,29 @@ public class WSCImporter implements ServiceTransformer {
         String uri = baseUri.endsWith("#") ? baseUri : baseUri + "#";
         // Create the services following the iserve-commons-vocabulary model
         for(XMLService service : services.getServices()){
-            URI srvURI = URI.create(fakeURL+"#"+service.getName());
-            URI opURI = URI.create(fakeURL+"/"+service.getName()+"#Operation");
+            URI srvURI = URI.create(fakeURL + "#" + service.getName());
+            URI opURI = URI.create(fakeURL + "/" + service.getName() + "#Operation");
             log.debug("Transforming service (URI: {})", srvURI);
             Service modelService = new Service(srvURI);
             //modelService.setSource(srvURI);
             //modelService.setWsdlGrounding(srvURI);
 
+            // Create only one hasInput and hasOutput and mandatory parts for each input/output
             Operation operation = new Operation(opURI);
+            operation.addInput(transform(service.getInputs().getInstances(), "input"));
+            operation.addOutput(transform(service.getOutputs().getInstances(), "output"));
+
+            // The commented method is not supported by iServe (some methods cannot read more than
+            // one hasInput/hasOutput
+            // TODO; Revise hasInput/hasOutput problem
+            /*
             for(XMLInstance input : service.getInputs().getInstances()){
                 operation.addInput(transform(input, baseUri));
             }
             for(XMLInstance output : service.getOutputs().getInstances()){
                 operation.addOutput(transform(output, baseUri));
-            }
+            }*/
+
             modelService.addOperation(operation);
             modelService.setLabel(service.getName());
             listServices.add(modelService);

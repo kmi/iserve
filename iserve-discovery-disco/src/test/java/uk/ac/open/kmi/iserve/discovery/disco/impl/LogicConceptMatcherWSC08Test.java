@@ -17,32 +17,27 @@
 package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.Table;
-import es.usc.citius.composit.importer.wsc.wscxml.WSCImporter;
+import com.google.common.collect.Sets;
 import junit.extensions.TestSetup;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.log4j.BasicConfigurator;
-import org.junit.Test;
+import org.junit.Ignore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.commons.io.MediaType;
-import uk.ac.open.kmi.iserve.commons.io.Syntax;
 import uk.ac.open.kmi.iserve.commons.io.Transformer;
-import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterBySyntax;
+import uk.ac.open.kmi.iserve.commons.model.MessageContent;
+import uk.ac.open.kmi.iserve.commons.model.MessagePart;
+import uk.ac.open.kmi.iserve.commons.model.Operation;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -64,7 +59,7 @@ public class LogicConceptMatcherWSC08Test extends TestCase {
 
         TestSetup setup = new TestSetup(new TestSuite(LogicConceptMatcherWSC08Test.class)) {
             protected void setUp() throws Exception {
-                BasicConfigurator.configure();
+                //BasicConfigurator.configure();
                 // do your one-time setup here
 
                 // Clean the whole thing before testing
@@ -96,8 +91,8 @@ public class LogicConceptMatcherWSC08Test extends TestCase {
 
     public void testDirectPluginMatch() throws Exception {
 
-        URI origin = URI.create("http://127.0.0.1/ontology/taxonomy.owl#con1655991159");
-        URI destination = URI.create("http://127.0.0.1/ontology/taxonomy.owl#con409488015");
+        URI origin = URI.create("http://localhost/ontology/taxonomy.owl#con1655991159");
+        URI destination = URI.create("http://localhost/ontology/taxonomy.owl#con409488015");
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
@@ -110,8 +105,8 @@ public class LogicConceptMatcherWSC08Test extends TestCase {
 
     public void testDirectSubsumeMatch() throws Exception {
 
-        URI origin = URI.create("http://127.0.0.1/ontology/taxonomy.owl#con1655991159");
-        URI destination = URI.create("http://127.0.0.1/ontology/taxonomy.owl#con409488015");
+        URI origin = URI.create("http://localhost/ontology/taxonomy.owl#con1655991159");
+        URI destination = URI.create("http://localhost/ontology/taxonomy.owl#con409488015");
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
@@ -124,8 +119,8 @@ public class LogicConceptMatcherWSC08Test extends TestCase {
 
     public void testIndirectPluginMatch() throws Exception {
 
-        URI origin = URI.create("http://127.0.0.1/ontology/taxonomy.owl#con1901563774");
-        URI destination = URI.create("http://127.0.0.1/ontology/taxonomy.owl#con241744282");
+        URI origin = URI.create("http://localhost/ontology/taxonomy.owl#con1901563774");
+        URI destination = URI.create("http://localhost/ontology/taxonomy.owl#con241744282");
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
@@ -134,5 +129,78 @@ public class LogicConceptMatcherWSC08Test extends TestCase {
 
         log.info("Obtained match in {} \n {}", stopwatch, match);
         Assert.assertEquals(DiscoMatchType.Plugin, match.getMatchType());
+    }
+
+    public void testPluginMatchT1(){
+        // Match http://localhost/ontology/taxonomy.owl#con1233457844->http://localhost/ontology/taxonomy.owl#con1653328292:Fail
+        // con1233457844 is a subclass of con1653328292
+        URI origin = URI.create("http://localhost/ontology/taxonomy.owl#con1233457844");
+        URI destination = URI.create("http://localhost/ontology/taxonomy.owl#con1653328292");
+
+        // Obtain matches
+        Stopwatch stopwatch = new Stopwatch().start();
+        MatchResult match = matcher.match(origin, destination);
+        stopwatch.stop();
+
+        log.info("Obtained match in {} \n {}", stopwatch, match);
+        Assert.assertEquals(DiscoMatchType.Plugin, match.getMatchType());
+    }
+
+
+    public void testMultipleDiscovery() throws Exception {
+        // Define the available inputs
+        Set<URI> available = new HashSet<URI>();
+
+        available.add(URI.create("http://localhost/ontology/taxonomy.owl#con1233457844"));
+        available.add(URI.create("http://localhost/ontology/taxonomy.owl#con1849951292"));
+        available.add(URI.create("http://localhost/ontology/taxonomy.owl#con864995873"));
+
+        String[] expected = {
+                "serv213889376",
+                "serv1668689219",
+                "serv1323166560",
+                "serv75024910",
+                "serv1253734327",
+                "serv1462031026",
+                "serv144457143",
+                "serv561050541",
+                "serv1667050675",
+                "serv212250832",
+                "serv7231183",
+                "serv1529824753",
+                "serv2015850384",
+                "serv837140929",
+                "serv906573162",
+                "serv1599256986"};
+
+        Set<String> expectedServices = Sets.newHashSet(expected);
+
+        // Discover executable services
+        Set<String> candidates = new HashSet<String>();
+        for(URI service : ManagerSingleton.getInstance().listServices()){
+            // Load the service
+            Service srv = ManagerSingleton.getInstance().getService(service);
+            // Load operations
+            for(Operation op : srv.getOperations()) {
+                // Get inputs
+                // System.out.println("> Checking " + op.getUri());
+                for(MessageContent input : op.getInputs()){
+                    for(MessagePart part : input.getMandatoryParts()){
+                        URI to = part.getModelReferences().iterator().next().getUri();
+                        // System.out.println("\tChecking input " + to);
+                        for(URI from : available){
+                            // Try to match
+                            MatchResult result = matcher.match(from, to);
+                            if (result.getMatchType().compareTo(DiscoMatchType.Plugin)>=0){
+                                log.info("Service operation " + op.getUri() + " matched.");
+                                log.info("\t> Match " + from + "->" + to + ":" + result.getMatchType());
+                                assertTrue(expectedServices.contains(srv.getLabel()));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }

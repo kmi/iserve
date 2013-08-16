@@ -23,7 +23,7 @@ import java.util.Set;
  * @author Pablo Rodríguez Mier
  */
 public class OWLExporter {
-    private String baseUri = "http://127.0.0.1";
+    private String baseUri = "http://localhost";
     private String relativeServicePath = "services";
     private String relativeOntologyFile = "ontology/taxonomy.owl";
 

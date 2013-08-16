@@ -85,7 +85,7 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         if (serviceUri == null) {
             return new ArrayList<URI>();
         }
-
+        // TODO; serviceUri not used? should be used within the query
         String queryStr = new StringBuilder()
                 .append("select DISTINCT ?op where { \n")
                 .append("?s ").append("<").append(MSM.hasOperation.getURI()).append(">").append(" ?op .")
@@ -108,7 +108,8 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         if (operationUri == null) {
             return new ArrayList<URI>();
         }
-
+        // TODO; operationUri is not used. This function retrieves all inputs in the repository, not just the
+        // inputs of the operation
         String queryStr = new StringBuilder()
                 .append("select DISTINCT ?input where { \n")
                 .append("?o ").append("<").append(MSM.hasInput.getURI()).append(">").append(" ?input .")

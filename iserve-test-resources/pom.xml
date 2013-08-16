@@ -74,7 +74,7 @@
                             <url>http://localhost/datasets/wsc08-dataset01.zip</url>
                             <unpack>true</unpack>
                             <outputDirectory>${project.build.resources[0].directory}</outputDirectory>
-                            <md5>945071634ee34327dfa88a12e55c13bf</md5>
+                            <md5>67476223ff277f0c7d64be96654a343b</md5>
                         </configuration>
                     </execution>
                     <execution>
