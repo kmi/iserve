@@ -20,6 +20,8 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import junit.framework.Assert;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -35,6 +37,7 @@ import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,7 +61,8 @@ public class LogicConceptMatcherWSC08Test {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        //BasicConfigurator.configure();
+        BasicConfigurator.configure();
+        org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
         // do your one-time setup here
 
         // Clean the whole thing before testing
@@ -127,7 +131,7 @@ public class LogicConceptMatcherWSC08Test {
 
 
     @Test
-    @Ignore
+    @Ignore("Integration test (not a proper unit test), takes too long to complete")
     public void testMultipleDiscovery() throws Exception {
         // Define the available inputs
         Set<URI> available = new HashSet<URI>();
@@ -189,11 +193,24 @@ public class LogicConceptMatcherWSC08Test {
     }
 
     @Test
+    @Ignore("Integration test (not a proper unit test), takes too long to complete")
     public void discoverAllCandidates() throws Exception {
+
+        String[][] expectedServices = {{"serv1529824753", "serv1253734327", "serv1462031026", "serv212250832", "serv906573162", "serv144457143", "serv1599256986", "serv75024910", "serv561050541", "serv2015850384", "serv1668689219", "serv213889376", "serv837140929", "serv1667050675", "serv7231183", "serv1323166560"},
+                {"serv1043799122", "serv1736482908", "serv281683065", "serv974366889", "serv1805915141", "serv351115298", "serv769347240", "serv976005395", "serv1392598793", "serv630482774", "serv76663416", "serv2085282617"},
+                {"serv420547531", "serv283321609", "serv900019062", "serv1113231355", "serv346199742", "serv1531463259", "serv699915007"},
+                {"serv1807553685", "serv1114869861", "serv489979764", "serv422186075", "serv352753842", "serv1944779607", "serv1738121452", "serv1182663588", "serv1045437628", "serv1875347374"},
+                {"serv559411997", "serv1876985918", "serv1252095821"},
+                {"serv491618308", "serv1946418151", "serv2014211840", "serv1184302094"},
+                {"serv1321528054"},
+                {"serv628844230"},
+                {"serv2083644073"},
+                {"serv1460392520", "serv767708696", "serv5592677", "serv698276463", "serv1390960287"}};
+
         // Define the available inputs
         Set<URI> availableInputs = new HashSet<URI>();
         Set<URI> newInputs = new HashSet<URI>();
-        Set<Operation> allCandidates = new HashSet<Operation>();
+        Set<Operation> allRelevantOps = new HashSet<Operation>();
 
         availableInputs.add(URI.create("http://localhost/ontology/taxonomy.owl#con1233457844"));
         availableInputs.add(URI.create("http://localhost/ontology/taxonomy.owl#con1849951292"));
@@ -206,24 +223,26 @@ public class LogicConceptMatcherWSC08Test {
         for(URI srvURI : ManagerSingleton.getInstance().listServices()){
             services.add(ManagerSingleton.getInstance().getService(srvURI));
         }
-
         int pass = 0;
         while(!newInputs.isEmpty()){
-            Set<Operation> candidates = new HashSet<Operation>();
-            Set<URI> candidateOutputs = new HashSet<URI>();
+            Stopwatch passWatch = new Stopwatch().start();
+            Set<Operation> relevantOps = new HashSet<Operation>();
+            Set<URI> relevantOutputs = new HashSet<URI>();
+            Set<Service> relevantServices = new HashSet<Service>();
             for(Service srv : services){
-                System.out.println("Checking " + srv.getUri());
+                log.debug("Checking {}", srv.getUri());
                 // Load operations
                 operations:
                 for(Operation op : srv.getOperations()) {
-                    if (allCandidates.contains(op)) continue;
+                    if (allRelevantOps.contains(op)) continue;
                     // Fast check if there is some input that matches
                     if (consumesAny(newInputs, op)){
                         if (isInvokable2(availableInputs, op)){
-                            System.out.println(" >> Invokable!");
-                            candidates.add(op);
+                            log.debug(" >> Invokable!");
+                            relevantOps.add(op);
                             Set<URI> outputs = getOutputs(op);
-                            candidateOutputs.addAll(outputs);
+                            relevantOutputs.addAll(outputs);
+                            relevantServices.add(srv);
                             break operations;
                         }
                     }
@@ -231,16 +250,30 @@ public class LogicConceptMatcherWSC08Test {
             }
             // The new inputs:
             newInputs.clear();
-            candidateOutputs.removeAll(availableInputs);
-            newInputs.addAll(candidateOutputs);
+            // Remove concepts that were used before
+            relevantOutputs.removeAll(availableInputs);
+            // New inputs that potentially lead to new discovered services
+            newInputs.addAll(relevantOutputs);
             availableInputs.addAll(newInputs);
-            allCandidates.addAll(candidates);
-
+            allRelevantOps.addAll(relevantOps);
+            if (!newInputs.isEmpty()){
+                assertTrue(expectedServices[pass].length==relevantOps.size() &&
+                        serviceNamesToList(relevantServices).containsAll(Sets.newHashSet(expectedServices[pass])));
+            }
             pass++;
-            System.out.println(pass + " Pass, total candidates " + candidates.size() + ". Available inputs: " + availableInputs.size() + ". New Inputs " + newInputs.size());
+            log.info("{} Pass, total candidates {}. Available inputs {}. New Inputs {}. Iteration time {}", pass, relevantOps.size(), availableInputs.size(), newInputs.size(), passWatch.toString());
+            passWatch.reset();
         }
 
 
+    }
+
+    private List<String> serviceNamesToList(Set<Service> services){
+        List<String> names = new ArrayList<String>();
+        for(Service s : services){
+            names.add(s.getLabel());
+        }
+        return names;
     }
 
     private boolean consumesAny(Set<URI> inputs, Operation op){
