@@ -147,7 +147,7 @@ public class LogicConceptMatcher implements ConceptMatcher {
             Stopwatch stopwatch = new Stopwatch().start();
             ResultSet qResults = qexec.execSelect();
             stopwatch.stop();
-            log.info("Time taken for querying the registry: {}", stopwatch);
+            log.debug("Time taken for querying the registry: {}", stopwatch);
 
             // Obtain matches if any and figure out the type
             if (qResults.hasNext()) {
