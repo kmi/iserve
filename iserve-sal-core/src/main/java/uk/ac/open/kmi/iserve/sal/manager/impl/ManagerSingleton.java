@@ -109,6 +109,10 @@ public class ManagerSingleton implements iServeManager {
         return this.configuration;
     }
 
+    public ServiceManager getServiceManager(){
+        return this.serviceManager;
+    }
+
     /**
      * This method will be called when the server is being shutdown.
      * Ensure a clean shutdown.
