@@ -62,7 +62,7 @@ public class RelevantServicesFinderTest {
         available.add(URI.create("http://localhost/ontology/taxonomy.owl#con1849951292"));
         available.add(URI.create("http://localhost/ontology/taxonomy.owl#con864995873"));
 
-        List<Set<Operation>> operations = finder.search(available, DiscoMatchType.Plugin);
+        List<Set<Operation>> operations = finder.searchImproved(available, DiscoMatchType.Plugin);
         finder.graph(operations, DiscoMatchType.Plugin);
 
     }

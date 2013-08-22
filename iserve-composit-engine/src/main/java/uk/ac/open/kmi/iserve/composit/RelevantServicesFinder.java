@@ -4,6 +4,7 @@ package uk.ac.open.kmi.iserve.composit;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.model.*;
@@ -75,10 +76,12 @@ public class RelevantServicesFinder {
         List<Set<Operation>> layers = new ArrayList<Set<Operation>>();
         Set<URI> newInputs = new HashSet<URI>();
         Set<Operation> allRelevantOps = new HashSet<Operation>();
+        Map<Operation, Set<URI>> nonMatchedInputs = new HashMap<Operation, Set<URI>>();
         newInputs.addAll(availableInputs);
 
         // Perform a service initialization. This should be done without importing all, just
         // using URIs.
+        // TODO; Do not import services, use URIs
         Set<Service> services = new HashSet<Service>();
         for(URI srvURI : serviceManager.listServices()){
             services.add(serviceManager.getService(srvURI));
@@ -124,6 +127,68 @@ public class RelevantServicesFinder {
         return layers;
     }
 
+    public List<Set<Operation>> searchImproved(Set<URI> availableInputs, DiscoMatchType atLeast) throws Exception {
+        List<Set<Operation>> layers = new ArrayList<Set<Operation>>();
+        Set<URI> newOutputs = new HashSet<URI>();
+        Set<Operation> allRelevantOps = new HashSet<Operation>();
+        Set<URI> allConcepts = new HashSet<URI>(availableInputs);
+        Map<Operation, Set<URI>> unmatchedInputMap = new HashMap<Operation, Set<URI>>();
+        newOutputs.addAll(allConcepts);
+
+        // Perform a service initialization. This should be done without importing all, just
+        // using URIs.
+        // TODO; Do not import services, use URIs
+        Set<Service> services = new HashSet<Service>();
+        for(URI srvURI : serviceManager.listServices()){
+            services.add(serviceManager.getService(srvURI));
+        }
+        int pass = 0;
+        while(!newOutputs.isEmpty()){
+            Stopwatch passWatch = new Stopwatch().start();
+            Set<Operation> relevantOps = new HashSet<Operation>();
+            Set<URI> relevantOutputs = new HashSet<URI>();
+            Set<Service> relevantServices = new HashSet<Service>();
+            for(Service srv : services){
+                log.debug("Checking {}", srv.getUri());
+                // Load operations
+                operations:
+                for(Operation op : srv.getOperations()) {
+                    if (allRelevantOps.contains(op)) continue;
+                    // Get last unmatched inputs from op
+                    Set<URI> opInputs = unmatchedInputMap.get(op);
+                    if (opInputs == null){
+                        opInputs = getInputs(op);
+                    }
+                    Set<URI> unmatched = notMatchedInputs(newOutputs, opInputs, atLeast);
+                    // Update
+                    unmatchedInputMap.put(op, unmatched);
+                    // If there are no unmatched inputs, then the op is invokable
+                    if (unmatched.isEmpty()){
+                        log.debug(" >> Invokable!");
+                        relevantOps.add(op);
+                        Set<URI> outputs = getOutputs(op);
+                        relevantOutputs.addAll(outputs);
+                        relevantServices.add(srv);
+                        break operations;
+                    }
+                }
+            }
+            newOutputs.clear();
+            // Remove concepts that were used before
+            relevantOutputs.removeAll(allConcepts);
+            // New outputs that potentially lead to new discovered services
+            newOutputs.addAll(relevantOutputs);
+            // Track all new generated concepts (outputs) just to remove the used ones in following steps
+            allConcepts.addAll(newOutputs);
+            allRelevantOps.addAll(relevantOps);
+            layers.add(relevantOps);
+            pass++;
+            log.info("{} Pass, total candidates {}. Available concepts {}. New outputs {}. Iteration time {}", pass, relevantOps.size(), allConcepts.size(), newOutputs.size(), passWatch.toString());
+            passWatch.reset();
+        }
+        return layers;
+    }
+
     private boolean consumesAny(Set<URI> inputs, Operation op, DiscoMatchType atLeast){
         Set<URI> opInputs = getInputs(op);
         for(URI from : inputs){
@@ -138,6 +203,25 @@ public class RelevantServicesFinder {
     }
 
 
+    private Set<URI> notMatchedInputs(Set<URI> inputs, Set<URI> opInputs, DiscoMatchType atLeast){
+        Set<URI> matched = new HashSet<URI>();
+        for(URI from : inputs){
+            for(URI to : opInputs){
+                // skip if already matched
+                if (matched.contains(to)) continue;
+
+                MatchResult match = this.matcher.match(from, to);
+                if (match.getMatchType().compareTo(atLeast)>=0){
+                    matched.add(to);
+                    if (matched.size()==opInputs.size()){
+                        Collections.emptySet();
+                    }
+                }
+
+            }
+        }
+        return Sets.newHashSet(Sets.difference(opInputs, matched));
+    }
 
     private boolean isInvokable(Set<URI> availableInputs, Operation op, DiscoMatchType atLeast){
         Set<URI> opInputs = getInputs(op);
