@@ -78,6 +78,19 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>install-simple-semantic-datasets</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>http://localhost/datasets/simple-datasets.zip</url>
+                            <unpack>true</unpack>
+                            <outputDirectory>${project.build.resources[0].directory}</outputDirectory>
+                            <md5>2969506c87ec8946620e306f4fbd2573</md5>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>install-owls-tc4</id>
                         <phase>generate-resources</phase>
                         <goals>

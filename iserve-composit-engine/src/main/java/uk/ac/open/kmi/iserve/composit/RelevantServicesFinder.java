@@ -38,7 +38,7 @@ public class RelevantServicesFinder {
      * @param operations
      * @param atLeast
      */
-    public void graph(List<Set<Operation>> operations, DiscoMatchType atLeast){
+    public MatchGraph graph(List<Set<Operation>> operations, DiscoMatchType atLeast){
         Multimap<URI, URI> graphMatch = HashMultimap.create();
         Multimap<Operation, Operation> operationGraph = HashMultimap.create();
         for(int i=0; i<operations.size()-1;i++){
@@ -67,6 +67,7 @@ public class RelevantServicesFinder {
                 }
             }
         }
+        return new MatchGraph(graphMatch, operationGraph);
     }
 
     // TODO; This class should use a higher-level component (pre-configured) for matching instead of the ConceptMatcher.

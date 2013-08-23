@@ -110,6 +110,7 @@ public class WSCImporter implements ServiceTransformer {
             Operation operation = new Operation(opURI);
             operation.addInput(transform(service.getInputs().getInstances(), "input"));
             operation.addOutput(transform(service.getOutputs().getInstances(), "output"));
+            operation.setLabel(service.getName()+"_op");
 
             // The commented method is not supported by iServe (some methods cannot read more than
             // one hasInput/hasOutput

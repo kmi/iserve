@@ -25,7 +25,8 @@ import java.util.Set;
 
 public class RelevantServicesFinderTest {
     private static final Logger log = LoggerFactory.getLogger(RelevantServicesFinderTest.class);
-    private static final String WSC08_01_SERVICES = "/wsc08-dataset01/services/services.xml";
+    //private static final String DATASET = "/wsc08-dataset01/services/services.xml";
+    private static final String DATASET = "/simple-datasets/03/services.xml";
     private static final String MEDIATYPE = "text/xml";
 
     @BeforeClass
@@ -37,8 +38,8 @@ public class RelevantServicesFinderTest {
         // Clean the whole thing before testing
         ManagerSingleton.getInstance().clearRegistry();
 
-        log.info("Importing WSC 2008 services");
-        String file =  RelevantServicesFinderTest.class.getResource(WSC08_01_SERVICES).getFile();
+        log.info("Importing services");
+        String file =  RelevantServicesFinderTest.class.getResource(DATASET).getFile();
         log.debug("Using " + file);
         File services = new File(file);
 
@@ -63,8 +64,9 @@ public class RelevantServicesFinderTest {
         available.add(URI.create("http://localhost/ontology/taxonomy.owl#con864995873"));
 
         List<Set<Operation>> operations = finder.searchImproved(available, DiscoMatchType.Plugin);
-        finder.graph(operations, DiscoMatchType.Plugin);
-
+        MatchGraph graph = finder.graph(operations, DiscoMatchType.Plugin);
+        //graph.display();
+        //Thread.currentThread().join();
     }
 
 
