@@ -40,12 +40,12 @@ public class MatchGraph {
         dagLayout.setSize(new Dimension(600,600));
 
         BasicVisualizationServer<String, String> visualizationServer = new BasicVisualizationServer<String, String>(dagLayout);
-        visualizationServer.setPreferredSize(new Dimension(610,610));
+        //visualizationServer.setPreferredSize(new Dimension(650,650));
         visualizationServer.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<String>());
         JFrame frame = new JFrame("Graph");
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(visualizationServer);
+        frame.getContentPane().add(visualizationServer, BorderLayout.CENTER);
         frame.pack();
         frame.setVisible(true);
         return frame;

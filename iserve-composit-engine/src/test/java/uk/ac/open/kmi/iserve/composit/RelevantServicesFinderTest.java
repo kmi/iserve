@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.Assert.assertTrue;
+
 
 public class RelevantServicesFinderTest {
     private static final Logger log = LoggerFactory.getLogger(RelevantServicesFinderTest.class);
@@ -63,8 +65,12 @@ public class RelevantServicesFinderTest {
         available.add(URI.create("http://localhost/ontology/taxonomy.owl#con1849951292"));
         available.add(URI.create("http://localhost/ontology/taxonomy.owl#con864995873"));
 
-        List<Set<Operation>> operations = finder.searchImproved(available, DiscoMatchType.Plugin);
-        MatchGraph graph = finder.graph(operations, DiscoMatchType.Plugin);
+        int[] expectedSize={5,3,2};
+        List<Set<URI>> operations = finder.searchImproved(available, DiscoMatchType.Plugin);
+        for(int i=0; i<operations.size();i++){
+            assertTrue(operations.get(i).size()==expectedSize[i]);
+        }
+        //MatchGraph graph = finder.graph(operations, DiscoMatchType.Plugin);
         //graph.display();
         //Thread.currentThread().join();
     }

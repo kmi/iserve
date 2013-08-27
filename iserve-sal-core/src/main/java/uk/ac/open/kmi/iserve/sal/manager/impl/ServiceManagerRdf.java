@@ -37,8 +37,7 @@ import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManager {
 
@@ -180,7 +179,7 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
             // TODO: Remove profiling
             long endTime = System.currentTimeMillis();
             long duration = endTime - startTime;
-            log.info("Time taken for querying the registry: " + duration);
+            log.debug("Time taken for querying the registry: " + duration);
 
             Resource resource;
             URI matchUri;
@@ -469,5 +468,20 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         } finally {
             qexec.close();
         }
+    }
+
+    @Override
+    public Set<URI> listModelReferences(URI uri) {
+            if (uri == null) {
+                return Collections.emptySet();
+            }
+
+            String queryStr = new StringBuilder()
+                    .append("select DISTINCT ?model where { \n")
+                    .append("<").append(uri.toASCIIString()).append("> ").append("<http://www.w3.org/ns/sawsdl#modelReference>").append(" ?model")
+                    .append(" }")
+                    .toString();
+
+            return new HashSet<URI>(listResourcesByQuery(queryStr, "model"));
     }
 }

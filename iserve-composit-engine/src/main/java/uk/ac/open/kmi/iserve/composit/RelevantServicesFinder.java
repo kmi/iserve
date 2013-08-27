@@ -128,32 +128,25 @@ public class RelevantServicesFinder {
         return layers;
     }
 
-    public List<Set<Operation>> searchImproved(Set<URI> availableInputs, DiscoMatchType atLeast) throws Exception {
-        List<Set<Operation>> layers = new ArrayList<Set<Operation>>();
+    public List<Set<URI>> searchImproved(Set<URI> availableInputs, DiscoMatchType atLeast) throws Exception {
+        List<Set<URI>> layers = new ArrayList<Set<URI>>();
         Set<URI> newOutputs = new HashSet<URI>();
-        Set<Operation> allRelevantOps = new HashSet<Operation>();
+        Set<URI> allRelevantOps = new HashSet<URI>();
         Set<URI> allConcepts = new HashSet<URI>(availableInputs);
-        Map<Operation, Set<URI>> unmatchedInputMap = new HashMap<Operation, Set<URI>>();
+        Map<URI, Set<URI>> unmatchedInputMap = new HashMap<URI, Set<URI>>();
         newOutputs.addAll(allConcepts);
 
-        // Perform a service initialization. This should be done without importing all, just
-        // using URIs.
-        // TODO; Do not import services, use URIs
-        Set<Service> services = new HashSet<Service>();
-        for(URI srvURI : serviceManager.listServices()){
-            services.add(serviceManager.getService(srvURI));
-        }
         int pass = 0;
         while(!newOutputs.isEmpty()){
             Stopwatch passWatch = new Stopwatch().start();
-            Set<Operation> relevantOps = new HashSet<Operation>();
+            Set<URI> relevantOps = new HashSet<URI>();
             Set<URI> relevantOutputs = new HashSet<URI>();
-            Set<Service> relevantServices = new HashSet<Service>();
-            for(Service srv : services){
-                log.debug("Checking {}", srv.getUri());
+            Set<URI> relevantServices = new HashSet<URI>();
+            for(URI srv : serviceManager.listServices()){
+                log.debug("Checking {}", srv);
                 // Load operations
                 operations:
-                for(Operation op : srv.getOperations()) {
+                for(URI op : serviceManager.listOperations(srv)) {
                     if (allRelevantOps.contains(op)) continue;
                     // Get last unmatched inputs from op
                     Set<URI> opInputs = unmatchedInputMap.get(op);
@@ -182,7 +175,9 @@ public class RelevantServicesFinder {
             // Track all new generated concepts (outputs) just to remove the used ones in following steps
             allConcepts.addAll(newOutputs);
             allRelevantOps.addAll(relevantOps);
-            layers.add(relevantOps);
+            if (relevantOps.size()!=0){
+                layers.add(relevantOps);
+            }
             pass++;
             log.info("{} Pass, total candidates {}. Available concepts {}. New outputs {}. Iteration time {}", pass, relevantOps.size(), allConcepts.size(), newOutputs.size(), passWatch.toString());
             passWatch.reset();
@@ -247,6 +242,26 @@ public class RelevantServicesFinder {
         Set<URI> models = new HashSet<URI>();
         for(MessageContent c : op.getInputs()){
             models.addAll(getModelReferences(c));
+        }
+        return models;
+    }
+
+    private Set<URI> getInputs(URI operation){
+        Set<URI> models = new HashSet<URI>();
+        for(URI input : serviceManager.listInputs(operation)){
+            for(URI p : serviceManager.listMandatoryParts(input)){
+                models.addAll(serviceManager.listModelReferences(p));
+            }
+        }
+        return models;
+    }
+
+    private Set<URI> getOutputs(URI operation){
+        Set<URI> models = new HashSet<URI>();
+        for(URI output : serviceManager.listOutputs(operation)){
+            for(URI p : serviceManager.listMandatoryParts(output)){
+                models.addAll(serviceManager.listModelReferences(p));
+            }
         }
         return models;
     }
