@@ -7,7 +7,6 @@ import com.google.inject.name.Names;
 import uk.ac.open.kmi.iserve.commons.io.ServiceTransformer;
 import uk.ac.open.kmi.iserve.commons.io.TransformationPluginModule;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -25,7 +24,7 @@ public class WSCTransformationPluginModule extends AbstractModule implements Tra
     private Properties getProperties() {
         try {
             Properties properties = new Properties();
-            properties.load(getClass().getClassLoader().getResourceAsStream("plugin.properties"));
+            properties.load(getClass().getClassLoader().getResourceAsStream("wscimporter.properties"));
             return properties;
         } catch (IOException ex) {
             //log.error("Error obtaining plugin properties", ex);

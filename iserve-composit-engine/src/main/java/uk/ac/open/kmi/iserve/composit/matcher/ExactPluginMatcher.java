@@ -1,6 +1,6 @@
 package uk.ac.open.kmi.iserve.composit.matcher;
 
-
+/*
 import es.usc.citius.composit.core.match.function.MatchFunction;
 import es.usc.citius.composit.core.model.Resource;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
@@ -26,4 +26,4 @@ public class ExactPluginMatcher implements MatchFunction<Resource> {
         }
         return false;
     }
-}
+}*/

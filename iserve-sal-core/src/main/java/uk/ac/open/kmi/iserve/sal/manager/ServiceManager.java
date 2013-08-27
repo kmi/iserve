@@ -111,6 +111,8 @@ public interface ServiceManager {
      */
     public abstract List<URI> listOutputs(URI operationUri);
 
+    List<URI> listMandatoryParts(URI messageContent);
+
     /**
      * Lists all documents related to a given service
      *

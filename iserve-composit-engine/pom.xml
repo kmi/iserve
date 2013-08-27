@@ -10,11 +10,12 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>iserve-composit-engine</artifactId>
     <dependencies>
+        <!-- Disabled (not required at moment)
         <dependency>
             <groupId>es.usc.citius.composit</groupId>
             <artifactId>core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>

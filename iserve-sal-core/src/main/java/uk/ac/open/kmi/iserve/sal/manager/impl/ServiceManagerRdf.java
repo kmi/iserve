@@ -88,7 +88,7 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         // TODO; serviceUri not used? should be used within the query
         String queryStr = new StringBuilder()
                 .append("select DISTINCT ?op where { \n")
-                .append("?s ").append("<").append(MSM.hasOperation.getURI()).append(">").append(" ?op .")
+                .append("<").append(serviceUri.toASCIIString()).append("> ").append("<").append(MSM.hasOperation.getURI()).append(">").append(" ?op .")
                 .append("?op ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.Operation.getURI()).append("> .")
                 .append(" }")
                 .toString();
@@ -112,7 +112,7 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         // inputs of the operation
         String queryStr = new StringBuilder()
                 .append("select DISTINCT ?input where { \n")
-                .append("?o ").append("<").append(MSM.hasInput.getURI()).append(">").append(" ?input .")
+                .append("<").append(operationUri.toASCIIString()).append("> ").append("<").append(MSM.hasInput.getURI()).append(">").append(" ?input .")
                 .append("?input ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.MessageContent.getURI()).append("> .")
                 .append(" }")
                 .toString();
@@ -135,12 +135,28 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
 
         String queryStr = new StringBuilder()
                 .append("select DISTINCT ?output where { \n")
-                .append("?o ").append("<").append(MSM.hasOutput.getURI()).append(">").append(" ?output .")
+                .append("<").append(operationUri.toASCIIString()).append("> ").append("<").append(MSM.hasOutput.getURI()).append(">").append(" ?output .")
                 .append("?output ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.MessageContent.getURI()).append("> .")
                 .append(" }")
                 .toString();
 
         return listResourcesByQuery(queryStr, "output");
+    }
+
+    @Override
+    public List<URI> listMandatoryParts(URI messageContent) {
+        if (messageContent == null) {
+            return new ArrayList<URI>();
+        }
+
+        String queryStr = new StringBuilder()
+                .append("select DISTINCT ?part where { \n")
+                .append("<").append(messageContent.toASCIIString()).append("> ").append("<").append(MSM.hasMandatoryPart.getURI()).append(">").append(" ?part .")
+                .append("?part ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.MessagePart.getURI()).append("> .")
+                .append(" }")
+                .toString();
+
+        return listResourcesByQuery(queryStr, "part");
     }
 
     private List<URI> listResourcesByQuery(String queryStr, String variableName) {

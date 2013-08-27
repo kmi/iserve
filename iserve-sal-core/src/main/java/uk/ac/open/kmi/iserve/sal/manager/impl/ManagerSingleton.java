@@ -168,7 +168,6 @@ public class ManagerSingleton implements iServeManager {
         return this.serviceManager.listOutputs(operationUri);
     }
 
-    // TODO; Add a method to import services already transformed???
     // NOTE: I added this method to import a service which has already been transformed.
     // The method addService does not import the ontologies specified in the modelReference??
     public URI importService(Service service) throws ServiceException {
