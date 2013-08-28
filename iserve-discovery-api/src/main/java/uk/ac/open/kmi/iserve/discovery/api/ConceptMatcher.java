@@ -116,4 +116,6 @@ public interface ConceptMatcher {
      */
     Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType);
 
+    Table<URI, URI, MatchResult> listMatchesAtLeastOfType(Set<URI> origins, MatchType minType);
+
 }

@@ -224,6 +224,25 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
         return listResourcesByQuery(strBuilder.toString(), "class");
     }
 
+    @Override
+    public List<URI> listConcepts(URI graphID) {
+
+        StringBuilder strBuilder = new StringBuilder()
+                .append("select DISTINCT ?class where { \n");
+
+        if (graphID != null){
+            strBuilder.append("GRAPH <").append(graphID).append("> {");
+            strBuilder.append("?class ").append("a <").append(OWL.Class.getURI()).append("> .");
+            strBuilder.append(" } ");
+        } else {
+            strBuilder.append("?class ").append("a <").append(OWL.Class.getURI()).append("> .");
+        }
+
+        strBuilder.append(" }");
+
+        return listResourcesByQuery(strBuilder.toString(), "class");
+    }
+
     private List<URI> listResourcesByQuery(String queryStr, String variableName) {
 
         List<URI> result = new ArrayList<URI>();

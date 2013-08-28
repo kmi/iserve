@@ -90,4 +90,10 @@ public interface KnowledgeBaseManager {
     public List<URI> listSuperClasses(URI classUri, boolean direct);
 
 
+    /**
+     * List all concepts managed by the KnowledgeBaseManager.
+     * @param graphID Graph URI for filtering the concepts within the specified graphID, null for all concepts.
+     * @return List of concepts in the KnowledgeBaseManager
+     */
+    List<URI> listConcepts(URI graphID);
 }

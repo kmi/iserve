@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
-import uk.ac.open.kmi.iserve.discovery.api.MatchTypes;
+import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
@@ -17,19 +17,21 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class LogicIndexedConceptMatcher extends AbstractLogicConceptMatcher {
-    private static final Logger log = LoggerFactory.getLogger(LogicIndexedConceptMatcher.class);
+public class PartialIndexedLogicConceptMatcher extends AbstractLogicConceptMatcher {
+    private static final Logger log = LoggerFactory.getLogger(PartialIndexedLogicConceptMatcher.class);
     private Table<URI, URI, MatchResult> indexedMatches;
     private ServiceManager manager;
     private AbstractLogicConceptMatcher matcher;
 
-    public LogicIndexedConceptMatcher(ServiceManager manager, AbstractLogicConceptMatcher matcher){
+    public PartialIndexedLogicConceptMatcher(ServiceManager manager, AbstractLogicConceptMatcher matcher){
         this.manager = manager;
         this.matcher = matcher;
-        this.indexedMatches = populateByServices();
+        this.indexedMatches = populate();
     }
 
-    private Table<URI, URI, MatchResult> populateByServices(){
+
+
+    private Table<URI, URI, MatchResult> populate(){
         Table<URI, URI, MatchResult> indexedMatches = HashBasedTable.create();
         Set<URI> serviceInputs = findAllInputs();
         Set<URI> serviceOutputs = findAllOutputs();
@@ -93,10 +95,12 @@ public class LogicIndexedConceptMatcher extends AbstractLogicConceptMatcher {
     public MatchResult match(URI origin, URI destination) {
         MatchResult result = this.indexedMatches.get(origin, destination);
         // If both concepts are not indexed, then call the delegated matcher
+
         if (result == null){
             // Delegate
             result = this.matcher.match(origin, destination);
         }
+
         return result;
     }
 
@@ -122,6 +126,11 @@ public class LogicIndexedConceptMatcher extends AbstractLogicConceptMatcher {
 
     @Override
     public Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Table<URI, URI, MatchResult> listMatchesAtLeastOfType(Set<URI> origins, MatchType minType) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

@@ -8,12 +8,13 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.Transformer;
-import uk.ac.open.kmi.iserve.commons.model.Operation;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
+import uk.ac.open.kmi.iserve.discovery.disco.impl.FullIndexedLogicConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.disco.impl.LogicConceptMatcher;
-import uk.ac.open.kmi.iserve.discovery.disco.impl.LogicIndexedConceptMatcher;
+import uk.ac.open.kmi.iserve.discovery.disco.impl.PartialIndexedLogicConceptMatcher;
+import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
@@ -58,8 +59,10 @@ public class RelevantServicesFinderTest {
     @Test
     public void test() throws Exception {
         ServiceManager manager = ManagerSingleton.getInstance().getServiceManager();
-        ConceptMatcher matcher = new LogicConceptMatcher();
-        //ConceptMatcher matcher = new LogicIndexedConceptMatcher(manager, new LogicConceptMatcher());
+        KnowledgeBaseManager kb = ManagerSingleton.getInstance().getKbManager();
+        //ConceptMatcher matcher = new LogicConceptMatcher();
+        //ConceptMatcher matcher = new PartialIndexedLogicConceptMatcher(manager, new LogicConceptMatcher());
+        ConceptMatcher matcher = new FullIndexedLogicConceptMatcher(manager, kb, new LogicConceptMatcher());
         RelevantServicesFinder finder = new RelevantServicesFinder(matcher, manager);
 
         Set<URI> available = new HashSet<URI>();

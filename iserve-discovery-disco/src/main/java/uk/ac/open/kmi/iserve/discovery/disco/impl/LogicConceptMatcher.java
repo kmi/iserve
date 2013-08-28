@@ -178,7 +178,7 @@ public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
             Stopwatch stopwatch = new Stopwatch().start();
             ResultSet qResults = qexec.execSelect();
             stopwatch.stop();
-            log.info("Time taken for querying the registry: {}", stopwatch);
+            log.debug("Time taken for querying the registry: {}", stopwatch);
 
             // Obtain matches if any and figure out the type
             MatchType type;
@@ -251,7 +251,18 @@ public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
      * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
      */
     public Table<URI, URI, MatchResult> listMatchesAtLeastOfType(Set<URI> origins, MatchType minType) {
-        return null;  // TODO: implement
+        Table<URI, URI, MatchResult> matchTable = HashBasedTable.create();
+        Stopwatch w = new Stopwatch();
+        for(URI origin : origins){
+            w.start();
+            Map<URI, MatchResult> result = listMatchesAtLeastOfType(origin, minType);
+            for(Map.Entry<URI, MatchResult> dest : result.entrySet()){
+                matchTable.put(origin, dest.getKey(), dest.getValue());
+            }
+            log.debug("Computed matched types for {} in {}. {} total matches.", origin, w.stop().toString(), result.size());
+            w.reset();
+        }
+        return matchTable;
     }
 
 
@@ -363,7 +374,7 @@ public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
             Stopwatch stopwatch = new Stopwatch().start();
             ResultSet qResults = qexec.execSelect();
             stopwatch.stop();
-            log.info("Time taken for querying the registry: {}", stopwatch);
+            log.debug("Time taken for querying the registry: {}", stopwatch);
 
             Resource resource;
             URI matchUri;
