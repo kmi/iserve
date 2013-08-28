@@ -45,7 +45,7 @@ import java.util.*;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 30/07/2013
  */
-public class LogicConceptMatcher implements ConceptMatcher {
+public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
 
     private static final Logger log = LoggerFactory.getLogger(LogicConceptMatcher.class);
     private static final String MATCH_VAR = "match";
@@ -55,28 +55,12 @@ public class LogicConceptMatcher implements ConceptMatcher {
     private static final String ORIGIN_VAR = "origin";
     private static final String DESTINATION_VAR = "destination";
 
-    // TODO: Refactor for reuse
-
-    // Function to getMatchResult from a Map
-    private final Function<Map.Entry<URI, MatchResult>, MatchResult> getMatchResult =
-            new Function<Map.Entry<URI, MatchResult>, MatchResult>() {
-                public MatchResult apply(Map.Entry<URI, MatchResult> entry) {
-                    return entry.getValue();
-                }
-            };
-
-    // Order the results by score and then by url
-    private final Ordering<Map.Entry<URI, MatchResult>> entryOrdering =
-            Ordering.from(MatchComparator.BY_TYPE).onResultOf(getMatchResult).reverse().
-                    compound(Ordering.from(MatchComparator.BY_URI).onResultOf(getMatchResult));
-
     private final URI sparqlEndpoint;
-    MatchTypes<MatchType> matchTypes;
+
 
     public static String NL = System.getProperty("line.separator");
 
     public LogicConceptMatcher() {
-        matchTypes = EnumMatchTypes.of(DiscoMatchType.class);
         sparqlEndpoint = ManagerSingleton.getInstance().getConfiguration().getDataSparqlUri();
         if (sparqlEndpoint == null) {
             log.error("A SPARQL endpoint is currently needed for matching.");
@@ -105,15 +89,6 @@ public class LogicConceptMatcher implements ConceptMatcher {
         return null;  // TODO: implement
     }
 
-    /**
-     * Obtains the MatchTypes instance that contains the MatchTypes supported as well as their ordering information
-     *
-     * @return
-     */
-    @Override
-    public MatchTypes<MatchType> getMatchTypesSupported() {
-        return matchTypes;
-    }
 
     /**
      * Perform a match between two URIs (from {@code origin} to {@code destination})

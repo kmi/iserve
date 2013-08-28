@@ -13,6 +13,7 @@ import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.impl.LogicConceptMatcher;
+import uk.ac.open.kmi.iserve.discovery.disco.impl.LogicIndexedConceptMatcher;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
@@ -58,6 +59,7 @@ public class RelevantServicesFinderTest {
     public void test() throws Exception {
         ServiceManager manager = ManagerSingleton.getInstance().getServiceManager();
         ConceptMatcher matcher = new LogicConceptMatcher();
+        //ConceptMatcher matcher = new LogicIndexedConceptMatcher(manager, new LogicConceptMatcher());
         RelevantServicesFinder finder = new RelevantServicesFinder(matcher, manager);
 
         Set<URI> available = new HashSet<URI>();
