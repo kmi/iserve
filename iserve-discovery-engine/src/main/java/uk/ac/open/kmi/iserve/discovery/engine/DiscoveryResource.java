@@ -321,8 +321,8 @@ public class DiscoveryResource {
 
         // Order the results by score and then by url
         Ordering<Map.Entry<URL, MatchResult>> entryOrdering =
-                Ordering.from(MatchComparator.BY_SCORE).onResultOf(getMatchResult).reverse().
-                        compound(Ordering.from(MatchComparator.BY_URL).onResultOf(getMatchResult));
+                Ordering.from(MatchComparator.BY_TYPE).onResultOf(getMatchResult).reverse().
+                        compound(Ordering.from(MatchComparator.BY_URI).onResultOf(getMatchResult));
 
         // First obtain the map with the values scored, then order it
         Map<URL, MatchResult> scoredMap = Maps.transformValues(matchingResults, new BasicScorer());
