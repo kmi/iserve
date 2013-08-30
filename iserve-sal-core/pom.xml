@@ -135,6 +135,13 @@
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>uk.ac.open.kmi.iserve</groupId>
+            <artifactId>iserve-importer-wsc</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <!-- Include Test Resources -->
         <dependency>

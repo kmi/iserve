@@ -186,7 +186,9 @@ public class OwlsTransformer implements ServiceTransformer {
     private static final String VERSION_PROP_FILE = "plugin.properties";
     private static final String VERSION_PROP = "version";
     private static final String VERSION_UNKNOWN = "Unknown";
-    private String version = VERSION_UNKNOWN;
+
+    // Injection of the version
+    private @Inject(optional=true) @Named("version") String version = VERSION_UNKNOWN;
 
     // Supported Media Type
     public static String mediaType = "application/owl+xml";
@@ -201,8 +203,10 @@ public class OwlsTransformer implements ServiceTransformer {
 
     private Map<String, String> prefixes;
 
-    @Inject
-    public OwlsTransformer(@Named("version") String version) {
+
+
+
+    public OwlsTransformer() {
         // Initialise prefixes
         prefixes = new HashMap<String, String>(Vocabularies.prefixes);
         // Add those specific for handling OWLS
@@ -214,8 +218,6 @@ public class OwlsTransformer implements ServiceTransformer {
 
         if (version == null) {
             obtainVersionInformation();
-        } else {
-            this.version = version;
         }
     }
 
@@ -648,7 +650,7 @@ public class OwlsTransformer implements ServiceTransformer {
         OwlsTransformer importer;
         ServiceWriter writer;
 
-        importer = new OwlsTransformer(null);
+        importer = new OwlsTransformer();
         writer = new ServiceWriterImpl();
 
         List<Service> services;

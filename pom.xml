@@ -68,6 +68,7 @@
         <shiro.version>1.2.2</shiro.version>
         <jetty.version>8.1.11.v20130520</jetty.version>
         <guice.version>3.0</guice.version>
+        <guava.version>14.0</guava.version>
     </properties>
 
 
@@ -77,12 +78,14 @@
         <module>iserve-importer-sawsdl</module>
         <module>iserve-importer-hrests</module>
         <module>iserve-importer-owls</module>
+        <module>iserve-importer-wsc</module>
         <module>iserve-sal-core</module>
         <module>iserve-sal-rest</module>
         <module>iserve-discovery-api</module>
         <module>iserve-discovery-disco</module>
         <module>iserve-discovery-engine</module>
         <module>iserve-test-resources</module>
+        <module>iserve-composit-engine</module>
         <!-- <module>iserve-analysis-engine</module> -->
     </modules>
 

@@ -25,12 +25,8 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
 import uk.ac.open.kmi.iserve.commons.vocabulary.WSMO_LITE;
-import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
-import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
-import uk.ac.open.kmi.iserve.discovery.disco.MatchResultImpl;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -49,7 +45,7 @@ import java.util.Map;
  * @author Jacek Kopecky (Knowledge Media Institute - The Open University)
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
-public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin, OperationDiscoveryPlugin {
+public class RDFSClassificationDiscoveryPlugin {
 
 
     private static final String PLUGIN_NAME = "func-rdfs";
@@ -102,7 +98,6 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getName()
      */
-    @Override
     public String getName() {
         return PLUGIN_NAME;
     }
@@ -110,7 +105,6 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getDescription()
      */
-    @Override
     public String getDescription() {
         return PLUGIN_DESCRIPTION;
     }
@@ -118,7 +112,6 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin#getVersion()
      */
-    @Override
     public String getVersion() {
         return PLUGIN_VERSION;
     }
@@ -126,7 +119,6 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getFeedTitle()
      */
-    @Override
     public String getFeedTitle() {
         String feedTitle = "RDFS Functional Classification discovery results: " +
                 count + " service(s) or operation(s) for " + feedSuffix;
@@ -137,23 +129,20 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin#discoverServices(javax.ws.rs.core.MultivaluedMap)
      */
-    @Override
-    public Map<URL, MatchResult> discoverServices(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+    public Map<URL, MatchResult> discoverServices(MultivaluedMap<String, String> parameters) {
         return discover(false, parameters);
     }
 
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin#discoverOperations(javax.ws.rs.core.MultivaluedMap)
      */
-    @Override
-    public Map<URL, MatchResult> discoverOperations(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+    public Map<URL, MatchResult> discoverOperations(MultivaluedMap<String, String> parameters)  {
         return discover(true, parameters);
     }
 
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getParametersDetails()
      */
-    @Override
     public Map<String, String> getParametersDetails() {
         return parameterDetails;
     }
@@ -162,23 +151,22 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
      * @param operationDiscovery
      * @param parameters
      * @return
-     * @throws DiscoveryException
      */
-    public Map<URL, MatchResult> discover(boolean operationDiscovery, MultivaluedMap<String, String> parameters) throws DiscoveryException {
+    public Map<URL, MatchResult> discover(boolean operationDiscovery, MultivaluedMap<String, String> parameters)  {
 
         // If there is no SPARQL endpoint raise an error
         if (sparqlEndpoint == null) {
             log.error("Unable to perform discovery, no SPARQL endpoint available.");
-            throw new DiscoveryException(403, "Unable to perform discovery, no SPARQL endpoint available.");
+            throw new RuntimeException("403 Unable to perform discovery, no SPARQL endpoint available.");
         }
 
         List<String> classes = parameters.get(CLASS_PARAMETER);
         if (classes == null || classes.size() == 0) {
-            throw new DiscoveryException(403, "Functional discovery without parameters is not supported - add parameter 'class=uri'");
+            throw new RuntimeException("403 Functional discovery without parameters is not supported - add parameter 'class=uri'");
         }
         for (int i = 0; i < classes.size(); i++) {
             if (classes.get(i) == null) {
-                throw new DiscoveryException(400, "Empty class URI not allowed");
+                throw new RuntimeException("403 Empty class URI not allowed");
             }
         }
 
@@ -249,8 +237,8 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
 
                     if (soln.contains("sssog0")) {
                         // Add the result as it is: SSSOG = PLUGIN
-                        match.setMatchType(DiscoMatchType.PLUGIN);
-                        results.put(match.getMatchedResource(), match);
+                        match.setMatchType(DiscoMatchType.Plugin);
+                        results.put(match.getMatchedResource().toURL(), match);
 
                     }
 
@@ -269,11 +257,12 @@ public class RDFSClassificationDiscoveryPlugin implements ServiceDiscoveryPlugin
                         // The service is either GSSOS (Subsume), or Exact if it is SSOG too
                         if (results.containsKey(match.getMatchedResource())) {
                             // If it is there, it's a SSOG too -> Change to Exact
-                            results.get(match.getMatchedResource()).setMatchType(DiscoMatchType.EXACT);
+                            // TODO: Dirty fix, cast to matchResultImpl, setMatchType is not a method of the interface (and should not be)
+                            ((MatchResultImpl)results.get(match.getMatchedResource())).setMatchType(DiscoMatchType.Exact);
                         } else {
                             // Change to GSSOS and add to results
-                            match.setMatchType(DiscoMatchType.SUBSUME);
-                            results.put(match.getMatchedResource(), match);
+                            match.setMatchType(DiscoMatchType.Subsume);
+                            results.put(match.getMatchedResource().toURL(), match);
                         }
                     }
 

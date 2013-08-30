@@ -20,7 +20,9 @@ import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Interface that defines the operations a Service Manager should offer
@@ -111,6 +113,8 @@ public interface ServiceManager {
      */
     public abstract List<URI> listOutputs(URI operationUri);
 
+    List<URI> listMandatoryParts(URI messageContent);
+
     /**
      * Lists all documents related to a given service
      *
@@ -164,4 +168,5 @@ public interface ServiceManager {
      */
     public abstract boolean serviceExists(URI serviceUri) throws ServiceException;
 
+    Set<URI> listModelReferences(URI p);
 }

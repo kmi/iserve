@@ -15,9 +15,7 @@
  */
 package uk.ac.open.kmi.iserve.discovery.disco;
 
-import uk.ac.open.kmi.iserve.discovery.api.CompositeMatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
-import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 
 import com.google.common.base.Function;
 
@@ -33,7 +31,8 @@ public class BasicScorer implements Function<MatchResult, MatchResult> {
 	 */
 	@Override
 	public MatchResult apply(MatchResult input) {
-		if (input == null) {
+		/*
+        if (input == null) {
 			return null;
 		} else {
 
@@ -54,7 +53,9 @@ public class BasicScorer implements Function<MatchResult, MatchResult> {
 				input.setScore(Float.valueOf(matchType.ordinal()));
 			} 
 		}
-		return input;
+		return input; */
+        // TODO; Implementation required!
+        return null;
 	}
 
 }

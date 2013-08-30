@@ -58,7 +58,7 @@ public interface KnowledgeBaseManager {
      *
      * @param svc the service to be checked for referred models.
      */
-    void fetchModelsForService(Service svc);
+    void fetchModelsForService(Service svc, boolean wait);
 
     /**
      * Answers a List all of URIs of the classes that are known to be equivalent to this class. Equivalence may be

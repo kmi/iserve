@@ -56,6 +56,7 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
 
     // Set backed by a ConcurrentHashMap to avoid race conditions
     private Set<String> loadedModels;
+    private Set<String> unreachableModels = new HashSet<String>();
     private int NUM_THREADS = 4;
 
     private ExecutorService executor;
@@ -117,14 +118,31 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
         }
     }
 
+    // TODO; Using the flag wait to modify the behaviour may not be the best option
     @Override
-    public void fetchModelsForService(Service svc) {
+    public void fetchModelsForService(Service svc, boolean wait) {
         Set<String> modelUris = obtainReferencedModelUris(svc);
+        Map<String, Future<Boolean>> concurrentTasks = new HashMap<String, Future<Boolean>>();
+
         for (String modelUri : modelUris) {
-            if (!this.loadedModels.contains(modelUri)) {
+            if (!this.loadedModels.contains(modelUri) && !this.unreachableModels.contains(modelUri)) {
                 Callable<Boolean> task = new CrawlCallable(this, modelUri);
-                Future<Boolean> future = this.executor.submit(task);
-                // We should eventually check these..
+                concurrentTasks.put(modelUri, this.executor.submit(task));
+            }
+        }
+        if (wait) {
+            for (String modelUri : concurrentTasks.keySet()) {
+                Future<Boolean> f = concurrentTasks.get(modelUri);
+                try {
+                    if (!f.get()){
+                        this.unreachableModels.add(modelUri);
+                        log.error("Cannot load " + modelUri + ". Marked as invalid");
+                    }
+                } catch (Exception e) {
+                    // Mark as invalid
+                    log.error(e.getMessage());
+                    this.unreachableModels.add(modelUri);
+                }
             }
         }
     }

@@ -50,6 +50,7 @@ public class LogicConceptMatcherTest extends TestCase {
 
     private static final Logger log = LoggerFactory.getLogger(LogicConceptMatcherTest.class);
     private static final String OWLS_TC_SERVICES = "/OWLS-TC3-MSM";
+    private static final String WSC08_01_SERVICES = "/wsc08-dataset01/services";
     private static final String JGD_SERVICES = "/jgd-services";
     private static final String SOA4RE_SERVICES = "/soa4re";
 
@@ -72,9 +73,11 @@ public class LogicConceptMatcherTest extends TestCase {
                 FileInputStream in;
                 // Upload every document and obtain their URLs
                 for (File ttlFile : msmTtlTcFiles) {
+                    log.debug("Importing {}", ttlFile.getAbsolutePath());
                     in = new FileInputStream(ttlFile);
                     ManagerSingleton.getInstance().importService(in, MediaType.TEXT_TURTLE.getMediaType());
                 }
+                log.debug("Ready");
             }
 
             protected void tearDown() throws Exception {

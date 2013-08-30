@@ -62,7 +62,7 @@ public class HrestsTransformer implements ServiceTransformer {
     private static final String VERSION_PROP_FILE = "plugin.properties";
     private static final String VERSION_PROP = "version";
     private static final String VERSION_UNKNOWN = "Unknown";
-    private String version = VERSION_UNKNOWN;
+    private @Inject(optional=true) @Named("version") String version = VERSION_UNKNOWN;
 
     // Supported Media Type
     public static String mediaType = "text/html";
@@ -76,11 +76,13 @@ public class HrestsTransformer implements ServiceTransformer {
         fileExtensions.add("xhtml");
     }
 
-    @Inject
-    public HrestsTransformer(@Named("version") String version) throws TransformerConfigurationException {
+
+
+    public HrestsTransformer() throws TransformerConfigurationException {
         parser = new Tidy();
         try {
-            URL xsltUrl = getClass().getResource(XSLT);
+            //URL xsltUrl = getClass().getResource(XSLT);
+            URL xsltUrl = getClass().getClassLoader().getResource(XSLT);
             log.debug("Loading XSLT from {}", xsltUrl);
             xsltFile = new File(xsltUrl.toURI());
 //            ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -88,10 +90,8 @@ public class HrestsTransformer implements ServiceTransformer {
             TransformerFactory xformFactory = TransformerFactory.newInstance();
             transformer = xformFactory.newTransformer(new StreamSource(this.xsltFile));
 
-            if (version == null) {
+            if (this.version == null) {
                 obtainVersionInformation();
-            } else {
-                this.version = version;
             }
 
         } catch (URISyntaxException e) {
@@ -275,7 +275,7 @@ public class HrestsTransformer implements ServiceTransformer {
         HrestsTransformer importer;
         ServiceWriter writer;
 
-        importer = new HrestsTransformer(null);
+        importer = new HrestsTransformer();
         writer = new ServiceWriterImpl();
 
         List<Service> services;

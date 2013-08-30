@@ -25,10 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
-import uk.ac.open.kmi.iserve.discovery.api.DiscoveryException;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
-import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin;
-import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin;
 import uk.ac.open.kmi.iserve.discovery.disco.*;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
@@ -42,7 +39,7 @@ import java.util.concurrent.*;
 import static uk.ac.open.kmi.iserve.discovery.disco.MatchMapCombinator.INTERSECTION;
 import static uk.ac.open.kmi.iserve.discovery.disco.MatchMapCombinator.UNION;
 
-public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, OperationDiscoveryPlugin {
+public class RDFSInputOutputDiscoveryPlugin {
 
     private static final Logger log = LoggerFactory.getLogger(RDFSInputOutputDiscoveryPlugin.class);
 
@@ -180,7 +177,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getName()
      */
-    @Override
+
     public String getName() {
         return PLUGIN_NAME;
     }
@@ -188,7 +185,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.IServiceDiscoveryPlugin#getVersion()
      */
-    @Override
+
     public String getVersion() {
         return PLUGIN_VERSION;
     }
@@ -196,7 +193,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getDescription()
      */
-    @Override
+
     public String getDescription() {
         return PLUGIN_DESCRIPTION;
     }
@@ -204,7 +201,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.DiscoveryPlugin#getParametersDetails()
      */
-    @Override
+
     public Map<String, String> getParametersDetails() {
         return parameterDetails;
     }
@@ -220,17 +217,16 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin#discoverServices(javax.ws.rs.core.MultivaluedMap)
      */
-    @Override
-    public Map<URL, MatchResult> discoverServices(MultivaluedMap<String, String> parameters) throws DiscoveryException {
+    public Map<URL, MatchResult> discoverServices(MultivaluedMap<String, String> parameters){
         return discover(false, parameters);
     }
 
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin#discoverOperations(javax.ws.rs.core.MultivaluedMap)
      */
-    @Override
+
     public Map<URL, MatchResult> discoverOperations(MultivaluedMap<String,
-            String> parameters) throws DiscoveryException {
+            String> parameters) {
         return discover(true, parameters);
     }
 
@@ -252,15 +248,14 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
      * @param operationDiscovery true if carrying out operation discovery
      * @param parameters         request parameters
      * @return the set of discovery results
-     * @throws DiscoveryException
      */
     public Map<URL, MatchResult> discover(boolean operationDiscovery,
-                                          MultivaluedMap<String, String> parameters) throws DiscoveryException {
+                                          MultivaluedMap<String, String> parameters) {
 
         // If there is no SPARQL endpoint raise an error
         if (sparqlEndpoint == null) {
             log.error("Unable to perform discovery, no SPARQL endpoint available.");
-            throw new DiscoveryException(403, "Unable to perform discovery, no SPARQL endpoint available.");
+            throw new RuntimeException("Unable to perform discovery, no SPARQL endpoint available.");
         }
 
         List<String> inputClasses = parameters.get(INPUTS_PARAM);
@@ -269,19 +264,19 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
         boolean matchingInputs = inputClasses != null && inputClasses.size() != 0;
         boolean matchingOutputs = outputClasses != null && outputClasses.size() != 0;
         if (!matchingInputs && !matchingOutputs) {
-            throw new DiscoveryException(403, "I/O discovery without parameters is not supported");
+            throw new RuntimeException("I/O discovery without parameters is not supported");
         }
         if (matchingInputs) {
             for (String clazz : inputClasses) {
                 if (clazz == null) {
-                    throw new DiscoveryException(400, "Empty class URI not allowed");
+                    throw new RuntimeException("Empty class URI not allowed");
                 }
             }
         }
         if (matchingOutputs) {
             for (String clazz : outputClasses) {
                 if (clazz == null) {
-                    throw new DiscoveryException(400, "Empty class URI not allowed");
+                    throw new RuntimeException("Empty class URI not allowed");
                 }
             }
         }
@@ -365,9 +360,8 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
      *
      * @param operationDiscovery
      * @param classes
-     * @throws DiscoveryException
      */
-    private Map<URL, MatchResult> matchInputs(boolean operationDiscovery, List<String> classes) throws DiscoveryException {
+    private Map<URL, MatchResult> matchInputs(boolean operationDiscovery, List<String> classes) {
 
         Map<URL, MatchResult> results = new HashMap<URL, MatchResult>();
         // Return immediately if there is nothing to discover
@@ -469,14 +463,14 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
                     // of match will be obtained.
                     DiscoMatchType matchType = null;
                     if (isExact) {
-                        matchType = DiscoMatchType.EXACT;
+                        matchType = DiscoMatchType.Exact;
                     } else if (isPlugin) {
-                        matchType = DiscoMatchType.PLUGIN;
+                        matchType = DiscoMatchType.Plugin;
                     } else if (isSubsume) {
-                        matchType = DiscoMatchType.SUBSUME;
+                        matchType = DiscoMatchType.Subsume;
                     } else {
                         // By default it's failed
-                        matchType = DiscoMatchType.FAIL;
+                        matchType = DiscoMatchType.Fail;
                     }
 
                     // TODO: Add more details for real debugging
@@ -485,7 +479,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
                     toCombine.get(i).put(matchUrl, match);
                     log.debug("Adding match for " +
                             match.getMatchedResource() + " of type " +
-                            match.getMatchType().getShortName());
+                            match.getMatchType().name());
                 }
             }
 
@@ -512,7 +506,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
 
 
     // REMOVE, ONLY FOR TESTS
-    private Map<URL, MatchResult> matchInputsAlternative(boolean operationDiscovery, List<String> classes) throws DiscoveryException {
+    private Map<URL, MatchResult> matchInputsAlternative(boolean operationDiscovery, List<String> classes) {
 
         Map<URL, MatchResult> results = new HashMap<URL, MatchResult>();
         // Return immediately if there is nothing to discover
@@ -595,14 +589,14 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
                     // of match will be obtained.
                     DiscoMatchType matchType = null;
                     if (isExact) {
-                        matchType = DiscoMatchType.EXACT;
+                        matchType = DiscoMatchType.Exact;
                     } else if (isPlugin) {
-                        matchType = DiscoMatchType.PLUGIN;
+                        matchType = DiscoMatchType.Plugin;
                     } else if (isSubsume) {
-                        matchType = DiscoMatchType.SUBSUME;
+                        matchType = DiscoMatchType.Subsume;
                     } else {
                         // By default it's failed
-                        matchType = DiscoMatchType.FAIL;
+                        matchType = DiscoMatchType.Fail;
                     }
 
                     // TODO: Add more details for real debugging
@@ -611,7 +605,7 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
                     toCombine.get(i).put(matchUrl, match);
                     log.debug("Adding match for " +
                             match.getMatchedResource() + " of type " +
-                            match.getMatchType().getShortName());
+                            match.getMatchType().name());
                 }
             }
 
@@ -641,9 +635,8 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
      * @param operationDiscovery
      * @param classes
      * @return
-     * @throws DiscoveryException
      */
-    private Map<URL, MatchResult> matchOutputs(boolean operationDiscovery, List<String> classes) throws DiscoveryException {
+    private Map<URL, MatchResult> matchOutputs(boolean operationDiscovery, List<String> classes) {
 
         Map<URL, MatchResult> results = new HashMap<URL, MatchResult>();
         // Return immediately if there is nothing to discover
@@ -729,18 +722,18 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
         List<String> patterns = new ArrayList<String>();
         for (int i = 0; i < classes.size(); i++) {
             String currClass = classes.get(i).replace(">", "%3e");
-
+            // TODO; Use the new method generateMatchStrict...(URI, String, String, Boolean)
             if (inputMatch) {
                 // Match the modelRef of the input to strict subclasses of the class
-                patterns.add(Util.generateMatchStrictSubclassesPattern("mr", currClass, "su" + i));
+                // patterns.add(Util.generateMatchStrictSubclassesPattern("mr", currClass, "su" + i));
                 // Match the modelRef of the input to strict superclasses of the class
-                patterns.add(Util.generateMatchStrictSuperclassesPattern("mr", currClass, "pl" + i));
+                // patterns.add(Util.generateMatchStrictSuperclassesPattern("mr", currClass, "pl" + i));
             } else {
                 // Invert the matching for outputs
                 // Match the modelRef of the input to strict subclasses of the class
-                patterns.add(Util.generateMatchStrictSubclassesPattern("mr", currClass, "pl" + i));
+                // patterns.add(Util.generateMatchStrictSubclassesPattern("mr", currClass, "pl" + i));
                 // Match the modelRef of the input to strict superclasses of the class
-                patterns.add(Util.generateMatchStrictSuperclassesPattern("mr", currClass, "su" + i));
+                // patterns.add(Util.generateMatchStrictSuperclassesPattern("mr", currClass, "su" + i));
             }
             // Match the modelRef of the input to exact matches for the class
 
@@ -800,11 +793,11 @@ public class RDFSInputOutputDiscoveryPlugin implements ServiceDiscoveryPlugin, O
             String currClass = classes.get(i).replace(">", "%3e");
 
             // Match the modelRef of the input to strict subclasses of the class
-            patterns.add(Util.generateMatchStrictSubclassesPattern("ic", currClass, "interSu" + i));
+            // patterns.add(Util.generateMatchStrictSubclassesPattern("ic", currClass, "interSu" + i));
             // Match the modelRef of the input to strict superclasses of the class
-            patterns.add(Util.generateMatchStrictSuperclassesPattern("ic", currClass, "interPl" + i));
+            // patterns.add(Util.generateMatchStrictSuperclassesPattern("ic", currClass, "interPl" + i));
             // Match the modelRef of the input to exact matches for the class
-            patterns.add(Util.generateExactMatchPattern("ic", currClass, "interEx" + i));
+            // patterns.add(Util.generateExactMatchPattern("ic", currClass, "interEx" + i));
         }
 
         query.append(Util.generateUnionStatement(patterns));
