@@ -65,29 +65,16 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>install-wsc08-01</id>
+                        <id>install-wsc08</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>http://localhost/datasets/wsc08-dataset01.zip</url>
+                            <url>http://goo.gl/iOgxhw</url>
                             <unpack>true</unpack>
                             <outputDirectory>${project.build.resources[0].directory}</outputDirectory>
-                            <md5>67476223ff277f0c7d64be96654a343b</md5>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>install-simple-semantic-datasets</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>http://localhost/datasets/simple-datasets.zip</url>
-                            <unpack>true</unpack>
-                            <outputDirectory>${project.build.resources[0].directory}</outputDirectory>
-                            <md5>2969506c87ec8946620e306f4fbd2573</md5>
+                            <md5>21642281b7c3a4c10a68d0ecce6d7b68</md5>
                         </configuration>
                     </execution>
                     <execution>
@@ -103,21 +90,6 @@
                             <md5>b59f272e5d036d00e47f3350eef4ce72</md5>
                         </configuration>
                     </execution>
-                    <!--
-                    <execution>
-                        <id>install-wsc-2008</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>http://cec2008.cs.georgetown.edu/wsc08/downloads/Testset-30.06.2008.zip</url>
-                            <unpack>true</unpack>
-                            <outputDirectory>${project.build.resources[0].directory}</outputDirectory>
-                            <md5>9fe1e4ca9c8a13b5189b307eee039a18</md5>
-                        </configuration>
-                    </execution>
-                    -->
                 </executions>
             </plugin>
 
