@@ -12,6 +12,7 @@ import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 import java.net.URI;
 import java.util.*;
@@ -136,6 +137,13 @@ public class RelevantServicesFinder {
         Map<URI, Set<URI>> unmatchedInputMap = new HashMap<URI, Set<URI>>();
         newOutputs.addAll(allConcepts);
 
+        // Preload
+        Set<Service> services = new HashSet<Service>();
+        for(URI serviceUri : serviceManager.listServices()){
+            services.add(serviceManager.getService(serviceUri));
+        }
+
+        Stopwatch timer = new Stopwatch().start();
         int pass = 0;
         while(!newOutputs.isEmpty()){
             Stopwatch passWatch = new Stopwatch().start();
@@ -182,6 +190,72 @@ public class RelevantServicesFinder {
             log.info("{} Pass, total candidates {}. Available concepts {}. New outputs {}. Iteration time {}", pass, relevantOps.size(), allConcepts.size(), newOutputs.size(), passWatch.toString());
             passWatch.reset();
         }
+        log.info("Total time: {}", timer.stop().toString());
+        return layers;
+    }
+
+    public List<Set<URI>> searchImproved2(Set<URI> availableInputs, DiscoMatchType atLeast) throws Exception {
+        List<Set<URI>> layers = new ArrayList<Set<URI>>();
+        Set<URI> newOutputs = new HashSet<URI>();
+        Set<URI> allRelevantOps = new HashSet<URI>();
+        Set<URI> allConcepts = new HashSet<URI>(availableInputs);
+        Map<URI, Set<URI>> unmatchedInputMap = new HashMap<URI, Set<URI>>();
+        newOutputs.addAll(allConcepts);
+
+        // Preload
+        Set<Service> services = new HashSet<Service>();
+        for(URI serviceUri : serviceManager.listServices()){
+            services.add(serviceManager.getService(serviceUri));
+        }
+
+        Stopwatch timer = new Stopwatch().start();
+        int pass = 0;
+        while(!newOutputs.isEmpty()){
+            Stopwatch passWatch = new Stopwatch().start();
+            Set<URI> relevantOps = new HashSet<URI>();
+            Set<URI> relevantOutputs = new HashSet<URI>();
+            Set<URI> relevantServices = new HashSet<URI>();
+            for(Service srv : services){
+                log.debug("Checking {}", srv.getUri());
+                // Load operations
+                operations:
+                for(Operation op : srv.getOperations()) {
+                    if (allRelevantOps.contains(op.getUri())) continue;
+                    // Get last unmatched inputs from op
+                    Set<URI> opInputs = unmatchedInputMap.get(op.getUri());
+                    if (opInputs == null){
+                        opInputs = getInputs(op);
+                    }
+                    Set<URI> unmatched = notMatchedInputs(newOutputs, opInputs, atLeast);
+                    // Update
+                    unmatchedInputMap.put(op.getUri(), unmatched);
+                    // If there are no unmatched inputs, then the op is invokable
+                    if (unmatched.isEmpty()){
+                        log.debug(" >> Invokable!");
+                        relevantOps.add(op.getUri());
+                        Set<URI> outputs = getOutputs(op);
+                        relevantOutputs.addAll(outputs);
+                        relevantServices.add(srv.getUri());
+                        break operations;
+                    }
+                }
+            }
+            newOutputs.clear();
+            // Remove concepts that were used before
+            relevantOutputs.removeAll(allConcepts);
+            // New outputs that potentially lead to new discovered services
+            newOutputs.addAll(relevantOutputs);
+            // Track all new generated concepts (outputs) just to remove the used ones in following steps
+            allConcepts.addAll(newOutputs);
+            allRelevantOps.addAll(relevantOps);
+            if (relevantOps.size()!=0){
+                layers.add(relevantOps);
+            }
+            pass++;
+            log.info("{} Pass, total candidates {}. Available concepts {}. New outputs {}. Iteration time {}", pass, relevantOps.size(), allConcepts.size(), newOutputs.size(), passWatch.toString());
+            passWatch.reset();
+        }
+        log.info("Total time: {}", timer.stop().toString());
         return layers;
     }
 

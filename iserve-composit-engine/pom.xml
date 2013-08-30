@@ -62,6 +62,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.google.caliper</groupId>
+            <artifactId>caliper</artifactId>
+            <version>1.0-beta-1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <artifactId>iserve-importer-wsc</artifactId>
             <groupId>uk.ac.open.kmi.iserve</groupId>
             <version>${project.version}</version>
