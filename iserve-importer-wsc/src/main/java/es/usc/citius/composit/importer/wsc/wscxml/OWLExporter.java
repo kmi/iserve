@@ -74,6 +74,12 @@ public class OWLExporter {
         return new String(buffer);
     }
 
+    public void exportOntologyTo(File ontologyFile, String ontologyBaseUri) throws IOException {
+        BufferedWriter bout = new BufferedWriter(new FileWriter(ontologyFile));
+        bout.write(getOWLOntology(ontologyBaseUri));
+        bout.close();
+    }
+
     /**
      * Dump converted owl-s services and owl ontology
      * under destinationPath/services and destinationPath/ontology
@@ -112,17 +118,23 @@ public class OWLExporter {
 
     }
 
+    public String getOWLSService(String serviceName) throws IOException{
+        return getOWLSService(serviceName, baseUri, relativeOntologyFile, relativeServicePath);
+    }
+
     /**
      * Converts the OWL-S service associate to the XML Service defined
      * in WSC-08
      *
      * @param serviceName Service name (serv...)
+     * @param baseUri root base uri, for example http://localhost
+     * @param relativeOntologyFile for example ontology/onto.owl. This is appended to baseUri.
      * @return RDF (OWL-S) service
      */
-    public String getOWLSService(String serviceName) throws IOException{
+    public String getOWLSService(String serviceName, String baseUri, String relativeOntologyFile, String relativeServicePath) throws IOException{
         String owlTemplate = new String(template);
         XMLService service = index.get(serviceName);
-
+        String ontologyUri = baseUri + "/" + relativeOntologyFile;
         // Build input section
         String input_section = "";
         for(XMLInstance input : service.getInputs().getInstances()){
@@ -130,7 +142,7 @@ public class OWLExporter {
             String block = "<process:hasInput>"+eol+
                     "  <process:Input rdf:ID=\""+ input.getName() +"\">"+eol+
                     "  <process:parameterType rdf:datatype=\"http://www.w3.org/2001/XMLSchema#anyURI\">" +eol+
-                    baseUri+"/"+relativeOntologyFile + "#" + concept +eol+
+                    ontologyUri + "#" + concept +eol+
                     "  </process:parameterType>" +eol+
                     "  </process:Input>"+eol+
                     "</process:hasInput>" + eol;
@@ -145,7 +157,7 @@ public class OWLExporter {
             String block = "<process:hasOutput>"+eol+
                     "<process:Output rdf:ID=\""+ output.getName() +"\">"+eol+
                     "<process:parameterType rdf:datatype=\"http://www.w3.org/2001/XMLSchema#anyURI\">" +eol+
-                    baseUri+"/"+relativeOntologyFile + "#" + concept +eol+
+                    ontologyUri + "#" + concept +eol+
                     "</process:parameterType>" +eol+
                     "</process:Output>"+eol+
                     "</process:hasOutput>" + eol;
@@ -174,24 +186,28 @@ public class OWLExporter {
         owlTemplate = owlTemplate.replace("%profile_output_section%", profile_output_section);
         // Replace service & baseUri
         owlTemplate = owlTemplate.replace("%service%", service.getName());
-        owlTemplate = owlTemplate.replace("%ontology%", baseUri+"/"+relativeOntologyFile);
+        owlTemplate = owlTemplate.replace("%ontology%", ontologyUri);
         owlTemplate = owlTemplate.replace("%baseUri%", baseUri);
         owlTemplate = owlTemplate.replace("%servicePath%", relativeServicePath);
         return owlTemplate;
+    }
+
+    public String getOWLOntology(){
+        return getOWLOntology(baseUri + "/" + relativeOntologyFile);
     }
 
     /**
      *
      * @return Retrieves the OWL ontology
      */
-    public String getOWLOntology(){
+    public String getOWLOntology(String baseUri){
         String onto = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + eol +
                 "<rdf:RDF" + eol +
                 "  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"" + eol +
                 "  xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"" + eol +
                 "  xmlns:xsd=\"http://www.w3.org/2001/XMLSchema#\"" + eol +
                 "  xmlns:owl=\"http://www.w3.org/2002/07/owl#\"" + eol +
-                "  xml:base=\"" + baseUri + "/" + relativeOntologyFile + "\">" + eol +
+                "  xml:base=\"" + baseUri + "\">" + eol +
                 "  <owl:Ontology rdf:about=\"\" />" + eol;
 
         String strData = "";
