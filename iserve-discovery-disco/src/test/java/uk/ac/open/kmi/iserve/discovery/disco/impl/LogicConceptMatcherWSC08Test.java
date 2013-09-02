@@ -76,7 +76,7 @@ public class LogicConceptMatcherWSC08Test {
         List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
         // Import all services
         for (Service s : result) {
-            URI uri = ManagerSingleton.getInstance().importService(s);
+            URI uri = ManagerSingleton.getInstance().registerService(s);
             Assert.assertNotNull(uri);
             log.info("Service added: " + uri.toASCIIString());
         }

@@ -75,7 +75,7 @@ public class LogicConceptMatcherTest extends TestCase {
                 for (File ttlFile : msmTtlTcFiles) {
                     log.debug("Importing {}", ttlFile.getAbsolutePath());
                     in = new FileInputStream(ttlFile);
-                    ManagerSingleton.getInstance().importService(in, MediaType.TEXT_TURTLE.getMediaType());
+                    ManagerSingleton.getInstance().importServices(in, MediaType.TEXT_TURTLE.getMediaType());
                 }
                 log.debug("Ready");
             }
