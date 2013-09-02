@@ -43,24 +43,6 @@ public class WSCImporterTest {
     }
 
     @Test
-    public void testImportService() throws Exception {
-
-        int count = 0;
-        log.info("Importing WSC 2008 services");
-        File services = new File(getClass().getClassLoader().getResource("services.xml").getFile());
-        List<Service> result = Transformer.getInstance().transform(services, null, WSCImporter.mediaType);
-        /*
-        for(Service s : result){
-            URI uri = ManagerSingleton.getInstance().addService(s);
-            Assert.assertNotNull(uri);
-            log.info("Service added: " + uri.toASCIIString());
-            count++;
-        }*/
-
-        Assert.assertEquals(count, 158);
-    }
-
-    @Test
     public void testTransform() throws Exception {
         // Add all the test collections
         log.info("Transforming test collections");

@@ -47,41 +47,11 @@
         </dependency>
 
         <dependency>
-            <groupId>com.ebmwebsourcing.easywsdl</groupId>
-            <artifactId>easysawsdl10-api</artifactId>
-            <version>v2013-03-11</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.ebmwebsourcing.easywsdl</groupId>
-            <artifactId>easysawsdl10-impl</artifactId>
-            <version>v2013-03-11</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.ebmwebsourcing.easywsdl</groupId>
-            <artifactId>easywsdl11-api</artifactId>
-            <version>v2013-03-11</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.ebmwebsourcing.easywsdl</groupId>
-            <artifactId>easywsdl11-impl</artifactId>
-            <version>v2013-03-11</version>
-        </dependency>
-
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>uk.ac.open.kmi.iserve.import</groupId>
-            <artifactId>iserve-importer-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>-->
 
         <!--Add Guice for dependency injection -->
         <dependency>
