@@ -53,6 +53,8 @@ public interface KnowledgeBaseManager {
      */
     void uploadModel(String modelUri, Model model, boolean forceUpdate);
 
+    //TODO: Create Sync and Async methods instead
+
     /**
      * Given a model, this method will fetch an upload of the models referred to by the service.
      *

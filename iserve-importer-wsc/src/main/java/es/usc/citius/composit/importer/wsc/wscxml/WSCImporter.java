@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package es.usc.citius.composit.importer.wsc.wscxml;
 
 
@@ -22,6 +38,7 @@ import java.util.List;
 /**
  * Imports and transforms datasets from the Web Service Challenge 2008 (XML format)
  * Date: 7/18/13
+ *
  * @author Pablo Rodríguez Mier
  */
 public class WSCImporter implements ServiceTransformer {
@@ -52,34 +69,34 @@ public class WSCImporter implements ServiceTransformer {
         log.info("Exporting xml taxonomy to owl in {}", this.exportOWLTo);
         this.reasoner = new WSCXMLSemanticReasoner(ontology.openStream());
         // Convert the ontology to OWL
-        if (this.exportOWLTo != null){
+        if (this.exportOWLTo != null) {
             File file = new File(this.exportOWLTo);
             new OWLExporter(this.xmlTaxonomyURL, this.reasoner).exportTo(file);
         }
     }
 
 
-    private MessageContent transform(XMLInstance instance, String baseURI){
+    private MessageContent transform(XMLInstance instance, String baseURI) {
         // TODO Handle baseURI in some way!
         String concept = this.reasoner.getConceptInstance(instance.getName());
-        URI uri = URI.create(this.fakeURL + "#MessageContent_"+concept);
+        URI uri = URI.create(this.fakeURL + "#MessageContent_" + concept);
         MessageContent content = new MessageContent(uri);
         //content.setLabel("MessageContext");
         //content.setSource(uri);
         //content.setWsdlGrounding(uri);
         //content.setLabel(instance.getName());
-        content.addModelReference(new Resource(URI.create(this.owlOntologyURL+"#"+concept)));
+        content.addModelReference(new Resource(URI.create(this.owlOntologyURL + "#" + concept)));
         return content;
     }
 
-    private MessageContent transform(ArrayList<XMLInstance> instances, String fieldName){
+    private MessageContent transform(ArrayList<XMLInstance> instances, String fieldName) {
         URI uri = URI.create(this.fakeURL + "#MessageContent_" + fieldName);
         MessageContent msg = new MessageContent(uri);
-        for(XMLInstance instance : instances){
+        for (XMLInstance instance : instances) {
             String concept = this.reasoner.getConceptInstance(instance.getName());
             URI partURI = URI.create(this.fakeURL + "#MessagePart_" + concept);
             MessagePart part = new MessagePart(partURI);
-            part.addModelReference(new Resource(URI.create(this.owlOntologyURL+"#"+concept)));
+            part.addModelReference(new Resource(URI.create(this.owlOntologyURL + "#" + concept)));
             msg.addMandatoryPart(part);
         }
         return msg;
@@ -88,14 +105,14 @@ public class WSCImporter implements ServiceTransformer {
     @Override
     public List<Service> transform(InputStream originalDescription, String baseUri) {
         // De-serialize from XML
-        if (baseUri == null){
+        if (baseUri == null) {
             baseUri = "";
         }
         XMLServices services = JAXB.unmarshal(originalDescription, XMLServices.class);
         List<Service> listServices = new ArrayList<Service>(services.getServices().size());
         String uri = baseUri.endsWith("#") ? baseUri : baseUri + "#";
         // Create the services following the iserve-commons-vocabulary model
-        for(XMLService service : services.getServices()){
+        for (XMLService service : services.getServices()) {
             URI srvURI = URI.create(fakeURL + "#" + service.getName());
             URI opURI = URI.create(fakeURL + "/" + service.getName() + "#Operation");
             log.debug("Transforming service (URI: {})", srvURI);
@@ -107,7 +124,7 @@ public class WSCImporter implements ServiceTransformer {
             Operation operation = new Operation(opURI);
             operation.addInput(transform(service.getInputs().getInstances(), "input"));
             operation.addOutput(transform(service.getOutputs().getInstances(), "output"));
-            operation.setLabel(service.getName()+"_op");
+            operation.setLabel(service.getName() + "_op");
 
             // The commented method is not supported by iServe (some methods cannot read more than
             // one hasInput/hasOutput

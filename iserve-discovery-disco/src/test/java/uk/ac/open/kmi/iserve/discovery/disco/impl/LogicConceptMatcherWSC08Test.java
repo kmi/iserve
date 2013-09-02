@@ -22,7 +22,6 @@ import com.google.common.collect.Table;
 import junit.framework.Assert;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -32,7 +31,6 @@ import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
-import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 import java.io.File;
@@ -69,7 +67,7 @@ public class LogicConceptMatcherWSC08Test {
         ManagerSingleton.getInstance().clearRegistry();
 
         log.info("Importing WSC 2008 services");
-        String file =  LogicConceptMatcherWSC08Test.class.getResource(WSC08_01_SERVICES).getFile();
+        String file = LogicConceptMatcherWSC08Test.class.getResource(WSC08_01_SERVICES).getFile();
         log.debug("Using " + file);
         File services = new File(file);
 
@@ -77,7 +75,7 @@ public class LogicConceptMatcherWSC08Test {
         // Automatic plugin discovery
         List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
         // Import all services
-        for(Service s : result){
+        for (Service s : result) {
             URI uri = ManagerSingleton.getInstance().importService(s);
             Assert.assertNotNull(uri);
             log.info("Service added: " + uri.toASCIIString());
@@ -162,20 +160,20 @@ public class LogicConceptMatcherWSC08Test {
 
         // Discover executable services
         Set<String> candidates = new HashSet<String>();
-        for(URI service : ManagerSingleton.getInstance().listServices()){
+        for (URI service : ManagerSingleton.getInstance().listServices()) {
             // Load the service
             Service srv = ManagerSingleton.getInstance().getService(service);
             // Load operations
             opLoop:
-            for(Operation op : srv.getOperations()) {
+            for (Operation op : srv.getOperations()) {
                 // Get inputs
                 // System.out.println("> Checking " + op.getUri());
-                for(URI to : getInputs(op)){
+                for (URI to : getInputs(op)) {
                     // System.out.println("\tChecking input " + to);
-                    for(URI from : available){
+                    for (URI from : available) {
                         // Try to match
                         MatchResult result = matcher.match(from, to);
-                        if (result.getMatchType().compareTo(DiscoMatchType.Plugin)>=0){
+                        if (result.getMatchType().compareTo(DiscoMatchType.Plugin) >= 0) {
                             log.info("Service operation " + op.getUri() + " matched.");
                             log.info("\t> Match " + from + "->" + to + ":" + result.getMatchType());
                             candidates.add(srv.getLabel());
@@ -220,24 +218,24 @@ public class LogicConceptMatcherWSC08Test {
         // Preload servide models
         // TODO; Discovery operations without loading the entire service model.
         Set<Service> services = new HashSet<Service>();
-        for(URI srvURI : ManagerSingleton.getInstance().listServices()){
+        for (URI srvURI : ManagerSingleton.getInstance().listServices()) {
             services.add(ManagerSingleton.getInstance().getService(srvURI));
         }
         int pass = 0;
-        while(!newInputs.isEmpty()){
+        while (!newInputs.isEmpty()) {
             Stopwatch passWatch = new Stopwatch().start();
             Set<Operation> relevantOps = new HashSet<Operation>();
             Set<URI> relevantOutputs = new HashSet<URI>();
             Set<Service> relevantServices = new HashSet<Service>();
-            for(Service srv : services){
+            for (Service srv : services) {
                 log.debug("Checking {}", srv.getUri());
                 // Load operations
                 operations:
-                for(Operation op : srv.getOperations()) {
+                for (Operation op : srv.getOperations()) {
                     if (allRelevantOps.contains(op)) continue;
                     // Fast check if there is some input that matches
-                    if (consumesAny(newInputs, op)){
-                        if (isInvokable2(availableInputs, op)){
+                    if (consumesAny(newInputs, op)) {
+                        if (isInvokable2(availableInputs, op)) {
                             log.debug(" >> Invokable!");
                             relevantOps.add(op);
                             Set<URI> outputs = getOutputs(op);
@@ -256,8 +254,8 @@ public class LogicConceptMatcherWSC08Test {
             newInputs.addAll(relevantOutputs);
             availableInputs.addAll(newInputs);
             allRelevantOps.addAll(relevantOps);
-            if (!newInputs.isEmpty()){
-                assertTrue(expectedServices[pass].length==relevantOps.size() &&
+            if (!newInputs.isEmpty()) {
+                assertTrue(expectedServices[pass].length == relevantOps.size() &&
                         serviceNamesToList(relevantServices).containsAll(Sets.newHashSet(expectedServices[pass])));
             }
             pass++;
@@ -268,20 +266,20 @@ public class LogicConceptMatcherWSC08Test {
 
     }
 
-    private List<String> serviceNamesToList(Set<Service> services){
+    private List<String> serviceNamesToList(Set<Service> services) {
         List<String> names = new ArrayList<String>();
-        for(Service s : services){
+        for (Service s : services) {
             names.add(s.getLabel());
         }
         return names;
     }
 
-    private boolean consumesAny(Set<URI> inputs, Operation op){
+    private boolean consumesAny(Set<URI> inputs, Operation op) {
         Set<URI> opInputs = getInputs(op);
-        for(URI from : inputs){
-            for(URI to : opInputs){
+        for (URI from : inputs) {
+            for (URI to : opInputs) {
                 MatchResult match = this.matcher.match(from, to);
-                if (match.getMatchType().compareTo(DiscoMatchType.Plugin)>=0){
+                if (match.getMatchType().compareTo(DiscoMatchType.Plugin) >= 0) {
                     return true;
                 }
             }
@@ -289,17 +287,17 @@ public class LogicConceptMatcherWSC08Test {
         return false;
     }
 
-    private boolean isInvokable2(Set<URI> availableInputs, Operation op){
+    private boolean isInvokable2(Set<URI> availableInputs, Operation op) {
         Set<URI> opInputs = getInputs(op);
         Set<URI> matched = new HashSet<URI>();
-        for(URI from : availableInputs){
-            for(URI to : opInputs){
+        for (URI from : availableInputs) {
+            for (URI to : opInputs) {
                 // skip if already matched
                 if (matched.contains(to)) continue;
                 MatchResult match = this.matcher.match(from, to);
-                if (match.getMatchType().compareTo(DiscoMatchType.Plugin)>=0){
+                if (match.getMatchType().compareTo(DiscoMatchType.Plugin) >= 0) {
                     matched.add(to);
-                    if (matched.size()==opInputs.size()){
+                    if (matched.size() == opInputs.size()) {
                         return true;
                     }
                 }
@@ -308,45 +306,45 @@ public class LogicConceptMatcherWSC08Test {
         return false;
     }
 
-    private boolean isInvokable(Set<URI> availableInputs, Operation op){
-        Table<URI,URI,MatchResult> result = matcher.match(availableInputs, getInputs(op));
-        for(URI column : result.columnKeySet()){
+    private boolean isInvokable(Set<URI> availableInputs, Operation op) {
+        Table<URI, URI, MatchResult> result = matcher.match(availableInputs, getInputs(op));
+        for (URI column : result.columnKeySet()) {
             // Each column (destination) should contain a valid match.
-            boolean hasValidMatch=false;
-            for(MatchResult mr : result.column(column).values()){
-                if (mr.getMatchType().compareTo(DiscoMatchType.Plugin)>=0){
-                    hasValidMatch=true;
+            boolean hasValidMatch = false;
+            for (MatchResult mr : result.column(column).values()) {
+                if (mr.getMatchType().compareTo(DiscoMatchType.Plugin) >= 0) {
+                    hasValidMatch = true;
                     break;
                 }
             }
-            if (!hasValidMatch){
+            if (!hasValidMatch) {
                 return false;
             }
         }
         return true;
     }
 
-    private Set<URI> getInputs(Operation op){
+    private Set<URI> getInputs(Operation op) {
         Set<URI> models = new HashSet<URI>();
-        for(MessageContent c : op.getInputs()){
+        for (MessageContent c : op.getInputs()) {
             models.addAll(getModelReferences(c));
         }
         return models;
     }
 
-    private Set<URI> getOutputs(Operation op){
+    private Set<URI> getOutputs(Operation op) {
         Set<URI> models = new HashSet<URI>();
-        for(MessageContent c : op.getOutputs()){
+        for (MessageContent c : op.getOutputs()) {
             models.addAll(getModelReferences(c));
         }
         return models;
     }
 
 
-    private Set<URI> getModelReferences(MessageContent msg){
+    private Set<URI> getModelReferences(MessageContent msg) {
         Set<URI> uris = new HashSet<URI>();
-        for(MessagePart p : msg.getMandatoryParts()){
-            for(Resource r : p.getModelReferences()){
+        for (MessagePart p : msg.getMandatoryParts()) {
+            for (Resource r : p.getModelReferences()) {
                 uris.add(r.getUri());
             }
         }

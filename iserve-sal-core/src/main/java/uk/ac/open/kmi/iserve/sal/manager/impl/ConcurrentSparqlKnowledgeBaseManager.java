@@ -134,7 +134,7 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
             for (String modelUri : concurrentTasks.keySet()) {
                 Future<Boolean> f = concurrentTasks.get(modelUri);
                 try {
-                    if (!f.get()){
+                    if (!f.get()) {
                         this.unreachableModels.add(modelUri);
                         log.error("Cannot load " + modelUri + ". Marked as invalid");
                     }

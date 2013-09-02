@@ -188,7 +188,10 @@ public class OwlsTransformer implements ServiceTransformer {
     private static final String VERSION_UNKNOWN = "Unknown";
 
     // Injection of the version
-    private @Inject(optional=true) @Named("version") String version = VERSION_UNKNOWN;
+    private
+    @Inject(optional = true)
+    @Named("version")
+    String version = VERSION_UNKNOWN;
 
     // Supported Media Type
     public static String mediaType = "application/owl+xml";
@@ -202,8 +205,6 @@ public class OwlsTransformer implements ServiceTransformer {
     }
 
     private Map<String, String> prefixes;
-
-
 
 
     public OwlsTransformer() {

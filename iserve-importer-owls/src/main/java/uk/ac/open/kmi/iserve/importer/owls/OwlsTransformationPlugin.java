@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.ServiceTransformer;
 import uk.ac.open.kmi.iserve.commons.io.TransformationPluginModule;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -41,7 +40,6 @@ public class OwlsTransformationPlugin extends AbstractModule implements Transfor
     @Override
     protected void configure() {
         MapBinder<String, ServiceTransformer> binder = MapBinder.newMapBinder(binder(), String.class, ServiceTransformer.class);
-        //binder.addBinding(OwlsTransformer.mediaType).toInstance(new OwlsTransformer());
         binder.addBinding(OwlsTransformer.mediaType).to(OwlsTransformer.class);
 
         // Bind the configuration as well
@@ -56,7 +54,6 @@ public class OwlsTransformationPlugin extends AbstractModule implements Transfor
         } catch (IOException ex) {
             log.error("Error obtaining plugin properties", ex);
         }
-        // Return empty properties ?
         return new Properties();
     }
 }

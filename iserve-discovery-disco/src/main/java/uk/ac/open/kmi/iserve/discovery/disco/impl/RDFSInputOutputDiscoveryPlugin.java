@@ -26,7 +26,10 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
-import uk.ac.open.kmi.iserve.discovery.disco.*;
+import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
+import uk.ac.open.kmi.iserve.discovery.disco.MatchResultsMerger;
+import uk.ac.open.kmi.iserve.discovery.disco.MultimapToMapMerger;
+import uk.ac.open.kmi.iserve.discovery.disco.Util;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -217,7 +220,7 @@ public class RDFSInputOutputDiscoveryPlugin {
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoveryPlugin#discoverServices(javax.ws.rs.core.MultivaluedMap)
      */
-    public Map<URL, MatchResult> discoverServices(MultivaluedMap<String, String> parameters){
+    public Map<URL, MatchResult> discoverServices(MultivaluedMap<String, String> parameters) {
         return discover(false, parameters);
     }
 

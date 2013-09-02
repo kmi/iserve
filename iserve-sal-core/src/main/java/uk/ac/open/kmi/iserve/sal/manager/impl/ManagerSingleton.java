@@ -85,10 +85,6 @@ public class ManagerSingleton implements iServeManager {
         }
     }
 
-    public URI addService(Service service) throws ServiceException {
-        return serviceManager.addService(service);
-    }
-
     public static ManagerSingleton getInstance() {
         if (_instance == null) {
             try {
@@ -107,10 +103,6 @@ public class ManagerSingleton implements iServeManager {
      */
     public SystemConfiguration getConfiguration() {
         return this.configuration;
-    }
-
-    public ServiceManager getServiceManager(){
-        return this.serviceManager;
     }
 
     /**
@@ -166,15 +158,6 @@ public class ManagerSingleton implements iServeManager {
     @Override
     public List<URI> listOutputs(URI operationUri) throws SalException {
         return this.serviceManager.listOutputs(operationUri);
-    }
-
-    // NOTE: I added this method to import a service which has already been transformed.
-    // The method addService does not import the ontologies specified in the modelReference??
-    public URI importService(Service service) throws ServiceException {
-        URI serviceUri = this.serviceManager.addService(service);
-        this.kbManager.fetchModelsForService(service, true);
-        // TODO: Rollback changes if fail!
-        return serviceUri;
     }
 
     /* (non-Javadoc)

@@ -1,22 +1,27 @@
 <?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <rdf:RDF
         xmlns:process="http://www.daml.org/services/owl-s/1.1/Process.owl#"
-        xmlns:pddxml="http://www2.dfki.de/~babla/cascom/pddxml.owl#"
-        xmlns:list="http://www.daml.org/services/owl-s/1.1/generic/ObjectList.owl#"
-        xmlns:swrl="http://www.w3.org/2003/11/swrl#"
-        xmlns:time="http://www.isi.edu/~pan/damltime/time-entry.owl#"
-        xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
         xmlns:owl="http://www.w3.org/2002/07/owl#"
-        xmlns:expr="http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#"
-        xmlns:swrlb="http://www.w3.org/2003/11/swrlb#"
         xmlns:service="http://www.daml.org/services/owl-s/1.1/Service.owl#"
         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
         xmlns:grounding="http://www.daml.org/services/owl-s/1.1/Grounding.owl#"
-        xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-        xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
-        xmlns:dc="http://purl.org/dc/elements/1.1/"
         xmlns:profile="http://www.daml.org/services/owl-s/1.1/Profile.owl#"
-        xmlns="%namespace%/%servicePath%/%service%.owl#"
         xml:base="%namespace%/%servicePath%/%service%.owl">
 
     <owl:Ontology rdf:about="">
@@ -48,9 +53,11 @@
                 <!-- Outputs -->
                 %profile_output_section%
                 <!-- Service name -->
-                <profile:serviceName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">%service%</profile:serviceName>
+                <profile:serviceName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">%service%
+                </profile:serviceName>
                 <!-- Service description -->
-                <profile:textDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">WSC-08: %service%</profile:textDescription>
+                <profile:textDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">WSC-08: %service%
+                </profile:textDescription>
                 <!-- Service ID -->
                 <service:presentedBy rdf:resource="#%service%_Service"/>
                 <!-- AtomicProcess ID -->

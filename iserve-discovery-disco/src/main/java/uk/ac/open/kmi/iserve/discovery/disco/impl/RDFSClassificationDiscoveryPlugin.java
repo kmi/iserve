@@ -136,7 +136,7 @@ public class RDFSClassificationDiscoveryPlugin {
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.discovery.api.OperationDiscoveryPlugin#discoverOperations(javax.ws.rs.core.MultivaluedMap)
      */
-    public Map<URL, MatchResult> discoverOperations(MultivaluedMap<String, String> parameters)  {
+    public Map<URL, MatchResult> discoverOperations(MultivaluedMap<String, String> parameters) {
         return discover(true, parameters);
     }
 
@@ -152,7 +152,7 @@ public class RDFSClassificationDiscoveryPlugin {
      * @param parameters
      * @return
      */
-    public Map<URL, MatchResult> discover(boolean operationDiscovery, MultivaluedMap<String, String> parameters)  {
+    public Map<URL, MatchResult> discover(boolean operationDiscovery, MultivaluedMap<String, String> parameters) {
 
         // If there is no SPARQL endpoint raise an error
         if (sparqlEndpoint == null) {
@@ -258,7 +258,7 @@ public class RDFSClassificationDiscoveryPlugin {
                         if (results.containsKey(match.getMatchedResource())) {
                             // If it is there, it's a SSOG too -> Change to Exact
                             // TODO: Dirty fix, cast to matchResultImpl, setMatchType is not a method of the interface (and should not be)
-                            ((MatchResultImpl)results.get(match.getMatchedResource())).setMatchType(DiscoMatchType.Exact);
+                            ((MatchResultImpl) results.get(match.getMatchedResource())).setMatchType(DiscoMatchType.Exact);
                         } else {
                             // Change to GSSOS and add to results
                             match.setMatchType(DiscoMatchType.Subsume);
