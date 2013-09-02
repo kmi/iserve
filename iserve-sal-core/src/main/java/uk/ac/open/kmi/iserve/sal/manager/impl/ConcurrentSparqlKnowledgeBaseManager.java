@@ -88,6 +88,15 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
     }
 
     /**
+     * This method will be called when the server is initialised.
+     * If necessary it should take care of updating any indexes on boot time.
+     */
+    @Override
+    public void initialise() {
+        // TODO: implement
+    }
+
+    /**
      * This method will be called when the server is being shutdown.
      * Ensure a clean shutdown.
      */
@@ -107,6 +116,27 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
         return this.loadedModels.contains(modelUri);
     }
 
+    /**
+     * Obtains a set with all the models loaded  into this Knowledge Base Manager
+     *
+     * @return the set of loaded models
+     */
+    @Override
+    public Set<String> getLoadedModels() {
+        return this.loadedModels;
+    }
+
+    /**
+     * Obtains a set with all the models that have not been reachable at some point. These are models that should be
+     * loaded but could not possibly due to the model being temporarily unavailable of the link being broken.
+     *
+     * @return the set of unreachable models
+     */
+    @Override
+    public Set<String> getUnreachableModels() {
+        return this.unreachableModels;
+    }
+
     @Override
     public void uploadModel(String modelUri, Model model, boolean forceUpdate) {
 
@@ -118,9 +148,53 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
         }
     }
 
-    // TODO; Using the flag wait to modify the behaviour may not be the best option
+    /**
+     * Given a model, this method will fetch an upload of the models referred to by the service.
+     * This is a synchronous implementation that will therefore wait until its fetched and uploaded.
+     *
+     * @param svc the service to be checked for referred models.
+     * @return True if all the models were propertly fetched, false otherwise
+     */
     @Override
-    public void fetchModelsForService(Service svc, boolean wait) {
+    public boolean fetchModelsForService(Service svc) {
+        boolean result = true;
+        Map<String, Future<Boolean>> concurrentTasks = launchFetchingTasks(svc);
+
+        Boolean fetched;
+        for (String modelUri : concurrentTasks.keySet()) {
+            Future<Boolean> f = concurrentTasks.get(modelUri);
+            try {
+                fetched = f.get();
+                result = result && fetched;
+
+                if (!fetched) {
+                    this.unreachableModels.add(modelUri);
+                    log.error("Cannot load " + modelUri + ". Marked as invalid");
+                }
+            } catch (Exception e) {
+                // Mark as invalid
+                log.error(e.getMessage());
+                this.unreachableModels.add(modelUri);
+                result = false;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Given a model, this method will fetch an upload of the models referred to by the service.
+     * This is an asynchronous implementation that will not wait until its fetched and uploaded.
+     *
+     * @param svc the service to be checked for referred models.
+     * @return a map with a Future<Boolean> per model to be fetched. True will indicate if the model was properly obtained.
+     */
+    @Override
+    public Map<String, Future<Boolean>> asyncFetchModelsForService(Service svc) {
+        return launchFetchingTasks(svc);
+    }
+
+    private Map<String, Future<Boolean>> launchFetchingTasks(Service svc) {
         Set<String> modelUris = obtainReferencedModelUris(svc);
         Map<String, Future<Boolean>> concurrentTasks = new HashMap<String, Future<Boolean>>();
 
@@ -130,21 +204,8 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
                 concurrentTasks.put(modelUri, this.executor.submit(task));
             }
         }
-        if (wait) {
-            for (String modelUri : concurrentTasks.keySet()) {
-                Future<Boolean> f = concurrentTasks.get(modelUri);
-                try {
-                    if (!f.get()) {
-                        this.unreachableModels.add(modelUri);
-                        log.error("Cannot load " + modelUri + ". Marked as invalid");
-                    }
-                } catch (Exception e) {
-                    // Mark as invalid
-                    log.error(e.getMessage());
-                    this.unreachableModels.add(modelUri);
-                }
-            }
-        }
+
+        return concurrentTasks;
     }
 
     /**

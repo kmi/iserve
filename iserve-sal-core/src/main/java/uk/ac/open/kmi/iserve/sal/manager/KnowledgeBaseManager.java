@@ -21,6 +21,9 @@ import uk.ac.open.kmi.iserve.commons.model.Service;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Future;
 
 /**
  * KnowledgeBaseManager is in charge of managing ontologies within iServe.
@@ -29,6 +32,12 @@ import java.util.List;
  * @since 29/07/2013
  */
 public interface KnowledgeBaseManager {
+
+    /**
+     * This method will be called when the server is initialised.
+     * If necessary it should take care of updating any indexes on boot time.
+     */
+    public void initialise();
 
     /**
      * This method will be called when the server is being shutdown.
@@ -42,7 +51,22 @@ public interface KnowledgeBaseManager {
      * @param modelUri URI of the model to be checked
      * @return true if the model has already been uploaded, false otherwise.
      */
-    boolean containsModel(String modelUri);
+    public boolean containsModel(String modelUri);
+
+    /**
+     * Obtains a set with all the models loaded  into this Knowledge Base Manager
+     *
+     * @return the set of loaded models
+     */
+    public Set<String> getLoadedModels();
+
+    /**
+     * Obtains a set with all the models that have not been reachable at some point. These are models that should be
+     * loaded but could not possibly due to the model being temporarily unavailable of the link being broken.
+     *
+     * @return the set of unreachable models
+     */
+    public Set<String> getUnreachableModels();
 
     /**
      * Uploads a model into the Knowledge Base Manager
@@ -51,16 +75,25 @@ public interface KnowledgeBaseManager {
      * @param model       the actual model to upload
      * @param forceUpdate if true the model will be updated even if already is there
      */
-    void uploadModel(String modelUri, Model model, boolean forceUpdate);
-
-    //TODO: Create Sync and Async methods instead
+    public void uploadModel(String modelUri, Model model, boolean forceUpdate);
 
     /**
      * Given a model, this method will fetch an upload of the models referred to by the service.
+     * This is a synchronous implementation that will therefore wait until its fetched and uploaded.
      *
      * @param svc the service to be checked for referred models.
+     * @return True if all the models were propertly fetched, false otherwise
      */
-    void fetchModelsForService(Service svc, boolean wait);
+    public boolean fetchModelsForService(Service svc);
+
+    /**
+     * Given a model, this method will fetch an upload of the models referred to by the service.
+     * This is an asynchronous implementation that will not wait until its fetched and uploaded.
+     *
+     * @param svc the service to be checked for referred models.
+     * @return a map with a Future<Boolean> per model to be fetched. True will indicate if the model was properly obtained.
+     */
+    public Map<String, Future<Boolean>> asyncFetchModelsForService(Service svc);
 
     /**
      * Answers a List all of URIs of the classes that are known to be equivalent to this class. Equivalence may be

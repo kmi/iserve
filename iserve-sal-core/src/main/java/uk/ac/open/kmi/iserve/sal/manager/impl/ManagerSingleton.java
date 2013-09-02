@@ -204,8 +204,12 @@ public class ManagerSingleton implements iServeManager {
             if (serviceUri != null) {
                 log.info("Service imported: {}", serviceUri.toASCIIString());
                 log.info("Source document imported: {}", sourceDocUri.toASCIIString());
-                // Update the knowledge base
-                this.kbManager.fetchModelsForService(svc, true);
+                // Update the knowledge base -- using the synchronous version
+                boolean fetched = this.kbManager.fetchModelsForService(svc);
+                if (!fetched) {
+                    log.info("Some models could not be imported: {}", this.kbManager.getUnreachableModels());
+                    // TODO: schedule these for ulterior uploads
+                }
             }
 
         } finally {
