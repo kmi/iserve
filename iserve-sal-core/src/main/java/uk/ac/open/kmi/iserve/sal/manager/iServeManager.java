@@ -52,30 +52,40 @@ public interface iServeManager {
     // Create
 
     /**
-     * Register a new service. This operation takes care of performing the
-     * appropriate format transformation. The source document is not stored on
-     * the server. For keeping a copy of the source document within the server
-     * use @see importService instead.
+     * Registers all the services found on a given source document. This operation takes care of performing the
+     * appropriate format transformation. The source document is not stored on the server. For keeping a copy of the
+     * source document within the server use @see importServices instead.
      *
      * @param sourceDocumentUri
      * @param mediaType
      * @return
      * @throws SalException
      */
-    public abstract URI registerService(URI sourceDocumentUri,
-                                        String mediaType) throws SalException;
+    public abstract List<URI> registerServices(URI sourceDocumentUri,
+                                               String mediaType) throws SalException;
+
+    /**
+     * Register a new service. Given a service already expressed in terms of MSM, this method takes care of registering
+     * it within the server. This method makes no guarantee about the availability of the source document or any other
+     * related document. The calling application should ensure this is correct.
+     *
+     * @param service the MSM service to register
+     * @return the resulting URI of the service within the server.
+     * @throws SalException
+     */
+    public abstract URI registerService(Service service) throws SalException;
 
     /**
      * Imports a new service within iServe. The original document is stored
      * in the server and the transformed version registered within iServe.
      *
-     * @param serviceContent
+     * @param servicesContentStream
      * @param mediaType
      * @return
      * @throws SalException
      */
-    public abstract URI importService(InputStream serviceContent,
-                                      String mediaType) throws SalException;
+    public abstract List<URI> importServices(InputStream servicesContentStream,
+                                             String mediaType) throws SalException;
 
     /**
      * Clears the registry entirely: all documents and services are deleted
@@ -149,6 +159,14 @@ public interface iServeManager {
      * @return a List of URIs with the outputs of the operation. If no output is provided the List should be empty NOT null.
      */
     public abstract List<URI> listOutputs(URI operationUri) throws SalException;
+
+    /**
+     * Obtains the list of mandatory parts for a given Message Content
+     *
+     * @param messageContent the message content URI
+     * @return a List of URIs with the mandatory parts of the message content. If there are no parts the List should be empty NOT null.
+     */
+    public abstract List<URI> listMandatoryParts(URI messageContent);
 
     /**
      * Checks if a service exists in the repository

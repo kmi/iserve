@@ -30,6 +30,7 @@ import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
 import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
@@ -477,7 +478,7 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
 
         String queryStr = new StringBuilder()
                 .append("select DISTINCT ?model where { \n")
-                .append("<").append(uri.toASCIIString()).append("> ").append("<http://www.w3.org/ns/sawsdl#modelReference>").append(" ?model")
+                .append("<").append(uri.toASCIIString()).append("> <").append(SAWSDL.modelReference.getURI()).append("> ?model")
                 .append(" }")
                 .toString();
 

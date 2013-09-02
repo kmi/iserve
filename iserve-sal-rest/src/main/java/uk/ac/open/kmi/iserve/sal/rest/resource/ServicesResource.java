@@ -32,6 +32,7 @@ import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.List;
 
 /**
  * Services Resource
@@ -79,7 +80,7 @@ public class ServicesResource {
 
         // The user is allowed to create services
         String mediaType = null;
-        URI serviceUri;
+        List<URI> servicesUris;
 
         if (bodyPart != null) {
             mediaType = bodyPart.getMediaType().toString();
@@ -90,22 +91,30 @@ public class ServicesResource {
         try {
             if ((locationUri != null) && (!"".equalsIgnoreCase(locationUri))) {
                 // There is a location. Just register, don't import
-                log.info("Registering the service: " + locationUri);
-                serviceUri = ManagerSingleton.getInstance().registerService(URI.create(locationUri), mediaType);
+                log.info("Registering the services from {} ", locationUri);
+                servicesUris = ManagerSingleton.getInstance().registerServices(URI.create(locationUri), mediaType);
             } else {
                 // There is no location. Import the entire service
-                log.info("Importing the service");
-                serviceUri = ManagerSingleton.getInstance().importService(file, mediaType);
+                log.info("Importing the services");
+                servicesUris = ManagerSingleton.getInstance().importServices(file, mediaType);
             }
             //		String oauthConsumer = ((SecurityFilter.Authorizer) security).getOAuthConsumer();
 
-            String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                    "  <body>\nA service is created at <a href='" + serviceUri + "'>" + serviceUri + "</a>\n  </body>\n</html>";
+            StringBuilder responseBuilder = new StringBuilder()
+                    .append("<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n")
+                    .append("<body>\n")
+                    .append(servicesUris.size()).append(" services added.");
 
-            return Response.status(Status.CREATED).contentLocation(serviceUri).entity(htmlString).build();
+            for (URI svcUri : servicesUris) {
+                responseBuilder.append("Service created at <a href='").append(svcUri).append("'>").append(svcUri).append("</a>\n");
+            }
+
+            responseBuilder.append("</body>\n</html>");
+
+            return Response.status(Status.CREATED).entity(responseBuilder.toString()).build();
         } catch (ServiceException e) {
             String error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                    "  <body>\nThere was an error while transforming the service: " + e.getMessage() + "\n  </body>\n</html>";
+                    "  <body>\nThere was an error while transforming the service descriptions: " + e.getMessage() + "\n  </body>\n</html>";
 
             // TODO: Add logging
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
