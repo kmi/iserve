@@ -64,6 +64,11 @@ public class WSCImporter implements ServiceTransformer {
         this.owlOntologyURL = owlOntologyURL;
     }
 
+    public WSCImporter(InputStream xmlTaxonomyFileStream, String owlOntologyURL) throws IOException {
+        this.reasoner = new WSCXMLSemanticReasoner(xmlTaxonomyFileStream);
+        this.owlOntologyURL = owlOntologyURL;
+    }
+
 
     private MessageContent transform(XMLInstance instance, String baseURI){
         // TODO Handle baseURI in some way!
