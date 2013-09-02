@@ -20,9 +20,7 @@ import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 
 import java.net.URI;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Interface that defines the operations a Service Manager should offer
@@ -113,7 +111,21 @@ public interface ServiceManager {
      */
     public abstract List<URI> listOutputs(URI operationUri);
 
-    List<URI> listMandatoryParts(URI messageContent);
+    /**
+     * Obtains the list of mandatory parts for a given Message Content
+     *
+     * @param messageContent the message content URI
+     * @return a List of URIs with the mandatory parts of the message content. If there are no parts the List should be empty NOT null.
+     */
+    public abstract List<URI> listMandatoryParts(URI messageContent);
+
+    /**
+     * Obtains the list of model references for a given element.
+     *
+     * @param elementUri the URI of the element for which we want to obtain the model references
+     * @return a List of URIs with the model references of the given element. If there are no model references the List should be empty NOT null.
+     */
+    public abstract List<URI> listModelReferences(URI elementUri);
 
     /**
      * Lists all documents related to a given service
@@ -168,5 +180,4 @@ public interface ServiceManager {
      */
     public abstract boolean serviceExists(URI serviceUri) throws ServiceException;
 
-    Set<URI> listModelReferences(URI p);
 }

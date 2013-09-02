@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package es.usc.citius.composit.importer.wsc.wscxml;
 
 
@@ -109,7 +125,7 @@ public class WSCXMLSemanticReasoner implements Serializable {
 
     public Set<String> getSubclasses(String concept) {
         Set<String> subclasses = this.subclasses.get(concept);
-        if (subclasses == null){
+        if (subclasses == null) {
             return new HashSet<String>();
         }
         return new HashSet<String>(subclasses);
@@ -117,7 +133,7 @@ public class WSCXMLSemanticReasoner implements Serializable {
 
     public Set<String> getSuperclasses(String concept) {
         Set<String> superclasses = this.superclasses.get(concept);
-        if (superclasses == null){
+        if (superclasses == null) {
             return new HashSet<String>();
         }
         return new HashSet<String>(superclasses);
@@ -129,7 +145,7 @@ public class WSCXMLSemanticReasoner implements Serializable {
 
     public boolean subsumes(String x, String y) {
         Set<String> superclasses = this.superclasses.get(y);
-        if (superclasses == null){
+        if (superclasses == null) {
             return false;
         }
         return superclasses.contains(x);
@@ -161,7 +177,7 @@ public class WSCXMLSemanticReasoner implements Serializable {
 
     public Set<String> getInstances(String resource) {
         Set<String> instances = this.instances.get(resource);
-        if (instances == null){
+        if (instances == null) {
             return new HashSet<String>();
         }
         return new HashSet<String>(instances);

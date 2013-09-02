@@ -85,7 +85,6 @@
         <module>iserve-discovery-disco</module>
         <module>iserve-discovery-engine</module>
         <module>iserve-test-resources</module>
-        <module>iserve-composit-engine</module>
         <!-- <module>iserve-analysis-engine</module> -->
     </modules>
 

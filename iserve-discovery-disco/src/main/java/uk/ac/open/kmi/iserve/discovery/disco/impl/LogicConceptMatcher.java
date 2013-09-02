@@ -122,7 +122,7 @@ public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
             Stopwatch stopwatch = new Stopwatch().start();
             ResultSet qResults = qexec.execSelect();
             stopwatch.stop();
-            log.debug("Time taken for querying the registry: {}", stopwatch);
+            log.info("Time taken for querying the registry: {}", stopwatch);
 
             // Obtain matches if any and figure out the type
             if (qResults.hasNext()) {
@@ -225,6 +225,7 @@ public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
      * @param type    the MatchType we want to obtain
      * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
      */
+    @Override
     public Table<URI, URI, MatchResult> listMatchesOfType(Set<URI> origins, MatchType type) {
         return null;  // TODO: implement
     }
@@ -250,6 +251,7 @@ public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
      * @param minType the minimum MatchType we want to obtain
      * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
      */
+    @Override
     public Table<URI, URI, MatchResult> listMatchesAtLeastOfType(Set<URI> origins, MatchType minType) {
         Table<URI, URI, MatchResult> matchTable = HashBasedTable.create();
         Stopwatch w = new Stopwatch();
@@ -286,6 +288,7 @@ public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
      * @param maxType the maximum MatchType we want to obtain
      * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
      */
+    @Override
     public Table<URI, URI, MatchResult> listMatchesAtMostOfType(Set<URI> origins, MatchType maxType) {
         return null;  // TODO: implement
     }
@@ -322,6 +325,7 @@ public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
      * @param maxType the maximum MatchType we want to obtain
      * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
      */
+    @Override
     public Table<URI, URI, MatchResult> listMatchesWithinRange(Set<URI> origins, MatchType minType, MatchType maxType) {
         return null;  // TODO: implement
     }

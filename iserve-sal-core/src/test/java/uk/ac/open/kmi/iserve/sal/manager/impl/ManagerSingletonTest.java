@@ -137,15 +137,15 @@ public class ManagerSingletonTest {
 
         ManagerSingleton.getInstance().clearRegistry();
         InputStream in;
-        URI serviceUri;
+        List<URI> servicesUris;
         int count = 0;
         log.info("Importing MSM TTL services");
         for (File ttlFile : msmTtlTcFiles) {
             in = new FileInputStream(ttlFile);
             log.info("Adding service: " + ttlFile.getName());
-            serviceUri = ManagerSingleton.getInstance().importService(in, MediaType.TEXT_TURTLE.getMediaType());
-            Assert.assertNotNull(serviceUri);
-            log.info("Service added: " + serviceUri.toASCIIString());
+            servicesUris = ManagerSingleton.getInstance().importServices(in, MediaType.TEXT_TURTLE.getMediaType());
+            Assert.assertNotNull(servicesUris);
+            log.info("Service added: " + servicesUris.get(0).toASCIIString());
             count++;
         }
         Assert.assertEquals(msmTtlTcFiles.length, count);
@@ -156,9 +156,9 @@ public class ManagerSingletonTest {
         for (File owlsFile : owlsTcFiles) {
             in = new FileInputStream(owlsFile);
             log.info("Adding service: " + owlsFile.getName());
-            serviceUri = ManagerSingleton.getInstance().importService(in, OWLS_MEDIATYPE);
-            Assert.assertNotNull(serviceUri);
-            log.info("Service added: " + serviceUri.toASCIIString());
+            servicesUris = ManagerSingleton.getInstance().importServices(in, OWLS_MEDIATYPE);
+            Assert.assertNotNull(servicesUris);
+            log.info("Service added: " + servicesUris.get(0).toASCIIString());
             count++;
         }
         Assert.assertEquals(owlsTcFiles.length, count);

@@ -62,7 +62,10 @@ public class HrestsTransformer implements ServiceTransformer {
     private static final String VERSION_PROP_FILE = "plugin.properties";
     private static final String VERSION_PROP = "version";
     private static final String VERSION_UNKNOWN = "Unknown";
-    private @Inject(optional=true) @Named("version") String version = VERSION_UNKNOWN;
+    private
+    @Inject(optional = true)
+    @Named("version")
+    String version = VERSION_UNKNOWN;
 
     // Supported Media Type
     public static String mediaType = "text/html";
@@ -75,7 +78,6 @@ public class HrestsTransformer implements ServiceTransformer {
         fileExtensions.add("html");
         fileExtensions.add("xhtml");
     }
-
 
 
     public HrestsTransformer() throws TransformerConfigurationException {

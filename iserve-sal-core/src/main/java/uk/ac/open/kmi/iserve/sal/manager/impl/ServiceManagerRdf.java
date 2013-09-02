@@ -16,6 +16,7 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
+import com.google.common.base.Stopwatch;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -29,6 +30,7 @@ import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
+import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
 import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
@@ -37,7 +39,9 @@ import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManager {
 
@@ -171,15 +175,11 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
 
         try {
-            // TODO: Remove profiling
-            long startTime = System.currentTimeMillis();
-
+            Stopwatch stopwatch = new Stopwatch().start();
             ResultSet qResults = qexec.execSelect();
+            stopwatch.stop();
 
-            // TODO: Remove profiling
-            long endTime = System.currentTimeMillis();
-            long duration = endTime - startTime;
-            log.debug("Time taken for querying the registry: " + duration);
+            log.info("Time taken for querying the registry: {} ", stopwatch);
 
             Resource resource;
             URI matchUri;
@@ -471,17 +471,17 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
     }
 
     @Override
-    public Set<URI> listModelReferences(URI uri) {
-            if (uri == null) {
-                return Collections.emptySet();
-            }
+    public List<URI> listModelReferences(URI uri) {
+        if (uri == null) {
+            return Collections.emptyList();
+        }
 
-            String queryStr = new StringBuilder()
-                    .append("select DISTINCT ?model where { \n")
-                    .append("<").append(uri.toASCIIString()).append("> ").append("<http://www.w3.org/ns/sawsdl#modelReference>").append(" ?model")
-                    .append(" }")
-                    .toString();
+        String queryStr = new StringBuilder()
+                .append("select DISTINCT ?model where { \n")
+                .append("<").append(uri.toASCIIString()).append("> <").append(SAWSDL.modelReference.getURI()).append("> ?model")
+                .append(" }")
+                .toString();
 
-            return new HashSet<URI>(listResourcesByQuery(queryStr, "model"));
+        return listResourcesByQuery(queryStr, "model");
     }
 }

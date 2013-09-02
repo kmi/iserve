@@ -65,19 +65,6 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>install-wsc08</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>http://goo.gl/iOgxhw</url>
-                            <unpack>true</unpack>
-                            <outputDirectory>${project.build.resources[0].directory}</outputDirectory>
-                            <md5>21642281b7c3a4c10a68d0ecce6d7b68</md5>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>install-owls-tc4</id>
                         <phase>generate-resources</phase>
                         <goals>
@@ -88,6 +75,19 @@
                             <unpack>true</unpack>
                             <outputDirectory>${project.build.resources[0].directory}</outputDirectory>
                             <md5>b59f272e5d036d00e47f3350eef4ce72</md5>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install-wsc08</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>http://goo.gl/iOgxhw</url>
+                            <unpack>true</unpack>
+                            <outputDirectory>${project.build.resources[0].directory}</outputDirectory>
+                            <md5>21642281b7c3a4c10a68d0ecce6d7b68</md5>
                         </configuration>
                     </execution>
                 </executions>

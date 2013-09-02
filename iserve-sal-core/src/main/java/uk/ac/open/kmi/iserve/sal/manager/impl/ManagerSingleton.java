@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -85,10 +86,6 @@ public class ManagerSingleton implements iServeManager {
         }
     }
 
-    public URI addService(Service service) throws ServiceException {
-        return serviceManager.addService(service);
-    }
-
     public static ManagerSingleton getInstance() {
         if (_instance == null) {
             try {
@@ -107,10 +104,6 @@ public class ManagerSingleton implements iServeManager {
      */
     public SystemConfiguration getConfiguration() {
         return this.configuration;
-    }
-
-    public ServiceManager getServiceManager(){
-        return this.serviceManager;
     }
 
     /**
@@ -168,21 +161,24 @@ public class ManagerSingleton implements iServeManager {
         return this.serviceManager.listOutputs(operationUri);
     }
 
-    // NOTE: I added this method to import a service which has already been transformed.
-    // The method addService does not import the ontologies specified in the modelReference??
-    public URI importService(Service service) throws ServiceException {
-        URI serviceUri = this.serviceManager.addService(service);
-        this.kbManager.fetchModelsForService(service, true);
-        // TODO: Rollback changes if fail!
-        return serviceUri;
-    }
-
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#importService(java.io.InputStream, java.lang.String)
+    /**
+     * Obtains the list of mandatory parts for a given Message Content
+     *
+     * @param messageContent the message content URI
+     * @return a List of URIs with the mandatory parts of the message content. If there are no parts the List should be empty NOT null.
      */
     @Override
-    public URI importService(InputStream serviceContent,
-                             String mediaType) throws SalException {
+    public List<URI> listMandatoryParts(URI messageContent) {
+        return this.serviceManager.listMandatoryParts(messageContent);
+    }
+
+
+    /* (non-Javadoc)
+     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#importServices(java.io.InputStream, java.lang.String)
+     */
+    @Override
+    public List<URI> importServices(InputStream servicesContentStream,
+                                    String mediaType) throws SalException {
 
         boolean isNativeFormat = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.containsKey(mediaType);
         // Throw error if Format Unsupported
@@ -194,41 +190,48 @@ public class ManagerSingleton implements iServeManager {
         // Obtain the file extension to use
         String fileExtension = findFileExtensionToUse(mediaType, isNativeFormat);
 
+        List<Service> services = null;
+        List<URI> importedServices = new ArrayList<URI>();
         URI sourceDocUri = null;
-        URI serviceUri = null;
         InputStream localStream = null;
         try {
             // 1st Store the document
-            sourceDocUri = this.docManager.createDocument(serviceContent, fileExtension);
-            if (sourceDocUri == null)
+            sourceDocUri = this.docManager.createDocument(servicesContentStream, fileExtension);
+            if (sourceDocUri == null) {
                 throw new ServiceException("Unable to save service document. Operation aborted.");
+            }
 
             // 2nd Parse and Transform the document
             // The original stream may be a one-of stream so save it first and read locally
             localStream = this.docManager.getDocument(sourceDocUri);
-            List<Service> services = getServicesFromStream(mediaType, isNativeFormat, localStream);
+            services = getServicesFromStream(mediaType, isNativeFormat, localStream);
 
-            // 3rd - Store the resulting MSM services. In principle it should be just one
-            Service svc = null;
+            // 3rd - Store the resulting MSM services. There may be more than one
+            URI serviceUri = null;
             if (services != null && !services.isEmpty()) {
-                svc = services.get(0);
-                svc.setSource(sourceDocUri); // The service is being imported -> update the source
-                serviceUri = this.serviceManager.addService(svc);
+                log.info("Importing {} services", services.size());
+                for (Service service : services) {
+                    // The service is being imported -> update the source
+                    service.setSource(sourceDocUri);
+                    serviceUri = registerService(service);
+                    if (serviceUri != null) {
+                        importedServices.add(serviceUri);
+                    }
+                }
             }
 
             // 4th Log it was all done correctly
             // TODO: log to the system and notify observers
-            if (serviceUri != null) {
-                log.info("Service imported: {}", serviceUri.toASCIIString());
-                log.info("Source document imported: {}", sourceDocUri.toASCIIString());
-                // Update the knowledge base
-                this.kbManager.fetchModelsForService(svc, true);
-            }
+            log.info("Source document imported: {}", sourceDocUri.toASCIIString());
 
         } finally {
             // Rollback if something went wrong
-            if (serviceUri == null && sourceDocUri != null) {
+            if ((services == null || (services != null && services.size() != importedServices.size()))
+                    && sourceDocUri != null) {
                 this.docManager.deleteDocument(sourceDocUri);
+                for (URI svcUri : importedServices) {
+                    this.serviceManager.deleteService(svcUri);
+                }
                 log.warn("There were problems importing the service. Changes undone.");
             }
 
@@ -240,7 +243,7 @@ public class ManagerSingleton implements iServeManager {
                 }
         }
 
-        return serviceUri;
+        return importedServices;
     }
 
     private List<Service> getServicesFromStream(String mediaType, boolean nativeFormat, InputStream localStream) throws ServiceException {
@@ -293,10 +296,10 @@ public class ManagerSingleton implements iServeManager {
     }
 
     /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#registerService(java.net.URI, java.lang.String)
+     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#registerServices(java.net.URI, java.lang.String)
      */
     @Override
-    public URI registerService(URI sourceDocumentUri, String mediaType) throws SalException {
+    public List<URI> registerServices(URI sourceDocumentUri, String mediaType) throws SalException {
 
         boolean isNativeFormat = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.containsKey(mediaType);
         // Throw error if Format Unsupported
@@ -305,20 +308,30 @@ public class ManagerSingleton implements iServeManager {
             throw new ServiceException("Unable to import service. Format unsupported.");
         }
 
-        URI serviceUri = null;
+        List<URI> registeredServices = new ArrayList<URI>();
+
         try {
+            log.debug("Registering services from document: {}", sourceDocumentUri.toASCIIString());
             // 1st Obtain the document and parse/transform it
             InputStream is = sourceDocumentUri.toURL().openStream();
             List<Service> services = getServicesFromStream(mediaType, isNativeFormat, is);
 
-            // TODO: We assume there is just one service here..
-            if (services != null && !services.isEmpty())
-                serviceUri = this.serviceManager.addService(services.get(0));
+            if (services != null && !services.isEmpty()) {
+                log.debug("Services found: {}. Registering ...", services.size());
+                URI serviceUri;
+                for (Service service : services) {
+                    // 2nd Add the service
+                    serviceUri = registerService(service);
+                    if (serviceUri != null) {
+                        registeredServices.add(serviceUri);
+                    }
+                }
+            }
 
-            // 4th Log it was all done correctly
-            // TODO: log to the system and notify observers
-            log.info("Service imported: {}", serviceUri.toASCIIString());
-            log.info("Source document: {}", sourceDocumentUri.toASCIIString());
+            if (registeredServices.size() != services.size()) {
+                log.warn("Found {} services in document {} but only imported {} services", services.size(),
+                        sourceDocumentUri, registeredServices.size());
+            }
 
         } catch (MalformedURLException e) {
             log.error("Error obtaining the source document. Incorrect URL. " + sourceDocumentUri.toString());
@@ -328,6 +341,37 @@ public class ManagerSingleton implements iServeManager {
             throw new ServiceException("Unable to register service. Unable to retrieve source document.", e);
         }
 
+        return registeredServices;
+    }
+
+    /**
+     * Register a new service. Given a service already expressed in terms of MSM, this method takes care of registering
+     * it within the server. This method makes no guarantee about the availability of the source document or any other
+     * related document. The calling application should ensure this is correct.
+     *
+     * @param service the MSM service to register
+     * @return the resulting URI of the service within the server.
+     * @throws uk.ac.open.kmi.iserve.sal.exception.SalException
+     *
+     */
+    @Override
+    public URI registerService(Service service) throws SalException {
+        URI serviceUri = null;
+
+        if (service != null) {
+            // 1st Add service
+            serviceUri = this.serviceManager.addService(service);
+            // Log it was all done correctly
+            log.info("Service imported: {}", serviceUri.toASCIIString());
+
+            // 2nd Update the knowledge base -- using the synchronous version
+            boolean fetched = this.kbManager.fetchModelsForService(service);
+            if (!fetched) {
+                log.info("Some models could not be imported: {}", this.kbManager.getUnreachableModels());
+                // TODO: schedule these for ulterior uploads
+            }
+            // TODO: log to the system and notify observers
+        }
         return serviceUri;
     }
 

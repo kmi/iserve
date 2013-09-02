@@ -69,11 +69,11 @@ public interface ConceptMatcher {
      * Perform a match between two Sets of URIs (from {@code origin} to {@code destination})
      * and returns the result.
      *
-     * @param origin      Set of URIs of the elements to match
-     * @param destination Set of URIs of the elements to match against
+     * @param origins      Set of URIs of the elements to match
+     * @param destinations Set of URIs of the elements to match against
      * @return a {@link Table} with the result of the matching indexed by origin URI and then destination URI.
      */
-    Table<URI, URI, MatchResult> match(Set<URI> origin, Set<URI> destination);
+    Table<URI, URI, MatchResult> match(Set<URI> origins, Set<URI> destinations);
 
     /**
      * Obtains all the matching resources that have a precise MatchType with the URI of {@code origin}.
@@ -86,6 +86,15 @@ public interface ConceptMatcher {
     Map<URI, MatchResult> listMatchesOfType(URI origin, MatchType type);
 
     /**
+     * Obtains all the matching resources that have a precise MatchType with the URIs of {@code origin}.
+     *
+     * @param origins URIs to match
+     * @param type    the MatchType we want to obtain
+     * @return a {@link Table} with the result of the matching indexed by origin URI and then destination URI.
+     */
+    Table<URI, URI, MatchResult> listMatchesOfType(Set<URI> origins, MatchType type);
+
+    /**
      * Obtains all the matching resources that have a MatchType with the URI of {@code origin} of the type provided (inclusive) or more.
      *
      * @param origin  URI to match
@@ -94,6 +103,15 @@ public interface ConceptMatcher {
      *         result is found the Map should be empty not null.
      */
     Map<URI, MatchResult> listMatchesAtLeastOfType(URI origin, MatchType minType);
+
+    /**
+     * Obtains all the matching resources that have a MatchType with the URIs of {@code origin} of the type provided (inclusive) or more.
+     *
+     * @param origins URIs to match
+     * @param minType the minimum MatchType we want to obtain
+     * @return a {@link Table} with the result of the matching indexed by origin URI and then destination URI.
+     */
+    Table<URI, URI, MatchResult> listMatchesAtLeastOfType(Set<URI> origins, MatchType minType);
 
     /**
      * Obtain all the matching resources that have a MatchTyoe with the URI of {@code origin} of the type provided (inclusive) or less.
@@ -106,6 +124,15 @@ public interface ConceptMatcher {
     Map<URI, MatchResult> listMatchesAtMostOfType(URI origin, MatchType maxType);
 
     /**
+     * Obtain all the matching resources that have a MatchTyoe with the URIs of {@code origin} of the type provided (inclusive) or less.
+     *
+     * @param origins URIs to match
+     * @param maxType the maximum MatchType we want to obtain
+     * @return a {@link Table} with the result of the matching indexed by origin URI and then destination URI.
+     */
+    Table<URI, URI, MatchResult> listMatchesAtMostOfType(Set<URI> origins, MatchType maxType);
+
+    /**
      * Obtain all the matching resources with the URI of {@code origin} within the range of MatchTypes provided, both inclusive.
      *
      * @param origin  URI to match
@@ -116,6 +143,14 @@ public interface ConceptMatcher {
      */
     Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType);
 
-    Table<URI, URI, MatchResult> listMatchesAtLeastOfType(Set<URI> origins, MatchType minType);
+    /**
+     * Obtain all the matching resources with the URIs of {@code origin} within the range of MatchTypes provided, both inclusive.
+     *
+     * @param origins URIs to match
+     * @param minType the minimum MatchType we want to obtain
+     * @param maxType the maximum MatchType we want to obtain
+     * @return a {@link Table} with the result of the matching indexed by origin URI and then destination URI.
+     */
+    Table<URI, URI, MatchResult> listMatchesWithinRange(Set<URI> origins, MatchType minType, MatchType maxType);
 
 }
