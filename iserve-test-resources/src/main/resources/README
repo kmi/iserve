@@ -66,3 +66,14 @@ SAWSDL-TC3-WSDL11
  Benedikt Fries
  Mahboob Alam Khalid
  Martin Vasileski
+
+ Web Service Contest 2008
+ ========================
+ This module obtains an adapted version of this dataset from: http://iserve.kmi.open.ac.uk/datasets/composit-wsc08.zip
+
+ This version was modified by Pablo Rodriguez Mier (CITIUS - University of Santiago de Compostela). The modified version
+ includes the dataset used for evaluating composition engines that exploit semantic descriptions, adapted such that the
+ taxonomies provided are captured in OWL.
+
+ Original datasets from the WSC'08
+ http://cec2008.cs.georgetown.edu/wsc08/
