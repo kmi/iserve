@@ -48,7 +48,7 @@ public class HrestsTransformationPlugin extends AbstractModule implements Transf
     private Properties getProperties() {
         try {
             Properties properties = new Properties();
-            properties.load(getClass().getClassLoader().getResourceAsStream("plugin.properties"));
+            properties.load(getClass().getClassLoader().getResourceAsStream("hrests-transformer.properties"));
             return properties;
         } catch (IOException ex) {
             log.error("Error obtaining plugin properties", ex);
