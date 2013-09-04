@@ -52,10 +52,9 @@ public interface MatchResult {
      *
      * @return
      */
-    public ConceptMatcher getMatcher();
+    public Matcher getMatcher();
 
     public String getExplanation();
-
 
 
 }

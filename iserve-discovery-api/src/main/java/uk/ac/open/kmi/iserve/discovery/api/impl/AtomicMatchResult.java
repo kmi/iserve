@@ -16,9 +16,9 @@
 
 package uk.ac.open.kmi.iserve.discovery.api.impl;
 
-import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
+import uk.ac.open.kmi.iserve.discovery.api.Matcher;
 
 import java.net.URI;
 
@@ -33,10 +33,10 @@ public class AtomicMatchResult implements MatchResult {
 
     private URI resourceToMatch;
     private URI matchedResource;
-    private ConceptMatcher matcher;
+    private Matcher matcher;
     private MatchType matchType;
 
-    public AtomicMatchResult(URI resourceToMatch, URI matchedResource, MatchType matchType, ConceptMatcher matcher) {
+    public AtomicMatchResult(URI resourceToMatch, URI matchedResource, MatchType matchType, Matcher matcher) {
         this.resourceToMatch = resourceToMatch;
         this.matchedResource = matchedResource;
         this.matcher = matcher;
@@ -69,7 +69,7 @@ public class AtomicMatchResult implements MatchResult {
      * @return
      */
     @Override
-    public ConceptMatcher getMatcher() {
+    public Matcher getMatcher() {
         return this.matcher;
     }
 

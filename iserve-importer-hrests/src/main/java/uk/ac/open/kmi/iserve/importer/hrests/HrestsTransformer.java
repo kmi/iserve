@@ -36,7 +36,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,20 +51,24 @@ public class HrestsTransformer implements ServiceTransformer {
 
     private static final String XSLT = "hrests.xslt";
 
-    private Tidy parser;
-
-    private File xsltFile;
-
+    private final Tidy parser;
+    private final TransformerFactory xformFactory;
     private Transformer transformer;
 
     // Include information about the software version
     private static final String VERSION_PROP_FILE = "plugin.properties";
     private static final String VERSION_PROP = "version";
     private static final String VERSION_UNKNOWN = "Unknown";
+
     private
     @Inject(optional = true)
     @Named("version")
     String version = VERSION_UNKNOWN;
+
+//    private
+//    @Inject
+//    @Named("xslt")
+//    String xsltUrl = null;
 
     // Supported Media Type
     public static String mediaType = "text/html";
@@ -80,32 +83,17 @@ public class HrestsTransformer implements ServiceTransformer {
     }
 
 
-    public HrestsTransformer() throws TransformerConfigurationException {
+    public HrestsTransformer() {
         parser = new Tidy();
-        try {
-            //URL xsltUrl = getClass().getResource(XSLT);
-            URL xsltUrl = getClass().getClassLoader().getResource(XSLT);
-            log.debug("Loading XSLT from {}", xsltUrl);
-            xsltFile = new File(xsltUrl.toURI());
-//            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-//            xsltFile = new File(loader.getResource(XSLT).toURI());
-            TransformerFactory xformFactory = TransformerFactory.newInstance();
-            transformer = xformFactory.newTransformer(new StreamSource(this.xsltFile));
-
-            if (this.version == null) {
-                obtainVersionInformation();
-            }
-
-        } catch (URISyntaxException e) {
-            log.error("Wrong URI for the XSLT transformation file.");
-            throw new TransformerConfigurationException("Wrong URI for the XSLT transformation file.", e);
+        xformFactory = TransformerFactory.newInstance();
+        if (this.version == null || this.version == VERSION_UNKNOWN) {
+            obtainVersionInformation();
         }
-
     }
 
     private void obtainVersionInformation() {
         log.info("Loading version information from {}", VERSION_PROP_FILE);
-        PropertiesConfiguration config = null;
+        PropertiesConfiguration config;
         try {
             config = new PropertiesConfiguration(VERSION_PROP_FILE);
             this.version = config.getString(VERSION_PROP, VERSION_UNKNOWN);
@@ -167,8 +155,11 @@ public class HrestsTransformer implements ServiceTransformer {
             return new ArrayList<Service>();
         }
 
-        ByteArrayInputStream istream = null;
+        if (this.transformer == null) {
+            configureTransformer();
+        }
 
+        ByteArrayInputStream istream = null;
         Document document = parser.parseDOM(originalDescription, System.out);
 
         DOMSource source = new DOMSource(document);
@@ -204,6 +195,18 @@ public class HrestsTransformer implements ServiceTransformer {
                 }
         }
 
+    }
+
+    private void configureTransformer() {
+        URL xsltUrl = getClass().getResource(XSLT);
+        log.debug("Loading XSLT from {}", xsltUrl);
+        File xsltFile = new File(xsltUrl.toString());
+
+        try {
+            transformer = this.xformFactory.newTransformer(new StreamSource(xsltFile));
+        } catch (TransformerConfigurationException e) {
+            log.error("Exception while configuring XSLT transformer", e);
+        }
     }
 
     public static void main(String[] args) throws TransformerConfigurationException {

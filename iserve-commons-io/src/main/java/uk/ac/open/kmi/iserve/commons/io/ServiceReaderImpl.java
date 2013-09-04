@@ -311,13 +311,24 @@ public class ServiceReaderImpl implements ServiceReader {
                 node = nodeIterator.next();
                 Individual axiomIndiv = node.as(Individual.class); // Should be possible given the filter
                 if (axiomClass.equals(Condition.class)) {
-                    Condition cond = new Condition(new URI(axiomIndiv.getURI()));
+                    Condition cond;
+                    if (axiomIndiv.isAnon()) {
+                        cond = new Condition(null);
+                    } else {
+                        cond = new Condition(new URI(axiomIndiv.getURI()));
+                    }
                     setResourceProperties(axiomIndiv, cond);
                     cond.setTypedValue(getAxiom(axiomIndiv));
                     ((List<Condition>) result).add(cond);
 
                 } else {
-                    Effect effect = new Effect(new URI(axiomIndiv.getURI()));
+                    Effect effect;
+                    if (axiomIndiv.isAnon()) {
+                        effect = new Effect(null);
+                    } else {
+                        effect = new Effect(new URI(axiomIndiv.getURI()));
+                    }
+
                     setResourceProperties(axiomIndiv, effect);
                     effect.setTypedValue(getAxiom(axiomIndiv));
                     ((List<Effect>) result).add(effect);

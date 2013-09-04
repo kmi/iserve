@@ -90,11 +90,11 @@ public class ManagerSingletonTest {
         // Upload every document and obtain their URLs
         for (File ttlFile : msmTtlTcFiles) {
             in = new FileInputStream(ttlFile);
-            log.info("Adding document: " + ttlFile.getName());
+            log.info("Adding document: {}", ttlFile.getName());
             String fileExt = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.get(MediaType.TEXT_TURTLE.getMediaType()).getExtension();
             docUri = ManagerSingleton.getInstance().createDocument(in, fileExt);
             Assert.assertNotNull(docUri);
-            log.info("Service added: " + docUri.toASCIIString());
+            log.info("Service added: {}", docUri.toASCIIString());
             count++;
         }
         Assert.assertEquals(msmTtlTcFiles.length, count);
@@ -114,7 +114,7 @@ public class ManagerSingletonTest {
         int count = numDocs;
         while (index < numDocs) {
             docUri = documents.get(index);
-            log.info("Deleting document: " + docUri);
+            log.info("Deleting document: {}", docUri);
             result = ManagerSingleton.getInstance().deleteDocument(docUri);
             Assert.assertTrue(result);
             index += delta;
@@ -142,10 +142,10 @@ public class ManagerSingletonTest {
         log.info("Importing MSM TTL services");
         for (File ttlFile : msmTtlTcFiles) {
             in = new FileInputStream(ttlFile);
-            log.info("Adding service: " + ttlFile.getName());
+            log.info("Adding service: {}", ttlFile.getName());
             servicesUris = ManagerSingleton.getInstance().importServices(in, MediaType.TEXT_TURTLE.getMediaType());
             Assert.assertNotNull(servicesUris);
-            log.info("Service added: " + servicesUris.get(0).toASCIIString());
+            log.info("Service added: {}", servicesUris.get(0).toASCIIString());
             count++;
         }
         Assert.assertEquals(msmTtlTcFiles.length, count);
@@ -155,10 +155,10 @@ public class ManagerSingletonTest {
         log.info("Importing OWLS services");
         for (File owlsFile : owlsTcFiles) {
             in = new FileInputStream(owlsFile);
-            log.info("Adding service: " + owlsFile.getName());
+            log.info("Adding service: {}", owlsFile.getName());
             servicesUris = ManagerSingleton.getInstance().importServices(in, OWLS_MEDIATYPE);
             Assert.assertNotNull(servicesUris);
-            log.info("Service added: " + servicesUris.get(0).toASCIIString());
+            log.info("Service added: {}", servicesUris.get(0).toASCIIString());
             count++;
         }
         Assert.assertEquals(owlsTcFiles.length, count);
@@ -190,7 +190,7 @@ public class ManagerSingletonTest {
         int index = rand.nextInt(10 - 0 + 1) + 0;
         while (index < numDocs) {
             docUri = documents.get(index);
-            log.info("Obtaining document: " + docUri);
+            log.info("Obtaining document: {}", docUri);
             is = ManagerSingleton.getInstance().getDocument(docUri);
             Assert.assertNotNull(is);
             index += delta;
@@ -213,9 +213,9 @@ public class ManagerSingletonTest {
 
         List<URI> services = ManagerSingleton.getInstance().listServices();
         for (URI svcUri : services) {
-            log.info("Processing service: " + svcUri.toASCIIString());
+            log.info("Processing service: {}", svcUri.toASCIIString());
             svc = ManagerSingleton.getInstance().getService(svcUri);
-            log.info("Checking document sources is available: " + svc.getSource().toASCIIString());
+            log.info("Checking document sources is available: {}", svc.getSource().toASCIIString());
             docStream = ManagerSingleton.getInstance().getDocument(svc.getSource());
             Assert.assertNotNull(docStream);
         }
@@ -232,7 +232,7 @@ public class ManagerSingletonTest {
 
         List<URI> servicesToLoad = new ArrayList<URI>();
         while (index < services.size()) {
-            log.info("Adding service to be loaded: " + services.get(index).toASCIIString());
+            log.info("Adding service to be loaded: {}", services.get(index).toASCIIString());
             servicesToLoad.add(services.get(index));
             index += delta;
         }
