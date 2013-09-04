@@ -30,7 +30,7 @@ public class WSCImporter implements ServiceTransformer {
     private WSCXMLSemanticReasoner reasoner;
     private String xmlTaxonomyURL;
     private String owlOntologyURL;
-    private String exportOWLTo;
+    //private String exportOWLTo;
     private String fakeURL = "http://localhost/services/services.owl";
     public static final String mediaType = "text/xml";
 
@@ -48,15 +48,16 @@ public class WSCImporter implements ServiceTransformer {
         this.owlOntologyURL = (String) props.getProperty("ontology.url");
         URL xmlTaxonomy = new URL(xmlTaxonomyURL);
         log.info("Using ontology {}", this.owlOntologyURL);
-        this.exportOWLTo = (String) props.getProperty("taxonomy.export");
-        log.info("Exporting xml taxonomy to owl in {}", this.exportOWLTo);
+        //this.exportOWLTo = (String) props.getProperty("taxonomy.export");
+        //log.info("Exporting xml taxonomy to owl in {}", this.exportOWLTo);
         this.reasoner = new WSCXMLSemanticReasoner(xmlTaxonomy.openStream());
         // Convert the ontology to OWL
+        /*
         if (this.exportOWLTo != null){
             File file = new File(this.exportOWLTo);
             // TODO; Export only the ontology
             new OWLExporter(this.xmlTaxonomyURL, this.reasoner).exportTo(file);
-        }
+        }*/
     }
 
     public WSCImporter(String xmlTaxonomyFile, String owlOntologyURL) throws IOException {
@@ -107,7 +108,7 @@ public class WSCImporter implements ServiceTransformer {
         for(XMLService service : services.getServices()){
             URI srvURI = URI.create(fakeURL + "#" + service.getName());
             URI opURI = URI.create(fakeURL + "/" + service.getName() + "#Operation");
-            log.debug("Transforming service (URI: {})", srvURI);
+            log.debug("Transforming service (Fake OWL URI: {})", srvURI);
             Service modelService = new Service(srvURI);
             //modelService.setSource(srvURI);
             //modelService.setWsdlGrounding(srvURI);

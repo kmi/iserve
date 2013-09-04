@@ -94,6 +94,11 @@ public class FullIndexedLogicConceptMatcher extends AbstractLogicConceptMatcher 
     }
 
     @Override
+    public Table<URI, URI, MatchResult> listMatchesOfType(Set<URI> origins, MatchType type) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public Map<URI, MatchResult> listMatchesAtLeastOfType(URI origin, MatchType minType) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -104,7 +109,17 @@ public class FullIndexedLogicConceptMatcher extends AbstractLogicConceptMatcher 
     }
 
     @Override
+    public Table<URI, URI, MatchResult> listMatchesAtMostOfType(Set<URI> origins, MatchType maxType) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Table<URI, URI, MatchResult> listMatchesWithinRange(Set<URI> origins, MatchType minType, MatchType maxType) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

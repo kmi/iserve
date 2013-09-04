@@ -27,6 +27,7 @@ import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 //import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
@@ -39,23 +40,31 @@ public class WSCImporterTest {
     @Before
     public void setUp() throws Exception {
         BasicConfigurator.configure();
-        //ManagerSingleton.getInstance().clearRegistry();
+    }
+
+    @Test
+    public void testPluginTransform() throws Exception {
+        // Add all the test collections
+        log.info("Transforming test collections");
+        InputStream stream = this.getClass().getResourceAsStream("/WSC08/wsc08_datasets/01/services.xml");
+        Assert.assertNotNull("Cannot open services.xml", stream);
+        List<Service> result = Transformer.getInstance().transform(stream, null, WSCImporter.mediaType);
+        Assert.assertEquals(158, result.size());
+
     }
 
     @Test
     public void testTransform() throws Exception {
         // Add all the test collections
         log.info("Transforming test collections");
-        File services = new File(getClass().getClassLoader().getResource("services.xml").getFile());
-
-        log.info("Transforming service {}", services.getAbsolutePath());
-        try {
-            List<Service> result = Transformer.getInstance().transform(services, null, WSCImporter.mediaType);
-            Assert.assertNotNull("Service collection should not be null", services);
-            Assert.assertEquals(158, result.size());
-        } catch (Exception e) {
-            log.error("Problems transforming the service. Continuing", e);
-        }
+        // NOTE: Ontology URL is not required to be reachable
+        InputStream taxonomyStream = this.getClass().getResourceAsStream("/WSC08/wsc08_datasets/01/taxonomy.xml");
+        InputStream servicesStream = this.getClass().getResourceAsStream("/WSC08/wsc08_datasets/01/services.xml");
+        Assert.assertNotNull("Cannot open taxonomy.xml", taxonomyStream);
+        Assert.assertNotNull("Cannot open services.xml", servicesStream);
+        WSCImporter importer = new WSCImporter(taxonomyStream, "http://localhost/onto.owl");
+        List<Service> result = importer.transform(servicesStream,"");
+        Assert.assertEquals(158, result.size());
     }
 
 }

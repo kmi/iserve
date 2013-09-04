@@ -84,10 +84,10 @@
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>http://goo.gl/iOgxhw</url>
+                            <url>http://iserve.kmi.open.ac.uk/datasets/composit-wsc08.zip</url>
                             <unpack>true</unpack>
                             <outputDirectory>${project.build.resources[0].directory}</outputDirectory>
-                            <md5>21642281b7c3a4c10a68d0ecce6d7b68</md5>
+                            <md5>9354c77e534e26cda283e89fb9a69707</md5>
                         </configuration>
                     </execution>
                 </executions>
