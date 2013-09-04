@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package es.usc.citius.composit.importer.wsc.wscxml;
 
 
@@ -11,8 +27,10 @@ import uk.ac.open.kmi.iserve.commons.io.ServiceTransformer;
 import uk.ac.open.kmi.iserve.commons.model.*;
 
 import javax.xml.bind.JAXB;
-import java.io.*;
-import java.net.MalformedURLException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -66,7 +84,7 @@ public class WSCImporter implements ServiceTransformer {
     }
 
 
-    private MessageContent transform(XMLInstance instance, String baseURI){
+    private MessageContent transform(XMLInstance instance, String baseURI) {
         // TODO Handle baseURI in some way!
         String concept = this.reasoner.getConceptInstance(instance.getName());
         URI uri = URI.create(this.fakeURL + "#MessageContent_" + concept);
@@ -79,7 +97,7 @@ public class WSCImporter implements ServiceTransformer {
         return content;
     }
 
-    private MessageContent transform(ArrayList<XMLInstance> instances, String fieldName) {
+    private MessageContent transform(ArrayList<XMLInstance> instances, String fieldName, String owlOntologyURL) {
         URI uri = URI.create(this.fakeURL + "#MessageContent_" + fieldName);
         MessageContent msg = new MessageContent(uri);
         for (XMLInstance instance : instances) {
@@ -92,8 +110,8 @@ public class WSCImporter implements ServiceTransformer {
         return msg;
     }
 
-    @Override
-    public List<Service> transform(InputStream originalDescription, String baseUri) {
+
+    public List<Service> transform(InputStream originalDescription, String baseUri, String owlOntologyURL) {
         // De-serialize from XML
 
         XMLServices services = JAXB.unmarshal(originalDescription, XMLServices.class);
@@ -110,9 +128,9 @@ public class WSCImporter implements ServiceTransformer {
 
             // Create only one hasInput and hasOutput and mandatory parts for each input/output
             Operation operation = new Operation(opURI);
-            operation.addInput(transform(service.getInputs().getInstances(), "input"));
-            operation.addOutput(transform(service.getOutputs().getInstances(), "output"));
-            operation.setLabel(service.getName()+"_op");
+            operation.addInput(transform(service.getInputs().getInstances(), "input", owlOntologyURL));
+            operation.addOutput(transform(service.getOutputs().getInstances(), "output", owlOntologyURL));
+            operation.setLabel(service.getName() + "_op");
 
             // The commented method is not supported by iServe (some methods cannot read more than
             // one hasInput/hasOutput

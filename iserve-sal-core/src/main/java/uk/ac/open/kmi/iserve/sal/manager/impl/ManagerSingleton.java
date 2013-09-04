@@ -551,11 +551,4 @@ public class ManagerSingleton implements iServeManager {
         return this.kbManager.listSuperClasses(classUri, direct);
     }
 
-    /**
-     * Provides access to the internal Knowledge Base Manager
-     * @return Knowledge Base Manager
-     */
-    public KnowledgeBaseManager getKbManager() {
-        return kbManager;
-    }
 }
