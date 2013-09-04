@@ -551,4 +551,7 @@ public class ManagerSingleton implements iServeManager {
         return this.kbManager.listSuperClasses(classUri, direct);
     }
 
+    public KnowledgeBaseManager getKbManager() {
+        return kbManager;
+    }
 }
