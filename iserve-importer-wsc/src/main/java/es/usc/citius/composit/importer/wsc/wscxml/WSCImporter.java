@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2013. Knowledge Media Institute - The Open University
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package es.usc.citius.composit.importer.wsc.wscxml;
 
 
@@ -27,8 +11,8 @@ import uk.ac.open.kmi.iserve.commons.io.ServiceTransformer;
 import uk.ac.open.kmi.iserve.commons.model.*;
 
 import javax.xml.bind.JAXB;
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -63,20 +47,26 @@ public class WSCImporter implements ServiceTransformer {
         this.xmlTaxonomyURL = (String) props.getProperty("taxonomy.url");
         log.info("Using taxonomy {}", this.xmlTaxonomyURL);
         this.owlOntologyURL = (String) props.getProperty("ontology.url");
-        URL ontology = new URL(xmlTaxonomyURL);
+        URL xmlTaxonomy = new URL(xmlTaxonomyURL);
         log.info("Using ontology {}", this.owlOntologyURL);
         this.exportOWLTo = (String) props.getProperty("taxonomy.export");
         log.info("Exporting xml taxonomy to owl in {}", this.exportOWLTo);
-        this.reasoner = new WSCXMLSemanticReasoner(ontology.openStream());
+        this.reasoner = new WSCXMLSemanticReasoner(xmlTaxonomy.openStream());
         // Convert the ontology to OWL
         if (this.exportOWLTo != null) {
             File file = new File(this.exportOWLTo);
+            // TODO; Export only the ontology
             new OWLExporter(this.xmlTaxonomyURL, this.reasoner).exportTo(file);
         }
     }
 
+    public WSCImporter(String xmlTaxonomyFile, String owlOntologyURL) throws IOException {
+        this.reasoner = new WSCXMLSemanticReasoner(new FileInputStream(new File(xmlTaxonomyFile)));
+        this.owlOntologyURL = owlOntologyURL;
+    }
 
-    private MessageContent transform(XMLInstance instance, String baseURI) {
+
+    private MessageContent transform(XMLInstance instance, String baseURI){
         // TODO Handle baseURI in some way!
         String concept = this.reasoner.getConceptInstance(instance.getName());
         URI uri = URI.create(this.fakeURL + "#MessageContent_" + concept);
@@ -105,12 +95,10 @@ public class WSCImporter implements ServiceTransformer {
     @Override
     public List<Service> transform(InputStream originalDescription, String baseUri) {
         // De-serialize from XML
-        if (baseUri == null) {
-            baseUri = "";
-        }
+
         XMLServices services = JAXB.unmarshal(originalDescription, XMLServices.class);
         List<Service> listServices = new ArrayList<Service>(services.getServices().size());
-        String uri = baseUri.endsWith("#") ? baseUri : baseUri + "#";
+
         // Create the services following the iserve-commons-vocabulary model
         for (XMLService service : services.getServices()) {
             URI srvURI = URI.create(fakeURL + "#" + service.getName());
@@ -124,7 +112,7 @@ public class WSCImporter implements ServiceTransformer {
             Operation operation = new Operation(opURI);
             operation.addInput(transform(service.getInputs().getInstances(), "input"));
             operation.addOutput(transform(service.getOutputs().getInstances(), "output"));
-            operation.setLabel(service.getName() + "_op");
+            operation.setLabel(service.getName()+"_op");
 
             // The commented method is not supported by iServe (some methods cannot read more than
             // one hasInput/hasOutput
@@ -142,6 +130,12 @@ public class WSCImporter implements ServiceTransformer {
             listServices.add(modelService);
         }
         return listServices;
+    }
+
+    @Override
+    public List<Service> transform(InputStream originalDescription, String baseUri) {
+        // De-serialize from XML
+        return transform(originalDescription, baseUri, this.owlOntologyURL);
     }
 
     @Override
