@@ -23,15 +23,11 @@ import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
-import uk.ac.open.kmi.iserve.discovery.api.MatchTypes;
 import uk.ac.open.kmi.iserve.discovery.api.impl.AtomicMatchResult;
-import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.Util;
-import uk.ac.open.kmi.iserve.discovery.util.MatchComparator;
 import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 import java.net.URI;

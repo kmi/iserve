@@ -5,12 +5,9 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
-import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
-import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 import java.net.URI;
 import java.util.HashSet;
@@ -115,6 +112,11 @@ public class PartialIndexedLogicConceptMatcher extends AbstractLogicConceptMatch
     }
 
     @Override
+    public Table<URI, URI, MatchResult> listMatchesOfType(Set<URI> origins, MatchType type) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public Map<URI, MatchResult> listMatchesAtLeastOfType(URI origin, MatchType minType) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -125,7 +127,17 @@ public class PartialIndexedLogicConceptMatcher extends AbstractLogicConceptMatch
     }
 
     @Override
+    public Table<URI, URI, MatchResult> listMatchesAtMostOfType(Set<URI> origins, MatchType maxType) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Table<URI, URI, MatchResult> listMatchesWithinRange(Set<URI> origins, MatchType minType, MatchType maxType) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

@@ -2,21 +2,20 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Ordering;
-import com.google.common.collect.Table;
-import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
+
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 import uk.ac.open.kmi.iserve.discovery.api.MatchTypes;
+import uk.ac.open.kmi.iserve.discovery.api.Matcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
 import uk.ac.open.kmi.iserve.discovery.util.MatchComparator;
 
 import java.net.URI;
 import java.util.Map;
-import java.util.Set;
 
 
-public abstract class AbstractLogicConceptMatcher implements ConceptMatcher {
+public abstract class AbstractLogicConceptMatcher implements Matcher {
 
     public static final MatchTypes<MatchType> matchTypes = EnumMatchTypes.of(DiscoMatchType.class);
 

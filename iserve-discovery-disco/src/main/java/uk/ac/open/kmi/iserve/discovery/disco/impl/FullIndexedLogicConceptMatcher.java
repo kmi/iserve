@@ -1,17 +1,14 @@
 package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 
-import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
+import uk.ac.open.kmi.iserve.discovery.api.Matcher;
 import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
 import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
-import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
-import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 import java.net.URI;
 import java.util.HashSet;
@@ -21,12 +18,10 @@ import java.util.Set;
 public class FullIndexedLogicConceptMatcher extends AbstractLogicConceptMatcher {
     private static final Logger log = LoggerFactory.getLogger(FullIndexedLogicConceptMatcher.class);
     private Table<URI, URI, MatchResult> indexedMatches;
-    private ServiceManager manager;
     private KnowledgeBaseManager kbManager;
     private AbstractLogicConceptMatcher matcher;
 
-    public FullIndexedLogicConceptMatcher(ServiceManager manager, KnowledgeBaseManager kbManager, AbstractLogicConceptMatcher matcher){
-        this.manager = manager;
+    public FullIndexedLogicConceptMatcher(KnowledgeBaseManager kbManager, AbstractLogicConceptMatcher matcher){
         this.matcher = matcher;
         this.kbManager = kbManager;
         this.indexedMatches = populate();
@@ -70,7 +65,7 @@ public class FullIndexedLogicConceptMatcher extends AbstractLogicConceptMatcher 
                 }
 
                 @Override
-                public ConceptMatcher getMatcher() {
+                public Matcher getMatcher() {
                     return FullIndexedLogicConceptMatcher.this;
                 }
 
