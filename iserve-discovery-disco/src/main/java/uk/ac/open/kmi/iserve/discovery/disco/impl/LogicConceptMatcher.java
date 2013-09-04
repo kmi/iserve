@@ -23,10 +23,10 @@ import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 import uk.ac.open.kmi.iserve.discovery.api.MatchTypes;
+import uk.ac.open.kmi.iserve.discovery.api.Matcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.AtomicMatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
@@ -45,7 +45,7 @@ import java.util.*;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 30/07/2013
  */
-public class LogicConceptMatcher implements ConceptMatcher {
+public class LogicConceptMatcher implements Matcher {
 
     private static final Logger log = LoggerFactory.getLogger(LogicConceptMatcher.class);
     private static final String MATCH_VAR = "match";

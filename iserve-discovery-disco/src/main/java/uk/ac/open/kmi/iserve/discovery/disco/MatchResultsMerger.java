@@ -17,9 +17,9 @@
 package uk.ac.open.kmi.iserve.discovery.disco;
 
 import com.google.common.base.Function;
-import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
+import uk.ac.open.kmi.iserve.discovery.api.Matcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.CompositeMatchResult;
 import uk.ac.open.kmi.iserve.discovery.util.MatchComparator;
 
@@ -68,7 +68,7 @@ public enum MatchResultsMerger implements Function<Collection<MatchResult>, Matc
             // Use the first one as reference and ignore matches for different items
             URI matchUri = match.getMatchedResource();
             URI resourceToMatch = match.getResourceToMatch();
-            ConceptMatcher matcher = match.getMatcher();
+            Matcher matcher = match.getMatcher();
 
             SortedSet<MatchResult> innerMatches = new TreeSet<MatchResult>(MatchComparator.BY_TYPE);
             innerMatches.add(match);
@@ -113,7 +113,7 @@ public enum MatchResultsMerger implements Function<Collection<MatchResult>, Matc
             // Use the first one as reference and ignore matches for different items
             URI matchUri = match.getMatchedResource();
             URI resourceToMatch = match.getResourceToMatch();
-            ConceptMatcher matcher = match.getMatcher();
+            Matcher matcher = match.getMatcher();
 
             SortedSet<MatchResult> innerMatches = new TreeSet<MatchResult>(MatchComparator.BY_TYPE);
             innerMatches.add(match);
