@@ -291,12 +291,12 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
         StringBuilder strBuilder = new StringBuilder()
                 .append("select DISTINCT ?class where { \n");
 
-        if (graphID != null){
+        if (graphID != null) {
             strBuilder.append("GRAPH <").append(graphID).append("> {");
-            strBuilder.append("?class ").append("a <").append(OWL.Class.getURI()).append("> .");
+            strBuilder.append("?class ").append("a <").append(RDFS.Class.getURI()).append("> .");
             strBuilder.append(" } ");
         } else {
-            strBuilder.append("?class ").append("a <").append(OWL.Class.getURI()).append("> .");
+            strBuilder.append("?class ").append("a <").append(RDFS.Class.getURI()).append("> .");
         }
 
         strBuilder.append(" }");

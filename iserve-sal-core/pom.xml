@@ -26,7 +26,7 @@
     </parent>
     <groupId>uk.ac.open.kmi.iserve.sal</groupId>
     <artifactId>iserve-sal-core</artifactId>
-    <version>${parent.version}</version>
+    <version>${project.parent.version}</version>
     <name>iServe Storage Access Layer (SAL) Core API</name>
     <url>http://iserve.kmi.open.ac.uk/</url>
 
