@@ -116,26 +116,16 @@ public class PartialIndexedLogicConceptMatcher extends AbstractLogicConceptMatch
         return result;
     }
 
+    // TODO; Delegate!
+
     @Override
-    public Table<URI, URI, MatchResult> match(Set<URI> origin, Set<URI> destination) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public Table<URI, URI, MatchResult> match(Set<URI> origins, Set<URI> destinations) {
+        return this.matcher.match(origins, destinations);
     }
 
     @Override
     public Map<URI, MatchResult> listMatchesOfType(URI origin, MatchType type) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    /**
-     * Obtains all the matching resources that have a precise MatchType with the URIs of {@code origin}.
-     *
-     * @param origins URIs to match
-     * @param type    the MatchType we want to obtain
-     * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
-     */
-    @Override
-    public Table<URI, URI, MatchResult> listMatchesOfType(Set<URI> origins, MatchType type) {
-        return null;  // TODO: implement
+        return null;
     }
 
     @Override
@@ -149,20 +139,13 @@ public class PartialIndexedLogicConceptMatcher extends AbstractLogicConceptMatch
     }
 
     @Override
-    public Map<URI, MatchResult> listMatchesAtMostOfType(URI origin, MatchType maxType) {
+    public Table<URI, URI, MatchResult> listMatchesAtLeastOfType(Set<URI> origins, MatchType minType) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    /**
-     * Obtain all the matching resources that have a MatchTyoe with the URIs of {@code origin} of the type provided (inclusive) or less.
-     *
-     * @param origins URIs to match
-     * @param maxType the maximum MatchType we want to obtain
-     * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
-     */
     @Override
-    public Table<URI, URI, MatchResult> listMatchesAtMostOfType(Set<URI> origins, MatchType maxType) {
-        return null;  // TODO: implement
+    public Map<URI, MatchResult> listMatchesAtMostOfType(URI origin, MatchType maxType) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -175,26 +158,10 @@ public class PartialIndexedLogicConceptMatcher extends AbstractLogicConceptMatch
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    /**
-     * Obtain all the matching resources with the URIs of {@code origin} within the range of MatchTypes provided, both inclusive.
-     *
-     * @param origins URIs to match
-     * @param minType the minimum MatchType we want to obtain
-     * @param maxType the maximum MatchType we want to obtain
-     * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
-     */
-    @Override
-    public Table<URI, URI, MatchResult> listMatchesWithinRange(Set<URI> origins, MatchType minType, MatchType maxType) {
-        return null;  // TODO: implement
-    }
-
     @Override
     public Table<URI, URI, MatchResult> listMatchesWithinRange(Set<URI> origins, MatchType minType, MatchType maxType) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override
-    public Table<URI, URI, MatchResult> listMatchesAtLeastOfType(Set<URI> origins, MatchType minType) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+
 }
