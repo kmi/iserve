@@ -28,6 +28,7 @@ import uk.ac.open.kmi.iserve.commons.model.Service;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 
 //import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
@@ -42,13 +43,19 @@ public class WSCImporterTest {
         BasicConfigurator.configure();
     }
 
+
     @Test
     public void testPluginTransform() throws Exception {
         // Add all the test collections
         log.info("Transforming test collections");
-        InputStream stream = this.getClass().getResourceAsStream("/WSC08/wsc08_datasets/01/services.xml");
+        // Get base url
+        URL base = this.getClass().getResource("/WSC08/wsc08_datasets/01/");
+        log.info("Reading {}", base.toURI().toASCIIString());
+        // Services
+        URL services = new URL(base.toURI().toASCIIString() + "services.xml");
+        InputStream stream = services.openStream();
         Assert.assertNotNull("Cannot open services.xml", stream);
-        List<Service> result = Transformer.getInstance().transform(stream, null, WSCImporter.mediaType);
+        List<Service> result = Transformer.getInstance().transform(stream, base.toURI().toASCIIString(), WSCImporter.mediaType);
         Assert.assertEquals(158, result.size());
 
     }

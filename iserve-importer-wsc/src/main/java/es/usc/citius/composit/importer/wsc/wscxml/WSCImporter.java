@@ -14,6 +14,7 @@ import javax.xml.bind.JAXB;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,8 +29,8 @@ public class WSCImporter implements ServiceTransformer {
 
     private static final Logger log = LoggerFactory.getLogger(WSCImporter.class);
     private WSCXMLSemanticReasoner reasoner;
-    private String xmlTaxonomyURL;
-    private String owlOntologyURL;
+    private String taxonomyFile;
+    private String ontologyFile;
     //private String exportOWLTo;
     private String fakeURL = "http://localhost/services/services.owl";
     public static final String mediaType = "text/xml";
@@ -43,66 +44,54 @@ public class WSCImporter implements ServiceTransformer {
         // NOTE: The inputs and outputs of the services should be automatically translated from instances to
         // concepts using the XML Reasoner
         PropertiesConfiguration props = new PropertiesConfiguration("wscimporter.properties");
-        this.xmlTaxonomyURL = (String) props.getProperty("taxonomy.url");
-        log.info("Using taxonomy {}", this.xmlTaxonomyURL);
-        this.owlOntologyURL = (String) props.getProperty("ontology.url");
-        URL xmlTaxonomy = new URL(xmlTaxonomyURL);
-        log.info("Using ontology {}", this.owlOntologyURL);
+        this.taxonomyFile = (String) props.getProperty("taxonomy");
+        log.info("Taxonomy file name {}", this.taxonomyFile);
+        this.ontologyFile = (String) props.getProperty("ontology");
+        log.info("Ontology file name {}", this.ontologyFile);
         //this.exportOWLTo = (String) props.getProperty("taxonomy.export");
         //log.info("Exporting xml taxonomy to owl in {}", this.exportOWLTo);
-        this.reasoner = new WSCXMLSemanticReasoner(xmlTaxonomy.openStream());
-        // Convert the ontology to OWL
-        /*
-        if (this.exportOWLTo != null){
-            File file = new File(this.exportOWLTo);
-            // TODO; Export only the ontology
-            new OWLExporter(this.xmlTaxonomyURL, this.reasoner).exportTo(file);
-        }*/
+        //this.reasoner = new WSCXMLSemanticReasoner(xmlTaxonomy.openStream());
     }
 
-    public WSCImporter(String xmlTaxonomyFile, String owlOntologyURL) throws IOException {
+    public WSCImporter(String xmlTaxonomyFile, String ontologyFile) throws IOException {
         this.reasoner = new WSCXMLSemanticReasoner(new FileInputStream(new File(xmlTaxonomyFile)));
-        this.owlOntologyURL = owlOntologyURL;
+        this.ontologyFile = ontologyFile;
     }
 
-    public WSCImporter(InputStream xmlTaxonomyFileStream, String owlOntologyURL) throws IOException {
+    public WSCImporter(InputStream xmlTaxonomyFileStream, String ontologyFile) throws IOException {
         this.reasoner = new WSCXMLSemanticReasoner(xmlTaxonomyFileStream);
-        this.owlOntologyURL = owlOntologyURL;
+        this.ontologyFile = ontologyFile;
     }
 
 
-    private MessageContent transform(XMLInstance instance, String baseURI){
-        // TODO Handle baseURI in some way!
-        String concept = this.reasoner.getConceptInstance(instance.getName());
+    private MessageContent transform(XMLInstance instance, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner){
+        String concept = reasoner.getConceptInstance(instance.getName());
         URI uri = URI.create(this.fakeURL + "#MessageContent_"+concept);
         MessageContent content = new MessageContent(uri);
-        //content.setLabel("MessageContext");
-        //content.setSource(uri);
-        //content.setWsdlGrounding(uri);
-        //content.setLabel(instance.getName());
-        content.addModelReference(new Resource(URI.create(this.owlOntologyURL+"#"+concept)));
+        content.addModelReference(new Resource(URI.create(ontologyOwlUrl +"#"+concept)));
         return content;
     }
 
-    private MessageContent transform(ArrayList<XMLInstance> instances, String fieldName, String owlOntologyURL){
+    private MessageContent transform(ArrayList<XMLInstance> instances, String fieldName, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner){
         URI uri = URI.create(this.fakeURL + "#MessageContent_" + fieldName);
         MessageContent msg = new MessageContent(uri);
         for(XMLInstance instance : instances){
-            String concept = this.reasoner.getConceptInstance(instance.getName());
+            String concept = reasoner.getConceptInstance(instance.getName());
             URI partURI = URI.create(this.fakeURL + "#MessagePart_" + concept);
             MessagePart part = new MessagePart(partURI);
-            part.addModelReference(new Resource(URI.create(owlOntologyURL+"#"+concept)));
+            part.addModelReference(new Resource(URI.create(ontologyOwlUrl+"#"+concept)));
             msg.addMandatoryPart(part);
         }
         return msg;
     }
 
 
-    public List<Service> transform(InputStream originalDescription, String baseUri, String owlOntologyURL){
+    public List<Service> transform(InputStream originalDescription, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner){
         // De-serialize from XML
 
         XMLServices services = JAXB.unmarshal(originalDescription, XMLServices.class);
         List<Service> listServices = new ArrayList<Service>(services.getServices().size());
+
 
         // Create the services following the iserve-commons-vocabulary model
         for(XMLService service : services.getServices()){
@@ -115,20 +104,10 @@ public class WSCImporter implements ServiceTransformer {
 
             // Create only one hasInput and hasOutput and mandatory parts for each input/output
             Operation operation = new Operation(opURI);
-            operation.addInput(transform(service.getInputs().getInstances(), "input", owlOntologyURL));
-            operation.addOutput(transform(service.getOutputs().getInstances(), "output", owlOntologyURL));
+            operation.addInput(transform(service.getInputs().getInstances(), "input", ontologyOwlUrl, reasoner));
+            operation.addOutput(transform(service.getOutputs().getInstances(), "output", ontologyOwlUrl, reasoner));
             operation.setLabel(service.getName()+"_op");
 
-            // The commented method is not supported by iServe (some methods cannot read more than
-            // one hasInput/hasOutput
-            // TODO; Revise hasInput/hasOutput problem
-            /*
-            for(XMLInstance input : service.getInputs().getInstances()){
-                operation.addInput(transform(input, baseUri));
-            }
-            for(XMLInstance output : service.getOutputs().getInstances()){
-                operation.addOutput(transform(output, baseUri));
-            }*/
 
             modelService.addOperation(operation);
             modelService.setLabel(service.getName());
@@ -140,7 +119,22 @@ public class WSCImporter implements ServiceTransformer {
     @Override
     public List<Service> transform(InputStream originalDescription, String baseUri) {
         // De-serialize from XML
-        return transform(originalDescription, baseUri, this.owlOntologyURL);
+        // Use the baseUri to locate automatically the taxonomy.xml and ontology.owl
+        String ontologyOwlUrl = null;
+        try{
+            ontologyOwlUrl = new URL(baseUri + this.ontologyFile).toURI().toASCIIString();
+            if (reasoner == null){
+                // Try to load automatically the required taxonomy.xml (only required if
+                // there is no reasoner instantiated)
+                URL taxonomyXmlUrl = new URL(baseUri + this.taxonomyFile);
+                // Create a new reasoner
+                reasoner = new WSCXMLSemanticReasoner(taxonomyXmlUrl.openStream());
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return transform(originalDescription, ontologyOwlUrl, reasoner);
     }
 
     @Override
@@ -162,11 +156,11 @@ public class WSCImporter implements ServiceTransformer {
         this.reasoner = reasoner;
     }
 
-    public void setXmlTaxonomyURL(String xmlTaxonomyURL) {
-        this.xmlTaxonomyURL = xmlTaxonomyURL;
+    public void setTaxonomyFile(String taxonomyFile) {
+        this.taxonomyFile = taxonomyFile;
     }
 
-    public void setOwlOntologyURL(String owlOntologyURL) {
-        this.owlOntologyURL = owlOntologyURL;
+    public void setOntologyFile(String ontologyFile) {
+        this.ontologyFile = ontologyFile;
     }
 }
