@@ -167,7 +167,7 @@ public class ServicesResource {
 
         String response;
         try {
-            if (!ManagerSingleton.getInstance().serviceExists(serviceUri)) {
+            if (!ManagerSingleton.getInstance().getServiceManager().serviceExists(serviceUri)) {
                 // The service doesn't exist
                 response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                         "  <body>\n The service " + serviceUri + " is not present in the registry.\n  </body>\n</html>";
@@ -230,7 +230,7 @@ public class ServicesResource {
 
         String response;
         try {
-            if (ManagerSingleton.getInstance().clearServices()) {
+            if (ManagerSingleton.getInstance().getServiceManager().clearServices()) {
                 // The registry was cleared
                 response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                         "  <body>\n The services have been cleared.\n  </body>\n</html>";

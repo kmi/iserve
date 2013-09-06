@@ -31,19 +31,7 @@ import java.util.concurrent.Future;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 29/07/2013
  */
-public interface KnowledgeBaseManager {
-
-    /**
-     * This method will be called when the server is initialised.
-     * If necessary it should take care of updating any indexes on boot time.
-     */
-    public void initialise();
-
-    /**
-     * This method will be called when the server is being shutdown.
-     * Ensure a clean shutdown.
-     */
-    public void shutdown();
+public interface KnowledgeBaseManager extends iServeComponent {
 
     /**
      * Checks whether the model has already been uploaded
@@ -70,12 +58,24 @@ public interface KnowledgeBaseManager {
 
     /**
      * Uploads a model into the Knowledge Base Manager
+     * <p/>
+     * After successfully uploading a model, implementations of this method should raise a {@code OntologyCreatedEvent}
      *
      * @param modelUri    URI of the model to upload
      * @param model       the actual model to upload
      * @param forceUpdate if true the model will be updated even if already is there
      */
     public void uploadModel(String modelUri, Model model, boolean forceUpdate);
+
+    /**
+     * Deletes a model from the Knowledge Base Manager
+     * <p/>
+     * After successfully deleting a model, implementations of this method should raise a {@code OntologyDeletedEvent}
+     *
+     * @param modelUri the URI of the model to remove
+     * @return true if it was correctly deleted, false otherwise.
+     */
+    public boolean deleteModel(URI modelUri);
 
     /**
      * Given a model, this method will fetch an upload of the models referred to by the service.

@@ -29,13 +29,15 @@ import java.util.List;
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  */
-public interface ServiceManager {
+public interface ServiceManager extends iServeComponent {
 
     // Create Methods
 
     /**
      * Creates a Service Description in the system.
      * Only needs to be fed with an MSM Service description.
+     * <p/>
+     * After successfully adding a service, implementations of this method should raise a {@code ServiceCreatedEvent}
      *
      * @param service the input service description in terms of MSM
      * @return the URI this service description was saved to
@@ -140,6 +142,8 @@ public interface ServiceManager {
 
     /**
      * Deletes the given service
+     * <p/>
+     * After successfully deleting a service, implementations of this method should raise a {@code ServiceDeletedEvent}
      *
      * @param serviceUri the URI of the service to delete
      * @return True if it was deleted or false otherwise
@@ -150,6 +154,8 @@ public interface ServiceManager {
 
     /**
      * Deletes the given service
+     * <p/>
+     * After successfully deleting a service, implementations of this method should raise a {@code ServiceDeletedEvent}
      *
      * @param service the service to delete
      * @return True if it was deleted or false otherwise
@@ -163,6 +169,8 @@ public interface ServiceManager {
     /**
      * Deletes all the services on the registry.
      * This operation cannot be undone. Use with care.
+     * <p/>
+     * After successfully clearing the services, implementations of this method should raise a {@code ServicesClearedEvent}
      *
      * @return
      * @throws ServiceException

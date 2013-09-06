@@ -29,9 +29,20 @@ import java.util.List;
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  */
-public interface DocumentManager {
+public interface DocumentManager extends iServeComponent {
 
     // Create Methods
+
+    /**
+     * Add a document to the registry
+     * <p/>
+     * After successfully creating the document, implementations of this method should raise a {@code DocumentCreatedEvent}
+     *
+     * @param docContent
+     * @param fileExtension
+     * @return
+     * @throws DocumentException
+     */
     public abstract URI createDocument(InputStream docContent, String fileExtension)
             throws DocumentException;
 
@@ -40,11 +51,23 @@ public interface DocumentManager {
             throws DocumentException;
 
     // Delete Methods
+
+    /**
+     * Deletes a document from the registry
+     * <p/>
+     * After successfully deleting a document, implementations of this method should raise a {@code DocumentDeletedEvent}
+     *
+     * @param documentUri
+     * @return
+     * @throws DocumentException
+     */
     public abstract boolean deleteDocument(URI documentUri)
             throws DocumentException;
 
     /**
      * Deletes all the documents in iServe
+     * <p/>
+     * After successfully clearing the documents, implementations of this method should raise a {@code DocumentsClearedEvent}
      *
      * @return
      * @throws DocumentException

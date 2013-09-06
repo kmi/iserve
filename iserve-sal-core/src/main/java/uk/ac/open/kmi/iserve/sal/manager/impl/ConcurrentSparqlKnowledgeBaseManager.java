@@ -149,6 +149,19 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
     }
 
     /**
+     * Deletes a model from the Knowledge Base Manager
+     * <p/>
+     * After successfully deleting a model, implementations of this method should raise a {@code OntologyDeletedEvent}
+     *
+     * @param modelUri the URI of the model to remove
+     * @return true if it was correctly deleted, false otherwise.
+     */
+    @Override
+    public boolean deleteModel(URI modelUri) {
+        return false;  // TODO: implement
+    }
+
+    /**
      * Given a model, this method will fetch an upload of the models referred to by the service.
      * This is a synchronous implementation that will therefore wait until its fetched and uploaded.
      *

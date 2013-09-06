@@ -22,10 +22,12 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.*;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
-import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve.sal.manager.*;
+import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
+import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
+import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
 import java.io.IOException;
@@ -50,13 +52,11 @@ public class ManagerSingleton implements iServeManager {
     private static final int HALF_MB = 512 * 1024;
 
     private SystemConfiguration configuration;
+
     private DocumentManager docManager;
-    private LogManager logManager;
-    private ReviewManager reviewManager;
     private ServiceManager serviceManager;
     private KnowledgeBaseManager kbManager;
-    private UserManager userManager;
-    private KeyManager keyManager;
+
     private ServiceFormatDetector formatDetector;
 
     private static ManagerSingleton _instance;
@@ -64,15 +64,10 @@ public class ManagerSingleton implements iServeManager {
     private ManagerSingleton() throws ConfigurationException, SalException {
 
         configuration = new SystemConfiguration(CONFIG_PROPERTIES_FILENAME);
+
         docManager = new DocumentManagerFileSystem(configuration);
         serviceManager = new ServiceManagerRdf(configuration);
         kbManager = new ConcurrentSparqlKnowledgeBaseManager(configuration);
-
-        //		logManager = new LogManagerRdf(configuration);
-        //		reviewManager = new ReviewManagerLuf(configuration);
-        //		taxonomyManager = new TaxonomyManagerRdf(configuration);
-        //		userManager = new UserManagerRdf(configuration);
-        //		keyManager = new KeyManagerRdf(configuration);
 
         formatDetector = new ServiceFormatDetector();
         setProxy(configuration.getProxyHostName(), configuration.getProxyPort());
@@ -107,76 +102,71 @@ public class ManagerSingleton implements iServeManager {
     }
 
     /**
+     * Obtains the Service Manager for this instance of iServe
+     *
+     * @return the Service Manager
+     */
+    @Override
+    public ServiceManager getServiceManager() {
+        return this.serviceManager;
+    }
+
+    /**
+     * Obtains the Knowledge Base Manager for this instance of iServe
+     *
+     * @return the Knowledge Base Manager
+     */
+    @Override
+    public KnowledgeBaseManager getKnowledgeBaseManager() {
+        return this.kbManager;
+    }
+
+    /**
+     * Obtains the Document Manager for this instance of iServe
+     *
+     * @return the Document Manager
+     */
+    @Override
+    public DocumentManager getDocumentManager() {
+        return this.docManager;
+    }
+
+    /**
+     * This method will be called when the server is initialised.
+     * If necessary it should take care of updating any indexes on boot time.
+     */
+    @Override
+    public void initialise() {
+        this.serviceManager.initialise();
+        this.docManager.initialise();
+        this.kbManager.initialise();
+    }
+
+    /**
      * This method will be called when the server is being shutdown.
      * Ensure a clean shutdown.
      */
     @Override
     public void shutdown() {
-        // TODO: do proper generic implementation across managers
+        this.serviceManager.shutdown();
+        this.docManager.shutdown();
         this.kbManager.shutdown();
     }
-
-	/*
-     * uk.ac.open.kmi.iserve.commons.model.Service Management
-	 */
-
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#listServices()
-     */
-    @Override
-    public List<java.net.URI> listServices() {
-        return this.serviceManager.listServices();
-    }
-
-    /**
-     * Obtains the list of operation URIs for a given Operation
-     *
-     * @param serviceUri the service URI
-     * @return a List of URIs with the operations provided by the service. If there are no operations, the List should be empty NOT null.
-     */
-    @Override
-    public List<URI> listOperations(URI serviceUri) throws SalException {
-        return this.serviceManager.listOperations(serviceUri);
-    }
-
-    /**
-     * Obtains the list of input URIs for a given Operation
-     *
-     * @param operationUri the operation URI
-     * @return a List of URIs with the inputs of the operation. If no input is necessary the List should be empty NOT null.
-     */
-    @Override
-    public List<URI> listInputs(URI operationUri) throws SalException {
-        return this.serviceManager.listInputs(operationUri);
-    }
-
-    /**
-     * Obtains the list of output URIs for a given Operation
-     *
-     * @param operationUri the operation URI
-     * @return a List of URIs with the outputs of the operation. If no output is provided the List should be empty NOT null.
-     */
-    @Override
-    public List<URI> listOutputs(URI operationUri) throws SalException {
-        return this.serviceManager.listOutputs(operationUri);
-    }
-
-    /**
-     * Obtains the list of mandatory parts for a given Message Content
-     *
-     * @param messageContent the message content URI
-     * @return a List of URIs with the mandatory parts of the message content. If there are no parts the List should be empty NOT null.
-     */
-    @Override
-    public List<URI> listMandatoryParts(URI messageContent) {
-        return this.serviceManager.listMandatoryParts(messageContent);
-    }
-
 
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#importServices(java.io.InputStream, java.lang.String)
      */
     @Override
+
+    /**
+     * Imports a new service within iServe. The original document is stored
+     * in the server and the transformed version registered within iServe.
+     *
+     * @param servicesContentStream
+     * @param mediaType
+     * @return the List of URIs of the services imported
+     * @throws SalException
+     */
     public List<URI> importServices(InputStream servicesContentStream,
                                     String mediaType) throws SalException {
 
@@ -213,7 +203,7 @@ public class ManagerSingleton implements iServeManager {
                 for (Service service : services) {
                     // The service is being imported -> update the source
                     service.setSource(sourceDocUri);
-                    serviceUri = registerService(service);
+                    serviceUri = this.serviceManager.addService(service);
                     if (serviceUri != null) {
                         importedServices.add(serviceUri);
                     }
@@ -287,16 +277,27 @@ public class ManagerSingleton implements iServeManager {
      * This operation cannot be undone. Use with care.
      *
      * @return true if the registry was cleared.
-     * @throws uk.ac.open.kmi.iserve.sal.exception.SalException
-     *
+     * @throws SalException
      */
     @Override
     public boolean clearRegistry() throws SalException {
-        return this.clearServices() & this.clearDocuments();
+        boolean result = this.serviceManager.clearServices();
+        // Only try if we could delete the services
+        if (result)
+            result = result & this.docManager.clearDocuments();
+
+        return result;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#registerServices(java.net.URI, java.lang.String)
+    /**
+     * Registers all the services found on a given source document. This operation takes care of performing the
+     * appropriate format transformation. The source document is not stored on the server. For keeping a copy of the
+     * source document within the server use @see importServices instead.
+     *
+     * @param sourceDocumentUri
+     * @param mediaType
+     * @return the List of URIs of the services registered
+     * @throws SalException
      */
     @Override
     public List<URI> registerServices(URI sourceDocumentUri, String mediaType) throws SalException {
@@ -321,7 +322,7 @@ public class ManagerSingleton implements iServeManager {
                 URI serviceUri;
                 for (Service service : services) {
                     // 2nd Add the service
-                    serviceUri = registerService(service);
+                    serviceUri = this.serviceManager.addService(service);
                     if (serviceUri != null) {
                         registeredServices.add(serviceUri);
                     }
@@ -344,36 +345,36 @@ public class ManagerSingleton implements iServeManager {
         return registeredServices;
     }
 
-    /**
-     * Register a new service. Given a service already expressed in terms of MSM, this method takes care of registering
-     * it within the server. This method makes no guarantee about the availability of the source document or any other
-     * related document. The calling application should ensure this is correct.
-     *
-     * @param service the MSM service to register
-     * @return the resulting URI of the service within the server.
-     * @throws uk.ac.open.kmi.iserve.sal.exception.SalException
-     *
-     */
-    @Override
-    public URI registerService(Service service) throws SalException {
-        URI serviceUri = null;
-
-        if (service != null) {
-            // 1st Add service
-            serviceUri = this.serviceManager.addService(service);
-            // Log it was all done correctly
-            log.info("Service imported: {}", serviceUri.toASCIIString());
-
-            // 2nd Update the knowledge base -- using the synchronous version
-            boolean fetched = this.kbManager.fetchModelsForService(service);
-            if (!fetched) {
-                log.info("Some models could not be imported: {}", this.kbManager.getUnreachableModels());
-                // TODO: schedule these for ulterior uploads
-            }
-            // TODO: log to the system and notify observers
-        }
-        return serviceUri;
-    }
+//    /**
+//     * Register a new service. Given a service already expressed in terms of MSM, this method takes care of registering
+//     * it within the server. This method makes no guarantee about the availability of the source document or any other
+//     * related document. The calling application should ensure this is correct.
+//     *
+//     * @param service the MSM service to register
+//     * @return the resulting URI of the service within the server.
+//     * @throws uk.ac.open.kmi.iserve.sal.exception.SalException
+//     *
+//     */
+//    @Override
+//    public URI registerService(Service service) throws SalException {
+//        URI serviceUri = null;
+//
+//        if (service != null) {
+//            // 1st Add service
+//            serviceUri = this.serviceManager.addService(service);
+//            // Log it was all done correctly
+//            log.info("Service imported: {}", serviceUri.toASCIIString());
+//
+//            // 2nd Update the knowledge base -- using the synchronous version
+//            boolean fetched = this.kbManager.fetchModelsForService(service);
+//            if (!fetched) {
+//                log.info("Some models could not be imported: {}", this.kbManager.getUnreachableModels());
+//                // TODO: schedule these for ulterior uploads
+//            }
+//            // TODO: log to the system and notify observers
+//        }
+//        return serviceUri;
+//    }
 
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#unregisterService(java.net.URI)
@@ -392,19 +393,6 @@ public class ManagerSingleton implements iServeManager {
         return this.serviceManager.deleteService(serviceUri);
     }
 
-    /**
-     * Delete all services from the server
-     * This operation cannot be undone. Use with care.
-     *
-     * @return true if all the services could be deleted.
-     * @throws uk.ac.open.kmi.iserve.sal.exception.SalException
-     *
-     */
-    @Override
-    public boolean clearServices() throws SalException {
-        return this.serviceManager.clearServices();
-    }
-
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#getService(java.net.URI, java.lang.String)
      */
@@ -416,142 +404,4 @@ public class ManagerSingleton implements iServeManager {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#getService(java.net.URI)
-	 */
-    @Override
-    public Service getService(URI serviceUri) throws SalException {
-        return this.serviceManager.getService(serviceUri);
-    }
-
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#getServices(java.util.List)
-	 */
-    @Override
-    public List<Service> getServices(List<URI> serviceUris) throws SalException {
-        return this.serviceManager.getServices(serviceUris);
-    }
-
-    /**
-     * Determines whether a service is known to the registry
-     *
-     * @param serviceUri the URI of the service being looked up
-     * @return True if it is registered in the server
-     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
-     */
-    @Override
-    public boolean serviceExists(URI serviceUri) throws ServiceException {
-        return serviceManager.serviceExists(serviceUri);
-    }
-
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#addRelatedDocumentToService(java.net.URI, java.net.URI)
-     */
-    @Override
-    public boolean addRelatedDocumentToService(URI serviceUri,
-                                               URI relatedDocument) throws SalException {
-        return this.serviceManager.addRelatedDocumentToService(serviceUri, relatedDocument);
-    }
-
-    // Delegate Methods
-    /*
-     *  Document Manager
-	 */
-
-
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#getDocument(java.net.URI)
-     */
-    @Override
-    public InputStream getDocument(URI documentUri) throws DocumentException {
-        return this.docManager.getDocument(documentUri);
-    }
-
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#createDocument(java.io.InputStream, java.lang.String)
-     */
-    @Override
-    public URI createDocument(InputStream docContent, String fileExtension) throws SalException {
-        return this.docManager.createDocument(docContent, fileExtension);
-    }
-
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#listDocuments()
-     */
-    @Override
-    public List<URI> listDocuments() throws SalException {
-        return this.docManager.listDocuments();
-    }
-
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#listDocumentsForService(java.net.URI)
-     */
-    @Override
-    public List<URI> listDocumentsForService(URI serviceURI) throws SalException {
-        return this.serviceManager.listDocumentsForService(serviceURI);
-    }
-
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#deleteDocument(java.net.URI)
-     */
-    @Override
-    public boolean deleteDocument(URI documentUri) throws SalException {
-        return this.docManager.deleteDocument(documentUri);
-    }
-
-    /**
-     * Deletes all documents from the server
-     * This operation cannot be undone. Use with care.
-     *
-     * @return true if all the documents could be deleted.
-     * @throws uk.ac.open.kmi.iserve.sal.exception.SalException
-     *
-     */
-    @Override
-    public boolean clearDocuments() throws SalException {
-        return this.docManager.clearDocuments();
-    }
-
-    /**
-     * Answers a List all of URIs of the classes that are known to be equivalent to this class. Equivalence may be
-     * asserted in the model (using, for example, owl:equivalentClass, or may be inferred by the reasoner attached to
-     * the model. Note that the OWL semantics entails that every class is equivalent to itself, so when using a
-     * reasoning model clients should expect that this class will appear as a member of its own equivalent classes.
-     *
-     * @param classUri the URI of the class for which to list the equivalent classes
-     * @return the List of equivalent classes
-     */
-    @Override
-    public List<URI> listEquivalentClasses(URI classUri) {
-        return this.kbManager.listEquivalentClasses(classUri);
-    }
-
-    /**
-     * Answers a List of all the URIs of the classes that are declared to be sub-classes of this class.
-     *
-     * @param classUri the URI of the class for which to list the subclasses.
-     * @param direct   if true only the direct subclasses will be listed.
-     * @return the list of subclasses
-     */
-    @Override
-    public List<URI> listSubClasses(URI classUri, boolean direct) {
-        return this.kbManager.listSubClasses(classUri, direct);
-    }
-
-    /**
-     * Answers a List of all the URIs of the classes that are declared to be super-classes of this class.
-     *
-     * @param classUri the URI of the class for which to list the super-classes.
-     * @param direct   if true only the direct super-classes will be listed.
-     * @return the list of super-classes
-     */
-    @Override
-    public List<URI> listSuperClasses(URI classUri, boolean direct) {
-        return this.kbManager.listSuperClasses(classUri, direct);
-    }
-
-    public KnowledgeBaseManager getKbManager() {
-        return kbManager;
-    }
 }

@@ -26,16 +26,13 @@ import uk.ac.open.kmi.iserve.commons.io.Syntax;
 import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterBySyntax;
 import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterForTransformer;
-import uk.ac.open.kmi.iserve.commons.model.Service;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * ManagerSingletonTest
@@ -55,10 +52,8 @@ public class ManagerSingletonTest {
 
     private FilenameFilter ttlFilter;
     private FilenameFilter owlsFilter;
-    private List<URI> docUris;
 
     private int numServices;
-    private String dataUpdateEndpoint;
     private File[] msmTtlTcFiles;
     private File[] owlsTcFiles;
 
@@ -74,63 +69,7 @@ public class ManagerSingletonTest {
         dir = new File(owlsTestFolder);
         owlsTcFiles = dir.listFiles(owlsFilter);
         numServices = msmTtlTcFiles.length + owlsTcFiles.length;
-        docUris = new ArrayList<URI>();
-
-        dataUpdateEndpoint = ManagerSingleton.getInstance().getConfiguration().getDataSparqlUpdateUri().toASCIIString();
     }
-
-
-    @Test
-    public void testCreateDocument() throws Exception {
-
-        ManagerSingleton.getInstance().clearRegistry();
-        InputStream in;
-        URI docUri;
-        int count = 0;
-        // Upload every document and obtain their URLs
-        for (File ttlFile : msmTtlTcFiles) {
-            in = new FileInputStream(ttlFile);
-            log.info("Adding document: {}", ttlFile.getName());
-            String fileExt = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.get(MediaType.TEXT_TURTLE.getMediaType()).getExtension();
-            docUri = ManagerSingleton.getInstance().createDocument(in, fileExt);
-            Assert.assertNotNull(docUri);
-            log.info("Service added: {}", docUri.toASCIIString());
-            count++;
-        }
-        Assert.assertEquals(msmTtlTcFiles.length, count);
-
-        // TODO: We should check the content is correct
-    }
-
-    @Test
-    public void testDeleteDocument() throws Exception {
-        boolean result;
-        URI docUri;
-        Random rand = new Random();
-        List<URI> documents = ManagerSingleton.getInstance().listDocuments();
-        int numDocs = documents.size();
-        int delta = numDocs / 10;
-        int index = rand.nextInt(10 - 0 + 1) + 0;
-        int count = numDocs;
-        while (index < numDocs) {
-            docUri = documents.get(index);
-            log.info("Deleting document: {}", docUri);
-            result = ManagerSingleton.getInstance().deleteDocument(docUri);
-            Assert.assertTrue(result);
-            index += delta;
-            count--;
-        }
-        // Now ensure that the number of docs was reduced accordingly;
-        documents = ManagerSingleton.getInstance().listDocuments();
-        Assert.assertEquals(count, documents.size());
-    }
-
-    //
-//    @Test
-//    public void testAddRelatedDocumentToService() throws Exception {
-//
-//    }
-//
 
     @Test
     public void testImportService() throws Exception {
@@ -163,103 +102,4 @@ public class ManagerSingletonTest {
         }
         Assert.assertEquals(owlsTcFiles.length, count);
     }
-
-    @Test
-    public void testListServices() throws Exception {
-        // The test depends on the number of services previously updloaded
-        List<URI> services = ManagerSingleton.getInstance().listServices();
-        Assert.assertEquals(numServices, services.size());
-    }
-
-    @Test
-    public void testListDocuments() throws Exception {
-        // The test depends on the number of services previously updloaded
-        List<URI> documents = ManagerSingleton.getInstance().listDocuments();
-        Assert.assertEquals(numServices, documents.size());
-    }
-
-    @Test
-    public void testGetDocument() throws Exception {
-
-        InputStream is;
-        URI docUri;
-        Random rand = new Random();
-        List<URI> documents = ManagerSingleton.getInstance().listDocuments();
-        int numDocs = documents.size();
-        int delta = numDocs / 10;
-        int index = rand.nextInt(10 - 0 + 1) + 0;
-        while (index < numDocs) {
-            docUri = documents.get(index);
-            log.info("Obtaining document: {}", docUri);
-            is = ManagerSingleton.getInstance().getDocument(docUri);
-            Assert.assertNotNull(is);
-            index += delta;
-        }
-    }
-
-//
-//    @Test
-//    public void testRegisterService() throws Exception {
-//
-//    }
-//
-
-    @Test
-    public void testGetService() throws Exception {
-        // Ensure that reader and writer work fine
-        // Also depends on obtaining the right document
-        Service svc;
-        InputStream docStream;
-
-        List<URI> services = ManagerSingleton.getInstance().listServices();
-        for (URI svcUri : services) {
-            log.info("Processing service: {}", svcUri.toASCIIString());
-            svc = ManagerSingleton.getInstance().getService(svcUri);
-            log.info("Checking document sources is available: {}", svc.getSource().toASCIIString());
-            docStream = ManagerSingleton.getInstance().getDocument(svc.getSource());
-            Assert.assertNotNull(docStream);
-        }
-    }
-
-    @Test
-    public void testGetServices() throws Exception {
-
-        List<URI> services = ManagerSingleton.getInstance().listServices();
-        Random rand = new Random();
-        int delta = services.size() / 10;
-        int index = rand.nextInt(10 - 0 + 1) + 0;
-        // Obtain at most 10 services randomly
-
-        List<URI> servicesToLoad = new ArrayList<URI>();
-        while (index < services.size()) {
-            log.info("Adding service to be loaded: {}", services.get(index).toASCIIString());
-            servicesToLoad.add(services.get(index));
-            index += delta;
-        }
-
-        List<Service> svcInstances = ManagerSingleton.getInstance().getServices(servicesToLoad);
-        Assert.assertNotNull(svcInstances);
-        Assert.assertEquals(servicesToLoad.size(), svcInstances.size());
-        for (Service svc : svcInstances) {
-            Assert.assertNotNull(svc);
-        }
-
-    }
-
-//
-//    @Test
-//    public void testListDocumentsForService() throws Exception {
-//
-//    }
-//
-//    @Test
-//    public void testExportService() throws Exception {
-//
-//    }
-
-//    @Test
-//    public void testUnregisterService() throws Exception {
-//
-//    }
-
 }
