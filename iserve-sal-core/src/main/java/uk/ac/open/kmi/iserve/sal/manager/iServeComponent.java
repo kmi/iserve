@@ -16,22 +16,22 @@
 
 package uk.ac.open.kmi.iserve.sal.manager;
 
-import uk.ac.open.kmi.iserve.sal.exception.LogException;
-
-import java.net.URI;
-import java.util.Date;
-
 /**
- * Class Description
- * TODO: Complete and use PROVO
+ * iServeComponent defines the basic methods that internal components from iServe should implement
  *
- * @author Dong Liu (Knowledge Media Institute - The Open University)
- * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
+ * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
+ * @since 06/09/2013
  */
-public interface LogManager extends iServeComponent {
+public interface iServeComponent {
+    /**
+     * This method will be called when the server is initialised.
+     * If necessary it should take care of updating any indexes on boot time.
+     */
+    void initialise();
 
-    // TODO: Change to use URIs
-    public abstract void log(URI agentUri, URI actionUri, URI object,
-                             Date time, String method) throws LogException;
-
+    /**
+     * This method will be called when the server is being shutdown.
+     * Ensure a clean shutdown.
+     */
+    void shutdown();
 }

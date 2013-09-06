@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.model.Service;
+import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 
 import java.io.File;
 import java.net.URI;
@@ -37,11 +38,14 @@ import static org.junit.Assert.fail;
 
 
 public class ServiceManagerRdfTest {
+
     private static final Logger log = LoggerFactory.getLogger(ServiceManagerRdfTest.class);
     //private static final String DATASET = "/wsc08-dataset01/services/services.xml";
     private static final String DATASET = "/simple-datasets/03/services.xml";
     private static final String MEDIATYPE = "text/xml";
     private static final String CONFIG_PROPERTIES_FILENAME = "config.properties";
+
+    private static ServiceManager serviceManager;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -49,19 +53,18 @@ public class ServiceManagerRdfTest {
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
 
         ManagerSingleton.getInstance().clearRegistry();
+        serviceManager = serviceManager;
 
         log.info("Importing");
         String file = ServiceManagerRdfTest.class.getResource(DATASET).getFile();
         log.debug("Using " + file);
         File services = new File(file);
 
-        // TODO; Change for using the plugin system instead manual instantiation.
         List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
-        //WSCImporter imp = new WSCImporter();
-        //List<Service> result = imp.transform(new FileInputStream(services),"");
+
         // Import all services
         for (Service s : result) {
-            URI uri = ManagerSingleton.getInstance().registerService(s);
+            URI uri = serviceManager.addService(s);
             Assert.assertNotNull(uri);
             log.info("Service added: " + uri.toASCIIString());
         }
@@ -71,7 +74,7 @@ public class ServiceManagerRdfTest {
     @Test
     public void testListServices() throws Exception {
         String[] expected = {"serv1323166560", "serv1392598793", "serv1462031026", "serv699915007", "serv7231183", "serv630482774", "serv2015850384", "serv769347240", "serv1253734327", "serv1531463259"};
-        List<URI> services = ManagerSingleton.getInstance().listServices();
+        List<URI> services = serviceManager.listServices();
         assertTrue(expected.length == services.size());
         for (URI service : services) {
             boolean exists = false;
@@ -93,7 +96,7 @@ public class ServiceManagerRdfTest {
      * @return first coincident URI
      */
     public URI findServiceURI(String opName) {
-        List<URI> services = ManagerSingleton.getInstance().listServices();
+        List<URI> services = serviceManager.listServices();
         for (URI service : services) {
             if (service.toASCIIString().contains(opName)) {
                 return service;
@@ -106,7 +109,7 @@ public class ServiceManagerRdfTest {
     public void testListOperations() throws Exception {
         URI op = findServiceURI("serv1323166560");
         if (op != null) {
-            List<URI> ops = ManagerSingleton.getInstance().listOperations(op);
+            List<URI> ops = serviceManager.listOperations(op);
             assertTrue(ops.size() == 1);
         } else {
             fail();
@@ -117,8 +120,8 @@ public class ServiceManagerRdfTest {
     public void testListInputs() throws Exception {
         URI op = findServiceURI("serv1323166560");
         if (op != null) {
-            List<URI> ops = ManagerSingleton.getInstance().listOperations(op);
-            List<URI> inputs = ManagerSingleton.getInstance().listInputs(ops.get(0));
+            List<URI> ops = serviceManager.listOperations(op);
+            List<URI> inputs = serviceManager.listInputs(ops.get(0));
             assertTrue(inputs.size() == 1);
         } else {
             fail();
@@ -130,9 +133,9 @@ public class ServiceManagerRdfTest {
         URI op = findServiceURI("serv1323166560");
         String[] expected = {"con241744282", "con1849951292", "con1653328292"};
         if (op != null) {
-            List<URI> ops = ManagerSingleton.getInstance().listOperations(op);
-            List<URI> inputs = ManagerSingleton.getInstance().listInputs(ops.get(0));
-            Set<URI> parts = new HashSet<URI>(ManagerSingleton.getInstance().listMandatoryParts(inputs.get(0)));
+            List<URI> ops = serviceManager.listOperations(op);
+            List<URI> inputs = serviceManager.listInputs(ops.get(0));
+            Set<URI> parts = new HashSet<URI>(serviceManager.listMandatoryParts(inputs.get(0)));
             // [http://localhost:9090/iserve/id/services/92783016-66aa-41a7-a2da-a4b2422037cb/serv1323166560/Operation/MessageContent_input/MessagePart_con241744282,
             // http://localhost:9090/iserve/id/services/92783016-66aa-41a7-a2da-a4b2422037cb/serv1323166560/Operation/MessageContent_input/MessagePart_con1849951292,
             // http://localhost:9090/iserve/id/services/92783016-66aa-41a7-a2da-a4b2422037cb/serv1323166560/Operation/MessageContent_input/MessagePart_con1653328292]
@@ -157,8 +160,8 @@ public class ServiceManagerRdfTest {
     public void testListOutputs() throws Exception {
         URI op = findServiceURI("serv1323166560");
         if (op != null) {
-            List<URI> ops = ManagerSingleton.getInstance().listOperations(op);
-            List<URI> inputs = ManagerSingleton.getInstance().listOutputs(ops.get(0));
+            List<URI> ops = serviceManager.listOperations(op);
+            List<URI> inputs = serviceManager.listOutputs(ops.get(0));
             assertTrue(inputs.size() == 1);
         } else {
             fail();
