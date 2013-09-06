@@ -172,6 +172,11 @@ public class ManagerSingleton implements iServeManager {
         return this.serviceManager.listMandatoryParts(messageContent);
     }
 
+    @Override
+    public List<URI> listModelReferences(URI resource) {
+        return this.serviceManager.listModelReferences(resource);
+    }
+
 
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#importServices(java.io.InputStream, java.lang.String)

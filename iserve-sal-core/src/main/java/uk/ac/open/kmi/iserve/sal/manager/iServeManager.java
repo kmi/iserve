@@ -169,6 +169,14 @@ public interface iServeManager {
     public abstract List<URI> listMandatoryParts(URI messageContent);
 
     /**
+     * Obtains the model references for a given Resource
+     *
+     * @param resource the resource URI
+     * @return a List of URIs with the model reference.
+     */
+    public abstract List<URI> listModelReferences(URI resource);
+
+    /**
      * Checks if a service exists in the repository
      *
      * @param serviceUri the URI of the service
