@@ -16,6 +16,8 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +28,7 @@ import uk.ac.open.kmi.iserve.commons.io.Syntax;
 import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterBySyntax;
 import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterForTransformer;
+import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,9 +44,9 @@ import java.util.List;
  * Date: 06/06/2013
  * Time: 18:50
  */
-public class ManagerSingletonTest {
+public class iServeFacadeTest {
 
-    private static final Logger log = LoggerFactory.getLogger(ManagerSingletonTest.class);
+    private static final Logger log = LoggerFactory.getLogger(iServeFacadeTest.class);
 
     private static final String OWLS_TC3_MSM = "/OWLS-TC3-MSM";
     private static final String OWLS_TC4_PDDL = "/OWLS-TC4_PDDL/htdocs/services/1.1";
@@ -57,24 +60,30 @@ public class ManagerSingletonTest {
     private File[] msmTtlTcFiles;
     private File[] owlsTcFiles;
 
+    private iServeManager manager;
+
     @Before
     public void setUp() throws Exception {
-        URI msmTestFolder = ManagerSingletonTest.class.getResource(OWLS_TC3_MSM).toURI();
+        URI msmTestFolder = iServeFacadeTest.class.getResource(OWLS_TC3_MSM).toURI();
         ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
         File dir = new File(msmTestFolder);
         msmTtlTcFiles = dir.listFiles(ttlFilter);
 
-        URI owlsTestFolder = ManagerSingletonTest.class.getResource(OWLS_TC4_PDDL).toURI();
+        URI owlsTestFolder = iServeFacadeTest.class.getResource(OWLS_TC4_PDDL).toURI();
         owlsFilter = new FilenameFilterForTransformer(Transformer.getInstance().getTransformer(OWLS_MEDIATYPE));
         dir = new File(owlsTestFolder);
         owlsTcFiles = dir.listFiles(owlsFilter);
         numServices = msmTtlTcFiles.length + owlsTcFiles.length;
+
+        Injector injector = Guice.createInjector(new iServeManagementModule());
+        manager = injector.getInstance(iServeManager.class);
+
     }
 
     @Test
     public void testImportService() throws Exception {
 
-        ManagerSingleton.getInstance().clearRegistry();
+        manager.clearRegistry();
         InputStream in;
         List<URI> servicesUris;
         int count = 0;
@@ -82,7 +91,7 @@ public class ManagerSingletonTest {
         for (File ttlFile : msmTtlTcFiles) {
             in = new FileInputStream(ttlFile);
             log.info("Adding service: {}", ttlFile.getName());
-            servicesUris = ManagerSingleton.getInstance().importServices(in, MediaType.TEXT_TURTLE.getMediaType());
+            servicesUris = manager.importServices(in, MediaType.TEXT_TURTLE.getMediaType());
             Assert.assertNotNull(servicesUris);
             log.info("Service added: {}", servicesUris.get(0).toASCIIString());
             count++;
@@ -95,7 +104,7 @@ public class ManagerSingletonTest {
         for (File owlsFile : owlsTcFiles) {
             in = new FileInputStream(owlsFile);
             log.info("Adding service: {}", owlsFile.getName());
-            servicesUris = ManagerSingleton.getInstance().importServices(in, OWLS_MEDIATYPE);
+            servicesUris = manager.importServices(in, OWLS_MEDIATYPE);
             Assert.assertNotNull(servicesUris);
             log.info("Service added: {}", servicesUris.get(0).toASCIIString());
             count++;

@@ -16,6 +16,9 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
 import com.hp.hpl.jena.ontology.OntDocumentManager;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -31,10 +34,12 @@ import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.commons.vocabulary.*;
-import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
+import uk.ac.open.kmi.iserve.sal.events.OntologyCreatedEvent;
+import uk.ac.open.kmi.iserve.sal.events.ServiceCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
 
+import javax.inject.Named;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -49,7 +54,7 @@ import java.util.concurrent.*;
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  */
-public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager implements KnowledgeBaseManager {
+class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager implements KnowledgeBaseManager {
 
     private static final Logger log = LoggerFactory.getLogger(ConcurrentSparqlKnowledgeBaseManager.class);
     private static final String DIRECT_SUBCLASS = "http://www.openrdf.org/schema/sesame#directSubClassOf";
@@ -64,8 +69,17 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
     /**
      * default constructor
      */
-    public ConcurrentSparqlKnowledgeBaseManager(SystemConfiguration configuration) throws SalException {
-        super(configuration);
+    @Inject
+    ConcurrentSparqlKnowledgeBaseManager(EventBus eventBus,
+                                         @Named("iserve.url") String iServeUri,
+                                         @Named("iserve.services.sparql.query") String sparqlQueryEndpoint,
+                                         @Named("iserve.services.sparql.update") String sparqlUpdateEndpoint,
+                                         @Named("iserve.services.sparql.service") String sparqlServiceEndpoint,
+                                         @Named("http.proxyHost") String proxyHost,
+                                         @Named("http.proxyPort") String proxyPort) throws SalException {
+
+        super(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
+
         this.loadedModels = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
         this.loadedModels.add(RDF.getURI());
         this.loadedModels.add(RDFS.getURI());
@@ -77,6 +91,10 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
         this.loadedModels.add(MSM_WSDL.NS);
         this.loadedModels.add("http://www.w3.org/ns/wsdl-extensions#");  // for WSDLX safety
 
+        // Set the proxy if necessary
+        if (proxyHost != null && proxyPort != null)
+            setProxy(proxyHost, proxyPort);
+
         // Set default values for Document Manager
         OntDocumentManager dm = OntDocumentManager.getInstance();
         dm.setProcessImports(true);
@@ -85,6 +103,14 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
         // set the executor
 //        executor = Executors.newFixedThreadPool(NUM_THREADS);
         executor = Executors.newSingleThreadExecutor();
+    }
+
+    private void setProxy(String proxyHost, String proxyPort) {
+        if (proxyHost != null && proxyPort != null) {
+            Properties prop = System.getProperties();
+            prop.put("http.proxyHost", proxyHost);
+            prop.put("http.proxyPort", proxyPort);
+        }
     }
 
     /**
@@ -145,6 +171,13 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
             // We are assuming here that uploading won't fail!
             // There is no way to figure this out at the moment with Jena (other than querying after)
             putGraph(modelUri, model);
+
+            // Generate Event
+            try {
+                this.getEventBus().post(new OntologyCreatedEvent(new Date(), new URI(modelUri)));
+            } catch (URISyntaxException e) {
+                log.error("Unable to generate notification event: model URI is incorrect", e);
+            }
         }
     }
 
@@ -383,5 +416,13 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
         }
 
         return result;
+    }
+
+    // Event Processing of internal changes
+
+    @Subscribe
+    public void handleServiceCreated(ServiceCreatedEvent event) {
+        log.debug("Processing Service Created Event {}", event);
+        this.fetchModelsForService(event.getService());
     }
 }

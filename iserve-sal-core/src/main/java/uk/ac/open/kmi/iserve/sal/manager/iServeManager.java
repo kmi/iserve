@@ -16,7 +16,6 @@
 
 package uk.ac.open.kmi.iserve.sal.manager;
 
-import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 
 import java.io.InputStream;
@@ -32,9 +31,16 @@ import java.util.List;
 
 public interface iServeManager extends iServeComponent {
 
-    // TODO: Implement the Observer pattern so that we can update other software about changes
-
-    public abstract SystemConfiguration getConfiguration();
+    /**
+     * Register the given object as an Observer for this iServe instance.
+     * All events created within iServe would be notified. Currently based on Guava's EventBus.
+     * In order to process them, the corresponding observer should only implement a method that takes as sole parameter
+     * the event wanted to process. This method should additionally be annotated with {@code @Subscribe} for the system
+     * to work.
+     *
+     * @param obj The observer
+     */
+    public void registerAsObserver(Object obj);
 
     /**
      * Obtains the Service Manager for this instance of iServe
@@ -49,7 +55,6 @@ public interface iServeManager extends iServeComponent {
      * @return the Knowledge Base Manager
      */
     public KnowledgeBaseManager getKnowledgeBaseManager();
-
 
     /**
      * Obtains the Document Manager for this instance of iServe

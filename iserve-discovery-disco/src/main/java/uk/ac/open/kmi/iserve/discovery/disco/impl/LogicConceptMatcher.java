@@ -16,9 +16,11 @@
 
 package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
-import com.google.common.base.Function;
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.*;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Table;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Resource;
 import org.slf4j.Logger;
@@ -28,7 +30,6 @@ import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 import uk.ac.open.kmi.iserve.discovery.api.impl.AtomicMatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.Util;
-import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -51,18 +52,18 @@ public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
     private static final String ORIGIN_VAR = "origin";
     private static final String DESTINATION_VAR = "destination";
 
-    private final URI sparqlEndpoint;
+    private URI sparqlEndpoint = null;
 
 
     public static String NL = System.getProperty("line.separator");
 
-    public LogicConceptMatcher() {
-        sparqlEndpoint = ManagerSingleton.getInstance().getConfiguration().getDataSparqlUri();
+    public LogicConceptMatcher(String sparqlEndpoint) throws URISyntaxException {
+
         if (sparqlEndpoint == null) {
             log.error("A SPARQL endpoint is currently needed for matching.");
-            // TODO throw exception
+        } else {
+            this.sparqlEndpoint = new URI(sparqlEndpoint);
         }
-
     }
 
     /**
@@ -251,10 +252,10 @@ public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
     public Table<URI, URI, MatchResult> listMatchesAtLeastOfType(Set<URI> origins, MatchType minType) {
         Table<URI, URI, MatchResult> matchTable = HashBasedTable.create();
         Stopwatch w = new Stopwatch();
-        for(URI origin : origins){
+        for (URI origin : origins) {
             w.start();
             Map<URI, MatchResult> result = listMatchesAtLeastOfType(origin, minType);
-            for(Map.Entry<URI, MatchResult> dest : result.entrySet()){
+            for (Map.Entry<URI, MatchResult> dest : result.entrySet()) {
                 matchTable.put(origin, dest.getKey(), dest.getValue());
             }
             log.debug("Computed matched types for {} in {}. {} total matches.", origin, w.stop().toString(), result.size());

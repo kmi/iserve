@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package uk.ac.open.kmi.iserve.sal.manager;
+package uk.ac.open.kmi.iserve.sal.events;
+
+import java.util.Date;
 
 /**
- * iServeComponent defines the basic methods that internal components from iServe should implement
+ * DocumentsClearedEvent captures the event where the entire documents registry is deleted
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
- * @since 06/09/2013
+ * @since 05/09/2013
  */
-public interface iServeComponent {
-    /**
-     * This method will be called when the server is initialised.
-     * If necessary it should take care of updating any indexes on boot time.
-     */
-    void initialise();
+public class DocumentsClearedEvent extends DocumentManagerEvent {
 
-    /**
-     * This method will be called when the server is being shutdown.
-     * Ensure a clean shutdown.
-     */
-    void shutdown();
-
+    public DocumentsClearedEvent(Date date) {
+        super(date);
+    }
 }

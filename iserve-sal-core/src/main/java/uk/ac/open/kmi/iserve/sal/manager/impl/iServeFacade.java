@@ -16,89 +16,67 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
+import com.google.common.eventbus.EventBus;
+import com.google.inject.Inject;
 import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.*;
 import uk.ac.open.kmi.iserve.commons.model.Service;
-import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
+import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
-import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
+import javax.inject.Named;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
- * Singleton Class providing a Facade to the entire Storage and Access Layer
+ * iServe Manager implementation providing a facade to the entire Storage and Access Layer
  * Delegates the actual implementation to each of the specific managers configured
  *
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
-public class ManagerSingleton implements iServeManager {
+public class iServeFacade extends IntegratedComponent implements uk.ac.open.kmi.iserve.sal.manager.iServeManager {
 
-    private static final Logger log = LoggerFactory.getLogger(ManagerSingleton.class);
+    private static final Logger log = LoggerFactory.getLogger(iServeFacade.class);
 
     private static final String CONFIG_PROPERTIES_FILENAME = "config.properties";
     private static final int HALF_MB = 512 * 1024;
-
-    private SystemConfiguration configuration;
 
     private DocumentManager docManager;
     private ServiceManager serviceManager;
     private KnowledgeBaseManager kbManager;
 
-    private ServiceFormatDetector formatDetector;
+    @Inject
+    private iServeFacade(EventBus eventBus, @Named("iserve.url") String iServeUri, DocumentManager docManager, ServiceManager serviceManager, KnowledgeBaseManager kbManager) throws ConfigurationException, SalException {
 
-    private static ManagerSingleton _instance;
-
-    private ManagerSingleton() throws ConfigurationException, SalException {
-
-        configuration = new SystemConfiguration(CONFIG_PROPERTIES_FILENAME);
-
-        docManager = new DocumentManagerFileSystem(configuration);
-        serviceManager = new ServiceManagerRdf(configuration);
-        kbManager = new ConcurrentSparqlKnowledgeBaseManager(configuration);
-
-        formatDetector = new ServiceFormatDetector();
-        setProxy(configuration.getProxyHostName(), configuration.getProxyPort());
-    }
-
-    private void setProxy(String proxyHost, String proxyPort) {
-        if (proxyHost != null && proxyPort != null) {
-            Properties prop = System.getProperties();
-            prop.put("http.proxyHost", proxyHost);
-            prop.put("http.proxyPort", proxyPort);
-        }
-    }
-
-    public static ManagerSingleton getInstance() {
-        if (_instance == null) {
-            try {
-                _instance = new ManagerSingleton();
-            } catch (ConfigurationException e) {
-                throw (new IllegalStateException("iServe's storage and access layer is not properly configured", e));
-            } catch (SalException e) {
-                throw (new IllegalStateException("iServe's storage and access layer is not properly configured", e));
-            }
-        }
-        return _instance;
+        super(eventBus, iServeUri);
+        this.docManager = docManager;
+        this.serviceManager = serviceManager;
+        this.kbManager = kbManager;
     }
 
     /**
-     * @return the configuration
+     * Register the given object as an Observer for this iServe instance.
+     * All events created within iServe would be notified. Currently based on Guava's EventBus.
+     * In order to process them, the corresponding observer should only implement a method that takes as sole parameter
+     * the event wanted to process. This method should additionally be annotated with {@code @Subscribe} for the system
+     * to work.
+     *
+     * @param obj The observer
      */
-    public SystemConfiguration getConfiguration() {
-        return this.configuration;
+    @Override
+    public void registerAsObserver(Object obj) {
+        this.getEventBus().register(obj);
     }
 
     /**
@@ -386,7 +364,7 @@ public class ManagerSingleton implements iServeManager {
 
         // Check the URI is correct and belongs to the server
         if (serviceUri == null ||
-                !UriUtil.isResourceLocalToServer(serviceUri, configuration.getIserveUri())) {
+                !UriUtil.isResourceLocalToServer(serviceUri, this.getIserveUri())) {
             return false;
         }
 

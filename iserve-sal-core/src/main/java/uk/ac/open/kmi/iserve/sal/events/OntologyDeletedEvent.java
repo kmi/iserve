@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package uk.ac.open.kmi.iserve.sal.manager;
+package uk.ac.open.kmi.iserve.sal.events;
+
+import java.net.URI;
+import java.util.Date;
 
 /**
- * iServeComponent defines the basic methods that internal components from iServe should implement
+ * OntologyDeletedEvent captures the event where the an ontology has been deleted from the Knowledge Base
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
- * @since 06/09/2013
+ * @since 05/09/2013
  */
-public interface iServeComponent {
-    /**
-     * This method will be called when the server is initialised.
-     * If necessary it should take care of updating any indexes on boot time.
-     */
-    void initialise();
+public class OntologyDeletedEvent extends OntologyEvent {
 
-    /**
-     * This method will be called when the server is being shutdown.
-     * Ensure a clean shutdown.
-     */
-    void shutdown();
-
+    public OntologyDeletedEvent(Date date, URI ontologyUri) {
+        super(date, ontologyUri);
+    }
 }

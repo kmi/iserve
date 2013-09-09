@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
+import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -92,11 +92,11 @@ public class ServicesResource {
             if ((locationUri != null) && (!"".equalsIgnoreCase(locationUri))) {
                 // There is a location. Just register, don't import
                 log.info("Registering the services from {} ", locationUri);
-                servicesUris = ManagerSingleton.getInstance().registerServices(URI.create(locationUri), mediaType);
+                servicesUris = iServeFacade.getInstance().registerServices(URI.create(locationUri), mediaType);
             } else {
                 // There is no location. Import the entire service
                 log.info("Importing the services");
-                servicesUris = ManagerSingleton.getInstance().importServices(file, mediaType);
+                servicesUris = iServeFacade.getInstance().importServices(file, mediaType);
             }
             //		String oauthConsumer = ((SecurityFilter.Authorizer) security).getOAuthConsumer();
 
@@ -167,7 +167,7 @@ public class ServicesResource {
 
         String response;
         try {
-            if (!ManagerSingleton.getInstance().getServiceManager().serviceExists(serviceUri)) {
+            if (!iServeFacade.getInstance().getServiceManager().serviceExists(serviceUri)) {
                 // The service doesn't exist
                 response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                         "  <body>\n The service " + serviceUri + " is not present in the registry.\n  </body>\n</html>";
@@ -175,7 +175,7 @@ public class ServicesResource {
                 return Response.status(Status.NOT_FOUND).contentLocation(serviceUri).entity(response).build();
             }
 
-            if (ManagerSingleton.getInstance().unregisterService(serviceUri)) {
+            if (iServeFacade.getInstance().unregisterService(serviceUri)) {
                 // The service was deleted
                 response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                         "  <body>\n The service <a href='" + serviceUri + "'>" + serviceUri + "</a> has been deleted from the server.\n  </body>\n</html>";
@@ -230,7 +230,7 @@ public class ServicesResource {
 
         String response;
         try {
-            if (ManagerSingleton.getInstance().getServiceManager().clearServices()) {
+            if (iServeFacade.getInstance().getServiceManager().clearServices()) {
                 // The registry was cleared
                 response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                         "  <body>\n The services have been cleared.\n  </body>\n</html>";
