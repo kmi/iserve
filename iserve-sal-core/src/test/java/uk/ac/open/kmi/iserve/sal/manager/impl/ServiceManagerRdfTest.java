@@ -16,6 +16,7 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
+import com.google.common.eventbus.EventBus;
 import junit.framework.Assert;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
@@ -23,8 +24,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.commons.io.TransformationException;
 import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.model.Service;
+import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 
 import java.io.File;
@@ -45,6 +48,12 @@ public class ServiceManagerRdfTest {
     private static final String MEDIATYPE = "text/xml";
     private static final String CONFIG_PROPERTIES_FILENAME = "config.properties";
 
+    private static final String ISERVE_TEST_URI = "file:///tmp/iserve/service-docs";
+    private static final String ISERVE_TEST_QUERY_URI = "http://localhost:8080/openrdf-sesame/repositories/Test";
+    private static final String ISERVE_TEST_UPDATE_URI = "http://localhost:8080/openrdf-sesame/repositories/Test/statements";
+    private static final String ISERVE_TEST_SERVICE_URI = "http://localhost:8080/openrdf-sesame/repositories/Test/rdf-graphs/service";
+
+
     private static ServiceManager serviceManager;
 
     @BeforeClass
@@ -52,27 +61,17 @@ public class ServiceManagerRdfTest {
         BasicConfigurator.configure();
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
 
-        ManagerSingleton.getInstance().clearRegistry();
-        serviceManager = serviceManager;
-
-        log.info("Importing");
-        String file = ServiceManagerRdfTest.class.getResource(DATASET).getFile();
-        log.debug("Using " + file);
-        File services = new File(file);
-
-        List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
-
-        // Import all services
-        for (Service s : result) {
-            URI uri = serviceManager.addService(s);
-            Assert.assertNotNull(uri);
-            log.info("Service added: " + uri.toASCIIString());
-        }
+        EventBus eventBus = new EventBus();
+        serviceManager = new ServiceManagerRdf(eventBus, ISERVE_TEST_URI, ISERVE_TEST_QUERY_URI, ISERVE_TEST_UPDATE_URI, ISERVE_TEST_UPDATE_URI);
     }
 
 
     @Test
     public void testListServices() throws Exception {
+
+        serviceManager.clearServices();
+        importWscServices();
+
         String[] expected = {"serv1323166560", "serv1392598793", "serv1462031026", "serv699915007", "serv7231183", "serv630482774", "serv2015850384", "serv769347240", "serv1253734327", "serv1531463259"};
         List<URI> services = serviceManager.listServices();
         assertTrue(expected.length == services.size());
@@ -87,6 +86,22 @@ public class ServiceManagerRdfTest {
             assertTrue(exists);
         }
 
+    }
+
+    private void importWscServices() throws TransformationException, ServiceException {
+        log.info("Importing");
+        String file = ServiceManagerRdfTest.class.getResource(DATASET).getFile();
+        log.debug("Using " + file);
+        File services = new File(file);
+
+        List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
+
+        // Import all services
+        for (Service s : result) {
+            URI uri = serviceManager.addService(s);
+            Assert.assertNotNull(uri);
+            log.info("Service added: " + uri.toASCIIString());
+        }
     }
 
     /**
