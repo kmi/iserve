@@ -17,6 +17,8 @@
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.eventbus.EventBus;
+import com.google.inject.Inject;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -31,36 +33,63 @@ import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
-import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
+import uk.ac.open.kmi.iserve.sal.events.ServiceCreatedEvent;
+import uk.ac.open.kmi.iserve.sal.events.ServiceDeletedEvent;
+import uk.ac.open.kmi.iserve.sal.events.ServicesClearedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
+import javax.inject.Named;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
-public class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManager {
+class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManager {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceManagerRdf.class);
 
     private ServiceFormatDetector formatDetector;
 
+    // Default path for service and documents URIs.
+    // Note that any change here should also affect the REST API
+    // Keep the trailing slash
+    private static final String SERVICES_URL_PATH = "id/services/";
+
     /**
-     * Constructor for the Service Manager. Protected to avoid external access.
-     * Any access to this should take place through the iServeManager
-     * <p/>
-     * TODO: Provide means for applications to register to changes in the registry
-     *
-     * @param configuration the system configuration
-     * @throws SalException
+     * Default services repository name
      */
-    protected ServiceManagerRdf(SystemConfiguration configuration) throws SalException {
-        super(configuration);
+    private static final String DEFAULT_SERVICES_REPO = "iserve-services";
+
+
+    // Configuration properties
+    private static final String ISERVE_URL_PROP = "iserve.url";
+    private static final String ISERVE_VERSION_PROP = "iserve.version";
+
+    // Services data
+    private static final String SERVICES_REPOSITORY_URL_PROP = "iserve.services.rdfserver";
+    private static final String SERVICES_REPOSITORY_NAME_PROP = "iserve.services.repository";
+    private static final String SERVICES_REPOSITORY_SPARQL_PROP = "iserve.services.sparql.query";
+    private static final String SERVICES_REPOSITORY_SPARQL_UPDATE_PROP = "iserve.services.sparql.update";
+    private static final String SERVICES_REPOSITORY_SPARQL_SERVICE_PROP = "iserve.services.sparql.service";
+
+    private final URI servicesUri;
+
+    @Inject
+    ServiceManagerRdf(EventBus eventBus,
+                      @Named("iserve.url") String iServeUri,
+                      @Named("iserve.services.sparql.query") String sparqlQueryEndpoint,
+                      @Named("iserve.services.sparql.update") String sparqlUpdateEndpoint,
+                      @Named("iserve.services.sparql.service") String sparqlServiceEndpoint) throws SalException {
+
+        super(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
+        this.servicesUri = this.getIserveUri().resolve(SERVICES_URL_PATH);
     }
+
 
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#listService()
@@ -250,6 +279,7 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         return new ArrayList<URI>();  //TODO: Implement
     }
 
+
     public URI addService(Service service) throws ServiceException {
 
         // Check input and exit early
@@ -278,6 +308,9 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         this.putGraph(newBaseServiceUri.toASCIIString(), svcModel);
         log.info("Service added.");
 
+        // Generate Event
+        this.getEventBus().post(new ServiceCreatedEvent(new Date(), service));
+
         return service.getUri();
     }
 
@@ -296,7 +329,7 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
     }
 
     private URI generateUniqueServiceUri() {
-        return this.getConfiguration().getServicesUri().resolve(UriUtil.generateUniqueId());
+        return this.servicesUri.resolve(UriUtil.generateUniqueId());
     }
 
     /**
@@ -398,7 +431,7 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
      * @return the URI of the service document
      */
     private URI getServiceBaseUri(String serviceId) {
-        return this.getConfiguration().getServicesUri().resolve(serviceId);
+        return this.servicesUri.resolve(serviceId);
     }
 
     /* (non-Javadoc)
@@ -419,6 +452,9 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
 
         log.info("Deleting service: " + serviceUri.toASCIIString());
         this.deleteGraph(URIUtil.getNameSpace(serviceUri.toASCIIString()));
+
+        // Generate Event
+        this.getEventBus().post(new ServiceDeletedEvent(new Date(), new Service(serviceUri)));
 
         return true;
     }
@@ -446,6 +482,10 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
 
         log.info("Clearing services registry.");
         clearDataset();
+
+        // Generate Event
+        this.getEventBus().post(new ServicesClearedEvent(new Date()));
+
         return true;
     }
 

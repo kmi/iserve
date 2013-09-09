@@ -16,6 +16,8 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
+import com.google.common.eventbus.EventBus;
+import com.google.inject.Inject;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.query.*;
@@ -32,17 +34,18 @@ import com.hp.hpl.jena.update.UpdateRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.model.util.Vocabularies;
-import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
+import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 
+import javax.inject.Named;
 import java.io.StringWriter;
 import java.net.URI;
+import java.net.URISyntaxException;
 
-public class SparqlGraphStoreManager {
+class SparqlGraphStoreManager extends IntegratedComponent {
 
     private static final Logger log = LoggerFactory.getLogger(SparqlGraphStoreManager.class);
 
-    private SystemConfiguration configuration;
     private URI sparqlQueryEndpoint;
     // To use SPARQL Update for modification
     private URI sparqlUpdateEndpoint;
@@ -51,30 +54,35 @@ public class SparqlGraphStoreManager {
 
     private DatasetAccessor datasetAccessor;
 
-    protected SparqlGraphStoreManager(SystemConfiguration configuration) throws SalException {
-        this.configuration = configuration;
-        this.sparqlQueryEndpoint = configuration.getDataSparqlUri();
-        this.sparqlUpdateEndpoint = configuration.getDataSparqlUpdateUri();
-        this.sparqlServiceEndpoint = configuration.getDataSparqlServiceUri();
-        if (this.sparqlQueryEndpoint == null) {
+    @Inject
+    SparqlGraphStoreManager(EventBus eventBus,
+                            @Named("iserve.url") String iServeUri,
+                            @Named("iserve.services.sparql.query") String sparqlQueryEndpoint,
+                            @Named("iserve.services.sparql.update") String sparqlUpdateEndpoint,
+                            @Named("iserve.services.sparql.service") String sparqlServiceEndpoint) throws SalException {
+
+        super(eventBus, iServeUri);
+
+        if (sparqlQueryEndpoint == null) {
             log.error(SparqlGraphStoreManager.class.getSimpleName() + " requires a SPARQL Query endpoint.");
             throw new SalException(SparqlGraphStoreManager.class.getSimpleName() + " requires a SPARQL Query endpoint.");
         }
 
-        if (this.sparqlUpdateEndpoint == null && sparqlServiceEndpoint == null) {
+        if (sparqlUpdateEndpoint == null && sparqlServiceEndpoint == null) {
             log.warn(SparqlGraphStoreManager.class.getSimpleName() + " requires a SPARQL Update endpoint to modify data.");
         }
 
-        if (this.sparqlServiceEndpoint != null) {
-            this.datasetAccessor = DatasetAccessorFactory.createHTTP(this.sparqlServiceEndpoint.toASCIIString());
-        }
-    }
+        try {
+            this.sparqlQueryEndpoint = new URI(sparqlQueryEndpoint);
+            this.sparqlUpdateEndpoint = new URI(sparqlUpdateEndpoint);
+            this.sparqlServiceEndpoint = new URI(sparqlServiceEndpoint);
 
-    /**
-     * @return the configuration
-     */
-    public SystemConfiguration getConfiguration() {
-        return this.configuration;
+            if (this.sparqlServiceEndpoint != null) {
+                this.datasetAccessor = DatasetAccessorFactory.createHTTP(this.sparqlServiceEndpoint.toASCIIString());
+            }
+        } catch (URISyntaxException e) {
+            log.error("URI error configuring SPARQL Graph Store Manager", e);
+        }
     }
 
     /**

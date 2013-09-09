@@ -32,7 +32,7 @@ package uk.ac.open.kmi.iserve.sal.rest;/*
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
+import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -69,6 +69,6 @@ public class iServeContextListener implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         log.info("iServe shutting down");
-        ManagerSingleton.getInstance().shutdown();
+        iServeFacade.getInstance().shutdown();
     }
 }

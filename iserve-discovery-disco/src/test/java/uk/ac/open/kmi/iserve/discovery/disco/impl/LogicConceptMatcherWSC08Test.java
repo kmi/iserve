@@ -31,7 +31,7 @@ import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
-import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
+import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import java.io.File;
 import java.net.URI;
@@ -64,7 +64,7 @@ public class LogicConceptMatcherWSC08Test {
         // do your one-time setup here
 
         // Clean the whole thing before testing
-        ManagerSingleton.getInstance().clearRegistry();
+        iServeFacade.getInstance().clearRegistry();
 
         log.info("Importing WSC 2008 services");
         String file = LogicConceptMatcherWSC08Test.class.getResource(WSC08_01_SERVICES).getFile();
@@ -76,7 +76,7 @@ public class LogicConceptMatcherWSC08Test {
         List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
         // Import all services
         for (Service s : result) {
-            URI uri = ManagerSingleton.getInstance().registerService(s);
+            URI uri = iServeFacade.getInstance().registerService(s);
             Assert.assertNotNull(uri);
             log.info("Service added: " + uri.toASCIIString());
         }
@@ -160,9 +160,9 @@ public class LogicConceptMatcherWSC08Test {
 
         // Discover executable services
         Set<String> candidates = new HashSet<String>();
-        for (URI service : ManagerSingleton.getInstance().listServices()) {
+        for (URI service : iServeFacade.getInstance().listServices()) {
             // Load the service
-            Service srv = ManagerSingleton.getInstance().getService(service);
+            Service srv = iServeFacade.getInstance().getService(service);
             // Load operations
             opLoop:
             for (Operation op : srv.getOperations()) {
@@ -218,8 +218,8 @@ public class LogicConceptMatcherWSC08Test {
         // Preload servide models
         // TODO; Discovery operations without loading the entire service model.
         Set<Service> services = new HashSet<Service>();
-        for (URI srvURI : ManagerSingleton.getInstance().listServices()) {
-            services.add(ManagerSingleton.getInstance().getService(srvURI));
+        for (URI srvURI : iServeFacade.getInstance().listServices()) {
+            services.add(iServeFacade.getInstance().getService(srvURI));
         }
         int pass = 0;
         while (!newInputs.isEmpty()) {

@@ -33,7 +33,7 @@ import uk.ac.open.kmi.iserve.commons.io.MediaType;
 import uk.ac.open.kmi.iserve.commons.io.Syntax;
 import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterBySyntax;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
-import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
+import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -136,7 +136,7 @@ public class ServiceResourceIT {
     public final void testAddService() throws IOException {
         // Clean the whole thing before testing
         try {
-            ManagerSingleton.getInstance().clearRegistry();
+            iServeFacade.getInstance().clearRegistry();
         } catch (SalException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -188,7 +188,7 @@ public class ServiceResourceIT {
     @Test
     public void testDeleteService() throws Exception {
 
-        List<URI> existingServices = ManagerSingleton.getInstance().listServices();
+        List<URI> existingServices = iServeFacade.getInstance().listServices();
 
         log.info("Deleting services");
         // Try to delete endpoint

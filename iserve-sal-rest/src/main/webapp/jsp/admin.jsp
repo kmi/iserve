@@ -1,4 +1,4 @@
-<%@ page import="uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton" %>
+<%@ page import="uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade" %>
 
 <%--
   ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
@@ -15,6 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
+
 <%@ include file="./include.jsp" %>
 
 <html>
@@ -84,10 +85,10 @@
 
 <h2>Server Statistics</h2>
 
-<p>Services registered: <%= ManagerSingleton.getInstance().listServices().size() %>
+<p>Services registered: <%= iServeFacade.getInstance().listServices().size() %>
 </p>
 
-<p>Documents registered: <%= ManagerSingleton.getInstance().listDocuments().size() %>
+<p>Documents registered: <%= iServeFacade.getInstance().listDocuments().size() %>
 </p>
 
 <p>See <a href="<c:url value="/control/show-stats"/>">Elda's Statistics</a>.</p>

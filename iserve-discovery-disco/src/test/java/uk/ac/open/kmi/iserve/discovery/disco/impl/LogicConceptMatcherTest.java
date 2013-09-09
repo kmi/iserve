@@ -30,7 +30,7 @@ import uk.ac.open.kmi.iserve.commons.io.Syntax;
 import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterBySyntax;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
-import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
+import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -63,7 +63,7 @@ public class LogicConceptMatcherTest extends TestCase {
                 // do your one-time setup here
 
                 // Clean the whole thing before testing
-                ManagerSingleton.getInstance().clearRegistry();
+                iServeFacade.getInstance().clearRegistry();
 
                 URI testFolder = LogicConceptMatcherTest.class.getResource(OWLS_TC_SERVICES).toURI();
                 FilenameFilter ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
@@ -75,7 +75,7 @@ public class LogicConceptMatcherTest extends TestCase {
                 for (File ttlFile : msmTtlTcFiles) {
                     log.debug("Importing {}", ttlFile.getAbsolutePath());
                     in = new FileInputStream(ttlFile);
-                    ManagerSingleton.getInstance().importServices(in, MediaType.TEXT_TURTLE.getMediaType());
+                    iServeFacade.getInstance().importServices(in, MediaType.TEXT_TURTLE.getMediaType());
                 }
                 log.debug("Ready");
             }

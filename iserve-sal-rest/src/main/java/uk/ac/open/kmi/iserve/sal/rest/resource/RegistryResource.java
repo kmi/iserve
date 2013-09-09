@@ -22,7 +22,7 @@ import org.glassfish.jersey.server.mvc.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
-import uk.ac.open.kmi.iserve.sal.manager.impl.ManagerSingleton;
+import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -66,7 +66,7 @@ public class RegistryResource {
     @Produces({MediaType.TEXT_HTML})
     public Response showConfiguration() {
         log.debug("Forwarding to {}", CONFIGURATION_JSP_PATH);
-        return Response.ok(new Viewable(CONFIGURATION_JSP_PATH, ManagerSingleton.getInstance().getConfiguration())).build();
+        return Response.ok(new Viewable(CONFIGURATION_JSP_PATH, iServeFacade.getInstance().getConfiguration())).build();
     }
 
     /**
@@ -100,7 +100,7 @@ public class RegistryResource {
 
         String response;
         try {
-            if (ManagerSingleton.getInstance().clearRegistry()) {
+            if (iServeFacade.getInstance().clearRegistry()) {
                 // The registry was cleared
                 response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                         "  <body>\n The registry was cleared.\n  </body>\n</html>";

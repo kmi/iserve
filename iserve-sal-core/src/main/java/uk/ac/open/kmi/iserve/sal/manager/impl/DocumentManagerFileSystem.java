@@ -16,52 +16,71 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
+import com.google.common.eventbus.EventBus;
+import com.google.inject.Inject;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.util.FileUtil;
-import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
+import uk.ac.open.kmi.iserve.sal.events.DocumentCreatedEvent;
+import uk.ac.open.kmi.iserve.sal.events.DocumentDeletedEvent;
+import uk.ac.open.kmi.iserve.sal.events.DocumentsClearedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
+import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
+import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
+import javax.inject.Named;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class DocumentManagerFileSystem implements DocumentManager {
+class DocumentManagerFileSystem extends IntegratedComponent implements DocumentManager {
 
     private static final Logger log = LoggerFactory.getLogger(DocumentManagerFileSystem.class);
 
-    private URI documentsInternalPath;
+    // Default path for service and documents URIs.
+    // Note that any change here should also affect the REST API
+    // Keep the trailing slash
+    private static final String DEFAULT_DOC_URL_PATH = "id/documents/";
 
+    private static final String DEFAULT_DOC_FOLDER_PATH = "/tmp/";
+
+    private URI documentsInternalPath;
     private URI documentsPublicUri;
 
-    /**
-     * Constructor for the Document Manager. Protected to avoid external access.
-     * Any access to this should take place through the iServeManager
-     *
-     * @param configuration
-     */
-    protected DocumentManagerFileSystem(SystemConfiguration configuration) throws DocumentException {
+    @Inject
+    DocumentManagerFileSystem(EventBus eventBus,
+                              @Named("iserve.url") String iServeUri,
+                              @Named("iserve.documents.folder") String documentsFolderPath) throws SalException {
+        super(eventBus, iServeUri);
 
-        this.documentsInternalPath = configuration.getDocumentsFolderUri();
-        if (!this.documentsInternalPath.isAbsolute()) {
-            // Obtain absolute URI
-            try {
-                log.warn("Configuring document manager with relative path. Documents may be deleted when the application is redeployed.");
-                this.documentsInternalPath = this.getClass().getResource(".").toURI().resolve(this.documentsInternalPath);
-            } catch (URISyntaxException e) {
-                throw new DocumentException("Incorrect URI for documents folder.");
-            }
+        if (documentsFolderPath == null) {
+            documentsFolderPath = DEFAULT_DOC_FOLDER_PATH;
         }
 
+        this.documentsPublicUri = this.getIserveUri().resolve(DEFAULT_DOC_URL_PATH);
 
-        this.documentsPublicUri = configuration.getDocumentsUri();
+        try {
+            // Set the internal URI to the docs folder
+            this.documentsInternalPath = new URI(documentsFolderPath + (documentsFolderPath.endsWith("/") ? "" : "/"));  // Ensure it has a final slash
 
-        File file = new File(getDocumentsInternalPath());
+            if (!this.documentsInternalPath.isAbsolute()) {
+                // Obtain absolute URI
+                log.warn("Configuring document manager with relative path. Documents may be deleted when the application is redeployed.");
+                this.documentsInternalPath = this.getClass().getResource(".").toURI().resolve(this.documentsInternalPath);
+            }
+
+        } catch (URISyntaxException e) {
+            log.error("Incorrect iServe URI while initialising " + this.getClass().getSimpleName(), e);
+            throw new SalException("Incorrect iServe URI while initialising " + this.getClass().getSimpleName(), e);
+        }
+
+        File file = new File(this.documentsInternalPath);
         if (!file.exists()) {
             if (file.mkdirs()) {
                 log.info("Created documents folder.");
@@ -73,7 +92,6 @@ public class DocumentManagerFileSystem implements DocumentManager {
                 throw new DocumentException("There already exists a file with the documents folder URI.");
             }
         }
-
     }
 
     /**
@@ -186,6 +204,10 @@ public class DocumentManagerFileSystem implements DocumentManager {
         } catch (IOException e) {
             throw new DocumentException("Unable to add document to service.", e);
         }
+
+        // Generate Event
+        this.getEventBus().post(new DocumentCreatedEvent(new Date(), newDocUri));
+
         return newDocUri;
     }
 
@@ -202,6 +224,8 @@ public class DocumentManagerFileSystem implements DocumentManager {
             result = file.delete();
             if (result) {
                 log.info("File deleted: " + file.getName());
+                // Generate Event
+                this.getEventBus().post(new DocumentDeletedEvent(new Date(), documentUri));
             } else {
                 log.warn("File does not exist. Unable to delete it: " + file.getAbsolutePath());
             }
@@ -224,6 +248,10 @@ public class DocumentManagerFileSystem implements DocumentManager {
             file.delete();
             log.info("File deleted: " + file.getAbsolutePath());
         }
+
+        // Generate Event
+        this.getEventBus().post(new DocumentsClearedEvent(new Date()));
+
         return true;
     }
 
