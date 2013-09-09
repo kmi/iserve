@@ -43,8 +43,8 @@ import static org.junit.Assert.fail;
 public class ServiceManagerRdfTest {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceManagerRdfTest.class);
-    //private static final String DATASET = "/wsc08-dataset01/services/services.xml";
-    private static final String DATASET = "/simple-datasets/03/services.xml";
+    private static final String DATASET = "/WSC08/wsc08_datasets/01/services.xml";
+
     private static final String MEDIATYPE = "text/xml";
     private static final String CONFIG_PROPERTIES_FILENAME = "config.properties";
 
