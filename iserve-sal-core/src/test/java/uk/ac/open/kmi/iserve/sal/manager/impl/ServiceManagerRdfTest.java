@@ -32,10 +32,13 @@ import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -43,12 +46,14 @@ import static org.junit.Assert.fail;
 public class ServiceManagerRdfTest {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceManagerRdfTest.class);
-    private static final String DATASET = "/WSC08/wsc08_datasets/01/services.xml";
+    private static final String DATASET = "/WSC08/wsc08_datasets/01/";
 
     private static final String MEDIATYPE = "text/xml";
     private static final String CONFIG_PROPERTIES_FILENAME = "config.properties";
 
-    private static final String ISERVE_TEST_URI = "file:///tmp/iserve/service-docs";
+    // TODO: Change this URL!
+    //private static final String ISERVE_TEST_URI = "file:///tmp/iserve/service-docs";
+    private static final String ISERVE_TEST_URI = "http://localhost:9090/iserve";
     private static final String ISERVE_TEST_QUERY_URI = "http://localhost:8080/openrdf-sesame/repositories/Test";
     private static final String ISERVE_TEST_UPDATE_URI = "http://localhost:8080/openrdf-sesame/repositories/Test/statements";
     private static final String ISERVE_TEST_SERVICE_URI = "http://localhost:8080/openrdf-sesame/repositories/Test/rdf-graphs/service";
@@ -72,36 +77,31 @@ public class ServiceManagerRdfTest {
         serviceManager.clearServices();
         importWscServices();
 
-        String[] expected = {"serv1323166560", "serv1392598793", "serv1462031026", "serv699915007", "serv7231183", "serv630482774", "serv2015850384", "serv769347240", "serv1253734327", "serv1531463259"};
         List<URI> services = serviceManager.listServices();
-        assertTrue(expected.length == services.size());
-        for (URI service : services) {
-            boolean exists = false;
-            for (String valid : expected) {
-                if (service.toASCIIString().contains(valid)) {
-                    exists = true;
-                    break;
-                }
-            }
-            assertTrue(exists);
-        }
-
+        // Check the original list of retrieved URIs
+        assertEquals(158, services.size());
+        // Check if there are no duplications
+        assertEquals(158, new HashSet<URI>(services).size());
     }
 
-    private void importWscServices() throws TransformationException, ServiceException {
+    private void importWscServices() throws TransformationException, ServiceException, URISyntaxException {
         log.info("Importing");
-        String file = ServiceManagerRdfTest.class.getResource(DATASET).getFile();
+        String file = ServiceManagerRdfTest.class.getResource(DATASET + "services.xml").getFile();
         log.debug("Using " + file);
         File services = new File(file);
-
-        List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
+        URL base = this.getClass().getResource(DATASET);
+        List<Service> result = Transformer.getInstance().transform(services, base.toURI().toASCIIString(), MEDIATYPE);
+        //List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
 
         // Import all services
+        int counter=0;
         for (Service s : result) {
             URI uri = serviceManager.addService(s);
             Assert.assertNotNull(uri);
             log.info("Service added: " + uri.toASCIIString());
+            counter++;
         }
+        log.debug("Total services added {}", counter);
     }
 
     /**

@@ -104,6 +104,8 @@ public class WSCImporter implements ServiceTransformer {
 
             // Create only one hasInput and hasOutput and mandatory parts for each input/output
             Operation operation = new Operation(opURI);
+            //TODO: Remove the line below!
+            //ontologyOwlUrl="http://localhost/invalid.owl";
             operation.addInput(transform(service.getInputs().getInstances(), "input", ontologyOwlUrl, reasoner));
             operation.addOutput(transform(service.getOutputs().getInstances(), "output", ontologyOwlUrl, reasoner));
             operation.setLabel(service.getName()+"_op");
@@ -121,6 +123,10 @@ public class WSCImporter implements ServiceTransformer {
         // De-serialize from XML
         // Use the baseUri to locate automatically the taxonomy.xml and ontology.owl
         String ontologyOwlUrl = null;
+        if (baseUri == null){
+            throw new NullPointerException("BaseUri cannot be null. Please specify a baseUri to locate" +
+                    " the WSC files");
+        }
         try{
             ontologyOwlUrl = new URL(baseUri + this.ontologyFile).toURI().toASCIIString();
             if (reasoner == null){
