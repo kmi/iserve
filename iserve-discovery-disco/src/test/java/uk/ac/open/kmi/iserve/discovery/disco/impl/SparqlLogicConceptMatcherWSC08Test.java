@@ -19,6 +19,8 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import junit.framework.Assert;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
@@ -30,8 +32,9 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
-import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
+import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
+import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
+import uk.ac.open.kmi.iserve.sal.manager.impl.iServeManagementModule;
 
 import java.io.File;
 import java.net.URI;
@@ -49,25 +52,32 @@ import static org.junit.Assert.assertTrue;
  * @author <a href="mailto:pablo.rodriguez.mier@usc.es">Pablo Rodriguez Mier</a> (CiTIUS, University of Santiago de Compostela)
  * @since 01/08/2013
  */
-public class LogicConceptMatcherWSC08Test {
+public class SparqlLogicConceptMatcherWSC08Test {
 
-    private static final Logger log = LoggerFactory.getLogger(LogicConceptMatcherWSC08Test.class);
-    private static final String WSC08_01_SERVICES = "/wsc08-dataset01/services/services.xml";
+    private static final Logger log = LoggerFactory.getLogger(SparqlLogicConceptMatcherWSC08Test.class);
+    private static final String WSC08_01_SERVICES = "/WSC08/wsc08_datasets/01/services.xml";
     private static final String MEDIATYPE = "text/xml";
 
-    private LogicConceptMatcher matcher = new LogicConceptMatcher();
+    private static final String SPARQL_ENDPOINT = "http://localhost:8080/openrdf-sesame/repositories/Test";
+
+    private static SparqlLogicConceptMatcher conceptMatcher;
+    private static iServeManager manager;
 
     @BeforeClass
     public static void setUp() throws Exception {
         BasicConfigurator.configure();
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
         // do your one-time setup here
+        Injector injector = Guice.createInjector(new iServeManagementModule());
+        manager = injector.getInstance(iServeManager.class);
 
         // Clean the whole thing before testing
-        iServeFacade.getInstance().clearRegistry();
+        manager.clearRegistry();
+
+        conceptMatcher = new SparqlLogicConceptMatcher(SPARQL_ENDPOINT);
 
         log.info("Importing WSC 2008 services");
-        String file = LogicConceptMatcherWSC08Test.class.getResource(WSC08_01_SERVICES).getFile();
+        String file = SparqlLogicConceptMatcherWSC08Test.class.getResource(WSC08_01_SERVICES).getFile();
         log.debug("Using " + file);
         File services = new File(file);
 
@@ -76,7 +86,7 @@ public class LogicConceptMatcherWSC08Test {
         List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
         // Import all services
         for (Service s : result) {
-            URI uri = iServeFacade.getInstance().registerService(s);
+            URI uri = manager.getServiceManager().addService(s);
             Assert.assertNotNull(uri);
             log.info("Service added: " + uri.toASCIIString());
         }
@@ -90,11 +100,11 @@ public class LogicConceptMatcherWSC08Test {
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
-        MatchResult match = matcher.match(origin, destination);
+        MatchResult match = this.conceptMatcher.match(origin, destination);
         stopwatch.stop();
 
         log.info("Obtained match in {} \n {}", stopwatch, match);
-        Assert.assertEquals(DiscoMatchType.Plugin, match.getMatchType());
+        Assert.assertEquals(LogicConceptMatchType.Plugin, match.getMatchType());
     }
 
     @Test
@@ -105,11 +115,11 @@ public class LogicConceptMatcherWSC08Test {
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
-        MatchResult match = matcher.match(destination, origin);
+        MatchResult match = this.conceptMatcher.match(destination, origin);
         stopwatch.stop();
 
         log.info("Obtained match in {} \n {}", stopwatch, match);
-        Assert.assertEquals(DiscoMatchType.Subsume, match.getMatchType());
+        Assert.assertEquals(LogicConceptMatchType.Subsume, match.getMatchType());
     }
 
     @Test
@@ -120,11 +130,11 @@ public class LogicConceptMatcherWSC08Test {
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
-        MatchResult match = matcher.match(origin, destination);
+        MatchResult match = this.conceptMatcher.match(origin, destination);
         stopwatch.stop();
 
         log.info("Obtained match in {} \n {}", stopwatch, match);
-        Assert.assertEquals(DiscoMatchType.Plugin, match.getMatchType());
+        Assert.assertEquals(LogicConceptMatchType.Plugin, match.getMatchType());
     }
 
 
@@ -160,9 +170,9 @@ public class LogicConceptMatcherWSC08Test {
 
         // Discover executable services
         Set<String> candidates = new HashSet<String>();
-        for (URI service : iServeFacade.getInstance().listServices()) {
+        for (URI service : this.manager.getServiceManager().listServices()) {
             // Load the service
-            Service srv = iServeFacade.getInstance().getService(service);
+            Service srv = this.manager.getServiceManager().getService(service);
             // Load operations
             opLoop:
             for (Operation op : srv.getOperations()) {
@@ -172,8 +182,8 @@ public class LogicConceptMatcherWSC08Test {
                     // System.out.println("\tChecking input " + to);
                     for (URI from : available) {
                         // Try to match
-                        MatchResult result = matcher.match(from, to);
-                        if (result.getMatchType().compareTo(DiscoMatchType.Plugin) >= 0) {
+                        MatchResult result = conceptMatcher.match(from, to);
+                        if (result.getMatchType().compareTo(LogicConceptMatchType.Plugin) >= 0) {
                             log.info("Service operation " + op.getUri() + " matched.");
                             log.info("\t> Match " + from + "->" + to + ":" + result.getMatchType());
                             candidates.add(srv.getLabel());
@@ -218,8 +228,8 @@ public class LogicConceptMatcherWSC08Test {
         // Preload servide models
         // TODO; Discovery operations without loading the entire service model.
         Set<Service> services = new HashSet<Service>();
-        for (URI srvURI : iServeFacade.getInstance().listServices()) {
-            services.add(iServeFacade.getInstance().getService(srvURI));
+        for (URI srvURI : this.manager.getServiceManager().listServices()) {
+            services.add(this.manager.getServiceManager().getService(srvURI));
         }
         int pass = 0;
         while (!newInputs.isEmpty()) {
@@ -278,8 +288,8 @@ public class LogicConceptMatcherWSC08Test {
         Set<URI> opInputs = getInputs(op);
         for (URI from : inputs) {
             for (URI to : opInputs) {
-                MatchResult match = this.matcher.match(from, to);
-                if (match.getMatchType().compareTo(DiscoMatchType.Plugin) >= 0) {
+                MatchResult match = this.conceptMatcher.match(from, to);
+                if (match.getMatchType().compareTo(LogicConceptMatchType.Plugin) >= 0) {
                     return true;
                 }
             }
@@ -294,8 +304,8 @@ public class LogicConceptMatcherWSC08Test {
             for (URI to : opInputs) {
                 // skip if already matched
                 if (matched.contains(to)) continue;
-                MatchResult match = this.matcher.match(from, to);
-                if (match.getMatchType().compareTo(DiscoMatchType.Plugin) >= 0) {
+                MatchResult match = this.conceptMatcher.match(from, to);
+                if (match.getMatchType().compareTo(LogicConceptMatchType.Plugin) >= 0) {
                     matched.add(to);
                     if (matched.size() == opInputs.size()) {
                         return true;
@@ -307,12 +317,12 @@ public class LogicConceptMatcherWSC08Test {
     }
 
     private boolean isInvokable(Set<URI> availableInputs, Operation op) {
-        Table<URI, URI, MatchResult> result = matcher.match(availableInputs, getInputs(op));
+        Table<URI, URI, MatchResult> result = this.conceptMatcher.match(availableInputs, getInputs(op));
         for (URI column : result.columnKeySet()) {
             // Each column (destination) should contain a valid match.
             boolean hasValidMatch = false;
             for (MatchResult mr : result.column(column).values()) {
-                if (mr.getMatchType().compareTo(DiscoMatchType.Plugin) >= 0) {
+                if (mr.getMatchType().compareTo(LogicConceptMatchType.Plugin) >= 0) {
                     hasValidMatch = true;
                     break;
                 }
