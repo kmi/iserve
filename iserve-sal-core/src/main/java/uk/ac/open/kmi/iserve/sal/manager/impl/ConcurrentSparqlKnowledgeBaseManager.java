@@ -66,6 +66,15 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
 
     private ExecutorService executor;
 
+    @Inject(optional = true)
+    @Named("http.proxyHost")
+    private String proxyHost;
+
+    @Inject(optional = true)
+    @Named("http.proxyPort")
+    private String proxyPort;
+
+
     /**
      * default constructor
      */
@@ -74,9 +83,7 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
                                          @Named("iserve.url") String iServeUri,
                                          @Named("iserve.services.sparql.query") String sparqlQueryEndpoint,
                                          @Named("iserve.services.sparql.update") String sparqlUpdateEndpoint,
-                                         @Named("iserve.services.sparql.service") String sparqlServiceEndpoint,
-                                         @Named("http.proxyHost") String proxyHost,
-                                         @Named("http.proxyPort") String proxyPort) throws SalException {
+                                         @Named("iserve.services.sparql.service") String sparqlServiceEndpoint) throws SalException {
 
         super(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
 
@@ -91,10 +98,6 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
         this.loadedModels.add(MSM_WSDL.NS);
         this.loadedModels.add("http://www.w3.org/ns/wsdl-extensions#");  // for WSDLX safety
 
-        // Set the proxy if necessary
-        if (proxyHost != null && proxyPort != null)
-            setProxy(proxyHost, proxyPort);
-
         // Set default values for Document Manager
         OntDocumentManager dm = OntDocumentManager.getInstance();
         dm.setProcessImports(true);
@@ -105,12 +108,29 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
         executor = Executors.newSingleThreadExecutor();
     }
 
-    private void setProxy(String proxyHost, String proxyPort) {
+    private void configureProxy() {
         if (proxyHost != null && proxyPort != null) {
+            log.info("Configuring proxy: Host - {} - Port {} .", proxyHost, proxyPort);
             Properties prop = System.getProperties();
             prop.put("http.proxyHost", proxyHost);
             prop.put("http.proxyPort", proxyPort);
         }
+    }
+
+    String getProxyHost() {
+        return proxyHost;
+    }
+
+    void setProxyHost(String proxyHost) {
+        this.proxyHost = proxyHost;
+    }
+
+    String getProxyPort() {
+        return proxyPort;
+    }
+
+    void setProxyPort(String proxyPort) {
+        this.proxyPort = proxyPort;
     }
 
     /**
@@ -119,7 +139,8 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
      */
     @Override
     public void initialise() {
-        // TODO: implement
+        // Set the proxy if necessary
+        configureProxy();
     }
 
     /**
@@ -219,8 +240,9 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
                 }
             } catch (Exception e) {
                 // Mark as invalid
-                log.error(e.getMessage());
+                log.error("There was an error while trying to fetch a remote model", e.getMessage());
                 this.unreachableModels.add(modelUri);
+                log.info("Added {} to the unreachable models list.", modelUri);
                 result = false;
             }
         }
