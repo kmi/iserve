@@ -34,6 +34,7 @@ import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.commons.vocabulary.*;
+import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.events.OntologyCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServiceCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
@@ -58,6 +59,8 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
 
     private static final Logger log = LoggerFactory.getLogger(ConcurrentSparqlKnowledgeBaseManager.class);
     private static final String DIRECT_SUBCLASS = "http://www.openrdf.org/schema/sesame#directSubClassOf";
+    private static final String JAVA_PROXY_HOST_PROP = "http.proxyHost";
+    private static final String JAVA_PROXY_PORT_PROP = "http.proxyPort";
 
     // Set backed by a ConcurrentHashMap to avoid race conditions
     private Set<String> loadedModels;
@@ -72,10 +75,10 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
      */
     static class ProxyConfiguration {
         @Inject(optional = true)
-        @Named("http.proxyHost")
+        @Named(SystemConfiguration.PROXY_HOST_NAME_PROP)
         private String proxyHost = null;
         @Inject(optional = true)
-        @Named("http.proxyPort")
+        @Named(SystemConfiguration.PROXY_PORT_PROP)
         private String proxyPort = null;
     }
 
@@ -93,10 +96,10 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
      */
     @Inject
     ConcurrentSparqlKnowledgeBaseManager(EventBus eventBus,
-                                         @Named("iserve.url") String iServeUri,
-                                         @Named("iserve.services.sparql.query") String sparqlQueryEndpoint,
-                                         @Named("iserve.services.sparql.update") String sparqlUpdateEndpoint,
-                                         @Named("iserve.services.sparql.service") String sparqlServiceEndpoint,
+                                         @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
+                                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlQueryEndpoint,
+                                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_UPDATE_PROP) String sparqlUpdateEndpoint,
+                                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_SERVICE_PROP) String sparqlServiceEndpoint,
                                          ProxyConfiguration proxyCfg)
             throws SalException {
 
@@ -127,11 +130,14 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
     }
 
     private void configureProxy(ProxyConfiguration proxyCfg) {
+        Properties prop = System.getProperties();
         if (proxyCfg != null && proxyCfg.proxyHost != null && proxyCfg.proxyPort != null) {
             log.info("Configuring proxy: Host - {} - Port {} .", proxyCfg.proxyHost, proxyCfg.proxyPort);
-            Properties prop = System.getProperties();
-            prop.put("http.proxyHost", proxyCfg.proxyHost);
-            prop.put("http.proxyPort", proxyCfg.proxyPort);
+            prop.put(JAVA_PROXY_HOST_PROP, proxyCfg.proxyHost);
+            prop.put(JAVA_PROXY_PORT_PROP, proxyCfg.proxyPort);
+        } else {
+            prop.remove(JAVA_PROXY_HOST_PROP);
+            prop.remove(JAVA_PROXY_PORT_PROP);
         }
     }
 
@@ -241,7 +247,7 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
                 }
             } catch (Exception e) {
                 // Mark as invalid
-                log.error("There was an error while trying to fetch a remote model", e.getMessage());
+                log.error("There was an error while trying to fetch a remote model", e);
                 this.unreachableModels.add(modelUri);
                 log.info("Added {} to the unreachable models list.", modelUri);
                 result = false;

@@ -33,6 +33,7 @@ import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
+import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.events.ServiceCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServiceDeletedEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServicesClearedEvent;
@@ -65,26 +66,14 @@ class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManage
      */
     private static final String DEFAULT_SERVICES_REPO = "iserve-services";
 
-
-    // Configuration properties
-    private static final String ISERVE_URL_PROP = "iserve.url";
-    private static final String ISERVE_VERSION_PROP = "iserve.version";
-
-    // Services data
-    private static final String SERVICES_REPOSITORY_URL_PROP = "iserve.services.rdfserver";
-    private static final String SERVICES_REPOSITORY_NAME_PROP = "iserve.services.repository";
-    private static final String SERVICES_REPOSITORY_SPARQL_PROP = "iserve.services.sparql.query";
-    private static final String SERVICES_REPOSITORY_SPARQL_UPDATE_PROP = "iserve.services.sparql.update";
-    private static final String SERVICES_REPOSITORY_SPARQL_SERVICE_PROP = "iserve.services.sparql.service";
-
     private final URI servicesUri;
 
     @Inject
     ServiceManagerRdf(EventBus eventBus,
-                      @Named("iserve.url") String iServeUri,
-                      @Named("iserve.services.sparql.query") String sparqlQueryEndpoint,
-                      @Named("iserve.services.sparql.update") String sparqlUpdateEndpoint,
-                      @Named("iserve.services.sparql.service") String sparqlServiceEndpoint) throws SalException {
+                      @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
+                      @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlQueryEndpoint,
+                      @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_UPDATE_PROP) String sparqlUpdateEndpoint,
+                      @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_SERVICE_PROP) String sparqlServiceEndpoint) throws SalException {
 
         super(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
         this.servicesUri = this.getIserveUri().resolve(SERVICES_URL_PATH);

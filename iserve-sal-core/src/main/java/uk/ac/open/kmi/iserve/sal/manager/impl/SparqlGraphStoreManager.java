@@ -34,6 +34,7 @@ import com.hp.hpl.jena.update.UpdateRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.model.util.Vocabularies;
+import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 
@@ -56,10 +57,10 @@ class SparqlGraphStoreManager extends IntegratedComponent {
 
     @Inject
     SparqlGraphStoreManager(EventBus eventBus,
-                            @Named("iserve.url") String iServeUri,
-                            @Named("iserve.services.sparql.query") String sparqlQueryEndpoint,
-                            @Named("iserve.services.sparql.update") String sparqlUpdateEndpoint,
-                            @Named("iserve.services.sparql.service") String sparqlServiceEndpoint) throws SalException {
+                            @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
+                            @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlQueryEndpoint,
+                            @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_UPDATE_PROP) String sparqlUpdateEndpoint,
+                            @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_SERVICE_PROP) String sparqlServiceEndpoint) throws SalException {
 
         super(eventBus, iServeUri);
 
