@@ -19,26 +19,47 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.google.common.eventbus.EventBus;
+import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
+import uk.ac.open.kmi.iserve.discovery.api.MatchTypes;
+import uk.ac.open.kmi.iserve.discovery.api.Matcher;
+import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
+import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
+import uk.ac.open.kmi.iserve.sal.exception.SalException;
+import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 
+import javax.inject.Named;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class PartialIndexedLogicConceptMatcher extends AbstractLogicConceptMatcher {
-    private static final Logger log = LoggerFactory.getLogger(PartialIndexedLogicConceptMatcher.class);
-    private Table<URI, URI, MatchResult> indexedMatches;
-    private ServiceManager manager;
-    private AbstractLogicConceptMatcher matcher;
+public class PartialIndexedLogicConceptMatcher extends IntegratedComponent implements Matcher {
 
-    public PartialIndexedLogicConceptMatcher(ServiceManager manager, AbstractLogicConceptMatcher matcher) {
-        this.manager = manager;
-        this.matcher = matcher;
+
+    private static final Logger log = LoggerFactory.getLogger(PartialIndexedLogicConceptMatcher.class);
+
+    private static final MatchTypes<MatchType> matchTypes = EnumMatchTypes.of(LogicConceptMatchType.class);
+
+    private Table<URI, URI, MatchResult> indexedMatches;
+    private ServiceManager serviceManager;
+    private Matcher sparqlMatcher;
+
+    @Inject
+    public PartialIndexedLogicConceptMatcher(EventBus eventBus,
+                                             @Named("iserve.url") String iServeUri,
+                                             SparqlLogicConceptMatcher sparqlMatcher,
+                                             ServiceManager serviceManager) throws SalException {
+
+        super(eventBus, iServeUri);
+
+        this.serviceManager = serviceManager;
+        this.sparqlMatcher = sparqlMatcher;
         this.indexedMatches = populate();
     }
 
@@ -52,7 +73,7 @@ public class PartialIndexedLogicConceptMatcher extends AbstractLogicConceptMatch
         for (URI output : serviceOutputs) {
             counter++;
             for (URI input : serviceInputs) {
-                MatchResult result = matcher.match(output, input);
+                MatchResult result = sparqlMatcher.match(output, input);
                 indexedMatches.put(output, input, result);
             }
             log.info(output + " indexed (" + counter + "/" + totalOutputs + ")");
@@ -63,9 +84,9 @@ public class PartialIndexedLogicConceptMatcher extends AbstractLogicConceptMatch
 
     private Set<URI> findAllInputs() {
         Set<URI> models = new HashSet<URI>();
-        for (URI service : manager.listServices()) {
-            for (URI op : manager.listOperations(service)) {
-                for (URI input : manager.listInputs(op)) {
+        for (URI service : serviceManager.listServices()) {
+            for (URI op : serviceManager.listOperations(service)) {
+                for (URI input : serviceManager.listInputs(op)) {
                     models.addAll(getAllModels(input));
                 }
             }
@@ -75,9 +96,9 @@ public class PartialIndexedLogicConceptMatcher extends AbstractLogicConceptMatch
 
     private Set<URI> findAllOutputs() {
         Set<URI> models = new HashSet<URI>();
-        for (URI service : manager.listServices()) {
-            for (URI op : manager.listOperations(service)) {
-                for (URI output : manager.listOutputs(op)) {
+        for (URI service : serviceManager.listServices()) {
+            for (URI op : serviceManager.listOperations(service)) {
+                for (URI output : serviceManager.listOutputs(op)) {
                     models.addAll(getAllModels(output));
                 }
             }
@@ -87,8 +108,8 @@ public class PartialIndexedLogicConceptMatcher extends AbstractLogicConceptMatch
 
     private Set<URI> getAllModels(URI messageContent) {
         Set<URI> models = new HashSet<URI>();
-        for (URI mandatoryPart : manager.listMandatoryParts(messageContent)) {
-            models.addAll(manager.listModelReferences(mandatoryPart));
+        for (URI mandatoryPart : serviceManager.listMandatoryParts(messageContent)) {
+            models.addAll(serviceManager.listModelReferences(mandatoryPart));
         }
         return models;
     }
@@ -103,6 +124,16 @@ public class PartialIndexedLogicConceptMatcher extends AbstractLogicConceptMatch
         return "1.0";
     }
 
+    /**
+     * Obtains the MatchTypes instance that contains the MatchTypes supported as well as their ordering information
+     *
+     * @return
+     */
+    @Override
+    public MatchTypes<MatchType> getMatchTypesSupported() {
+        return this.matchTypes;
+    }
+
     @Override
     public MatchResult match(URI origin, URI destination) {
         MatchResult result = this.indexedMatches.get(origin, destination);
@@ -110,7 +141,7 @@ public class PartialIndexedLogicConceptMatcher extends AbstractLogicConceptMatch
 
         if (result == null) {
             // Delegate
-            result = this.matcher.match(origin, destination);
+            result = this.sparqlMatcher.match(origin, destination);
         }
 
         return result;
@@ -120,7 +151,7 @@ public class PartialIndexedLogicConceptMatcher extends AbstractLogicConceptMatch
 
     @Override
     public Table<URI, URI, MatchResult> match(Set<URI> origins, Set<URI> destinations) {
-        return this.matcher.match(origins, destinations);
+        return this.sparqlMatcher.match(origins, destinations);
     }
 
     @Override
