@@ -67,6 +67,25 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
     private ExecutorService executor;
 
     /**
+     * Optional constructor arguments.
+     * For more information check http://code.google.com/p/google-guice/wiki/FrequentlyAskedQuestions#How_can_I_inject_optional_parameters_into_a_constructor
+     */
+    static class ProxyHolder {
+        @Inject(optional=true) @Named("http.proxyHost") private String proxyHost;
+        @Inject(optional=true) @Named("http.proxyPort") private String proxyPort;
+    }
+
+    ConcurrentSparqlKnowledgeBaseManager(EventBus eventBus,
+                                         String iServeUri,
+                                         String sparqlQueryEndpoint,
+                                         String sparqlUpdateEndpoint,
+                                         String sparqlServiceEndpoint) throws SalException {
+        this(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint,
+        new ProxyHolder());
+    }
+
+
+    /**
      * default constructor
      */
     @Inject
@@ -75,8 +94,8 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
                                          @Named("iserve.services.sparql.query") String sparqlQueryEndpoint,
                                          @Named("iserve.services.sparql.update") String sparqlUpdateEndpoint,
                                          @Named("iserve.services.sparql.service") String sparqlServiceEndpoint,
-                                         @Named("http.proxyHost") String proxyHost,
-                                         @Named("http.proxyPort") String proxyPort) throws SalException {
+                                         ProxyHolder proxy)
+            throws SalException {
 
         super(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
 
@@ -92,8 +111,8 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
         this.loadedModels.add("http://www.w3.org/ns/wsdl-extensions#");  // for WSDLX safety
 
         // Set the proxy if necessary
-        if (proxyHost != null && proxyPort != null)
-            setProxy(proxyHost, proxyPort);
+        if (proxy.proxyHost != null && proxy.proxyPort != null)
+            setProxy(proxy.proxyHost, proxy.proxyPort);
 
         // Set default values for Document Manager
         OntDocumentManager dm = OntDocumentManager.getInstance();
