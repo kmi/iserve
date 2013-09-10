@@ -67,12 +67,16 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
     private ExecutorService executor;
 
     /**
-     * Optional constructor arguments.
+     * Static class used for Optional constructor arguments.
      * For more information check http://code.google.com/p/google-guice/wiki/FrequentlyAskedQuestions#How_can_I_inject_optional_parameters_into_a_constructor
      */
-    static class ProxyHolder {
-        @Inject(optional=true) @Named("http.proxyHost") private String proxyHost;
-        @Inject(optional=true) @Named("http.proxyPort") private String proxyPort;
+    static class ProxyConfiguration {
+        @Inject(optional = true)
+        @Named("http.proxyHost")
+        private String proxyHost = null;
+        @Inject(optional = true)
+        @Named("http.proxyPort")
+        private String proxyPort = null;
     }
 
     ConcurrentSparqlKnowledgeBaseManager(EventBus eventBus,
@@ -80,8 +84,7 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
                                          String sparqlQueryEndpoint,
                                          String sparqlUpdateEndpoint,
                                          String sparqlServiceEndpoint) throws SalException {
-        this(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint,
-        new ProxyHolder());
+        this(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint, new ProxyConfiguration());
     }
 
 
@@ -94,7 +97,7 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
                                          @Named("iserve.services.sparql.query") String sparqlQueryEndpoint,
                                          @Named("iserve.services.sparql.update") String sparqlUpdateEndpoint,
                                          @Named("iserve.services.sparql.service") String sparqlServiceEndpoint,
-                                         ProxyHolder proxy)
+                                         ProxyConfiguration proxyCfg)
             throws SalException {
 
         super(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
@@ -110,9 +113,8 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
         this.loadedModels.add(MSM_WSDL.NS);
         this.loadedModels.add("http://www.w3.org/ns/wsdl-extensions#");  // for WSDLX safety
 
-        // Set the proxy if necessary
-        if (proxy.proxyHost != null && proxy.proxyPort != null)
-            setProxy(proxy.proxyHost, proxy.proxyPort);
+        // Configure proxy if necessary
+        configureProxy(proxyCfg);
 
         // Set default values for Document Manager
         OntDocumentManager dm = OntDocumentManager.getInstance();
@@ -124,12 +126,12 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
         executor = Executors.newSingleThreadExecutor();
     }
 
-    private void setProxy(String proxyHost, String proxyPort) {
-        if (proxyHost != null && proxyPort != null) {
-            log.info("Configuring proxy: Host - {} - Port {} .", proxyHost, proxyPort);
+    private void configureProxy(ProxyConfiguration proxyCfg) {
+        if (proxyCfg != null && proxyCfg.proxyHost != null && proxyCfg.proxyPort != null) {
+            log.info("Configuring proxy: Host - {} - Port {} .", proxyCfg.proxyHost, proxyCfg.proxyPort);
             Properties prop = System.getProperties();
-            prop.put("http.proxyHost", proxyHost);
-            prop.put("http.proxyPort", proxyPort);
+            prop.put("http.proxyHost", proxyCfg.proxyHost);
+            prop.put("http.proxyPort", proxyCfg.proxyPort);
         }
     }
 

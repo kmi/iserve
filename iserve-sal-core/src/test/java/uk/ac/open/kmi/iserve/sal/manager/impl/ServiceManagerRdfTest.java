@@ -38,9 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 
 public class ServiceManagerRdfTest {
@@ -51,8 +49,6 @@ public class ServiceManagerRdfTest {
     private static final String MEDIATYPE = "text/xml";
     private static final String CONFIG_PROPERTIES_FILENAME = "config.properties";
 
-    // TODO: Change this URL!
-    //private static final String ISERVE_TEST_URI = "file:///tmp/iserve/service-docs";
     private static final String ISERVE_TEST_URI = "http://localhost:9090/iserve";
     private static final String ISERVE_TEST_QUERY_URI = "http://localhost:8080/openrdf-sesame/repositories/Test";
     private static final String ISERVE_TEST_UPDATE_URI = "http://localhost:8080/openrdf-sesame/repositories/Test/statements";
@@ -94,7 +90,7 @@ public class ServiceManagerRdfTest {
         //List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
 
         // Import all services
-        int counter=0;
+        int counter = 0;
         for (Service s : result) {
             URI uri = serviceManager.addService(s);
             Assert.assertNotNull(uri);
