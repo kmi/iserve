@@ -32,7 +32,8 @@ public class WSCImporter implements ServiceTransformer {
     private String taxonomyFile;
     private String ontologyFile;
     //private String exportOWLTo;
-    private String fakeURL = "http://localhost/services/services.owl";
+    //private String fakeURL = "http://localhost/services/services.owl";
+    private String fakeBaseUri = "http://localhost/services/";
     public static final String mediaType = "text/xml";
 
 
@@ -64,20 +65,20 @@ public class WSCImporter implements ServiceTransformer {
     }
 
 
-    private MessageContent transform(XMLInstance instance, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner){
+    private MessageContent transform(XMLInstance instance, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner, String fakeServiceUri){
         String concept = reasoner.getConceptInstance(instance.getName());
-        URI uri = URI.create(this.fakeURL + "#MessageContent_"+concept);
+        URI uri = URI.create(fakeServiceUri + "#MessageContent_"+concept);
         MessageContent content = new MessageContent(uri);
         content.addModelReference(new Resource(URI.create(ontologyOwlUrl +"#"+concept)));
         return content;
     }
 
-    private MessageContent transform(ArrayList<XMLInstance> instances, String fieldName, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner){
-        URI uri = URI.create(this.fakeURL + "#MessageContent_" + fieldName);
+    private MessageContent transform(ArrayList<XMLInstance> instances, String fieldName, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner, String fakeServiceUri){
+        URI uri = URI.create(fakeServiceUri + "#MessageContent_" + fieldName);
         MessageContent msg = new MessageContent(uri);
         for(XMLInstance instance : instances){
             String concept = reasoner.getConceptInstance(instance.getName());
-            URI partURI = URI.create(this.fakeURL + "#MessagePart_" + concept);
+            URI partURI = URI.create(fakeServiceUri + "#MessagePart_" + concept);
             MessagePart part = new MessagePart(partURI);
             part.addModelReference(new Resource(URI.create(ontologyOwlUrl+"#"+concept)));
             msg.addMandatoryPart(part);
@@ -95,8 +96,9 @@ public class WSCImporter implements ServiceTransformer {
 
         // Create the services following the iserve-commons-vocabulary model
         for(XMLService service : services.getServices()){
-            URI srvURI = URI.create(fakeURL + "#" + service.getName());
-            URI opURI = URI.create(fakeURL + "/" + service.getName() + "#Operation");
+            String fakeServiceUri = this.fakeBaseUri + service.getName() + ".owl";
+            URI srvURI = URI.create(fakeServiceUri + "#Service");
+            URI opURI = URI.create(fakeServiceUri + "#Operation");
             log.debug("Transforming service (Fake OWL URI: {})", srvURI);
             Service modelService = new Service(srvURI);
             //modelService.setSource(srvURI);
@@ -105,9 +107,9 @@ public class WSCImporter implements ServiceTransformer {
             // Create only one hasInput and hasOutput and mandatory parts for each input/output
             Operation operation = new Operation(opURI);
             //TODO: Remove the line below!
-            //ontologyOwlUrl="http://localhost/invalid.owl";
-            operation.addInput(transform(service.getInputs().getInstances(), "input", ontologyOwlUrl, reasoner));
-            operation.addOutput(transform(service.getOutputs().getInstances(), "output", ontologyOwlUrl, reasoner));
+            ontologyOwlUrl="http://localhost/invalid.owl";
+            operation.addInput(transform(service.getInputs().getInstances(), "input", ontologyOwlUrl, reasoner, fakeServiceUri));
+            operation.addOutput(transform(service.getOutputs().getInstances(), "output", ontologyOwlUrl, reasoner, fakeServiceUri));
             operation.setLabel(service.getName()+"_op");
 
 
