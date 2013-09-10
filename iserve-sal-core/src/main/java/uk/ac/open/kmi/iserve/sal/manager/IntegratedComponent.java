@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 
+import javax.inject.Named;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -41,7 +42,7 @@ public abstract class IntegratedComponent {
     private final URI iserveUri;
 
     @Inject
-    protected IntegratedComponent(EventBus eventBus, String iServeUri) throws SalException {
+    protected IntegratedComponent(EventBus eventBus, @Named("iserve.url") String iServeUri) throws SalException {
         this.eventBus = eventBus;
         eventBus.register(this);
 
