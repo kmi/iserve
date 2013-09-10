@@ -16,35 +16,44 @@
 
 package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
+import com.google.common.base.Function;
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Table;
+import com.google.common.collect.*;
+import com.google.inject.Inject;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
+import uk.ac.open.kmi.iserve.discovery.api.MatchTypes;
+import uk.ac.open.kmi.iserve.discovery.api.Matcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.AtomicMatchResult;
-import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
+import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
+import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.Util;
+import uk.ac.open.kmi.iserve.discovery.util.MatchComparator;
 
+import javax.inject.Named;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
 /**
- * DiscoMatcher
- * TODO: Provide Description
+ * SparqlLogicConceptMatcher implements a Matcher for concepts directly backed by a SPARQL endpoint.
+ * The response time of this matcher will be fine for human interactions but too slow for high frequency queries by
+ * software such as composition engines. Does not require to maintain its own index.
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 30/07/2013
  */
-public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
+public class SparqlLogicConceptMatcher implements Matcher {
 
-    private static final Logger log = LoggerFactory.getLogger(LogicConceptMatcher.class);
+    private static final Logger log = LoggerFactory.getLogger(SparqlLogicConceptMatcher.class);
+
+    private static String NL = System.getProperty("line.separator");
+
+    // Variable names used in queries
     private static final String MATCH_VAR = "match";
     private static final String EXACT_VAR = "exact";
     private static final String SUB_VAR = "sub";
@@ -52,12 +61,25 @@ public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
     private static final String ORIGIN_VAR = "origin";
     private static final String DESTINATION_VAR = "destination";
 
+    private static final MatchTypes<MatchType> matchTypes = EnumMatchTypes.of(LogicConceptMatchType.class);
+
     private URI sparqlEndpoint = null;
 
+    // Function to getMatchResult from a Map
+    protected final Function<Map.Entry<URI, MatchResult>, MatchResult> getMatchResult =
+            new Function<Map.Entry<URI, MatchResult>, MatchResult>() {
+                public MatchResult apply(Map.Entry<URI, MatchResult> entry) {
+                    return entry.getValue();
+                }
+            };
 
-    public static String NL = System.getProperty("line.separator");
+    // Order the results by score and then by url
+    protected final Ordering<Map.Entry<URI, MatchResult>> entryOrdering =
+            Ordering.from(MatchComparator.BY_TYPE).onResultOf(getMatchResult).reverse().
+                    compound(Ordering.from(MatchComparator.BY_URI).onResultOf(getMatchResult));
 
-    public LogicConceptMatcher(String sparqlEndpoint) throws URISyntaxException {
+    @Inject
+    public SparqlLogicConceptMatcher(@Named("iserve.services.sparql.query") String sparqlEndpoint) throws URISyntaxException {
 
         if (sparqlEndpoint == null) {
             log.error("A SPARQL endpoint is currently needed for matching.");
@@ -86,6 +108,16 @@ public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
         return null;  // TODO: implement
     }
 
+    /**
+     * Obtains the MatchTypes instance that contains the MatchTypes supported as well as their ordering information
+     *
+     * @return
+     */
+    @Override
+    public MatchTypes<MatchType> getMatchTypesSupported() {
+        return this.matchTypes;
+    }
+
 
     /**
      * Perform a match between two URIs (from {@code origin} to {@code destination})
@@ -110,7 +142,7 @@ public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
 
     private MatchResult queryForMatchResult(URI origin, URI destination, String queryStr) {
 
-        MatchType type = DiscoMatchType.Fail;
+        MatchType type = LogicConceptMatchType.Fail;
         // Query the engine
         Query query = QueryFactory.create(queryStr);
         QueryExecution qexec = QueryExecutionFactory.sparqlService(this.sparqlEndpoint.toASCIIString(), query);
@@ -238,7 +270,7 @@ public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
      */
     @Override
     public Map<URI, MatchResult> listMatchesAtLeastOfType(URI origin, MatchType minType) {
-        return listMatchesWithinRange(origin, minType, DiscoMatchType.Exact);
+        return listMatchesWithinRange(origin, minType, LogicConceptMatchType.Exact);
     }
 
     /**
@@ -275,7 +307,7 @@ public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
      */
     @Override
     public Map<URI, MatchResult> listMatchesAtMostOfType(URI origin, MatchType maxType) {
-        return listMatchesWithinRange(origin, DiscoMatchType.Fail, maxType);
+        return listMatchesWithinRange(origin, LogicConceptMatchType.Fail, maxType);
     }
 
     /**
@@ -338,15 +370,15 @@ public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
     private MatchType getMatchType(QuerySolution soln) {
 
         if (soln.contains(EXACT_VAR))
-            return DiscoMatchType.Exact;
+            return LogicConceptMatchType.Exact;
 
         if (soln.contains(SUPER_VAR))
-            return DiscoMatchType.Plugin;
+            return LogicConceptMatchType.Plugin;
 
         if (soln.contains(SUB_VAR))
-            return DiscoMatchType.Subsume;
+            return LogicConceptMatchType.Subsume;
 
-        return DiscoMatchType.Fail;
+        return LogicConceptMatchType.Fail;
     }
 
     private Map<URI, MatchResult> obtainMatchResults(Set<URI> origins, MatchType minType, MatchType maxType) {
@@ -426,17 +458,17 @@ public class LogicConceptMatcher extends AbstractLogicConceptMatcher {
 
     private List<String> generatePatterns(URI origin, String destinationVar, MatchType minType, MatchType maxType) {
         List<String> patterns = new ArrayList<String>();
-        if (minType.compareTo(DiscoMatchType.Subsume) <= 0 && maxType.compareTo(DiscoMatchType.Subsume) >= 0) {
+        if (minType.compareTo(LogicConceptMatchType.Subsume) <= 0 && maxType.compareTo(LogicConceptMatchType.Subsume) >= 0) {
             // Match the origin concept to strict subclasses
             patterns.add(Util.generateMatchStrictSubclassesPattern(origin, destinationVar, SUB_VAR, false));
         }
 
-        if (minType.compareTo(DiscoMatchType.Plugin) <= 0 && maxType.compareTo(DiscoMatchType.Plugin) >= 0) {
+        if (minType.compareTo(LogicConceptMatchType.Plugin) <= 0 && maxType.compareTo(LogicConceptMatchType.Plugin) >= 0) {
             // Match the origin concept to strict superclasses
             patterns.add(Util.generateMatchStrictSuperclassesPattern(origin, destinationVar, SUPER_VAR, false));
         }
 
-        if (minType.compareTo(DiscoMatchType.Exact) <= 0 && maxType.compareTo(DiscoMatchType.Exact) >= 0) {
+        if (minType.compareTo(LogicConceptMatchType.Exact) <= 0 && maxType.compareTo(LogicConceptMatchType.Exact) >= 0) {
             // Match the origin concept to exact matches
             patterns.add(Util.generateExactMatchPattern(origin, destinationVar, EXACT_VAR, false));
         }
