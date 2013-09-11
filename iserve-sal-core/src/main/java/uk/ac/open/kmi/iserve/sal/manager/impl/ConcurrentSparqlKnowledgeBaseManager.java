@@ -63,8 +63,8 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
     private static final String JAVA_PROXY_PORT_PROP = "http.proxyPort";
 
     // Set backed by a ConcurrentHashMap to avoid race conditions
-    private Set<String> loadedModels;
-    private Set<String> unreachableModels = new HashSet<String>();
+    private Set<URI> loadedModels;
+    private Set<URI> unreachableModels = new HashSet<URI>();
     private int NUM_THREADS = 4;
 
     private ExecutorService executor;
@@ -105,16 +105,16 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
 
         super(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
 
-        this.loadedModels = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
-        this.loadedModels.add(RDF.getURI());
-        this.loadedModels.add(RDFS.getURI());
-        this.loadedModels.add(OWL.NS);
-        this.loadedModels.add(WSMO_LITE.NS);
-        this.loadedModels.add(SAWSDL.NS);
-        this.loadedModels.add(MSM.NS);
-        this.loadedModels.add(HRESTS.NS);
-        this.loadedModels.add(MSM_WSDL.NS);
-        this.loadedModels.add("http://www.w3.org/ns/wsdl-extensions#");  // for WSDLX safety
+        this.loadedModels = Collections.newSetFromMap(new ConcurrentHashMap<URI, Boolean>());
+        this.loadedModels.add(URI.create(RDF.getURI()));
+        this.loadedModels.add(URI.create(RDFS.getURI()));
+        this.loadedModels.add(URI.create(OWL.NS));
+        this.loadedModels.add(URI.create(WSMO_LITE.NS));
+        this.loadedModels.add(URI.create(SAWSDL.NS));
+        this.loadedModels.add(URI.create(MSM.NS));
+        this.loadedModels.add(URI.create(HRESTS.NS));
+        this.loadedModels.add(URI.create(MSM_WSDL.NS));
+        this.loadedModels.add(URI.create("http://www.w3.org/ns/wsdl-extensions#"));  // for WSDLX safety
 
         // Configure proxy if necessary
         configureProxy(proxyCfg);
@@ -166,7 +166,7 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
     }
 
     @Override
-    public boolean containsModel(String modelUri) {
+    public boolean containsModel(URI modelUri) {
         return this.loadedModels.contains(modelUri);
     }
 
@@ -176,7 +176,7 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
      * @return the set of loaded models
      */
     @Override
-    public Set<String> getLoadedModels() {
+    public Set<URI> getLoadedModels() {
         return this.loadedModels;
     }
 
@@ -187,12 +187,12 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
      * @return the set of unreachable models
      */
     @Override
-    public Set<String> getUnreachableModels() {
+    public Set<URI> getUnreachableModels() {
         return this.unreachableModels;
     }
 
     @Override
-    public void uploadModel(String modelUri, Model model, boolean forceUpdate) {
+    public void uploadModel(URI modelUri, Model model, boolean forceUpdate) {
 
         if (modelUri != null && model != null && (!this.loadedModels.contains(modelUri) || forceUpdate)) {
             this.loadedModels.add(modelUri);
@@ -201,11 +201,7 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
             putGraph(modelUri, model);
 
             // Generate Event
-            try {
-                this.getEventBus().post(new OntologyCreatedEvent(new Date(), new URI(modelUri)));
-            } catch (URISyntaxException e) {
-                log.error("Unable to generate notification event: model URI is incorrect", e);
-            }
+            this.getEventBus().post(new OntologyCreatedEvent(new Date(), modelUri));
         }
     }
 
@@ -232,10 +228,10 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
     @Override
     public boolean fetchModelsForService(Service svc) {
         boolean result = true;
-        Map<String, Future<Boolean>> concurrentTasks = launchFetchingTasks(svc);
+        Map<URI, Future<Boolean>> concurrentTasks = launchFetchingTasks(svc);
 
         Boolean fetched;
-        for (String modelUri : concurrentTasks.keySet()) {
+        for (URI modelUri : concurrentTasks.keySet()) {
             Future<Boolean> f = concurrentTasks.get(modelUri);
             try {
                 fetched = f.get();
@@ -265,15 +261,15 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
      * @return a map with a Future<Boolean> per model to be fetched. True will indicate if the model was properly obtained.
      */
     @Override
-    public Map<String, Future<Boolean>> asyncFetchModelsForService(Service svc) {
+    public Map<URI, Future<Boolean>> asyncFetchModelsForService(Service svc) {
         return launchFetchingTasks(svc);
     }
 
-    private Map<String, Future<Boolean>> launchFetchingTasks(Service svc) {
-        Set<String> modelUris = obtainReferencedModelUris(svc);
-        Map<String, Future<Boolean>> concurrentTasks = new HashMap<String, Future<Boolean>>();
+    private Map<URI, Future<Boolean>> launchFetchingTasks(Service svc) {
+        Set<URI> modelUris = obtainReferencedModelUris(svc);
+        Map<URI, Future<Boolean>> concurrentTasks = new HashMap<URI, Future<Boolean>>();
 
-        for (String modelUri : modelUris) {
+        for (URI modelUri : modelUris) {
             if (!this.loadedModels.contains(modelUri) && !this.unreachableModels.contains(modelUri)) {
                 Callable<Boolean> task = new CrawlCallable(this, modelUri);
                 concurrentTasks.put(modelUri, this.executor.submit(task));
@@ -428,8 +424,8 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
         return result;
     }
 
-    private Set<String> obtainReferencedModelUris(Service svc) {
-        Set<String> result = new HashSet<String>();
+    private Set<URI> obtainReferencedModelUris(Service svc) {
+        Set<URI> result = new HashSet<URI>();
         if (svc != null) {
             ServiceWriterImpl writer = new ServiceWriterImpl();
             Model svcModel = writer.generateModel(svc);
@@ -440,7 +436,11 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
             while (modelRefs.hasNext()) {
                 node = modelRefs.next();
                 if (!node.isAnon()) {
-                    result.add(URIUtil.getNameSpace(node.asResource().getURI()));
+                    try {
+                        result.add(URIUtil.getNameSpace(node.asResource().getURI()));
+                    } catch (URISyntaxException e) {
+                        log.error("The namespace from the resource is not a correct URI. Skipping node.", e);
+                    }
                 }
             }
         }

@@ -19,6 +19,7 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.common.collect.Table;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +28,10 @@ import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 import uk.ac.open.kmi.iserve.discovery.api.MatchTypes;
 import uk.ac.open.kmi.iserve.discovery.api.Matcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
-import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
+import uk.ac.open.kmi.iserve.sal.events.OntologyCreatedEvent;
+import uk.ac.open.kmi.iserve.sal.events.OntologyDeletedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
@@ -37,8 +39,14 @@ import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
 import javax.inject.Named;
 import java.net.URI;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+/**
+ * Rudimentary implementation of an in-memory index for logic matching.
+ * We are assuming here that the ontologies are in a remote server exposed through a SPARQL endpoint. If we can sit in
+ * the same server we should try and use the libraries from the store directly to avoid replicating the index.
+ */
 public class SparqlIndexedLogicConceptMatcher extends IntegratedComponent implements Matcher {
 
     private static final Logger log = LoggerFactory.getLogger(SparqlIndexedLogicConceptMatcher.class);
@@ -64,7 +72,7 @@ public class SparqlIndexedLogicConceptMatcher extends IntegratedComponent implem
 
     private Table<URI, URI, MatchResult> populate() {
         Set<URI> classes = new HashSet<URI>(this.kbManager.listConcepts(null));
-        return sparqlMatcher.listMatchesAtLeastOfType(classes, DiscoMatchType.Plugin);
+        return sparqlMatcher.listMatchesAtLeastOfType(classes, LogicConceptMatchType.Plugin);
     }
 
     @Override
@@ -121,4 +129,29 @@ public class SparqlIndexedLogicConceptMatcher extends IntegratedComponent implem
         }
         return result;
     }
+
+    // Process events to update the indexes
+
+    /**
+     * A new ontology has been uploaded to the server and we need to update the indexes
+     *
+     * @param event the actual event that was triggered
+     */
+    @Subscribe
+    public void handleOntologyCreated(OntologyCreatedEvent event) {
+
+        // Obtain the concepts in the ontology uploaded
+        List<URI> conceptUris = this.kbManager.listConcepts(event.getOntologyUri());
+
+        // For each of them update their entries in the index (matched concepts will be updated later within the loop)
+//        this.sparqlMatcher.listMatchesAtLeastOfType(conceptUris, LogicConceptMatchType.Plugin);
+
+    }
+
+    @Subscribe
+    public void handleOntologyDeleted(OntologyDeletedEvent event) {
+
+
+    }
+
 }
