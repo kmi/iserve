@@ -16,11 +16,7 @@
 
 package uk.ac.open.kmi.iserve.discovery.api;
 
-import com.google.common.collect.Table;
-
 import java.net.URI;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * The interface {@code Matcher} defines the basic methods to perform a match
@@ -54,7 +50,6 @@ public interface Matcher {
      */
     MatchTypes<MatchType> getMatchTypesSupported();
 
-
     /**
      * Perform a match between two URIs (from {@code origin} to {@code destination})
      * and returns the result.
@@ -64,93 +59,5 @@ public interface Matcher {
      * @return {@link MatchResult} with the result of the matching.
      */
     MatchResult match(URI origin, URI destination);
-
-    /**
-     * Perform a match between two Sets of URIs (from {@code origin} to {@code destination})
-     * and returns the result.
-     *
-     * @param origins      Set of URIs of the elements to match
-     * @param destinations Set of URIs of the elements to match against
-     * @return a {@link Table} with the result of the matching indexed by origin URI and then destination URI.
-     */
-    Table<URI, URI, MatchResult> match(Set<URI> origins, Set<URI> destinations);
-
-    /**
-     * Obtains all the matching resources that have a precise MatchType with the URI of {@code origin}.
-     *
-     * @param origin URI to match
-     * @param type   the MatchType we want to obtain
-     * @return a Map containing indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
-     *         result is found the Map should be empty not null.
-     */
-    Map<URI, MatchResult> listMatchesOfType(URI origin, MatchType type);
-
-    /**
-     * Obtains all the matching resources that have a precise MatchType with the URIs of {@code origin}.
-     *
-     * @param origins URIs to match
-     * @param type    the MatchType we want to obtain
-     * @return a {@link Table} with the result of the matching indexed by origin URI and then destination URI.
-     */
-    Table<URI, URI, MatchResult> listMatchesOfType(Set<URI> origins, MatchType type);
-
-    /**
-     * Obtains all the matching resources that have a MatchType with the URI of {@code origin} of the type provided (inclusive) or more.
-     *
-     * @param origin  URI to match
-     * @param minType the minimum MatchType we want to obtain
-     * @return a Map containing indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
-     *         result is found the Map should be empty not null.
-     */
-    Map<URI, MatchResult> listMatchesAtLeastOfType(URI origin, MatchType minType);
-
-    /**
-     * Obtains all the matching resources that have a MatchType with the URIs of {@code origin} of the type provided (inclusive) or more.
-     *
-     * @param origins URIs to match
-     * @param minType the minimum MatchType we want to obtain
-     * @return a {@link Table} with the result of the matching indexed by origin URI and then destination URI.
-     */
-    Table<URI, URI, MatchResult> listMatchesAtLeastOfType(Set<URI> origins, MatchType minType);
-
-    /**
-     * Obtain all the matching resources that have a MatchTyoe with the URI of {@code origin} of the type provided (inclusive) or less.
-     *
-     * @param origin  URI to match
-     * @param maxType the maximum MatchType we want to obtain
-     * @return a Map containing indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
-     *         result is found the Map should be empty not null.
-     */
-    Map<URI, MatchResult> listMatchesAtMostOfType(URI origin, MatchType maxType);
-
-    /**
-     * Obtain all the matching resources that have a MatchTyoe with the URIs of {@code origin} of the type provided (inclusive) or less.
-     *
-     * @param origins URIs to match
-     * @param maxType the maximum MatchType we want to obtain
-     * @return a {@link Table} with the result of the matching indexed by origin URI and then destination URI.
-     */
-    Table<URI, URI, MatchResult> listMatchesAtMostOfType(Set<URI> origins, MatchType maxType);
-
-    /**
-     * Obtain all the matching resources with the URI of {@code origin} within the range of MatchTypes provided, both inclusive.
-     *
-     * @param origin  URI to match
-     * @param minType the minimum MatchType we want to obtain
-     * @param maxType the maximum MatchType we want to obtain
-     * @return a Map containing indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
-     *         result is found the Map should be empty not null.
-     */
-    Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType);
-
-    /**
-     * Obtain all the matching resources with the URIs of {@code origin} within the range of MatchTypes provided, both inclusive.
-     *
-     * @param origins URIs to match
-     * @param minType the minimum MatchType we want to obtain
-     * @param maxType the maximum MatchType we want to obtain
-     * @return a {@link Table} with the result of the matching indexed by origin URI and then destination URI.
-     */
-    Table<URI, URI, MatchResult> listMatchesWithinRange(Set<URI> origins, MatchType minType, MatchType maxType);
 
 }

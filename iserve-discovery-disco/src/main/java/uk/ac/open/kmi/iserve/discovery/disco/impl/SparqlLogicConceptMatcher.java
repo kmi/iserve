@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 import uk.ac.open.kmi.iserve.discovery.api.MatchTypes;
-import uk.ac.open.kmi.iserve.discovery.api.Matcher;
+import uk.ac.open.kmi.iserve.discovery.api.RangedMultiMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.AtomicMatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
@@ -47,7 +47,7 @@ import java.util.*;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 30/07/2013
  */
-public class SparqlLogicConceptMatcher implements Matcher {
+public class SparqlLogicConceptMatcher implements RangedMultiMatcher {
 
     private static final Logger log = LoggerFactory.getLogger(SparqlLogicConceptMatcher.class);
 
