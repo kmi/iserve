@@ -107,7 +107,7 @@ public class WSCImporter implements ServiceTransformer {
             // Create only one hasInput and hasOutput and mandatory parts for each input/output
             Operation operation = new Operation(opURI);
             //TODO: Remove the line below!
-            ontologyOwlUrl="http://localhost/invalid.owl";
+            //ontologyOwlUrl="http://localhost/invalid.owl";
             operation.addInput(transform(service.getInputs().getInstances(), "input", ontologyOwlUrl, reasoner, fakeServiceUri));
             operation.addOutput(transform(service.getOutputs().getInstances(), "output", ontologyOwlUrl, reasoner, fakeServiceUri));
             operation.setLabel(service.getName()+"_op");
@@ -116,6 +116,13 @@ public class WSCImporter implements ServiceTransformer {
             modelService.addOperation(operation);
             modelService.setLabel(service.getName());
             listServices.add(modelService);
+            // Dump it
+            /*
+            try {
+                IOUtil.dumpToRdf(modelService, new File("/home/" + modelService.getLabel() + ".rdf"));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }*/
         }
         return listServices;
     }
@@ -126,6 +133,14 @@ public class WSCImporter implements ServiceTransformer {
         // Use the baseUri to locate automatically the taxonomy.xml and ontology.owl
         String ontologyOwlUrl = null;
         if (baseUri == null){
+            /*
+            // Used to test if there is a problem in another part of the code for using a baseUri
+            try {
+                baseUri = this.getClass().getResource("/WSC08/wsc08_datasets/01/").toURI().toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }*/
+
             throw new NullPointerException("BaseUri cannot be null. Please specify a baseUri to locate" +
                     " the WSC files");
         }
