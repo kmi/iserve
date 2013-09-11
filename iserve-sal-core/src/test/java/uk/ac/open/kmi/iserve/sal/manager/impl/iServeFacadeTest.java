@@ -77,7 +77,6 @@ public class iServeFacadeTest {
 
         Injector injector = Guice.createInjector(new iServeManagementModule());
         manager = injector.getInstance(iServeManager.class);
-
     }
 
     @Test

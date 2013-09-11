@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
@@ -70,7 +69,7 @@ public class WSCImporterTest {
         Assert.assertNotNull("Cannot open taxonomy.xml", taxonomyStream);
         Assert.assertNotNull("Cannot open services.xml", servicesStream);
         WSCImporter importer = new WSCImporter(taxonomyStream, "http://localhost/onto.owl");
-        List<Service> result = importer.transform(servicesStream,"");
+        List<Service> result = importer.transform(servicesStream, "");
         Assert.assertEquals(158, result.size());
     }
 

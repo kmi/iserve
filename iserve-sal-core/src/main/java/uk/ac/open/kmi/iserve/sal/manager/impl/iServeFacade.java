@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.*;
 import uk.ac.open.kmi.iserve.commons.model.Service;
+import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
@@ -57,7 +58,10 @@ public class iServeFacade extends IntegratedComponent implements uk.ac.open.kmi.
     private KnowledgeBaseManager kbManager;
 
     @Inject
-    private iServeFacade(EventBus eventBus, @Named("iserve.url") String iServeUri, DocumentManager docManager, ServiceManager serviceManager, KnowledgeBaseManager kbManager) throws ConfigurationException, SalException {
+    private iServeFacade(EventBus eventBus, @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
+                         DocumentManager docManager,
+                         ServiceManager serviceManager,
+                         KnowledgeBaseManager kbManager) throws ConfigurationException, SalException {
 
         super(eventBus, iServeUri);
         this.docManager = docManager;

@@ -47,14 +47,14 @@ public class iServeManagementModule extends AbstractModule {
         final EventBus eventBus = new EventBus("iServe");
         bind(EventBus.class).toInstance(eventBus);
 
+        // Bind the configuration file to @named valuese
+        Names.bindProperties(binder(), getProperties());
+
         // Bind each of the managers
         bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
         bind(ServiceManager.class).to(ServiceManagerRdf.class);
         bind(KnowledgeBaseManager.class).to(ConcurrentSparqlKnowledgeBaseManager.class);
         bind(uk.ac.open.kmi.iserve.sal.manager.iServeManager.class).to(iServeFacade.class);
-
-        // Bind the configuration as well
-        Names.bindProperties(binder(), getProperties());
     }
 
     private Properties getProperties() {

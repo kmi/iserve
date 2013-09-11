@@ -34,6 +34,7 @@ import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.commons.vocabulary.*;
+import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.events.OntologyCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServiceCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
@@ -58,6 +59,8 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
 
     private static final Logger log = LoggerFactory.getLogger(ConcurrentSparqlKnowledgeBaseManager.class);
     private static final String DIRECT_SUBCLASS = "http://www.openrdf.org/schema/sesame#directSubClassOf";
+    private static final String JAVA_PROXY_HOST_PROP = "http.proxyHost";
+    private static final String JAVA_PROXY_PORT_PROP = "http.proxyPort";
 
     // Set backed by a ConcurrentHashMap to avoid race conditions
     private Set<String> loadedModels;
@@ -67,12 +70,16 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
     private ExecutorService executor;
 
     /**
-     * Optional constructor arguments.
+     * Static class used for Optional constructor arguments.
      * For more information check http://code.google.com/p/google-guice/wiki/FrequentlyAskedQuestions#How_can_I_inject_optional_parameters_into_a_constructor
      */
-    static class ProxyHolder {
-        @Inject(optional=true) @Named("http.proxyHost") private String proxyHost;
-        @Inject(optional=true) @Named("http.proxyPort") private String proxyPort;
+    static class ProxyConfiguration {
+        @Inject(optional = true)
+        @Named(SystemConfiguration.PROXY_HOST_NAME_PROP)
+        private String proxyHost = null;
+        @Inject(optional = true)
+        @Named(SystemConfiguration.PROXY_PORT_PROP)
+        private String proxyPort = null;
     }
 
     ConcurrentSparqlKnowledgeBaseManager(EventBus eventBus,
@@ -80,8 +87,8 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
                                          String sparqlQueryEndpoint,
                                          String sparqlUpdateEndpoint,
                                          String sparqlServiceEndpoint) throws SalException {
-        this(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint,
-        new ProxyHolder());
+
+        this(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint, new ProxyConfiguration());
     }
 
 
@@ -90,12 +97,11 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
      */
     @Inject
     ConcurrentSparqlKnowledgeBaseManager(EventBus eventBus,
-                                         @Named("iserve.url") String iServeUri,
-                                         @Named("iserve.services.sparql.query") String sparqlQueryEndpoint,
-                                         @Named("iserve.services.sparql.update") String sparqlUpdateEndpoint,
-                                         @Named("iserve.services.sparql.service") String sparqlServiceEndpoint,
-                                         ProxyHolder proxy)
-            throws SalException {
+                                         @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
+                                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlQueryEndpoint,
+                                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_UPDATE_PROP) String sparqlUpdateEndpoint,
+                                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_SERVICE_PROP) String sparqlServiceEndpoint,
+                                         ProxyConfiguration proxyCfg) throws SalException {
 
         super(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
 
@@ -110,9 +116,8 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
         this.loadedModels.add(MSM_WSDL.NS);
         this.loadedModels.add("http://www.w3.org/ns/wsdl-extensions#");  // for WSDLX safety
 
-        // Set the proxy if necessary
-        if (proxy.proxyHost != null && proxy.proxyPort != null)
-            setProxy(proxy.proxyHost, proxy.proxyPort);
+        // Configure proxy if necessary
+        configureProxy(proxyCfg);
 
         // Set default values for Document Manager
         OntDocumentManager dm = OntDocumentManager.getInstance();
@@ -124,11 +129,15 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
         executor = Executors.newSingleThreadExecutor();
     }
 
-    private void setProxy(String proxyHost, String proxyPort) {
-        if (proxyHost != null && proxyPort != null) {
-            Properties prop = System.getProperties();
-            prop.put("http.proxyHost", proxyHost);
-            prop.put("http.proxyPort", proxyPort);
+    private void configureProxy(ProxyConfiguration proxyCfg) {
+        Properties prop = System.getProperties();
+        if (proxyCfg != null && proxyCfg.proxyHost != null && proxyCfg.proxyPort != null) {
+            log.info("Configuring proxy: Host - {} - Port {} .", proxyCfg.proxyHost, proxyCfg.proxyPort);
+            prop.put(JAVA_PROXY_HOST_PROP, proxyCfg.proxyHost);
+            prop.put(JAVA_PROXY_PORT_PROP, proxyCfg.proxyPort);
+        } else {
+            prop.remove(JAVA_PROXY_HOST_PROP);
+            prop.remove(JAVA_PROXY_PORT_PROP);
         }
     }
 
@@ -238,8 +247,9 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
                 }
             } catch (Exception e) {
                 // Mark as invalid
-                log.error(e.getMessage());
+                log.error("There was an error while trying to fetch a remote model", e);
                 this.unreachableModels.add(modelUri);
+                log.info("Added {} to the unreachable models list.", modelUri);
                 result = false;
             }
         }
@@ -267,6 +277,7 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
             if (!this.loadedModels.contains(modelUri) && !this.unreachableModels.contains(modelUri)) {
                 Callable<Boolean> task = new CrawlCallable(this, modelUri);
                 concurrentTasks.put(modelUri, this.executor.submit(task));
+                log.debug("Fetching model - {}", modelUri);
             }
         }
 

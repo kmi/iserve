@@ -22,6 +22,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.util.FileUtil;
+import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.events.DocumentCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.DocumentDeletedEvent;
 import uk.ac.open.kmi.iserve.sal.events.DocumentsClearedEvent;
@@ -55,8 +56,8 @@ class DocumentManagerFileSystem extends IntegratedComponent implements DocumentM
 
     @Inject
     DocumentManagerFileSystem(EventBus eventBus,
-                              @Named("iserve.url") String iServeUri,
-                              @Named("iserve.documents.folder") String documentsFolderPath) throws SalException {
+                              @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
+                              @Named(SystemConfiguration.DOC_FOLDER_PATH_PROP) String documentsFolderPath) throws SalException {
         super(eventBus, iServeUri);
 
         if (documentsFolderPath == null) {

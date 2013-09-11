@@ -25,12 +25,14 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
  * Time: 18:19
  */
 
+import com.google.common.base.Stopwatch;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
 
 import java.util.concurrent.Callable;
 
@@ -38,10 +40,10 @@ import java.util.concurrent.Callable;
 public class CrawlCallable implements Callable<Boolean> {
 
     private static final Logger log = LoggerFactory.getLogger(CrawlCallable.class);
-    private ConcurrentSparqlKnowledgeBaseManager kbManager;
+    private KnowledgeBaseManager kbManager;
     private String modelUri;
 
-    public CrawlCallable(ConcurrentSparqlKnowledgeBaseManager kbManager, String modelUri) {
+    public CrawlCallable(KnowledgeBaseManager kbManager, String modelUri) {
         this.kbManager = kbManager;
         this.modelUri = modelUri;
     }
@@ -73,9 +75,15 @@ public class CrawlCallable implements Callable<Boolean> {
 
     private Model fetchModel(String modelUri) {
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
-        log.info("Fetching remote ontology document: " + modelUri);
+
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.start();
+        // Fetch the model
         model.read(modelUri);
-        log.debug("Remote ontology document fetched.");
+        stopwatch.stop();
+
+        log.info("Remote ontology fetched - {} . Time taken: {}", modelUri, stopwatch);
+
         return model;
     }
 }
