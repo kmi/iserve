@@ -63,6 +63,7 @@ public class ServiceManagerRdfTest {
 
         EventBus eventBus = new EventBus();
         serviceManager = new ServiceManagerRdf(eventBus, ISERVE_TEST_URI, ISERVE_TEST_QUERY_URI, ISERVE_TEST_UPDATE_URI, ISERVE_TEST_SERVICE_URI);
+
         serviceManager.clearServices();
         importWscServices();
     }
