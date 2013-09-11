@@ -292,7 +292,7 @@ class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManage
         // Store in backend
         ServiceWriterImpl writer = new ServiceWriterImpl();
         Model svcModel = writer.generateModel(service);
-        log.info("Adding service - {} " + service.getUri().toASCIIString());
+        log.info("Adding service - {}", service.getUri().toASCIIString());
         // The graph id corresponds is the base id
         this.putGraph(newBaseServiceUri.toASCIIString(), svcModel);
 

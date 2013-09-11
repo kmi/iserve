@@ -87,6 +87,7 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
                                          String sparqlQueryEndpoint,
                                          String sparqlUpdateEndpoint,
                                          String sparqlServiceEndpoint) throws SalException {
+
         this(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint, new ProxyConfiguration());
     }
 
@@ -100,8 +101,7 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
                                          @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlQueryEndpoint,
                                          @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_UPDATE_PROP) String sparqlUpdateEndpoint,
                                          @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_SERVICE_PROP) String sparqlServiceEndpoint,
-                                         ProxyConfiguration proxyCfg)
-            throws SalException {
+                                         ProxyConfiguration proxyCfg) throws SalException {
 
         super(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
 
@@ -277,6 +277,7 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
             if (!this.loadedModels.contains(modelUri) && !this.unreachableModels.contains(modelUri)) {
                 Callable<Boolean> task = new CrawlCallable(this, modelUri);
                 concurrentTasks.put(modelUri, this.executor.submit(task));
+                log.debug("Fetching model - {}", modelUri);
             }
         }
 

@@ -47,7 +47,6 @@ public class ServiceManagerRdfTest {
     private static final String DATASET = "/WSC08/wsc08_datasets/01/";
 
     private static final String MEDIATYPE = "text/xml";
-    private static final String CONFIG_PROPERTIES_FILENAME = "config.properties";
 
     private static final String ISERVE_TEST_URI = "http://localhost:9090/iserve";
     private static final String ISERVE_TEST_QUERY_URI = "http://localhost:8080/openrdf-sesame/repositories/Test";
@@ -63,15 +62,14 @@ public class ServiceManagerRdfTest {
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
 
         EventBus eventBus = new EventBus();
-        serviceManager = new ServiceManagerRdf(eventBus, ISERVE_TEST_URI, ISERVE_TEST_QUERY_URI, ISERVE_TEST_UPDATE_URI, ISERVE_TEST_UPDATE_URI);
+        serviceManager = new ServiceManagerRdf(eventBus, ISERVE_TEST_URI, ISERVE_TEST_QUERY_URI, ISERVE_TEST_UPDATE_URI, ISERVE_TEST_SERVICE_URI);
+        serviceManager.clearServices();
+        importWscServices();
     }
 
 
     @Test
     public void testListServices() throws Exception {
-
-        serviceManager.clearServices();
-        importWscServices();
 
         List<URI> services = serviceManager.listServices();
         // Check the original list of retrieved URIs
@@ -80,12 +78,12 @@ public class ServiceManagerRdfTest {
         assertEquals(158, new HashSet<URI>(services).size());
     }
 
-    private void importWscServices() throws TransformationException, ServiceException, URISyntaxException {
+    private static void importWscServices() throws TransformationException, ServiceException, URISyntaxException {
         log.info("Importing");
         String file = ServiceManagerRdfTest.class.getResource(DATASET + "services.xml").getFile();
         log.debug("Using " + file);
         File services = new File(file);
-        URL base = this.getClass().getResource(DATASET);
+        URL base = ServiceManagerRdfTest.class.getResource(DATASET);
         List<Service> result = Transformer.getInstance().transform(services, base.toURI().toASCIIString(), MEDIATYPE);
         //List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
 
