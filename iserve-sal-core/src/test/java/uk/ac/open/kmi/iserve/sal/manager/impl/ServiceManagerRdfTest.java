@@ -41,6 +41,9 @@ import java.util.Set;
 import static org.junit.Assert.*;
 
 
+/**
+ * ServiceManagerRdf test
+ */
 public class ServiceManagerRdfTest {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceManagerRdfTest.class);

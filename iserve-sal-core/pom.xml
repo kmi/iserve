@@ -189,12 +189,13 @@
                             <includeArtifactIds>iserve-test-resources</includeArtifactIds>
                             <outputDirectory>${project.build.directory}/test-classes/</outputDirectory>
                             <includes>
-                                OWLS-TC3-MSM/*.ttl,OWLS-TC4_PDDL/htdocs/services/**/*.owls,OWLS-TC4_PDDL/htdocs/services/**/*.wsdl
+                                OWLS-TC3-MSM/*.ttl,OWLS-TC4_PDDL/htdocs/services/**/*.owls,OWLS-TC4_PDDL/htdocs/services/**/*.wsdl,WSC08/wsc08_datasets/**/**
                             </includes>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 
