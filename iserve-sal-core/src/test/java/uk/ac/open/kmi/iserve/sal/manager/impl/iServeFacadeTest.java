@@ -38,7 +38,7 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * ManagerSingletonTest
+ * iServeFacadeTest
  * <p/>
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 06/06/2013

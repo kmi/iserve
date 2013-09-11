@@ -26,7 +26,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.commons.io.ServiceFormatDetector;
 import uk.ac.open.kmi.iserve.commons.io.ServiceReaderImpl;
 import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
@@ -54,17 +53,10 @@ class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManage
 
     private static final Logger log = LoggerFactory.getLogger(ServiceManagerRdf.class);
 
-    private ServiceFormatDetector formatDetector;
-
     // Default path for service and documents URIs.
     // Note that any change here should also affect the REST API
     // Keep the trailing slash
     private static final String SERVICES_URL_PATH = "id/services/";
-
-    /**
-     * Default services repository name
-     */
-    private static final String DEFAULT_SERVICES_REPO = "iserve-services";
 
     private final URI servicesUri;
 

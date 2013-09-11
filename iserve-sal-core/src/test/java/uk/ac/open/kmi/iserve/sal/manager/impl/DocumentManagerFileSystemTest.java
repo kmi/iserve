@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * ManagerSingletonTest
+ * DocumentManagerFileSystemTest
  * <p/>
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 06/06/2013

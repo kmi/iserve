@@ -29,6 +29,7 @@ import uk.ac.open.kmi.iserve.discovery.api.Matcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
+import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
@@ -36,7 +37,6 @@ import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
 import javax.inject.Named;
 import java.net.URI;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class SparqlIndexedLogicConceptMatcher extends IntegratedComponent implements Matcher {
@@ -51,7 +51,7 @@ public class SparqlIndexedLogicConceptMatcher extends IntegratedComponent implem
 
     @Inject
     public SparqlIndexedLogicConceptMatcher(EventBus eventBus,
-                                            @Named("iserve.url") String iServeUri,
+                                            @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
                                             KnowledgeBaseManager kbManager,
                                             SparqlLogicConceptMatcher sparqlMatcher) throws SalException {
 
@@ -120,50 +120,5 @@ public class SparqlIndexedLogicConceptMatcher extends IntegratedComponent implem
             };
         }
         return result;
-    }
-
-    @Override
-    public Table<URI, URI, MatchResult> match(Set<URI> origin, Set<URI> destination) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Map<URI, MatchResult> listMatchesOfType(URI origin, MatchType type) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Table<URI, URI, MatchResult> listMatchesOfType(Set<URI> origins, MatchType type) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Map<URI, MatchResult> listMatchesAtLeastOfType(URI origin, MatchType minType) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Map<URI, MatchResult> listMatchesAtMostOfType(URI origin, MatchType maxType) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Table<URI, URI, MatchResult> listMatchesAtMostOfType(Set<URI> origins, MatchType maxType) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Table<URI, URI, MatchResult> listMatchesWithinRange(Set<URI> origins, MatchType minType, MatchType maxType) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Table<URI, URI, MatchResult> listMatchesAtLeastOfType(Set<URI> origins, MatchType minType) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

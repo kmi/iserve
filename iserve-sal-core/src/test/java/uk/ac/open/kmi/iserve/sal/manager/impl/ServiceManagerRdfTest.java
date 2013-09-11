@@ -21,7 +21,6 @@ import junit.framework.Assert;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +41,9 @@ import java.util.Set;
 import static org.junit.Assert.*;
 
 
+/**
+ * ServiceManagerRdf test
+ */
 public class ServiceManagerRdfTest {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceManagerRdfTest.class);
@@ -64,10 +66,7 @@ public class ServiceManagerRdfTest {
 
         EventBus eventBus = new EventBus();
         serviceManager = new ServiceManagerRdf(eventBus, ISERVE_TEST_URI, ISERVE_TEST_QUERY_URI, ISERVE_TEST_UPDATE_URI, ISERVE_TEST_SERVICE_URI);
-        log.debug("ISERVE_TEST_URI {}", ISERVE_TEST_URI);
-        log.debug("ISERVE_TEST_QUERY_URI {}", ISERVE_TEST_QUERY_URI);
-        log.debug("ISERVE_TEST_UPDATE_URI {}", ISERVE_TEST_UPDATE_URI);
-        log.debug("ISERVE_TEST_SERVICE_URI {}", ISERVE_TEST_SERVICE_URI);
+
         serviceManager.clearServices();
         importWscServices();
     }
@@ -84,17 +83,14 @@ public class ServiceManagerRdfTest {
     }
 
     private static void importWscServices() throws TransformationException, ServiceException, URISyntaxException {
-        log.info("Importing WSC Services");
+        log.info("Importing");
         String file = ServiceManagerRdfTest.class.getResource(DATASET + "services.xml").getFile();
-        log.info("Using " + file);
+        log.debug("Using " + file);
         File services = new File(file);
         URL base = ServiceManagerRdfTest.class.getResource(DATASET);
-        log.info("URL base " + base.toURI().toASCIIString());
         List<Service> result = Transformer.getInstance().transform(services, base.toURI().toASCIIString(), MEDIATYPE);
         //List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
-        if (result.size()==0){
-            fail("No services converted!");
-        }
+
         // Import all services
         int counter = 0;
         for (Service s : result) {
