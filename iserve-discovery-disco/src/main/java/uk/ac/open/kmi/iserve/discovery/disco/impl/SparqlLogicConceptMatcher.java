@@ -33,6 +33,7 @@ import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.Util;
 import uk.ac.open.kmi.iserve.discovery.util.MatchComparator;
+import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 
 import javax.inject.Named;
 import java.net.URI;
@@ -79,7 +80,7 @@ public class SparqlLogicConceptMatcher implements RangedMultiMatcher {
                     compound(Ordering.from(MatchComparator.BY_URI).onResultOf(getMatchResult));
 
     @Inject
-    public SparqlLogicConceptMatcher(@Named("iserve.services.sparql.query") String sparqlEndpoint) throws URISyntaxException {
+    public SparqlLogicConceptMatcher(@Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlEndpoint) throws URISyntaxException {
 
         if (sparqlEndpoint == null) {
             log.error("A SPARQL endpoint is currently needed for matching.");

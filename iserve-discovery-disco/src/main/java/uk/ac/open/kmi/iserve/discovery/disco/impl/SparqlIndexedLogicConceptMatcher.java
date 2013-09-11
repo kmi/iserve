@@ -29,6 +29,7 @@ import uk.ac.open.kmi.iserve.discovery.api.Matcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
+import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
@@ -50,7 +51,7 @@ public class SparqlIndexedLogicConceptMatcher extends IntegratedComponent implem
 
     @Inject
     public SparqlIndexedLogicConceptMatcher(EventBus eventBus,
-                                            @Named("iserve.url") String iServeUri,
+                                            @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
                                             KnowledgeBaseManager kbManager,
                                             SparqlLogicConceptMatcher sparqlMatcher) throws SalException {
 

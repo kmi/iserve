@@ -29,6 +29,7 @@ import uk.ac.open.kmi.iserve.discovery.api.MatchTypes;
 import uk.ac.open.kmi.iserve.discovery.api.MultiMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
+import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
@@ -51,7 +52,7 @@ public class PartialIndexedLogicConceptMatcher extends IntegratedComponent imple
 
     @Inject
     public PartialIndexedLogicConceptMatcher(EventBus eventBus,
-                                             @Named("iserve.url") String iServeUri,
+                                             @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
                                              SparqlLogicConceptMatcher sparqlMatcher,
                                              ServiceManager serviceManager) throws SalException {
 
