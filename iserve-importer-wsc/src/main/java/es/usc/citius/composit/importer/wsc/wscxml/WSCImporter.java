@@ -97,7 +97,7 @@ public class WSCImporter implements ServiceTransformer {
         // Create the services following the iserve-commons-vocabulary model
         for(XMLService service : services.getServices()){
             String fakeServiceUri = this.fakeBaseUri + service.getName() + ".owl";
-            URI srvURI = URI.create(fakeServiceUri + "#Service");
+            URI srvURI = URI.create(fakeServiceUri + "#" + service.getName());
             URI opURI = URI.create(fakeServiceUri + "#Operation");
             log.debug("Transforming service (Fake OWL URI: {})", srvURI);
             Service modelService = new Service(srvURI);

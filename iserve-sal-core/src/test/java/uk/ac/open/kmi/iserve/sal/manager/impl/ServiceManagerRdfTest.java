@@ -83,14 +83,17 @@ public class ServiceManagerRdfTest {
     }
 
     private static void importWscServices() throws TransformationException, ServiceException, URISyntaxException {
-        log.info("Importing");
+        log.info("Importing WSC Datasets");
         String file = ServiceManagerRdfTest.class.getResource(DATASET + "services.xml").getFile();
-        log.debug("Using " + file);
+        log.info("Services XML file {}", file);
         File services = new File(file);
         URL base = ServiceManagerRdfTest.class.getResource(DATASET);
+        log.info("Dataset Base URI {}", base.toURI().toASCIIString());
         List<Service> result = Transformer.getInstance().transform(services, base.toURI().toASCIIString(), MEDIATYPE);
         //List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
-
+        if (result.size()==0){
+            fail("No services transformed!");
+        }
         // Import all services
         int counter = 0;
         for (Service s : result) {
@@ -119,6 +122,7 @@ public class ServiceManagerRdfTest {
     }
 
     @Test
+    //@Ignore
     public void testListOperations() throws Exception {
         URI op = findServiceURI("serv1323166560");
         if (op != null) {
@@ -130,6 +134,7 @@ public class ServiceManagerRdfTest {
     }
 
     @Test
+    //@Ignore
     public void testListInputs() throws Exception {
         URI op = findServiceURI("serv1323166560");
         if (op != null) {
@@ -149,9 +154,6 @@ public class ServiceManagerRdfTest {
             List<URI> ops = serviceManager.listOperations(op);
             List<URI> inputs = serviceManager.listInputs(ops.get(0));
             Set<URI> parts = new HashSet<URI>(serviceManager.listMandatoryParts(inputs.get(0)));
-            // [http://localhost:9090/iserve/id/services/92783016-66aa-41a7-a2da-a4b2422037cb/serv1323166560/Operation/MessageContent_input/MessagePart_con241744282,
-            // http://localhost:9090/iserve/id/services/92783016-66aa-41a7-a2da-a4b2422037cb/serv1323166560/Operation/MessageContent_input/MessagePart_con1849951292,
-            // http://localhost:9090/iserve/id/services/92783016-66aa-41a7-a2da-a4b2422037cb/serv1323166560/Operation/MessageContent_input/MessagePart_con1653328292]
             assertTrue(parts.size() == 3);
             for (URI part : parts) {
                 boolean valid = false;
@@ -163,7 +165,6 @@ public class ServiceManagerRdfTest {
                 }
                 assertTrue(valid);
             }
-            //System.out.println(parts);
         } else {
             fail();
         }
