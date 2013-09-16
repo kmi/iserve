@@ -67,16 +67,13 @@ public class SparqlLogicConceptMatcherWSC08Test {
 
     private static final String WSC08_01 = "/WSC08/wsc08_datasets/01/";
     private static final String WSC08_01_SERVICES = WSC08_01 + "services.xml";
-    private static final String WSC08_01_TAXONOMY = WSC08_01 + "taxonomy.owl";
+    private static final String WSC08_01_TAXONOMY_FILE = WSC08_01 + "taxonomy.owl";
+    private static final String WSC_01_TAXONOMY_URL = "http://localhost/wsc/01/taxonomy.owl";
+    private static final String WSC_01_TAXONOMY_NS = "http://localhost/wsc/01/taxonomy.owl#";
 
     private static MultiMatcher conceptMatcher;
     private static iServeManager manager;
 
-    /**
-     * The root of the file scheme
-     */
-    private static final String FILE_SCHEME = "file:";
-    private static String modelRefNs;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -99,15 +96,14 @@ public class SparqlLogicConceptMatcherWSC08Test {
         // Get base url
         URL base = SparqlLogicConceptMatcherWSC08Test.class.getResource(WSC08_01);
 
-        modelRefNs = "http://localhost/wsc/01/taxonomy.owl#";
-
         // First load the ontology in the server to avoid issues
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         // Fetch the model
-        String taxonomyFile = SparqlLogicConceptMatcherWSC08Test.class.getResource(WSC08_01_TAXONOMY).toURI().toASCIIString();
+        String taxonomyFile = SparqlLogicConceptMatcherWSC08Test.class.getResource(WSC08_01_TAXONOMY_FILE).toURI().toASCIIString();
         model.read(taxonomyFile);
 
-        manager.getKnowledgeBaseManager().uploadModel(URI.create(modelRefNs), model, true);
+        // Upload the model first (it won't be automatically fetched as the URIs won't resolve so we do it manually)
+        manager.getKnowledgeBaseManager().uploadModel(URI.create(WSC_01_TAXONOMY_URL), model, true);
 
         //List<Service> result = new WSCImporter().transform(new FileInputStream(services), null);
         // Automatic plugin discovery
@@ -123,8 +119,8 @@ public class SparqlLogicConceptMatcherWSC08Test {
     @Test
     public void testDirectPluginMatch() throws Exception {
 
-        URI origin = URI.create(modelRefNs + "con1655991159");
-        URI destination = URI.create(modelRefNs + "con409488015");
+        URI origin = URI.create(WSC_01_TAXONOMY_NS + "con1655991159");
+        URI destination = URI.create(WSC_01_TAXONOMY_NS + "con409488015");
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
@@ -138,8 +134,8 @@ public class SparqlLogicConceptMatcherWSC08Test {
     @Test
     public void testDirectSubsumeMatch() throws Exception {
 
-        URI origin = URI.create(modelRefNs + "con1655991159");
-        URI destination = URI.create(modelRefNs + "con409488015");
+        URI origin = URI.create(WSC_01_TAXONOMY_NS + "con1655991159");
+        URI destination = URI.create(WSC_01_TAXONOMY_NS + "con409488015");
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
@@ -153,8 +149,8 @@ public class SparqlLogicConceptMatcherWSC08Test {
     @Test
     public void testIndirectPluginMatch() throws Exception {
 
-        URI origin = URI.create(modelRefNs + "con1901563774");
-        URI destination = URI.create(modelRefNs + "con241744282");
+        URI origin = URI.create(WSC_01_TAXONOMY_NS + "con1901563774");
+        URI destination = URI.create(WSC_01_TAXONOMY_NS + "con241744282");
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
@@ -172,9 +168,9 @@ public class SparqlLogicConceptMatcherWSC08Test {
         // Define the available inputs
         Set<URI> available = new HashSet<URI>();
 
-        available.add(URI.create(modelRefNs + "con1233457844"));
-        available.add(URI.create(modelRefNs + "con1849951292"));
-        available.add(URI.create(modelRefNs + "con864995873"));
+        available.add(URI.create(WSC_01_TAXONOMY_NS + "con1233457844"));
+        available.add(URI.create(WSC_01_TAXONOMY_NS + "con1849951292"));
+        available.add(URI.create(WSC_01_TAXONOMY_NS + "con864995873"));
 
         String[] expected = {
                 "serv213889376",
@@ -248,9 +244,9 @@ public class SparqlLogicConceptMatcherWSC08Test {
         Set<URI> newInputs = new HashSet<URI>();
         Set<Operation> allRelevantOps = new HashSet<Operation>();
 
-        availableInputs.add(URI.create(modelRefNs + "con1233457844"));
-        availableInputs.add(URI.create(modelRefNs + "con1849951292"));
-        availableInputs.add(URI.create(modelRefNs + "con864995873"));
+        availableInputs.add(URI.create(WSC_01_TAXONOMY_NS + "con1233457844"));
+        availableInputs.add(URI.create(WSC_01_TAXONOMY_NS + "con1849951292"));
+        availableInputs.add(URI.create(WSC_01_TAXONOMY_NS + "con864995873"));
         newInputs.addAll(availableInputs);
 
         // Preload servide models
