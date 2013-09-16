@@ -37,6 +37,11 @@ import java.util.List;
 public class WSCImporterTest {
     private static final Logger log = LoggerFactory.getLogger(WSCImporterTest.class);
 
+    private static final String WSC08_01 = "/WSC08/wsc08_datasets/01/";
+    private static final String WSC08_01_SERVICES = WSC08_01 + "services.xml";
+    private static final String WSC08_01_TAXONOMY = WSC08_01 + "taxonomy.owl";
+    private static final String WSC08_01_TAXONOMY_XML = WSC08_01 + "taxonomy.xml";
+
     @Before
     public void setUp() throws Exception {
         BasicConfigurator.configure();
@@ -48,7 +53,7 @@ public class WSCImporterTest {
         // Add all the test collections
         log.info("Transforming test collections");
         // Get base url
-        URL base = this.getClass().getResource("/WSC08/wsc08_datasets/01/");
+        URL base = this.getClass().getResource(WSC08_01);
         log.info("Reading {}", base.toURI().toASCIIString());
         // Services
         URL services = new URL(base.toURI().toASCIIString() + "services.xml");
@@ -64,12 +69,17 @@ public class WSCImporterTest {
         // Add all the test collections
         log.info("Transforming test collections");
         // NOTE: Ontology URL is not required to be reachable
-        InputStream taxonomyStream = this.getClass().getResourceAsStream("/WSC08/wsc08_datasets/01/taxonomy.xml");
-        InputStream servicesStream = this.getClass().getResourceAsStream("/WSC08/wsc08_datasets/01/services.xml");
+        InputStream taxonomyStream = this.getClass().getResourceAsStream(WSC08_01_TAXONOMY_XML);
+        InputStream servicesStream = this.getClass().getResourceAsStream(WSC08_01_SERVICES);
         Assert.assertNotNull("Cannot open taxonomy.xml", taxonomyStream);
         Assert.assertNotNull("Cannot open services.xml", servicesStream);
-        WSCImporter importer = new WSCImporter(taxonomyStream, "http://localhost/onto.owl");
-        List<Service> result = importer.transform(servicesStream, "");
+
+        // Get base url
+        URL base = this.getClass().getResource(WSC08_01);
+
+
+        WSCImporter importer = new WSCImporter(taxonomyStream, base.toURI().toASCIIString());
+        List<Service> result = importer.transform(servicesStream, base.toURI().toASCIIString());
         Assert.assertEquals(158, result.size());
     }
 
