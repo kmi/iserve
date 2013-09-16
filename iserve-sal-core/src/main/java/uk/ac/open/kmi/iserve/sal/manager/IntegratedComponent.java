@@ -38,7 +38,7 @@ public abstract class IntegratedComponent {
 
     private static final Logger log = LoggerFactory.getLogger(IntegratedComponent.class);
 
-    private final EventBus eventBus;
+    private final EventBus eventBus; // inject
     private final URI iserveUri;
 
     @Inject

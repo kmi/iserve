@@ -72,6 +72,12 @@ public class PartialIndexedLogicConceptMatcher extends IntegratedComponent imple
         int counter = 0;
         for (URI output : serviceOutputs) {
             counter++;
+            // Partial indexed matcher also stores fail match. The reason behind this is
+            // that, given the index is partial, we have to know when a match was calculated
+            // or not. If we don't store fail match, each time we test for a match between
+            // two concepts, if there is no entry in the index, we have to delegate the match
+            // to the sparqlMatcher, because we are not sure if the match exists or not.
+
             for (URI input : serviceInputs) {
                 MatchResult result = sparqlMatcher.match(output, input);
                 indexedMatches.put(output, input, result);

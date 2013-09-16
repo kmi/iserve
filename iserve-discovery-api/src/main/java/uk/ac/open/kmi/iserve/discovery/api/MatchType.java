@@ -16,15 +16,27 @@
 
 package uk.ac.open.kmi.iserve.discovery.api;
 
+import java.io.Serializable;
+
 /**
  * Match Type Interface
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @author <a href="mailto:pablo.rodriguez.mier@usc.es">Pablo Rodriguez Mier</a> (CITIUS - Universidad de Santiago de Compostela)
  */
-public interface MatchType<T> extends Comparable<T> {
+public interface MatchType<T> extends Comparable<T>, Serializable {
+    /**
+     * Returns the name of the concrete match type. This name
+     * must uniquely identify the match type.
+     *
+     * @return match type name
+     */
     String name();
 
+    /**
+     * Description of the match type and its properties.
+     * @return description
+     */
     String description();
 
 
