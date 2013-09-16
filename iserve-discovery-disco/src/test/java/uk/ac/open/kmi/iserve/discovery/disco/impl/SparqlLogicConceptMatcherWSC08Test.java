@@ -21,6 +21,9 @@ import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import junit.framework.Assert;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
@@ -32,12 +35,14 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
+import uk.ac.open.kmi.iserve.discovery.api.MultiMatcher;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.iServeManagementModule;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -55,18 +60,28 @@ import static org.junit.Assert.assertTrue;
 public class SparqlLogicConceptMatcherWSC08Test {
 
     private static final Logger log = LoggerFactory.getLogger(SparqlLogicConceptMatcherWSC08Test.class);
-    private static final String WSC08_01_SERVICES = "/WSC08/wsc08_datasets/01/services.xml";
+
     private static final String MEDIATYPE = "text/xml";
 
     private static final String SPARQL_ENDPOINT = "http://localhost:8080/openrdf-sesame/repositories/Test";
 
-    private static SparqlLogicConceptMatcher conceptMatcher;
+    private static final String WSC08_01 = "/WSC08/wsc08_datasets/01/";
+    private static final String WSC08_01_SERVICES = WSC08_01 + "services.xml";
+    private static final String WSC08_01_TAXONOMY = WSC08_01 + "taxonomy.owl";
+
+    private static MultiMatcher conceptMatcher;
     private static iServeManager manager;
+
+    /**
+     * The root of the file scheme
+     */
+    private static final String FILE_SCHEME = "file:";
+    private static String modelRefNs;
 
     @BeforeClass
     public static void setUp() throws Exception {
         BasicConfigurator.configure();
-        org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
+        org.apache.log4j.Logger.getRootLogger().setLevel(Level.DEBUG);
         // do your one-time setup here
         Injector injector = Guice.createInjector(new iServeManagementModule());
         manager = injector.getInstance(iServeManager.class);
@@ -81,9 +96,22 @@ public class SparqlLogicConceptMatcherWSC08Test {
         log.debug("Using " + file);
         File services = new File(file);
 
+        // Get base url
+        URL base = SparqlLogicConceptMatcherWSC08Test.class.getResource(WSC08_01);
+
+        modelRefNs = "http://localhost/wsc/01/taxonomy.owl#";
+
+        // First load the ontology in the server to avoid issues
+        OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+        // Fetch the model
+        String taxonomyFile = SparqlLogicConceptMatcherWSC08Test.class.getResource(WSC08_01_TAXONOMY).toURI().toASCIIString();
+        model.read(taxonomyFile);
+
+        manager.getKnowledgeBaseManager().uploadModel(URI.create(modelRefNs), model, true);
+
         //List<Service> result = new WSCImporter().transform(new FileInputStream(services), null);
         // Automatic plugin discovery
-        List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
+        List<Service> result = Transformer.getInstance().transform(services, base.toURI().toASCIIString(), MEDIATYPE);
         // Import all services
         for (Service s : result) {
             URI uri = manager.getServiceManager().addService(s);
@@ -95,8 +123,8 @@ public class SparqlLogicConceptMatcherWSC08Test {
     @Test
     public void testDirectPluginMatch() throws Exception {
 
-        URI origin = URI.create("http://localhost/ontology/taxonomy.owl#con1655991159");
-        URI destination = URI.create("http://localhost/ontology/taxonomy.owl#con409488015");
+        URI origin = URI.create(modelRefNs + "con1655991159");
+        URI destination = URI.create(modelRefNs + "con409488015");
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
@@ -110,8 +138,8 @@ public class SparqlLogicConceptMatcherWSC08Test {
     @Test
     public void testDirectSubsumeMatch() throws Exception {
 
-        URI origin = URI.create("http://localhost/ontology/taxonomy.owl#con1655991159");
-        URI destination = URI.create("http://localhost/ontology/taxonomy.owl#con409488015");
+        URI origin = URI.create(modelRefNs + "con1655991159");
+        URI destination = URI.create(modelRefNs + "con409488015");
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
@@ -125,8 +153,8 @@ public class SparqlLogicConceptMatcherWSC08Test {
     @Test
     public void testIndirectPluginMatch() throws Exception {
 
-        URI origin = URI.create("http://localhost/ontology/taxonomy.owl#con1901563774");
-        URI destination = URI.create("http://localhost/ontology/taxonomy.owl#con241744282");
+        URI origin = URI.create(modelRefNs + "con1901563774");
+        URI destination = URI.create(modelRefNs + "con241744282");
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
@@ -144,9 +172,9 @@ public class SparqlLogicConceptMatcherWSC08Test {
         // Define the available inputs
         Set<URI> available = new HashSet<URI>();
 
-        available.add(URI.create("http://localhost/ontology/taxonomy.owl#con1233457844"));
-        available.add(URI.create("http://localhost/ontology/taxonomy.owl#con1849951292"));
-        available.add(URI.create("http://localhost/ontology/taxonomy.owl#con864995873"));
+        available.add(URI.create(modelRefNs + "con1233457844"));
+        available.add(URI.create(modelRefNs + "con1849951292"));
+        available.add(URI.create(modelRefNs + "con864995873"));
 
         String[] expected = {
                 "serv213889376",
@@ -220,9 +248,9 @@ public class SparqlLogicConceptMatcherWSC08Test {
         Set<URI> newInputs = new HashSet<URI>();
         Set<Operation> allRelevantOps = new HashSet<Operation>();
 
-        availableInputs.add(URI.create("http://localhost/ontology/taxonomy.owl#con1233457844"));
-        availableInputs.add(URI.create("http://localhost/ontology/taxonomy.owl#con1849951292"));
-        availableInputs.add(URI.create("http://localhost/ontology/taxonomy.owl#con864995873"));
+        availableInputs.add(URI.create(modelRefNs + "con1233457844"));
+        availableInputs.add(URI.create(modelRefNs + "con1849951292"));
+        availableInputs.add(URI.create(modelRefNs + "con864995873"));
         newInputs.addAll(availableInputs);
 
         // Preload servide models

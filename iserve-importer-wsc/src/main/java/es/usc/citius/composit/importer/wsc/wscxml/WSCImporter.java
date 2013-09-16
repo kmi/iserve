@@ -32,6 +32,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +52,7 @@ public class WSCImporter implements ServiceTransformer {
     private String ontologyFile;
     //private String exportOWLTo;
     private String fakeURL = "http://localhost/services/services.owl";
+
     public static final String mediaType = "text/xml";
 
 
@@ -82,29 +84,37 @@ public class WSCImporter implements ServiceTransformer {
     }
 
 
-    private MessageContent transform(XMLInstance instance, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner) {
+    private MessageContent transform(XMLInstance instance, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner) throws URISyntaxException {
         String concept = reasoner.getConceptInstance(instance.getName());
         URI uri = URI.create(this.fakeURL + "#MessageContent_" + concept);
         MessageContent content = new MessageContent(uri);
-        content.addModelReference(new Resource(URI.create(ontologyOwlUrl + "#" + concept)));
+
+        String globalOntologyUri = deriveGlobalOntologyUri(ontologyOwlUrl);
+        content.addModelReference(new Resource(new URI(globalOntologyUri + "#" + concept)));
         return content;
     }
 
-    private MessageContent transform(ArrayList<XMLInstance> instances, String fieldName, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner) {
+    private String deriveGlobalOntologyUri(String ontologyOwlUrl) {
+        String endPart = ontologyOwlUrl.substring(ontologyOwlUrl.indexOf("wsc08_datasets"));
+        return "http://localhost/wsc/" + endPart;
+    }
+
+    private MessageContent transform(ArrayList<XMLInstance> instances, String fieldName, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner) throws URISyntaxException {
         URI uri = URI.create(this.fakeURL + "#MessageContent_" + fieldName);
         MessageContent msg = new MessageContent(uri);
         for (XMLInstance instance : instances) {
             String concept = reasoner.getConceptInstance(instance.getName());
             URI partURI = URI.create(this.fakeURL + "#MessagePart_" + concept);
             MessagePart part = new MessagePart(partURI);
-            part.addModelReference(new Resource(URI.create(ontologyOwlUrl + "#" + concept)));
+            String globalOntologyUri = deriveGlobalOntologyUri(ontologyOwlUrl);
+            part.addModelReference(new Resource(new URI(globalOntologyUri + "#" + concept)));
             msg.addMandatoryPart(part);
         }
         return msg;
     }
 
 
-    public List<Service> transform(InputStream originalDescription, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner) {
+    public List<Service> transform(InputStream originalDescription, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner) throws URISyntaxException {
         // De-serialize from XML
 
         XMLServices services = JAXB.unmarshal(originalDescription, XMLServices.class);
@@ -158,7 +168,12 @@ public class WSCImporter implements ServiceTransformer {
             e.printStackTrace();
         }
 
-        return transform(originalDescription, ontologyOwlUrl, reasoner);
+        try {
+            return transform(originalDescription, ontologyOwlUrl, reasoner);
+        } catch (URISyntaxException e) {
+            log.error("Problems generating URIs while transforming service.", e);
+            return new ArrayList<Service>();
+        }
     }
 
     @Override

@@ -16,6 +16,7 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
@@ -389,15 +390,13 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
         QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
 
         try {
-            // TODO: Remove profiling
-            long startTime = System.currentTimeMillis();
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.start();
 
             ResultSet qResults = qexec.execSelect();
 
-            // TODO: Remove profiling
-            long endTime = System.currentTimeMillis();
-            long duration = endTime - startTime;
-            log.info("Time taken for querying the registry: " + duration);
+            stopwatch.stop();
+            log.info("Time taken for querying the registry: {}", stopwatch);
 
             Resource resource;
             URI matchUri;
