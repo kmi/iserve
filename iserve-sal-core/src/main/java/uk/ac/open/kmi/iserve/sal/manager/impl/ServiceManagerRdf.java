@@ -222,7 +222,13 @@ class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManage
         if (serviceUri == null)
             return null;
 
-        OntModel model = this.getGraph(URIUtil.getNameSpace(serviceUri));
+        OntModel model = null;
+        try {
+            model = this.getGraph(URIUtil.getNameSpace(serviceUri));
+        } catch (URISyntaxException e) {
+            log.error("The namespace of the service is not a correct URI", e);
+            return null;
+        }
 
         // Parse the service. There should only be one in the response
         ServiceReaderImpl reader = new ServiceReaderImpl();
@@ -286,7 +292,7 @@ class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManage
         Model svcModel = writer.generateModel(service);
         log.info("Adding service - {}", service.getUri().toASCIIString());
         // The graph id corresponds is the base id
-        this.putGraph(newBaseServiceUri.toASCIIString(), svcModel);
+        this.putGraph(newBaseServiceUri, svcModel);
 
         // Generate Event
         this.getEventBus().post(new ServiceCreatedEvent(new Date(), service));
@@ -430,8 +436,13 @@ class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManage
             return false;
         }
 
-        log.info("Deleting service: " + serviceUri.toASCIIString());
-        this.deleteGraph(URIUtil.getNameSpace(serviceUri.toASCIIString()));
+        log.info("Deleting service - {}", serviceUri.toASCIIString());
+        try {
+            this.deleteGraph(URIUtil.getNameSpace(serviceUri));
+        } catch (URISyntaxException e) {
+            log.error("The namespace of the service is an incorrect URI", e);
+            throw new ServiceException("The namespace of the service is an incorrect URI", e);
+        }
 
         // Generate Event
         this.getEventBus().post(new ServiceDeletedEvent(new Date(), new Service(serviceUri)));
@@ -477,9 +488,16 @@ class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManage
         if (serviceUri == null)
             return false;
 
-        String queryStr = "ASK { \n" +
-                "GRAPH <" + URIUtil.getNameSpace(serviceUri.toASCIIString()) + "> {" +
-                "<" + serviceUri.toASCIIString() + "> <" + RDF.type.getURI() + "> <" + MSM.Service + "> }\n}";
+        String queryStr = null;
+        try {
+            queryStr = new StringBuilder()
+                    .append("ASK { \n")
+                    .append("GRAPH <").append(URIUtil.getNameSpace(serviceUri).toASCIIString()).append("> {")
+                    .append("<").append(serviceUri.toASCIIString()).append("> <").append(RDF.type.getURI()).append("> <").append(MSM.Service).append("> }\n}").toString();
+        } catch (URISyntaxException e) {
+            log.error("The namespace of the URI of the service is incorrect.", e);
+            throw new ServiceException("The namespace of the URI of the service is incorrect.", e);
+        }
 
         Query query = QueryFactory.create(queryStr);
         QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);

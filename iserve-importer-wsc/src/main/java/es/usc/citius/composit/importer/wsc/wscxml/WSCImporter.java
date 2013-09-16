@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package es.usc.citius.composit.importer.wsc.wscxml;
 
 
@@ -11,8 +27,10 @@ import uk.ac.open.kmi.iserve.commons.io.ServiceTransformer;
 import uk.ac.open.kmi.iserve.commons.model.*;
 
 import javax.xml.bind.JAXB;
-import java.io.*;
-import java.net.MalformedURLException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -23,6 +41,7 @@ import java.util.List;
 /**
  * Imports and transforms datasets from the Web Service Challenge 2008 (XML format)
  * Date: 7/18/13
+ *
  * @author Pablo Rodríguez Mier
  */
 public class WSCImporter implements ServiceTransformer {
@@ -32,8 +51,8 @@ public class WSCImporter implements ServiceTransformer {
     private String taxonomyFile;
     private String ontologyFile;
     //private String exportOWLTo;
-    //private String fakeURL = "http://localhost/services/services.owl";
-    private String fakeBaseUri = "http://localhost/services/";
+    private String fakeURL = "http://localhost/services/services.owl";
+
     public static final String mediaType = "text/xml";
 
 
@@ -65,29 +84,37 @@ public class WSCImporter implements ServiceTransformer {
     }
 
 
-    private MessageContent transform(XMLInstance instance, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner, String fakeServiceUri){
+    private MessageContent transform(XMLInstance instance, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner) throws URISyntaxException {
         String concept = reasoner.getConceptInstance(instance.getName());
-        URI uri = URI.create(fakeServiceUri + "#MessageContent_"+concept);
+        URI uri = URI.create(this.fakeURL + "#MessageContent_" + concept);
         MessageContent content = new MessageContent(uri);
-        content.addModelReference(new Resource(URI.create(ontologyOwlUrl +"#"+concept)));
+
+        String globalOntologyUri = deriveGlobalOntologyUri(ontologyOwlUrl);
+        content.addModelReference(new Resource(new URI(globalOntologyUri + "#" + concept)));
         return content;
     }
 
-    private MessageContent transform(ArrayList<XMLInstance> instances, String fieldName, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner, String fakeServiceUri){
-        URI uri = URI.create(fakeServiceUri + "#MessageContent_" + fieldName);
+    private String deriveGlobalOntologyUri(String ontologyOwlUrl) {
+        String endPart = ontologyOwlUrl.substring(ontologyOwlUrl.indexOf("wsc08_datasets"));
+        return "http://localhost/wsc/" + endPart;
+    }
+
+    private MessageContent transform(ArrayList<XMLInstance> instances, String fieldName, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner) throws URISyntaxException {
+        URI uri = URI.create(this.fakeURL + "#MessageContent_" + fieldName);
         MessageContent msg = new MessageContent(uri);
-        for(XMLInstance instance : instances){
+        for (XMLInstance instance : instances) {
             String concept = reasoner.getConceptInstance(instance.getName());
-            URI partURI = URI.create(fakeServiceUri + "#MessagePart_" + concept);
+            URI partURI = URI.create(this.fakeURL + "#MessagePart_" + concept);
             MessagePart part = new MessagePart(partURI);
-            part.addModelReference(new Resource(URI.create(ontologyOwlUrl+"#"+concept)));
+            String globalOntologyUri = deriveGlobalOntologyUri(ontologyOwlUrl);
+            part.addModelReference(new Resource(new URI(globalOntologyUri + "#" + concept)));
             msg.addMandatoryPart(part);
         }
         return msg;
     }
 
 
-    public List<Service> transform(InputStream originalDescription, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner){
+    public List<Service> transform(InputStream originalDescription, String ontologyOwlUrl, WSCXMLSemanticReasoner reasoner) throws URISyntaxException {
         // De-serialize from XML
 
         XMLServices services = JAXB.unmarshal(originalDescription, XMLServices.class);
@@ -95,10 +122,9 @@ public class WSCImporter implements ServiceTransformer {
 
 
         // Create the services following the iserve-commons-vocabulary model
-        for(XMLService service : services.getServices()){
-            String fakeServiceUri = this.fakeBaseUri + service.getName() + ".owl";
-            URI srvURI = URI.create(fakeServiceUri + "#" + service.getName());
-            URI opURI = URI.create(fakeServiceUri + "#Operation");
+        for (XMLService service : services.getServices()) {
+            URI srvURI = URI.create(fakeURL + "#" + service.getName());
+            URI opURI = URI.create(fakeURL + "/" + service.getName() + "#Operation");
             log.debug("Transforming service (Fake OWL URI: {})", srvURI);
             Service modelService = new Service(srvURI);
             //modelService.setSource(srvURI);
@@ -108,21 +134,14 @@ public class WSCImporter implements ServiceTransformer {
             Operation operation = new Operation(opURI);
             //TODO: Remove the line below!
             //ontologyOwlUrl="http://localhost/invalid.owl";
-            operation.addInput(transform(service.getInputs().getInstances(), "input", ontologyOwlUrl, reasoner, fakeServiceUri));
-            operation.addOutput(transform(service.getOutputs().getInstances(), "output", ontologyOwlUrl, reasoner, fakeServiceUri));
-            operation.setLabel(service.getName()+"_op");
+            operation.addInput(transform(service.getInputs().getInstances(), "input", ontologyOwlUrl, reasoner));
+            operation.addOutput(transform(service.getOutputs().getInstances(), "output", ontologyOwlUrl, reasoner));
+            operation.setLabel(service.getName() + "_op");
 
 
             modelService.addOperation(operation);
             modelService.setLabel(service.getName());
             listServices.add(modelService);
-            // Dump it
-            /*
-            try {
-                IOUtil.dumpToRdf(modelService, new File("/home/" + modelService.getLabel() + ".rdf"));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }*/
         }
         return listServices;
     }
@@ -132,32 +151,29 @@ public class WSCImporter implements ServiceTransformer {
         // De-serialize from XML
         // Use the baseUri to locate automatically the taxonomy.xml and ontology.owl
         String ontologyOwlUrl = null;
-        if (baseUri == null){
-            /*
-            // Used to test if there is a problem in another part of the code for using a baseUri
-            try {
-                baseUri = this.getClass().getResource("/WSC08/wsc08_datasets/01/").toURI().toASCIIString();
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }*/
-
+        if (baseUri == null) {
             throw new NullPointerException("BaseUri cannot be null. Please specify a baseUri to locate" +
                     " the WSC files");
         }
-        try{
+        try {
             ontologyOwlUrl = new URL(baseUri + this.ontologyFile).toURI().toASCIIString();
-            if (reasoner == null){
+            if (reasoner == null) {
                 // Try to load automatically the required taxonomy.xml (only required if
                 // there is no reasoner instantiated)
                 URL taxonomyXmlUrl = new URL(baseUri + this.taxonomyFile);
                 // Create a new reasoner
                 reasoner = new WSCXMLSemanticReasoner(taxonomyXmlUrl.openStream());
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return transform(originalDescription, ontologyOwlUrl, reasoner);
+        try {
+            return transform(originalDescription, ontologyOwlUrl, reasoner);
+        } catch (URISyntaxException e) {
+            log.error("Problems generating URIs while transforming service.", e);
+            return new ArrayList<Service>();
+        }
     }
 
     @Override

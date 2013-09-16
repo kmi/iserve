@@ -75,15 +75,13 @@ public class URIUtil {
         return separatorIdx + 1;
     }
 
-    public static String getNameSpace(URI uri) {
-        String uriStr = uri.toASCIIString();
-        int localNameIdx = getLocalNameIndex(uriStr);
-        return uriStr.substring(0, localNameIdx - 1);
+    public static URI getNameSpace(URI uri) throws URISyntaxException {
+        return getNameSpace(uri.toASCIIString());
     }
 
-    public static String getNameSpace(String uriString) {
+    public static URI getNameSpace(String uriString) throws URISyntaxException {
         int localNameIdx = getLocalNameIndex(uriString);
-        return uriString.substring(0, localNameIdx - 1);
+        return new URI(uriString.substring(0, localNameIdx - 1));
     }
 
     public static String generateItemLabel(URL itemUrl) {

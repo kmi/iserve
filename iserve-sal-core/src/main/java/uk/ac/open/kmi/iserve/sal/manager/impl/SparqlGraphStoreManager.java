@@ -174,14 +174,14 @@ class SparqlGraphStoreManager extends IntegratedComponent {
      *
      * @param graphUri
      */
-    protected void deleteGraph(String graphUri) {
+    protected void deleteGraph(URI graphUri) {
 
         if (graphUri == null || !this.canBeModified())
             return;
 
         // Use HTTP protocol if possible
         if (this.sparqlServiceEndpoint != null) {
-            this.datasetAccessor.deleteModel(graphUri);
+            this.datasetAccessor.deleteModel(graphUri.toASCIIString());
         } else {
             deleteGraphSparqlUpdate(graphUri);
         }
@@ -194,10 +194,10 @@ class SparqlGraphStoreManager extends IntegratedComponent {
      *
      * @param graphUri
      */
-    private void deleteGraphSparqlUpdate(String graphUri) {
+    private void deleteGraphSparqlUpdate(URI graphUri) {
         UpdateRequest request = UpdateFactory.create();
         request.setPrefixMapping(PrefixMapping.Factory.create().setNsPrefixes(Vocabularies.prefixes));
-        request.add(new UpdateDrop(graphUri));
+        request.add(new UpdateDrop(graphUri.toASCIIString()));
 
         // Use create form for Sesame-based engines. TODO: Generalise and push to config.
         UpdateProcessor processor = UpdateExecutionFactory.createRemoteForm(request, this.getSparqlUpdateEndpoint().toASCIIString());
@@ -228,9 +228,9 @@ class SparqlGraphStoreManager extends IntegratedComponent {
      * Get a named model of a Dataset
      *
      * @param graphUri
-     * @return
+     * @return the Ontology Model
      */
-    protected OntModel getGraph(String graphUri) {
+    protected OntModel getGraph(URI graphUri) {
         log.debug("Obtaining graph: " + graphUri);
 
         if (graphUri == null)
@@ -254,14 +254,14 @@ class SparqlGraphStoreManager extends IntegratedComponent {
      * @param graphUri
      * @return
      */
-    private OntModel getGraphSparqlQuery(String graphUri) {
+    private OntModel getGraphSparqlQuery(URI graphUri) {
 
         StringBuilder queryStr = new StringBuilder("CONSTRUCT { ?s ?p ?o } \n")
                 .append("WHERE {\n");
 
         // Add named graph if necessary
         if (graphUri != null) {
-            queryStr.append("GRAPH <").append(graphUri).append("> ");
+            queryStr.append("GRAPH <").append(graphUri.toASCIIString()).append("> ");
         }
         queryStr.append("{ ?s ?p ?o } } \n");
 
@@ -307,23 +307,23 @@ class SparqlGraphStoreManager extends IntegratedComponent {
      * @param graphUri
      * @param data
      */
-    protected void putGraph(String graphUri, Model data) {
+    protected void putGraph(URI graphUri, Model data) {
         if (graphUri == null || data == null)
             return;
 
         // Use HTTP protocol if possible
         if (this.sparqlServiceEndpoint != null) {
-            datasetAccessor.putModel(graphUri, data);
+            datasetAccessor.putModel(graphUri.toASCIIString(), data);
         } else {
             this.putGraphSparqlQuery(graphUri, data);
         }
     }
 
-    private void putGraphSparqlQuery(String graphUri, Model data) {
+    private void putGraphSparqlQuery(URI graphUri, Model data) {
 
         UpdateRequest request = UpdateFactory.create();
         request.setPrefixMapping(PrefixMapping.Factory.create().setNsPrefixes(Vocabularies.prefixes));
-        request.add(new UpdateCreate(graphUri));
+        request.add(new UpdateCreate(graphUri.toASCIIString()));
         request.add(generateInsertRequest(graphUri, data));
         log.debug("Sparql Update Query issued: " + request.toString());
 
@@ -332,7 +332,7 @@ class SparqlGraphStoreManager extends IntegratedComponent {
         processor.execute(); // TODO: anyway to know if things went ok?
     }
 
-    private String generateInsertRequest(String graphUri, Model data) {
+    private String generateInsertRequest(URI graphUri, Model data) {
 
         StringWriter out = new StringWriter();
         data.write(out, uk.ac.open.kmi.iserve.commons.io.Syntax.TTL.getName());

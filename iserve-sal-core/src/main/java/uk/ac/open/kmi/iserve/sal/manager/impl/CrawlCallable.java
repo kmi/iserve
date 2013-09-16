@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
 
+import java.net.URI;
 import java.util.concurrent.Callable;
 
 
@@ -41,9 +42,9 @@ public class CrawlCallable implements Callable<Boolean> {
 
     private static final Logger log = LoggerFactory.getLogger(CrawlCallable.class);
     private KnowledgeBaseManager kbManager;
-    private String modelUri;
+    private URI modelUri;
 
-    public CrawlCallable(KnowledgeBaseManager kbManager, String modelUri) {
+    public CrawlCallable(KnowledgeBaseManager kbManager, URI modelUri) {
         this.kbManager = kbManager;
         this.modelUri = modelUri;
     }
@@ -73,13 +74,13 @@ public class CrawlCallable implements Callable<Boolean> {
         return Boolean.FALSE;
     }
 
-    private Model fetchModel(String modelUri) {
+    private Model fetchModel(URI modelUri) {
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
 
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.start();
         // Fetch the model
-        model.read(modelUri);
+        model.read(modelUri.toASCIIString());
         stopwatch.stop();
 
         log.info("Remote ontology fetched - {} . Time taken: {}", modelUri, stopwatch);

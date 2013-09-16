@@ -261,13 +261,13 @@ public class SawsdlTransformer implements ServiceTransformer {
         return msmSvc;
     }
 
-    private uk.ac.open.kmi.iserve.commons.model.Operation transform(BindingOperation wsdlOp, String namespace, String portName) {
+    private uk.ac.open.kmi.iserve.commons.model.Operation transform(BindingOperation wsdlOp, URI namespace, String portName) {
 
         uk.ac.open.kmi.iserve.commons.model.Operation msmOp = null;
         if (wsdlOp == null)
             return msmOp;
 
-        StringBuilder builder = new StringBuilder(namespace).append("#").
+        StringBuilder builder = new StringBuilder(namespace.toASCIIString()).append("#").
                 append("wsdl.interfaceOperation").
                 append("(").append(portName).append("/").append(wsdlOp.getName()).append(")");
 
@@ -308,7 +308,7 @@ public class SawsdlTransformer implements ServiceTransformer {
         return msmOp;
     }
 
-    private MessageContent transform(TBindingOperationMessage message, String namespace, String portName, String opName) {
+    private MessageContent transform(TBindingOperationMessage message, URI namespace, String portName, String opName) {
 
         MessageContent mc = null;
         if (message == null)
@@ -316,7 +316,7 @@ public class SawsdlTransformer implements ServiceTransformer {
 
         String direction = (message instanceof BindingOperationInput) ? "In" : "Out";
 
-        StringBuilder builder = new StringBuilder(namespace).append("#").
+        StringBuilder builder = new StringBuilder(namespace.toASCIIString()).append("#").
                 append("wsdl.interfaceMessageReference").
                 append("(").append(portName).append("/").append(opName).append("/").append(direction).append(")");
 

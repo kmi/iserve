@@ -39,14 +39,14 @@ public interface KnowledgeBaseManager extends iServeComponent {
      * @param modelUri URI of the model to be checked
      * @return true if the model has already been uploaded, false otherwise.
      */
-    public boolean containsModel(String modelUri);
+    public boolean containsModel(URI modelUri);
 
     /**
      * Obtains a set with all the models loaded  into this Knowledge Base Manager
      *
      * @return the set of loaded models
      */
-    public Set<String> getLoadedModels();
+    public Set<URI> getLoadedModels();
 
     /**
      * Obtains a set with all the models that have not been reachable at some point. These are models that should be
@@ -54,7 +54,7 @@ public interface KnowledgeBaseManager extends iServeComponent {
      *
      * @return the set of unreachable models
      */
-    public Set<String> getUnreachableModels();
+    public Set<URI> getUnreachableModels();
 
     /**
      * Uploads a model into the Knowledge Base Manager
@@ -65,7 +65,7 @@ public interface KnowledgeBaseManager extends iServeComponent {
      * @param model       the actual model to upload
      * @param forceUpdate if true the model will be updated even if already is there
      */
-    public void uploadModel(String modelUri, Model model, boolean forceUpdate);
+    public void uploadModel(URI modelUri, Model model, boolean forceUpdate);
 
     /**
      * Deletes a model from the Knowledge Base Manager
@@ -93,7 +93,7 @@ public interface KnowledgeBaseManager extends iServeComponent {
      * @param svc the service to be checked for referred models.
      * @return a map with a Future<Boolean> per model to be fetched. True will indicate if the model was properly obtained.
      */
-    public Map<String, Future<Boolean>> asyncFetchModelsForService(Service svc);
+    public Map<URI, Future<Boolean>> asyncFetchModelsForService(Service svc);
 
     /**
      * Answers a List all of URIs of the classes that are known to be equivalent to this class. Equivalence may be
