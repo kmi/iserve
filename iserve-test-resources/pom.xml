@@ -87,7 +87,7 @@
                             <url>http://iserve.kmi.open.ac.uk/datasets/composit-wsc08.zip</url>
                             <unpack>true</unpack>
                             <outputDirectory>${project.build.resources[0].directory}</outputDirectory>
-                            <md5>9160e4414d5e650660345db196f4b386</md5>
+                            <md5>eff36eb369bf0cca5f00ddc10d5579d6</md5>
                         </configuration>
                     </execution>
                 </executions>
