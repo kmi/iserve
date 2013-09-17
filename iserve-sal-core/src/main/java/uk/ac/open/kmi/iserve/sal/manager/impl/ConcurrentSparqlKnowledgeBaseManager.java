@@ -56,7 +56,7 @@ import java.util.concurrent.*;
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  */
-class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager implements KnowledgeBaseManager {
+public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager implements KnowledgeBaseManager {
 
     private static final Logger log = LoggerFactory.getLogger(ConcurrentSparqlKnowledgeBaseManager.class);
     private static final String DIRECT_SUBCLASS = "http://www.openrdf.org/schema/sesame#directSubClassOf";

@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-class DocumentManagerFileSystem extends IntegratedComponent implements DocumentManager {
+public class DocumentManagerFileSystem extends IntegratedComponent implements DocumentManager {
 
     private static final Logger log = LoggerFactory.getLogger(DocumentManagerFileSystem.class);
 

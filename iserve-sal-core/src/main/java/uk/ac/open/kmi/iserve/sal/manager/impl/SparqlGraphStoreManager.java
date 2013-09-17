@@ -43,7 +43,7 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-class SparqlGraphStoreManager extends IntegratedComponent {
+public class SparqlGraphStoreManager extends IntegratedComponent {
 
     private static final Logger log = LoggerFactory.getLogger(SparqlGraphStoreManager.class);
 

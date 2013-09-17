@@ -49,7 +49,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManager {
+public class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManager {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceManagerRdf.class);
 
