@@ -368,7 +368,7 @@ public class Util {
         // Include origin and destination in the returned bindings if requested
         if (includeUrisBound) {
             query.append("BIND (").append(sparqlWrapUri(origin)).append(" as ?origin) .").append(NL);
-            query.append("BIND (").append(sparqlWrapUri(destination)).append(" as ?destination) .").append(NL);    // FIXME
+            query.append("BIND (").append(sparqlWrapUri(destination)).append(" as ?destination) .").append(NL);
         }
         return query.toString();
     }
@@ -399,7 +399,7 @@ public class Util {
         // Include origin and destination in the returned bindings if requested
         if (includeUrisBound) {
             query.append("BIND (").append(sparqlWrapUri(origin)).append(" as ?origin) .").append(NL);
-            query.append("BIND (").append(matchVariable).append(" as ?destination) .").append(NL);    //FIXME
+            query.append("BIND (?").append(matchVariable).append(" as ?destination) .").append(NL);    //FIXME
         }
         return query.toString();
     }
@@ -428,7 +428,7 @@ public class Util {
         // Include origin and destination in the returned bindings if requested
         if (includeUrisBound) {
             query.append("BIND (").append(sparqlWrapUri(origin)).append(" as ?origin) .").append(NL);
-            query.append("BIND (").append(sparqlWrapUri(destination)).append(" as ?destination) .").append(NL);    //FIXME
+            query.append("BIND (").append(sparqlWrapUri(destination)).append(" as ?destination) .").append(NL);
         }
         return query.toString();
     }
@@ -456,7 +456,7 @@ public class Util {
         // Include origin and destination in the returned bindings if requested
         if (includeUrisBound) {
             query.append("BIND (").append(sparqlWrapUri(origin)).append(" as ?origin) .").append(NL);
-            query.append("BIND (").append(matchVariable).append(" as ?destination) .").append(NL);   // FIXME
+            query.append("BIND (?").append(matchVariable).append(" as ?destination) .").append(NL);   // FIXME
         }
         return query.toString();
     }
@@ -484,7 +484,7 @@ public class Util {
         // Include origin and destination in the returned bindings if requested
         if (includeUrisBound) {
             query.append("BIND (").append(sparqlWrapUri(origin)).append(" as ?origin) .").append(NL);
-            query.append("BIND (").append(sparqlWrapUri(destination)).append(" as ?destination) .").append(NL);   // FIXME
+            query.append("BIND (").append(sparqlWrapUri(destination)).append(" as ?destination) .").append(NL);
         }
         return query.toString();
     }

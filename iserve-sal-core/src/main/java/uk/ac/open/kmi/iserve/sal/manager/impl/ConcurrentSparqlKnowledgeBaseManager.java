@@ -364,15 +364,23 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
         StringBuilder strBuilder = new StringBuilder()
                 .append("select DISTINCT ?class where { \n");
 
+        // Add the graph wrapper if necessary
         if (graphID != null) {
-            strBuilder.append("GRAPH <").append(graphID).append("> {");
-            strBuilder.append("?class ").append("a <").append(RDFS.Class.getURI()).append("> .");
+            strBuilder.append("GRAPH <").append(graphID).append("> { ");
+        }
+        // Pattern for both OWL and RDFS (note that this is only inferred and would not pop up in a named graph (at least in OWLIM)
+        strBuilder.append(" { ")
+                .append("?class <").append(RDF.type.getURI()).append("> <").append(RDFS.Class.getURI()).append("> .")
+                .append(" } UNION { ")
+                .append("?class <").append(RDF.type.getURI()).append("> <").append(OWL.Class.getURI()).append("> .")
+                .append(" } ");
+
+        // Close the graph wrapper if necessary
+        if (graphID != null) {
             strBuilder.append(" } ");
-        } else {
-            strBuilder.append("?class ").append("a <").append(RDFS.Class.getURI()).append("> .");
         }
 
-        strBuilder.append(" }");
+        strBuilder.append(" } ");
 
         return listResourcesByQuery(strBuilder.toString(), "class");
     }
@@ -386,6 +394,7 @@ class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager imple
         }
 
         // Query the engine
+        log.debug("Evaluating SPARQL query in Knowledge Base: \n {}", queryStr);
         Query query = QueryFactory.create(queryStr);
         QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
 

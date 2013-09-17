@@ -62,7 +62,7 @@ public class SparqlIndexedLogicConceptMatcher implements MultiMatcher {
 
         this.sparqlMatcher = sparqlMatcher;
         this.manager = iServeManager;
-        this.manager.registerAsObserver(this);
+        iServeManager.registerAsObserver(this);
         this.indexedMatches = populate();
     }
 
@@ -136,11 +136,14 @@ public class SparqlIndexedLogicConceptMatcher implements MultiMatcher {
     @Subscribe
     public void handleOntologyCreated(OntologyCreatedEvent event) {
 
+        log.info("Processing Ontology Created Event - {}", event.getOntologyUri());
+
         // Obtain the concepts in the ontology uploaded
         List<URI> conceptUris = this.manager.getKnowledgeBaseManager().listConcepts(event.getOntologyUri());
+        log.info("Fetching matches for all the {} concepts present in the ontology - {}", conceptUris.size(), event.getOntologyUri());
 
         // For each of them update their entries in the index (matched concepts will be updated later within the loop)
-        Table<URI, URI, MatchResult> matches = this.sparqlMatcher.listMatchesAtLeastOfType(new HashSet<URI>(conceptUris), LogicConceptMatchType.Plugin);
+        Table<URI, URI, MatchResult> matches = this.sparqlMatcher.listMatchesAtLeastOfType(new HashSet<URI>(conceptUris), LogicConceptMatchType.Subsume);
         this.indexedMatches.putAll(matches);
     }
 
@@ -152,6 +155,8 @@ public class SparqlIndexedLogicConceptMatcher implements MultiMatcher {
      */
     @Subscribe
     public void handleOntologyDeleted(OntologyDeletedEvent event) {
+
+        log.info("Processing Ontology Deleted Event - {}", event.getOntologyUri());
 
         // Obtain all concepts in the KB
         List<URI> conceptUris = this.manager.getKnowledgeBaseManager().listConcepts(null);
