@@ -27,18 +27,19 @@ import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.core.SystemConfiguration;
+import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 import uk.ac.open.kmi.iserve.discovery.api.MatchTypes;
-import uk.ac.open.kmi.iserve.discovery.api.RangedMultiMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.AtomicMatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.Util;
 import uk.ac.open.kmi.iserve.discovery.util.MatchComparator;
-import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -54,7 +55,8 @@ import java.util.Set;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 30/07/2013
  */
-public class SparqlLogicConceptMatcher implements RangedMultiMatcher {
+@Singleton
+public class SparqlLogicConceptMatcher implements ConceptMatcher {
 
     private static final Logger log = LoggerFactory.getLogger(SparqlLogicConceptMatcher.class);
 
@@ -86,7 +88,7 @@ public class SparqlLogicConceptMatcher implements RangedMultiMatcher {
                     compound(Ordering.from(MatchComparator.BY_URI).onResultOf(getMatchResult));
 
     @Inject
-    public SparqlLogicConceptMatcher(@Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlEndpoint) throws URISyntaxException {
+    protected SparqlLogicConceptMatcher(@Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlEndpoint) throws URISyntaxException {
 
         if (sparqlEndpoint == null) {
             log.error("A SPARQL endpoint is currently needed for matching.");
