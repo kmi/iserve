@@ -26,7 +26,7 @@
     </parent>
     <groupId>uk.ac.open.kmi.iserve.discovery</groupId>
     <artifactId>iserve-discovery-disco</artifactId>
-    <version>${parent.version}</version>
+    <version>${project.parent.version}</version>
     <name>iServe Disco Discovery Plug-in</name>
     <url>http://iserve.kmi.open.ac.uk/</url>
 
@@ -99,6 +99,7 @@
             <version>${jena.version}</version>
             <type>pom</type>
         </dependency>
+
         <!-- For testing of REST services. Place before JUnit-->
         <dependency>
             <groupId>com.jayway.restassured</groupId>
@@ -182,6 +183,25 @@
                             <includeArtifactIds>iserve-test-resources</includeArtifactIds>
                             <outputDirectory>${project.build.directory}/test-classes/</outputDirectory>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Generate the META-INF/services information for ServiceLoader -->
+            <plugin>
+                <groupId>eu.somatik.serviceloader-maven-plugin</groupId>
+                <artifactId>serviceloader-maven-plugin</artifactId>
+                <version>1.0.2</version>
+                <configuration>
+                    <services>
+                        <param>uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule</param>
+                    </services>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

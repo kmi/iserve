@@ -26,7 +26,7 @@
     </parent>
     <groupId>uk.ac.open.kmi.iserve.commons</groupId>
     <artifactId>iserve-commons-vocabulary</artifactId>
-    <version>${parent.version}</version>
+    <version>${project.parent.version}</version>
 
     <name>iServe Commons Vocabulary</name>
 
@@ -80,6 +80,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
                 <executions>
                     <!-- Automated File Generation with Schemagen: MSM -->
                     <execution>
@@ -207,6 +208,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.8</version>
                 <executions>
                     <execution>
                         <id>add-source</id>

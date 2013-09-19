@@ -28,7 +28,6 @@ import junit.framework.Assert;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,19 +50,15 @@ import java.util.Set;
 import static org.junit.Assert.assertTrue;
 
 /**
- * LogicConceptMatcherWSC08Test
+ * SparqlIndexedLogicConceptMatcherWSC08Test
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @author <a href="mailto:pablo.rodriguez.mier@usc.es">Pablo Rodriguez Mier</a> (CiTIUS, University of Santiago de Compostela)
  * @since 01/08/2013
  */
-public class SparqlLogicConceptMatcherWSC08Test {
+public class SparqlIndexedLogicConceptMatcherWSC08Test {
 
-    private static final Logger log = LoggerFactory.getLogger(SparqlLogicConceptMatcherWSC08Test.class);
-
-    private static final String MEDIATYPE = "text/xml";
-
-    private static final String SPARQL_ENDPOINT = "http://localhost:8080/openrdf-sesame/repositories/Test";
+    private static final Logger log = LoggerFactory.getLogger(SparqlIndexedLogicConceptMatcherWSC08Test.class);
 
     private static final String WSC08_01 = "/WSC08/wsc08_datasets/01/";
     private static final String WSC08_01_SERVICES = WSC08_01 + "services.xml";
@@ -71,9 +66,16 @@ public class SparqlLogicConceptMatcherWSC08Test {
     private static final String WSC_01_TAXONOMY_URL = "http://localhost/wsc/01/taxonomy.owl";
     private static final String WSC_01_TAXONOMY_NS = "http://localhost/wsc/01/taxonomy.owl#";
 
+    private static final String MEDIATYPE = "text/xml";
+
+    private static final String ISERVE_TEST_URI = "http://localhost:9090/iserve";
+    private static final String ISERVE_TEST_QUERY_URI = "http://localhost:8080/openrdf-sesame/repositories/Test";
+    private static final String ISERVE_TEST_UPDATE_URI = "http://localhost:8080/openrdf-sesame/repositories/Test/statements";
+    private static final String ISERVE_TEST_SERVICE_URI = "http://localhost:8080/openrdf-sesame/repositories/Test/rdf-graphs/service";
+
+
     private static ConceptMatcher conceptMatcher;
     private static iServeManager manager;
-
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -86,7 +88,9 @@ public class SparqlLogicConceptMatcherWSC08Test {
         // Clean the whole thing before testing
         manager.clearRegistry();
 
-        conceptMatcher = new SparqlLogicConceptMatcher(SPARQL_ENDPOINT);
+        // Create matcher.
+        SparqlLogicConceptMatcher backendLoader = new SparqlLogicConceptMatcher(ISERVE_TEST_QUERY_URI);
+        conceptMatcher = new SparqlIndexedLogicConceptMatcher(manager, backendLoader);
 
         log.info("Importing WSC 2008 services");
         String file = SparqlLogicConceptMatcherWSC08Test.class.getResource(WSC08_01_SERVICES).getFile();
@@ -163,7 +167,7 @@ public class SparqlLogicConceptMatcherWSC08Test {
 
 
     @Test
-    @Ignore("Integration test (not a proper unit test), takes too long to complete")
+//    @Ignore("Integration test (not a proper unit test), takes too long to complete")
     public void testMultipleDiscovery() throws Exception {
         // Define the available inputs
         Set<URI> available = new HashSet<URI>();
@@ -225,7 +229,7 @@ public class SparqlLogicConceptMatcherWSC08Test {
     }
 
     @Test
-    @Ignore("Integration test (not a proper unit test), takes too long to complete")
+//    @Ignore("Integration test (not a proper unit test), takes too long to complete")
     public void discoverAllCandidates() throws Exception {
 
         String[][] expectedServices = {{"serv1529824753", "serv1253734327", "serv1462031026", "serv212250832", "serv906573162", "serv144457143", "serv1599256986", "serv75024910", "serv561050541", "serv2015850384", "serv1668689219", "serv213889376", "serv837140929", "serv1667050675", "serv7231183", "serv1323166560"},

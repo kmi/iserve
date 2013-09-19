@@ -18,27 +18,34 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.common.base.Function;
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.*;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Ordering;
+import com.google.common.collect.Table;
 import com.google.inject.Inject;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.core.SystemConfiguration;
+import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 import uk.ac.open.kmi.iserve.discovery.api.MatchTypes;
-import uk.ac.open.kmi.iserve.discovery.api.RangedMultiMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.AtomicMatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.Util;
 import uk.ac.open.kmi.iserve.discovery.util.MatchComparator;
-import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * SparqlLogicConceptMatcher implements a Matcher for concepts directly backed by a SPARQL endpoint.
@@ -48,7 +55,8 @@ import java.util.*;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 30/07/2013
  */
-public class SparqlLogicConceptMatcher implements RangedMultiMatcher {
+@Singleton
+public class SparqlLogicConceptMatcher implements ConceptMatcher {
 
     private static final Logger log = LoggerFactory.getLogger(SparqlLogicConceptMatcher.class);
 
@@ -80,7 +88,7 @@ public class SparqlLogicConceptMatcher implements RangedMultiMatcher {
                     compound(Ordering.from(MatchComparator.BY_URI).onResultOf(getMatchResult));
 
     @Inject
-    public SparqlLogicConceptMatcher(@Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlEndpoint) throws URISyntaxException {
+    protected SparqlLogicConceptMatcher(@Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlEndpoint) throws URISyntaxException {
 
         if (sparqlEndpoint == null) {
             log.error("A SPARQL endpoint is currently needed for matching.");
@@ -295,6 +303,8 @@ public class SparqlLogicConceptMatcher implements RangedMultiMatcher {
             w.reset();
         }
         return matchTable;
+
+//        return obtainMatchResults(origins, minType, this.getMatchTypesSupported().getHighest()); // TODO: Use the proper implementation for this
     }
 
 
@@ -320,7 +330,7 @@ public class SparqlLogicConceptMatcher implements RangedMultiMatcher {
      */
     @Override
     public Table<URI, URI, MatchResult> listMatchesAtMostOfType(Set<URI> origins, MatchType maxType) {
-        return null;  // TODO: implement
+        return obtainMatchResults(origins, this.getMatchTypesSupported().getLowest(), maxType);
     }
 
 
@@ -336,15 +346,8 @@ public class SparqlLogicConceptMatcher implements RangedMultiMatcher {
     @Override
     public Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType) {
 
-        Map<URI, MatchResult> matches = obtainMatchResults(ImmutableSet.of(origin), minType, maxType);
-
-        // Desired entries in desired order.  Put them in an ImmutableMap in this order filtered.
-        ImmutableMap.Builder<URI, MatchResult> builder = ImmutableMap.builder();
-        for (Map.Entry<URI, MatchResult> entry : entryOrdering.sortedCopy(matches.entrySet())) {
-            builder.put(entry.getKey(), entry.getValue());
-        }
-
-        return builder.build();
+        Table<URI, URI, MatchResult> matches = obtainMatchResults(ImmutableSet.of(origin), minType, maxType);
+        return matches.row(origin);
     }
 
     /**
@@ -357,7 +360,7 @@ public class SparqlLogicConceptMatcher implements RangedMultiMatcher {
      */
     @Override
     public Table<URI, URI, MatchResult> listMatchesWithinRange(Set<URI> origins, MatchType minType, MatchType maxType) {
-        return null;  // TODO: implement
+        return obtainMatchResults(origins, minType, maxType);
     }
 
 
@@ -382,19 +385,25 @@ public class SparqlLogicConceptMatcher implements RangedMultiMatcher {
         return LogicConceptMatchType.Fail;
     }
 
-    private Map<URI, MatchResult> obtainMatchResults(Set<URI> origins, MatchType minType, MatchType maxType) {
-        Map<URI, MatchResult> result = new HashMap<URI, MatchResult>();
+    /**
+     * Obtain all match results for the set of origins that are within a range of match types
+     * TODO: This method is buggy. To be fixed
+     *
+     * @param origins
+     * @param minType
+     * @param maxType
+     * @return
+     */
+    private Table<URI, URI, MatchResult> obtainMatchResults(Set<URI> origins, MatchType minType, MatchType maxType) {
+        Table<URI, URI, MatchResult> result = HashBasedTable.create();
         // Exit fast if no data is provided or no matches can be found
         if (origins == null || origins.isEmpty() || minType.compareTo(maxType) > 0)
             return result;
 
-        // Obtain an array to keep track of the order
-        URI[] uris = origins.toArray(new URI[origins.size()]);
-
         // Create the query
         String queryStr = new StringBuffer()
                 .append(generateQueryHeader())
-                .append(generateRangeMatchWhereClause(uris, minType, maxType))
+                .append(generateRangeMatchWhereClause(origins, minType, maxType))
                 .append(generateQueryFooter())
                 .toString();
 
@@ -408,30 +417,34 @@ public class SparqlLogicConceptMatcher implements RangedMultiMatcher {
             Stopwatch stopwatch = new Stopwatch().start();
             ResultSet qResults = qexec.execSelect();
             stopwatch.stop();
-            log.debug("Time taken for querying the registry: {}", stopwatch);
+            log.info("Obtained matches for {} concepts within range {} - {} in {}", origins.size(), minType, maxType, stopwatch);
 
-            Resource resource;
+            Resource origin;
+            Resource destination;
+            URI originUri;
             URI matchUri;
             int index = 0;
             // Iterate over the results obtained starting with the matches for class0 onwards
             while (qResults.hasNext()) {
                 QuerySolution soln = qResults.nextSolution();
-                resource = soln.getResource(MATCH_VAR + index);
+                origin = soln.getResource(ORIGIN_VAR);
+                destination = soln.getResource(MATCH_VAR + index);
 
-                // Get the current matching class, we assume the results come by batches over the same class ordered
-                // If this is not the case we should loop every time to see which class matched
-                while (resource == null && index < uris.length) {
-                    index++;
-                    resource = soln.getResource(MATCH_VAR + index);
-                }
+//                // Get the current matching class, we assume the results come by batches over the same class ordered
+//                // If this is not the case we should loop every time to see which class matched
+//                while (resource == null && index < uris.length) {
+//                    index++;
+//                    resource = soln.getResource(MATCH_VAR + index);
+//                }
 
-                if (resource != null && resource.isURIResource()) {
-                    matchUri = new URI(resource.getURI());
+                if (origin != null && origin.isURIResource() && destination != null && destination.isURIResource()) {
+                    originUri = new URI(origin.getURI());
+                    matchUri = new URI(destination.getURI());
                     MatchType type = getMatchType(soln);
-                    result.put(matchUri, new AtomicMatchResult(uris[index], matchUri, type, this));
-                    log.debug("Concept {} was matched to {} with type {}", uris[index], matchUri, type);
+                    result.put(originUri, matchUri, new AtomicMatchResult(originUri, matchUri, type, this));
+                    log.debug("Concept {} was matched to {} with type {}", originUri, matchUri, type);
                 } else {
-                    log.warn("Skipping result as the URL is null");
+                    log.warn("Skipping result as some URI is null: Origin - {}, Destination - {}", origin, destination);
                     break;
                 }
             }
@@ -444,7 +457,7 @@ public class SparqlLogicConceptMatcher implements RangedMultiMatcher {
 
     }
 
-    private String generateRangeMatchWhereClause(URI[] origins, MatchType minType, MatchType maxType) {
+    private String generateRangeMatchWhereClause(Set<URI> origins, MatchType minType, MatchType maxType) {
 
         StringBuffer queryBuffer = new StringBuffer();
 
@@ -461,17 +474,17 @@ public class SparqlLogicConceptMatcher implements RangedMultiMatcher {
         List<String> patterns = new ArrayList<String>();
         if (minType.compareTo(LogicConceptMatchType.Subsume) <= 0 && maxType.compareTo(LogicConceptMatchType.Subsume) >= 0) {
             // Match the origin concept to strict subclasses
-            patterns.add(Util.generateMatchStrictSubclassesPattern(origin, destinationVar, SUB_VAR, false));
+            patterns.add(Util.generateMatchStrictSubclassesPattern(origin, destinationVar, SUB_VAR, true));
         }
 
         if (minType.compareTo(LogicConceptMatchType.Plugin) <= 0 && maxType.compareTo(LogicConceptMatchType.Plugin) >= 0) {
             // Match the origin concept to strict superclasses
-            patterns.add(Util.generateMatchStrictSuperclassesPattern(origin, destinationVar, SUPER_VAR, false));
+            patterns.add(Util.generateMatchStrictSuperclassesPattern(origin, destinationVar, SUPER_VAR, true));
         }
 
         if (minType.compareTo(LogicConceptMatchType.Exact) <= 0 && maxType.compareTo(LogicConceptMatchType.Exact) >= 0) {
             // Match the origin concept to exact matches
-            patterns.add(Util.generateExactMatchPattern(origin, destinationVar, EXACT_VAR, false));
+            patterns.add(Util.generateExactMatchPattern(origin, destinationVar, EXACT_VAR, true));
         }
 
         return patterns;

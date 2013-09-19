@@ -32,7 +32,7 @@ import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
-import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
+import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.events.ServiceCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServiceDeletedEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServicesClearedEvent;
@@ -49,7 +49,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManager {
+public class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManager {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceManagerRdf.class);
 

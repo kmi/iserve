@@ -22,7 +22,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.util.FileUtil;
-import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
+import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.events.DocumentCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.DocumentDeletedEvent;
 import uk.ac.open.kmi.iserve.sal.events.DocumentsClearedEvent;
@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-class DocumentManagerFileSystem extends IntegratedComponent implements DocumentManager {
+public class DocumentManagerFileSystem extends IntegratedComponent implements DocumentManager {
 
     private static final Logger log = LoggerFactory.getLogger(DocumentManagerFileSystem.class);
 

@@ -24,10 +24,10 @@ import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 import uk.ac.open.kmi.iserve.discovery.api.MatchTypes;
-import uk.ac.open.kmi.iserve.discovery.api.MultiMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.AtomicMatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
@@ -36,9 +36,11 @@ import uk.ac.open.kmi.iserve.sal.events.OntologyDeletedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
 
+import javax.inject.Singleton;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -46,7 +48,8 @@ import java.util.Set;
  * We are assuming here that the ontologies are in a remote server exposed through a SPARQL endpoint. If we can sit in
  * the same server we should try and use the libraries from the store directly to avoid replicating the index.
  */
-public class SparqlIndexedLogicConceptMatcher implements MultiMatcher {
+@Singleton
+public class SparqlIndexedLogicConceptMatcher implements ConceptMatcher {
 
     private static final Logger log = LoggerFactory.getLogger(SparqlIndexedLogicConceptMatcher.class);
 
@@ -57,12 +60,12 @@ public class SparqlIndexedLogicConceptMatcher implements MultiMatcher {
     private SparqlLogicConceptMatcher sparqlMatcher;
 
     @Inject
-    public SparqlIndexedLogicConceptMatcher(iServeManager iServeManager,
-                                            SparqlLogicConceptMatcher sparqlMatcher) throws SalException {
+    protected SparqlIndexedLogicConceptMatcher(iServeManager iServeManager,
+                                               SparqlLogicConceptMatcher sparqlMatcher) throws SalException {
 
         this.sparqlMatcher = sparqlMatcher;
         this.manager = iServeManager;
-        this.manager.registerAsObserver(this);
+        iServeManager.registerAsObserver(this);
         this.indexedMatches = populate();
     }
 
@@ -126,6 +129,108 @@ public class SparqlIndexedLogicConceptMatcher implements MultiMatcher {
         return builder.build();
     }
 
+    /**
+     * Obtains all the matching resources that have a precise MatchType with the URI of {@code origin}.
+     *
+     * @param origin URI to match
+     * @param type   the MatchType we want to obtain
+     * @return a Map containing indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
+     *         result is found the Map should be empty not null.
+     */
+    @Override
+    public Map<URI, MatchResult> listMatchesOfType(URI origin, MatchType type) {
+        return null;  // TODO: implement
+    }
+
+    /**
+     * Obtains all the matching resources that have a MatchType with the URI of {@code origin} of the type provided (inclusive) or more.
+     *
+     * @param origin  URI to match
+     * @param minType the minimum MatchType we want to obtain
+     * @return a Map containing indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
+     *         result is found the Map should be empty not null.
+     */
+    @Override
+    public Map<URI, MatchResult> listMatchesAtLeastOfType(URI origin, MatchType minType) {
+        return null;  // TODO: implement
+    }
+
+    /**
+     * Obtain all the matching resources that have a MatchTyoe with the URI of {@code origin} of the type provided (inclusive) or less.
+     *
+     * @param origin  URI to match
+     * @param maxType the maximum MatchType we want to obtain
+     * @return a Map containing indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
+     *         result is found the Map should be empty not null.
+     */
+    @Override
+    public Map<URI, MatchResult> listMatchesAtMostOfType(URI origin, MatchType maxType) {
+        return null;  // TODO: implement
+    }
+
+    /**
+     * Obtain all the matching resources with the URI of {@code origin} within the range of MatchTypes provided, both inclusive.
+     *
+     * @param origin  URI to match
+     * @param minType the minimum MatchType we want to obtain
+     * @param maxType the maximum MatchType we want to obtain
+     * @return a Map containing indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
+     *         result is found the Map should be empty not null.
+     */
+    @Override
+    public Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType) {
+        return null;  // TODO: implement
+    }
+
+    /**
+     * Obtains all the matching resources that have a MatchType with the URIs of {@code origin} of the type provided (inclusive) or more.
+     *
+     * @param origins URIs to match
+     * @param minType the minimum MatchType we want to obtain
+     * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
+     */
+    @Override
+    public Table<URI, URI, MatchResult> listMatchesAtLeastOfType(Set<URI> origins, MatchType minType) {
+        return null;  // TODO: implement
+    }
+
+    /**
+     * Obtain all the matching resources that have a MatchTyoe with the URIs of {@code origin} of the type provided (inclusive) or less.
+     *
+     * @param origins URIs to match
+     * @param maxType the maximum MatchType we want to obtain
+     * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
+     */
+    @Override
+    public Table<URI, URI, MatchResult> listMatchesAtMostOfType(Set<URI> origins, MatchType maxType) {
+        return null;  // TODO: implement
+    }
+
+    /**
+     * Obtain all the matching resources with the URIs of {@code origin} within the range of MatchTypes provided, both inclusive.
+     *
+     * @param origins URIs to match
+     * @param minType the minimum MatchType we want to obtain
+     * @param maxType the maximum MatchType we want to obtain
+     * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
+     */
+    @Override
+    public Table<URI, URI, MatchResult> listMatchesWithinRange(Set<URI> origins, MatchType minType, MatchType maxType) {
+        return null;  // TODO: implement
+    }
+
+    /**
+     * Obtains all the matching resources that have a precise MatchType with the URIs of {@code origin}.
+     *
+     * @param origins URIs to match
+     * @param type    the MatchType we want to obtain
+     * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
+     */
+    @Override
+    public Table<URI, URI, MatchResult> listMatchesOfType(Set<URI> origins, MatchType type) {
+        return null;  // TODO: implement
+    }
+
     // Process events to update the indexes
 
     /**
@@ -136,11 +241,14 @@ public class SparqlIndexedLogicConceptMatcher implements MultiMatcher {
     @Subscribe
     public void handleOntologyCreated(OntologyCreatedEvent event) {
 
+        log.info("Processing Ontology Created Event - {}", event.getOntologyUri());
+
         // Obtain the concepts in the ontology uploaded
         List<URI> conceptUris = this.manager.getKnowledgeBaseManager().listConcepts(event.getOntologyUri());
+        log.info("Fetching matches for all the {} concepts present in the ontology - {}", conceptUris.size(), event.getOntologyUri());
 
         // For each of them update their entries in the index (matched concepts will be updated later within the loop)
-        Table<URI, URI, MatchResult> matches = this.sparqlMatcher.listMatchesAtLeastOfType(new HashSet<URI>(conceptUris), LogicConceptMatchType.Plugin);
+        Table<URI, URI, MatchResult> matches = this.sparqlMatcher.listMatchesAtLeastOfType(new HashSet<URI>(conceptUris), LogicConceptMatchType.Subsume);
         this.indexedMatches.putAll(matches);
     }
 
@@ -152,6 +260,8 @@ public class SparqlIndexedLogicConceptMatcher implements MultiMatcher {
      */
     @Subscribe
     public void handleOntologyDeleted(OntologyDeletedEvent event) {
+
+        log.info("Processing Ontology Deleted Event - {}", event.getOntologyUri());
 
         // Obtain all concepts in the KB
         List<URI> conceptUris = this.manager.getKnowledgeBaseManager().listConcepts(null);

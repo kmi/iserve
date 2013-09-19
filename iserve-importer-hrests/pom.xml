@@ -27,7 +27,7 @@
     <url>http://iserve.kmi.open.ac.uk/</url>
     <groupId>uk.ac.open.kmi.iserve.import</groupId>
     <artifactId>iserve-importer-hrests</artifactId>
-    <version>${parent.version}</version>
+    <version>${project.parent.version}</version>
     <name>iServe hRESTS Importer</name>
 
     <developers>

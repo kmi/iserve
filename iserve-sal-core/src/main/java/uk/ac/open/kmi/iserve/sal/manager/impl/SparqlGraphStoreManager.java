@@ -34,7 +34,7 @@ import com.hp.hpl.jena.update.UpdateRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.model.util.Vocabularies;
-import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
+import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 
@@ -43,7 +43,7 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-class SparqlGraphStoreManager extends IntegratedComponent {
+public class SparqlGraphStoreManager extends IntegratedComponent {
 
     private static final Logger log = LoggerFactory.getLogger(SparqlGraphStoreManager.class);
 
