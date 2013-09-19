@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.open.kmi.iserve.sal;
+package uk.ac.open.kmi.iserve.core;
 
 /**
  * iServe's Configuration Properties

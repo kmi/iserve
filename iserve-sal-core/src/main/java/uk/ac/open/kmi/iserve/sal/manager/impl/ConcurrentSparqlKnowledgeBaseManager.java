@@ -35,7 +35,7 @@ import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.commons.vocabulary.*;
-import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
+import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.events.OntologyCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServiceCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;

@@ -32,7 +32,7 @@ import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
-import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
+import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.events.ServiceCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServiceDeletedEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServicesClearedEvent;
