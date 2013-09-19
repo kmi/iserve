@@ -199,6 +199,25 @@
                 </executions>
             </plugin>
 
+            <!-- Generate the META-INF/services information for ServiceLoader -->
+            <plugin>
+                <groupId>eu.somatik.serviceloader-maven-plugin</groupId>
+                <artifactId>serviceloader-maven-plugin</artifactId>
+                <version>1.0.2</version>
+                <configuration>
+                    <services>
+                        <param>uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule</param>
+                    </services>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Configure Integration Tests-->
 
             <!-- run integration-test -->

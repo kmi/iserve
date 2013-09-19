@@ -19,45 +19,37 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
-import uk.ac.open.kmi.iserve.discovery.api.MatchTypes;
-import uk.ac.open.kmi.iserve.discovery.api.MultiMatcher;
+import uk.ac.open.kmi.iserve.discovery.api.impl.AbstractMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
-import uk.ac.open.kmi.iserve.sal.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
-import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 
-import javax.inject.Named;
 import java.net.URI;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-public class PartialIndexedLogicConceptMatcher extends IntegratedComponent implements MultiMatcher {
+public class PartialIndexedLogicConceptMatcher extends AbstractMatcher implements ConceptMatcher {
 
 
     private static final Logger log = LoggerFactory.getLogger(PartialIndexedLogicConceptMatcher.class);
 
-    private static final MatchTypes<MatchType> matchTypes = EnumMatchTypes.of(LogicConceptMatchType.class);
-
     private Table<URI, URI, MatchResult> indexedMatches;
     private ServiceManager serviceManager;
-    private MultiMatcher sparqlMatcher;
+    private ConceptMatcher sparqlMatcher;
 
     @Inject
-    public PartialIndexedLogicConceptMatcher(EventBus eventBus,
-                                             @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
-                                             SparqlLogicConceptMatcher sparqlMatcher,
-                                             ServiceManager serviceManager) throws SalException {
+    protected PartialIndexedLogicConceptMatcher(SparqlLogicConceptMatcher sparqlMatcher,
+                                                ServiceManager serviceManager) throws SalException {
 
-        super(eventBus, iServeUri);
-
+        super(EnumMatchTypes.of(LogicConceptMatchType.class));
         this.serviceManager = serviceManager;
         this.sparqlMatcher = sparqlMatcher;
         this.indexedMatches = populate();
@@ -130,16 +122,6 @@ public class PartialIndexedLogicConceptMatcher extends IntegratedComponent imple
         return "1.0";
     }
 
-    /**
-     * Obtains the MatchTypes instance that contains the MatchTypes supported as well as their ordering information
-     *
-     * @return
-     */
-    @Override
-    public MatchTypes<MatchType> getMatchTypesSupported() {
-        return this.matchTypes;
-    }
-
     @Override
     public MatchResult match(URI origin, URI destination) {
         MatchResult result = this.indexedMatches.get(origin, destination);
@@ -153,11 +135,23 @@ public class PartialIndexedLogicConceptMatcher extends IntegratedComponent imple
         return result;
     }
 
-    // TODO; Delegate!
-
     @Override
     public Table<URI, URI, MatchResult> match(Set<URI> origins, Set<URI> destinations) {
         return this.sparqlMatcher.match(origins, destinations);
+    }
+
+    /**
+     * Obtain all the matching resources with the URI of {@code origin} within the range of MatchTypes provided, both inclusive.
+     *
+     * @param origin  URI to match
+     * @param minType the minimum MatchType we want to obtain
+     * @param maxType the maximum MatchType we want to obtain
+     * @return a Map containing indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
+     *         result is found the Map should be empty not null.
+     */
+    @Override
+    public Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType) {
+        return null;  // TODO: implement
     }
 
 }

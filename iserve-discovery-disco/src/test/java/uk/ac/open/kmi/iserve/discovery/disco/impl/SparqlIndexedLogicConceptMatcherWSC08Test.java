@@ -33,8 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.model.*;
+import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
-import uk.ac.open.kmi.iserve.discovery.api.MultiMatcher;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.iServeManagementModule;
@@ -74,7 +74,7 @@ public class SparqlIndexedLogicConceptMatcherWSC08Test {
     private static final String ISERVE_TEST_SERVICE_URI = "http://localhost:8080/openrdf-sesame/repositories/Test/rdf-graphs/service";
 
 
-    private static MultiMatcher conceptMatcher;
+    private static ConceptMatcher conceptMatcher;
     private static iServeManager manager;
 
     @BeforeClass
