@@ -99,19 +99,6 @@
             <version>${jena.version}</version>
             <type>pom</type>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast</artifactId>
-            <version>3.0.1</version>
-        </dependency>-->
-        <dependency>
-            <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast-client</artifactId>
-            <version>3.0.1</version>
-        </dependency>
-
-
         <!-- For testing of REST services. Place before JUnit-->
         <dependency>
             <groupId>com.jayway.restassured</groupId>
