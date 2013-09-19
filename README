@@ -19,14 +19,14 @@ Accessing iServe
 Applications and users can interact with iServe through a number of mechanisms:
 - Linked Data
 - RESTful API
-- Graphical User Interface
+- HTML Front end
 
 Linked Data
 -----------
 Once published in iServe, the service descriptions are exposed following Linked
 Data principles. In particular, each service description is given a unique and 
 resolvable HTTP URI exposing service descriptions in both HTML and RDF through
-content negotiation. Additionally, the entire registry can be queries through a 
+content negotiation. Additionally, the entire registry can be queried through a
 SPARQL endpoint. 
 
 RESTful API
@@ -37,9 +37,8 @@ as it allows accessing the discovery algorithms implemented.
 
 Graphical User Interface
 ------------------------
-iServe includes a GWT Web-based user interface giving access to the content of 
-the service registry and allowing users to submit new services, search for them,
-add ratings and comments, etc 
+iServe includes a Web-based user interface giving access to the content of
+the service registry and allowing users to search for them, etc
 
 Service Languages and Ontologies Supported
 ==========================================
@@ -49,6 +48,7 @@ In particular iServe currently supports:
 - WSDL v1 and v2
 - SAWSDL
 - OWL-S v1.1
+- Web Service Contest's proprietary format
 - MicroWSMO
 - WSMO-Lite
 
@@ -64,7 +64,7 @@ Currently iServe provides the following discovery plugins:
 - Functional Classifications with RDFS reasoning
 - SKOS categorisations 
 - Inputs and Outputs with RDFS reasoning
-- Keywords similarity 
+- Keywords similarity (disabled in v2.0)
 
 
 

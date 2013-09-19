@@ -26,6 +26,14 @@
     <name>iServe Parent</name>
     <url>http://iserve.kmi.open.ac.uk</url>
 
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>manual</distribution>
+        </license>
+    </licenses>
+
     <developers>
         <developer>
             <id>cpedrinaci</id>
@@ -46,6 +54,13 @@
             <id>jkopecky</id>
             <name>Jacek Kopecky</name>
             <email>j.kopecky-{AT}-open.ac.uk</email>
+            <organization>Knowledge Media Institute - The Open University</organization>
+            <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+        </developer>
+        <developer>
+            <id>izzyblues</id>
+            <name>Luca Panziera</name>
+            <email>luca.panziera-{AT}-open.ac.uk</email>
             <organization>Knowledge Media Institute - The Open University</organization>
             <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
         </developer>

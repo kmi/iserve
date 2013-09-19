@@ -26,7 +26,7 @@
     </parent>
     <groupId>uk.ac.open.kmi.iserve.import</groupId>
     <artifactId>iserve-importer-sawsdl</artifactId>
-    <version>${parent.version}</version>
+    <version>${project.parent.version}</version>
     <name>iServe SAWSDL Importer</name>
 
     <developers>
