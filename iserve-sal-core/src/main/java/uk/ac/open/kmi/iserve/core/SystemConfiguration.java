@@ -32,10 +32,10 @@ public class SystemConfiguration {
     public static final String DOC_FOLDER_PATH_PROP = "iserve.documents.folder";
 
     // Services data
-    public static final String SERVICES_REPOSITORY_URL_PROP = "iserve.services.rdfserver";
-    public static final String SERVICES_REPOSITORY_NAME_PROP = "iserve.services.repository";
     public static final String SERVICES_REPOSITORY_SPARQL_PROP = "iserve.services.sparql.query";
     public static final String SERVICES_REPOSITORY_SPARQL_UPDATE_PROP = "iserve.services.sparql.update";
     public static final String SERVICES_REPOSITORY_SPARQL_SERVICE_PROP = "iserve.services.sparql.service";
 
+    // Discovery config
+    public static final String DEFAULT_CONCEPT_MATCHER_PROP = "discovery.default.conceptMatcher";
 }
