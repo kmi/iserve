@@ -29,6 +29,10 @@
     <version>${project.parent.version}</version>
 
     <name>iServe Commons Vocabulary</name>
+    <description>
+        iServe Commons Vocabulary provides a Java object model for the manipulation of service descriptions in terms
+        of the vocabulary used within iServe.
+    </description>
 
     <developers>
         <developer>

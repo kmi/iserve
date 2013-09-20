@@ -28,7 +28,12 @@
     <artifactId>iserve-discovery-engine</artifactId>
     <version>${project.parent.version}</version>
     <packaging>war</packaging>
+
     <name>iServe Discovery Engine</name>
+    <description>
+        iServe Discovery Engine provides the basic machinery for exposing discovery plugins via a RESTful interface.
+        It additionally provides support for combining diverse plugin results (Union, Intersection and Subtraction).
+    </description>
 
     <developers>
         <developer>

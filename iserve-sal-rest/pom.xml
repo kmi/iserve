@@ -29,7 +29,12 @@
     <version>${project.parent.version}</version>
     <packaging>war</packaging>
 
-    <name>iServe SAL RESTful API based on Jersey</name>
+    <name>iServe SAL REST</name>
+    <description>
+        iServe SAL REST provides a RESTful interface to the registry exposing the Linked Data hosted by the registry
+        either for humnans (HTML) or for machines (RDF, JSON) as well as it enables applications to create, read,
+        update or delete data from the server.
+    </description>
 
     <developers>
         <developer>
@@ -48,9 +53,9 @@
             <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
         </developer>
         <developer>
-            <id>jkopecky</id>
-            <name>Jacek Kopecky</name>
-            <email>j.kopecky-{AT}-open.ac.uk</email>
+            <id>izzyblues</id>
+            <name>Luca Panziera</name>
+            <email>luca.panziera-{AT}-open.ac.uk</email>
             <organization>Knowledge Media Institute - The Open University</organization>
             <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
         </developer>
@@ -108,7 +113,19 @@
             <artifactId>jersey-mvc-jsp</artifactId>
             <version>${jersey.version}</version>
         </dependency>
+        <!-- Jersey-Guice dependencies -->
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-servlet</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>guice-bridge</artifactId>
+            <version>2.1.93</version>
+        </dependency>
 
+        <!-- iServe dependencies -->
         <dependency>
             <groupId>uk.ac.open.kmi.iserve.sal</groupId>
             <artifactId>iserve-sal-core</artifactId>
@@ -309,17 +326,6 @@
     <build>
         <finalName>iserve-sal-rest</finalName>
         <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <inherited>true</inherited>
-                <configuration>
-                    <target>${maven.compiler.target}</target>
-                    <source>${maven.compiler.source}</source>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
-
             <!-- Obtain shared test resources and unpack them -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -348,11 +354,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.15</version>
                 <configuration>
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>
-
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

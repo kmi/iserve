@@ -19,8 +19,6 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -36,8 +34,7 @@ import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
-import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeManagementModule;
+import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import java.io.File;
 import java.net.URI;
@@ -75,22 +72,21 @@ public class SparqlIndexedLogicConceptMatcherWSC08Test {
 
 
     private static ConceptMatcher conceptMatcher;
-    private static iServeManager manager;
+    private static iServeFacade manager;
 
     @BeforeClass
     public static void setUp() throws Exception {
         BasicConfigurator.configure();
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
         // do your one-time setup here
-        Injector injector = Guice.createInjector(new iServeManagementModule());
-        manager = injector.getInstance(iServeManager.class);
+        manager = iServeFacade.getInstance();
 
         // Clean the whole thing before testing
         manager.clearRegistry();
 
         // Create matcher.
         SparqlLogicConceptMatcher backendLoader = new SparqlLogicConceptMatcher(ISERVE_TEST_QUERY_URI);
-        conceptMatcher = new SparqlIndexedLogicConceptMatcher(manager, backendLoader);
+        conceptMatcher = new SparqlIndexedLogicConceptMatcher(backendLoader);
 
         log.info("Importing WSC 2008 services");
         String file = SparqlLogicConceptMatcherWSC08Test.class.getResource(WSC08_01_SERVICES).getFile();

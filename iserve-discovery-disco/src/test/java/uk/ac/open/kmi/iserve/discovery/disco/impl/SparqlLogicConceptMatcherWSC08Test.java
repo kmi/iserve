@@ -19,8 +19,6 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -37,8 +35,7 @@ import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
-import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeManagementModule;
+import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import java.io.File;
 import java.net.URI;
@@ -72,16 +69,15 @@ public class SparqlLogicConceptMatcherWSC08Test {
     private static final String WSC_01_TAXONOMY_NS = "http://localhost/wsc/01/taxonomy.owl#";
 
     private static ConceptMatcher conceptMatcher;
-    private static iServeManager manager;
+    private static iServeFacade manager;
 
 
     @BeforeClass
     public static void setUp() throws Exception {
         BasicConfigurator.configure();
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
-        // do your one-time setup here
-        Injector injector = Guice.createInjector(new iServeManagementModule());
-        manager = injector.getInstance(iServeManager.class);
+
+        manager = iServeFacade.getInstance();
 
         // Clean the whole thing before testing
         manager.clearRegistry();
@@ -162,7 +158,7 @@ public class SparqlLogicConceptMatcherWSC08Test {
     }
 
 
-    @Test
+    //    @Test
     @Ignore("Integration test (not a proper unit test), takes too long to complete")
     public void testMultipleDiscovery() throws Exception {
         // Define the available inputs
@@ -224,7 +220,7 @@ public class SparqlLogicConceptMatcherWSC08Test {
         System.out.println("Total services " + candidates.size());
     }
 
-    @Test
+    //    @Test
     @Ignore("Integration test (not a proper unit test), takes too long to complete")
     public void discoverAllCandidates() throws Exception {
 

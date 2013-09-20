@@ -48,6 +48,5 @@ public class iServeManagementModule extends ConfiguredModule {
         bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
         bind(ServiceManager.class).to(ServiceManagerRdf.class);
         bind(KnowledgeBaseManager.class).to(ConcurrentSparqlKnowledgeBaseManager.class);
-        bind(uk.ac.open.kmi.iserve.sal.manager.iServeManager.class).to(iServeFacade.class);
     }
 }

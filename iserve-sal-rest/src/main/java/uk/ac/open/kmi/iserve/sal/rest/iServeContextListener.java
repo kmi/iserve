@@ -45,6 +45,7 @@ import javax.servlet.ServletContextListener;
  * Date: 19/06/2013
  * Time: 16:01
  */
+//public class iServeContextListener extends GuiceServletContextListener {
 public class iServeContextListener implements ServletContextListener {
 
     private static final Logger log = LoggerFactory.getLogger(iServeContextListener.class);
@@ -58,7 +59,8 @@ public class iServeContextListener implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        log.info("iServe initialising");
+        log.info("iServe initialising ...");
+        iServeFacade.getInstance().initialise();
     }
 
     /**
@@ -68,7 +70,8 @@ public class iServeContextListener implements ServletContextListener {
      */
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        log.info("iServe shutting down");
+        log.info("iServe shutting down ...");
         iServeFacade.getInstance().shutdown();
     }
+
 }

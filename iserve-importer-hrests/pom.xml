@@ -28,7 +28,12 @@
     <groupId>uk.ac.open.kmi.iserve.import</groupId>
     <artifactId>iserve-importer-hrests</artifactId>
     <version>${project.parent.version}</version>
+
     <name>iServe hRESTS Importer</name>
+    <description>
+        iServe hRESTS Importer provides support for transforming hRESTS service descriptions into the model used by
+        iServe, namely Minimal Service Model.
+    </description>
 
     <developers>
         <developer>
@@ -75,7 +80,7 @@
         <dependency>
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
-            <version>1.9</version>
+            <version>${commons-config.version}</version>
         </dependency>
 
         <dependency>

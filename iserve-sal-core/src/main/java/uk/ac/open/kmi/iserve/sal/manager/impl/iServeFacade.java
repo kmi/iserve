@@ -17,7 +17,8 @@
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.eventbus.EventBus;
-import com.google.inject.Inject;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,9 @@ import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
+import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -42,11 +45,13 @@ import java.util.List;
 
 /**
  * iServe Manager implementation providing a facade to the entire Storage and Access Layer
- * Delegates the actual implementation to each of the specific managers configured
+ * Delegates the actual implementation to each of the specific managers configured.
+ * This class implements the Singleton pattern and takes care of all dependency injection transparently for the user.
  *
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
-public class iServeFacade extends IntegratedComponent implements uk.ac.open.kmi.iserve.sal.manager.iServeManager {
+@Singleton
+public class iServeFacade extends IntegratedComponent {
 
     private static final Logger log = LoggerFactory.getLogger(iServeFacade.class);
 
@@ -56,6 +61,8 @@ public class iServeFacade extends IntegratedComponent implements uk.ac.open.kmi.
     private DocumentManager docManager;
     private ServiceManager serviceManager;
     private KnowledgeBaseManager kbManager;
+
+    private static Injector injector;
 
     @Inject
     private iServeFacade(EventBus eventBus, @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
@@ -70,6 +77,20 @@ public class iServeFacade extends IntegratedComponent implements uk.ac.open.kmi.
     }
 
     /**
+     * Obtains the iServeFacade
+     *
+     * @return the iServeFacade instance
+     */
+    public static iServeFacade getInstance() {
+
+        if (injector == null) {
+            injector = Guice.createInjector(new iServeManagementModule());
+        }
+
+        return injector.getInstance(iServeFacade.class);
+    }
+
+    /**
      * Register the given object as an Observer for this iServe instance.
      * All events created within iServe would be notified. Currently based on Guava's EventBus.
      * In order to process them, the corresponding observer should only implement a method that takes as sole parameter
@@ -78,7 +99,6 @@ public class iServeFacade extends IntegratedComponent implements uk.ac.open.kmi.
      *
      * @param obj The observer
      */
-    @Override
     public void registerAsObserver(Object obj) {
         this.getEventBus().register(obj);
     }
@@ -88,7 +108,6 @@ public class iServeFacade extends IntegratedComponent implements uk.ac.open.kmi.
      *
      * @return the Service Manager
      */
-    @Override
     public ServiceManager getServiceManager() {
         return this.serviceManager;
     }
@@ -98,7 +117,6 @@ public class iServeFacade extends IntegratedComponent implements uk.ac.open.kmi.
      *
      * @return the Knowledge Base Manager
      */
-    @Override
     public KnowledgeBaseManager getKnowledgeBaseManager() {
         return this.kbManager;
     }
@@ -108,7 +126,6 @@ public class iServeFacade extends IntegratedComponent implements uk.ac.open.kmi.
      *
      * @return the Document Manager
      */
-    @Override
     public DocumentManager getDocumentManager() {
         return this.docManager;
     }
@@ -117,7 +134,6 @@ public class iServeFacade extends IntegratedComponent implements uk.ac.open.kmi.
      * This method will be called when the server is initialised.
      * If necessary it should take care of updating any indexes on boot time.
      */
-    @Override
     public void initialise() {
         this.serviceManager.initialise();
         this.docManager.initialise();
@@ -128,17 +144,11 @@ public class iServeFacade extends IntegratedComponent implements uk.ac.open.kmi.
      * This method will be called when the server is being shutdown.
      * Ensure a clean shutdown.
      */
-    @Override
     public void shutdown() {
         this.serviceManager.shutdown();
         this.docManager.shutdown();
         this.kbManager.shutdown();
     }
-
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#importServices(java.io.InputStream, java.lang.String)
-     */
-    @Override
 
     /**
      * Imports a new service within iServe. The original document is stored
@@ -261,7 +271,6 @@ public class iServeFacade extends IntegratedComponent implements uk.ac.open.kmi.
      * @return true if the registry was cleared.
      * @throws SalException
      */
-    @Override
     public boolean clearRegistry() throws SalException {
         boolean result = this.serviceManager.clearServices();
         // Only try if we could delete the services
@@ -281,7 +290,6 @@ public class iServeFacade extends IntegratedComponent implements uk.ac.open.kmi.
      * @return the List of URIs of the services registered
      * @throws SalException
      */
-    @Override
     public List<URI> registerServices(URI sourceDocumentUri, String mediaType) throws SalException {
 
         boolean isNativeFormat = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.containsKey(mediaType);
@@ -327,44 +335,16 @@ public class iServeFacade extends IntegratedComponent implements uk.ac.open.kmi.
         return registeredServices;
     }
 
-//    /**
-//     * Register a new service. Given a service already expressed in terms of MSM, this method takes care of registering
-//     * it within the server. This method makes no guarantee about the availability of the source document or any other
-//     * related document. The calling application should ensure this is correct.
-//     *
-//     * @param service the MSM service to register
-//     * @return the resulting URI of the service within the server.
-//     * @throws uk.ac.open.kmi.iserve.sal.exception.SalException
-//     *
-//     */
-//    @Override
-//    public URI registerService(Service service) throws SalException {
-//        URI serviceUri = null;
-//
-//        if (service != null) {
-//            // 1st Add service
-//            serviceUri = this.serviceManager.addService(service);
-//            // Log it was all done correctly
-//            log.info("Service imported: {}", serviceUri.toASCIIString());
-//
-//            // 2nd Update the knowledge base -- using the synchronous version
-//            boolean fetched = this.kbManager.fetchModelsForService(service);
-//            if (!fetched) {
-//                log.info("Some models could not be imported: {}", this.kbManager.getUnreachableModels());
-//                // TODO: schedule these for ulterior uploads
-//            }
-//            // TODO: log to the system and notify observers
-//        }
-//        return serviceUri;
-//    }
 
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#unregisterService(java.net.URI)
+    /**
+     * Unregisters a service from the registry. Effectively this will delete the service description and remove any
+     * related documents on the server.
+     *
+     * @param serviceUri the URI of the service to unregister
+     * @return true if it was properly unregistered, false otherwise.
+     * @throws SalException
      */
-    @Override
     public boolean unregisterService(URI serviceUri) throws SalException {
-
-        // TODO: We should also delete the related documents from the server
 
         // Check the URI is correct and belongs to the server
         if (serviceUri == null ||
@@ -372,13 +352,27 @@ public class iServeFacade extends IntegratedComponent implements uk.ac.open.kmi.
             return false;
         }
 
-        return this.serviceManager.deleteService(serviceUri);
+        if (this.serviceManager.deleteService(serviceUri)) {
+            // delete documents
+            List<URI> docs = this.serviceManager.listDocumentsForService(serviceUri);
+            for (URI doc : docs) {
+                this.docManager.deleteDocument(doc);
+            }
+            // Some documents may not have been deleted properly. TODO: handle properly this case
+            return true;
+        }
+
+        return false;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.iServeManager#getService(java.net.URI, java.lang.String)
+    /**
+     * Exports a given service in the media type requested
+     *
+     * @param serviceUri the URI of the service to export
+     * @param mediaType  the media type to use for the export
+     * @return the String representation of the service in the given format
+     * @throws ServiceException
      */
-    @Override
     public String exportService(URI serviceUri, String mediaType)
             throws ServiceException {
         //		return this.serviceManager.getServiceSerialisation(serviceUri, syntax);

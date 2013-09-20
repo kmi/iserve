@@ -28,6 +28,9 @@
     <artifactId>iserve-commons-io</artifactId>
     <version>${project.parent.version}</version>
     <name>iServe Commons I/O</name>
+    <description>
+        iServe Commons I/O provides basic support for reading and writing service descriptions.
+    </description>
 
     <developers>
         <developer>
