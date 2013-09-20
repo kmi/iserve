@@ -17,7 +17,6 @@
 package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 
-import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import com.google.common.eventbus.Subscribe;
@@ -27,14 +26,14 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
-import uk.ac.open.kmi.iserve.discovery.api.MatchTypes;
+import uk.ac.open.kmi.iserve.discovery.api.impl.AbstractMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.AtomicMatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.sal.events.OntologyCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.OntologyDeletedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
-import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
+import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import javax.inject.Singleton;
 import java.net.URI;
@@ -49,23 +48,22 @@ import java.util.Set;
  * the same server we should try and use the libraries from the store directly to avoid replicating the index.
  */
 @Singleton
-public class SparqlIndexedLogicConceptMatcher implements ConceptMatcher {
+public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements ConceptMatcher {
 
     private static final Logger log = LoggerFactory.getLogger(SparqlIndexedLogicConceptMatcher.class);
 
-    private static final MatchTypes<MatchType> matchTypes = EnumMatchTypes.of(LogicConceptMatchType.class);
-
     private Table<URI, URI, MatchResult> indexedMatches;
-    private iServeManager manager;
+    private final iServeFacade manager;
     private SparqlLogicConceptMatcher sparqlMatcher;
 
     @Inject
-    protected SparqlIndexedLogicConceptMatcher(iServeManager iServeManager,
-                                               SparqlLogicConceptMatcher sparqlMatcher) throws SalException {
+    protected SparqlIndexedLogicConceptMatcher(SparqlLogicConceptMatcher sparqlMatcher) throws SalException {
+
+        super(EnumMatchTypes.of(LogicConceptMatchType.class));
 
         this.sparqlMatcher = sparqlMatcher;
-        this.manager = iServeManager;
-        iServeManager.registerAsObserver(this);
+        this.manager = iServeFacade.getInstance();
+        this.manager.registerAsObserver(this);
         this.indexedMatches = populate();
     }
 
@@ -84,16 +82,6 @@ public class SparqlIndexedLogicConceptMatcher implements ConceptMatcher {
         return "1.0";
     }
 
-    /**
-     * Obtains the MatchTypes instance that contains the MatchTypes supported as well as their ordering information
-     *
-     * @return
-     */
-    @Override
-    public MatchTypes<MatchType> getMatchTypesSupported() {
-        return this.matchTypes;
-    }
-
     @Override
     public MatchResult match(final URI origin, final URI destination) {
         MatchResult result = this.indexedMatches.get(origin, destination);
@@ -105,68 +93,29 @@ public class SparqlIndexedLogicConceptMatcher implements ConceptMatcher {
     }
 
 
-    /**
-     * Perform a match between two Sets of URIs (from {@code origin} to {@code destination})
-     * and returns the result.
-     *
-     * @param origins      Set of URIs of the elements to match
-     * @param destinations Set of URIs of the elements to match against
-     * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
-     */
-    @Override
-    public Table<URI, URI, MatchResult> match(Set<URI> origins, Set<URI> destinations) {
-        ImmutableTable.Builder<URI, URI, MatchResult> builder = ImmutableTable.builder();
-        for (URI origin : origins) {
-            for (URI destination : destinations) {
-                MatchResult mr = this.indexedMatches.get(origin, destination);
-                if (mr == null) {
-                    mr = new AtomicMatchResult(origin, destination, LogicConceptMatchType.Fail, this);
-                }
-
-                builder.put(origin, destination, mr);
-            }
-        }
-        return builder.build();
-    }
-
-    /**
-     * Obtains all the matching resources that have a precise MatchType with the URI of {@code origin}.
-     *
-     * @param origin URI to match
-     * @param type   the MatchType we want to obtain
-     * @return a Map containing indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
-     *         result is found the Map should be empty not null.
-     */
-    @Override
-    public Map<URI, MatchResult> listMatchesOfType(URI origin, MatchType type) {
-        return null;  // TODO: implement
-    }
-
-    /**
-     * Obtains all the matching resources that have a MatchType with the URI of {@code origin} of the type provided (inclusive) or more.
-     *
-     * @param origin  URI to match
-     * @param minType the minimum MatchType we want to obtain
-     * @return a Map containing indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
-     *         result is found the Map should be empty not null.
-     */
-    @Override
-    public Map<URI, MatchResult> listMatchesAtLeastOfType(URI origin, MatchType minType) {
-        return null;  // TODO: implement
-    }
-
-    /**
-     * Obtain all the matching resources that have a MatchTyoe with the URI of {@code origin} of the type provided (inclusive) or less.
-     *
-     * @param origin  URI to match
-     * @param maxType the maximum MatchType we want to obtain
-     * @return a Map containing indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
-     *         result is found the Map should be empty not null.
-     */
-    @Override
-    public Map<URI, MatchResult> listMatchesAtMostOfType(URI origin, MatchType maxType) {
-        return null;  // TODO: implement
-    }
+//    /**
+//     * Perform a match between two Sets of URIs (from {@code origin} to {@code destination})
+//     * and returns the result.
+//     *
+//     * @param origins      Set of URIs of the elements to match
+//     * @param destinations Set of URIs of the elements to match against
+//     * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
+//     */
+//    @Override
+//    public Table<URI, URI, MatchResult> match(Set<URI> origins, Set<URI> destinations) {
+//        ImmutableTable.Builder<URI, URI, MatchResult> builder = ImmutableTable.builder();
+//        for (URI origin : origins) {
+//            for (URI destination : destinations) {
+//                MatchResult mr = this.indexedMatches.get(origin, destination);
+//                if (mr == null) {
+//                    mr = new AtomicMatchResult(origin, destination, LogicConceptMatchType.Fail, this);
+//                }
+//
+//                builder.put(origin, destination, mr);
+//            }
+//        }
+//        return builder.build();
+//    }
 
     /**
      * Obtain all the matching resources with the URI of {@code origin} within the range of MatchTypes provided, both inclusive.
@@ -179,55 +128,6 @@ public class SparqlIndexedLogicConceptMatcher implements ConceptMatcher {
      */
     @Override
     public Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType) {
-        return null;  // TODO: implement
-    }
-
-    /**
-     * Obtains all the matching resources that have a MatchType with the URIs of {@code origin} of the type provided (inclusive) or more.
-     *
-     * @param origins URIs to match
-     * @param minType the minimum MatchType we want to obtain
-     * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
-     */
-    @Override
-    public Table<URI, URI, MatchResult> listMatchesAtLeastOfType(Set<URI> origins, MatchType minType) {
-        return null;  // TODO: implement
-    }
-
-    /**
-     * Obtain all the matching resources that have a MatchTyoe with the URIs of {@code origin} of the type provided (inclusive) or less.
-     *
-     * @param origins URIs to match
-     * @param maxType the maximum MatchType we want to obtain
-     * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
-     */
-    @Override
-    public Table<URI, URI, MatchResult> listMatchesAtMostOfType(Set<URI> origins, MatchType maxType) {
-        return null;  // TODO: implement
-    }
-
-    /**
-     * Obtain all the matching resources with the URIs of {@code origin} within the range of MatchTypes provided, both inclusive.
-     *
-     * @param origins URIs to match
-     * @param minType the minimum MatchType we want to obtain
-     * @param maxType the maximum MatchType we want to obtain
-     * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
-     */
-    @Override
-    public Table<URI, URI, MatchResult> listMatchesWithinRange(Set<URI> origins, MatchType minType, MatchType maxType) {
-        return null;  // TODO: implement
-    }
-
-    /**
-     * Obtains all the matching resources that have a precise MatchType with the URIs of {@code origin}.
-     *
-     * @param origins URIs to match
-     * @param type    the MatchType we want to obtain
-     * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
-     */
-    @Override
-    public Table<URI, URI, MatchResult> listMatchesOfType(Set<URI> origins, MatchType type) {
         return null;  // TODO: implement
     }
 
