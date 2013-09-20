@@ -51,7 +51,10 @@ public class RegistryResource {
     @Context
     UriInfo uriInfo;
 
+    private final iServeFacade manager;
+
     public RegistryResource() {
+        this.manager = iServeFacade.getInstance();
     }
 
     @GET
@@ -61,13 +64,13 @@ public class RegistryResource {
         return Response.ok(new Viewable(ADMIN_JSP_PATH, null)).build();
     }
 
-    @GET
-    @Path("/configuration")
-    @Produces({MediaType.TEXT_HTML})
-    public Response showConfiguration() {
-        log.debug("Forwarding to {}", CONFIGURATION_JSP_PATH);
-        return Response.ok(new Viewable(CONFIGURATION_JSP_PATH, iServeFacade.getInstance().getConfiguration())).build();
-    }
+//    @GET
+//    @Path("/configuration")
+//    @Produces({MediaType.TEXT_HTML})
+//    public Response showConfiguration() {
+//        log.debug("Forwarding to {}", CONFIGURATION_JSP_PATH);
+//        return Response.ok(new Viewable(CONFIGURATION_JSP_PATH, manager.getConfiguration())).build();
+//    }
 
     /**
      * Clears the entire registry
@@ -100,7 +103,7 @@ public class RegistryResource {
 
         String response;
         try {
-            if (iServeFacade.getInstance().clearRegistry()) {
+            if (manager.clearRegistry()) {
                 // The registry was cleared
                 response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                         "  <body>\n The registry was cleared.\n  </body>\n</html>";

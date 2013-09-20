@@ -75,6 +75,7 @@ public class ServiceResourceTest extends AbstractContainerTest {
 
     // For HTML testing (logging via forms, etc)
     private final WebClient webClient = new WebClient();
+    private iServeFacade manager;
 
     /**
      * @throws Exception
@@ -103,6 +104,8 @@ public class ServiceResourceTest extends AbstractContainerTest {
 
         // Logout
         logOut();
+
+        this.manager = iServeFacade.getInstance();
 
     }
 
@@ -144,7 +147,7 @@ public class ServiceResourceTest extends AbstractContainerTest {
     public final void testAddService() throws IOException {
         // Clean the whole thing before testing
         try {
-            iServeFacade.getInstance().clearRegistry();
+            manager.clearRegistry();
         } catch (SalException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -189,7 +192,7 @@ public class ServiceResourceTest extends AbstractContainerTest {
     public void testDeleteService() throws Exception {
 
         String relativeUri;
-        List<URI> existingServices = iServeFacade.getInstance().listServices();
+        List<URI> existingServices = manager.getServiceManager().listServices();
 
         log.info("Trying to delete prior to logging");
         URI testUri = existingServices.get(0);

@@ -41,6 +41,21 @@
         <dispatcher>ERROR</dispatcher>
     </filter-mapping>
 
+    <!-- Guice Filter should also come early -->
+    <listener>
+        <listener-class>uk.ac.open.kmi.iserve.sal.rest.iServeContextListener</listener-class>
+    </listener>
+
+    <filter>
+        <filter-name>guiceFilter</filter-name>
+        <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>guiceFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <!-- For Elda -->
     <context-param>
         <param-name>com.epimorphics.api.initialSpecFile</param-name>
@@ -49,13 +64,22 @@
         </param-value>
     </context-param>
 
+    <!--<listener>-->
+    <!--<listener-class>com.epimorphics.lda.restlets.RouterRestlet$Init</listener-class>-->
+    <!--</listener>-->
+
+    <!-- Replace with our own R/W one -->
+    <listener>
+        <listener-class>uk.ac.open.kmi.iserve.sal.rest.resource.ReadWriteRouterServlet$Init</listener-class>
+    </listener>
+
     <filter>
         <filter-name>iServe SAL REST</filter-name>
         <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
 
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
-            <param-value>uk.ac.open.kmi.iserve.sal.rest.iServeApp</param-value>
+            <param-value>uk.ac.open.kmi.iserve.sal.rest.iServeWebApplication</param-value>
         </init-param>
 
         <!--<init-param>-->
@@ -88,14 +112,6 @@
         <filter-name>iServe SAL REST</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-
-    <listener>
-        <listener-class>com.epimorphics.lda.restlets.RouterRestlet$Init</listener-class>
-    </listener>
-
-    <listener>
-        <listener-class>uk.ac.open.kmi.iserve.sal.rest.iServeContextListener</listener-class>
-    </listener>
 
     <welcome-file-list>
         <welcome-file>jsp/index.jsp</welcome-file>

@@ -53,7 +53,10 @@ public class ServicesResource {
     @Context
     SecurityContext security;
 
+    private final iServeFacade manager;
+
     public ServicesResource() {
+        this.manager = iServeFacade.getInstance();
     }
 
 
@@ -92,11 +95,11 @@ public class ServicesResource {
             if ((locationUri != null) && (!"".equalsIgnoreCase(locationUri))) {
                 // There is a location. Just register, don't import
                 log.info("Registering the services from {} ", locationUri);
-                servicesUris = iServeFacade.getInstance().registerServices(URI.create(locationUri), mediaType);
+                servicesUris = manager.registerServices(URI.create(locationUri), mediaType);
             } else {
                 // There is no location. Import the entire service
                 log.info("Importing the services");
-                servicesUris = iServeFacade.getInstance().importServices(file, mediaType);
+                servicesUris = manager.importServices(file, mediaType);
             }
             //		String oauthConsumer = ((SecurityFilter.Authorizer) security).getOAuthConsumer();
 
@@ -167,7 +170,7 @@ public class ServicesResource {
 
         String response;
         try {
-            if (!iServeFacade.getInstance().getServiceManager().serviceExists(serviceUri)) {
+            if (!manager.getServiceManager().serviceExists(serviceUri)) {
                 // The service doesn't exist
                 response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                         "  <body>\n The service " + serviceUri + " is not present in the registry.\n  </body>\n</html>";
@@ -175,7 +178,7 @@ public class ServicesResource {
                 return Response.status(Status.NOT_FOUND).contentLocation(serviceUri).entity(response).build();
             }
 
-            if (iServeFacade.getInstance().unregisterService(serviceUri)) {
+            if (manager.unregisterService(serviceUri)) {
                 // The service was deleted
                 response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                         "  <body>\n The service <a href='" + serviceUri + "'>" + serviceUri + "</a> has been deleted from the server.\n  </body>\n</html>";
@@ -230,7 +233,7 @@ public class ServicesResource {
 
         String response;
         try {
-            if (iServeFacade.getInstance().getServiceManager().clearServices()) {
+            if (manager.getServiceManager().clearServices()) {
                 // The registry was cleared
                 response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                         "  <body>\n The services have been cleared.\n  </body>\n</html>";

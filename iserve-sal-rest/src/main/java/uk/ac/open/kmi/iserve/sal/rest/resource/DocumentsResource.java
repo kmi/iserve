@@ -19,8 +19,10 @@ package uk.ac.open.kmi.iserve.sal.rest.resource;
 import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 import uk.ac.open.kmi.iserve.sal.exception.LogException;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
+import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
@@ -37,7 +39,11 @@ public class DocumentsResource {
     @Context
     SecurityContext security;
 
+    private final DocumentManager docManager;
+
+    @Inject
     public DocumentsResource() {
+        this.docManager = iServeFacade.getInstance().getDocumentManager();
     }
 
     @POST
@@ -61,7 +67,7 @@ public class DocumentsResource {
         InputStream is;
         try {
             is = new ByteArrayInputStream(document.getBytes("UTF-8"));
-            URI docUri = iServeFacade.getInstance().getDocumentManager().createDocument(is, contentType);
+            URI docUri = docManager.createDocument(is, contentType);
 
             String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                     "  <body>\nA document is created at <a href='" + docUri.toString() + "'>" + docUri.toString() + "</a>\n  </body>\n</html>";
@@ -115,7 +121,7 @@ public class DocumentsResource {
 //		String userFoafId = security.getUserPrincipal().getName();
 
         try {
-            boolean result = iServeFacade.getInstance().getDocumentManager().deleteDocument(uriInfo.getRequestUri());
+            boolean result = docManager.deleteDocument(uriInfo.getRequestUri());
         } catch (SalException e) {
             String error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                     "  <body>\nThere was an error while deleting a document. Contact the system administrator. \n  </body>\n</html>";
