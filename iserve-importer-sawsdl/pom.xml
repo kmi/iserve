@@ -28,6 +28,10 @@
     <artifactId>iserve-importer-sawsdl</artifactId>
     <version>${project.parent.version}</version>
     <name>iServe SAWSDL Importer</name>
+    <description>
+        iServe SAWSDL Importer provides support for transforming SAWSDL service descriptions into the model used by
+        iServe, namely Minimal Service Model.
+    </description>
 
     <developers>
         <developer>
@@ -75,7 +79,7 @@
         <dependency>
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
-            <version>1.9</version>
+            <version>${commons-config.version}</version>
         </dependency>
 
         <!--Add Guice for dependency injection -->

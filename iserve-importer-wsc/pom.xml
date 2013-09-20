@@ -27,6 +27,25 @@
 
     <artifactId>iserve-importer-wsc</artifactId>
     <name>iServe WSC 2008 Importer</name>
+    <description>
+        iServe WSC 2008 Importer provides support for transforming service descriptions in terms of the proprietary
+        format of the WSC 2008 contest into the model used by iServe, namely Minimal Service Model.
+    </description>
+
+    <developers>
+        <developer>
+            <id>pablo</id>
+            <name>Pablo Rodriguez Mier</name>
+            <email>pablo.rodriguez.mier-{AT}-usc.es</email>
+            <organization>CITIUS - Universidad de Santiago de Compostela</organization>
+            <organizationUrl>http://citius.usc.es</organizationUrl>
+        </developer>
+    </developers>
+
+    <organization>
+        <name>CITIUS - Universidad de Santiago de Compostela</name>
+        <url>http://citius.usc.es</url>
+    </organization>
 
     <dependencies>
 
@@ -38,7 +57,7 @@
         <dependency>
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
-            <version>1.8</version>
+            <version>${commons-config.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-cli</groupId>

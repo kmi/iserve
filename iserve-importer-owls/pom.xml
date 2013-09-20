@@ -30,6 +30,11 @@
     <name>iServe OWL-S Importer</name>
     <url>http://iserve.kmi.open.ac.uk/</url>
 
+    <description>
+        iServe OWL-S Importer provides support for transforming OWL-S service descriptions into the model used by
+        iServe, namely Minimal Service Model.
+    </description>
+
     <developers>
         <developer>
             <id>cpedrinaci</id>
@@ -84,7 +89,7 @@
         <dependency>
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
-            <version>1.9</version>
+            <version>${commons-config.version}</version>
         </dependency>
         <!--Add Guice for dependency injection -->
         <dependency>

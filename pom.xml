@@ -23,8 +23,22 @@
     <version>2.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>iServe Parent</name>
+    <name>iServe</name>
     <url>http://iserve.kmi.open.ac.uk</url>
+    <description>
+        iServe is what we refer to as service warehouse which unifies service
+        publication, analysis, and discovery through the use of lightweight semantics
+        as well as advanced discovery and analytic capabilities. iServe provides the
+        typical features of service registries and additional functionality that
+        exploits service descriptions, service annotations and further data gathered and
+        derived from the analysis of these descriptions, data crawled from the Web,
+        periodic monitoring and user activities.
+
+        iServe builds upon lessons learnt from research and development on the Web and
+        on service discovery algorithms to provide a generic semantic service registry
+        able to support advanced discovery over both Web APIs and WSDL services
+        described using heterogeneous formalisms.
+    </description>
 
     <licenses>
         <license>
@@ -33,6 +47,17 @@
             <distribution>manual</distribution>
         </license>
     </licenses>
+
+    <scm>
+        <url>https://github.com/kmi/iserve</url>
+        <connection>scm:git:https://github.com/kmi/iserve.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:kmi/iserve.git</developerConnection>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/kmi/iserve/issues</url>
+    </issueManagement>
 
     <developers>
         <developer>
@@ -64,7 +89,15 @@
             <organization>Knowledge Media Institute - The Open University</organization>
             <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
         </developer>
+        <developer>
+            <id>pablo</id>
+            <name>Pablo Rodriguez Mier</name>
+            <email>pablo.rodriguez.mier-{AT}-usc.es</email>
+            <organization>CITIUS - Universidad de Santiago de Compostela</organization>
+            <organizationUrl>http://citius.usc.es</organizationUrl>
+        </developer>
     </developers>
+
     <organization>
         <name>Knowledge Media Institute - The Open University</name>
         <url>http://kmi.open.ac.uk</url>
@@ -84,8 +117,24 @@
         <jetty.version>8.1.11.v20130520</jetty.version>
         <guice.version>3.0</guice.version>
         <guava.version>14.0</guava.version>
+        <commons-config.version>1.9</commons-config.version>
+
+        <!-- Configuration for GitHub deployment -->
+        <site.url>http://kmi.github.io/iserve/</site.url>
+        <github.global.server>github</github.global.server>
+        <site.deploy.id>gh-pages</site.deploy.id>
+        <site.deploy.url/>
+        <repositoryName>iserve</repositoryName>
+        <repositoryOwner>kmi</repositoryOwner>
     </properties>
 
+    <distributionManagement>
+        <site>
+            <id>${site.deploy.id}</id>
+            <name>Deployment through GitHub's site deployment plugin</name>
+            <url>${site.deploy.url}</url>
+        </site>
+    </distributionManagement>
 
     <modules>
         <module>iserve-commons-io</module>
@@ -125,8 +174,103 @@
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.1</version>
             </plugin>
+
+            <!-- Configure Maven site plugin for Reflow skin and Markdown support -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.3</version>
+                <dependencies>
+                    <dependency>
+                        <!-- Markdown support for writing website content -->
+                        <groupId>org.apache.maven.doxia</groupId>
+                        <artifactId>doxia-module-markdown</artifactId>
+                        <version>1.3</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <port>10000</port>
+                    <generateReports>true</generateReports>
+                    <inputEncoding>UTF-8</inputEncoding>
+                    <outputEncoding>UTF-8</outputEncoding>
+                    <!-- Site deployment done using GitHub site plugin -->
+                    <skipDeploy>true</skipDeploy>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <!-- GitHub site plug-in for deployment to GitHub pages -->
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <version>0.7</version>
+                <configuration>
+                    <message>Creating site for ${project.artifactId}, ${project.version}</message>
+                    <!-- this does the trick to place every module in the correct subfolder -->
+                    <path>${project.distributionManagement.site.url}</path>
+                    <merge>true</merge>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>github-site</id>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                        <phase>site-deploy</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.7</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>index</report>
+                            <report>summary</report>
+                            <report>license</report>
+                            <report>modules</report>
+                            <report>project-team</report>
+                            <report>scm</report>
+                            <report>issue-tracking</report>
+                            <!--<report>dependencies</report>-->
+                            <!--<report>dependency-convergence</report>-->
+                            <!--<report>plugins</report>-->
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changes-plugin</artifactId>
+                <version>2.8</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>changes-report</report>
+                            <!-- <report>github-report</report> -->
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
 
     <repositories>
         <repository>
@@ -134,6 +278,6 @@
             <name>Apache Repository</name>
             <url>https://repository.apache.org/content/repositories/releases/</url>
         </repository>
-
     </repositories>
+
 </project>

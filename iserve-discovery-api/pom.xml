@@ -28,7 +28,11 @@
     <artifactId>iserve-discovery-api</artifactId>
     <version>${project.parent.version}</version>
 
-    <name>iServe Discovery Plug-in API</name>
+    <name>iServe Discovery API</name>
+    <description>
+        iServe Discovery API provide the core infrastructure and APIs for the development and management of discovery
+        plugins.
+    </description>
 
     <developers>
         <developer>
@@ -53,6 +57,11 @@
     </organization>
 
     <dependencies>
+        <dependency>
+            <groupId>uk.ac.open.kmi.iserve.sal</groupId>
+            <artifactId>iserve-sal-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>

@@ -27,7 +27,26 @@
 
     <artifactId>iserve-test-resources</artifactId>
     <name>iServe Shared Test Resources</name>
+    <description>
+        iServe Shared Test Resources is a convenience module capturing some of the resources used for tests within
+        the project, as well as providing direct scripts for automatically downloading other resources from the Web.
+    </description>
 
+    <developers>
+        <developer>
+            <id>cpedrinaci</id>
+            <name>Carlos Pedrinaci</name>
+            <email>c.pedrinaci-{AT}-open.ac.uk</email>
+            <url>http://people.kmi.open.ac.uk/carlos/</url>
+            <organization>Knowledge Media Institute - The Open University</organization>
+            <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+        </developer>
+    </developers>
+
+    <organization>
+        <name>Knowledge Media Institute - The Open University</name>
+        <url>http://kmi.open.ac.uk</url>
+    </organization>
 
     <build>
         <plugins>
