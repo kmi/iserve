@@ -24,7 +24,7 @@
     <packaging>pom</packaging>
 
     <name>iServe</name>
-    <url>http://iserve.kmi.open.ac.uk</url>
+    <url>http://kmi.github.io/iserve/</url>
     <description>
         iServe is what we refer to as service warehouse which unifies service
         publication, analysis, and discovery through the use of lightweight semantics
@@ -234,6 +234,11 @@
 
     <reporting>
         <plugins>
+            <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-javadoc-plugin</artifactId>-->
+            <!--<version>2.9.1</version>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
@@ -271,6 +276,36 @@
             </plugin>
         </plugins>
     </reporting>
+
+    <profiles>
+        <profile>
+            <id>stage</id>
+            <properties>
+                <site.deploy.url>https://github.com/kmi/iserve/tree/gh-pages/</site.deploy.url>
+            </properties>
+
+            <build>
+                <plugins>
+                    <!-- Configure Maven site plugin to perform stage -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <version>3.3</version>
+                        <executions>
+                            <execution>
+                                <id>stage</id>
+                                <goals>
+                                    <goal>stage</goal>
+                                </goals>
+                                <phase>site</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
+    </profiles>
 
     <repositories>
         <repository>
