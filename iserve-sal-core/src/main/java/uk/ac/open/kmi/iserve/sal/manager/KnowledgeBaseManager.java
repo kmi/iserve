@@ -20,7 +20,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -104,7 +103,7 @@ public interface KnowledgeBaseManager extends iServeComponent {
      * @param classUri the URI of the class for which to list the equivalent classes
      * @return the List of equivalent classes
      */
-    public List<URI> listEquivalentClasses(URI classUri);
+    public Set<URI> listEquivalentClasses(URI classUri);
 
     /**
      * Answers a List of all the URIs of the classes that are declared to be sub-classes of this class.
@@ -113,7 +112,7 @@ public interface KnowledgeBaseManager extends iServeComponent {
      * @param direct   if true only the direct subclasses will be listed.
      * @return the list of subclasses
      */
-    public List<URI> listSubClasses(URI classUri, boolean direct);
+    public Set<URI> listSubClasses(URI classUri, boolean direct);
 
     /**
      * Answers a List of all the URIs of the classes that are declared to be super-classes of this class.
@@ -122,7 +121,7 @@ public interface KnowledgeBaseManager extends iServeComponent {
      * @param direct   if true only the direct super-classes will be listed.
      * @return the list of super-classes
      */
-    public List<URI> listSuperClasses(URI classUri, boolean direct);
+    public Set<URI> listSuperClasses(URI classUri, boolean direct);
 
 
     /**
@@ -131,5 +130,5 @@ public interface KnowledgeBaseManager extends iServeComponent {
      * @param graphID Graph URI for filtering the concepts within the specified graphID, null for all concepts.
      * @return List of concepts in the KnowledgeBaseManager
      */
-    List<URI> listConcepts(URI graphID);
+    Set<URI> listConcepts(URI graphID);
 }

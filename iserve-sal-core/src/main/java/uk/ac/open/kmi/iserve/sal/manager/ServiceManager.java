@@ -20,7 +20,7 @@ import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 
 import java.net.URI;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Interface that defines the operations a Service Manager should offer
@@ -77,7 +77,7 @@ public interface ServiceManager extends iServeComponent {
      * @return the list of all services that could be obtained. If none could be obtained the list will be empty.
      * @throws ServiceException
      */
-    public abstract List<Service> getServices(List<URI> serviceUris)
+    public abstract Set<Service> getServices(Set<URI> serviceUris)
             throws ServiceException;
 
     // Listing Methods
@@ -87,7 +87,7 @@ public interface ServiceManager extends iServeComponent {
      *
      * @return list of URIs with all the services in the registry
      */
-    public abstract List<URI> listServices();
+    public abstract Set<URI> listServices();
 
     /**
      * Obtains the list of operation URIs for a given Operation
@@ -95,7 +95,7 @@ public interface ServiceManager extends iServeComponent {
      * @param serviceUri the service URI
      * @return a List of URIs with the operations provided by the service. If there are no operations, the List should be empty NOT null.
      */
-    public abstract List<URI> listOperations(URI serviceUri);
+    public abstract Set<URI> listOperations(URI serviceUri);
 
     /**
      * Obtains the list of input URIs for a given Operation
@@ -103,7 +103,7 @@ public interface ServiceManager extends iServeComponent {
      * @param operationUri the operation URI
      * @return a List of URIs with the inputs of the operation. If no input is necessary the List should be empty NOT null.
      */
-    public abstract List<URI> listInputs(URI operationUri);
+    public abstract Set<URI> listInputs(URI operationUri);
 
     /**
      * Obtains the list of output URIs for a given Operation
@@ -111,7 +111,7 @@ public interface ServiceManager extends iServeComponent {
      * @param operationUri the operation URI
      * @return a List of URIs with the outputs of the operation. If no output is provided the List should be empty NOT null.
      */
-    public abstract List<URI> listOutputs(URI operationUri);
+    public abstract Set<URI> listOutputs(URI operationUri);
 
     /**
      * Obtains the list of mandatory parts for a given Message Content
@@ -119,7 +119,7 @@ public interface ServiceManager extends iServeComponent {
      * @param messageContent the message content URI
      * @return a List of URIs with the mandatory parts of the message content. If there are no parts the List should be empty NOT null.
      */
-    public abstract List<URI> listMandatoryParts(URI messageContent);
+    public abstract Set<URI> listMandatoryParts(URI messageContent);
 
     /**
      * Obtains the list of model references for a given element.
@@ -127,7 +127,7 @@ public interface ServiceManager extends iServeComponent {
      * @param elementUri the URI of the element for which we want to obtain the model references
      * @return a List of URIs with the model references of the given element. If there are no model references the List should be empty NOT null.
      */
-    public abstract List<URI> listModelReferences(URI elementUri);
+    public abstract Set<URI> listModelReferences(URI elementUri);
 
     /**
      * Lists all documents related to a given service
@@ -136,7 +136,7 @@ public interface ServiceManager extends iServeComponent {
      * @return the List of the URIs of all the documents related to the service
      * @throws ServiceException
      */
-    public abstract List<URI> listDocumentsForService(URI serviceUri) throws ServiceException;
+    public abstract Set<URI> listDocumentsForService(URI serviceUri) throws ServiceException;
 
     // Delete Methods
 

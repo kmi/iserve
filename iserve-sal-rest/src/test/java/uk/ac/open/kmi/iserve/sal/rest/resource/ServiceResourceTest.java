@@ -40,7 +40,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URI;
-import java.util.List;
+import java.util.Iterator;
+import java.util.Set;
 
 import static com.jayway.restassured.RestAssured.given;
 
@@ -192,10 +193,10 @@ public class ServiceResourceTest extends AbstractContainerTest {
     public void testDeleteService() throws Exception {
 
         String relativeUri;
-        List<URI> existingServices = manager.getServiceManager().listServices();
+        Set<URI> existingServices = manager.getServiceManager().listServices();
 
         log.info("Trying to delete prior to logging");
-        URI testUri = existingServices.get(0);
+        URI testUri = existingServices.iterator().next();
         relativeUri = URI.create(SERVICES_URI).relativize(testUri).toASCIIString();
         log.info("Trying to delete service id: " + testUri);
         given().log().all().
@@ -238,8 +239,9 @@ public class ServiceResourceTest extends AbstractContainerTest {
         }
 
         // Try to delete 10 services using their entire URIs
-        for (int i = 0; i < 10; i++) {
-            URI uri = existingServices.get(i);
+        Iterator<URI> iter = existingServices.iterator();
+        for (int i = 0; i < 10 && iter.hasNext(); i++) {
+            URI uri = iter.next();
             relativeUri = URI.create(SERVICES_URI).relativize(uri).toASCIIString();
             log.info("Deleting service id: " + uri);
             given().log().all().

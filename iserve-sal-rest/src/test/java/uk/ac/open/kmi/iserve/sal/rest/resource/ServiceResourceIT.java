@@ -41,7 +41,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.util.List;
+import java.util.Set;
 
 import static com.jayway.restassured.RestAssured.given;
 
@@ -195,7 +195,7 @@ public class ServiceResourceIT {
     @Ignore("To be fixed again")
     public void testDeleteService() throws Exception {
 
-        List<URI> existingServices = manager.getServiceManager().listServices();
+        Set<URI> existingServices = manager.getServiceManager().listServices();
 
         log.info("Deleting services");
         // Try to delete endpoint
