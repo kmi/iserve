@@ -7,33 +7,36 @@
 */
 
 /*
-	(c) Copyright 2010 Epimorphics Limited
+    (c) Copyright 2010 Epimorphics Limited
 	[see end of file]
 	$Id$
 */
 
 package com.epimorphics.lda.sources;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.epimorphics.lda.exceptions.EldaException;
 import com.epimorphics.lda.support.TDBManager;
 import com.epimorphics.vocabs.API;
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.shared.Lock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class TDBSource extends SourceBase implements Source
-    {
+public class TDBSource extends SourceBase implements Source {
     static Logger log = LoggerFactory.getLogger(TDBSource.class);
 
-    protected final Model source; 
+    protected final Model source;
     protected final Dataset sourceSet;
     protected final String endpoint;
-    
+
     public TDBSource(String endpoint) {
-        String name = endpoint.substring( TDBManager.PREFIX.length() );
+        String name = endpoint.substring(TDBManager.PREFIX.length());
         this.endpoint = endpoint;
         this.sourceSet = TDBManager.getDataset();
         if (name != null && !name.isEmpty()) {
@@ -41,43 +44,48 @@ public class TDBSource extends SourceBase implements Source
             log.debug("TDB with endpoint " + endpoint + " has model with "
                     + this.source.size() + " triples.");
             if (this.source.isEmpty())
-                EldaException.EmptyTDB( name );
+                EldaException.EmptyTDB(name);
         } else {
             source = null;
             log.info("Using TDB whole dataset");
         }
     }
 
-    @Override public void addMetadata( Resource meta )
-        {        
-        meta.addProperty( API.sparqlEndpoint, ResourceFactory.createResource( endpoint ) );
-        }
-
-    @Override public String toString()
-        { return "TDB datasource - " + endpoint; }
-    
-    @Override public Lock getLock() {
-    	return source == null ? sourceSet.getLock() : source.getLock();
+    @Override
+    public void addMetadata(Resource meta) {
+        meta.addProperty(API.sparqlEndpoint, ResourceFactory.createResource(endpoint));
     }
-    
-    @Override public QueryExecution execute( Query query )
-        {
+
+    @Override
+    public String toString() {
+        return "TDB datasource - " + endpoint;
+    }
+
+    @Override
+    public Lock getLock() {
+        return source == null ? sourceSet.getLock() : source.getLock();
+    }
+
+    @Override
+    public QueryExecution execute(Query query) {
 //        if (log.isInfoEnabled()) log.info( "Running query: " + query.toString().replaceAll( "\n", " " ) + " over " + this.source.size() + " triples.");
 //        QueryExecution q = QueryExecutionFactory.create( query, source );
 //        Model result = q.execDescribe();
 //        if (log.isInfoEnabled()) log.info( "Resulting model has " + result.size() + " triples." );
         return
-            source == null 
-                ?  QueryExecutionFactory.create( query, sourceSet )
-                :  QueryExecutionFactory.create( query, source );
-        }
+                source == null
+                        ? QueryExecutionFactory.create(query, sourceSet)
+                        : QueryExecutionFactory.create(query, source);
+    }
 
     /**
-        TDB supports nested selects via ARQ.
-    */
-	@Override public boolean supportsNestedSelect() 
-		{ return true; }
+     * TDB supports nested selects via ARQ.
+     */
+    @Override
+    public boolean supportsNestedSelect() {
+        return true;
     }
+}
 
     
 /*

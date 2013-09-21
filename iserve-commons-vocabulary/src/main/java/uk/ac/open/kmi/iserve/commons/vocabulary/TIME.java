@@ -18,9 +18,9 @@ package uk.ac.open.kmi.iserve.commons.vocabulary;
 
 public class TIME {
 
-	public static final String NS = "http://www.w3.org/time#";
-	public static final String NS_PREFIX = "time";
-	public static final String IN_XSD_DATE_TIME = NS + "inXSDDateTime";
-	public static final String TIME_INSTANT = NS + "Instant";
+    public static final String NS = "http://www.w3.org/time#";
+    public static final String NS_PREFIX = "time";
+    public static final String IN_XSD_DATE_TIME = NS + "inXSDDateTime";
+    public static final String TIME_INSTANT = NS + "Instant";
 
 }

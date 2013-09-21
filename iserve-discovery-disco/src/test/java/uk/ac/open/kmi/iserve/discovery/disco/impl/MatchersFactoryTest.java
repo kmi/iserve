@@ -55,36 +55,6 @@ public class MatchersFactoryTest {
         log.info("Obtained a concept matcher, {}", matcher.getClass().getName());
         Assert.assertEquals(matcher.getClass(), SparqlLogicConceptMatcher.class);
 
-        // Check that we can get the other class
-        matcher = MatchersFactory.createConceptMatcher(SparqlIndexedLogicConceptMatcher.class.getName());
-        Assert.assertNotNull(matcher);
-        log.info("Obtained a concept matcher, {}", matcher.getClass().getName());
-        Assert.assertEquals(matcher.getClass(), SparqlIndexedLogicConceptMatcher.class);
-    }
-
-    /**
-     * Test that only one instance of each index type gets created.
-     * Note that this depends on the module configuration
-     */
-    @Test
-    public void testSingleton() {
-
-        ConceptMatcher matcher, matcher2;
-
-        // check we get one
-        matcher = MatchersFactory.createConceptMatcher(SparqlIndexedLogicConceptMatcher.class.getName());
-        Assert.assertNotNull(matcher);
-        log.info("Obtained a concept matcher, {}", matcher.getClass().getName());
-        Assert.assertEquals(matcher.getClass(), SparqlIndexedLogicConceptMatcher.class);
-
-        // Check we get one of the class requested
-        matcher2 = MatchersFactory.createConceptMatcher(SparqlIndexedLogicConceptMatcher.class.getName());
-        Assert.assertNotNull(matcher2);
-        log.info("Obtained a concept matcher, {}", matcher2.getClass().getName());
-        Assert.assertEquals(matcher2.getClass(), SparqlIndexedLogicConceptMatcher.class);
-
-        Assert.assertEquals(matcher, matcher2);
-
     }
 
 }

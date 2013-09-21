@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Annotable Resource Class provides common methods to those classes that
  * can be annotated with modelReferences
- *
+ * <p/>
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 20/05/2013
  * Time: 17:18
@@ -34,7 +34,7 @@ public class AnnotableResource extends Resource {
      * General modelRefs (FCs, but also domain models)
      * This could be used for any type of modelReference but it is recommended
      * to be used only for FCs and domain models.
-     *
+     * <p/>
      * For NFPs, Conditions and Effects use the specific methods that will ensure
      * the proper rdf:type statements are also maintained.
      */

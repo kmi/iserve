@@ -22,10 +22,10 @@ import java.net.URI;
  * Resources
  * Resources can be attached a number of metadata properties such as
  * label, comment, creator, seeAlso and source
- *
+ * <p/>
  * Resources can also be attached a WSDL grounding for now although this
  * may better be handled differently
- *
+ * <p/>
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 20/05/2013
  * Time: 17:12

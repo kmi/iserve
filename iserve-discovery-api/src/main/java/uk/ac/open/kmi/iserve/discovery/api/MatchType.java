@@ -35,6 +35,7 @@ public interface MatchType<T> extends Comparable<T>, Serializable {
 
     /**
      * Description of the match type and its properties.
+     *
      * @return description
      */
     String description();

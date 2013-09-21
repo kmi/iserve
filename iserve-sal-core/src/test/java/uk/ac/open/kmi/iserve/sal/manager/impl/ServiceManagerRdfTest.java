@@ -91,7 +91,7 @@ public class ServiceManagerRdfTest {
         log.info("Dataset Base URI {}", base.toURI().toASCIIString());
         List<Service> result = Transformer.getInstance().transform(services, base.toURI().toASCIIString(), MEDIATYPE);
         //List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
-        if (result.size()==0){
+        if (result.size() == 0) {
             fail("No services transformed!");
         }
         // Import all services

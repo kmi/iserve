@@ -18,7 +18,7 @@ package uk.ac.open.kmi.iserve.commons.vocabulary;
 
 public class ISERVE {
 
-	public static final String NS_URI = "http://iserve.kmi.open.ac.uk/ns/iserve#";
-	public static final String NS_PREFIX = "iserve";
+    public static final String NS_URI = "http://iserve.kmi.open.ac.uk/ns/iserve#";
+    public static final String NS_PREFIX = "iserve";
 
 }

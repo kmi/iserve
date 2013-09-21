@@ -17,22 +17,22 @@ package uk.ac.open.kmi.iserve.sal.exception;
 
 public class ReviewException extends SalException {
 
-	private static final long serialVersionUID = -7092358620629758742L;
+    private static final long serialVersionUID = -7092358620629758742L;
 
-	public ReviewException() {
-		super();
-	}
+    public ReviewException() {
+        super();
+    }
 
-	public ReviewException(String message) {
-		super(message);
-	}
+    public ReviewException(String message) {
+        super(message);
+    }
 
-	public ReviewException(Throwable cause) {
-		super(cause);
-	}
+    public ReviewException(Throwable cause) {
+        super(cause);
+    }
 
-	public ReviewException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public ReviewException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

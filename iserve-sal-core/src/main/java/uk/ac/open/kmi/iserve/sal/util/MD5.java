@@ -21,13 +21,13 @@ import java.security.NoSuchAlgorithmException;
 
 public class MD5 {
 
-	public static String digest(String data) throws NoSuchAlgorithmException {
-		MessageDigest digest = MessageDigest.getInstance("MD5");
-		digest.update(data.getBytes());
-		BigInteger i = new BigInteger(1, digest.digest());
-		String result = String.format("%1$032X", i);
-		return result;
-	}
+    public static String digest(String data) throws NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("MD5");
+        digest.update(data.getBytes());
+        BigInteger i = new BigInteger(1, digest.digest());
+        String result = String.format("%1$032X", i);
+        return result;
+    }
 //
 //	public static void main(String[] args) {
 //		try {

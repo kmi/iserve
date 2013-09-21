@@ -22,13 +22,12 @@ import java.io.OutputStream;
 
 /**
  * Service Writer Interface
- *
+ * <p/>
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 22/05/2013
  * Time: 02:04
- *
+ * <p/>
  * TODO: Move to the right module
- *
  */
 public interface ServiceWriter {
 

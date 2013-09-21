@@ -7,15 +7,12 @@
 */
 
 /*
-	(c) Copyright 2010 Epimorphics Limited
+    (c) Copyright 2010 Epimorphics Limited
 	[see end of file]
 	$Id$
 */
 
 package com.epimorphics.lda.renderers;
-
-import java.io.*;
-import java.util.Map;
 
 import com.epimorphics.lda.bindings.Bindings;
 import com.epimorphics.lda.core.APIResultSet;
@@ -25,44 +22,60 @@ import com.epimorphics.util.MediaType;
 import com.epimorphics.util.StreamUtils;
 import com.hp.hpl.jena.shared.WrappedException;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.util.Map;
+
 public class TurtleRenderer implements Renderer {
-	
-    @Override public MediaType getMediaType( Bindings irrelevant ) {
+
+    @Override
+    public MediaType getMediaType(Bindings irrelevant) {
         return MediaType.TEXT_TURTLE;
     }
 
-    @Override public String getPreferredSuffix() {
-    	return "ttl";
+    @Override
+    public String getPreferredSuffix() {
+        return "ttl";
     }
-    
-    @Override public Mode getMode() {
-    	return Mode.PreferLocalnames;
+
+    @Override
+    public Mode getMode() {
+        return Mode.PreferLocalnames;
     }
-    
-    @Override public Renderer.BytesOut render( Times t, Bindings ignored, Map<String, String> termBindings, final APIResultSet results ) {
-    	ByteArrayOutputStream os = new ByteArrayOutputStream();
-    	StripPrefixes.Do(results.getMergedModel()).write( os, "TTL" );
-    	try { os.flush(); } catch (IOException e) { throw new WrappedException( e ); }
-    	final String content = UTF8.toString( os );
-    	
-    	return new BytesOutTimed() {
 
-			@Override public void writeAll(OutputStream os) {			
-				OutputStreamWriter u = StreamUtils.asUTF8(os);
-				try {
-					u.write(content);
-					u.flush();
-					u.close();
-				} catch (IOException e) {
-					throw new WrappedException(e);
-				}
-			}
+    @Override
+    public Renderer.BytesOut render(Times t, Bindings ignored, Map<String, String> termBindings, final APIResultSet results) {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        StripPrefixes.Do(results.getMergedModel()).write(os, "TTL");
+        try {
+            os.flush();
+        } catch (IOException e) {
+            throw new WrappedException(e);
+        }
+        final String content = UTF8.toString(os);
 
-			@Override protected String getFormat() {
-				return "ttl";
-			}
-    		
-    	};
+        return new BytesOutTimed() {
+
+            @Override
+            public void writeAll(OutputStream os) {
+                OutputStreamWriter u = StreamUtils.asUTF8(os);
+                try {
+                    u.write(content);
+                    u.flush();
+                    u.close();
+                } catch (IOException e) {
+                    throw new WrappedException(e);
+                }
+            }
+
+            @Override
+            protected String getFormat() {
+                return "ttl";
+            }
+
+        };
     }
 
 }

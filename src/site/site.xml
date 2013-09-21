@@ -29,6 +29,8 @@
     <bannerLeft>
         <name>iServe</name>
         <src>images/iServe-logo.png</src>
+        <height>475</height>
+        <width>263</width>
         <href>http://kmi.github.io/iserve/</href>
     </bannerLeft>
 

@@ -8,24 +8,27 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 public class VelocityRendererFactory implements RendererFactory {
 
-	private MediaType mt = MediaType.TEXT_HTML;
-	
-	private Resource config = null;
-	
-	public VelocityRendererFactory() {
-	}
-	
-	@Override public Renderer buildWith( APIEndpoint ep, ShortnameService sns ) {
-		return new VelocityRenderer( mt, ep.getSpec().getBindings(), config );
-	}
+    private MediaType mt = MediaType.TEXT_HTML;
 
-	@Override public RendererFactory withRoot( Resource config ) {
-		this.config = config;
-		return this;
-	}
+    private Resource config = null;
 
-	@Override public RendererFactory withMediaType( MediaType mt ) {
-		this.mt = mt;
-		return this;
-	}
+    public VelocityRendererFactory() {
+    }
+
+    @Override
+    public Renderer buildWith(APIEndpoint ep, ShortnameService sns) {
+        return new VelocityRenderer(mt, ep.getSpec().getBindings(), config);
+    }
+
+    @Override
+    public RendererFactory withRoot(Resource config) {
+        this.config = config;
+        return this;
+    }
+
+    @Override
+    public RendererFactory withMediaType(MediaType mt) {
+        this.mt = mt;
+        return this;
+    }
 }

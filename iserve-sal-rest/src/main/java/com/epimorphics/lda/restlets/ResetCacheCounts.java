@@ -8,17 +8,22 @@
 
 package com.epimorphics.lda.restlets;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
-
 import com.epimorphics.lda.cache.Cache;
 import com.epimorphics.util.URIUtils;
 
-@Path( "/control/reset-counts") public class ResetCacheCounts {
-	
-	@POST @Produces("text/html") public Response resetCache() {
-		Cache.Registry.resetCounts();
-		return Response.seeOther( URIUtils.newURI( "/control/show-cache" ) ).build();
-	}
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+
+@Path("/control/reset-counts")
+public class ResetCacheCounts {
+
+    @POST
+    @Produces("text/html")
+    public Response resetCache() {
+        Cache.Registry.resetCounts();
+        return Response.seeOther(URIUtils.newURI("/control/show-cache")).build();
+    }
 
 }

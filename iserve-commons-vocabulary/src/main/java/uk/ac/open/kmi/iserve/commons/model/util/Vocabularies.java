@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Utility class holding the prefixes of the vocabularies.
  * Placed in here for now but will require rearranging
- *
+ * <p/>
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 31/05/2013
  * Time: 11:41
@@ -20,6 +20,7 @@ import java.util.Map;
 public class Vocabularies {
 
     public static final Map<String, String> prefixes;
+
     static {
         HashMap<String, String> aMap = new HashMap<String, String>();
         aMap.put("rdf", RDF.getURI());

@@ -43,9 +43,9 @@ package uk.ac.open.kmi.iserve.sal.rest.auth;
  */
 public class AuthenticationException extends RuntimeException {
 
- 	private static final long serialVersionUID = -4824067590918741487L;
+    private static final long serialVersionUID = -4824067590918741487L;
 
-	public AuthenticationException(String message, String realm) {
+    public AuthenticationException(String message, String realm) {
         super(message);
         this.realm = realm;
     }
