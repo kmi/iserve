@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns:sawsdl="http://www.w3.org/ns/sawsdl" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://www.earthtools.org/" targetNamespace="http://www.earthtools.org/">
+    <wsdl:documentation>This is a WSDL 1.1 comment that has been created for a RESTful service for evaluation and
+        testing purposes.
+        It is not guaranteed to be correct or appropriate. The binding information in particular may likely not be
+        correct.
+    </wsdl:documentation>
+    <wsdl:types>
+        <xsd:schema elementFormDefault="qualified" targetNamespace="http://www.earthtools.org/">
+            <xsd:complexType name="Output">
+                <xsd:sequence>
+                    <xsd:element minOccurs="1" maxOccurs="1"
+                                 name="version" type="xsd:string">
+                        <xsd:annotation>
+                            The version number of the service
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1"
+                                 name="location" type="xsd:anyType"
+                                 sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protont#Location">
+                        <xsd:annotation>
+                            The location parsed from the given input.
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1"
+                                 name="meters" type="xsd:string"
+                                 sawsdl:modelReference="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#Elevation">
+                        <xsd:annotation>
+                            The altitude above sea level in meters and
+                            feet. If the requested point is outside the
+                            area of coverage, both the meters and feet
+                            elements will contain 'Unknown'. If the
+                            point is within the area of coverage but
+                            over sea, then the meters and feet elements
+                            may contain 'Unknown' or '-9999'.
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="feet" type="xsd:string" maxOccurs="1" minOccurs="1"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="Output" nillable="true" type="tns:Output"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="EarthTools_Elevation_Height_Above_Sea_LevelHttpGetIn">
+        <wsdl:part name="lat" type="xsd:string"
+                   sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protont#Location">
+            <wsdl:documentation>The latitude of the point of interest.</wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="long" type="xsd:string">
+            <wsdl:documentation>The longitude of the point of interest.</wsdl:documentation>
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="EarthTools_Elevation_Height_Above_Sea_LevelHttpGetOut">
+        <wsdl:part name="Body" element="tns:Output">
+            <wsdl:documentation></wsdl:documentation>
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="EarthTools_Elevation_Height_Above_Sea_LevelHttpGet">
+        <wsdl:operation name="EarthTools_Elevation_Height_Above_Sea_Level"
+                        sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <wsdl:documentation>This service responds with the height above sea level at the given latitude and
+                longitude.
+                Data is available covering all of mainland Europe and the United States of America. European coverage
+                covers the area bounded by 35°N and 60°N and 15°W and 35°E. American coverage covers the area bounded by
+                20°N and 50°N and 65°W and 125°W. I intend to extend the coverage of that data to the rest of the world
+                (as and when the space available for hosting increases to hold the data!).
+                The terrain model used to find heights above sealevel is from the Shuttle Radar Topography Mission
+                (SRTM) which was a joint project between the US National Geospatial-Intelligence Agency (NGA) and the
+                National Aeronautics and Space Administration (NASA). Data was recorded for 11 days from the Space
+                Shuttle Endevour from 11th February 2000. The data used here is at a resolution of 3 arc seconds
+                (approximately 90m).
+            </wsdl:documentation>
+            <wsdl:input message="tns:EarthTools_Elevation_Height_Above_Sea_LevelHttpGetIn"/>
+            <wsdl:output message="tns:EarthTools_Elevation_Height_Above_Sea_LevelHttpGetOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="EarthTools_Elevation_Height_Above_Sea_LevelHttpGet"
+                  type="tns:EarthTools_Elevation_Height_Above_Sea_LevelHttpGet">
+        <http:binding verb="GET"/>
+        <wsdl:operation name="EarthTools_Elevation_Height_Above_Sea_Level">
+            <http:operation location="height"/>
+            <wsdl:input>
+                <http:urlEncoded/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:mimeXml part="Body"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service
+            sawsdl:modelReference=" http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#InformationAboutLocationLookup"
+            name="EarthTools_Elevation_Height_Above_Sea_Level">
+        <wsdl:port name="EarthTools_Elevation_Height_Above_Sea_LevelHttpGet"
+                   binding="tns:EarthTools_Elevation_Height_Above_Sea_LevelHttpGet">
+            <http:address location="http://www.earthtools.org/"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

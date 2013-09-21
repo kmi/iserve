@@ -1,0 +1,61 @@
+====================
+iServe Release Notes
+====================
+
+iServe 2.0 includes many new features, bug fixes and performance improvements.
+
+iServe requires Java 1.6 or higher. The distribution should be runnable in
+most J2EE servlet containers.
+
+Requires SPARQL 1.1 compliant RDF store
+
+Requires a Servlet 3.0 compliant Web application server, e.g., Tomcat 7
+
+NOTE: Old configuration files need updating due to changes in the configuration
+mechanism.
+
+General
+=======
+- The system has been ported to Jena as the base library for RDF and SPARQL
+- Developed a new in-memory Java model and the corresponding parsers and writers for easier management of services data
+- Updated MSM model (new namespace, new properties)
+    - Added new WSDL grounding details
+    - Use of dc:source rather than rdf:describedBy
+- RDF Stores have been decoupled from the software by using SPARQL Updates and the Graph Management protocol instead
+of direct access to concrete registry implementations. As a consequence a slight performance overhead is incurred but
+the system is entirely decoupled from concrete RDF stores implementations.
+- iServe now makes use of dependency injection and automated implementation loading to provide further modularity
+and extensibility
+- Data management has been adapted and makes further use of named graphs for better data management
+- Included a notification mechanism as part of the infrastructure to support updates when changes on the underlying data
+occur. The implementation is based on Guava's event bus
+- Better centralised configuration mechanism (old configuration files need updating)
+- Re-engineering of modules:
+    - Removed unnecessary modules (over fragmented)
+    - More structured interfaces
+    - Added notion of Knowledge Base manager (implementation with local indexing and/or remote SPARQL service)
+- Added new GUI based on ELDA for visualising and querying the registry
+
+
+Import
+======
+- Import mechanisms now based on plugins that can be loaded at runtime
+- Updated OWL-S import - provided also as standalone executable application
+- Added mechanism added for the Web Services Contest
+- Improved automated support for uploading referenced ontologies both synchronously and asynchronously
+- Added basic roll-back features for dealing with partial imports
+- External datasets have now been integrated and made available via maven automated downloads for testing and development
+
+Discovery
+=========
+- Discovery mechanisms are now pluggable and detected automatically by the system
+- Default discovery implementation can now discover operations and services
+- Discovery plugins are now accompanied by their own internal documentation
+- Basic Scoring and Ranking mechanism implemented for better results ordering
+- Discovery results now include details on the inner matches for debugging and 
+better scoring purposes.
+- Homogeneised discovery result types within the standard discovery plugin
+- Scoring and ranking is only performed at the end to avoid recomputations
+- Developed some initial basic implementations with local indexes for much faster discovery responses
+
+ 

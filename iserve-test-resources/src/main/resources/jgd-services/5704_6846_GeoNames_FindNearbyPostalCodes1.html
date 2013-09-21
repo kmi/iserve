@@ -1,0 +1,124 @@
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<html>
+
+
+<meta name="generator" content="HTML Tidy, see www.w3.org">
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<title>GeoNames Web uk.ac.open.kmi.iserve.commons.model.Service Documentation</title>
+<link rel="search" type="application/opensearchdescription+xml" title="geonames"
+      href="http://www.geonames.org/opensearch-plugin.xml">
+<link href="http://www.geonames.org/geonames.ico" rel="shortcut icon">
+<link type="text/css" rel="stylesheet" href="http://www.geonames.org/geonames.css">
+
+<table id="topmenutable">
+    <tbody>
+    <tr>
+        <td class="topmenu">&nbsp;<a href="javascript:callProxy('http://www.geonames.org/')">GeoNames
+            Home</a>&nbsp;|&nbsp;<a href="javascript:callProxy('http://www.geonames.org/postal-codes/')">Postal
+            Codes</a>&nbsp;|&nbsp;<a href="javascript:callProxy('http://www.geonames.org/export/')">Download
+            / Webservice</a>&nbsp;|&nbsp;<a href="javascript:callProxy('http://www.geonames.org/about.html')">About</a>&nbsp;|
+        </td>
+        <td class="topsearch">
+            <form class="topsearch" name="searchForm" method="post" action="/servlet/geonames"
+                  onsubmit="javascript:fulltextsearch();return false;">search <input class="topmenu" name="q" size="20"
+                                                                                     value="" type="text"> <input
+                    name="srv" value="1" type="hidden"></form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="margin: auto; width: 600px; text-align: left;">
+    <h3>GeoNames Web Services Documentation</h3>
+
+    GeoNames is mainly using REST webservices.<br>
+
+    <div class="service" id="GeoNames_FindNearbyPostalCodes1"
+         href="http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#LocationLookup" rel="model">
+        <div class="operation" id="operation1" href="http://www.w3.org/ns/wsdl-extensions#SafeInteraction" rel="model">
+            <h5>
+                <span class="label" id="label1">GeoNames_FindNearbyPostalCodes1</span>/ reverse geocoding</h5>
+
+            This service comes in two flavors. You can either pass the lat/long
+            or a postalcode/placename.
+
+            <p>Webservice Type : REST<br>
+                Url : <span class="address" id="address1">ws.geonames.org/findNearbyPostalCodes?</span><br>
+                Parameters :<br>
+
+            <div class="input" id="input1">
+                <span href="http://www.w3.org/2003/01/geo/wgs84_pos#lat" rel="model">lat</span>,
+                <span href="http://www.w3.org/2003/01/geo/wgs84_pos#long" rel="model">lng</span>,
+                <span href="http://fusion.cs.uni-jena.de/geographydataset.owl#CircularGeographicArea"
+                      rel="model">radius</span> (in km),
+                <span href="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#ResultsCountLimit"
+                      rel="model">maxRows</span> (default = 5),
+                <span href="http://www.cs.umd.edu/%7Esengcy/classes/828y/scy_lifestyle-ont.daml#Style"
+                      rel="model">style</span>
+                (verbosity :<i>SHORT</i>,<i>MEDIUM</i>,<i>LONG</i>,<i>FULL</i>),
+                <span href="http://kmi-web05.open.ac.uk:81/cache/2/fe3/2c5f/68592/02b3537c7f/4a4ed3a13e4f9e685#Country"
+                      rel="model">country</span>
+                (default = all countries)
+            </div>
+            , localCountry (in border areas this
+            parameter will restrict the search on the local country,
+            value=true)<br>
+            or<br>
+            postalcode,country, radius (in Km), maxRows (default = 5)<br>
+            Result :
+            <div class="output" id="output1" href="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#PostalCodeArea"
+                 rel="model" href="http://fusion.cs.uni-jena.de/geographydataset.owl#GeographicDistance" rel="model">
+                returns a list of postalcodes and places for the lat/lng
+                query as xml document
+            </div>
+            . The result is sorted by distance.<br>
+            Example:<br>
+            <a href="javascript:callProxy('http://ws.geonames.org/findNearbyPostalCodes?lat=47&amp;lng=9')"
+               target="_blank">http://ws.geonames.org/findNearbyPostalCodes?lat=47&amp;lng=9</a><br>
+            or<br>
+            <a href="javascript:callProxy('http://ws.geonames.org/findNearbyPostalCodes?postalcode=8775&amp;country=CH&amp;radius=10')"
+               target="_blank">ws.geonames.org/findNearbyPostalCodes?postalcode=8775&amp;country=CH&amp;radius=10</a></p>
+
+            <p>This service is also available in JSON format : <a
+                    href="javascript:callProxy('http://ws.geonames.org/findNearbyPostalCodesJSON?postalcode=8775&amp;country=CH&amp;radius=10')"
+                    target="_blank">ws.geonames.org/findNearbyPostalCodesJSON?postalcode=8775&amp;country=CH&amp;radius=10</a><br>
+                <br>
+                <small>[<a href="javascript:callProxy('http://www.geonames.org/export/reverse-geocoding.html')">
+                    more reverse geocoding webservices</a>]
+                </small>
+                <br>
+                <br>
+                <br>
+                </a></p>
+        </div>
+    </div>
+
+    <div id="pageFooter">info@geonames.org
+
+        <p><a href="javascript:callProxy('http://www.geonames.org/')">GeoNames
+            Home</a> <span class="separator">•</span> <a
+                href="javascript:callProxy('http://www.geonames.org/postal-codes/')">Postal
+            Codes</a> <span class="separator">•</span> <a
+                href="javascript:callProxy('http://www.geonames.org/export/')">Download
+            / Webservice</a> <span class="separator">•</span> <a
+                href="javascript:callProxy('http://forum.geonames.org')">Forum</a> <span class="separator">•</span> <a
+                href="javascript:callProxy('http://geonames.wordpress.com')">Blog</a>
+            <span class="separator">•</span> <a href="javascript:callProxy('http://www.geonames.org/sitemap.html')">Sitemap</a>
+        </p>
+    </div>
+</html>

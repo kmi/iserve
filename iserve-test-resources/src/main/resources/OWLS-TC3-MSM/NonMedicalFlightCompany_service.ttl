@@ -1,0 +1,66 @@
+@prefix hr:      <http://iserve.kmi.open.ac.uk/ns/hrests#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix wl:      <http://www.wsmo.org/ns/wsmo-lite#> .
+@prefix sawsdl:  <http://www.w3.org/ns/sawsdl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix msm:     <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix msm-wsdl:  <http://iserve.kmi.open.ac.uk/ns/msm-wsdl#> .
+@prefix dcterms:  <http://purl.org/dc/elements/1.1/> .
+
+<http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformationProcess_Input>
+      a       msm:MessageContent , msm:MessagePart ;
+      msm:hasMandatoryPart
+              <http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#GetNonMedicalFlightAccount_CustomerDesiredAccountName> , <http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformation_DesiredDepartureDateTime> , <http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformation_DesiredArrivalAirport> , <http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformation_FlightCategory> , <http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformation_DesiredDepartureAirport> ;
+      msm-wsdl:isGroundedIn
+              <http://127.0.0.1/wsdl/Providenonmedicalflightinformation#getProvideNonMedicalFlightInformation_ListOfFlightsRequest> .
+
+<http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#GetNonMedicalFlightAccount_CustomerDesiredAccountName>
+      a       msm:MessagePart ;
+      sawsdl:modelReference
+              <http://127.0.0.1/ontology/NonMedicalFlightCompanyOntology.owl#AccountName> .
+
+<http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformation_DesiredDepartureDateTime>
+      a       msm:MessagePart ;
+      sawsdl:modelReference
+              <http://127.0.0.1/ontology/NonMedicalFlightCompanyOntology.owl#DateTime> .
+
+<http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformation_DesiredArrivalAirport>
+      a       msm:MessagePart ;
+      sawsdl:modelReference
+              <http://127.0.0.1/ontology/NonMedicalFlightCompanyOntology.owl#Airport> .
+
+<http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformationProcess>
+      a       msm:Operation ;
+      msm:hasInput <http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformationProcess_Input> ;
+      msm:hasOutput <http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformationProcess_Output> ;
+      dcterms:source <http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformationProcess> .
+
+<http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformationService>
+      a       msm:Service ;
+      msm:hasOperation <http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformationProcess> ;
+      msm-wsdl:isGroundedIn
+              <http://127.0.0.1/wsdl/NonMedicalFlightCompany_service.wsdl> ;
+      dcterms:source <http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformationService> .
+
+<http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformation_ListOfFlights>
+      a       msm:MessagePart ;
+      sawsdl:modelReference
+              <http://127.0.0.1/ontology/NonMedicalFlightCompanyOntology.owl#ListOfFlights> .
+
+<http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformation_FlightCategory>
+      a       msm:MessagePart ;
+      sawsdl:modelReference
+              <http://127.0.0.1/ontology/NonMedicalFlightCompanyOntology.owl#FlightCategory> .
+
+<http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformationProcess_Output>
+      a       msm:MessageContent , msm:MessagePart ;
+      msm:hasMandatoryPart
+              <http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformation_ListOfFlights> ;
+      msm-wsdl:isGroundedIn
+              <http://127.0.0.1/wsdl/Providenonmedicalflightinformation#getProvideNonMedicalFlightInformation_ListOfFlightsResponse> .
+
+<http://127.0.0.1/services/1.1/NonMedicalFlightCompany_service.owls#ProvideNonMedicalFlightInformation_DesiredDepartureAirport>
+      a       msm:MessagePart ;
+      sawsdl:modelReference
+              <http://127.0.0.1/ontology/NonMedicalFlightCompanyOntology.owl#Airport> .

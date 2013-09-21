@@ -1,11 +1,12 @@
+*.iml
 .classpath
 .project
 .settings
 .settings/*
 target
 target/*
-iserve.war
 iserve/*
 deploy.sh
-serve-rest-client/src/test/java/uk/ac/open/kmi/iserve/client/rest/TestIServeHttpClient.java
 
+/iserve
+/iserve*.war

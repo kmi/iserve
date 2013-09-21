@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns:sawsdl="http://www.w3.org/ns/sawsdl" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://ws.geonames.org/" targetNamespace="http://ws.geonames.org/">
+    <wsdl:documentation>This is a WSDL 1.1 comment that has been created for a RESTful service for evaluation and
+        testing purposes.
+        It is not guaranteed to be correct or appropriate.
+    </wsdl:documentation>
+    <wsdl:types>
+        <xsd:schema elementFormDefault="qualified" targetNamespace="http://ws.geonames.org/">
+            <xsd:annotation>This type information has been semi-automatically generated. It properly represents the
+                semantics of the service's parameters, but is not guaranteed to precisely match the schema actually used
+                by the service.
+            </xsd:annotation>
+            <xsd:complexType name="Output"
+                             sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#GeographicDistance http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#GeolocatedWikipediaArticle">
+                <xsd:sequence>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="Wikipedia_articles" type="xsd:anyType">
+                        <xsd:annotation>Wikipedia articles including title, language, summary, link to full text, type
+                            and some structured data of the object described in the article and distance to the given
+                            location.
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="distance" type="xsd:double">
+                        <xsd:annotation>The distance of the localization of the article to the input location
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="lat" type="xsd:string">
+                        <xsd:annotation>The latitude of the geographic position the wikipedia article is localized to.
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="lng" type="xsd:string">
+                        <xsd:annotation>The longitude of the geographic position the wikipedia article is localized
+                            to.
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="Output" nillable="true" type="tns:Output"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="GeoNames_FindNearbyWikipedia2HttpGetIn">
+        <!-- the model reference below should be on the message because it really applies to radius+lat+lng -->
+        <wsdl:part name="radius" type="xsd:string"
+                   sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#CircularGeographicArea">
+            <wsdl:documentation>The radius in km for places to be included in the result set. Finetune the number of
+                results to be returned using the maxRows parameter.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="maxRows" type="xsd:string"
+                   sawsdl:modelReference="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#ResultsCountLimit">
+            <wsdl:documentation>Determines the maximun number of places to be returned (optional, default = 5).
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="postal_code" type="xsd:string"
+                   sawsdl:modelReference="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#PostalCodeArea">
+            <wsdl:documentation>postal code of the location of interest</wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="lang" type="xsd:string">
+            <wsdl:documentation>The language returned articles should be in. Optional, default=en.</wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="country_code" type="xsd:string"
+                   sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protonu#Country">
+            <wsdl:documentation>The ISO code of the country that the returned articles should be localized to.
+            </wsdl:documentation>
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="GeoNames_FindNearbyWikipedia2HttpGetOut">
+        <wsdl:part name="Body" element="tns:Output">
+            <wsdl:documentation></wsdl:documentation>
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="GeoNames_FindNearbyWikipedia2HttpGet">
+        <wsdl:operation name="GeoNames_FindNearbyWikipedia2"
+                        sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <wsdl:documentation>Find Wikipedia articles localized close to the given location (identified by a country
+                and a postal code).
+            </wsdl:documentation>
+            <wsdl:input message="tns:GeoNames_FindNearbyWikipedia2HttpGetIn"/>
+            <wsdl:output message="tns:GeoNames_FindNearbyWikipedia2HttpGetOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="GeoNames_FindNearbyWikipedia2HttpGet" type="tns:GeoNames_FindNearbyWikipedia2HttpGet">
+        <http:binding verb="GET"/>
+        <wsdl:operation name="GeoNames_FindNearbyWikipedia2">
+            <http:operation location="findNearbyWikipedia"/>
+            <wsdl:input>
+                <http:urlEncoded/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:mimeXml part="Body"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service sawsdl:modelReference=" http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#EntityLocationService"
+                  name="GeoNames_FindNearbyWikipedia2">
+        <wsdl:port name="GeoNames_FindNearbyWikipedia2HttpGet" binding="tns:GeoNames_FindNearbyWikipedia2HttpGet">
+            <http:address location="http://ws.geonames.org/"/>
+        </wsdl:port>
+
+    </wsdl:service>
+</wsdl:definitions>

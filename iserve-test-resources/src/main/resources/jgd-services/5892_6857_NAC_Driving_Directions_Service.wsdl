@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns:sawsdl="http://www.w3.org/ns/sawsdl" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://mlbs.net/nacgeoservicesv4.5/" targetNamespace="http://mlbs.net/nacgeoservicesv4.5/">
+    <wsdl:documentation>This is a WSDL 1.1 comment that has been created for a RESTful service for evaluation and
+        testing purposes.
+        It is not guaranteed to be correct or appropriate.
+    </wsdl:documentation>
+    <wsdl:types>
+        <xsd:schema elementFormDefault="qualified" targetNamespace="http://mlbs.net/nacgeoservicesv4.5/">
+            <xsd:annotation>This type information has been semi-automatically generated. It properly represents the
+                semantics of the service's parameters, but is not guaranteed to precisely match the schema actually used
+                by the service.
+            </xsd:annotation>
+            <xsd:complexType name="Output"
+                             sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#Route http://fusion.cs.uni-jena.de/geographydataset.owl#RouteMap">
+                <xsd:sequence>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="TotalDistance" type="xsd:double">
+                        <xsd:annotation>The total driving distance in the unit (km or miles) specified in the input.
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="TotalDrivingTime" type="xsd:string">
+                        <xsd:annotation>The total driving time of the route.</xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="directions" type="xsd:anyType">
+                        <xsd:annotation>Driving directions to navigate the route in the specified language.
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="MapImageURL" type="xsd:anyURI">
+                        <xsd:annotation>A url pointing to a map displaying the requested route (if a map was
+                            requested).
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="Output" nillable="true" type="tns:Output"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="NAC_Driving_Directions_ServiceHttpGetIn">
+        <wsdl:part name="userID" type="xsd:string">
+            <wsdl:documentation>A valid user id to authenticate for the service.</wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="startLatLng" type="xsd:string"
+                   sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protont#Location">
+            <wsdl:documentation>The geographic coordinates (southwest, northeast) of the start location.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="ImageWidth" type="xsd:string">
+            <wsdl:documentation>ImageWidth is the route map image width in pixels</wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="ImageHeight" type="xsd:string">
+            <wsdl:documentation>ImageHeight is the route map image height in pixels</wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="ImageFormat" type="xsd:string">
+            <wsdl:documentation>ImageFormat is the image format of the route map and can be "gif" or "png"
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="language" type="xsd:string">
+            <wsdl:documentation>Language is the language you want for the result. It can be "en" for British English,
+                "en-US" for US English, "es" for Spanish, "de" for German, "fr" for French, "it" for Italian, "nl" for
+                Dutch, "pt" for Portuguese, and "sv" for Swedish. It's optional. The default language is "en" for Europe
+                and "en-US" for North America.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="endLatLng" type="xsd:string">
+            <wsdl:documentation>The geographic coordinates of the end location.</wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="criterion" type="xsd:string">
+            <wsdl:documentation>Criterion can be QUICKEST or SHORTEST to decide the driving route</wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="stops" type="xsd:string">
+            <wsdl:documentation>Stops provides the latitude/longitude pairs of the stop locations of the route. It is
+                optional.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="unit" type="xsd:string">
+            <wsdl:documentation>Unit is the unit for the returned driving distance, that can be "KM" or "MILE". The
+                default is "KM".
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="ShowWaypoints" type="xsd:string">
+            <wsdl:documentation>ShowWaypoints is optional and can be "yes" or "no". The default value is "no". If it is
+                "yes", then the pairs of latitude and longitude of waypoints will be returned in the Waypointslist text
+                area.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="ShowMap" type="xsd:string">
+            <wsdl:documentation>ShowMap is to indicate whether the route map is requested, and can be yes or no
+            </wsdl:documentation>
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="NAC_Driving_Directions_ServiceHttpGetOut">
+        <wsdl:part name="Body" element="tns:Output">
+            <wsdl:documentation></wsdl:documentation>
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="NAC_Driving_Directions_ServiceHttpGet">
+        <wsdl:operation name="NAC_Driving_Directions_Service"
+                        sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <wsdl:documentation>his service is based on http get request/XML response model to provide driving
+                directions and route maps for 34 countries and areas:
+
+                Asian Pacific Region: Australia, Hong Kong (59%), Malaysia (highway only), New Zealand, Singapore, and
+                Taiwan (15%).
+
+                Western Europe: Andorra, Austria, Belgium, Czech Republic, Denmark, Finland (Helsinki only), France,
+                Germany, Ireland (50%), Italy, Liechtenstein, Luxembourg, Monaco, The Netherlands, Norway (Oslo only),
+                Portugal, San Marino, Slovakia, Spain, Sweden, Switzerland, Greece (Athens only), United Kingdom and
+                Vatican City.
+
+                North America: Canada, Mexico (Major roads for Mexico; street-level detail for Mexico City), Puerto Rico
+                and United States.
+
+                Central and Eastern Europe: Albania, Armenia, Azerbaijan, Belarus, Bosnia and Herzegovina, Bulgaria,
+                Croatia, Czech Republic, Estonia, Georgia, Greece, Hungary, Latvia, Lithuania, the former Yugoslav
+                republic of Macedonia, Moldova, Poland, Romania, Russia, Serbia and Montenegro, Slovakia, Slovenia,
+                Turkey, and Ukraine. South America: Argentina, Brazil and Chile. North Africa: Algeria, Egypt, Libyan
+                Arab Jamahiriya (Libya), Morocco and Tunisia. And worldwide city-to-city routing.
+            </wsdl:documentation>
+            <wsdl:input message="tns:NAC_Driving_Directions_ServiceHttpGetIn"/>
+            <wsdl:output message="tns:NAC_Driving_Directions_ServiceHttpGetOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="NAC_Driving_Directions_ServiceHttpGet" type="tns:NAC_Driving_Directions_ServiceHttpGet">
+        <http:binding verb="GET"/>
+        <wsdl:operation name="NAC_Driving_Directions_Service">
+            <http:operation location="xmldirections.aspx?"/>
+            <wsdl:input>
+                <http:urlEncoded/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:mimeXml part="Body"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service
+            sawsdl:modelReference=" http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#RouteLookup http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#EntityMappingService http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#LocationDistanceLookup"
+            name="NAC_Driving_Directions_Service">
+        <wsdl:port name="NAC_Driving_Directions_ServiceHttpGet" binding="tns:NAC_Driving_Directions_ServiceHttpGet">
+            <http:address location="http://mlbs.net/nacgeoservicesv4.5/"/>
+        </wsdl:port>
+
+    </wsdl:service>
+</wsdl:definitions>

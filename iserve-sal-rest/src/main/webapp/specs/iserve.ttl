@@ -1,0 +1,238 @@
+#
+# A hello-world config. 
+#
+
+# Assorted prefix declarations. Some of them are for the structuring
+# of the API config, others are for the vocabulary definitions.
+#
+
+@prefix api:                <http://purl.org/linked-data/api/vocab#> .
+@prefix dct:				<http://purl.org/dc/terms/> .
+
+@prefix rdf:                <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:               <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:                <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:                <http://www.w3.org/2002/07/owl#> .
+@prefix skos:               <http://www.w3.org/2004/02/skos/core#> .
+@prefix foaf:               <http://xmlns.com/foaf/0.1/> .
+
+# The elda namespace/prefix is for Elda extensions to the LDA specification.
+@prefix elda:               <http://www.epimorphics.com/vocabularies/lda#> .
+
+# Prefix for example-local entities.
+@prefix msm:				<http://iserve.kmi.open.ac.uk/ns/msm#>.
+@prefix spec:               <http://localhost:9090/iserve/elda/api-config#> .
+@prefix dc:					<http://purl.org/dc/elements/1.1/> .
+@prefix sawsdl:				<http://www.w3.org/ns/sawsdl#> .
+@prefix wl:					<http://www.wsmo.org/ns/wsmo-lite#> .
+
+# ---------------------------------------------------------------------
+# API config
+
+spec:api a api:API; 
+	rdfs:label "iServe API"@en ;
+	api:vocabulary "http://iserve.kmi.open.ac.uk/ns/msm#" ;
+	api:base "http://localhost:9090/iserve/" ;
+	api:variable [
+        	api:name "base" ;
+        	api:value "http://localhost:9090/iserve/" ;
+        	api:type rdfs:Resource ;
+       	] ;
+	api:sparqlEndpoint <http://localhost:8080/openrdf-sesame/repositories/Test> ;
+	# the page size can't be set higher than this 
+	api:maxPageSize 50 ;
+	# and this is the default page size
+	api:defaultPageSize 10 ;
+	# the viewer to use by default, a DESCRIBE plus labels for all the
+	# resources that have them.
+	#api:defaultViewer api:labelledDescribeViewer ;
+	# the default formatter is the XSLT formatter defined above 
+	api:defaultFormatter spec:HtmlFormatter ;
+	api:endpoint
+	    spec:serviceList ,
+	    spec:serviceItem ,
+		spec:operationsList ,
+		spec:operationItem ,
+		spec:operationInputsList ,
+		spec:messageItem .
+	
+# Endpoint definition	
+					
+# Viewers Definitions
+spec:viewerMedium
+	a api:Viewer ;
+	api:name "medium" ;
+	api:properties "label,type.label,hasPart.label,hasMandatoryPart.label,hasOptionalPart.label" .
+										
+	
+_:servicesSelect a api:Selector ;
+	api:filter "type=Service" .
+#	api:sort "label" .
+
+spec:serviceList a api:ListEndpoint ;
+	rdfs:label "Services List"@en ;
+	api:uriTemplate "/doc/services" ;
+	api:selector _:servicesSelect .
+
+_:operationsSelect a api:Selector;
+	api:filter "type=Operation" ;
+	api:sort "label" .
+		
+spec:operationsList a api:ListEndpoint ;
+	rdfs:label "Operations List"@en ;
+	api:uriTemplate "/doc/operations" ;
+	api:selector _:operationsSelect .
+
+_:operationInputsSelect a api:Selector ;
+	api:filter "type=MessageContent" ;
+	# To be fixed as the code is not really used properly
+	api:where "?operation msm:hasInput ?item ." ;
+	api:sort "label" . 
+	
+spec:operationInputsList a api:ListEndpoint ;
+	rdfs:label "Operation Inputs List"@en ;
+	api:uriTemplate "/doc/services/{svcId}/{serviceName}/{opName}/messages" ;
+	# Define a variable that represents that actual operation ID.
+	api:variable [
+    	api:name "operation" ;
+    	api:value "{base}/id/services/{svcId}/{serviceName}/{opName}" ;
+    	api:type rdfs:Resource ;
+   	] ;
+   	api:variable [
+        	api:name "service" ;
+        	api:value "{base}/id/services/{svcId}/{serviceName}" ;
+        	api:type rdfs:Resource ;
+       	] ;
+	api:defaultViewer spec:viewerMedium ;
+	api:selector _:operationInputsSelect .	
+
+#Items descriptions
+spec:serviceItem
+    a api:ItemEndpoint ;
+    rdfs:label "Service"@en ;
+    api:uriTemplate "/doc/services/{svcId}/{serviceName}" ;
+    api:itemTemplate "http://localhost:9090/iserve/id/services/{svcId}/{serviceName}" .
+	
+spec:operationItem
+    a api:ItemEndpoint ;
+    rdfs:label "Operation"@en ;
+    api:uriTemplate "/doc/services/{svcId}/{serviceName}/{opName}" ;
+    api:itemTemplate "http://localhost:9090/iserve/id/services/{svcId}/{serviceName}/{opName}" ;
+    api:variable [
+            	api:name "service" ;
+            	api:value "http://localhost:9090/iserve/id/services/{svcId}/{serviceName}" ;
+            	api:type rdfs:Resource ;
+           	] .
+
+spec:messageItem
+    a api:ItemEndpoint ;
+    rdfs:label "Message Content"@en ;
+    api:uriTemplate "/doc/services/{svcId}/{serviceName}/{opName}/{messageName}" ;
+    api:itemTemplate "http://localhost:9090/iserve/id/services/{svcId}/{serviceName}/{opName}/{messageName}" .
+
+#
+# This XSLT formatter produces rich HTML from the viewer properties.
+#
+	
+
+spec:HtmlFormatter a api:XsltFormatter ; 
+	api:name "html" ;
+	api:mimeType "text/html; charset=utf-8" ;
+	api:stylesheet "xslt/result-osm-trimmed.xsl" .
+	
+# Vocabulary Definitions
+
+#iServe-specific terminology		
+	
+# MSM
+
+
+# SAWSDL	
+sawsdl:modelReference api:label "modelReference" .	
+sawsdl:liftingSchemaMapping api:label "liftingSchemaMapping" .
+sawsdl:loweringSchemaMapping api:label "loweringSchemaMapping" .
+
+# WSMO-Lite	
+wl:NonfunctionalParameter api:label "NonFunctionalParameter" .
+wl:Condition api:label "Condition" .
+wl:Effect api:label "Effect" .
+
+
+# General Basic Resources
+	
+# RDF/S	
+rdf:Property api:label "Property" .
+
+rdf:type api:label "type" 
+    ; api:multiValued true 
+    ; rdfs:range rdfs:Class 
+    .
+
+rdf:value api:label "value" .
+
+rdfs:Class api:label "Class" .
+
+rdfs:label api:label "label" ; api:multiValued true .
+
+rdfs:seeAlso api:label "seeAlso" ; api:multiValued true .
+
+rdfs:comment api:label "comment" .
+
+rdfs:range api:label "range" .
+
+rdfs:domain api:label "domain" .
+
+rdfs:isDefinedBy api:label "isDefinedBy" .
+
+rdfs:subClassOf api:label "subClassOf" .
+
+rdfs:subPropertyOf api:label "subPropertyOf" .
+
+# OWL
+owl:sameAs api:label "sameAs" .
+owl:imports api:label "imports" .
+owl:versionInfo api:label "versionInfo" .
+
+# FOAF
+foaf:isPrimaryTopicOf a rdf:Property;
+    api:label "isPrimaryTopicOf"
+    .
+
+# SKOS	
+skos:prefName api:label "prefName".
+
+skos:Concept api:label "Concept" .
+
+skos:ConceptScheme api:label "ConceptScheme" .
+
+skos:prefLabel api:label "prefLabel" .
+
+skos:altLabel api:label "altLabel" 
+	; api:multiValued true .
+
+skos:note api:label "note" .
+
+skos:notation api:label "notation" .
+
+skos:scopeNote api:label "scopeNote" .
+
+skos:topConceptOf api:label "topConceptOf" 
+	; rdfs:range rdfs:Resource
+	.
+
+skos:hasTopConcept api:label "topConcept"  
+	; rdfs:range rdfs:Resource 
+	; api:multiValued true 
+	.
+
+skos:broader api:label "broader"  
+	; rdfs:range rdfs:Resource
+	.
+
+skos:narrower api:label "narrower"  
+	; rdfs:range rdfs:Resource
+	; api:multiValued true 
+	.
+
+# DC
+dc:source api:label "documentSource" .	

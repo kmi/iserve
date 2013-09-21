@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns:sawsdl="http://www.w3.org/ns/sawsdl" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema"
+                  xmlns:tns="http://www.webserviceX.NET" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  targetNamespace="http://www.webserviceX.NET" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <wsdl:types>
+        <s:schema elementFormDefault="qualified" targetNamespace="http://www.webserviceX.NET">
+
+            <s:element name="GetInfoByCity">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="USCity" type="s:string"
+                                   sawsdl:modelReference="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#RawAddress"/>
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+
+            <s:element name="GetInfoByCityResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="GetInfoByCityResult">
+                            <s:complexType mixed="true">
+                                <s:sequence>
+                                    <s:any/>
+                                </s:sequence>
+                            </s:complexType>
+                        </s:element>
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+
+        </s:schema>
+    </wsdl:types>
+
+    <wsdl:message name="GetInfoByCitySoapIn">
+        <wsdl:part name="parameters" element="tns:GetInfoByCity"/>
+    </wsdl:message>
+
+    <wsdl:message name="GetInfoByCitySoapOut">
+        <wsdl:part name="parameters" element="tns:GetInfoByCityResponse"
+                   sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protonu#City http://fusion.cs.uni-jena.de/geographydataset.owl#PhoneCode http://proton.semanticweb.org/2005/04/protonu#TimeZone http://fusion.cs.uni-jena.de/geographydataset.owl#PostalCode"/>
+    </wsdl:message>
+
+    <wsdl:message name="GetInfoByCityHttpGetIn">
+        <wsdl:part name="USCity" type="s:string"
+                   sawsdl:modelReference="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#RawAddress"/>
+    </wsdl:message>
+
+    <wsdl:message name="GetInfoByCityHttpGetOut">
+        <wsdl:part name="Body"
+                   sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protonu#City http://fusion.cs.uni-jena.de/geographydataset.owl#PhoneCode http://proton.semanticweb.org/2005/04/protonu#TimeZone http://fusion.cs.uni-jena.de/geographydataset.owl#PostalCode"/>
+    </wsdl:message>
+
+    <wsdl:message name="GetInfoByCityHttpPostIn">
+        <wsdl:part name="USCity" type="s:string"
+                   sawsdl:modelReference="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#RawAddress"/>
+    </wsdl:message>
+
+    <wsdl:message name="GetInfoByCityHttpPostOut">
+        <wsdl:part name="Body"
+                   sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protonu#City http://fusion.cs.uni-jena.de/geographydataset.owl#PhoneCode http://proton.semanticweb.org/2005/04/protonu#TimeZone http://fusion.cs.uni-jena.de/geographydataset.owl#PostalCode"/>
+    </wsdl:message>
+
+    <wsdl:portType name="USZipSoap">
+        <wsdl:operation name="GetInfoByCity"
+                        sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">Get State Code,City,Area Code,Time Zone,Zip Code by
+                City
+            </documentation>
+            <wsdl:input message="tns:GetInfoByCitySoapIn"/>
+            <wsdl:output message="tns:GetInfoByCitySoapOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:portType name="USZipHttpGet">
+        <wsdl:operation name="GetInfoByCity"
+                        sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">Get State Code,City,Area Code,Time Zone,Zip Code by
+                City
+            </documentation>
+            <wsdl:input message="tns:GetInfoByCityHttpGetIn"/>
+            <wsdl:output message="tns:GetInfoByCityHttpGetOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:portType name="USZipHttpPost">
+        <wsdl:operation name="GetInfoByCity"
+                        sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">Get State Code,City,Area Code,Time Zone,Zip Code by
+                City
+            </documentation>
+            <wsdl:input message="tns:GetInfoByCityHttpPostIn"/>
+            <wsdl:output message="tns:GetInfoByCityHttpPostOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="USZipSoap" type="tns:USZipSoap">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="GetInfoByCity">
+            <soap:operation soapAction="http://www.webserviceX.NET/GetInfoByCity" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:binding name="USZipHttpGet" type="tns:USZipHttpGet">
+        <http:binding verb="GET"/>
+        <wsdl:operation name="GetInfoByCity">
+            <http:operation location="/GetInfoByCity"/>
+            <wsdl:input>
+                <http:urlEncoded/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content part="Body" type="text/xml"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:binding name="USZipHttpPost" type="tns:USZipHttpPost">
+        <http:binding verb="POST"/>
+        <wsdl:operation name="GetInfoByCity">
+            <http:operation location="/GetInfoByCity"/>
+            <wsdl:input>
+                <mime:content type="application/x-www-form-urlencoded"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content part="Body" type="text/xml"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service sawsdl:modelReference=" http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#LocationLookup"
+                  name="USZip">
+        <wsdl:port name="USZipSoap" binding="tns:USZipSoap">
+            <soap:address location="http://www.webservicex.net/uszip.asmx"/>
+        </wsdl:port>
+        <wsdl:port name="USZipHttpGet" binding="tns:USZipHttpGet">
+            <http:address location="http://www.webservicex.net/uszip.asmx"/>
+        </wsdl:port>
+        <wsdl:port name="USZipHttpPost" binding="tns:USZipHttpPost">
+            <http:address location="http://www.webservicex.net/uszip.asmx"/>
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>

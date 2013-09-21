@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns:sawsdl="http://www.w3.org/ns/sawsdl" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://www.earthtools.org/" targetNamespace="http://www.earthtools.org/">
+    <wsdl:documentation>This is a WSDL 1.1 comment that has been created for a RESTful service for evaluation and
+        testing purposes.
+        It is not guaranteed to be correct or appropriate. The binding information in particular may likely not be
+        correct.
+    </wsdl:documentation>
+    <wsdl:types>
+        <xsd:schema elementFormDefault="qualified" targetNamespace="http://www.earthtools.org/">
+            <xsd:annotation>This type information has been semi-automatically generated. It properly represents the
+                semantics of the service's parameters, but does not necessarily match the schema actually used by the
+                service.
+            </xsd:annotation>
+            <xsd:complexType name="Output">
+                <xsd:sequence>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="version_number" type="xsd:anyType">
+                        <xsd:annotation>The version number of the service</xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="location" type="xsd:anyType"
+                                 sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protont#Location">
+                        <xsd:annotation>The location parsed from the given input.</xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="date" type="xsd:anyType">
+                        <xsd:annotation>The provided input used for the calculation (day, month, timezone and dst)
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="sunrise" type="xsd:anyType"
+                                 sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#Sunrise">
+                        <xsd:annotation>The computed sunrise time provided as the normal sunrise time as well as the
+                            civil, nautical, and astronomical twilight times.
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="sunset" type="xsd:anyType"
+                                 sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#Sunset">
+                        <xsd:annotation>The computed sunset time provided as the normal sunset time as well as the
+                            civil, nautical, and astronomical twilight times.
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="Output" nillable="true" type="tns:Output"/>
+            <xsd:element name="long" type="xsd:string"></xsd:element>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="EarthTools_Sunrise_and_Sunset_TimesHttpGetIn">
+        <wsdl:part name="lat" type="xsd:string"
+                   sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protont#Location">
+            <wsdl:documentation>The latitude and longitude of the point of interest.</wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="long" type="xsd:string"></wsdl:part>
+        <wsdl:part name="day" type="xsd:int" sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protonu#Date">
+            <wsdl:documentation>The day and month of interest</wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="month" type="xsd:int"></wsdl:part>
+        <wsdl:part name="timezone" type="xsd:int"> <!-- ignored, will use 99 everywhere, and 1 for dst -->
+            <wsdl:documentation>hours offset from UTC (from -12 to 14). Alternatively, use '99' as the timezone in order
+                to automatically work out the timezone based on the given latitude/longitude.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="dst" type="xsd:int">
+            <wsdl:documentation>whether daylight saving time should be taken into account (either 0 for no or 1 for
+                yes).
+            </wsdl:documentation>
+        </wsdl:part>
+
+
+    </wsdl:message>
+    <wsdl:message name="EarthTools_Sunrise_and_Sunset_TimesHttpGetOut">
+        <wsdl:part name="Body" element="tns:Output">
+            <wsdl:documentation></wsdl:documentation>
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="EarthTools_Sunrise_and_Sunset_TimesHttpGet">
+        <wsdl:operation name="EarthTools_Sunrise_and_Sunset_Times"
+                        sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <wsdl:documentation>This service responds with the sunrise, sunset and twilight times for the specified
+                latitude and longitude and date.
+                Sunrise and sunset times are calculated using a PHP script using formulae from www.srrb.noaa.gov. There
+                might be errors when using latitudes which are close to the poles
+            </wsdl:documentation>
+            <wsdl:input message="tns:EarthTools_Sunrise_and_Sunset_TimesHttpGetIn"/>
+            <wsdl:output message="tns:EarthTools_Sunrise_and_Sunset_TimesHttpGetOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="EarthTools_Sunrise_and_Sunset_TimesHttpGet2"
+                  type="tns:EarthTools_Sunrise_and_Sunset_TimesHttpGet">
+        <http:binding verb="GET"/>
+        <wsdl:operation name="EarthTools_Sunrise_and_Sunset_Times">
+            <http:operation location="sun/(lat)/(long)/(day)/(month)/(timezone)/(dst)"/>
+            <wsdl:input>
+                <http:urlReplacement/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:mimeXml part="Body"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service
+            sawsdl:modelReference=" http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#InformationAboutLocationLookup http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#EventOccurrenceLookup"
+            name="EarthTools_Sunrise_and_Sunset_Times">
+
+        <wsdl:port name="EarthTools_Sunrise_and_Sunset_TimesHttpGet2"
+                   binding="tns:EarthTools_Sunrise_and_Sunset_TimesHttpGet2">
+            <http:address location="http://www.earthtools.org/"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

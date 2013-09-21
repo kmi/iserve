@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns:sawsdl="http://www.w3.org/ns/sawsdl" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema"
+                  xmlns:tns="http://www.webserviceX.NET/" targetNamespace="http://www.webserviceX.NET/"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <wsdl:types>
+        <s:schema elementFormDefault="qualified" targetNamespace="http://www.webserviceX.NET/">
+            <s:element name="GetSunSetRiseTime">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="1" maxOccurs="1" name="L" type="tns:LatLonDate"
+                                   sawsdl:modelReference="http://proton.semanticweb.org/2005/04/protonu#Date http://proton.semanticweb.org/2005/04/protonu#TimeZone http://proton.semanticweb.org/2005/04/protont#Location"/>
+                    </s:sequence>
+                </s:complexType>
+
+            </s:element>
+            <s:complexType name="LatLonDate">
+                <s:sequence>
+                    <s:element minOccurs="1" maxOccurs="1" name="Latitude" type="s:float"/>
+                    <s:element minOccurs="1" maxOccurs="1" name="Longitude" type="s:float"/>
+                    <s:element minOccurs="1" maxOccurs="1" name="SunSetTime" type="s:float"/>
+                    <s:element minOccurs="1" maxOccurs="1" name="SunRiseTime" type="s:float"/>
+                    <s:element minOccurs="1" maxOccurs="1" name="TimeZone" type="s:int"/>
+                    <s:element minOccurs="1" maxOccurs="1" name="Day" type="s:int"/>
+
+                    <s:element minOccurs="1" maxOccurs="1" name="Month" type="s:int"/>
+                    <s:element minOccurs="1" maxOccurs="1" name="Year" type="s:int"/>
+                </s:sequence>
+            </s:complexType>
+            <s:element name="GetSunSetRiseTimeResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="1" maxOccurs="1" name="GetSunSetRiseTimeResult" type="tns:LatLonDate"
+                                   sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#Sunset http://fusion.cs.uni-jena.de/geographydataset.owl#Sunrise"/>
+                    </s:sequence>
+
+                </s:complexType>
+            </s:element>
+        </s:schema>
+    </wsdl:types>
+    <wsdl:message name="GetSunSetRiseTimeSoapIn">
+        <wsdl:part name="parameters" element="tns:GetSunSetRiseTime"/>
+    </wsdl:message>
+    <wsdl:message name="GetSunSetRiseTimeSoapOut">
+        <wsdl:part name="parameters" element="tns:GetSunSetRiseTimeResponse"/>
+
+    </wsdl:message>
+    <wsdl:portType name="SunSetRiseServiceSoap">
+        <wsdl:operation name="GetSunSetRiseTime"
+                        sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">Get Sunset and Sunrise time for any location in the
+                world&lt;br&gt;&lt;b&gt;Longitude:&lt;/b&gt;Positive in Western Hemisphere,Negative in Eastern
+                Hemisphere&lt;br&gt;&lt;b&gt;Latitude:&lt;/b&gt;Positive in Northern Hemisphere,Negative in Southern
+                Hemisphere
+            </documentation>
+
+            <wsdl:input message="tns:GetSunSetRiseTimeSoapIn"/>
+            <wsdl:output message="tns:GetSunSetRiseTimeSoapOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:portType name="SunSetRiseServiceHttpGet"/>
+    <wsdl:portType name="SunSetRiseServiceHttpPost"/>
+    <wsdl:binding name="SunSetRiseServiceSoap" type="tns:SunSetRiseServiceSoap">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="GetSunSetRiseTime">
+
+            <soap:operation soapAction="http://www.webserviceX.NET/GetSunSetRiseTime" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:binding name="SunSetRiseServiceHttpGet" type="tns:SunSetRiseServiceHttpGet">
+        <http:binding verb="GET"/>
+    </wsdl:binding>
+    <wsdl:binding name="SunSetRiseServiceHttpPost" type="tns:SunSetRiseServiceHttpPost">
+        <http:binding verb="POST"/>
+    </wsdl:binding>
+    <wsdl:service
+            sawsdl:modelReference=" http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#InformationAboutLocationLookup http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#EventOccurrenceLookup"
+            name="SunSetRiseService">
+        <wsdl:port name="SunSetRiseServiceSoap" binding="tns:SunSetRiseServiceSoap">
+            <soap:address location="http://www.webservicex.net/sunsetriseservice.asmx"/>
+
+        </wsdl:port>
+        <wsdl:port name="SunSetRiseServiceHttpGet" binding="tns:SunSetRiseServiceHttpGet">
+            <http:address location="http://www.webservicex.net/sunsetriseservice.asmx"/>
+        </wsdl:port>
+        <wsdl:port name="SunSetRiseServiceHttpPost" binding="tns:SunSetRiseServiceHttpPost">
+            <http:address location="http://www.webservicex.net/sunsetriseservice.asmx"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

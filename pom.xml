@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>uk.ac.open.kmi.iserve</groupId>
+    <artifactId>iserve-parent</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>iServe</name>
+    <url>http://iserve.kmi.open.ac.uk</url>
+    <description>
+        iServe is what we refer to as service warehouse which unifies service
+        publication, analysis, and discovery through the use of lightweight semantics
+        as well as advanced discovery and analytic capabilities. iServe provides the
+        typical features of service registries and additional functionality that
+        exploits service descriptions, service annotations and further data gathered and
+        derived from the analysis of these descriptions, data crawled from the Web,
+        periodic monitoring and user activities.
+
+        iServe builds upon lessons learnt from research and development on the Web and
+        on service discovery algorithms to provide a generic semantic service registry
+        able to support advanced discovery over both Web APIs and WSDL services
+        described using heterogeneous formalisms.
+    </description>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>manual</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/kmi/iserve</url>
+        <connection>scm:git:https://github.com/kmi/iserve.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:kmi/iserve.git</developerConnection>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/kmi/iserve/issues</url>
+    </issueManagement>
+
+    <developers>
+        <developer>
+            <id>cpedrinaci</id>
+            <name>Carlos Pedrinaci</name>
+            <email>c.pedrinaci-{AT}-open.ac.uk</email>
+            <url>http://people.kmi.open.ac.uk/carlos/</url>
+            <organization>Knowledge Media Institute - The Open University</organization>
+            <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+        </developer>
+        <developer>
+            <id>dong</id>
+            <name>Dong Liu</name>
+            <email>d.liu-{AT}-open.ac.uk</email>
+            <organization>Knowledge Media Institute - The Open University</organization>
+            <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+        </developer>
+        <developer>
+            <id>jkopecky</id>
+            <name>Jacek Kopecky</name>
+            <email>j.kopecky-{AT}-open.ac.uk</email>
+            <organization>Knowledge Media Institute - The Open University</organization>
+            <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+        </developer>
+        <developer>
+            <id>izzyblues</id>
+            <name>Luca Panziera</name>
+            <email>luca.panziera-{AT}-open.ac.uk</email>
+            <organization>Knowledge Media Institute - The Open University</organization>
+            <organizationUrl>http://kmi.open.ac.uk</organizationUrl>
+        </developer>
+        <developer>
+            <id>pablo</id>
+            <name>Pablo Rodriguez Mier</name>
+            <email>pablo.rodriguez.mier-{AT}-usc.es</email>
+            <organization>CITIUS - Universidad de Santiago de Compostela</organization>
+            <organizationUrl>http://citius.usc.es</organizationUrl>
+        </developer>
+    </developers>
+
+    <organization>
+        <name>Knowledge Media Institute - The Open University</name>
+        <url>http://kmi.open.ac.uk</url>
+    </organization>
+
+    <properties>
+        <!-- Convenience properties for all subprojects -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
+        <jersey.version>2.0</jersey.version>
+        <junit.version>4.8.2</junit.version>
+        <jena.version>2.10.1</jena.version>
+        <httpclient.version>4.2.3</httpclient.version>
+        <slf4j.version>1.7.5</slf4j.version>
+        <shiro.version>1.2.2</shiro.version>
+        <jetty.version>8.1.11.v20130520</jetty.version>
+        <guice.version>3.0</guice.version>
+        <guava.version>14.0</guava.version>
+        <commons-config.version>1.9</commons-config.version>
+
+        <!-- Configuration for GitHub deployment -->
+        <site.url>http://kmi.github.io/iserve/</site.url>
+        <github.global.server>github</github.global.server>
+        <site.deploy.id>gh-pages</site.deploy.id>
+        <site.deploy.url/>
+        <repositoryName>iserve</repositoryName>
+        <repositoryOwner>kmi</repositoryOwner>
+    </properties>
+
+    <distributionManagement>
+        <site>
+            <id>${site.deploy.id}</id>
+            <name>Deployment through GitHub's site deployment plugin</name>
+            <url>${site.deploy.url}</url>
+        </site>
+    </distributionManagement>
+
+    <modules>
+        <module>iserve-commons-io</module>
+        <module>iserve-commons-vocabulary</module>
+        <module>iserve-importer-sawsdl</module>
+        <module>iserve-importer-hrests</module>
+        <module>iserve-importer-owls</module>
+        <module>iserve-importer-wsc</module>
+        <module>iserve-sal-core</module>
+        <module>iserve-sal-rest</module>
+        <module>iserve-discovery-api</module>
+        <module>iserve-discovery-disco</module>
+        <module>iserve-discovery-engine</module>
+        <module>iserve-test-resources</module>
+        <!-- <module>iserve-analysis-engine</module> -->
+    </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>2.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.1</version>
+            </plugin>
+
+            <!-- Configure Maven site plugin for Reflow skin and Markdown support -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.3</version>
+                <dependencies>
+                    <dependency>
+                        <!-- Markdown support for writing website content -->
+                        <groupId>org.apache.maven.doxia</groupId>
+                        <artifactId>doxia-module-markdown</artifactId>
+                        <version>1.3</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <port>10000</port>
+                    <generateReports>true</generateReports>
+                    <inputEncoding>UTF-8</inputEncoding>
+                    <outputEncoding>UTF-8</outputEncoding>
+                    <!-- Site deployment done using GitHub site plugin -->
+                    <skipDeploy>true</skipDeploy>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <!-- GitHub site plug-in for deployment to GitHub pages -->
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <version>0.7</version>
+                <configuration>
+                    <message>Creating site for ${project.artifactId}, ${project.version}</message>
+                    <!-- this does the trick to place every module in the correct subfolder -->
+                    <path>${project.distributionManagement.site.url}</path>
+                    <merge>true</merge>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>github-site</id>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                        <phase>site-deploy</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.7</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>index</report>
+                            <report>summary</report>
+                            <report>license</report>
+                            <report>modules</report>
+                            <report>project-team</report>
+                            <report>scm</report>
+                            <report>issue-tracking</report>
+                            <!--<report>dependencies</report>-->
+                            <!--<report>dependency-convergence</report>-->
+                            <!--<report>plugins</report>-->
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changes-plugin</artifactId>
+                <version>2.8</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>changes-report</report>
+                            <!-- <report>github-report</report> -->
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <repositories>
+        <repository>
+            <id>apache-repo-releases</id>
+            <name>Apache Repository</name>
+            <url>https://repository.apache.org/content/repositories/releases/</url>
+        </repository>
+    </repositories>
+
+</project>

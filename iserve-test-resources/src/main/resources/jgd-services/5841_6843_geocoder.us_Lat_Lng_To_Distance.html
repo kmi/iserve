@@ -1,0 +1,165 @@
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<html>
+
+
+<meta name="generator" content="HTML Tidy, see www.w3.org">
+<title>geocoder.us: a free US geocoder</title>
+<link type="text/css" rel="stylesheet" href="http://geocoder.us/style.css">
+
+<!-- this div is opened here, closed in the footer or somewhere else -->
+<div align="center">
+    <script type="text/javascript">
+        <!--
+        google_ad_client = "pub-1219510847949987";
+        google_ad_width = 728;
+        google_ad_height = 90;
+        google_ad_format = "728x90_as";
+        google_ad_type = "text_image";
+        google_ad_channel = "";
+        google_color_border = ["336699", "B4D0DC", "DDB7BA", "FDEFD2"];
+        google_color_bg = ["FFFFFF", "ECF8FF", "FFF5F6", "FDEFD2"];
+        google_color_link = ["0000FF", "0000CC", "0000CC", "0000CC"];
+        google_color_url = "008000";
+        google_color_text = ["000000", "6F6F6F", "6F6F6F", "000000"];
+        //-->
+    </script>
+
+
+    <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+    </script>
+
+    <!--
+   <h2><a href="/blog">Read the Geocoder.US Blog</a></h2>
+   -->
+
+
+    <h1>geocoder.us / geocoder.net</h1>
+
+    <h2>find the latitude &amp; longitude of any US address - for
+        <em>free</em></h2>
+
+    <div align="center">
+        <h2>Client Documentation</h2>
+    </div>
+
+    <div align="center"><span style="font-size: 10pt;"><em>Updated 30
+        January 2008</em></span></div>
+
+    <div style="width: 75%;" align="center">
+        <div align="justify">
+            <div class="service" id="geocoderUs_Lat_Lng_To_Distance"
+                 href="http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#LocationDistanceLookup" rel="model"><h3>
+                geocoder.us_Lat_Lng_To_Distance</h3>
+
+                <p class="text">Geocoder.us can now calculate distances between two
+                    coordinates, or between two zip codes::</p>
+
+                <div class="operation" id="operation1" href="http://www.w3.org/ns/wsdl-extensions#SafeInteraction"
+                     rel="model"><h2><span class="label" id="label1">Lat/Long to Lat/Long Distances</span></h2>
+
+<pre style="font-size: 9pt;">http://<em>username</em>:<em>password</em>@geocoder.us/member/service/distance?
+<div class="input" id="input1" href="http://proton.semanticweb.org/2005/04/protont#Location" rel="model">lat1=38&amp;lat2=39&amp;lng1=-122&amp;lng2=-123
+</div></pre>
+
+                    <p class="text">or with the free service (but throttled to one
+                        request per 15 seconds):</p>
+
+<pre style="font-size: 9pt;"><a
+        href="javascript:callProxy('http://geocoder.us/service/distance?lat1=38&amp;lat2=39&amp;lng1=-122&amp;lng2=-123')"><span
+        class="address" id="address1">http://geocoder.us/service/distance?</span>lat1=38&amp;lat2=39&amp;lng1=-122&amp;lng2=-123</a>
+</pre>
+
+                    <p class="text">Fetching the above URL (go ahead, click on it!)
+                        yields the following:</p>
+
+<pre>(38, -122) to (39, -123) =  <div class="output" id="output1"
+                                      href="http://fusion.cs.uni-jena.de/geographydataset.owl#GeographicDistance"
+                                      rel="model">87.7188 miles
+</div></pre>
+                </div>
+            </div>
+
+            <h2>Zip Code to Zip Code Distances</h2>
+
+<pre style="font-size: 9pt;">http://<em>username</em>:<em>password</em>@geocoder.us/member/service/distance?zip1=95472&amp;zip2=94305
+</pre>
+
+            <p class="text">or with the free service (but throttled to one
+                request per 15 seconds):</p>
+
+<pre style="font-size: 9pt;"><a
+        href="javascript:callProxy('http://geocoder.us/service/distance?zip1=95472&amp;zip2=94305')">http://geocoder.us/service/distance?zip1=95472&amp;zip2=94305</a>
+</pre>
+
+            <p class="text">Fetching the above URL (go ahead, click on it!)
+                yields the following:</p>
+
+<pre>95472, Sebastopol, CA, (38.393314, -122.83666) to 94305, Stanford, CA, (37.427039, -122.16496) =    76.13 miles
+</pre>
+
+            <p class="text">This is just a reworking of code I first wrote on
+                Jan 29, 1998. You <a href="javascript:callProxy('http://chilidog.com/zip/zipmain.html')">Can
+                    run that old code</a>. It allows you to enter multiple zip codes.
+                That was ten years and a day ago.</p>
+
+            <p class="text">Please let me know <a
+                    href="javascript:callProxy('http://geocoder.us//help/mailto:help@geocoder.us')">
+                help@geocoder.us</a> if you'd like this in a different format, or
+                if you have other needs for 'utility' type geo functions</p>
+        </div>
+    </div>
+
+    <hr noshade="1" width="90%">
+    <div class="footer">= <a href="javascript:callProxy('http://geocoder.us/')">geocoder.us</a> =
+        © 2004-8 <a href="javascript:callProxy('http://locative.us/')">Locative
+            Technologies</a> = <a href="javascript:callProxy('http://geocoder.us/terms.shtml')">terms
+            &amp; conditions</a> = <a
+                href="javascript:callProxy('http://geocoder.us//help/mailto:contact@geocoder.us')">
+            contact us</a> =
+    </div>
+
+    <div class="footer"><!-- Open Knowledge Link -->
+        <a href="javascript:callProxy('http://okd.okfn.org/')"><img alt="This material is Open Knowlege"
+                                                                    src="http://m.okfn.org/images/ok_buttons/ok_80x23_blue.png"
+                                                                    border="0" height="31" vspace="5"></a>
+        <!-- /Open Knowledge Link -->
+        <a href="javascript:callProxy('http://www.perl.org')"><img src="http://geocoder.us/img/rectangle_power_perl.png"
+                                                                   border="0" height="31" hspace="5" vspace="5"
+                                                                   width="88"></a> <a
+                href="javascript:callProxy('http://creativecommons.org/licenses/by-nc-sa/2.0/')">
+            <img src="http://geocoder.us/img/somerights20.png" border="0" height="31" hspace="5" vspace="5" width="88"></a>
+        <!-- PayPal Logo -->
+        <table align="center" border="0" cellpadding="10" cellspacing="0">
+            <tbody>
+            <tr>
+                <td align="center"></td>
+            </tr>
+
+            <tr>
+                <td align="center"><a href="javascript:callProxy('http://geocoder.us//help/#')"
+                                      onclick="javascript:window.open('https://www.paypal.com/us/cgi-bin/webscr?cmd=xpt/popup/OLCWhatIsPayPal-outside','olcwhatispaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, width=400, height=350');">
+                    <img src="https://www.paypal.com/en_US/i/logo/PayPal_mark_60x38.gif" alt="Acceptance Mark"
+                         border="0"></a></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- PayPal Logo -->
+    </div>
+</div>
+</html>

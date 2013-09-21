@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns:sawsdl="http://www.w3.org/ns/sawsdl" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://mlbs.net/nacgeoservicesv4.5/" targetNamespace="http://mlbs.net/nacgeoservicesv4.5/">
+    <wsdl:documentation>This is a WSDL 1.1 comment that has been created for a RESTful service for evaluation and
+        testing purposes.
+        It is not guaranteed to be correct or appropriate.
+    </wsdl:documentation>
+    <wsdl:types>
+        <xsd:schema elementFormDefault="qualified" targetNamespace="http://mlbs.net/nacgeoservicesv4.5/">
+            <xsd:annotation>This type information has been semi-automatically generated. It properly represents the
+                semantics of the service's parameters, but is not guaranteed to precisely match the schema actually used
+                by the service.
+            </xsd:annotation>
+            <xsd:complexType name="Output"
+                             sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#RectangularGeographicArea http://fusion.cs.uni-jena.de/geographydataset.owl#Map">
+                <xsd:sequence>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="center" type="xsd:anyType">
+                        <xsd:annotation>The geographic coordinates of the center of the returned map.</xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="northing" type="xsd:string">
+                        <xsd:annotation>The south-north span of the returned map.</xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="easting" type="xsd:string">
+                        <xsd:annotation>The east-west span of the returned map.</xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded"
+                                 name="Hotspots" type="xsd:string">
+                        <xsd:annotation>
+                            If you have objects mapped, the pixel
+                            coordinates of the rectangle of each icon
+                            will be returned as Hotspots - a sequence of
+                            Top1, Bottom1, Left1, Right1; Top2, Bottom2,
+                            Left2, Right2;... in which the order of the
+                            sequence is: the map center (if mapped),
+                            object1, object2, ... same as in the input.
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="MapImageURL" type="xsd:anyURI">
+                        <xsd:annotation>The url pointing to the requested map.</xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="Output" nillable="true" type="tns:Output"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="NAC_Mpt_and_Mapping_Service_By_CenterHttpGetIn">
+        <wsdl:part name="userID" type="xsd:string">
+            <wsdl:documentation>A valid user id to authenticate for the service.</wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="latlng" type="xsd:string"
+                   sawsdl:modelReference="http://fusion.cs.uni-jena.de/geographydataset.owl#RectangularGeographicArea">
+            <wsdl:documentation>The map center coordinates in decimal degrees.</wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="northing" type="xsd:string">
+            <wsdl:documentation>Northing is the map span in the south to north direction in kilometers.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="Easting" type="xsd:string">
+            <wsdl:documentation>Easting is the map span in the west to east direction in kilometers.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="ImageWidth" type="xsd:string">
+            <wsdl:documentation>ImageWidth is the map image width in pixels</wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="ImageHeight" type="xsd:string">
+            <wsdl:documentation>ImageHeight is the map image height in pixels</wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="ImageFormat" type="xsd:string">
+            <wsdl:documentation>ImageFormat is the image format of the map and can be "gif" or "png"
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="isOverview" type="xsd:string">
+            <wsdl:documentation>IsOverview is to decide whether an overview map or a standard map will be returned. The
+                overview map has width and height between 32 and 180 pixels and does not have "MapPoint" on the map.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="Icon" type="xsd:string">
+            <wsdl:documentation>Icon is the name of icon that you want to display at the center of the map (optional).
+                If you don't provide a name for the icon, there will be no icon on the map.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="DataSource" type="xsd:string">
+            <wsdl:documentation>DataSource is the data source name. It can be "MapPoint.AP", "MapPoint.BR",
+                "MapPoint.NA", "MapPoint.EU", "MapPoint.World", and "MapPoint.Moon". It is optional. The default data
+                source is "MapPoint.AP" for Aisa-Pacific region, "MapPoint.BR" for Brazil, "MapPoint.EU" for Europe,
+                "MapPoint.NA" for North America, and "MapPoint.World" for the rest of the world.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="language" type="xsd:string">
+            <wsdl:documentation>Language is the language you want for the result. It can be "en" for British English,
+                "en-US" for US English, "es" for Spanish, "de" for German, "fr" for French, "it" for Italian, "nl" for
+                Dutch, "pt" for Portuguese, and "sv" for Swedish. It's optional. The default language is "en" for Europe
+                and "en-US" for North America.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="Objects" type="xsd:string"
+                   sawsdl:modelReference="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#PointOfInterest">
+            <wsdl:documentation>Objects is to provide a list of objects (up to 100 objects) to display on the map. This
+                is optional. In the list, each object can have four parameters: latitude, longitude, icon name, label
+                separated by a comma. The icon name is the name you can choose from the icon table. If you don't want a
+                label, you can simply provide nothing there but keep the comma in front of it. In the list, the objects
+                will be separated by a semicolon.
+            </wsdl:documentation>
+        </wsdl:part>
+        <wsdl:part name="MapStyle" type="xsd:string">
+            <wsdl:documentation>MapStyle is a map style. Refer to the web service documentation for available values.
+            </wsdl:documentation>
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="NAC_Mpt_and_Mapping_Service_By_CenterHttpGetOut">
+        <wsdl:part name="Body" element="tns:Output">
+            <wsdl:documentation></wsdl:documentation>
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="NAC_Mpt_and_Mapping_Service_By_CenterHttpGet">
+        <wsdl:operation name="NAC_Mpt_and_Mapping_Service_By_Center"
+                        sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <wsdl:documentation>The mapping services provide a variety of maps and allow you to map up to 100 objects
+                onto each map with a choice of street maps of 65 countries and areas of either complete or partial
+                coverage:
+
+                In MapPoint.AP (5 countries and areas):
+                Australia, Hong Kong (59%), New Zealand, Singapore, and Taiwan (15%).
+
+                In MapPoint.BR (1 country):
+                Brazil (19%)
+
+                In MapPoint.EU (23 countries):
+                Austria, Belgium, Czech Republic (24%), Denmark, Finland (Helsinki only), France, Germany, Greece
+                (Athens only), Ireland (50%), Italy (91%), Liechtenstein, Luxembourg, Monaco, The Netherlands, Norway
+                (Oslo only), Portugal (53%), San Marino, Slovakia (14%), Spain (71%), Sweden, Switzerland, United
+                Kingdom, and Vatican City.
+
+                In MapPoint.NA (4 countries):
+                Canada, Mexico (10%), Puerto Rico, and United States.
+
+                In MapPoint.World (33 countries): Central and Eastern Europe (24 countries): Albania (9%), Armenia
+                (30%), Azerbaijan (14%), Belarus (20%), Bosnia and Herzegovina (26%), Bulgaria (14%), Croatia (6%),
+                Czech Republic (24%), Estonia (29%), Georgia (23%), Greece (Athens only), Hungary (17%), Latvia (31%),
+                Lithuania (26%), the former Yugoslav republic of Macedonia (28%), Moldova (21%), Poland (22%), Romania
+                (9%), Russia (19%), Serbia and Montenegro (20%), Slovakia (14%), Slovenia (15%), Turkey (37%), and
+                Ukraine (8%). North and South America (4 countries): Argentina, Brazil, Chile and Mexico North Africa (5
+                countries): Algeria, Egypt, Libyan Arab Jamahiriya (Libya), Morocco and Tunisia. And extra 34 cities of
+                other countries: Bangkok, Thailand; Beijing, China; Bogota, Colombia; Budapest, Hungary; Buenos Aires,
+                Argentina; Cairo, Egypt; Calcutta, India; Charlotte Amalie, U.S. Virgin Islands; Delhi, India; Ho Chi
+                Minh City, Vietnam; Istanbul, Turkey; Jakarta, Indonesia; Jerusalem, Israel; Johannesburg, South Africa;
+                Kingston, Jamaica; Kinshasha, Congo; Kuala Lumpur, Malaysia; Kyoto, Japan; Lagos, Nigeria; Lima, Peru;
+                Manila, Philippines; Moscow, Russia; Nairobi, Kenya; Nassau, Bahamas; Osaka, Japan; San Jose, Costa
+                Rica; Santiago, Chile; Santo Domingo, Dominican Republic; Seoul, South Korea; Shanghai China; Tehran,
+                Iran; Tel Aviv, Israel; Tokyo, Japan; and Warsaw, Poland.
+
+                and general thematic maps of the entire world.
+            </wsdl:documentation>
+            <wsdl:input message="tns:NAC_Mpt_and_Mapping_Service_By_CenterHttpGetIn"/>
+            <wsdl:output message="tns:NAC_Mpt_and_Mapping_Service_By_CenterHttpGetOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="NAC_Mpt_and_Mapping_Service_By_CenterHttpGet"
+                  type="tns:NAC_Mpt_and_Mapping_Service_By_CenterHttpGet">
+        <http:binding verb="GET"/>
+        <wsdl:operation name="NAC_Mpt_and_Mapping_Service_By_Center">
+            <http:operation location="xmlgetmap.aspx"/>
+            <wsdl:input>
+                <http:urlEncoded/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:mimeXml part="Body"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service sawsdl:modelReference=" http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#EntityMappingService"
+                  name="NAC_Mpt_and_Mapping_Service_By_Center">
+        <wsdl:port name="NAC_Mpt_and_Mapping_Service_By_CenterHttpGet"
+                   binding="tns:NAC_Mpt_and_Mapping_Service_By_CenterHttpGet">
+            <http:address location="http://mlbs.net/nacgeoservicesv4.5/"/>
+        </wsdl:port>
+
+    </wsdl:service>
+</wsdl:definitions>

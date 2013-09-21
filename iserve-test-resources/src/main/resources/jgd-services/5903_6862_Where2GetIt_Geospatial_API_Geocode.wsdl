@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions xmlns:sawsdl="http://www.w3.org/ns/sawsdl" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://www.where2getit.com/media_files/API/"
+                  targetNamespace="http://www.where2getit.com/media_files/API/">
+    <wsdl:documentation>This is a WSDL 1.1 comment that has been created for a RESTful service for evaluation and
+        testing purposes.
+        It is not guaranteed to be correct or appropriate.
+    </wsdl:documentation>
+    <wsdl:types>
+        <xsd:schema elementFormDefault="qualified" targetNamespace="http://www.where2getit.com/media_files/API/">
+            <xsd:annotation>This type information has been semi-automatically generated. It properly represents the
+                semantics of the service's parameters, but is not guaranteed to precisely match the schema actually used
+                by the service.
+            </xsd:annotation>
+            <xsd:complexType name="Output"
+                             sawsdl:modelReference="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#SpecificAddress http://proton.semanticweb.org/2005/04/protont#Location">
+                <xsd:sequence>
+                    <xsd:element minOccurs="1" maxOccurs="unbounded" name="address" type="xsd:anyType">
+                        <xsd:annotation>The geocoded addresses. As much as possible of the following will be provided:
+                            address (street and house number), city, country, county, postal code, province, state.
+                            The precise location (decimal WGS84 coordinates) will always be provided.
+                            Furthermore the precision of the match will be given. If multiple matches are found, all
+                            will be returned.
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="unbounded" name="location" type="xsd:anyType">
+                        <xsd:annotation>The precise locations for the returned addresses.</xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="Output" nillable="true" type="tns:Output"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="Where2GetIt_Geospatial_API_GeocodeHttpGetIn">
+        <wsdl:part name="addresses" type="xsd:string"
+                   sawsdl:modelReference="http://iserve.kmi.open.ac.uk/2010/05/s3eval/data.rdfs#RawAddress">
+            <wsdl:documentation>The addresses to geocode. An address may be provided either as a single line
+                unstructured address string or os a structured record consisting of street, city, region (state or
+                province code), coutry (two digit ISO country code) and postalcode. For structured addresses only the
+                country field is mandatory. In case an imprecise address is given (e.g. only a country), the location of
+                its centroid will be returned.
+            </wsdl:documentation>
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="Where2GetIt_Geospatial_API_GeocodeHttpGetOut">
+        <wsdl:part name="Body" element="tns:Output">
+            <wsdl:documentation></wsdl:documentation>
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="Where2GetIt_Geospatial_API_GeocodeHttpGet">
+        <wsdl:operation name="Where2GetIt_Geospatial_API_Geocode"
+                        sawsdl:modelReference="http://www.w3.org/ns/wsdl-extensions#SafeInteraction">
+            <wsdl:documentation>The geocoder method supports both single and batch geocode requests. It works for many
+                countries world-wide and supports both geocoding of structured and unstructured addresses.
+            </wsdl:documentation>
+            <wsdl:input message="tns:Where2GetIt_Geospatial_API_GeocodeHttpGetIn"/>
+            <wsdl:output message="tns:Where2GetIt_Geospatial_API_GeocodeHttpGetOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="Where2GetIt_Geospatial_API_GeocodeHttpGet" type="tns:Where2GetIt_Geospatial_API_GeocodeHttpGet">
+        <http:binding verb="GET"/>
+        <wsdl:operation name="Where2GetIt_Geospatial_API_Geocode">
+            <http:operation location="media_files/API/"/>
+            <wsdl:input>
+                <http:urlEncoded/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:mimeXml part="Body"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service sawsdl:modelReference=" http://iserve.kmi.open.ac.uk/2010/05/s3eval/func.rdfs#LocationLookup"
+                  name="Where2GetIt_Geospatial_API_Geocode">
+        <wsdl:port name="Where2GetIt_Geospatial_API_GeocodeHttpGet"
+                   binding="tns:Where2GetIt_Geospatial_API_GeocodeHttpGet">
+            <http:address location="http://www.where2getit.com/media_files/API/"/>
+        </wsdl:port>
+
+    </wsdl:service>
+</wsdl:definitions>
