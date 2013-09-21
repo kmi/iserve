@@ -1,0 +1,97 @@
+            -----------
+            Usage
+            -----------
+
+Using iServe
+
+    iServe provides two main means for its integration, namely a direct Java API, and a RESTful interface.
+
+* Java API
+
+    Currenly access to iServe's functionality is provided through two main entry points depending on whether
+    you want to interact with its CRUD interface to add services, documents, or ontologies, or with its matching
+    interface if you want to discover services.
+
+** CRUD Interface
+
+    Access to the CRUD interface is obtained by means of iServeFacade. Therein you will get access to the main
+    data managers in charge of services, documents, and ontologies. For convenience iServeFacade provides methods that
+    take care of automatically transforming services prior to importing them, keeping all data managers synchronized,
+    and when necessary, obtaining remote ontologies referred to by the imported services.
+
+*** Obtaining the Facade
+
++------------------------------------------------+
+
+iServeFacade facade = iServeFacade.getInstance();
+
++------------------------------------------------+
+
+*** Importing Services
+
++----------------------------------------------------------------------------------+
+
+InputStream in;
+List<URI> servicesUris;
+for (File ttlFile : msmTtlTcFiles) {
+    in = new FileInputStream(ttlFile);
+    servicesUris = facade.importServices(in, MediaType.TEXT_TURTLE.getMediaType());
+}
+
++----------------------------------------------------------------------------------+
+
+*** Listing the Registered Services
+
++----------------------------------------------------------------------------------+
+List<URI> services = facade.getServiceManager().listServices();
++----------------------------------------------------------------------------------+
+
+*** Obtaining the Java Representation of a Service
+
++----------------------------------------------------------------------------------+
+URI svcUri = new URI("http://iserve.installation.org/services/id/1");
+Service service = facade.getServiceManager().getService(svcUri);
++----------------------------------------------------------------------------------+
+
+** The Matching Interface
+
+    iServe provides a Matching API that can be used programmatically from Java. Although, work is ongoing to provide a
+    more advanced and richer API, you can already work with it within your applications. Should you wish to obtain a
+    Matcher, you can simply do so by means of the <uk.ac.open.kmi.iserve.discovery.api.impl.MatchersFactory>.
+    This factory takes care of locating Matcher implementations by means of a plugin mechanism, and will automatically
+    create the plugin of your choice at runtime. Currently, the code only provides a ConceptMatcher allowing you to
+    find matches between concepts loaded in the server by relying directly on SPARQL queries. Further matches are under
+    development and will be released incrementally.
+
+    Below you have an example on how you can create a Matcher.
+
++------------------------------------------------+
+ConceptMatcher matcher = MatchersFactory.createConceptMatcher(SparqlLogicConceptMatcher.class.getName());
++------------------------------------------------+
+
+** Notifications
+
+    In order to enable applications and extensions to react upon changes to the registry, iServe implements a simple
+    notification mechanism based on Guava's EventBus. Applications can register for notifications simply by doing:
+
++----------------------------------------------------------------------------------+
+facade.registerAsObserver(this);
++----------------------------------------------------------------------------------+
+
+    This will ensure than any change on the Services, Documents or Knowledge Base Managers get automatically reported.
+    Processing the events is simply ensured by implementing a method that takes the event we are interested in as sole
+    argument. The method should be annotated with @Subscribe. See package uk.ac.open.kmi.iserve.sal.events for the list
+    of events supported.
+
+    An example on how such a subscription method should be implemented is listed next.
+
++----------------------------------------------------------------------------------+
+@Subscribe
+public void handleOntologyCreatedEvent(OntologyCreatedEvent event) {
+    // Code handling the event...
+}
++----------------------------------------------------------------------------------+
+
+* RESTful Interface
+
+    TBD
