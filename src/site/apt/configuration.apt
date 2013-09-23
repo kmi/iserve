@@ -15,7 +15,7 @@ Configuring iServe
     starting point and adapt it to your own requirements.
 
 
-* Setting Up and RDF Store
+* Setting up an RDF Store
 
     In order to store the Service descriptions and the Ontologies, you tell iServe where to find an RDF Store, including
     notably its SPARQL Query and Update endpoints. Note, that in this last release, iServe requires and RDF Store that

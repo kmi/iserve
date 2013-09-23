@@ -10,7 +10,9 @@ Extending iServe
     support the automated detection and use of plugin implementations at runtime, and can therefore be exploited simply
     by dropping a new jar in the classpath.
 
-* Developing a new Import Plugin
+%{toc|section=1|fromDepth=2|toDepth=3}
+
+* {Developing a new Import Plugin}
 
     Providing an import plugin requires two main things. First and foremost you must implement the code for transforming
      service descriptions in the format you want to be able to import, to the ones iServe can handle. You should for this
@@ -69,7 +71,7 @@ uk.ac.open.kmi.iserve.importer.owls.OwlsTransformationPlugin
 </plugin>
 +-----------------------------------------------------------------------------------------------------------------------+
 
-** Dependencies
+** {Dependencies}
 
     Given that we use Guice and its multibinding extension for the plugin mechanism, these are also dependencies for
     your plugin.
@@ -98,7 +100,7 @@ uk.ac.open.kmi.iserve.importer.owls.OwlsTransformationPlugin
 
 +-----------------------------------------------------------------------------------------------------------------------+
 
-** Testing that the Plugin Mechanism Works
+** {Testing that the Plugin Mechanism Works}
 
     Should you wish to ensure that the plugin mechanism works and picks up properly your implementation, you can simply
     try our generic transformer over the services you wish to transform. Below you have an example on how this can be
@@ -108,7 +110,7 @@ uk.ac.open.kmi.iserve.importer.owls.OwlsTransformationPlugin
 List<Services> services = Transformer.getInstance().transform(file, null, OwlsTransformer.mediaType );
 +-----------------------------------------------------------------------------------------------------------------------+
 
-* Developing a new Matcher
+* {Developing a new Matcher}
 
     Matchers are provided in iServe by means of the very same plugin mechanism used for transformation plugins. In this
     case however the interface that needs to be implemented is one of the <uk.ac.open.kmi.iserve.discovery.api.Matcher>
@@ -165,7 +167,7 @@ uk.ac.open.kmi.iserve.discovery.disco.impl.DiscoMatchersPlugin
 </plugin>
 +-----------------------------------------------------------------------------------------------------------------------+
 
-** Dependencies
+** {Dependencies}
 
     Given that we use Guice and its multibinding extension for the plugin mechanism, these are also dependencies for
     your plugin.
@@ -194,7 +196,7 @@ uk.ac.open.kmi.iserve.discovery.disco.impl.DiscoMatchersPlugin
 
 +-----------------------------------------------------------------------------------------------------------------------+
 
-** Testing that the Plugin Mechanism Works
+** {Testing that the Plugin Mechanism Works}
 
     Should you wish to ensure that the plugin mechanism works and picks up properly your implementation, you can simply
     try to obtain and use your Matcher by means of the <uk.ac.open.kmi.iserve.discovery.api.impl.MatchersFactory>.

@@ -26,6 +26,17 @@
         <version>1.3.0</version>
     </skin>
 
+    <custom>
+        <fluidoSkin>
+            <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+            <gitHub>
+                <projectId>kmi/iserve</projectId>
+                <ribbonOrientation>right</ribbonOrientation>
+                <ribbonColor>red</ribbonColor>
+            </gitHub>
+        </fluidoSkin>
+    </custom>
+
     <bannerLeft>
         <name>iServe</name>
         <src>images/iServe-logo.png</src>
