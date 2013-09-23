@@ -1,0 +1,62 @@
+            ----------------------
+            Configuring iServe
+            ----------------------
+
+Configuring iServe
+
+    iServe stores three main kinds of information: Service descriptions in RDF, Ontologies described in OWL or RDF/S,
+    and Documents (e.g., WSDL files, or HTML documentation). Service descriptions and Ontologies are both stored in an
+    RDF store, whereas Documents are directly stored in the file system. This, in order to get iServe up and running in
+    your own system you will need to carry out some basic configuration steps which we detail next.
+
+    Most of iServe's configuration is stored in the <config.properties> file. For those whishing to test iServe in
+    development mode, this file can be found within the source code, in the <iserve-sal-core> module, under <resources>.
+    For convenience we providea reference configuration file named <config.properties.reference>. You can take this as
+    starting point and adapt it to your own requirements.
+
+
+* Setting Up and RDF Store
+
+    In order to store the Service descriptions and the Ontologies, you tell iServe where to find an RDF Store, including
+    notably its SPARQL Query and Update endpoints. Note, that in this last release, iServe requires and RDF Store that
+    supports SPARQL 1.1. Most of the RDF Stores available out there already support this.
+
+    iServe does not come with an embedded RDF Store so, so you should take care of the actual installation and
+    configuration of one. Which one you use is certainly up to you although you should note that the discovery
+    capabilities of iServe depend entirely on the actual setup of the backend RDF Store. Indeed, including support for
+    highly expressive formalisms will have an impact on both the performance and discovery support provided by iServe.
+    In our tests we have used OWLIM with OWL Horst support and both the performance and reasoning support have been
+    adequate. In order to make your choice you may want to run a number of tests but as a rule of thumb you should bear
+    in mind that for a service registry querying response time will be more important than upload time. Therefore the
+    benefits of having expressive reasoning support and materialising the results upon load will most likely outweight
+    the loading overhead incurred.
+
+* Configuration Properties
+
+
+*-------------------------------+---------------------------------------------------------------------------------------+
+| <<Configuration Property>>    | <<Description>>                                                                       |
+*-------------------------------+---------------------------------------------------------------------------------------+
+| iserve.url                    | URL where the server will be available. This will determine the URLs for services and |
+|                               | should therefore match the URL where the server is deployed in order to ensure that   |
+|                               | content is published following the Linked Data principles                             |
+*-------------------------------+---------------------------------------------------------------------------------------+
+| iserve.documents.folder       | Folder where iServe will store the service documents and other related documentation. |
+*-------------------------------+---------------------------------------------------------------------------------------+
+| iserve.services.sparql.query  | URL of the SPARQL endpoint of the RDF Store used for services and ontologies.         |
+*-------------------------------+---------------------------------------------------------------------------------------+
+| iserve.services.sparql.update | URL of the SPARQL update endpoint of the RDF Store used for services and ontologies.  |
+*-------------------------------+---------------------------------------------------------------------------------------+
+| iserve.services.sparql.service| URL of where the RDF Store implements the Graph Store procotocol. This is not strictly|
+|                               | necessary although it may speed up the uploading and deletion of services and         |
+|                               | ontologies from the server.                                                           |
+*-------------------------------+---------------------------------------------------------------------------------------+
+| <http.proxyHost (Optional)>   | Host name for the HTTP proxy to use. This is necessary in order to obtain remote data.|
+*-------------------------------+---------------------------------------------------------------------------------------+
+| <http.proxyPort (Optional)>   | Port number for the HTTP proxy to use.                                                |
+*-------------------------------+---------------------------------------------------------------------------------------+
+iServe Configuration Properties.
+
+
+    Note: The reference configuration file has other properties but these are legacy ones which are currently not
+    in use.
