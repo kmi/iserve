@@ -72,7 +72,8 @@ ConceptMatcher matcher = MatchersFactory.createConceptMatcher(SparqlLogicConcept
 ** Notifications
 
     In order to enable applications and extensions to react upon changes to the registry, iServe implements a simple
-    notification mechanism based on Guava's EventBus. Applications can register for notifications simply by doing:
+    notification mechanism based on {{{http://code.google.com/p/guava-libraries/wiki/EventBusExplained} Guava's EventBus}}.
+    Applications can register for notifications simply by doing:
 
 +----------------------------------------------------------------------------------+
 facade.registerAsObserver(this);
@@ -80,7 +81,7 @@ facade.registerAsObserver(this);
 
     This will ensure than any change on the Services, Documents or Knowledge Base Managers get automatically reported.
     Processing the events is simply ensured by implementing a method that takes the event we are interested in as sole
-    argument. The method should be annotated with @Subscribe. See package uk.ac.open.kmi.iserve.sal.events for the list
+    argument. The method should be annotated with <@Subscribe>. See package <uk.ac.open.kmi.iserve.sal.events> for the list
     of events supported.
 
     An example on how such a subscription method should be implemented is listed next.

@@ -42,6 +42,8 @@
 
         <menu name="Overview">
             <item name="About" href="index.html"/>
+            <item name="Overview" href="overview.html"/>
+            <item name="Data Model" href="data-model.html"/>
             <item name="Architecture" href="architecture.html"/>
             <item name="Configuration" href="configuration.html"/>
             <item name="Using iServe" href="usage.html"/>
