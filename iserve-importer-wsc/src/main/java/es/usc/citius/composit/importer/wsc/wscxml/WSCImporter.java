@@ -33,12 +33,7 @@ import javax.xml.bind.JAXB;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -158,8 +153,7 @@ public class WSCImporter implements ServiceTransformer {
      * ontology, which is a translation of the taxonomy.xml into owl to import into iServe. The baseUri is used to
      * automatically locate these files without specifying anything more to the transformer. By default, if the
      * baseUri is http://localhost/, this method will try to open http://localhost/taxonomy.xml and will use
-     * http://localhost/taxonomy.owl as the model reference URL. Note that the {@literal xml:base} uri of each ontology has
-     * this format: http://localhost/wsc/0[1-8]/taxonomy.owl.
+     * http://localhost/taxonomy.owl as the model reference URL.
      *
      * @param originalDescription The semantic Web service description(s) stream
      * @param baseUri             The base URI to use while transforming the service description. The baseUri should point to
@@ -227,7 +221,9 @@ public class WSCImporter implements ServiceTransformer {
 
     }
 
-    private URL obtainXmlBaseUri(InputStream owlStream) throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
+
+
+    public static URL obtainXmlBaseUri(InputStream owlStream) throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         // Detect namespaces
         dbf.setNamespaceAware(true);
@@ -239,7 +235,7 @@ public class WSCImporter implements ServiceTransformer {
         return new URL(baseUri);
     }
 
-    private URL obtainXmlBaseUri(URL taxonomyOwlUrl) throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
+    public static URL obtainXmlBaseUri(URL taxonomyOwlUrl) throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         return obtainXmlBaseUri(taxonomyOwlUrl.openStream());
     }
 
