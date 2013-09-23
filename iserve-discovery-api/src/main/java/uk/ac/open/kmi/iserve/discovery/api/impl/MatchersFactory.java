@@ -23,7 +23,9 @@ import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
 
 import javax.inject.Named;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * MatchersFactory provides a factory for all known Matcher implementations.
@@ -58,9 +60,7 @@ public class MatchersFactory {
     }
 
     public static ConceptMatcher createConceptMatcher() {
-        if (instance == null) {
-            init();
-        }
+        checkAndInit();
 
         if (instance.conceptMatcherBindings != null && !instance.conceptMatcherBindings.isEmpty()) {
             // Get the default one
@@ -75,15 +75,24 @@ public class MatchersFactory {
     }
 
     public static ConceptMatcher createConceptMatcher(String className) {
-        if (instance == null) {
-            init();
-        }
+        checkAndInit();
 
         if (instance.conceptMatcherBindings != null && !instance.conceptMatcherBindings.isEmpty()) {
             return instance.conceptMatcherBindings.get(className).get();
         }
 
         return null;
+    }
+
+    public static Set<String> listAvailableMatchers(){
+        checkAndInit();
+        return new HashSet<String>(instance.conceptMatcherBindings.keySet());
+    }
+
+    private static void checkAndInit(){
+        if (instance==null){
+            init();
+        }
     }
 
 }
