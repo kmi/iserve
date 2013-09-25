@@ -160,7 +160,7 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
             Stopwatch stopwatch = new Stopwatch().start();
             ResultSet qResults = qexec.execSelect();
             stopwatch.stop();
-            log.info("Time taken for querying the registry: {}", stopwatch);
+            log.debug("Time taken for querying the registry: {}", stopwatch);
 
             // Obtain matches if any and figure out the type
             if (qResults.hasNext()) {
@@ -417,7 +417,7 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
             Stopwatch stopwatch = new Stopwatch().start();
             ResultSet qResults = qexec.execSelect();
             stopwatch.stop();
-            log.info("Obtained matches for {} concepts within range {} - {} in {}", origins.size(), minType, maxType, stopwatch);
+            log.debug("Obtained matches for {} concepts within range {} - {} in {}", origins.size(), minType, maxType, stopwatch);
 
             Resource origin;
             Resource destination;
