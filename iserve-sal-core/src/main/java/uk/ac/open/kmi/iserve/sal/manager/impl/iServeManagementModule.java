@@ -46,7 +46,8 @@ public class iServeManagementModule extends ConfiguredModule {
 
         // Bind each of the managers
         bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
-        bind(ServiceManager.class).to(ServiceManagerRdf.class);
+//        bind(ServiceManager.class).to(ServiceManagerRdf.class);
+        bind(ServiceManager.class).to(ServiceManagerIndexRdf.class);
         bind(KnowledgeBaseManager.class).to(ConcurrentSparqlKnowledgeBaseManager.class);
     }
 }
