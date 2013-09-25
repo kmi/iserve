@@ -38,7 +38,6 @@ import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 import javax.inject.Singleton;
 import java.net.URI;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -144,11 +143,11 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
         log.info("Processing Ontology Created Event - {}", event.getOntologyUri());
 
         // Obtain the concepts in the ontology uploaded
-        List<URI> conceptUris = this.manager.getKnowledgeBaseManager().listConcepts(event.getOntologyUri());
+        Set<URI> conceptUris = this.manager.getKnowledgeBaseManager().listConcepts(event.getOntologyUri());
         log.info("Fetching matches for all the {} concepts present in the ontology - {}", conceptUris.size(), event.getOntologyUri());
 
         // For each of them update their entries in the index (matched concepts will be updated later within the loop)
-        Table<URI, URI, MatchResult> matches = this.sparqlMatcher.listMatchesAtLeastOfType(new HashSet<URI>(conceptUris), LogicConceptMatchType.Subsume);
+        Table<URI, URI, MatchResult> matches = this.sparqlMatcher.listMatchesAtLeastOfType(conceptUris, LogicConceptMatchType.Subsume);
         this.indexedMatches.putAll(matches);
     }
 
@@ -164,11 +163,11 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
         log.info("Processing Ontology Deleted Event - {}", event.getOntologyUri());
 
         // Obtain all concepts in the KB
-        List<URI> conceptUris = this.manager.getKnowledgeBaseManager().listConcepts(null);
+        Set<URI> conceptUris = this.manager.getKnowledgeBaseManager().listConcepts(null);
 
         // Cross reference them with those for which we have entries. The ones unmatched were defined in the previous
         // ontology (note that tse of namespaces could be abused and therefore may not be a guarantee).
-        Set<URI> difference = Sets.difference(new HashSet<URI>(conceptUris), this.indexedMatches.rowKeySet());
+        Set<URI> difference = Sets.difference(conceptUris, this.indexedMatches.rowKeySet());
 
         // Eventually remove these rows and any value having that as a column.
         for (URI conceptUri : difference) {

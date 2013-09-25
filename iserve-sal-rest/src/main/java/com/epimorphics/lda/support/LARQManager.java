@@ -9,23 +9,26 @@
 package com.epimorphics.lda.support;
 
 
-import org.apache.jena.larq.*;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.shared.WrappedException;
+import org.apache.jena.larq.IndexBuilderSubject;
+import org.apache.jena.larq.IndexLARQ;
+import org.apache.jena.larq.LARQ;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.index.*;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.shared.WrappedException;
-
 public class LARQManager {
 
     public static final String LARQ_DIRECTORY_KEY = "com.epimorphics.api.LARQ-base-directory";
-    
-    public static void setLARQIndexDirectory( String value ) {
+
+    public static void setLARQIndexDirectory(String value) {
 //        try {
 //        	larqIndexDirectory = FSDirectory.open( new File(value ));    
 //        	log.info( "setLARQIndexDirectory " + value );
@@ -33,42 +36,45 @@ public class LARQManager {
 //        	throw new WrappedException( e );
 //        }
     }
-    
-    static Logger log = LoggerFactory.getLogger( LARQManager.class );
-    
+
+    static Logger log = LoggerFactory.getLogger(LARQManager.class);
+
     protected static Directory larqIndexDirectory = null;
-    
-    public static void setLARQIndex( QueryExecution qx ) {
-        log.info( "setting LARQ index [in " + larqIndexDirectory + "] on query " + qx.toString() );
-        LARQ.setDefaultIndex( qx.getContext(), getIndex() );
+
+    public static void setLARQIndex(QueryExecution qx) {
+        log.info("setting LARQ index [in " + larqIndexDirectory + "] on query " + qx.toString());
+        LARQ.setDefaultIndex(qx.getContext(), getIndex());
     }
 
     static final boolean getIndexViaWriter = false;
-    
-    private static IndexLARQ getIndex()
-        {
-        if (getIndexViaWriter)
-            {
+
+    private static IndexLARQ getIndex() {
+        if (getIndexViaWriter) {
             IndexWriter iw = getWriter();
-            IndexBuilderSubject ibs = new IndexBuilderSubject( iw );
+            IndexBuilderSubject ibs = new IndexBuilderSubject(iw);
             ibs.closeWriter();
             return ibs.getIndex();
-            }
-        else
-            return new IndexLARQ( getReader() );
-        }
+        } else
+            return new IndexLARQ(getReader());
+    }
 
     private static IndexReader getReader() {
-        try { return IndexReader.open( larqIndexDirectory ); }
-        catch (Exception e) { throw new WrappedException( e ); }
+        try {
+            return IndexReader.open(larqIndexDirectory);
+        } catch (Exception e) {
+            throw new WrappedException(e);
+        }
     }
 
     private static IndexWriter getWriter() {
-    	Version v = Version.LUCENE_30;
-    	Analyzer a = new StandardAnalyzer(v);
-    	IndexWriterConfig iwc = new IndexWriterConfig( v, a );
-        try { return new IndexWriter( larqIndexDirectory, iwc ); }
-        catch (Exception e) { throw new WrappedException( e ); }
+        Version v = Version.LUCENE_30;
+        Analyzer a = new StandardAnalyzer(v);
+        IndexWriterConfig iwc = new IndexWriterConfig(v, a);
+        try {
+            return new IndexWriter(larqIndexDirectory, iwc);
+        } catch (Exception e) {
+            throw new WrappedException(e);
+        }
     }
 }
 

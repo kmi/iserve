@@ -8,63 +8,60 @@
 
 package com.epimorphics.lda.support;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.epimorphics.lda.query.APIQuery;
+import com.epimorphics.lda.rdfq.Any;
+import com.epimorphics.lda.rdfq.RDFQ;
+import com.epimorphics.lda.rdfq.RDFQ.Triple;
+import com.epimorphics.lda.rdfq.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.epimorphics.lda.query.APIQuery;
-import com.epimorphics.lda.rdfq.*;
-import com.epimorphics.lda.rdfq.RDFQ.Triple;
+import java.util.ArrayList;
+import java.util.List;
 
-public class QuerySupport
-    {
-    
-    static Logger log = LoggerFactory.getLogger( APIQuery.class );
-    
-	private static boolean promoteAnySubject = true;
-	
-	/**
-	    Reorder the given triples to try and arrange that
-	   	query engines with weak optimisers aren't given excessively
-	   	silly queries. So rdf:type statements (which are usually
-	   	less useful than specific properties) are moved down the
-	   	order, and triples with literal objects (which often only
-	   	appear a few times) are moved up. All optional triples
-	   	are moved to the end regardless of their structure.
-	   	
-	 	@param triples the list of triples to re-order.
-	 	@return a fresh list of triples, a reordered version of triples.
-	*/
-    public static List<Triple> reorder( List<Triple> triples )
-    	{
-    	List<Triple> result = new ArrayList<Triple>(triples.size());
-    	List<Triple> plain = new ArrayList<Triple>(triples.size());
-    	List<Triple> type = new ArrayList<Triple>(triples.size());
-    	List<Triple> optional = new ArrayList<Triple>(triples.size());
-    	for (Triple t: triples) 
-    		{
-    		if (t.O instanceof Value && canPromoteSubject( t.S ))
-    			result.add( t );
-    		else if (t.P.equals( RDFQ.RDF_TYPE ))
-    			type.add( t );
-    		else
-    			plain.add( t );
-    		}
-    	result.addAll( plain );
-    	result.addAll( type );
-    	result.addAll( optional );
-    	if (!result.equals( triples ))
-    		log.debug( "reordered\n    " + triples + "\nto\n    " + result );
-    	return result;
-    	}
+public class QuerySupport {
 
-	public static boolean canPromoteSubject( Any S ) 
-		{
-		return promoteAnySubject || S.equals( APIQuery.SELECT_VAR );
-		}
+    static Logger log = LoggerFactory.getLogger(APIQuery.class);
+
+    private static boolean promoteAnySubject = true;
+
+    /**
+     * Reorder the given triples to try and arrange that
+     * query engines with weak optimisers aren't given excessively
+     * silly queries. So rdf:type statements (which are usually
+     * less useful than specific properties) are moved down the
+     * order, and triples with literal objects (which often only
+     * appear a few times) are moved up. All optional triples
+     * are moved to the end regardless of their structure.
+     *
+     * @param triples the list of triples to re-order.
+     * @return a fresh list of triples, a reordered version of triples.
+     */
+    public static List<Triple> reorder(List<Triple> triples) {
+        List<Triple> result = new ArrayList<Triple>(triples.size());
+        List<Triple> plain = new ArrayList<Triple>(triples.size());
+        List<Triple> type = new ArrayList<Triple>(triples.size());
+        List<Triple> optional = new ArrayList<Triple>(triples.size());
+        for (Triple t : triples) {
+            if (t.O instanceof Value && canPromoteSubject(t.S))
+                result.add(t);
+            else if (t.P.equals(RDFQ.RDF_TYPE))
+                type.add(t);
+            else
+                plain.add(t);
+        }
+        result.addAll(plain);
+        result.addAll(type);
+        result.addAll(optional);
+        if (!result.equals(triples))
+            log.debug("reordered\n    " + triples + "\nto\n    " + result);
+        return result;
     }
+
+    public static boolean canPromoteSubject(Any S) {
+        return promoteAnySubject || S.equals(APIQuery.SELECT_VAR);
+    }
+}
     
 /*
     (c) Copyright 2010 Epimorphics Limited

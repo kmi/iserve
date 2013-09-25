@@ -20,7 +20,7 @@ import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 
 import java.io.InputStream;
 import java.net.URI;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Class Description
@@ -76,7 +76,7 @@ public interface DocumentManager extends iServeComponent {
             throws DocumentException;
 
     // General Management Methods
-    public abstract List<URI> listDocuments() throws DocumentException;
+    public abstract Set<URI> listDocuments() throws DocumentException;
 
 
     public abstract boolean documentExists(URI documentUri)

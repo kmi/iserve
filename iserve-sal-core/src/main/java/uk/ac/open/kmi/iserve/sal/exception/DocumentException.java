@@ -17,22 +17,22 @@ package uk.ac.open.kmi.iserve.sal.exception;
 
 public class DocumentException extends SalException {
 
-	private static final long serialVersionUID = -7092358620629758742L;
+    private static final long serialVersionUID = -7092358620629758742L;
 
-	public DocumentException() {
-		super();
-	}
+    public DocumentException() {
+        super();
+    }
 
-	public DocumentException(String message) {
-		super(message);
-	}
+    public DocumentException(String message) {
+        super(message);
+    }
 
-	public DocumentException(Throwable cause) {
-		super(cause);
-	}
+    public DocumentException(Throwable cause) {
+        super(cause);
+    }
 
-	public DocumentException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public DocumentException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

@@ -17,6 +17,7 @@
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.hp.hpl.jena.ontology.OntModel;
@@ -44,10 +45,9 @@ import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 import javax.inject.Named;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 public class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManager {
 
@@ -76,7 +76,7 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
      * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#listService()
      */
     @Override
-    public List<URI> listServices() {
+    public Set<URI> listServices() {
 
         String queryStr = new StringBuilder()
                 .append("select DISTINCT ?svc where { \n")
@@ -93,10 +93,10 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
      * @return a List of URIs with the operations provided by the service. If there are no operations, the List should be empty NOT null.
      */
     @Override
-    public List<URI> listOperations(URI serviceUri) {
+    public Set<URI> listOperations(URI serviceUri) {
 
         if (serviceUri == null) {
-            return new ArrayList<URI>();
+            return ImmutableSet.of();
         }
         // TODO; serviceUri not used? should be used within the query
         String queryStr = new StringBuilder()
@@ -116,10 +116,10 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
      * @return a List of URIs with the inputs of the operation. If no input is necessary the List should be empty NOT null.
      */
     @Override
-    public List<URI> listInputs(URI operationUri) {
+    public Set<URI> listInputs(URI operationUri) {
 
         if (operationUri == null) {
-            return new ArrayList<URI>();
+            return ImmutableSet.of();
         }
         // TODO; operationUri is not used. This function retrieves all inputs in the repository, not just the
         // inputs of the operation
@@ -140,10 +140,10 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
      * @return a List of URIs with the outputs of the operation. If no output is provided the List should be empty NOT null.
      */
     @Override
-    public List<URI> listOutputs(URI operationUri) {
+    public Set<URI> listOutputs(URI operationUri) {
 
         if (operationUri == null) {
-            return new ArrayList<URI>();
+            return ImmutableSet.of();
         }
 
         String queryStr = new StringBuilder()
@@ -157,9 +157,9 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
     }
 
     @Override
-    public List<URI> listMandatoryParts(URI messageContent) {
+    public Set<URI> listMandatoryParts(URI messageContent) {
         if (messageContent == null) {
-            return new ArrayList<URI>();
+            return ImmutableSet.of();
         }
 
         String queryStr = new StringBuilder()
@@ -172,12 +172,34 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         return listResourcesByQuery(queryStr, "part");
     }
 
-    private List<URI> listResourcesByQuery(String queryStr, String variableName) {
+    /**
+     * Obtains the list of optional parts for a given Message Content
+     *
+     * @param messageContent the message content URI
+     * @return a Set of URIs with the optional parts of the message content. If there are no parts the Set should be empty NOT null.
+     */
+    @Override
+    public Set<URI> listOptionalParts(URI messageContent) {
+        if (messageContent == null) {
+            return ImmutableSet.of();
+        }
 
-        List<URI> result = new ArrayList<URI>();
+        String queryStr = new StringBuilder()
+                .append("select DISTINCT ?part where { \n")
+                .append("<").append(messageContent.toASCIIString()).append("> ").append("<").append(MSM.hasOptionalPart.getURI()).append(">").append(" ?part .")
+                .append("?part ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.MessagePart.getURI()).append("> .")
+                .append(" }")
+                .toString();
+
+        return listResourcesByQuery(queryStr, "part");
+    }
+
+    private Set<URI> listResourcesByQuery(String queryStr, String variableName) {
+
+        ImmutableSet.Builder<URI> result = ImmutableSet.builder();
         // If the SPARQL endpoint does not exist return immediately.
         if (this.getSparqlQueryEndpoint() == null) {
-            return result;
+            return result.build();
         }
 
         // Query the engine
@@ -213,7 +235,7 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         } finally {
             qexec.close();
         }
-        return result;
+        return result.build();
     }
 
     @Override
@@ -241,16 +263,16 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
     }
 
     @Override
-    public List<Service> getServices(List<URI> serviceUris) throws ServiceException {
-        List<Service> services = new ArrayList<Service>();
+    public Set<Service> getServices(Set<URI> serviceUris) throws ServiceException {
+        ImmutableSet.Builder<Service> result = ImmutableSet.builder();
         Service svc;
         for (URI svcUri : serviceUris) {
             svc = this.getService(svcUri);
             if (svc != null) {
-                services.add(svc);
+                result.add(svc);
             }
         }
-        return services;
+        return result.build();
     }
 
     /**
@@ -262,8 +284,8 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
      *
      */
     @Override
-    public List<URI> listDocumentsForService(URI serviceUri) throws ServiceException {
-        return new ArrayList<URI>();  //TODO: Implement
+    public Set<URI> listDocumentsForService(URI serviceUri) throws ServiceException {
+        return ImmutableSet.of(); // TODO: Implement
     }
 
 
@@ -509,9 +531,9 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
     }
 
     @Override
-    public List<URI> listModelReferences(URI uri) {
+    public Set<URI> listModelReferences(URI uri) {
         if (uri == null) {
-            return Collections.emptyList();
+            return ImmutableSet.of();
         }
 
         String queryStr = new StringBuilder()

@@ -7,14 +7,12 @@
 */
 
 /*
-	(c) Copyright 2010 Epimorphics Limited
+    (c) Copyright 2010 Epimorphics Limited
 	[see end of file]
 	$Id$
 */
 
 package com.epimorphics.lda.sources;
-
-import static com.epimorphics.util.RDFUtils.getStringValue;
 
 import com.epimorphics.lda.exceptions.EldaException;
 import com.epimorphics.lda.support.TDBManager;
@@ -25,28 +23,27 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-public class GetDataSource
-    {
-    public static Source sourceFromSpec( FileManager fm, Resource specification, AuthMap am ) 
-        {
-        Statement s = specification.getProperty( API.sparqlEndpoint );
-        if (s != null)
-            {
+import static com.epimorphics.util.RDFUtils.getStringValue;
+
+public class GetDataSource {
+    public static Source sourceFromSpec(FileManager fm, Resource specification, AuthMap am) {
+        Statement s = specification.getProperty(API.sparqlEndpoint);
+        if (s != null) {
             Resource ep = s.getResource();
-            if (ep.hasProperty( RDF.type, EXTRAS.Combiner )) return new CombinedSource( fm, am, ep );
-            }
-        String sparqlEndpoint = getStringValue( specification, API.sparqlEndpoint );
-        Resource ep = specification.getPropertyResourceValue( API.sparqlEndpoint );
-        if (sparqlEndpoint == null)
-        	EldaException.BadSpecification( "no SPARQL endpoint specified for " + specification );
-        return 
-            sparqlEndpoint.startsWith( LocalSource.PREFIX ) ? new LocalSource( fm, sparqlEndpoint )
-        	: sparqlEndpoint.startsWith( HereSource.PREFIX ) ? new HereSource( specification.getModel(), sparqlEndpoint )
-            : sparqlEndpoint.startsWith( TDBManager.PREFIX ) ? new TDBSource( sparqlEndpoint )
-            : new SparqlSource( ep, sparqlEndpoint, am )
-            ;
+            if (ep.hasProperty(RDF.type, EXTRAS.Combiner)) return new CombinedSource(fm, am, ep);
         }
+        String sparqlEndpoint = getStringValue(specification, API.sparqlEndpoint);
+        Resource ep = specification.getPropertyResourceValue(API.sparqlEndpoint);
+        if (sparqlEndpoint == null)
+            EldaException.BadSpecification("no SPARQL endpoint specified for " + specification);
+        return
+                sparqlEndpoint.startsWith(LocalSource.PREFIX) ? new LocalSource(fm, sparqlEndpoint)
+                        : sparqlEndpoint.startsWith(HereSource.PREFIX) ? new HereSource(specification.getModel(), sparqlEndpoint)
+                        : sparqlEndpoint.startsWith(TDBManager.PREFIX) ? new TDBSource(sparqlEndpoint)
+                        : new SparqlSource(ep, sparqlEndpoint, am)
+                ;
     }
+}
 
 /*
     (c) Copyright 2010 Epimorphics Limited

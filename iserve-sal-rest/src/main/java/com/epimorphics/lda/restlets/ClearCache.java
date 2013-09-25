@@ -8,16 +8,19 @@
 
 package com.epimorphics.lda.restlets;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
-
 import com.epimorphics.lda.cache.Cache;
 
-@Path( "/control/clear-cache") public class ClearCache 
-	{
-	@GET @Produces("text/plain") public Response clearCache() 
-		{ // should really not use GET for this
-		Cache.Registry.clearAll();
-		return RouterRestlet.returnAs( "caches cleared.", "text/plain" );
-		}
-	}
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+
+@Path("/control/clear-cache")
+public class ClearCache {
+    @GET
+    @Produces("text/plain")
+    public Response clearCache() { // should really not use GET for this
+        Cache.Registry.clearAll();
+        return RouterRestlet.returnAs("caches cleared.", "text/plain");
+    }
+}

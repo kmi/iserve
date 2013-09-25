@@ -17,6 +17,7 @@
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
@@ -291,10 +292,10 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
      * @return the List of equivalent classes
      */
     @Override
-    public List<URI> listEquivalentClasses(URI classUri) {
-        List<URI> result = new ArrayList<URI>();
+    public Set<URI> listEquivalentClasses(URI classUri) {
+
         if (classUri == null)
-            return result;
+            return ImmutableSet.of();
 
         StringBuilder strBuilder = new StringBuilder()
                 .append("select DISTINCT ?class where { \n")
@@ -313,10 +314,10 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
      * @return the list of subclasses
      */
     @Override
-    public List<URI> listSubClasses(URI classUri, boolean direct) {
-        List<URI> result = new ArrayList<URI>();
+    public Set<URI> listSubClasses(URI classUri, boolean direct) {
+
         if (classUri == null)
-            return result;
+            return ImmutableSet.of();
 
         StringBuilder strBuilder = new StringBuilder()
                 .append("select DISTINCT ?class where { \n");
@@ -340,10 +341,10 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
      * @return the list of super-classes
      */
     @Override
-    public List<URI> listSuperClasses(URI classUri, boolean direct) {
-        List<URI> result = new ArrayList<URI>();
+    public Set<URI> listSuperClasses(URI classUri, boolean direct) {
+
         if (classUri == null)
-            return result;
+            return ImmutableSet.of();
 
         StringBuilder strBuilder = new StringBuilder()
                 .append("select DISTINCT ?class where { \n");
@@ -359,7 +360,7 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
     }
 
     @Override
-    public List<URI> listConcepts(URI graphID) {
+    public Set<URI> listConcepts(URI graphID) {
 
         StringBuilder strBuilder = new StringBuilder()
                 .append("select DISTINCT ?class where { \n");
@@ -385,12 +386,12 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
         return listResourcesByQuery(strBuilder.toString(), "class");
     }
 
-    private List<URI> listResourcesByQuery(String queryStr, String variableName) {
+    private Set<URI> listResourcesByQuery(String queryStr, String variableName) {
 
-        List<URI> result = new ArrayList<URI>();
+        ImmutableSet.Builder<URI> result = ImmutableSet.builder();
         // If the SPARQL endpoint does not exist return immediately.
         if (this.getSparqlQueryEndpoint() == null) {
-            return result;
+            return result.build();
         }
 
         // Query the engine
@@ -429,7 +430,7 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
         } finally {
             qexec.close();
         }
-        return result;
+        return result.build();
     }
 
     private Set<URI> obtainReferencedModelUris(Service svc) {

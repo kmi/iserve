@@ -17,22 +17,22 @@ package uk.ac.open.kmi.iserve.sal.exception;
 
 public class SalException extends Exception {
 
-	private static final long serialVersionUID = 1221439121509145996L;
+    private static final long serialVersionUID = 1221439121509145996L;
 
-	public SalException() {
-		super();
-	}
+    public SalException() {
+        super();
+    }
 
-	public SalException(String message) {
-		super(message);
-	}
+    public SalException(String message) {
+        super(message);
+    }
 
-	public SalException(Throwable cause) {
-		super(cause);
-	}
+    public SalException(Throwable cause) {
+        super(cause);
+    }
 
-	public SalException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public SalException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

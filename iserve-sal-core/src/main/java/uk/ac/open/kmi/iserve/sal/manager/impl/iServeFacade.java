@@ -42,6 +42,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * iServe Manager implementation providing a facade to the entire Storage and Access Layer
@@ -354,7 +355,7 @@ public class iServeFacade extends IntegratedComponent {
 
         if (this.serviceManager.deleteService(serviceUri)) {
             // delete documents
-            List<URI> docs = this.serviceManager.listDocumentsForService(serviceUri);
+            Set<URI> docs = this.serviceManager.listDocumentsForService(serviceUri);
             for (URI doc : docs) {
                 this.docManager.deleteDocument(doc);
             }

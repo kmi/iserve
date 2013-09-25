@@ -32,8 +32,9 @@ import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
 
 import java.io.*;
 import java.net.URI;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * DocumentManagerFileSystemTest
@@ -121,13 +122,14 @@ public class DocumentManagerFileSystemTest {
         boolean result;
         URI docUri;
         Random rand = new Random();
-        List<URI> documents = documentManager.listDocuments();
+        Set<URI> documents = documentManager.listDocuments();
         int numDocs = documents.size();
         int delta = numDocs / 10;
         int index = rand.nextInt(10 - 0 + 1) + 0;
         int count = numDocs;
-        while (index < numDocs) {
-            docUri = documents.get(index);
+        Iterator<URI> docsIter = documents.iterator();
+        while (docsIter.hasNext() && index < numDocs) {
+            docUri = docsIter.next();
             log.info("Deleting document: {}", docUri);
             result = documentManager.deleteDocument(docUri);
             Assert.assertTrue(result);
@@ -146,7 +148,7 @@ public class DocumentManagerFileSystemTest {
         documentManager.clearDocuments();
         int count = uploadMsmFiles();
 
-        List<URI> documents = documentManager.listDocuments();
+        Set<URI> documents = documentManager.listDocuments();
         Assert.assertEquals(count, documents.size());
     }
 
@@ -160,12 +162,13 @@ public class DocumentManagerFileSystemTest {
         InputStream is;
         URI docUri;
         Random rand = new Random();
-        List<URI> documents = documentManager.listDocuments();
+        Set<URI> documents = documentManager.listDocuments();
         int numDocs = documents.size();
         int delta = numDocs / 10;
         int index = rand.nextInt(10 - 0 + 1) + 0;
-        while (index < numDocs) {
-            docUri = documents.get(index);
+        Iterator<URI> docsIter = documents.iterator();
+        while (docsIter.hasNext() && index < numDocs) {
+            docUri = docsIter.next();
             log.info("Obtaining document: {}", docUri);
             is = documentManager.getDocument(docUri);
             Assert.assertNotNull(is);

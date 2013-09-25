@@ -22,7 +22,7 @@ import java.net.URI;
  * Model Reference
  * This class captures modelReferences. We include the type in order to better
  * know the role that a given modelReference plays in a Service description.
- *
+ * <p/>
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 22/05/2013
  * Time: 01:43

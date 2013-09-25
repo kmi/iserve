@@ -16,6 +16,7 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import org.apache.commons.io.IOUtils;
@@ -36,9 +37,8 @@ import javax.inject.Named;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 public class DocumentManagerFileSystem extends IntegratedComponent implements DocumentManager {
 
@@ -133,19 +133,16 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
         return documentsPublicUri.resolve(relativeUri);
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#listDocument()
-     */
     @Override
-    public List<URI> listDocuments() throws DocumentException {
-        List<URI> result = new ArrayList<URI>();
+    public Set<URI> listDocuments() throws DocumentException {
+        ImmutableSet.Builder<URI> result = ImmutableSet.builder();
         File documentsFolder = new File(this.getDocumentsInternalPath());
         File[] docsList = documentsFolder.listFiles();
         for (File doc : docsList) {
             if (doc.isFile())
                 result.add(this.getDocumentPublicUri(doc));
         }
-        return result;
+        return result.build();
     }
 
     /* (non-Javadoc)

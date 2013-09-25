@@ -24,7 +24,7 @@
     <packaging>pom</packaging>
 
     <name>iServe</name>
-    <url>http://iserve.kmi.open.ac.uk</url>
+    <url>http://kmi.github.io/iserve/</url>
     <description>
         iServe is what we refer to as service warehouse which unifies service
         publication, analysis, and discovery through the use of lightweight semantics
@@ -236,6 +236,11 @@
 
     <reporting>
         <plugins>
+            <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-javadoc-plugin</artifactId>-->
+            <!--<version>2.9.1</version>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>

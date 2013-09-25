@@ -1,0 +1,207 @@
+            ----------------------
+            Developing Extensions
+            ----------------------
+
+Extending iServe
+
+    We have tried to support a certain degree of extensibility for iServe by providing a plugin mechanism. This mechanism
+    is currently available for 3rd party developers to provide their own import mechanisms for new formats, as well as
+    for including new matching algorithms. The plugin mechanism is based on Java's ServiceLoader combined with {{{http://code.google.com/p/google-guice/} Guice}} to
+    support the automated detection and use of plugin implementations at runtime, and can therefore be exploited simply
+    by dropping a new jar in the classpath.
+
+%{toc|section=1|fromDepth=2|toDepth=3}
+
+* {Developing a new Import Plugin}
+
+    Providing an import plugin requires two main things. First and foremost you must implement the code for transforming
+     service descriptions in the format you want to be able to import, to the ones iServe can handle. You should for this
+     simply provide an implementation of <uk.ac.open.kmi.iserve.commons.io.ServiceTransformer>.
+
+    Once implemented you should also provide a Guice module that ensures you declare your new implementation as a
+    binding for ServiceTransformer. Given that many implementations of this method may be available at runtime, we make
+    use of {{{http://code.google.com/p/google-guice/wiki/Multibindings} Guice's multibinding mechanism}} and index each implementation by the media type they support. Note that should
+    there be service formats with the same media type, the engine will have no means to know how to choose the right one
+    so be sure to chose a new one or remove the competing implementation from your classpath. Below you have a simple
+    example on how such a Guice module should look like.
+
++-----------------------------------------------------------------------------------------------------------------------+
+
+public class OwlsTransformationPlugin extends AbstractModule implements TransformationPluginModule {
+
+    @Override
+    protected void configure() {
+        MapBinder<String,ServiceTransformer> binder = MapBinder.newMapBinder(binder(), String.class, ServiceTransformer.class);
+        binder.addBinding(OwlsTransformer.mediaType).to(OwlsTransformer.class);
+    }
+}
+
++-----------------------------------------------------------------------------------------------------------------------+
+
+    The final thing required for the plugin to be automatically picked up by iServe is to provide the appropriate
+    information for {{{http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html} Java's ServiceLoader}} to locate your implementation. You should do this creating a file at
+    <META-INF/services/uk.ac.open.kmi.iserve.commons.io.TransformationPluginModule>. The content of the
+    file should just include a line with the complete name of your plugin implementation, eg., :
+
++-----------------------------------------------------------------------------------------------------------------------+
+uk.ac.open.kmi.iserve.importer.owls.OwlsTransformationPlugin
++-----------------------------------------------------------------------------------------------------------------------+
+
+    Developers using Maven can automate this last step easily by using <serviceloader-maven-plugin>. To do
+    so, simply include the following in your plugin's POM file:
+
++-----------------------------------------------------------------------------------------------------------------------+
+<!-- Generate the META-INF/services information for ServiceLoader -->
+<plugin>
+    <groupId>eu.somatik.serviceloader-maven-plugin</groupId>
+    <artifactId>serviceloader-maven-plugin</artifactId>
+    <version>1.0.2</version>
+    <configuration>
+        <services>
+            <param>uk.ac.open.kmi.iserve.commons.io.TransformationPluginModule</param>
+        </services>
+    </configuration>
+    <executions>
+        <execution>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
++-----------------------------------------------------------------------------------------------------------------------+
+
+** {Dependencies}
+
+    Given that we use Guice and its multibinding extension for the plugin mechanism, these are also dependencies for
+    your plugin.
+
+    Maven users can include the necessary dependencies by including the following:
+
++-----------------------------------------------------------------------------------------------------------------------+
+<dependency>
+    <groupId>uk.ac.open.kmi.iserve.commons</groupId>
+    <artifactId>iserve-commons-io</artifactId>
+    <version>${project.version}</version>
+</dependency>
+
+<!--Add Guice for dependency injection -->
+<dependency>
+    <groupId>com.google.inject</groupId>
+    <artifactId>guice</artifactId>
+    <version>${guice.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>com.google.inject.extensions</groupId>
+    <artifactId>guice-multibindings</artifactId>
+    <version>${guice.version}</version>
+</dependency>
+
++-----------------------------------------------------------------------------------------------------------------------+
+
+** {Testing that the Plugin Mechanism Works}
+
+    Should you wish to ensure that the plugin mechanism works and picks up properly your implementation, you can simply
+    try our generic transformer over the services you wish to transform. Below you have an example on how this can be
+     done.
+
++-----------------------------------------------------------------------------------------------------------------------+
+List<Services> services = Transformer.getInstance().transform(file, null, OwlsTransformer.mediaType );
++-----------------------------------------------------------------------------------------------------------------------+
+
+* {Developing a new Matcher}
+
+    Matchers are provided in iServe by means of the very same plugin mechanism used for transformation plugins. In this
+    case however the interface that needs to be implemented is one of the <uk.ac.open.kmi.iserve.discovery.api.Matcher>
+    extensions, e.g., ConceptMatcher. The Guice module to implement in this case is
+    <uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule>.
+
+    For the case of Matcher plugins, iServe will choose them at runtime on the basis of their class name, and should thus
+    be registered indexed by that. Below you have a complete example of a Guice module.
+
++-----------------------------------------------------------------------------------------------------------------------+
+public class DiscoMatchersPlugin extends ConfiguredModule implements MatcherPluginModule {
+
+    @Override
+    protected void configure() {
+        // Ensure we configure it
+        super.configure();
+
+        MapBinder<String, ConceptMatcher> conceptBinder = MapBinder.newMapBinder(binder(), String.class, ConceptMatcher.class);
+        conceptBinder.addBinding(SparqlLogicConceptMatcher.class.getName()).to(SparqlLogicConceptMatcher.class).in(Singleton.class);
+
+    }
+}
++-----------------------------------------------------------------------------------------------------------------------+
+
+    Like for import plugins, it is necessary to include the file for enabling Java's ServiceLoader to detect the
+    implementation at runtime. In this case, the file to provide is
+    <META-INF/services/uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule>. The content of the
+    file should just include a line with the complete name of your plugin implementation, eg., :
+
++-----------------------------------------------------------------------------------------------------------------------+
+uk.ac.open.kmi.iserve.discovery.disco.impl.DiscoMatchersPlugin
++-----------------------------------------------------------------------------------------------------------------------+
+
+    Maven developers can automated this last step by including the following in the plugin's POM file:
+
++-----------------------------------------------------------------------------------------------------------------------+
+<!-- Generate the META-INF/services information for ServiceLoader -->
+<plugin>
+    <groupId>eu.somatik.serviceloader-maven-plugin</groupId>
+    <artifactId>serviceloader-maven-plugin</artifactId>
+    <version>1.0.2</version>
+    <configuration>
+        <services>
+            <param>uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule</param>
+        </services>
+    </configuration>
+    <executions>
+        <execution>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
++-----------------------------------------------------------------------------------------------------------------------+
+
+** {Dependencies}
+
+    Given that we use Guice and its multibinding extension for the plugin mechanism, these are also dependencies for
+    your plugin.
+
+    Maven users can include the necessary dependencies by including the following:
+
++-----------------------------------------------------------------------------------------------------------------------+
+<dependency>
+    <groupId>uk.ac.open.kmi.iserve.discovery</groupId>
+    <artifactId>iserve-discovery-api</artifactId>
+    <version>${project.version}</version>
+</dependency>
+
+<!--Add Guice for dependency injection -->
+<dependency>
+    <groupId>com.google.inject</groupId>
+    <artifactId>guice</artifactId>
+    <version>${guice.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>com.google.inject.extensions</groupId>
+    <artifactId>guice-multibindings</artifactId>
+    <version>${guice.version}</version>
+</dependency>
+
++-----------------------------------------------------------------------------------------------------------------------+
+
+** {Testing that the Plugin Mechanism Works}
+
+    Should you wish to ensure that the plugin mechanism works and picks up properly your implementation, you can simply
+    try to obtain and use your Matcher by means of the <uk.ac.open.kmi.iserve.discovery.api.impl.MatchersFactory>.
+    Below you have an example on how this can be done.
+
++-----------------------------------------------------------------------------------------------------------------------+
+ConceptMatcher matcher = MatchersFactory.createConceptMatcher(SparqlLogicConceptMatcher.class.getName());
++-----------------------------------------------------------------------------------------------------------------------+

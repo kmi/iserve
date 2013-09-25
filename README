@@ -58,7 +58,7 @@ iServe provides an extensible plugin-based discovery engine which allows one to
 introduce new algorithms easily and combine them with existing ones on the fly.
 Discovery results are exposed using diverse serialisation formats (e.g., ATOM, 
 JSON) and can be combined through simple set operations like Union, Intersection,
-and Substraction.
+and Subtraction.
 
 Currently iServe provides the following discovery plugins:
 - Functional Classifications with RDFS reasoning
@@ -66,7 +66,7 @@ Currently iServe provides the following discovery plugins:
 - Inputs and Outputs with RDFS reasoning
 - Keywords similarity (disabled in v2.0)
 
-
+Note: some of these algorithms have yet to be ported to version 2.0
 
 
 

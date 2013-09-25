@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * Operations
- *
+ * <p/>
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 20/05/2013
  * Time: 17:35
@@ -102,7 +102,7 @@ public class Operation extends InvocableEntity {
         return false;
     }
 
-    public boolean addInputFault (MessageContent mc) {
+    public boolean addInputFault(MessageContent mc) {
         if (mc != null) {
             return this.inputFaults.add(mc);
         }
@@ -116,7 +116,7 @@ public class Operation extends InvocableEntity {
         return false;
     }
 
-    public boolean addOutputFault (MessageContent mc) {
+    public boolean addOutputFault(MessageContent mc) {
         if (mc != null) {
             return this.outputFaults.add(mc);
         }

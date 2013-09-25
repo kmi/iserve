@@ -75,7 +75,7 @@ public class ServiceManagerRdfTest {
     @Test
     public void testListServices() throws Exception {
 
-        List<URI> services = serviceManager.listServices();
+        Set<URI> services = serviceManager.listServices();
         // Check the original list of retrieved URIs
         assertEquals(158, services.size());
         // Check if there are no duplications
@@ -91,7 +91,7 @@ public class ServiceManagerRdfTest {
         log.info("Dataset Base URI {}", base.toURI().toASCIIString());
         List<Service> result = Transformer.getInstance().transform(services, base.toURI().toASCIIString(), MEDIATYPE);
         //List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
-        if (result.size()==0){
+        if (result.size() == 0) {
             fail("No services transformed!");
         }
         // Import all services
@@ -112,7 +112,7 @@ public class ServiceManagerRdfTest {
      * @return first coincident URI
      */
     public URI findServiceURI(String opName) {
-        List<URI> services = serviceManager.listServices();
+        Set<URI> services = serviceManager.listServices();
         for (URI service : services) {
             if (service.toASCIIString().contains(opName)) {
                 return service;
@@ -126,7 +126,7 @@ public class ServiceManagerRdfTest {
     public void testListOperations() throws Exception {
         URI op = findServiceURI("serv1323166560");
         if (op != null) {
-            List<URI> ops = serviceManager.listOperations(op);
+            Set<URI> ops = serviceManager.listOperations(op);
             assertTrue(ops.size() == 1);
         } else {
             fail();
@@ -138,8 +138,8 @@ public class ServiceManagerRdfTest {
     public void testListInputs() throws Exception {
         URI op = findServiceURI("serv1323166560");
         if (op != null) {
-            List<URI> ops = serviceManager.listOperations(op);
-            List<URI> inputs = serviceManager.listInputs(ops.get(0));
+            Set<URI> ops = serviceManager.listOperations(op);
+            Set<URI> inputs = serviceManager.listInputs(ops.iterator().next());
             assertTrue(inputs.size() == 1);
         } else {
             fail();
@@ -151,9 +151,9 @@ public class ServiceManagerRdfTest {
         URI op = findServiceURI("serv1323166560");
         String[] expected = {"con241744282", "con1849951292", "con1653328292"};
         if (op != null) {
-            List<URI> ops = serviceManager.listOperations(op);
-            List<URI> inputs = serviceManager.listInputs(ops.get(0));
-            Set<URI> parts = new HashSet<URI>(serviceManager.listMandatoryParts(inputs.get(0)));
+            Set<URI> ops = serviceManager.listOperations(op);
+            Set<URI> inputs = serviceManager.listInputs(ops.iterator().next());
+            Set<URI> parts = new HashSet<URI>(serviceManager.listMandatoryParts(inputs.iterator().next()));
             assertTrue(parts.size() == 3);
             for (URI part : parts) {
                 boolean valid = false;
@@ -174,8 +174,8 @@ public class ServiceManagerRdfTest {
     public void testListOutputs() throws Exception {
         URI op = findServiceURI("serv1323166560");
         if (op != null) {
-            List<URI> ops = serviceManager.listOperations(op);
-            List<URI> inputs = serviceManager.listOutputs(ops.get(0));
+            Set<URI> ops = serviceManager.listOperations(op);
+            Set<URI> inputs = serviceManager.listOutputs(ops.iterator().next());
             assertTrue(inputs.size() == 1);
         } else {
             fail();

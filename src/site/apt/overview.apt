@@ -1,0 +1,83 @@
+            -----------
+            Overview
+            -----------
+
+iServe Description
+
+    iServe is what we refer to as service warehouse which unifies service publication, analysis, and discovery through the
+    use of lightweight semantics as well as advanced discovery and analytic capabilities. iServe provides the typical
+    features of service registries and additional functionality that exploits service descriptions, service annotations and
+    further data gathered and derived from the analysis of these descriptions, data crawled from the Web, periodic
+    monitoring and user activities.
+
+    iServe builds upon lessons learnt from research and development on the Web and on service discovery algorithms to
+    provide a generic semantic service registry able to support advanced discovery over both Web APIs and WSDL services
+    described using heterogeneous formalisms.
+
+* Accessing iServe
+
+    Applications and users can interact with iServe through a number of mechanisms:
+
+        * Linked Data.
+
+        * RESTful API.
+
+        * HTML Front end.
+
+** Linked Data
+
+    Once published in iServe, the service descriptions are exposed following Linked Data principles. In particular, each
+    service description is given a unique and resolvable HTTP URI exposing service descriptions in both HTML and RDF through
+    content negotiation. Additionally, the entire registry can be queried through a SPARQL endpoint.
+
+** RESTful API
+
+    Programmatic access to iServe's functionality is provided through a RESTful API. The API allows applications to create,
+    read, update, and delete services, as well as it allows accessing the discovery algorithms implemented.
+
+** Graphical User Interface
+
+    iServe includes a Web-based user interface giving access to the content of the service registry and allowing users to
+    search for them, etc.
+
+* Service Languages and Ontologies Supported
+
+    Support to different formalisms is provided through an extensible set of import plugins which transform these into the
+    core conceptual model used by iServe.
+
+    In particular iServe currently supports:
+
+        * WSDL v1 and v2.
+
+        * SAWSDL.
+
+        * OWL-S v1.1.
+
+        * MicroWSMO.
+
+        * WSMO-Lite.
+
+        * Web Service Contest's proprietary format.
+
+
+* Discovery Algorithms Implemented
+
+    iServe provides an extensible plugin-based discovery engine which allows one to introduce new algorithms easily and
+    combine them with existing ones on the fly. Discovery results are exposed using diverse serialisation formats (e.g.,
+    ATOM, JSON) and can be combined through simple set operations like Union, Intersection, and Subtraction.
+
+    Currently iServe provides the following discovery plugins:
+
+        * Functional Classifications with RDFS reasoning.
+
+        * SKOS categorisations.
+
+        * Inputs and Outputs with RDFS reasoning.
+
+        * Keywords similarity (disabled in v2.0).
+
+
+    Note: some of these algorithms have yet to be ported to version 2.0
+
+
+

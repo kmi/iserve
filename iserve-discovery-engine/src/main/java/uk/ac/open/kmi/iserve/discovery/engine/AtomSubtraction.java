@@ -15,50 +15,46 @@
 */
 package uk.ac.open.kmi.iserve.discovery.engine;
 
-import java.text.ParseException;
+import org.apache.abdera.model.Entry;
+
+import javax.ws.rs.Path;
 import java.util.List;
 import java.util.Set;
 
-import javax.ws.rs.Path;
-
-import org.apache.abdera.model.Entry;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 /**
  * provides functionality to compute an intersection of two or more atom feeds
- * @author Jacek Kopecky
  *
+ * @author Jacek Kopecky
  */
 @Path("/{operator: andnot|minus|subtraction}")
 public class AtomSubtraction extends AtomBase {
 
-	@Override
-	String combinatorFeedTitle(String[] feedTitles) {
-        String title = "Subtraction in feed \"" + (feedTitles[0] == null ? "" : feedTitles[0]) + "\" of entries from " + (feedTitles.length-1) + " feed(s): ";
-        for (int i = 1; i<feedTitles.length; i++ ) {
+    @Override
+    String combinatorFeedTitle(String[] feedTitles) {
+        String title = "Subtraction in feed \"" + (feedTitles[0] == null ? "" : feedTitles[0]) + "\" of entries from " + (feedTitles.length - 1) + " feed(s): ";
+        for (int i = 1; i < feedTitles.length; i++) {
             title += "\"" + (feedTitles[i] == null ? "" : feedTitles[i]) + "\"";
-            if (i < (feedTitles.length-1)) {
+            if (i < (feedTitles.length - 1)) {
                 title += ", ";
             } else {
                 title += ".";
             }
         }
         return title;
-	}
+    }
 
-	@Override
-	String combinatorName() {
-		return "Subtraction";
-	}
+    @Override
+    String combinatorName() {
+        return "Subtraction";
+    }
 
-	/* (non-Javadoc)
-	 * @see uk.ac.open.kmi.iserve.discovery.engine.AtomBase#combineResults(java.util.Set, java.util.List)
-	 */
-	@Override
-	Set<Entry> combineResults(Set<Entry> combination, List<Entry> entries) {
-		combination.removeAll(entries);
-		return combination;
-	}
-	
+    /* (non-Javadoc)
+     * @see uk.ac.open.kmi.iserve.discovery.engine.AtomBase#combineResults(java.util.Set, java.util.List)
+     */
+    @Override
+    Set<Entry> combineResults(Set<Entry> combination, List<Entry> entries) {
+        combination.removeAll(entries);
+        return combination;
+    }
+
 }
