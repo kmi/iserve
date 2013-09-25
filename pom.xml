@@ -277,36 +277,6 @@
         </plugins>
     </reporting>
 
-    <profiles>
-        <profile>
-            <id>stage</id>
-            <properties>
-                <site.deploy.url>https://github.com/kmi/iserve/tree/gh-pages/</site.deploy.url>
-            </properties>
-
-            <build>
-                <plugins>
-                    <!-- Configure Maven site plugin to perform stage -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-site-plugin</artifactId>
-                        <version>3.3</version>
-                        <executions>
-                            <execution>
-                                <id>stage</id>
-                                <goals>
-                                    <goal>stage</goal>
-                                </goals>
-                                <phase>site</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-
-        </profile>
-    </profiles>
-
     <repositories>
         <repository>
             <id>apache-repo-releases</id>
