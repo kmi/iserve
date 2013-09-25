@@ -71,7 +71,7 @@ public interface ServiceManager extends iServeComponent {
             throws ServiceException;
 
     /**
-     * Obtains the service descriptions for all the services identified by the URI List
+     * Obtains the service descriptions for all the services identified by the URI Set
      *
      * @param serviceUris the URIs of the service to obtain
      * @return the list of all services that could be obtained. If none could be obtained the list will be empty.
@@ -93,7 +93,7 @@ public interface ServiceManager extends iServeComponent {
      * Obtains the list of operation URIs for a given Operation
      *
      * @param serviceUri the service URI
-     * @return a List of URIs with the operations provided by the service. If there are no operations, the List should be empty NOT null.
+     * @return a Set of URIs with the operations provided by the service. If there are no operations, the Set should be empty NOT null.
      */
     public abstract Set<URI> listOperations(URI serviceUri);
 
@@ -101,7 +101,7 @@ public interface ServiceManager extends iServeComponent {
      * Obtains the list of input URIs for a given Operation
      *
      * @param operationUri the operation URI
-     * @return a List of URIs with the inputs of the operation. If no input is necessary the List should be empty NOT null.
+     * @return a Set of URIs with the inputs of the operation. If no input is necessary the Set should be empty NOT null.
      */
     public abstract Set<URI> listInputs(URI operationUri);
 
@@ -109,7 +109,7 @@ public interface ServiceManager extends iServeComponent {
      * Obtains the list of output URIs for a given Operation
      *
      * @param operationUri the operation URI
-     * @return a List of URIs with the outputs of the operation. If no output is provided the List should be empty NOT null.
+     * @return a Set of URIs with the outputs of the operation. If no output is provided the Set should be empty NOT null.
      */
     public abstract Set<URI> listOutputs(URI operationUri);
 
@@ -117,23 +117,31 @@ public interface ServiceManager extends iServeComponent {
      * Obtains the list of mandatory parts for a given Message Content
      *
      * @param messageContent the message content URI
-     * @return a List of URIs with the mandatory parts of the message content. If there are no parts the List should be empty NOT null.
+     * @return a Set of URIs with the mandatory parts of the message content. If there are no parts the Set should be empty NOT null.
      */
     public abstract Set<URI> listMandatoryParts(URI messageContent);
+
+    /**
+     * Obtains the list of optional parts for a given Message Content
+     *
+     * @param messageContent the message content URI
+     * @return a Set of URIs with the optional parts of the message content. If there are no parts the Set should be empty NOT null.
+     */
+    public abstract Set<URI> listOptionalParts(URI messageContent);
 
     /**
      * Obtains the list of model references for a given element.
      *
      * @param elementUri the URI of the element for which we want to obtain the model references
-     * @return a List of URIs with the model references of the given element. If there are no model references the List should be empty NOT null.
+     * @return a Set of URIs with the model references of the given element. If there are no model references the Set should be empty NOT null.
      */
     public abstract Set<URI> listModelReferences(URI elementUri);
 
     /**
-     * Lists all documents related to a given service
+     * Sets all documents related to a given service
      *
      * @param serviceUri the service URI
-     * @return the List of the URIs of all the documents related to the service
+     * @return the Set of the URIs of all the documents related to the service
      * @throws ServiceException
      */
     public abstract Set<URI> listDocumentsForService(URI serviceUri) throws ServiceException;

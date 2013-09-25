@@ -172,6 +172,28 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         return listResourcesByQuery(queryStr, "part");
     }
 
+    /**
+     * Obtains the list of optional parts for a given Message Content
+     *
+     * @param messageContent the message content URI
+     * @return a Set of URIs with the optional parts of the message content. If there are no parts the Set should be empty NOT null.
+     */
+    @Override
+    public Set<URI> listOptionalParts(URI messageContent) {
+        if (messageContent == null) {
+            return ImmutableSet.of();
+        }
+
+        String queryStr = new StringBuilder()
+                .append("select DISTINCT ?part where { \n")
+                .append("<").append(messageContent.toASCIIString()).append("> ").append("<").append(MSM.hasOptionalPart.getURI()).append(">").append(" ?part .")
+                .append("?part ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.MessagePart.getURI()).append("> .")
+                .append(" }")
+                .toString();
+
+        return listResourcesByQuery(queryStr, "part");
+    }
+
     private Set<URI> listResourcesByQuery(String queryStr, String variableName) {
 
         ImmutableSet.Builder<URI> result = ImmutableSet.builder();
