@@ -150,6 +150,7 @@
         <module>iserve-discovery-engine</module>
         <module>iserve-test-resources</module>
         <module>iserve-discovery-hazelcast</module>
+        <module>iserve-discovery-infinispan</module>
         <!-- <module>iserve-analysis-engine</module> -->
     </modules>
 
