@@ -22,5 +22,5 @@ package uk.ac.open.kmi.iserve.discovery.api;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 18/09/2013
  */
-public interface ServiceMatcher {
+public interface DataflowMatcher extends Matcher {
 }
