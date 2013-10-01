@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.iserve.discovery.infinispan.kv;
+package uk.ac.open.kmi.iserve.discovery.infinispan.index;
 
 import com.google.common.collect.Table;
 import org.infinispan.Cache;
@@ -30,6 +30,13 @@ public class InfinispanIndexFactory implements IndexFactory<URI, Map<URI, String
         facade = iServeFacade.getInstance();
         // Get the default concept matcher to populate the index
         delegatedMatcher = MatchersFactory.createConceptMatcher();
+    }
+
+    public InfinispanIndexFactory(ConceptMatcher matcher){
+        // Get the default iServe facade
+        facade = iServeFacade.getInstance();
+        // Get the default concept matcher to populate the index
+        delegatedMatcher = matcher;
     }
 
     private void populate(Cache<URI, Map<URI, String>> cache) {

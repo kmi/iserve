@@ -13,6 +13,7 @@ import uk.ac.open.kmi.iserve.discovery.api.impl.AtomicMatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.impl.SparqlLogicConceptMatcher;
+import uk.ac.open.kmi.iserve.discovery.infinispan.index.InfinispanIndexFactory;
 import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import java.net.URI;
@@ -20,45 +21,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Pablo Rodríguez Mier
  */
 public class InfinispanIndexedConceptMatcher extends AbstractMatcher implements ConceptMatcher {
 
-    private Cache<URI, Map<URI, String>> map;
-    private SparqlLogicConceptMatcher matcher;
-    private iServeFacade facade;
+    private ConcurrentMap<URI, Map<URI, String>> map;
 
-    @Inject
-    public InfinispanIndexedConceptMatcher(SparqlLogicConceptMatcher matcher) {
+    public InfinispanIndexedConceptMatcher() {
         super(EnumMatchTypes.of(LogicConceptMatchType.class));
-        // Configure infinispan to obtain a cache
-        this.facade = iServeFacade.getInstance();
-        this.map = new DefaultCacheManager().getCache();
-        this.matcher = matcher;
-        populate(map);
-        warmup(map);
-    }
-
-    // TODO: This should not be here. A separate crawler is required to update the index
-    private void populate(Cache<URI,Map<URI, String>> map) {
-        Set<URI> classes = new HashSet<URI>(this.facade.getKnowledgeBaseManager().listConcepts(null));
-        Table<URI, URI, MatchResult> table = matcher.listMatchesAtLeastOfType(classes, LogicConceptMatchType.Plugin);
-        for(URI origin : table.rowKeySet()){
-            Map<URI, String> destMatch = new HashMap<URI, String>();
-            Map<URI, MatchResult> dest = table.row(origin);
-            for(URI destUri : dest.keySet()){
-                destMatch.put(destUri, dest.get(destUri).getMatchType().name());
-            }
-            map.put(origin, destMatch);
-        }
-    }
-
-    private void warmup(Cache<URI,Map<URI, String>> map) {
-        for(URI key : map.keySet()){
-            System.out.println(key + " -> " + map.get(key));
-        }
+        this.map = new InfinispanIndexFactory().createIndex();
     }
 
     @Override

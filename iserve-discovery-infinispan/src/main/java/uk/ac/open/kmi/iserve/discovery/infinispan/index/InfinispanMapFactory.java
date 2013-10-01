@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.iserve.discovery.infinispan.kv;
+package uk.ac.open.kmi.iserve.discovery.infinispan.index;
 
 import org.infinispan.manager.DefaultCacheManager;
 import uk.ac.open.kmi.iserve.discovery.disco.index.MapFactory;
