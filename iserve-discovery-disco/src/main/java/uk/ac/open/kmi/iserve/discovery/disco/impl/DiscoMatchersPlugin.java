@@ -38,6 +38,7 @@ public class DiscoMatchersPlugin extends ConfiguredModule implements MatcherPlug
 
         MapBinder<String, ConceptMatcher> conceptBinder = MapBinder.newMapBinder(binder(), String.class, ConceptMatcher.class);
         conceptBinder.addBinding(SparqlLogicConceptMatcher.class.getName()).to(SparqlLogicConceptMatcher.class).in(Singleton.class);
-
+        conceptBinder.addBinding(IndexedLogicConceptMatcher.class.getName()).to(IndexedLogicConceptMatcher.class).in(Singleton.class);
+        //bind(IndexFactory.class).to
     }
 }

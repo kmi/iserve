@@ -4,6 +4,8 @@ import com.google.inject.multibindings.MapBinder;
 import uk.ac.open.kmi.iserve.core.ConfiguredModule;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
+import uk.ac.open.kmi.iserve.discovery.disco.index.IndexFactory;
+import uk.ac.open.kmi.iserve.discovery.infinispan.kv.InfinispanIndexFactory;
 
 import javax.inject.Singleton;
 
@@ -15,6 +17,7 @@ public class InfinispanPluginModule extends ConfiguredModule implements MatcherP
     @Override
     protected void configure() {
         super.configure();
+        bind(IndexFactory.class).to(InfinispanIndexFactory.class);
         MapBinder<String, ConceptMatcher> conceptBinder = MapBinder.newMapBinder(binder(), String.class, ConceptMatcher.class);
         conceptBinder.addBinding(InfinispanIndexedConceptMatcher.class.getName()).to(InfinispanIndexedConceptMatcher.class).in(Singleton.class);
     }
