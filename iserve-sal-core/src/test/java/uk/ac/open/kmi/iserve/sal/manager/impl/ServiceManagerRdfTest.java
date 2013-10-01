@@ -182,7 +182,29 @@ public class ServiceManagerRdfTest {
         }
     }
 
-    // TODO; Add testOutputParts method
+    @Test
+    public void testOutputParts() {
+        URI op = findServiceURI("serv904934656");
+        String[] expected = {"con1660906753", "con1616052376", "con512919114", "con633555781"};
+        if (op != null) {
+            Set<URI> ops = serviceManager.listOperations(op);
+            Set<URI> outputs = serviceManager.listOutputs(ops.iterator().next());
+            Set<URI> parts = new HashSet<URI>(serviceManager.listMandatoryParts(outputs.iterator().next()));
+            assertEquals(4, parts.size());
+            for (URI part : parts) {
+                boolean valid = false;
+                for (String expectedInput : expected) {
+                    if (part.toASCIIString().contains(expectedInput)) {
+                        valid = true;
+                        break;
+                    }
+                }
+                assertTrue(valid);
+            }
+        } else {
+            fail();
+        }
+    }
 
     @Test
     public void testGetService() throws Exception {

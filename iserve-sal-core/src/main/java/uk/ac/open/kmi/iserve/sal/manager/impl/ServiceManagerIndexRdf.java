@@ -725,7 +725,7 @@ public class ServiceManagerIndexRdf extends SparqlGraphStoreManager implements S
 
         // Process Output
         messagesUris = new HashSet<URI>();
-        List<MessageContent> outputs = operation.getInputs();
+        List<MessageContent> outputs = operation.getOutputs();
         for (MessageContent output : outputs) {
             messagesUris.add(output.getUri());
             indexModelReferences(output);
