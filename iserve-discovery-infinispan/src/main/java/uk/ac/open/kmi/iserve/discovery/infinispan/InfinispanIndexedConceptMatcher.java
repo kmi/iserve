@@ -1,9 +1,5 @@
 package uk.ac.open.kmi.iserve.discovery.infinispan;
 
-import com.google.common.collect.Table;
-import com.google.inject.Inject;
-import org.infinispan.Cache;
-import org.infinispan.manager.DefaultCacheManager;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
@@ -12,15 +8,10 @@ import uk.ac.open.kmi.iserve.discovery.api.impl.AbstractMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.AtomicMatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
-import uk.ac.open.kmi.iserve.discovery.disco.impl.SparqlLogicConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.infinispan.index.InfinispanIndexFactory;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
 /**
