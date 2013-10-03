@@ -130,6 +130,13 @@
                     <include>**/*.properties</include>
                 </includes>
             </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*.owl</include>
+                </includes>
+            </resource>
         </resources>
 
         <plugins>
