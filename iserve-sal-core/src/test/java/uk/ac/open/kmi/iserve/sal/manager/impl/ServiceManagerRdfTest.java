@@ -222,7 +222,7 @@ public class ServiceManagerRdfTest {
         Set<URI> result;
 
         result = serviceManager.listOperationsWithOutputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con332477359"));
-        assertEquals(1, result.size());
+        assertEquals(0, result.size());
 
         result = serviceManager.listOperationsWithOutputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con1023932779"));
         assertEquals(1, result.size());
@@ -240,6 +240,61 @@ public class ServiceManagerRdfTest {
         assertEquals(2, result.size());
 
         result = serviceManager.listOperationsWithOutputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con38363177"));
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    public void testListServicesWithInputType() throws Exception {
+
+        Set<URI> result;
+
+        result = serviceManager.listServicesWithInputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con332477359"));
+        assertEquals(1, result.size());
+
+        result = serviceManager.listServicesWithInputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con1023932779"));
+        assertEquals(1, result.size());
+
+        result = serviceManager.listServicesWithInputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con33243578"));
+        assertEquals(1, result.size());
+
+        result = serviceManager.listServicesWithInputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con246045693"));
+        assertEquals(0, result.size());
+
+        result = serviceManager.listServicesWithInputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con1557475654"));
+        assertEquals(1, result.size());
+
+        result = serviceManager.listServicesWithInputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con996692056"));
+        assertEquals(1, result.size());
+
+        result = serviceManager.listServicesWithInputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con38363177"));
+        assertEquals(0, result.size());
+    }
+
+
+    @Test
+    public void testListServicesWithOutputType() throws Exception {
+
+        Set<URI> result;
+
+        result = serviceManager.listServicesWithOutputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con332477359"));
+        assertEquals(0, result.size());
+
+        result = serviceManager.listServicesWithOutputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con1023932779"));
+        assertEquals(1, result.size());
+
+        result = serviceManager.listServicesWithOutputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con33243578"));
+        assertEquals(3, result.size());
+
+        result = serviceManager.listServicesWithOutputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con246045693"));
+        assertEquals(3, result.size());
+
+        result = serviceManager.listServicesWithOutputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con1557475654"));
+        assertEquals(0, result.size());
+
+        result = serviceManager.listServicesWithOutputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con996692056"));
+        assertEquals(2, result.size());
+
+        result = serviceManager.listServicesWithOutputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con38363177"));
         assertEquals(1, result.size());
     }
 }

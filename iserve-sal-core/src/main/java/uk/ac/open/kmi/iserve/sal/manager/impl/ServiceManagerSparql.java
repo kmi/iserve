@@ -27,6 +27,7 @@ import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -686,6 +687,58 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
     }
 
     /**
+     * Given the URI of a type (i.e., a modelReference), this method figures out all the entities of a type
+     * (Service or Operation are the ones that are expected) that have this as part of their inputs or outputs. What
+     * data relationship should be used is also parameterised.
+     *
+     * @param entityType       the type of entity we are looking for (i.e., service or operation)
+     * @param dataPropertyType the kind of data property we are interested in (e.g., inputs, outputs, fault)
+     * @param modelReference   the type of input sought for
+     * @return a Set of URIs of the entities that matched the request or the empty Set otherwise.
+     */
+    private Set<URI> listEntitiesByDataModel(com.hp.hpl.jena.rdf.model.Resource entityType, Property dataPropertyType, URI modelReference) {
+
+        if (modelReference == null) {
+            return ImmutableSet.of();
+        }
+
+        StringBuilder queryBuilder = new StringBuilder()
+                .append("SELECT DISTINCT ?entity where {").append("\n")
+                .append("{").append("\n")
+                .append(" ?entity <").append(RDF.type.getURI()).append("> <").append(entityType.getURI()).append("> .").append("\n");
+
+        // Deal with the difference between Services and Operations
+        if (entityType.equals(MSM.Service)) {
+            queryBuilder.append(" ?entity <").append(MSM.hasOperation.getURI()).append("> ?op.").append("\n")
+                    .append(" ?op <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+        } else {
+            queryBuilder.append(" ?entity <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+        }
+
+        queryBuilder.append(" ?message <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n")
+                .append("}")
+                .append(" UNION ")
+                .append("{").append("\n")
+                .append(" ?entity <").append(RDF.type.getURI()).append("> <").append(entityType.getURI()).append("> .").append("\n");
+
+        // Deal with the difference between Services and Operations
+        if (entityType.equals(MSM.Service)) {
+            queryBuilder.append(" ?entity <").append(MSM.hasOperation.getURI()).append("> ?op.").append("\n")
+                    .append(" ?op <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+        } else {
+            queryBuilder.append(" ?entity <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+        }
+
+        queryBuilder.append(" ?message <").append(MSM.hasPartTransitive.getURI()).append("> ?part .").append("\n")
+                .append(" ?part <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n")
+                .append("}").append("\n")
+                .append("}");
+
+        return this.graphStoreManager.listResourcesByQuery(queryBuilder.toString(), "entity");
+
+    }
+
+    /**
      * Given the URI of a type (i.e., a modelReference), this method figures out all the operations
      * that have this as part of their inputs.
      *
@@ -694,28 +747,7 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      */
     @Override
     public Set<URI> listOperationsWithInputType(URI modelReference) {
-        if (modelReference == null) {
-            return ImmutableSet.of();
-        }
-
-        String queryStr = new StringBuilder()
-                .append("SELECT DISTINCT ?op where {").append("\n")
-                .append("{").append("\n")
-                .append(" ?op <").append(RDF.type.getURI()).append("> <").append(MSM.Operation.getURI()).append("> .").append("\n")
-                .append(" ?op <").append(MSM.hasInput.getURI()).append("> ?input .").append("\n")
-                .append(" ?input <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n")
-                .append("}")
-                .append(" UNION ")
-                .append("{").append("\n")
-                .append(" ?op <").append(RDF.type.getURI()).append("> <").append(MSM.Operation.getURI()).append("> .").append("\n")
-                .append(" ?op <").append(MSM.hasInput.getURI()).append("> ?input .").append("\n")
-                .append(" ?input <").append(MSM.hasPartTransitive.getURI()).append("> ?part .").append("\n")
-                .append(" ?part <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n")
-                .append("}").append("\n")
-                .append("}")
-                .toString();
-
-        return this.graphStoreManager.listResourcesByQuery(queryStr, "op");
+        return this.listEntitiesByDataModel(MSM.Operation, MSM.hasInput, modelReference);
     }
 
     /**
@@ -727,7 +759,7 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      */
     @Override
     public Set<URI> listOperationsWithOutputType(URI modelReference) {
-        return null;  // TODO: implement
+        return this.listEntitiesByDataModel(MSM.Operation, MSM.hasOutput, modelReference);
     }
 
     /**
@@ -739,7 +771,7 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      */
     @Override
     public Set<URI> listServicesWithInputType(URI modelReference) {
-        return null;  // TODO: implement
+        return this.listEntitiesByDataModel(MSM.Service, MSM.hasInput, modelReference);
     }
 
     /**
@@ -751,7 +783,7 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      */
     @Override
     public Set<URI> listServicesWithOutputType(URI modelReference) {
-        return null;  // TODO: implement
+        return this.listEntitiesByDataModel(MSM.Service, MSM.hasOutput, modelReference);
     }
 
     /**
