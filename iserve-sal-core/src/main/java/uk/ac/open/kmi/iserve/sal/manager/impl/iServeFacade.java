@@ -66,7 +66,8 @@ public class iServeFacade extends IntegratedComponent {
     private static Injector injector;
 
     @Inject
-    private iServeFacade(EventBus eventBus, @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
+    private iServeFacade(EventBus eventBus,
+                         @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
                          DocumentManager docManager,
                          ServiceManager serviceManager,
                          KnowledgeBaseManager kbManager) throws ConfigurationException, SalException {
