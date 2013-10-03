@@ -141,8 +141,8 @@ public class SparqlLogicConceptMatcherTest extends TestCase {
                 conceptMatcher.listMatchesOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), LogicConceptMatchType.Exact);
         stopwatch.stop();
 
-        log.info("Obtained all exact matches ({}) in {} \n", matches.size(), stopwatch);
-        Assert.assertEquals(matches.size(), 1);
+        log.info("Obtained ({}) exact matches - {} - in {} \n", matches.size(), matches, stopwatch);
+        Assert.assertEquals(1, matches.size());
         stopwatch.reset();
 
         // Obtain only plugin
@@ -150,8 +150,8 @@ public class SparqlLogicConceptMatcherTest extends TestCase {
         matches = conceptMatcher.listMatchesOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), LogicConceptMatchType.Plugin);
         stopwatch.stop();
 
-        log.info("Obtained all plugin matches ({}) in {} \n", matches.size(), stopwatch);
-        Assert.assertEquals(matches.size(), 5);
+        log.info("Obtained ({}) plugin matches - {} - in {} \n", matches.size(), matches, stopwatch);
+        Assert.assertEquals(6, matches.size());
         stopwatch.reset();
 
         // Obtain only plugin
@@ -159,8 +159,9 @@ public class SparqlLogicConceptMatcherTest extends TestCase {
         matches = conceptMatcher.listMatchesOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), LogicConceptMatchType.Subsume);
         stopwatch.stop();
 
-        log.info("Obtained all plugin matches ({}) in {} \n", matches.size(), stopwatch);
-        Assert.assertEquals(matches.size(), 0);
+        log.info("Obtained ({}) plugin matches - {} - in {} \n", matches.size(), matches, stopwatch);
+        Assert.assertEquals(1, matches.size());
+        Assert.assertTrue(matches.containsKey(URI.create("http://www.w3.org/2002/07/owl#Nothing")));
         stopwatch.reset();
     }
 
@@ -172,8 +173,8 @@ public class SparqlLogicConceptMatcherTest extends TestCase {
                 conceptMatcher.listMatchesAtLeastOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), LogicConceptMatchType.Exact);
         stopwatch.stop();
 
-        log.info("Obtained at least Exact matches ({}) in {} \n", matches.size(), stopwatch);
-        Assert.assertEquals(matches.size(), 1);
+        log.info("Obtained ({}) At least Exact matches - {} - in {} \n", matches.size(), matches, stopwatch);
+        Assert.assertEquals(1, matches.size());
         stopwatch.reset();
 
         // Obtain at least plugin
@@ -181,8 +182,8 @@ public class SparqlLogicConceptMatcherTest extends TestCase {
         matches = conceptMatcher.listMatchesAtLeastOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), LogicConceptMatchType.Plugin);
         stopwatch.stop();
 
-        log.info("Obtained at least Plugin matches ({}) in {} \n", matches.size(), stopwatch);
-        Assert.assertEquals(matches.size(), 6);
+        log.info("Obtained ({}) At least Plugin matches - {} - in {} \n", matches.size(), matches, stopwatch);
+        Assert.assertEquals(7, matches.size());
         stopwatch.reset();
 
         // Obtain at least subsumes
@@ -190,8 +191,8 @@ public class SparqlLogicConceptMatcherTest extends TestCase {
         matches = conceptMatcher.listMatchesAtLeastOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), LogicConceptMatchType.Subsume);
         stopwatch.stop();
 
-        log.info("Obtained at least Subsumes matches ({}) in {} \n", matches.size(), stopwatch);
-        Assert.assertEquals(matches.size(), 6);
+        log.info("Obtained ({}) At least Subsumes matches - {] - in {} \n", matches.size(), matches, stopwatch);
+        Assert.assertEquals(8, matches.size());
         stopwatch.reset();
 
         // Obtain at least fail
@@ -199,8 +200,8 @@ public class SparqlLogicConceptMatcherTest extends TestCase {
         matches = conceptMatcher.listMatchesAtLeastOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), LogicConceptMatchType.Fail);
         stopwatch.stop();
 
-        log.info("Obtained at least Fail matches ({}) in {} \n", matches.size(), stopwatch);
-        Assert.assertEquals(matches.size(), 6);
+        log.info("Obtained ({}) At least Fail matches - {} - in {} \n", matches.size(), matches, stopwatch);
+        Assert.assertEquals(8, matches.size());
         stopwatch.reset();
     }
 
@@ -212,8 +213,8 @@ public class SparqlLogicConceptMatcherTest extends TestCase {
                 conceptMatcher.listMatchesAtMostOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), LogicConceptMatchType.Exact);
         stopwatch.stop();
 
-        log.info("Obtained at most Exact matches ({}) in {} \n", matches.size(), stopwatch);
-        Assert.assertEquals(matches.size(), 6);
+        log.info("Obtained ({}) At most Exact matches - {} - in {} \n", matches.size(), matches, stopwatch);
+        Assert.assertEquals(8, matches.size());
         stopwatch.reset();
 
         // Obtain at least plugin
@@ -221,8 +222,8 @@ public class SparqlLogicConceptMatcherTest extends TestCase {
         matches = conceptMatcher.listMatchesAtMostOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), LogicConceptMatchType.Plugin);
         stopwatch.stop();
 
-        log.info("Obtained at most Plugin matches ({}) in {} \n", matches.size(), stopwatch);
-        Assert.assertEquals(matches.size(), 5);
+        log.info("Obtained ({}) At most Plugin matches - {} - in {} \n", matches.size(), matches, stopwatch);
+        Assert.assertEquals(7, matches.size());
         stopwatch.reset();
 
         // Obtain at least subsumes
@@ -230,8 +231,8 @@ public class SparqlLogicConceptMatcherTest extends TestCase {
         matches = conceptMatcher.listMatchesAtMostOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), LogicConceptMatchType.Subsume);
         stopwatch.stop();
 
-        log.info("Obtained at most Subsumes matches ({}) in {} \n", matches.size(), stopwatch);
-        Assert.assertEquals(matches.size(), 0);
+        log.info("Obtained ({}) At most Subsumes matches - {} - in {} \n", matches.size(), matches, stopwatch);
+        Assert.assertEquals(1, matches.size());
         stopwatch.reset();
 
         // Obtain at least fail
@@ -239,8 +240,8 @@ public class SparqlLogicConceptMatcherTest extends TestCase {
         matches = conceptMatcher.listMatchesAtMostOfType(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), LogicConceptMatchType.Fail);
         stopwatch.stop();
 
-        log.info("Obtained at most Fail matches ({}) in {} \n", matches.size(), stopwatch);
-        Assert.assertEquals(matches.size(), 0);
+        log.info("Obtained ({}) At most Fail matches - {} - in {} \n", matches.size(), matches, stopwatch);
+        Assert.assertEquals(0, matches.size());
         stopwatch.reset();
     }
 
@@ -253,8 +254,8 @@ public class SparqlLogicConceptMatcherTest extends TestCase {
                 conceptMatcher.listMatchesWithinRange(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), LogicConceptMatchType.Fail, LogicConceptMatchType.Exact);
         stopwatch.stop();
 
-        log.info("Obtained all matches ({}) in {} \n", matches.size(), stopwatch);
-        Assert.assertEquals(matches.size(), 6);
+        log.info("Obtained ({}) all matches - {} - in {} \n", matches.size(), matches, stopwatch);
+        Assert.assertEquals(8, matches.size());
         stopwatch.reset();
 
         // Obtain only exact
@@ -262,8 +263,8 @@ public class SparqlLogicConceptMatcherTest extends TestCase {
         matches = conceptMatcher.listMatchesWithinRange(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), LogicConceptMatchType.Exact, LogicConceptMatchType.Exact);
         stopwatch.stop();
 
-        log.info("Obtained exact matches ({}) in {} \n", matches.size(), stopwatch);
-        Assert.assertEquals(matches.size(), 1);
+        log.info("Obtained ({}) exact matches - {} - in {} \n", matches.size(), stopwatch);
+        Assert.assertEquals(1, matches.size());
         stopwatch.reset();
 
         // Obtain from Plugin up
@@ -271,8 +272,8 @@ public class SparqlLogicConceptMatcherTest extends TestCase {
         matches = conceptMatcher.listMatchesWithinRange(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), LogicConceptMatchType.Plugin, LogicConceptMatchType.Exact);
         stopwatch.stop();
 
-        log.info("Obtained matches >= Plugin ({}) in {} \n", matches.size(), stopwatch);
-        Assert.assertEquals(matches.size(), 6);
+        log.info("Obtained ({}) matches >= Plugin - {} - in {} \n", matches.size(), stopwatch);
+        Assert.assertEquals(7, matches.size());
         stopwatch.reset();
 
         // Obtain Plugin and subsumes
@@ -280,8 +281,8 @@ public class SparqlLogicConceptMatcherTest extends TestCase {
         matches = conceptMatcher.listMatchesWithinRange(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), LogicConceptMatchType.Subsume, LogicConceptMatchType.Plugin);
         stopwatch.stop();
 
-        log.info("Obtained Subsumes >= matches >= Plugin ({}) in {} \n", matches.size(), stopwatch);
-        Assert.assertEquals(matches.size(), 5);
+        log.info("Obtained ({}) Subsumes >= matches >= Plugin - {} - in {} \n", matches.size(), stopwatch);
+        Assert.assertEquals(7, matches.size());
         stopwatch.reset();
 
         // Invert limits
@@ -289,8 +290,8 @@ public class SparqlLogicConceptMatcherTest extends TestCase {
         matches = conceptMatcher.listMatchesWithinRange(URI.create("http://127.0.0.1/ontology/SUMO.owl#EuroDollar"), LogicConceptMatchType.Exact, LogicConceptMatchType.Plugin);
         stopwatch.stop();
 
-        log.info("Obtained Exact >= matches >= Plugin ({}) in {} \n", matches.size(), stopwatch);
-        Assert.assertEquals(matches.size(), 0);
+        log.info("Obtained ({}) Exact >= matches >= Plugin - {} - in {} \n", matches.size(), stopwatch);
+        Assert.assertEquals(0, matches.size());
         stopwatch.reset();
 
     }

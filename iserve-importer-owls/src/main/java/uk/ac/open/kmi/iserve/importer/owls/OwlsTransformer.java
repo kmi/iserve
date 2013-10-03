@@ -20,10 +20,14 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
+import com.hp.hpl.jena.ontology.OntDocumentManager;
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import org.apache.commons.cli.*;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -186,6 +190,11 @@ public class OwlsTransformer implements ServiceTransformer {
     private static final String VERSION_PROP_FILE = "plugin.properties";
     private static final String VERSION_PROP = "version";
     private static final String VERSION_UNKNOWN = "Unknown";
+    private static final String OWL_S_11_SERVICE = "http://www.daml.org/services/owl-s/1.1/Service.owl#";
+    private static final String OWL_S_11_PROFILE = "http://www.daml.org/services/owl-s/1.1/Profile.owl#";
+    private static final String OWL_S_11_PROCESS = "http://www.daml.org/services/owl-s/1.1/Process.owl#";
+    private static final String OWL_S_11_GROUNDING = "http://www.daml.org/services/owl-s/1.1/Grounding.owl#";
+    private static final String OWL_S_11_EXPRESSION = "http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#";
 
     // Injection of the version
     private
@@ -206,20 +215,47 @@ public class OwlsTransformer implements ServiceTransformer {
 
     private Map<String, String> prefixes;
 
+    // Default Ont Model Specification to use when loading and transforming services
+    private OntModelSpec modelSpec;
+
 
     public OwlsTransformer() {
         // Initialise prefixes
         prefixes = new HashMap<String, String>(Vocabularies.prefixes);
         // Add those specific for handling OWLS
-        prefixes.put("service", "http://www.daml.org/services/owl-s/1.1/Service.owl#");
-        prefixes.put("profile", "http://www.daml.org/services/owl-s/1.1/Profile.owl#");
-        prefixes.put("process", "http://www.daml.org/services/owl-s/1.1/Process.owl#");
-        prefixes.put("grounding", "http://www.daml.org/services/owl-s/1.1/Grounding.owl#");
-        prefixes.put("expr", "http://www.daml.org/services/owl-s/1.1/generic/Expression.owl#");
+        prefixes.put("service", OWL_S_11_SERVICE);
+        prefixes.put("profile", OWL_S_11_PROFILE);
+        prefixes.put("process", OWL_S_11_PROCESS);
+        prefixes.put("grounding", OWL_S_11_GROUNDING);
+        prefixes.put("expr", OWL_S_11_EXPRESSION);
+
+        setupModelSpecification();
 
         if (version == null) {
             obtainVersionInformation();
         }
+    }
+
+
+    /**
+     * Setup a the OntModelSpec to be used when parsing services.
+     * In particular, setup import redirections, etc.
+     *
+     * @return
+     */
+    private void setupModelSpecification() {
+
+        OntDocumentManager documentManager = new OntDocumentManager();
+
+        // Add mapping specific to OWLS TC 4 tests.
+        // Add mappings to local files to save time and avoid connection issues
+        documentManager.addAltEntry("http://127.0.0.1/ontology/PDDLExpression.owl", this.getClass().getResource("/PDDLExpression.owl").toString());
+
+        // Ignore all imports altogether for speed
+        documentManager.setProcessImports(false);
+
+        this.modelSpec = new OntModelSpec(OntModelSpec.OWL_MEM_MICRO_RULE_INF);
+        this.modelSpec.setDocumentManager(documentManager);
     }
 
     private void obtainVersionInformation() {
@@ -288,14 +324,14 @@ public class OwlsTransformer implements ServiceTransformer {
         RDFDatatype rtype = PddlType.TYPE;
         TypeMapper.getInstance().registerDatatype(rtype);
 
-        Model origModel = ModelFactory.createDefaultModel();
-        InfModel infModel = ModelFactory.createInfModel(ReasonerRegistry.getOWLMicroReasoner(), origModel);
+        OntModel model = ModelFactory.createOntologyModel(this.modelSpec);
+
         // Read also the PDDL file to obtain the right Literal Type with OWL-S TC4
-        infModel.read("http://127.0.0.1/ontology/PDDLExpression.owl");
-        infModel.read(originalDescription, baseUri);
+        model.read("http://127.0.0.1/ontology/PDDLExpression.owl");
+        model.read(originalDescription, baseUri);
 
         // Transform the original model (may have several service definitions)
-        List<Service> services = transform(infModel, baseUri);
+        List<Service> services = transform(model, baseUri);
 
         return services;
     }

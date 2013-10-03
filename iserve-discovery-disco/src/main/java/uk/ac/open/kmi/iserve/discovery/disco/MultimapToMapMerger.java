@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.ac.open.kmi.iserve.discovery.disco;
 
 import com.google.common.base.Function;
@@ -21,7 +22,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 
-import java.net.URL;
+import java.net.URI;
 import java.util.Map;
 
 /**
@@ -29,7 +30,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  */
-public enum MultimapToMapMerger implements Function<Multimap<URL, MatchResult>, Map<URL, MatchResult>> {
+public enum MultimapToMapMerger implements Function<Multimap<URI, MatchResult>, Map<URI, MatchResult>> {
 
     /**
      * Perform the UNION of the results.
@@ -38,7 +39,7 @@ public enum MultimapToMapMerger implements Function<Multimap<URL, MatchResult>, 
      */
     UNION {
         @Override
-        public Map<URL, MatchResult> apply(Multimap<URL, MatchResult> input) {
+        public Map<URI, MatchResult> apply(Multimap<URI, MatchResult> input) {
             return ImmutableMap.copyOf(Maps.transformValues(input.asMap(),
                     MatchResultsMerger.UNION));
         }
@@ -53,7 +54,7 @@ public enum MultimapToMapMerger implements Function<Multimap<URL, MatchResult>, 
      */
     INTERSECTION {
         @Override
-        public Map<URL, MatchResult> apply(Multimap<URL, MatchResult> input) {
+        public Map<URI, MatchResult> apply(Multimap<URI, MatchResult> input) {
             return ImmutableMap.copyOf(Maps.transformValues(input.asMap(),
                     MatchResultsMerger.INTERSECTION));
         }

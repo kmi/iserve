@@ -117,8 +117,8 @@
                             <mainClass>jena.schemagen</mainClass>
                             <commandlineArgs>
                                 -a http://www.wsmo.org/ns/wsmo-lite# \
-                                -i ${basedir}/src/main/resources/wsmo-lite-2013-05-03.n3 \
-                                -e N3 \
+                                -i ${basedir}/src/main/resources/wsmo-lite-2013-05-03.ttl \
+                                -e TTL \
                                 --package uk.ac.open.kmi.iserve.commons.vocabulary \
                                 -o ${project.build.directory}/generated-sources/java \
                                 -n WSMO_LITE \
@@ -138,8 +138,8 @@
                             <mainClass>jena.schemagen</mainClass>
                             <commandlineArgs>
                                 -a http://www.w3.org/ns/sawsdl# \
-                                -i ${basedir}/src/main/resources/wsmo-lite-2013-05-03.n3 \
-                                -e N3 \
+                                -i ${basedir}/src/main/resources/sawsdl-2007-08-28.ttl \
+                                -e TTL \
                                 --package uk.ac.open.kmi.iserve.commons.vocabulary \
                                 -o ${project.build.directory}/generated-sources/java \
                                 -n SAWSDL \
@@ -158,7 +158,7 @@
                             <mainClass>jena.schemagen</mainClass>
                             <commandlineArgs>
                                 -a http://iserve.kmi.open.ac.uk/ns/hrests# \
-                                -i ${basedir}/src/main/resources/hrests-2013-05-08.ttl \
+                                -i ${basedir}/src/main/resources/hrests-2013-10-03.ttl \
                                 -e TTL \
                                 --package uk.ac.open.kmi.iserve.commons.vocabulary \
                                 -o ${project.build.directory}/generated-sources/java \

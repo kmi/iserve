@@ -15,7 +15,7 @@ wl: a owl:Ontology ;
     dc:modified "2013-05-30"^^xsd:date ;
     rdfs:label "WSMO-Lite"@en ;
     owl:versionInfo "2013-05-30" ;
-    owl:imports <http://iserve.kmi.open.ac.uk/ns/msm> , sawsdl: .
+    owl:imports <http://iserve.kmi.open.ac.uk/ns/msm> , <http://www.w3.org/ns/sawsdl> .
 
 # classes for use in semantic annotation of service descriptions
 wl:FunctionalClassificationRoot  rdfs:subClassOf  rdfs:Class ; 

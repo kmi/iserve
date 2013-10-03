@@ -110,7 +110,7 @@
         <maven.compiler.target>1.6</maven.compiler.target>
         <jersey.version>2.0</jersey.version>
         <junit.version>4.8.2</junit.version>
-        <jena.version>2.10.1</jena.version>
+        <jena.version>2.11.0</jena.version>
         <httpclient.version>4.2.3</httpclient.version>
         <slf4j.version>1.7.5</slf4j.version>
         <shiro.version>1.2.2</shiro.version>

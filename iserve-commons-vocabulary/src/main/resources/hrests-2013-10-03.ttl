@@ -5,9 +5,9 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#>.
 @prefix dc: <http://purl.org/dc/terms/>.
 @prefix msm: <http://iserve.kmi.open.ac.uk/ns/msm#> .
-@prefix http: <http://www.w3.org/2008/http-methods#>.
+@prefix http: <http://www.w3.org/2011/http#>.
     
-hr: a owl:Ontology ;
+<http://iserve.kmi.open.ac.uk/ns/hrests> a owl:Ontology ;
     dc:created "2010-03-10"^^xsd:date ;
     dc:issued "2010-03-10"^^xsd:date ;
     dc:description "This is a description of the Web API Grounding Model, a simple model for capturing Web API details relevant for invocation support"@en ;
@@ -15,10 +15,11 @@ hr: a owl:Ontology ;
     dc:modified "2011-12-03"^^xsd:date ;
     dc:modified "2012-03-14"^^xsd:date ;
     dc:modified "2012-05-08"^^xsd:date ;
+    dc:modified "2013-10-03"^^xsd:date ;
     rdfs:label "Web API Grounding Model"@en ;
-    owl:versionInfo "2013-05-08" ;
+    owl:versionInfo "2013-10-03" ;
     owl:priorVersion <http://purl.org/hrests/v2#> ;
-    owl:imports <http://iserve.kmi.open.ac.uk/ns/msm> , <http://www.w3.org/2008/http-methods> .
+    owl:imports <http://iserve.kmi.open.ac.uk/ns/msm> , <http://www.w3.org/2011/http>, <http://www.w3.org/2011/http-methods> .
 
 http:Method a rdfs:Class ;
     rdfs:subClassOf hr:Method .
