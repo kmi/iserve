@@ -17,6 +17,8 @@
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.eventbus.EventBus;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import junit.framework.Assert;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
@@ -64,8 +66,11 @@ public class ServiceManagerIndexRdfTest {
         BasicConfigurator.configure();
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
 
-        EventBus eventBus = new EventBus();
-        serviceManager = new ServiceManagerIndexRdf(eventBus, ISERVE_TEST_URI, ISERVE_TEST_QUERY_URI, ISERVE_TEST_UPDATE_URI, ISERVE_TEST_SERVICE_URI);
+        Injector injector = Guice.createInjector(new iServeManagementModule());
+        EventBus eventBus = injector.getInstance(EventBus.class);
+        SparqlGraphStoreFactory factory = injector.getInstance(SparqlGraphStoreFactory.class);
+
+        serviceManager = new ServiceManagerIndexRdf(eventBus, factory, ISERVE_TEST_URI, ISERVE_TEST_QUERY_URI, ISERVE_TEST_UPDATE_URI, ISERVE_TEST_SERVICE_URI);
 
         serviceManager.clearServices();
         importWscServices();
