@@ -5,7 +5,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 
-<http://iserve.kmi.open.ac.uk/ns/msm-wsdl#>
+<http://iserve.kmi.open.ac.uk/ns/msm-wsdl>
     dc:created "2010-05-30"^^xsd:date ;
     dc:issued "2010-05-30"^^xsd:date ;
     dc:description "This is a simple ontology that provides means to point to WSDL groundings"@en ;
