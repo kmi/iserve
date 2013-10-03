@@ -17,7 +17,7 @@
 package uk.ac.open.kmi.iserve.discovery.api;
 
 /**
- * Marker Interface for differentiating ServiceMatcher from other types of matchers
+ * Marker Interface for differentiating DataflowMatcher from other types of matchers
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 18/09/2013
