@@ -32,7 +32,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
+import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
 
 import java.net.URI;
 import java.util.concurrent.Callable;
@@ -41,12 +41,18 @@ import java.util.concurrent.Callable;
 public class CrawlCallable implements Callable<Boolean> {
 
     private static final Logger log = LoggerFactory.getLogger(CrawlCallable.class);
-    private KnowledgeBaseManager kbManager;
+
+    // The Ont Model Spec to use for obtaining the ontologies
+    private final OntModelSpec modelSpec;
+    private final String syntax;
+    private uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager graphStoreManager;
     private URI modelUri;
 
-    public CrawlCallable(KnowledgeBaseManager kbManager, URI modelUri) {
-        this.kbManager = kbManager;
+    public CrawlCallable(SparqlGraphStoreManager graphStoreManager, OntModelSpec modelSpec, URI modelUri, String syntax) {
+        this.graphStoreManager = graphStoreManager;
         this.modelUri = modelUri;
+        this.modelSpec = modelSpec;
+        this.syntax = syntax;
     }
 
     /**
@@ -65,22 +71,22 @@ public class CrawlCallable implements Callable<Boolean> {
     public Boolean call() {
 
         // If the model has not been uploaded fetch it and upload the graph
-        if (!this.kbManager.containsModel(this.modelUri)) {
-            Model model = fetchModel(this.modelUri);
-            this.kbManager.uploadModel(this.modelUri, model, false);
+        if (!this.graphStoreManager.containsGraph(this.modelUri)) {
+            Model model = fetchModel(this.modelUri, this.syntax);
+            this.graphStoreManager.putGraph(this.modelUri, model);
             return Boolean.TRUE;
         }
 
         return Boolean.FALSE;
     }
 
-    private Model fetchModel(URI modelUri) {
-        OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+    private Model fetchModel(URI modelUri, String syntax) {
+        OntModel model = ModelFactory.createOntologyModel(modelSpec);
 
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.start();
         // Fetch the model
-        model.read(modelUri.toASCIIString());
+        model.read(modelUri.toASCIIString(), syntax);
         stopwatch.stop();
 
         log.info("Remote ontology fetched - {} . Time taken: {}", modelUri, stopwatch);

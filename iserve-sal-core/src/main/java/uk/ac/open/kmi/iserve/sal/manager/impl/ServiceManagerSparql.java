@@ -16,14 +16,17 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
-import com.google.common.base.Stopwatch;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +42,9 @@ import uk.ac.open.kmi.iserve.sal.events.ServiceDeletedEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServicesClearedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
+import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
 import javax.inject.Named;
@@ -49,41 +54,80 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-public class ServiceManagerRdf extends SparqlGraphStoreManager implements ServiceManager {
+public class ServiceManagerSparql extends IntegratedComponent implements ServiceManager {
 
-    private static final Logger log = LoggerFactory.getLogger(ServiceManagerRdf.class);
+    private static final Logger log = LoggerFactory.getLogger(ServiceManagerSparql.class);
 
     // Default path for service and documents URIs.
     // Note that any change here should also affect the REST API
     // Keep the trailing slash
     private static final String SERVICES_URL_PATH = "id/services/";
 
+    // To load
+    private static final URI WSMO_LITE_URI = URI.create("http://www.wsmo.org/ns/wsmo-lite");
+    private static final URI MSM_URI = URI.create("http://iserve.kmi.open.ac.uk/ns/msm");
+    private static final URI HRESTS_URI = URI.create("http://iserve.kmi.open.ac.uk/ns/hrests");
+    private static final URI MSM_WSDL_URI = URI.create("http://iserve.kmi.open.ac.uk/ns/msm-wsdl");
+    private static final URI SAWSDL_URI = URI.create("http://www.w3.org/ns/sawsdl");
+    private static final URI HTTP_VOCAB_URI = URI.create("http://www.w3.org/2011/http");
+    private static final URI HTTP_METHODS_URI = URI.create("http://www.w3.org/2011/http-methods");
+    private static final URI FOAF_0_1_URI = URI.create("http://xmlns.com/foaf/0.1/");
+    private static final URI CONTENT_VOCAB_URI = URI.create("http://www.w3.org/2011/content#");
+    private static final URI DCTERMS_URI = URI.create("http://purl.org/dc/terms/");
+
+
+//    private static final URI WSDL_EXTENSIONS_URI = URI.create("http://www.w3.org/ns/wsdl-extensions#");
+
     private final URI servicesUri;
+    private final SparqlGraphStoreManager graphStoreManager;
+
 
     @Inject
-    ServiceManagerRdf(EventBus eventBus,
-                      @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
-                      @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlQueryEndpoint,
-                      @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_UPDATE_PROP) String sparqlUpdateEndpoint,
-                      @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_SERVICE_PROP) String sparqlServiceEndpoint) throws SalException {
+    ServiceManagerSparql(EventBus eventBus,
+                         SparqlGraphStoreFactory graphStoreFactory,
+                         @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
+                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlQueryEndpoint,
+                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_UPDATE_PROP) String sparqlUpdateEndpoint,
+                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_SERVICE_PROP) String sparqlServiceEndpoint) throws SalException {
 
-        super(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
+        super(eventBus, iServeUri);
         this.servicesUri = this.getIserveUri().resolve(SERVICES_URL_PATH);
+
+        // Configuration of base models to be loaded
+        Set<URI> defaultModelsToLoad = ImmutableSet.of(WSMO_LITE_URI, MSM_URI, HRESTS_URI, MSM_WSDL_URI, HTTP_VOCAB_URI, HTTP_METHODS_URI);
+
+        // Configuration for quick retrieval of ontologies by resolving them to local files.
+        ImmutableMap.Builder<String, String> mappingsBuilder = ImmutableMap.builder();
+        mappingsBuilder.put(FOAF_0_1_URI.toASCIIString(), this.getClass().getResource("/foaf-2010-08-09.rdf").toString());
+        mappingsBuilder.put(HRESTS_URI.toASCIIString(), this.getClass().getResource("/hrests-2013-10-03.ttl").toString());
+        mappingsBuilder.put(MSM_URI.toASCIIString(), this.getClass().getResource("/msm-2013-05-03.ttl").toString());
+        mappingsBuilder.put(MSM_WSDL_URI.toASCIIString(), this.getClass().getResource("/msm-wsdl-2013-05-30.ttl").toString());
+        mappingsBuilder.put(SAWSDL_URI.toASCIIString(), this.getClass().getResource("/sawsdl-2007-08-28.ttl").toString());
+        mappingsBuilder.put(WSMO_LITE_URI.toASCIIString(), this.getClass().getResource("/wsmo-lite-2013-05-03.ttl").toString());
+        mappingsBuilder.put(HTTP_VOCAB_URI.toASCIIString(), this.getClass().getResource("/http-2011-04-29.ttl").toString());
+        mappingsBuilder.put(HTTP_METHODS_URI.toASCIIString(), this.getClass().getResource("/http-methods-2011-04-29.ttl").toString());
+        mappingsBuilder.put(CONTENT_VOCAB_URI.toASCIIString(), this.getClass().getResource("/content-2011-04-29.ttl").toString());
+        mappingsBuilder.put(DCTERMS_URI.toASCIIString(), this.getClass().getResource("/dcterms-2012-06-14.ttl").toString());
+
+        // Configuration for avoiding the import of certain files
+        ImmutableSet<String> ignoredImports = ImmutableSet.of();
+
+        this.graphStoreManager = graphStoreFactory.create(sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint, defaultModelsToLoad, mappingsBuilder.build(), ignoredImports);
     }
 
-
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#listService()
+    /**
+     * Obtains a list of service URIs with all the services known to the system
+     *
+     * @return list of URIs with all the services in the registry
      */
     @Override
     public Set<URI> listServices() {
-
         String queryStr = new StringBuilder()
                 .append("select DISTINCT ?svc where { \n")
                 .append("?svc ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.Service.getURI()).append(">").append(" . }")
                 .toString();
 
-        return listResourcesByQuery(queryStr, "svc");
+        return this.graphStoreManager.listResourcesByQuery(queryStr, "svc");
     }
 
     /**
@@ -95,7 +139,8 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
     @Override
     public Set<URI> listOperations(URI serviceUri) {
 
-        if (serviceUri == null) {
+        if (serviceUri == null || !serviceUri.isAbsolute()) {
+            log.warn("The Service URI is either absent or relative. Provide an absolute URI");
             return ImmutableSet.of();
         }
         // TODO; serviceUri not used? should be used within the query
@@ -106,7 +151,7 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
                 .append(" }")
                 .toString();
 
-        return listResourcesByQuery(queryStr, "op");
+        return this.graphStoreManager.listResourcesByQuery(queryStr, "op");
     }
 
     /**
@@ -118,7 +163,8 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
     @Override
     public Set<URI> listInputs(URI operationUri) {
 
-        if (operationUri == null) {
+        if (operationUri == null || !operationUri.isAbsolute()) {
+            log.warn("The Operation URI is either absent or relative. Provide an absolute URI");
             return ImmutableSet.of();
         }
         // TODO; operationUri is not used. This function retrieves all inputs in the repository, not just the
@@ -130,7 +176,19 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
                 .append(" }")
                 .toString();
 
-        return listResourcesByQuery(queryStr, "input");
+        return this.graphStoreManager.listResourcesByQuery(queryStr, "input");
+    }
+
+    /**
+     * Given an operation, this method obtains the list of input URIs mapped to their annotated types (i.e., modelReferences).
+     * Note that the same input may have several annotations indicating the type.
+     *
+     * @param operationUri the URI for which we want to obtain the inputs and their annotated types
+     * @return a Multimap with the inputs and their corresponding types.
+     */
+    @Override
+    public Multimap<URI, URI> listTypedInputs(URI operationUri) {
+        return null;  // TODO: implement
     }
 
     /**
@@ -142,7 +200,8 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
     @Override
     public Set<URI> listOutputs(URI operationUri) {
 
-        if (operationUri == null) {
+        if (operationUri == null || !operationUri.isAbsolute()) {
+            log.warn("The Operation URI is either absent or relative. Provide an absolute URI");
             return ImmutableSet.of();
         }
 
@@ -153,12 +212,31 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
                 .append(" }")
                 .toString();
 
-        return listResourcesByQuery(queryStr, "output");
+        return this.graphStoreManager.listResourcesByQuery(queryStr, "output");
     }
 
+    /**
+     * Given an operation, this method obtains the list of output URIs mapped to their annotated types (i.e., modelReferences).
+     * Note that the same input may have several annotations indicating the type.
+     *
+     * @param operationUri the URI for which we want to obtain the outputs and their annotated types
+     * @return a Multimap with the outputs and their corresponding types.
+     */
+    @Override
+    public Multimap<URI, URI> listTypedOutputs(URI operationUri) {
+        return null;  // TODO: implement
+    }
+
+    /**
+     * Obtains the list of mandatory parts for a given Message Content
+     *
+     * @param messageContent the message content URI
+     * @return a Set of URIs with the mandatory parts of the message content. If there are no parts the Set should be empty NOT null.
+     */
     @Override
     public Set<URI> listMandatoryParts(URI messageContent) {
-        if (messageContent == null) {
+        if (messageContent == null || !messageContent.isAbsolute()) {
+            log.warn("The Message Content URI is either absent or relative. Provide an absolute URI");
             return ImmutableSet.of();
         }
 
@@ -169,7 +247,7 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
                 .append(" }")
                 .toString();
 
-        return listResourcesByQuery(queryStr, "part");
+        return this.graphStoreManager.listResourcesByQuery(queryStr, "part");
     }
 
     /**
@@ -180,7 +258,8 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
      */
     @Override
     public Set<URI> listOptionalParts(URI messageContent) {
-        if (messageContent == null) {
+        if (messageContent == null || !messageContent.isAbsolute()) {
+            log.warn("The Message Content URI is either absent or relative. Provide an absolute URI");
             return ImmutableSet.of();
         }
 
@@ -191,62 +270,27 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
                 .append(" }")
                 .toString();
 
-        return listResourcesByQuery(queryStr, "part");
+        return this.graphStoreManager.listResourcesByQuery(queryStr, "part");
     }
 
-    private Set<URI> listResourcesByQuery(String queryStr, String variableName) {
-
-        ImmutableSet.Builder<URI> result = ImmutableSet.builder();
-        // If the SPARQL endpoint does not exist return immediately.
-        if (this.getSparqlQueryEndpoint() == null) {
-            return result.build();
-        }
-
-        // Query the engine
-        Query query = QueryFactory.create(queryStr);
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
-
-        try {
-            Stopwatch stopwatch = new Stopwatch().start();
-            ResultSet qResults = qexec.execSelect();
-            stopwatch.stop();
-
-            log.info("Time taken for querying the registry: {} ", stopwatch);
-
-            Resource resource;
-            URI matchUri;
-            // Iterate over the results obtained
-            while (qResults.hasNext()) {
-                QuerySolution soln = qResults.nextSolution();
-
-                // Get the match URL
-                resource = soln.getResource(variableName);
-
-                if (resource != null && resource.isURIResource()) {
-                    matchUri = new URI(resource.getURI());
-                    result.add(matchUri);
-                } else {
-                    log.warn("Skipping result as the URL is null");
-                    break;
-                }
-            }
-        } catch (URISyntaxException e) {
-            log.error("Error obtaining match result. Expected a correct URI", e);
-        } finally {
-            qexec.close();
-        }
-        return result.build();
-    }
-
+    /**
+     * Obtains the service description of the service identified by the URI
+     *
+     * @param serviceUri the URI of the service to obtain
+     * @return the service description if it exists or null otherwise
+     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
+     *
+     */
     @Override
     public Service getService(URI serviceUri) throws ServiceException {
-
-        if (serviceUri == null)
+        if (serviceUri == null || !serviceUri.isAbsolute()) {
+            log.warn("The Service URI is either absent or relative. Provide an absolute URI");
             return null;
+        }
 
         OntModel model = null;
         try {
-            model = this.getGraph(URIUtil.getNameSpace(serviceUri));
+            model = this.graphStoreManager.getGraph(URIUtil.getNameSpace(serviceUri));
         } catch (URISyntaxException e) {
             log.error("The namespace of the service is not a correct URI", e);
             return null;
@@ -262,6 +306,14 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         return null;
     }
 
+    /**
+     * Obtains the service descriptions for all the services identified by the URI Set
+     *
+     * @param serviceUris the URIs of the service to obtain
+     * @return the list of all services that could be obtained. If none could be obtained the list will be empty.
+     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
+     *
+     */
     @Override
     public Set<Service> getServices(Set<URI> serviceUris) throws ServiceException {
         ImmutableSet.Builder<Service> result = ImmutableSet.builder();
@@ -288,14 +340,24 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         return ImmutableSet.of(); // TODO: Implement
     }
 
-
+    /**
+     * Creates a Service Description in the system.
+     * Only needs to be fed with an MSM Service description.
+     * <p/>
+     * After successfully adding a service, implementations of this method should raise a {@code ServiceCreatedEvent}
+     *
+     * @param service the input service description in terms of MSM
+     * @return the URI this service description was saved to
+     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
+     *
+     */
+    @Override
     public URI addService(Service service) throws ServiceException {
-
         // Check input and exit early
         if (service == null)
             throw new ServiceException("No service provided.");
 
-        if (!this.canBeModified()) {
+        if (!this.graphStoreManager.canBeModified()) {
             log.warn("The dataset cannot be modified. Unable to store the service.");
             return null;
         }
@@ -314,7 +376,7 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         Model svcModel = writer.generateModel(service);
         log.info("Adding service - {}", service.getUri().toASCIIString());
         // The graph id corresponds is the base id
-        this.putGraph(newBaseServiceUri, svcModel);
+        this.graphStoreManager.putGraph(newBaseServiceUri, svcModel);
 
         // Generate Event
         this.getEventBus().post(new ServiceCreatedEvent(new Date(), service));
@@ -442,25 +504,31 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         return this.servicesUri.resolve(serviceId);
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#deleteService(java.lang.String)
+    /**
+     * Deletes the given service
+     * <p/>
+     * After successfully deleting a service, implementations of this method should raise a {@code ServiceDeletedEvent}
+     *
+     * @param serviceUri the URI of the service to delete
+     * @return True if it was deleted or false otherwise
+     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
+     *
      */
     @Override
     public boolean deleteService(URI serviceUri) throws ServiceException {
-
         if (serviceUri == null || !serviceUri.isAbsolute()) {
             log.warn("The Service URI is either absent or relative. Provide an absolute URI");
             return false;
         }
 
-        if (!this.canBeModified()) {
+        if (!this.graphStoreManager.canBeModified()) {
             log.warn("The dataset cannot be modified.");
             return false;
         }
 
         log.info("Deleting service - {}", serviceUri.toASCIIString());
         try {
-            this.deleteGraph(URIUtil.getNameSpace(serviceUri));
+            this.graphStoreManager.deleteGraph(URIUtil.getNameSpace(serviceUri));
         } catch (URISyntaxException e) {
             log.error("The namespace of the service is an incorrect URI", e);
             throw new ServiceException("The namespace of the service is an incorrect URI", e);
@@ -472,6 +540,16 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         return true;
     }
 
+    /**
+     * Deletes the given service
+     * <p/>
+     * After successfully deleting a service, implementations of this method should raise a {@code ServiceDeletedEvent}
+     *
+     * @param service the service to delete
+     * @return True if it was deleted or false otherwise
+     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
+     *
+     */
     @Override
     public boolean deleteService(Service service) throws ServiceException {
         return deleteService(service.getUri());
@@ -488,13 +566,13 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
     @Override
     public boolean clearServices() throws ServiceException {
 
-        if (!this.canBeModified()) {
+        if (!this.graphStoreManager.canBeModified()) {
             log.warn("The dataset cannot be modified.");
             return false;
         }
 
         log.info("Clearing services registry.");
-        clearDataset();
+        this.graphStoreManager.clearDataset();
 
         // Generate Event
         this.getEventBus().post(new ServicesClearedEvent(new Date()));
@@ -502,13 +580,20 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#serviceExists(java.net.URI)
+    /**
+     * Determines whether a service is known to the registry
+     *
+     * @param serviceUri the URI of the service being looked up
+     * @return True if it is registered in the server
+     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
+     *
      */
     @Override
     public boolean serviceExists(URI serviceUri) throws ServiceException {
-        if (serviceUri == null)
+        if (serviceUri == null || !serviceUri.isAbsolute()) {
+            log.warn("The Service URI is either absent or relative. Provide an absolute URI");
             return false;
+        }
 
         String queryStr = null;
         try {
@@ -522,7 +607,7 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         }
 
         Query query = QueryFactory.create(queryStr);
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
+        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.graphStoreManager.getSparqlQueryEndpoint().toASCIIString(), query);
         try {
             return qexec.execAsk();
         } finally {
@@ -530,19 +615,143 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
         }
     }
 
+
+    /**
+     * Given the URI of an element, this method returns the URI of the element from the Minimal Service Model it
+     * corresponds to. That is, it will say if it is a service, operation, etc.
+     * This method uses SPARQL 1.1 to avoid using regexs for performance.
+     *
+     * @param elementUri the URI to get the element type for.
+     * @return the URI of the MSM type it corresponds to.
+     */
     @Override
-    public Set<URI> listModelReferences(URI uri) {
-        if (uri == null) {
+    public Set<URI> getMsmType(URI elementUri) {
+        if (elementUri == null || !elementUri.isAbsolute()) {
+            log.warn("The Element URI is either absent or relative. Provide an absolute URI");
+            return null;
+        }
+
+        String queryStr = null;
+        queryStr = new StringBuilder()
+                .append("SELECT * WHERE { \n")
+                .append("<").append(elementUri.toASCIIString()).append("> <").append(RDF.type.getURI()).append("> ?type .")
+                .append("FILTER(STRSTARTS(STR(?type), \"").append(MSM.NAMESPACE.getURI()).append("\"))")
+                .append("\n }")
+                .toString();
+
+        return this.graphStoreManager.listResourcesByQuery(queryStr, "type");
+    }
+
+    /**
+     * Obtains the list of model references for a given element.
+     *
+     * @param elementUri the URI of the element for which we want to obtain the model references
+     * @return a Set of URIs with the model references of the given element. If there are no model references the Set should be empty NOT null.
+     */
+    @Override
+    public Set<URI> listModelReferences(URI elementUri) {
+        if (elementUri == null) {
             return ImmutableSet.of();
         }
 
         String queryStr = new StringBuilder()
                 .append("select DISTINCT ?model where { \n")
-                .append("<").append(uri.toASCIIString()).append("> <").append(SAWSDL.modelReference.getURI()).append("> ?model")
+                .append("<").append(elementUri.toASCIIString()).append("> <").append(SAWSDL.modelReference.getURI()).append("> ?model")
                 .append(" }")
                 .toString();
 
-        return listResourcesByQuery(queryStr, "model");
+        return this.graphStoreManager.listResourcesByQuery(queryStr, "model");
+    }
+
+    /**
+     * Given a modelReference, this method finds all the elements that have been annotated with it. This method finds
+     * exact annotations. Note that the elements can be services, operations, inputs, etc.
+     *
+     * @param modelReference the actual annotation we are looking for
+     * @return a set of URIs for elements that have been annotated with the requested modelReferences.
+     */
+    @Override
+    public Set<URI> listElementsAnnotatedWith(URI modelReference) {
+        if (modelReference == null) {
+            return ImmutableSet.of();
+        }
+
+        String queryStr = new StringBuilder()
+                .append("SELECT DISTINCT ?element where { \n")
+                .append(" ?element <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .")
+                .append(" }")
+                .toString();
+
+        return this.graphStoreManager.listResourcesByQuery(queryStr, "element");
+    }
+
+    /**
+     * Given the URI of a type (i.e., a modelReference), this method figures out all the operations
+     * that have this as part of their inputs.
+     *
+     * @param modelReference the type of input sought for
+     * @return a Set of URIs of operations that can take this as input type.
+     */
+    @Override
+    public Set<URI> listOperationsWithInputType(URI modelReference) {
+        if (modelReference == null) {
+            return ImmutableSet.of();
+        }
+
+        String queryStr = new StringBuilder()
+                .append("SELECT DISTINCT ?op where {").append("\n")
+                .append("{").append("\n")
+                .append(" ?op <").append(RDF.type.getURI()).append("> <").append(MSM.Operation.getURI()).append("> .").append("\n")
+                .append(" ?op <").append(MSM.hasInput.getURI()).append("> ?input .").append("\n")
+                .append(" ?input <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n")
+                .append("}")
+                .append(" UNION ")
+                .append("{").append("\n")
+                .append(" ?op <").append(RDF.type.getURI()).append("> <").append(MSM.Operation.getURI()).append("> .").append("\n")
+                .append(" ?op <").append(MSM.hasInput.getURI()).append("> ?input .").append("\n")
+                .append(" ?input <").append(MSM.hasPartTransitive.getURI()).append("> ?part .").append("\n")
+                .append(" ?part <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n")
+                .append("}").append("\n")
+                .append("}")
+                .toString();
+
+        return this.graphStoreManager.listResourcesByQuery(queryStr, "op");
+    }
+
+    /**
+     * Given the URI of a type (i.e., a modelReference), this method figures out all the operations
+     * that have this as part of their inputs.
+     *
+     * @param modelReference the type of output sought for
+     * @return a Set of URIs of operations that generate this output type.
+     */
+    @Override
+    public Set<URI> listOperationsWithOutputType(URI modelReference) {
+        return null;  // TODO: implement
+    }
+
+    /**
+     * Given the URI of a type (i.e., a modelReference), this method figures out all the services
+     * that have this as part of their inputs.
+     *
+     * @param modelReference the type of input sought for
+     * @return a Set of URIs of services that can take this as input type.
+     */
+    @Override
+    public Set<URI> listServicesWithInputType(URI modelReference) {
+        return null;  // TODO: implement
+    }
+
+    /**
+     * Given the URI of a type (i.e., a modelReference), this method figures out all the services
+     * that have this as part of their inputs.
+     *
+     * @param modelReference the type of output sought for
+     * @return a Set of URIs of services that generate this output type.
+     */
+    @Override
+    public Set<URI> listServicesWithOutputType(URI modelReference) {
+        return null;  // TODO: implement
     }
 
     /**
@@ -551,7 +760,7 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
      */
     @Override
     public void initialise() {
-        // TODO: implement
+        this.graphStoreManager.initialise();
     }
 
     /**
@@ -560,6 +769,6 @@ public class ServiceManagerRdf extends SparqlGraphStoreManager implements Servic
      */
     @Override
     public void shutdown() {
-        // TODO: implement
+        this.graphStoreManager.shutdown();
     }
 }

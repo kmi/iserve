@@ -34,7 +34,7 @@ import java.net.URISyntaxException;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 06/09/2013
  */
-public abstract class IntegratedComponent {
+public abstract class IntegratedComponent implements iServeComponent {
 
     private static final Logger log = LoggerFactory.getLogger(IntegratedComponent.class);
 

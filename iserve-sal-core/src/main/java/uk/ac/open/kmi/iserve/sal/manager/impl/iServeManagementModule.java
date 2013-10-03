@@ -17,12 +17,14 @@
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.eventbus.EventBus;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.ConfiguredModule;
 import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
 import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
 
 /**
  * iServeModule is in charge of adequately initialising iServe by obtaining the configuration parameters
@@ -46,7 +48,12 @@ public class iServeManagementModule extends ConfiguredModule {
 
         // Bind each of the managers
         bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
-        bind(ServiceManager.class).to(ServiceManagerRdf.class);
-        bind(KnowledgeBaseManager.class).to(ConcurrentSparqlKnowledgeBaseManager.class);
+        bind(ServiceManager.class).to(ServiceManagerSparql.class);
+        bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class);
+
+        // Assisted Injection for the Graph Store Manager
+        install(new FactoryModuleBuilder()
+                .implement(SparqlGraphStoreManager.class, ConcurrentSparqlGraphStoreManager.class)
+                .build(SparqlGraphStoreFactory.class));
     }
 }

@@ -17,6 +17,8 @@
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.eventbus.EventBus;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import junit.framework.Assert;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
@@ -51,6 +53,7 @@ public class ServiceManagerRdfTest {
 
     private static final String MEDIATYPE = "text/xml";
 
+    //TODO: Change this to be read from a configuration file
     private static final String ISERVE_TEST_URI = "http://localhost:9090/iserve";
     private static final String ISERVE_TEST_QUERY_URI = "http://localhost:8080/openrdf-sesame/repositories/Test";
     private static final String ISERVE_TEST_UPDATE_URI = "http://localhost:8080/openrdf-sesame/repositories/Test/statements";
@@ -64,8 +67,11 @@ public class ServiceManagerRdfTest {
         BasicConfigurator.configure();
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
 
-        EventBus eventBus = new EventBus();
-        serviceManager = new ServiceManagerRdf(eventBus, ISERVE_TEST_URI, ISERVE_TEST_QUERY_URI, ISERVE_TEST_UPDATE_URI, ISERVE_TEST_SERVICE_URI);
+        Injector injector = Guice.createInjector(new iServeManagementModule());
+        EventBus eventBus = injector.getInstance(EventBus.class);
+        SparqlGraphStoreFactory factory = injector.getInstance(SparqlGraphStoreFactory.class);
+
+        serviceManager = new ServiceManagerSparql(eventBus, factory, ISERVE_TEST_URI, ISERVE_TEST_QUERY_URI, ISERVE_TEST_UPDATE_URI, ISERVE_TEST_SERVICE_URI);
 
         serviceManager.clearServices();
         importWscServices();
@@ -182,17 +188,58 @@ public class ServiceManagerRdfTest {
         }
     }
 
-    // TODO; Add testOutputParts method
-
     @Test
-    public void testGetService() throws Exception {
+    public void testListOperationsWithInputType() throws Exception {
 
+        Set<URI> result;
+
+        result = serviceManager.listOperationsWithInputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con332477359"));
+        assertEquals(1, result.size());
+
+        result = serviceManager.listOperationsWithInputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con1023932779"));
+        assertEquals(1, result.size());
+
+        result = serviceManager.listOperationsWithInputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con33243578"));
+        assertEquals(1, result.size());
+
+        result = serviceManager.listOperationsWithInputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con246045693"));
+        assertEquals(0, result.size());
+
+        result = serviceManager.listOperationsWithInputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con1557475654"));
+        assertEquals(1, result.size());
+
+        result = serviceManager.listOperationsWithInputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con996692056"));
+        assertEquals(1, result.size());
+
+        result = serviceManager.listOperationsWithInputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con38363177"));
+        assertEquals(0, result.size());
     }
 
+
     @Test
-    public void testGetServices() throws Exception {
+    public void testListOperationsWithOutputType() throws Exception {
 
+        Set<URI> result;
+
+        result = serviceManager.listOperationsWithOutputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con332477359"));
+        assertEquals(1, result.size());
+
+        result = serviceManager.listOperationsWithOutputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con1023932779"));
+        assertEquals(1, result.size());
+
+        result = serviceManager.listOperationsWithOutputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con33243578"));
+        assertEquals(3, result.size());
+
+        result = serviceManager.listOperationsWithOutputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con246045693"));
+        assertEquals(3, result.size());
+
+        result = serviceManager.listOperationsWithOutputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con1557475654"));
+        assertEquals(0, result.size());
+
+        result = serviceManager.listOperationsWithOutputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con996692056"));
+        assertEquals(2, result.size());
+
+        result = serviceManager.listOperationsWithOutputType(URI.create("http://localhost/wsc/wsc08_datasets/01/taxonomy.owl#con38363177"));
+        assertEquals(1, result.size());
     }
-
-
 }

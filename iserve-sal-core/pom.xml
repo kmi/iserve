@@ -111,6 +111,12 @@
             <artifactId>guice</artifactId>
             <version>${guice.version}</version>
         </dependency>
+        <!--Add assisted injection support-->
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-assistedinject</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
 
         <!-- Loging -->
         <dependency>
@@ -173,6 +179,19 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <includes>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*.*</include>
+                </includes>
+                <excludes>
+                    <exclude>.gitignore</exclude>
+                </excludes>
             </resource>
         </resources>
         <plugins>

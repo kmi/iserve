@@ -16,13 +16,12 @@
 
 package uk.ac.open.kmi.iserve.sal.manager;
 
+import com.google.common.eventbus.Subscribe;
 import com.hp.hpl.jena.rdf.model.Model;
-import uk.ac.open.kmi.iserve.commons.model.Service;
+import uk.ac.open.kmi.iserve.sal.events.ServiceCreatedEvent;
 
 import java.net.URI;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Future;
 
 /**
  * KnowledgeBaseManager is in charge of managing ontologies within iServe.
@@ -41,7 +40,7 @@ public interface KnowledgeBaseManager extends iServeComponent {
     public boolean containsModel(URI modelUri);
 
     /**
-     * Obtains a set with all the models loaded  into this Knowledge Base Manager
+     * Obtains a set with all the models loaded into this Knowledge Base Manager
      *
      * @return the set of loaded models
      */
@@ -77,24 +76,6 @@ public interface KnowledgeBaseManager extends iServeComponent {
     public boolean deleteModel(URI modelUri);
 
     /**
-     * Given a model, this method will fetch an upload of the models referred to by the service.
-     * This is a synchronous implementation that will therefore wait until its fetched and uploaded.
-     *
-     * @param svc the service to be checked for referred models.
-     * @return True if all the models were propertly fetched, false otherwise
-     */
-    public boolean fetchModelsForService(Service svc);
-
-    /**
-     * Given a model, this method will fetch an upload of the models referred to by the service.
-     * This is an asynchronous implementation that will not wait until its fetched and uploaded.
-     *
-     * @param svc the service to be checked for referred models.
-     * @return a map with a Future<Boolean> per model to be fetched. True will indicate if the model was properly obtained.
-     */
-    public Map<URI, Future<Boolean>> asyncFetchModelsForService(Service svc);
-
-    /**
      * Answers a List all of URIs of the classes that are known to be equivalent to this class. Equivalence may be
      * asserted in the model (using, for example, owl:equivalentClass, or may be inferred by the reasoner attached to
      * the model. Note that the OWL semantics entails that every class is equivalent to itself, so when using a
@@ -123,12 +104,20 @@ public interface KnowledgeBaseManager extends iServeComponent {
      */
     public Set<URI> listSuperClasses(URI classUri, boolean direct);
 
-
     /**
      * List all concepts managed by the KnowledgeBaseManager.
      *
      * @param graphID Graph URI for filtering the concepts within the specified graphID, null for all concepts.
      * @return List of concepts in the KnowledgeBaseManager
      */
-    Set<URI> listConcepts(URI graphID);
+    public Set<URI> listConcepts(URI graphID);
+
+    /**
+     * The upload of services gets automatically notified via the event bus. Every Knowledge Base Manager should process
+     * this event and ensure among other things, that all relevant ontologies are included in the Knowledge Base.
+     *
+     * @param event the Service Created Event
+     */
+    @Subscribe
+    void handleServiceCreated(ServiceCreatedEvent event);
 }

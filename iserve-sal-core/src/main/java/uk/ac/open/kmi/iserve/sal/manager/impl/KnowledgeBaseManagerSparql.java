@@ -16,17 +16,14 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
-import com.google.common.base.Stopwatch;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
-import com.hp.hpl.jena.ontology.OntDocumentManager;
-import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
@@ -40,13 +37,19 @@ import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.events.OntologyCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServiceCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
+import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
+import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
 
 import javax.inject.Named;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Future;
 
 /**
  * This class is a parametric tool for crawling for RDF data.
@@ -57,90 +60,82 @@ import java.util.concurrent.*;
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  */
-public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManager implements KnowledgeBaseManager {
+public class KnowledgeBaseManagerSparql extends IntegratedComponent implements KnowledgeBaseManager {
 
-    private static final Logger log = LoggerFactory.getLogger(ConcurrentSparqlKnowledgeBaseManager.class);
+    private static final Logger log = LoggerFactory.getLogger(KnowledgeBaseManagerSparql.class);
     private static final String DIRECT_SUBCLASS = "http://www.openrdf.org/schema/sesame#directSubClassOf";
     private static final String JAVA_PROXY_HOST_PROP = "http.proxyHost";
     private static final String JAVA_PROXY_PORT_PROP = "http.proxyPort";
 
+    // To load
+    private static final URI WSMO_LITE_URI = URI.create(WSMO_LITE.NS);
+    private static final URI MSM_URI = URI.create(MSM.NS);
+    private static final URI HRESTS_URI = URI.create(HRESTS.NS);
+    private static final URI MSM_WSDL_URI = URI.create(MSM_WSDL.NS);
+//    private static final URI WSDL_EXTENSIONS_URI = URI.create("http://www.w3.org/ns/wsdl-extensions#");
+
+
     // Set backed by a ConcurrentHashMap to avoid race conditions
-    private Set<URI> loadedModels;
-    private Set<URI> unreachableModels = new HashSet<URI>();
+    // Tracks unreachability and the moment this was last attempted
+    private Map<URI, Date> unreachableModels;
+
     private int NUM_THREADS = 4;
 
-    private ExecutorService executor;
+    private SparqlGraphStoreManager graphStoreManager;
 
-    /**
-     * Static class used for Optional constructor arguments.
-     * For more information check http://code.google.com/p/google-guice/wiki/FrequentlyAskedQuestions#How_can_I_inject_optional_parameters_into_a_constructor
-     */
-    static class ProxyConfiguration {
-        @Inject(optional = true)
-        @Named(SystemConfiguration.PROXY_HOST_NAME_PROP)
-        private String proxyHost = null;
-        @Inject(optional = true)
-        @Named(SystemConfiguration.PROXY_PORT_PROP)
-        private String proxyPort = null;
-    }
-
-    ConcurrentSparqlKnowledgeBaseManager(EventBus eventBus,
-                                         String iServeUri,
-                                         String sparqlQueryEndpoint,
-                                         String sparqlUpdateEndpoint,
-                                         String sparqlServiceEndpoint) throws SalException {
-
-        this(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint, new ProxyConfiguration());
-    }
-
+//    /**
+//     * Static class used for Optional constructor arguments.
+//     * For more information check http://code.google.com/p/google-guice/wiki/FrequentlyAskedQuestions#How_can_I_inject_optional_parameters_into_a_constructor
+//     */
+//    static class ProxyConfiguration {
+//        @Inject(optional = true)
+//        @Named(SystemConfiguration.PROXY_HOST_NAME_PROP)
+//        private String proxyHost = null;
+//        @Inject(optional = true)
+//        @Named(SystemConfiguration.PROXY_PORT_PROP)
+//        private String proxyPort = null;
+//    }
+//
+//    ConcurrentSparqlKnowledgeBaseManager(EventBus eventBus,
+//                                         String iServeUri,
+//                                         String sparqlQueryEndpoint,
+//                                         String sparqlUpdateEndpoint,
+//                                         String sparqlServiceEndpoint) throws SalException {
+//
+//        this(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint, new ProxyConfiguration());
+//    }
+//
+//
+//    /**
+//     * default constructor
+//     */
+//    @Inject
+//    ConcurrentSparqlKnowledgeBaseManager(EventBus eventBus,
+//                                         @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
+//                                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlQueryEndpoint,
+//                                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_UPDATE_PROP) String sparqlUpdateEndpoint,
+//                                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_SERVICE_PROP) String sparqlServiceEndpoint,
+//                                         ProxyConfiguration proxyCfg) throws SalException {
 
     /**
      * default constructor
      */
     @Inject
-    ConcurrentSparqlKnowledgeBaseManager(EventBus eventBus,
-                                         @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
-                                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlQueryEndpoint,
-                                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_UPDATE_PROP) String sparqlUpdateEndpoint,
-                                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_SERVICE_PROP) String sparqlServiceEndpoint,
-                                         ProxyConfiguration proxyCfg) throws SalException {
+    KnowledgeBaseManagerSparql(EventBus eventBus,
+                               SparqlGraphStoreFactory graphStoreFactory,
+                               @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
+                               @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlQueryEndpoint,
+                               @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_UPDATE_PROP) String sparqlUpdateEndpoint,
+                               @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_SERVICE_PROP) String sparqlServiceEndpoint) throws SalException {
 
-        super(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
+        super(eventBus, iServeUri);
 
-        this.loadedModels = Collections.newSetFromMap(new ConcurrentHashMap<URI, Boolean>());
-        this.loadedModels.add(URI.create(RDF.getURI()));
-        this.loadedModels.add(URI.create(RDFS.getURI()));
-        this.loadedModels.add(URI.create(OWL.NS));
-        this.loadedModels.add(URI.create(WSMO_LITE.NS));
-        this.loadedModels.add(URI.create(SAWSDL.NS));
-        this.loadedModels.add(URI.create(MSM.NS));
-        this.loadedModels.add(URI.create(HRESTS.NS));
-        this.loadedModels.add(URI.create(MSM_WSDL.NS));
-        this.loadedModels.add(URI.create("http://www.w3.org/ns/wsdl-extensions#"));  // for WSDLX safety
+        Set<URI> defaultModels = ImmutableSet.of();
+        Map<String, String> locationMappings = ImmutableMap.of();
+        Set<String> ignoredImports = ImmutableSet.of();
 
-        // Configure proxy if necessary
-        configureProxy(proxyCfg);
-
-        // Set default values for Document Manager
-        OntDocumentManager dm = OntDocumentManager.getInstance();
-        dm.setProcessImports(true);
-        dm.setCacheModels(true);
-
-        // set the executor
-//        executor = Executors.newFixedThreadPool(NUM_THREADS);
-        executor = Executors.newSingleThreadExecutor();
-    }
-
-    private void configureProxy(ProxyConfiguration proxyCfg) {
-        Properties prop = System.getProperties();
-        if (proxyCfg != null && proxyCfg.proxyHost != null && proxyCfg.proxyPort != null) {
-            log.info("Configuring proxy: Host - {} - Port {} .", proxyCfg.proxyHost, proxyCfg.proxyPort);
-            prop.put(JAVA_PROXY_HOST_PROP, proxyCfg.proxyHost);
-            prop.put(JAVA_PROXY_PORT_PROP, proxyCfg.proxyPort);
-        } else {
-            prop.remove(JAVA_PROXY_HOST_PROP);
-            prop.remove(JAVA_PROXY_PORT_PROP);
-        }
+        this.graphStoreManager = graphStoreFactory.create(sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint, defaultModels, locationMappings, ignoredImports);
+        this.unreachableModels = new ConcurrentHashMap<URI, Date>();
     }
 
     /**
@@ -149,7 +144,7 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
      */
     @Override
     public void initialise() {
-        // TODO: implement
+        this.graphStoreManager.initialise();
     }
 
     /**
@@ -157,19 +152,12 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
      * Ensure a clean shutdown.
      */
     public void shutdown() {
-        log.info("Shutting down Knowledge Base crawlers.");
-        this.executor.shutdown();
-        // waiting 2 seconds
-        try {
-            this.executor.awaitTermination(2, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            log.error("Interrupted while waiting for threads to conclude crawling.", e);
-        }
+        this.graphStoreManager.shutdown();
     }
 
     @Override
     public boolean containsModel(URI modelUri) {
-        return this.loadedModels.contains(modelUri);
+        return this.graphStoreManager.containsGraph(modelUri);
     }
 
     /**
@@ -179,7 +167,7 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
      */
     @Override
     public Set<URI> getLoadedModels() {
-        return this.loadedModels;
+        return this.graphStoreManager.listStoredGraphs();
     }
 
     /**
@@ -190,17 +178,16 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
      */
     @Override
     public Set<URI> getUnreachableModels() {
-        return this.unreachableModels;
+        return this.unreachableModels.keySet();
     }
 
     @Override
     public void uploadModel(URI modelUri, Model model, boolean forceUpdate) {
 
-        if (modelUri != null && model != null && (!this.loadedModels.contains(modelUri) || forceUpdate)) {
-            this.loadedModels.add(modelUri);
+        if (modelUri != null && model != null && (!this.containsModel(modelUri) || forceUpdate)) {
             // We are assuming here that uploading won't fail!
             // There is no way to figure this out at the moment with Jena (other than querying after)
-            putGraph(modelUri, model);
+            this.graphStoreManager.putGraph(modelUri, model);
 
             // Generate Event
             this.getEventBus().post(new OntologyCreatedEvent(new Date(), modelUri));
@@ -217,38 +204,43 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
      */
     @Override
     public boolean deleteModel(URI modelUri) {
-        return false;  // TODO: implement
+        // We are assuming here that uploading won't fail!
+        // There is no way to figure this out at the moment with Jena (other than querying after)
+        this.graphStoreManager.deleteGraph(modelUri);
+        return true;
     }
 
     /**
-     * Given a model, this method will fetch an upload of the models referred to by the service.
+     * Given a service, this method will fetch an upload of the models referred to by the service.
      * This is a synchronous implementation that will therefore wait until its fetched and uploaded.
      *
      * @param svc the service to be checked for referred models.
-     * @return True if all the models were propertly fetched, false otherwise
+     * @return True if all the models were properly fetched, false otherwise
      */
-    @Override
-    public boolean fetchModelsForService(Service svc) {
+    private boolean fetchModelsForService(Service svc) {
+
         boolean result = true;
-        Map<URI, Future<Boolean>> concurrentTasks = launchFetchingTasks(svc);
 
-        Boolean fetched;
-        for (URI modelUri : concurrentTasks.keySet()) {
-            Future<Boolean> f = concurrentTasks.get(modelUri);
-            try {
-                fetched = f.get();
-                result = result && fetched;
-
-                if (!fetched) {
-                    this.unreachableModels.add(modelUri);
-                    log.error("Cannot load " + modelUri + ". Marked as invalid");
+        Set<URI> modelUris = obtainReferencedModelUris(svc);
+        for (URI modelUri : modelUris) {
+            // Only fetch those that are not there and have not been unsucessfully fetched in the last 24 hours
+            if (!this.graphStoreManager.containsGraph(modelUri)) {
+                boolean fetch = true;
+                // If it was previously unreachable we need to check how long ago we tried
+                if (this.unreachableModels.containsKey(modelUri)) {
+                    Date now = new Date();
+                    Date lastAttempt = this.unreachableModels.get(modelUri);
+                    long diffHours = (now.getTime() - lastAttempt.getTime()) / (60 * 60 * 1000) % 24;
+                    fetch = (diffHours >= 24 ? true : false);
                 }
-            } catch (Exception e) {
-                // Mark as invalid
-                log.error("There was an error while trying to fetch a remote model", e);
-                this.unreachableModels.add(modelUri);
-                log.info("Added {} to the unreachable models list.", modelUri);
-                result = false;
+
+                if (fetch) {
+                    boolean isStored = this.graphStoreManager.fetchAndStore(modelUri);
+                    if (!isStored) {
+                        this.unreachableModels.put(modelUri, new Date());
+                    }
+                    result = result & isStored;
+                }
             }
         }
 
@@ -256,30 +248,41 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
     }
 
     /**
-     * Given a model, this method will fetch an upload of the models referred to by the service.
-     * This is an asynchronous implementation that will not wait until its fetched and uploaded.
+     * This method checks a set of fetching tasks that are pending to validate their adequate conclusion.
+     * For each of the fetching tasks launched we will track the models that were not adequately loaded for ulterior
+     * uploading.
      *
-     * @param svc the service to be checked for referred models.
-     * @return a map with a Future<Boolean> per model to be fetched. True will indicate if the model was properly obtained.
+     * @param concurrentTasks the Map with the models to fetch and the Future providing the state of the uploading
+     * @return True if all the models were adequately uploaded. False otherwise.
      */
-    @Override
-    public Map<URI, Future<Boolean>> asyncFetchModelsForService(Service svc) {
-        return launchFetchingTasks(svc);
-    }
+    private boolean checkFetchingTasks(Map<URI, Future<Boolean>> concurrentTasks) {
+        boolean result = true;
+        Boolean fetched;
+        for (URI modelUri : concurrentTasks.keySet()) {
+            Future<Boolean> f = concurrentTasks.get(modelUri);
+            try {
+                fetched = f.get();
+                result = result && fetched;
+                // Track unreachability
+                if (fetched && this.unreachableModels.containsKey(modelUri)) {
+                    this.unreachableModels.remove(modelUri);
+                    log.info("A previously unreachable model has finally been obtained - {}", modelUri);
+                }
 
-    private Map<URI, Future<Boolean>> launchFetchingTasks(Service svc) {
-        Set<URI> modelUris = obtainReferencedModelUris(svc);
-        Map<URI, Future<Boolean>> concurrentTasks = new HashMap<URI, Future<Boolean>>();
-
-        for (URI modelUri : modelUris) {
-            if (!this.loadedModels.contains(modelUri) && !this.unreachableModels.contains(modelUri)) {
-                Callable<Boolean> task = new CrawlCallable(this, modelUri);
-                concurrentTasks.put(modelUri, this.executor.submit(task));
-                log.debug("Fetching model - {}", modelUri);
+                if (!fetched) {
+                    this.unreachableModels.put(modelUri, new Date());
+                    log.error("Cannot load " + modelUri + ". Marked as invalid");
+                }
+            } catch (Exception e) {
+                // Mark as invalid
+                log.error("There was an error while trying to fetch a remote model", e);
+                this.unreachableModels.put(modelUri, new Date());
+                log.info("Added {} to the unreachable models list.", modelUri);
+                result = false;
             }
         }
 
-        return concurrentTasks;
+        return result;
     }
 
     /**
@@ -302,7 +305,7 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
                 .append("?class").append(" <").append(OWL.equivalentClass.getURI()).append("> ").append("<").append(classUri.toASCIIString()).append("> .")
                 .append(" }");
 
-        return listResourcesByQuery(strBuilder.toString(), "class");
+        return this.graphStoreManager.listResourcesByQuery(strBuilder.toString(), "class");
     }
 
     /**
@@ -329,7 +332,7 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
         }
 
         strBuilder.append(" }");
-        return listResourcesByQuery(strBuilder.toString(), "class");
+        return this.graphStoreManager.listResourcesByQuery(strBuilder.toString(), "class");
     }
 
     /**
@@ -356,7 +359,7 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
         }
         strBuilder.append(" }");
 
-        return listResourcesByQuery(strBuilder.toString(), "class");
+        return this.graphStoreManager.listResourcesByQuery(strBuilder.toString(), "class");
     }
 
     @Override
@@ -383,54 +386,7 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
 
         strBuilder.append(" } ");
 
-        return listResourcesByQuery(strBuilder.toString(), "class");
-    }
-
-    private Set<URI> listResourcesByQuery(String queryStr, String variableName) {
-
-        ImmutableSet.Builder<URI> result = ImmutableSet.builder();
-        // If the SPARQL endpoint does not exist return immediately.
-        if (this.getSparqlQueryEndpoint() == null) {
-            return result.build();
-        }
-
-        // Query the engine
-        log.debug("Evaluating SPARQL query in Knowledge Base: \n {}", queryStr);
-        Query query = QueryFactory.create(queryStr);
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
-
-        try {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.start();
-
-            ResultSet qResults = qexec.execSelect();
-
-            stopwatch.stop();
-            log.info("Time taken for querying the registry: {}", stopwatch);
-
-            Resource resource;
-            URI matchUri;
-            // Iterate over the results obtained
-            while (qResults.hasNext()) {
-                QuerySolution soln = qResults.nextSolution();
-
-                // Get the match URL
-                resource = soln.getResource(variableName);
-
-                if (resource != null && resource.isURIResource()) {
-                    matchUri = new URI(resource.getURI());
-                    result.add(matchUri);
-                } else {
-                    log.warn("Skipping result as the URL is null");
-                    break;
-                }
-            }
-        } catch (URISyntaxException e) {
-            log.error("Error obtaining match result. Expected a correct URI", e);
-        } finally {
-            qexec.close();
-        }
-        return result.build();
+        return this.graphStoreManager.listResourcesByQuery(strBuilder.toString(), "class");
     }
 
     private Set<URI> obtainReferencedModelUris(Service svc) {
@@ -459,6 +415,7 @@ public class ConcurrentSparqlKnowledgeBaseManager extends SparqlGraphStoreManage
 
     // Event Processing of internal changes
 
+    @Override
     @Subscribe
     public void handleServiceCreated(ServiceCreatedEvent event) {
         log.debug("Processing Service Created Event {}", event);

@@ -16,6 +16,7 @@
 
 package uk.ac.open.kmi.iserve.sal.manager;
 
+import com.google.common.collect.Multimap;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 
@@ -106,12 +107,30 @@ public interface ServiceManager extends iServeComponent {
     public abstract Set<URI> listInputs(URI operationUri);
 
     /**
+     * Given an operation, this method obtains the list of input URIs mapped to their annotated types (i.e., modelReferences).
+     * Note that the same input may have several annotations indicating the type.
+     *
+     * @param operationUri the URI for which we want to obtain the inputs and their annotated types
+     * @return a Multimap with the inputs and their corresponding types.
+     */
+    public abstract Multimap<URI, URI> listTypedInputs(URI operationUri);
+
+    /**
      * Obtains the list of output URIs for a given Operation
      *
      * @param operationUri the operation URI
      * @return a Set of URIs with the outputs of the operation. If no output is provided the Set should be empty NOT null.
      */
     public abstract Set<URI> listOutputs(URI operationUri);
+
+    /**
+     * Given an operation, this method obtains the list of output URIs mapped to their annotated types (i.e., modelReferences).
+     * Note that the same input may have several annotations indicating the type.
+     *
+     * @param operationUri the URI for which we want to obtain the outputs and their annotated types
+     * @return a Multimap with the outputs and their corresponding types.
+     */
+    public abstract Multimap<URI, URI> listTypedOutputs(URI operationUri);
 
     /**
      * Obtains the list of mandatory parts for a given Message Content
@@ -138,13 +157,68 @@ public interface ServiceManager extends iServeComponent {
     public abstract Set<URI> listModelReferences(URI elementUri);
 
     /**
-     * Sets all documents related to a given service
+     * Given a modelReference, this method finds all the elements that have been annotated with it. This method finds
+     * exact annotations. Note that the elements can be services, operations, inputs, etc.
+     *
+     * @param modelReference the actual annotation we are looking for
+     * @return a set of URIs for elements that have been annotated with the requested modelReferences.
+     */
+    public abstract Set<URI> listElementsAnnotatedWith(URI modelReference);
+
+    /**
+     * Given the URI of a type (i.e., a modelReference), this method figures out all the operations
+     * that have this as part of their inputs.
+     *
+     * @param modelReference the type of input sought for
+     * @return a Set of URIs of operations that can take this as input type.
+     */
+    public abstract Set<URI> listOperationsWithInputType(URI modelReference);
+
+    /**
+     * Given the URI of a type (i.e., a modelReference), this method figures out all the operations
+     * that have this as part of their inputs.
+     *
+     * @param modelReference the type of output sought for
+     * @return a Set of URIs of operations that generate this output type.
+     */
+    public abstract Set<URI> listOperationsWithOutputType(URI modelReference);
+
+    /**
+     * Given the URI of a type (i.e., a modelReference), this method figures out all the services
+     * that have this as part of their inputs.
+     *
+     * @param modelReference the type of input sought for
+     * @return a Set of URIs of services that can take this as input type.
+     */
+    public abstract Set<URI> listServicesWithInputType(URI modelReference);
+
+    /**
+     * Given the URI of a type (i.e., a modelReference), this method figures out all the services
+     * that have this as part of their inputs.
+     *
+     * @param modelReference the type of output sought for
+     * @return a Set of URIs of services that generate this output type.
+     */
+    public abstract Set<URI> listServicesWithOutputType(URI modelReference);
+
+    /**
+     * Lists all documents related to a given service
      *
      * @param serviceUri the service URI
-     * @return the Set of the URIs of all the documents related to the service
+     * @return the Set of URIs of all the documents related to the service
      * @throws ServiceException
      */
     public abstract Set<URI> listDocumentsForService(URI serviceUri) throws ServiceException;
+
+    /**
+     * Given the URI of an element, this method returns the URI of the elements from the Minimal Service Model it
+     * corresponds to. That is, it will say if it is a service, operation, etc. Note that in the case of messages
+     * parts, the entities will have two types.
+     *
+     * @param elementUri the URI to get the element type for.
+     * @return the URI of the MSM type it corresponds to.
+     */
+    public abstract Set<URI> getMsmType(URI elementUri);
 
     // Delete Methods
 
