@@ -1,0 +1,47 @@
+<rdf:RDF 
+  xmlns:rdf   ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs  ="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:xsd ="http://www.w3.org/2001/XMLSchema#"
+  xmlns:owl="http://www.w3.org/2002/07/owl#"
+  xmlns:expr  ="http://127.0.0.1/ontology/Expression.owl#"
+  xml:base    ="http://127.0.0.1/ontology/PDDLExpression.owl"
+  xmlns       ="http://127.0.0.1/ontology/PDDLExpression.owl#">
+<owl:Ontology rdf:about="">
+<owl:versionInfo>
+
+    $Id: PDDLExpression.owl,v 1.00
+  
+</owl:versionInfo>
+<rdfs:comment>
+
+    Ontology elements for capturing conditions and effects using PDDL syntax
+  
+</rdfs:comment>
+<owl:imports rdf:resource="http://127.0.0.1/ontology/Expression.owl" /> 
+</owl:Ontology>
+
+<expr:LogicLanguage rdf:ID="PDDL">
+	<refURI rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://planning.cis.strath.ac.uk/competition/</refURI>
+</expr:LogicLanguage>
+
+<owl:Class rdf:ID="PDDL-Expression">
+	<rdfs:subClassOf rdf:resource="http://127.0.0.1/ontology/Expression.owl#Expression"/>
+    <rdfs:subClassOf>
+		<owl:Restriction>
+			<owl:onProperty rdf:resource="http://127.0.0.1/ontology/Expression.owl#expressionLanguage"/>
+			<owl:hasValue rdf:resource="#PDDL"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction>
+			<owl:onProperty rdf:resource="http://127.0.0.1/ontology/Expression.owl#expressionBody"/>
+			<owl:allValuesFrom rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:ID="PDDL-Condition">
+	<rdfs:subClassOf rdf:resource="#PDDL-Expression"/>
+	<rdfs:subClassOf rdf:resource="http://127.0.0.1/ontology/Expression.owl#Condition"/>
+</owl:Class>
+</rdf:RDF>
