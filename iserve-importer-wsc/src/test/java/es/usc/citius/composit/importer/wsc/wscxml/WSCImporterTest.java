@@ -78,7 +78,7 @@ public class WSCImporterTest {
         URL base = this.getClass().getResource(WSC08_01);
 
 
-        WSCImporter importer = new WSCImporter(taxonomyStream, base.toURI().toASCIIString());
+        WSCImporter importer = new WSCImporter();
         List<Service> result = importer.transform(servicesStream, base.toURI().toASCIIString());
         Assert.assertEquals(158, result.size());
     }
