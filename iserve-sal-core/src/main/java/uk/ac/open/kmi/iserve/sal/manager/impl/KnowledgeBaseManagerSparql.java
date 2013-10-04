@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
 import uk.ac.open.kmi.iserve.commons.model.Service;
-import uk.ac.open.kmi.iserve.commons.vocabulary.*;
+import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
 import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.events.OntologyCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServiceCreatedEvent;
@@ -64,15 +64,6 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
 
     private static final Logger log = LoggerFactory.getLogger(KnowledgeBaseManagerSparql.class);
     private static final String DIRECT_SUBCLASS = "http://www.openrdf.org/schema/sesame#directSubClassOf";
-    private static final String JAVA_PROXY_HOST_PROP = "http.proxyHost";
-    private static final String JAVA_PROXY_PORT_PROP = "http.proxyPort";
-
-    // To load
-    private static final URI WSMO_LITE_URI = URI.create(WSMO_LITE.NS);
-    private static final URI MSM_URI = URI.create(MSM.NS);
-    private static final URI HRESTS_URI = URI.create(HRESTS.NS);
-    private static final URI MSM_WSDL_URI = URI.create(MSM_WSDL.NS);
-//    private static final URI WSDL_EXTENSIONS_URI = URI.create("http://www.w3.org/ns/wsdl-extensions#");
 
 
     // Set backed by a ConcurrentHashMap to avoid race conditions
@@ -83,39 +74,6 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
 
     private SparqlGraphStoreManager graphStoreManager;
 
-//    /**
-//     * Static class used for Optional constructor arguments.
-//     * For more information check http://code.google.com/p/google-guice/wiki/FrequentlyAskedQuestions#How_can_I_inject_optional_parameters_into_a_constructor
-//     */
-//    static class ProxyConfiguration {
-//        @Inject(optional = true)
-//        @Named(SystemConfiguration.PROXY_HOST_NAME_PROP)
-//        private String proxyHost = null;
-//        @Inject(optional = true)
-//        @Named(SystemConfiguration.PROXY_PORT_PROP)
-//        private String proxyPort = null;
-//    }
-//
-//    ConcurrentSparqlKnowledgeBaseManager(EventBus eventBus,
-//                                         String iServeUri,
-//                                         String sparqlQueryEndpoint,
-//                                         String sparqlUpdateEndpoint,
-//                                         String sparqlServiceEndpoint) throws SalException {
-//
-//        this(eventBus, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint, new ProxyConfiguration());
-//    }
-//
-//
-//    /**
-//     * default constructor
-//     */
-//    @Inject
-//    ConcurrentSparqlKnowledgeBaseManager(EventBus eventBus,
-//                                         @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
-//                                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlQueryEndpoint,
-//                                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_UPDATE_PROP) String sparqlUpdateEndpoint,
-//                                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_SERVICE_PROP) String sparqlServiceEndpoint,
-//                                         ProxyConfiguration proxyCfg) throws SalException {
 
     /**
      * default constructor
