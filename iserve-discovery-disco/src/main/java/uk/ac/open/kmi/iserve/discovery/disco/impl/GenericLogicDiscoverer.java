@@ -23,9 +23,11 @@ import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoverer;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoverer;
+import uk.ac.open.kmi.iserve.discovery.api.impl.MatchersFactory;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.MatchResultsMerger;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import java.net.URI;
 import java.util.Map;
@@ -45,10 +47,11 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
     private final ServiceManager serviceManager;
     private final ConceptMatcher conceptMatcher;
 
+    // TODO: Establish a way for configuring this
     @Inject
-    public GenericLogicDiscoverer(ServiceManager serviceManager, ConceptMatcher conceptMatcher) {
-        this.serviceManager = serviceManager;
-        this.conceptMatcher = conceptMatcher;
+    public GenericLogicDiscoverer() {
+        this.serviceManager = iServeFacade.getInstance().getServiceManager();
+        this.conceptMatcher = MatchersFactory.createConceptMatcher();
     }
 
     /**
@@ -139,7 +142,8 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         for (URI type : columnMap.keySet()) {
             Set<URI> entities = listEntitiesWithType(entityType, relationship, type);
             for (URI entity : entities) {
-                result.putAll(entity, columnMap.get(entity).values());
+//                result.putAll(entity, columnMap.get(entity).values());
+                result.putAll(entity, columnMap.get(type).values());
             }
         }
 
