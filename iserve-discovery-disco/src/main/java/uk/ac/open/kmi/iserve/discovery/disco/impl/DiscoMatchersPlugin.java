@@ -20,6 +20,10 @@ import com.google.inject.multibindings.MapBinder;
 import uk.ac.open.kmi.iserve.core.ConfiguredModule;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
+import uk.ac.open.kmi.iserve.discovery.disco.index.ConcurrentHashMapFactory;
+import uk.ac.open.kmi.iserve.discovery.disco.index.DefaultConceptMatcherIndexFactory;
+import uk.ac.open.kmi.iserve.discovery.disco.index.IndexFactory;
+import uk.ac.open.kmi.iserve.discovery.disco.index.MapFactory;
 
 import javax.inject.Singleton;
 
@@ -35,9 +39,10 @@ public class DiscoMatchersPlugin extends ConfiguredModule implements MatcherPlug
     protected void configure() {
         // Ensure we configure it
         super.configure();
-
+        bind(IndexFactory.class).to(DefaultConceptMatcherIndexFactory.class);
+        bind(MapFactory.class).to(ConcurrentHashMapFactory.class);
         MapBinder<String, ConceptMatcher> conceptBinder = MapBinder.newMapBinder(binder(), String.class, ConceptMatcher.class);
         conceptBinder.addBinding(SparqlLogicConceptMatcher.class.getName()).to(SparqlLogicConceptMatcher.class).in(Singleton.class);
-
+        conceptBinder.addBinding(IndexedLogicConceptMatcher.class.getName()).to(IndexedLogicConceptMatcher.class).in(Singleton.class);
     }
 }
