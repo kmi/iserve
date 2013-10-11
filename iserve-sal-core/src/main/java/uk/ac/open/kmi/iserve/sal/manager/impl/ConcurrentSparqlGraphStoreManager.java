@@ -595,7 +595,7 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
             ResultSet qResults = qexec.execSelect();
 
             stopwatch.stop();
-            log.info("Time taken for querying the registry: {}", stopwatch);
+            log.debug("Time taken for querying the registry: {}", stopwatch);
 
             Resource resource;
             URI matchUri;
