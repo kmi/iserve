@@ -71,4 +71,22 @@ public abstract class IntegratedComponent implements iServeComponent {
     public URI getIserveUri() {
         return iserveUri;
     }
+
+    /**
+     * This method will be called when the server is initialised.
+     * If necessary it should take care of updating any indexes on boot time.
+     */
+    @Override
+    public void initialise() {
+        // Add any common initialisation that should occur
+    }
+
+    /**
+     * This method will be called when the server is being shutdown.
+     * Ensure a clean shutdown.
+     */
+    @Override
+    public void shutdown() {
+        this.eventBus.unregister(this);
+    }
 }

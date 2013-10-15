@@ -102,6 +102,7 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
      */
     @Override
     public void initialise() {
+        super.initialise();
         this.graphStoreManager.initialise();
     }
 
@@ -110,6 +111,7 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
      * Ensure a clean shutdown.
      */
     public void shutdown() {
+        super.shutdown();
         this.graphStoreManager.shutdown();
     }
 

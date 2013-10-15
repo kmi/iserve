@@ -24,6 +24,8 @@ import uk.ac.open.kmi.iserve.discovery.disco.index.ConcurrentHashMapFactory;
 import uk.ac.open.kmi.iserve.discovery.disco.index.DefaultConceptMatcherIndexFactory;
 import uk.ac.open.kmi.iserve.discovery.disco.index.IndexFactory;
 import uk.ac.open.kmi.iserve.discovery.disco.index.MapFactory;
+import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoverer;
+import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoverer;
 
 import javax.inject.Singleton;
 
@@ -43,6 +45,11 @@ public class DiscoMatchersPlugin extends ConfiguredModule implements MatcherPlug
         bind(MapFactory.class).to(ConcurrentHashMapFactory.class);
         MapBinder<String, ConceptMatcher> conceptBinder = MapBinder.newMapBinder(binder(), String.class, ConceptMatcher.class);
         conceptBinder.addBinding(SparqlLogicConceptMatcher.class.getName()).to(SparqlLogicConceptMatcher.class).in(Singleton.class);
+
+        // Single bind discoverers for now
+        bind(OperationDiscoverer.class).to(GenericLogicDiscoverer.class);
+        bind(ServiceDiscoverer.class).to(GenericLogicDiscoverer.class);
+
         conceptBinder.addBinding(IndexedLogicConceptMatcher.class.getName()).to(IndexedLogicConceptMatcher.class).in(Singleton.class);
     }
 }

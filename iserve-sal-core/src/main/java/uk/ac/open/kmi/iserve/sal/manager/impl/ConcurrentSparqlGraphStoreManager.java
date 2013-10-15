@@ -65,6 +65,7 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
 
     private static final String JAVA_PROXY_HOST_PROP = "http.proxyHost";
     private static final String JAVA_PROXY_PORT_PROP = "http.proxyPort";
+    private static final int NUM_THREADS = 4;
 
     // Set backed by a ConcurrentHashMap to avoid race conditions
     private Set<URI> loadedModels;
@@ -126,8 +127,8 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
         setupModelSpecification(locationMappings, ignoredImports);
 
         // set the executor
-//        executor = Executors.newFixedThreadPool(NUM_THREADS);
-        executor = Executors.newSingleThreadExecutor();
+        executor = Executors.newFixedThreadPool(NUM_THREADS);
+//        executor = Executors.newSingleThreadExecutor();
 
         if (sparqlQueryEndpoint == null) {
             log.error(ConcurrentSparqlGraphStoreManager.class.getSimpleName() + " requires a SPARQL Query endpoint.");
@@ -233,8 +234,10 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
     private boolean loadDefaultModels() {
 
         Map<URI, Future<Boolean>> concurrentTasks = new HashMap<URI, Future<Boolean>>();
-        for (URI model : baseModels) {
-            concurrentTasks.put(model, this.asyncFetchModel(model, Syntax.N3.getName()));
+        for (URI modelUri : baseModels) {
+            if (modelUri != null && modelUri.isAbsolute()) {
+                concurrentTasks.put(modelUri, this.asyncFetchModel(modelUri, Syntax.N3.getName()));
+            }
         }
 
         boolean result = true;
@@ -245,7 +248,7 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
                 result = result && fetched;
 
                 if (!fetched) {
-                    log.error("Cannot load default model - {} - The software may not behave correctly. ");
+                    log.error("Cannot load default model - {} - The software may not behave correctly. ", modelUri);
                 }
             } catch (Exception e) {
                 // Mark as invalid
