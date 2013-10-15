@@ -16,10 +16,11 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
-import com.google.common.eventbus.EventBus;
 import junit.framework.Assert;
+import org.jukito.JukitoRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.MediaType;
@@ -30,6 +31,7 @@ import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterForTransformer;
 import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
 
+import javax.inject.Inject;
 import java.io.*;
 import java.net.URI;
 import java.util.Iterator;
@@ -43,16 +45,18 @@ import java.util.Set;
  * Date: 06/06/2013
  * Time: 18:50
  */
-public class DocumentManagerFileSystemTest {
+@RunWith(JukitoRunner.class)
+public class DocumentManagerTest {
 
-    private static final Logger log = LoggerFactory.getLogger(DocumentManagerFileSystemTest.class);
+    private static final Logger log = LoggerFactory.getLogger(DocumentManagerTest.class);
+
+    // Limit the number of documents to upload to the registry
+    private static final int MAX_DOCS = 25;
 
     private static final String OWLS_TC3_MSM = "/OWLS-TC3-MSM";
     private static final String OWLS_TC4_PDDL = "/OWLS-TC4_PDDL/htdocs/services/1.1";
     private static final Syntax SYNTAX = Syntax.TTL;
     private static final String OWLS_MEDIATYPE = "application/owl+xml";
-    private static final String ISERVE_TEST_URI = "http://localhost:9090/iserve";
-    private static final String ISERVE_TEST_DOCS_FLD = "file:///tmp/iserve/service-docs";
 
     private FilenameFilter ttlFilter;
     private FilenameFilter owlsFilter;
@@ -61,27 +65,38 @@ public class DocumentManagerFileSystemTest {
     private File[] msmTtlTcFiles;
     private File[] owlsTcFiles;
 
-    private static DocumentManager documentManager;
+    @Inject
+    private DocumentManager documentManager;
 
+    /**
+     * JukitoModule.
+     */
+    public static class InnerModule extends ConfiguredTestModule {
+        @Override
+        protected void configureTest() {
+            // Get properties
+            super.configureTest();
+            // bind
+            bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
+
+            // Necessary to verify interaction with the real object
+            bindSpy(DocumentManagerFileSystem.class);
+        }
+    }
 
     @Before
     public void setUp() throws Exception {
-        URI msmTestFolder = DocumentManagerFileSystemTest.class.getResource(OWLS_TC3_MSM).toURI();
+        URI msmTestFolder = DocumentManagerTest.class.getResource(OWLS_TC3_MSM).toURI();
         ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
         File dir = new File(msmTestFolder);
         msmTtlTcFiles = dir.listFiles(ttlFilter);
 
-        URI owlsTestFolder = DocumentManagerFileSystemTest.class.getResource(OWLS_TC4_PDDL).toURI();
+        URI owlsTestFolder = DocumentManagerTest.class.getResource(OWLS_TC4_PDDL).toURI();
         owlsFilter = new FilenameFilterForTransformer(Transformer.getInstance().getTransformer(OWLS_MEDIATYPE));
         dir = new File(owlsTestFolder);
         owlsTcFiles = dir.listFiles(owlsFilter);
         numServices = msmTtlTcFiles.length + owlsTcFiles.length;
-
-//        documentManager = ManagerSingleton.getInstance().getDocumentManager();
-        EventBus eventBus = new EventBus();
-        documentManager = new DocumentManagerFileSystem(eventBus, ISERVE_TEST_URI, ISERVE_TEST_DOCS_FLD);
     }
-
 
     @Test
     public void testCreateDocument() throws Exception {
@@ -89,7 +104,7 @@ public class DocumentManagerFileSystemTest {
         // Clear and upload data
         documentManager.clearDocuments();
         int count = uploadMsmFiles();
-        Assert.assertEquals(msmTtlTcFiles.length, count);
+        Assert.assertEquals(Math.min(msmTtlTcFiles.length, MAX_DOCS), count);
 
         // TODO: We should check the content is correct
     }
@@ -100,9 +115,9 @@ public class DocumentManagerFileSystemTest {
         URI docUri;
         int count = 0;
         // Upload every document and obtain their URLs
-        for (File ttlFile : msmTtlTcFiles) {
-            in = new FileInputStream(ttlFile);
-            log.info("Adding document: {}", ttlFile.getName());
+        for (int i = 0; i < MAX_DOCS && i < msmTtlTcFiles.length; i++) {
+            in = new FileInputStream(msmTtlTcFiles[i]);
+            log.info("Adding document: {}", msmTtlTcFiles[i].getName());
             String fileExt = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.get(MediaType.TEXT_TURTLE.getMediaType()).getExtension();
             docUri = documentManager.createDocument(in, fileExt);
             Assert.assertNotNull(docUri);
@@ -117,16 +132,19 @@ public class DocumentManagerFileSystemTest {
 
         // Clear and upload data
         documentManager.clearDocuments();
-        uploadMsmFiles();
+        int count = uploadMsmFiles();
 
         boolean result;
         URI docUri;
         Random rand = new Random();
         Set<URI> documents = documentManager.listDocuments();
         int numDocs = documents.size();
+
+        Assert.assertEquals(count, numDocs);
+
         int delta = numDocs / 10;
         int index = rand.nextInt(10 - 0 + 1) + 0;
-        int count = numDocs;
+
         Iterator<URI> docsIter = documents.iterator();
         while (docsIter.hasNext() && index < numDocs) {
             docUri = docsIter.next();

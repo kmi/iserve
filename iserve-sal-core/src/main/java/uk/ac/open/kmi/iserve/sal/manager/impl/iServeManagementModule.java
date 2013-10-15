@@ -48,7 +48,7 @@ public class iServeManagementModule extends ConfiguredModule {
 
         // Bind each of the managers
         bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
-        bind(ServiceManager.class).to(ServiceManagerSparql.class);
+        bind(ServiceManager.class).to(ServiceManagerIndexRdf.class);
         bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class);
 
         // Assisted Injection for the Graph Store Manager

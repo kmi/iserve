@@ -136,6 +136,14 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Include dependency on Jukito to have configured test cases with Guice injection -->
+        <dependency>
+            <groupId>org.jukito</groupId>
+            <artifactId>jukito</artifactId>
+            <version>1.2</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
