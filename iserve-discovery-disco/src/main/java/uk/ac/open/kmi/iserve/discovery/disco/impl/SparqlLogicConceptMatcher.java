@@ -18,10 +18,7 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.common.base.Function;
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Ordering;
-import com.google.common.collect.Table;
+import com.google.common.collect.*;
 import com.google.inject.Inject;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -206,7 +203,7 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
 
     private Table<URI, URI, MatchResult> queryForMatchResults(String queryStr) {
 
-        Table<URI, URI, MatchResult> result = HashBasedTable.create();
+        ImmutableTable.Builder<URI, URI, MatchResult> result = ImmutableTable.builder();
 
         // Query the engine
         Query query = QueryFactory.create(queryStr);
@@ -240,7 +237,7 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
             qexec.close();
         }
 
-        return result;
+        return result.build();
     }
 
     /**
