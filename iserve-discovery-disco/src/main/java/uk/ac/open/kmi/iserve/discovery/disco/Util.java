@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
+import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -34,8 +35,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import static uk.ac.open.kmi.iserve.discovery.disco.DiscoMatchType.*;
 
 /**
  * Class Description
@@ -500,15 +499,15 @@ public class Util {
         if (isSubsume) {
             if (isPlugin) {
                 // If plugin and subsume -> this is an exact match
-                return Exact;
+                return DiscoMatchType.Exact;
             }
-            return Subsume;
+            return DiscoMatchType.Subsume;
         } else {
             if (isPlugin) {
-                return Plugin;
+                return DiscoMatchType.Plugin;
             }
         }
-        return Fail;
+        return DiscoMatchType.Fail;
     }
 
     /**
@@ -521,42 +520,49 @@ public class Util {
      * @param worstMatch worst match type within the composite match
      * @return match type for the composite match
      */
-    public static DiscoMatchType calculateCompositeMatchType(DiscoMatchType bestMatch,
-                                                             DiscoMatchType worstMatch) {
+    public static DiscoMatchType calculateCompositeMatchType(MatchType bestMatch,
+                                                             MatchType worstMatch) {
+        if (bestMatch instanceof LogicConceptMatchType && worstMatch instanceof LogicConceptMatchType) {
+            return calculateCompositeMatchType((LogicConceptMatchType) bestMatch, (LogicConceptMatchType) worstMatch);
+        }
 
+        return DiscoMatchType.Fail;
+    }
+
+    private static DiscoMatchType calculateCompositeMatchType(LogicConceptMatchType bestMatch, LogicConceptMatchType worstMatch) {
         switch (worstMatch) {
             case Exact:
-                return Exact;
+                return DiscoMatchType.Exact;
 
             case Plugin:
-                return Plugin;
+                return DiscoMatchType.Plugin;
 
             case Subsume:
-                return Subsume;
+                return DiscoMatchType.Subsume;
 
             case Fail:
                 switch (bestMatch) {
                     case Exact:
-                        return PartialPlugin;
+                        return DiscoMatchType.PartialPlugin;
 
                     case Plugin:
-                        return PartialPlugin;
+                        return DiscoMatchType.PartialPlugin;
 
                     case Subsume:
-                        return PartialSubsume;
+                        return DiscoMatchType.PartialSubsume;
 
                     default:
                         log.warn("This match type is not supported: " +
                                 bestMatch.name());
 
-                        return Fail;
+                        return DiscoMatchType.Fail;
                 }
 
             default:
                 log.warn("This match type is not supported: " +
                         worstMatch.name());
 
-                return Fail;
+                return DiscoMatchType.Fail;
         }
     }
 
