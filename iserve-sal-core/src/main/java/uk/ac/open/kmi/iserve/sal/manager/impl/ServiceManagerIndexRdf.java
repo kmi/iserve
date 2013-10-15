@@ -709,7 +709,6 @@ public class ServiceManagerIndexRdf extends IntegratedComponent implements Servi
     }
 
     private void indexService(Service service) {
-        log.info("Indexing service.");
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.start();
         List<Operation> operations = service.getOperations();
@@ -723,7 +722,7 @@ public class ServiceManagerIndexRdf extends IntegratedComponent implements Servi
         // Index the modelReferences
         indexModelReferences(service);
         stopwatch.stop();
-        log.info("Service indexed. Time taken {}", stopwatch);
+        log.info("Service - {} - indexed. Time taken {}", service.getUri(), stopwatch);
     }
 
     private void indexModelReferences(AnnotableResource annotableResource) {

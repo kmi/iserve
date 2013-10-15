@@ -16,11 +16,11 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
+import com.google.inject.Inject;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import junit.framework.Assert;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
 import org.jukito.JukitoRunner;
+import org.jukito.TestScope;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -32,7 +32,6 @@ import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -62,7 +61,7 @@ public class ServiceManagerTest {
     private static final String WSC08_01_SERVICES = WSC08_01 + "services.xml";
 
     @Inject
-    ServiceManager serviceManager;
+    private ServiceManager serviceManager;
 
     /**
      * JukitoModule.
@@ -73,11 +72,11 @@ public class ServiceManagerTest {
             // Get properties
             super.configureTest();
 
-            // bind
-            bind(ServiceManager.class).to(ServiceManagerSparql.class);
+            // bind all the implementations
+            bind(ServiceManager.class).to(ServiceManagerIndexRdf.class).in(TestScope.SINGLETON);
 
             // Necessary to verify interaction with the real object
-            bindSpy(ServiceManagerSparql.class);
+//            bindSpy(ServiceManagerSparql.class);
 
             // Assisted Injection for the Graph Store Manager
             install(new FactoryModuleBuilder()
@@ -114,9 +113,6 @@ public class ServiceManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        BasicConfigurator.configure();
-        org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
-
         URL resource = ServiceManagerTest.class.getResource("init.check");
         if (resource != null) {
             File file = new File(resource.toURI());
@@ -126,6 +122,9 @@ public class ServiceManagerTest {
                 file.delete();
             }
         }
+
+        // Ensure that the manager is initialised
+        serviceManager.initialise();
     }
 
     @After
@@ -155,10 +154,16 @@ public class ServiceManagerTest {
         }
         log.debug("Total services added {}", counter);
         Assert.assertEquals(services.size(), counter);
+
+        // TODO: Remove
+        log.warn("Stored Data in Manager instance: {}", serviceManager.toString());
     }
 
     @Test
     public void testListServices() throws Exception {
+
+        // TODO: Remove
+        log.warn("Using Manager instance: {}", serviceManager.toString());
 
         Set<URI> services = serviceManager.listServices();
         // Check the original list of retrieved URIs
