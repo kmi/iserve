@@ -26,7 +26,6 @@ import junit.framework.Assert;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.jukito.JukitoRunner;
-import org.jukito.UseModules;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -42,7 +41,6 @@ import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeManagementModule;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -67,7 +65,6 @@ import static org.junit.Assert.assertTrue;
  * @since 01/08/2013
  */
 @RunWith(JukitoRunner.class)
-@UseModules(iServeManagementModule.class)
 public class ConceptMatcherWSC08Test {
 
     private static final Logger log = LoggerFactory.getLogger(ConceptMatcherWSC08Test.class);
@@ -79,8 +76,6 @@ public class ConceptMatcherWSC08Test {
     private static final String WSC_01_TAXONOMY_NS = "http://localhost/wsc/01/taxonomy.owl#";
 
     private static final String MEDIATYPE = "text/xml";
-
-    private static iServeFacade manager;
 
     @Inject
     private ConceptMatcher conceptMatcher;
@@ -106,18 +101,16 @@ public class ConceptMatcherWSC08Test {
     public static void setUp() throws Exception {
         BasicConfigurator.configure();
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
-        // do your one-time setup here
-        manager = iServeFacade.getInstance();
 
         // Clean the whole thing before testing
-        manager.clearRegistry();
+        iServeFacade.getInstance().clearRegistry();
         uploadWscTaxonomy();
         importWscServices();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        manager.shutdown();
+        iServeFacade.getInstance().shutdown();
     }
 
 
@@ -129,7 +122,7 @@ public class ConceptMatcherWSC08Test {
         model.read(taxonomyFile);
 
         // Upload the model first (it won't be automatically fetched as the URIs won't resolve so we do it manually)
-        manager.getKnowledgeBaseManager().uploadModel(URI.create(WSC_01_TAXONOMY_URL), model, true);
+        iServeFacade.getInstance().getKnowledgeBaseManager().uploadModel(URI.create(WSC_01_TAXONOMY_URL), model, true);
     }
 
     private static void importWscServices() throws TransformationException, SalException, URISyntaxException, FileNotFoundException {
@@ -148,7 +141,7 @@ public class ConceptMatcherWSC08Test {
         // Import all services
         int counter = 0;
         for (Service s : result) {
-            URI uri = manager.getServiceManager().addService(s);
+            URI uri = iServeFacade.getInstance().getServiceManager().addService(s);
             Assert.assertNotNull(uri);
             log.info("Service added: " + uri.toASCIIString());
             counter++;
@@ -234,9 +227,9 @@ public class ConceptMatcherWSC08Test {
 
         // Discover executable services
         Set<String> candidates = new HashSet<String>();
-        for (URI service : this.manager.getServiceManager().listServices()) {
+        for (URI service : iServeFacade.getInstance().getServiceManager().listServices()) {
             // Load the service
-            Service srv = this.manager.getServiceManager().getService(service);
+            Service srv = iServeFacade.getInstance().getServiceManager().getService(service);
             // Load operations
             opLoop:
             for (Operation op : srv.getOperations()) {
@@ -294,8 +287,8 @@ public class ConceptMatcherWSC08Test {
         // Preload servide models
         // TODO; Discovery operations without loading the entire service model.
         Set<Service> services = new HashSet<Service>();
-        for (URI srvURI : this.manager.getServiceManager().listServices()) {
-            services.add(this.manager.getServiceManager().getService(srvURI));
+        for (URI srvURI : iServeFacade.getInstance().getServiceManager().listServices()) {
+            services.add(iServeFacade.getInstance().getServiceManager().getService(srvURI));
         }
         int pass = 0;
         while (!newInputs.isEmpty()) {

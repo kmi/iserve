@@ -22,7 +22,7 @@ import junit.framework.Assert;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.jukito.JukitoRunner;
-import org.jukito.UseModules;
+import org.jukito.TestScope;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,7 +37,6 @@ import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeManagementModule;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -58,7 +57,6 @@ import java.util.Set;
  * @since 01/08/2013
  */
 @RunWith(JukitoRunner.class)
-@UseModules(iServeManagementModule.class)
 public class ConceptMatcherOwlTcTest {
 
     private static final Logger log = LoggerFactory.getLogger(ConceptMatcherOwlTcTest.class);
@@ -67,7 +65,6 @@ public class ConceptMatcherOwlTcTest {
 
     @Inject
     private ConceptMatcher conceptMatcher;
-    private static iServeFacade manager;
 
     /**
      * JukitoModule.
@@ -78,7 +75,7 @@ public class ConceptMatcherOwlTcTest {
             // Get properties
             super.configureTest();
             // bind
-            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
+            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class).in(TestScope.SINGLETON);
 
             // Necessary to verify interaction with the real object
             bindSpy(SparqlLogicConceptMatcher.class);
@@ -90,14 +87,13 @@ public class ConceptMatcherOwlTcTest {
         BasicConfigurator.configure();
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
 
-        manager = iServeFacade.getInstance();
-        manager.clearRegistry();
+        iServeFacade.getInstance().clearRegistry();
         uploadOwlsTc();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        manager.shutdown();
+        iServeFacade.getInstance().shutdown();
     }
 
     private static void uploadOwlsTc() throws URISyntaxException, FileNotFoundException, SalException {
@@ -112,7 +108,7 @@ public class ConceptMatcherOwlTcTest {
         for (File ttlFile : msmTtlTcFiles) {
             log.debug("Importing {}", ttlFile.getAbsolutePath());
             in = new FileInputStream(ttlFile);
-            manager.importServices(in, MediaType.TEXT_TURTLE.getMediaType());
+            iServeFacade.getInstance().importServices(in, MediaType.TEXT_TURTLE.getMediaType());
         }
         log.debug("Ready");
     }

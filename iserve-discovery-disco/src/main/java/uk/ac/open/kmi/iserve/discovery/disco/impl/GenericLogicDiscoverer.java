@@ -23,11 +23,9 @@ import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoverer;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoverer;
-import uk.ac.open.kmi.iserve.discovery.api.impl.MatchersFactory;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.MatchResultsMerger;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import java.net.URI;
 import java.util.Map;
@@ -36,8 +34,7 @@ import java.util.Set;
 import static uk.ac.open.kmi.iserve.commons.vocabulary.MSM.Service;
 
 /**
- * OperationDiscoverer
- * TODO: Provide Description
+ * GenericLogicDiscoverer provides discovery for both Operations and Services
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 27/09/2013
@@ -47,11 +44,10 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
     private final ServiceManager serviceManager;
     private final ConceptMatcher conceptMatcher;
 
-    // TODO: Establish a way for configuring this
     @Inject
-    public GenericLogicDiscoverer() {
-        this.serviceManager = iServeFacade.getInstance().getServiceManager();
-        this.conceptMatcher = MatchersFactory.createConceptMatcher();
+    public GenericLogicDiscoverer(ServiceManager serviceManager, ConceptMatcher conceptMatcher) {
+        this.serviceManager = serviceManager;
+        this.conceptMatcher = conceptMatcher;
     }
 
     /**

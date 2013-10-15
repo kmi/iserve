@@ -18,29 +18,37 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableSet;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import junit.framework.Assert;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
+import org.jukito.JukitoRunner;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.commons.io.TransformationException;
 import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.model.Service;
+import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoverer;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoverer;
+import uk.ac.open.kmi.iserve.sal.exception.SalException;
+import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerSparql;
 import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeManagementModule;
 
+import javax.inject.Inject;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +60,7 @@ import java.util.Map;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 04/10/2013
  */
+@RunWith(JukitoRunner.class)
 public class GenericLogicDiscovererTest {
 
     private static final Logger log = LoggerFactory.getLogger(GenericLogicDiscovererTest.class);
@@ -63,50 +72,82 @@ public class GenericLogicDiscovererTest {
     private static final String WSC_01_TAXONOMY_URL = "http://localhost/wsc/01/taxonomy.owl";
     private static final String WSC_01_TAXONOMY_NS = "http://localhost/wsc/01/taxonomy.owl#";
 
-    private static iServeFacade manager;
+    @Inject
     private static OperationDiscoverer opDiscoverer;
+
+    @Inject
     private static ServiceDiscoverer svcDiscoverer;
+
+    /**
+     * JukitoModule.
+     */
+    public static class InnerModule extends ConfiguredTestModule {
+        @Override
+        protected void configureTest() {
+            // Get properties
+            super.configureTest();
+
+            bind(ServiceManager.class).to(ServiceManagerSparql.class);
+            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
+
+            // bind
+            bind(OperationDiscoverer.class).to(GenericLogicDiscoverer.class);
+            bind(ServiceDiscoverer.class).to(GenericLogicDiscoverer.class);
+
+            // Necessary to verify interaction with the real object
+            bindSpy(GenericLogicDiscoverer.class);
+        }
+    }
 
     @BeforeClass
     public static void setUp() throws Exception {
         BasicConfigurator.configure();
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
 
-        Injector injector = Guice.createInjector(new iServeManagementModule(), new DiscoMatchersPlugin());
-
-        manager = iServeFacade.getInstance();
-        opDiscoverer = injector.getInstance(OperationDiscoverer.class);
-        svcDiscoverer = injector.getInstance(ServiceDiscoverer.class);
-
         // Clean the whole thing before testing
-        manager.clearRegistry();
+        iServeFacade.getInstance().clearRegistry();
+        uploadWscTaxonomy();
+        importWscServices();
+    }
 
-        log.info("Importing WSC 2008 services");
-        String file = GenericLogicDiscovererTest.class.getResource(WSC08_01_SERVICES).getFile();
-        log.debug("Using " + file);
-        File services = new File(file);
+    @AfterClass
+    public static void tearDown() throws Exception {
+        iServeFacade.getInstance().shutdown();
+    }
 
-        // Get base url
-        URL base = GenericLogicDiscovererTest.class.getResource(WSC08_01);
-
+    private static void uploadWscTaxonomy() throws URISyntaxException {
         // First load the ontology in the server to avoid issues
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         // Fetch the model
-        String taxonomyFile = GenericLogicDiscovererTest.class.getResource(WSC08_01_TAXONOMY_FILE).toURI().toASCIIString();
+        String taxonomyFile = ConceptMatcherWSC08Test.class.getResource(WSC08_01_TAXONOMY_FILE).toURI().toASCIIString();
         model.read(taxonomyFile);
 
         // Upload the model first (it won't be automatically fetched as the URIs won't resolve so we do it manually)
-        manager.getKnowledgeBaseManager().uploadModel(URI.create(WSC_01_TAXONOMY_URL), model, true);
+        iServeFacade.getInstance().getKnowledgeBaseManager().uploadModel(URI.create(WSC_01_TAXONOMY_URL), model, true);
+    }
 
-        //List<Service> result = new WSCImporter().transform(new FileInputStream(services), null);
-        // Automatic plugin discovery
+    private static void importWscServices() throws TransformationException, SalException, URISyntaxException, FileNotFoundException {
+        log.info("Importing WSC Dataset");
+        String file = OperationMatchTest.class.getResource(WSC08_01_SERVICES).getFile();
+        log.info("Services XML file {}", file);
+        File services = new File(file);
+        URL base = OperationMatchTest.class.getResource(WSC08_01);
+        log.info("Dataset Base URI {}", base.toURI().toASCIIString());
+
         List<Service> result = Transformer.getInstance().transform(services, base.toURI().toASCIIString(), MEDIATYPE);
+        //List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
+        if (result.size() == 0) {
+            Assert.fail("No services transformed!");
+        }
         // Import all services
+        int counter = 0;
         for (Service s : result) {
-            URI uri = manager.getServiceManager().addService(s);
+            URI uri = iServeFacade.getInstance().getServiceManager().addService(s);
             Assert.assertNotNull(uri);
             log.info("Service added: " + uri.toASCIIString());
+            counter++;
         }
+        log.debug("Total services added {}", counter);
     }
 
 

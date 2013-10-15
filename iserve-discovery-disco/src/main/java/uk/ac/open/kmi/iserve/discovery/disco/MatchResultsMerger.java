@@ -128,7 +128,7 @@ public enum MatchResultsMerger implements Function<Collection<MatchResult>, Matc
 
             MatchType maxType = innerMatches.first().getMatchType();
             MatchType minType = innerMatches.last().getMatchType();
-            MatchType type = Util.calculateCompositeMatchType((DiscoMatchType) maxType, (DiscoMatchType) minType);
+            MatchType type = Util.calculateCompositeMatchType(maxType, minType);
             CompositeMatchResult result = new CompositeMatchResult(resourceToMatch, matchUri, type, matcher, innerMatches);
             return result;
 

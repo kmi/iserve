@@ -31,7 +31,6 @@ import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 import uk.ac.open.kmi.iserve.discovery.api.impl.AbstractMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
-import uk.ac.open.kmi.iserve.discovery.disco.MatchResultsMerger;
 import uk.ac.open.kmi.iserve.discovery.util.MatchComparator;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
@@ -39,6 +38,8 @@ import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import java.net.URI;
 import java.util.Map;
 import java.util.Set;
+
+import static uk.ac.open.kmi.iserve.discovery.disco.MatchResultsMerger.INTERSECTION;
 
 /**
  * OperationDataflowMatcher implementation of DataflowMatching for Operations
@@ -114,7 +115,7 @@ public class OperationDataflowMatcher extends AbstractMatcher implements Dataflo
             builder.add(matchesMap.get(bestMatchUri));
         }
 
-        MatchResult result = MatchResultsMerger.INTERSECTION.apply(builder.build());
+        MatchResult result = INTERSECTION.apply(builder.build());
         log.info("Combined match result - {}", result);
         return result;
     }

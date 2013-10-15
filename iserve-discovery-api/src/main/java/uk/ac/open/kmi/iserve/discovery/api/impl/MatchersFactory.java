@@ -43,6 +43,7 @@ public class MatchersFactory {
     // Bind to the provider for lazy instance creation
     private Map<String, Provider<ConceptMatcher>> conceptMatcherBindings = null;
 
+    // TODO: Add configuration details
     @Inject(optional = true)
     @Named(SystemConfiguration.DEFAULT_CONCEPT_MATCHER_PROP)
     private final String defaultConceptMatcher = null;
@@ -84,13 +85,13 @@ public class MatchersFactory {
         return null;
     }
 
-    public static Set<String> listAvailableMatchers(){
+    public static Set<String> listAvailableMatchers() {
         checkAndInit();
         return new HashSet<String>(instance.conceptMatcherBindings.keySet());
     }
 
-    private static void checkAndInit(){
-        if (instance==null){
+    private static void checkAndInit() {
+        if (instance == null) {
             init();
         }
     }

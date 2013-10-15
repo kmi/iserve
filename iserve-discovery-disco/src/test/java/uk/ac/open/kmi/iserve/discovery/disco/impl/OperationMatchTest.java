@@ -25,7 +25,6 @@ import junit.framework.Assert;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.jukito.JukitoRunner;
-import org.jukito.UseModules;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,7 +41,6 @@ import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeManagementModule;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -61,7 +59,6 @@ import java.util.Set;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  */
 @RunWith(JukitoRunner.class)
-@UseModules(iServeManagementModule.class)
 public class OperationMatchTest {
 
     private static final Logger log = LoggerFactory.getLogger(OperationMatchTest.class);
@@ -73,8 +70,6 @@ public class OperationMatchTest {
     private static final String WSC08_01_TAXONOMY_FILE = WSC08_01 + "taxonomy.owl";
     private static final String WSC_01_TAXONOMY_URL = "http://localhost/wsc/01/taxonomy.owl";
     private static final String WSC_01_TAXONOMY_NS = "http://localhost/wsc/01/taxonomy.owl#";
-
-    private static iServeFacade manager;
 
     @Inject
     private ConceptMatcher conceptMatcher;
@@ -101,15 +96,14 @@ public class OperationMatchTest {
         BasicConfigurator.configure();
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
 
-        manager = iServeFacade.getInstance();
-        manager.clearRegistry();
+        iServeFacade.getInstance().clearRegistry();
         uploadWscTaxonomy();
         importWscServices();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        manager.shutdown();
+        iServeFacade.getInstance().shutdown();
     }
 
 
@@ -121,7 +115,7 @@ public class OperationMatchTest {
         model.read(taxonomyFile);
 
         // Upload the model first (it won't be automatically fetched as the URIs won't resolve so we do it manually)
-        manager.getKnowledgeBaseManager().uploadModel(URI.create(WSC_01_TAXONOMY_URL), model, true);
+        iServeFacade.getInstance().getKnowledgeBaseManager().uploadModel(URI.create(WSC_01_TAXONOMY_URL), model, true);
     }
 
     private static void importWscServices() throws TransformationException, SalException, URISyntaxException, FileNotFoundException {
@@ -140,7 +134,7 @@ public class OperationMatchTest {
         // Import all services
         int counter = 0;
         for (Service s : result) {
-            URI uri = manager.getServiceManager().addService(s);
+            URI uri = iServeFacade.getInstance().getServiceManager().addService(s);
             Assert.assertNotNull(uri);
             log.info("Service added: " + uri.toASCIIString());
             counter++;
@@ -149,9 +143,9 @@ public class OperationMatchTest {
     }
 
     private Service find(String name) throws ServiceException {
-        for (URI srvUri : manager.getServiceManager().listServices()) {
+        for (URI srvUri : iServeFacade.getInstance().getServiceManager().listServices()) {
             if (srvUri.toASCIIString().contains(name)) {
-                return manager.getServiceManager().getService(srvUri);
+                return iServeFacade.getInstance().getServiceManager().getService(srvUri);
             }
         }
         return null;
