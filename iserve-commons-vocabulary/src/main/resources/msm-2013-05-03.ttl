@@ -98,7 +98,7 @@ msm:hasPart
     rdfs:subPropertyOf msm:hasPartTransitive .
 
 msm:hasPartTransitive
-    a rdf:Property, owl:ObjectProperty, owl:TransitiveProperty ;
+    a owl:TransitiveProperty ;
     rdfs:isDefinedBy msm: ;
     rdfs:domain msm:MessagePart ;
     rdfs:label "has Part Transitive"@en ;
