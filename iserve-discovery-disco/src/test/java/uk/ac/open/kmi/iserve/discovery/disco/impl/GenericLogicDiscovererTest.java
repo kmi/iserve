@@ -22,8 +22,6 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import junit.framework.Assert;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
 import org.jukito.JukitoRunner;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -101,9 +99,6 @@ public class GenericLogicDiscovererTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        BasicConfigurator.configure();
-        org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
-
         // Clean the whole thing before testing
         iServeFacade.getInstance().clearRegistry();
         uploadWscTaxonomy();

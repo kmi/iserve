@@ -19,8 +19,6 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Table;
 import junit.framework.Assert;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
 import org.jukito.JukitoRunner;
 import org.jukito.TestScope;
 import org.junit.AfterClass;
@@ -84,9 +82,6 @@ public class ConceptMatcherOwlTcTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        BasicConfigurator.configure();
-        org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
-
         iServeFacade.getInstance().clearRegistry();
         uploadOwlsTc();
     }
