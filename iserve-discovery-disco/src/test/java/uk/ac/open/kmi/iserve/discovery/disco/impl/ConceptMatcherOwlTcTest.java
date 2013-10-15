@@ -18,80 +18,103 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Table;
-import junit.extensions.TestSetup;
 import junit.framework.Assert;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.jukito.JukitoRunner;
+import org.jukito.UseModules;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.MediaType;
 import uk.ac.open.kmi.iserve.commons.io.Syntax;
 import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterBySyntax;
+import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
+import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
+import uk.ac.open.kmi.iserve.sal.manager.impl.iServeManagementModule;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * LogicConceptMatcherTest
+ * ConceptMatcherOwlTcTest tests the Concept Matchers using some data from OWLS TC
+ * Ensures that ontologies are actually loaded and reasoned upon.
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 01/08/2013
  */
-public class SparqlLogicConceptMatcherTest extends TestCase {
+@RunWith(JukitoRunner.class)
+@UseModules(iServeManagementModule.class)
+public class ConceptMatcherOwlTcTest {
 
-    private static final Logger log = LoggerFactory.getLogger(SparqlLogicConceptMatcherTest.class);
+    private static final Logger log = LoggerFactory.getLogger(ConceptMatcherOwlTcTest.class);
 
     private static final String OWLS_TC_SERVICES = "/OWLS-TC3-MSM";
-    private static final String WSC08_01_SERVICES = "/wsc08-dataset01/services";
-    private static final String JGD_SERVICES = "/jgd-services";
-    private static final String SOA4RE_SERVICES = "/soa4re";
-    private static final String SPARQL_ENDPOINT = "http://localhost:8080/openrdf-sesame/repositories/Test";
 
-    private static SparqlLogicConceptMatcher conceptMatcher;
+    @Inject
+    private ConceptMatcher conceptMatcher;
     private static iServeFacade manager;
 
-    public static TestSetup suite() {
+    /**
+     * JukitoModule.
+     */
+    public static class InnerModule extends ConfiguredTestModule {
+        @Override
+        protected void configureTest() {
+            // Get properties
+            super.configureTest();
+            // bind
+            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
 
-        TestSetup setup = new TestSetup(new TestSuite(SparqlLogicConceptMatcherTest.class)) {
-            protected void setUp() throws Exception {
-                // do your one-time setup here
-                manager = iServeFacade.getInstance();
+            // Necessary to verify interaction with the real object
+            bindSpy(SparqlLogicConceptMatcher.class);
+        }
+    }
 
-                // Clean the whole thing before testing
-                manager.clearRegistry();
+    @BeforeClass
+    public static void setUp() throws Exception {
+        BasicConfigurator.configure();
+        org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
 
-                conceptMatcher = new SparqlLogicConceptMatcher(SPARQL_ENDPOINT);
+        manager = iServeFacade.getInstance();
+        manager.clearRegistry();
+        uploadOwlsTc();
+    }
 
-                // Obtain service documents
-                URI testFolder = SparqlLogicConceptMatcherTest.class.getResource(OWLS_TC_SERVICES).toURI();
-                FilenameFilter ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
-                File dir = new File(testFolder);
-                File[] msmTtlTcFiles = dir.listFiles(ttlFilter);
+    @AfterClass
+    public static void tearDown() throws Exception {
+        manager.shutdown();
+    }
 
-                FileInputStream in;
-                // Upload every document and obtain their URLs
-                for (File ttlFile : msmTtlTcFiles) {
-                    log.debug("Importing {}", ttlFile.getAbsolutePath());
-                    in = new FileInputStream(ttlFile);
-                    manager.importServices(in, MediaType.TEXT_TURTLE.getMediaType());
-                }
-                log.debug("Ready");
-            }
+    private static void uploadOwlsTc() throws URISyntaxException, FileNotFoundException, SalException {
+        // Obtain service documents
+        URI testFolder = ConceptMatcherOwlTcTest.class.getResource(OWLS_TC_SERVICES).toURI();
+        FilenameFilter ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
+        File dir = new File(testFolder);
+        File[] msmTtlTcFiles = dir.listFiles(ttlFilter);
 
-            protected void tearDown() throws Exception {
-                // do your one-time tear down here!
-            }
-        };
-        return setup;
+        FileInputStream in;
+        // Upload every document and obtain their URLs
+        for (File ttlFile : msmTtlTcFiles) {
+            log.debug("Importing {}", ttlFile.getAbsolutePath());
+            in = new FileInputStream(ttlFile);
+            manager.importServices(in, MediaType.TEXT_TURTLE.getMediaType());
+        }
+        log.debug("Ready");
     }
 
     public void testMatch() throws Exception {

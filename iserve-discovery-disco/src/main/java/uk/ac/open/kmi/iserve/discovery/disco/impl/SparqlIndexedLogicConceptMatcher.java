@@ -68,7 +68,7 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
 
     private Table<URI, URI, MatchResult> populate() {
         Set<URI> classes = new HashSet<URI>(this.manager.getKnowledgeBaseManager().listConcepts(null));
-        return sparqlMatcher.listMatchesAtLeastOfType(classes, LogicConceptMatchType.Plugin);
+        return sparqlMatcher.listMatchesAtLeastOfType(classes, LogicConceptMatchType.Subsume);
     }
 
     @Override

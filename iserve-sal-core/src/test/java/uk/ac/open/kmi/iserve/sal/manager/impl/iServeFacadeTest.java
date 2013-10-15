@@ -45,6 +45,9 @@ public class iServeFacadeTest {
 
     private static final Logger log = LoggerFactory.getLogger(iServeFacadeTest.class);
 
+    // Limit the number of documents to upload to the registry
+    private static final int MAX_DOCS = 25;
+
     private static final String OWLS_TC3_MSM = "/OWLS-TC3-MSM";
     private static final String OWLS_TC4_PDDL = "/OWLS-TC4_PDDL/htdocs/services/1.1";
     private static final Syntax SYNTAX = Syntax.TTL;
@@ -68,7 +71,6 @@ public class iServeFacadeTest {
         owlsFilter = new FilenameFilterForTransformer(Transformer.getInstance().getTransformer(OWLS_MEDIATYPE));
         dir = new File(owlsTestFolder);
         owlsTcFiles = dir.listFiles(owlsFilter);
-        numServices = msmTtlTcFiles.length + owlsTcFiles.length;
     }
 
     @Test
@@ -79,27 +81,28 @@ public class iServeFacadeTest {
         List<URI> servicesUris;
         int count = 0;
         log.info("Importing MSM TTL services");
-        for (File ttlFile : msmTtlTcFiles) {
-            in = new FileInputStream(ttlFile);
-            log.info("Adding service: {}", ttlFile.getName());
+        for (int i = 0; i < MAX_DOCS && i < msmTtlTcFiles.length; i++) {
+            in = new FileInputStream(msmTtlTcFiles[i]);
+            log.info("Adding service: {}", msmTtlTcFiles[i].getName());
             servicesUris = iServeFacade.getInstance().importServices(in, MediaType.TEXT_TURTLE.getMediaType());
             Assert.assertNotNull(servicesUris);
             log.info("Service added: {}", servicesUris.get(0).toASCIIString());
             count++;
         }
-        Assert.assertEquals(msmTtlTcFiles.length, count);
+
+        Assert.assertEquals(Math.min(MAX_DOCS, msmTtlTcFiles.length), count);
 
         // Test exploiting import plugins
         count = 0;
         log.info("Importing OWLS services");
-        for (File owlsFile : owlsTcFiles) {
-            in = new FileInputStream(owlsFile);
-            log.info("Adding service: {}", owlsFile.getName());
+        for (int i = 0; i < MAX_DOCS && i < owlsTcFiles.length; i++) {
+            in = new FileInputStream(owlsTcFiles[i]);
+            log.info("Adding service: {}", owlsTcFiles[i].getName());
             servicesUris = iServeFacade.getInstance().importServices(in, OWLS_MEDIATYPE);
             Assert.assertNotNull(servicesUris);
             log.info("Service added: {}", servicesUris.get(0).toASCIIString());
             count++;
         }
-        Assert.assertEquals(owlsTcFiles.length, count);
+        Assert.assertEquals(Math.min(MAX_DOCS, msmTtlTcFiles.length), count);
     }
 }

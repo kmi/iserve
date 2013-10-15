@@ -66,12 +66,13 @@ public class ServiceResourceIT {
     private static final String SERVICES_URI = WEB_APP_URI + "/services";
 
     private static final String OWLS_TC_SERVICES = "/OWLS-TC3-MSM";
-    private static final String JGD_SERVICES = "/jgd-services";
-    private static final String SOA4RE_SERVICES = "/soa4re";
 
     // Ensure that these are the ones listed in shiro.ini
     private static final String ROOT_USER = "root";
     private static final String ROOT_PASSWD = "secret";
+
+    // Limit the number of documents to upload to the registry
+    private static final int MAX_DOCS = 25;
 
     private URI testFolder;
 
@@ -177,14 +178,13 @@ public class ServiceResourceIT {
         // Test oriented towards individuals.
         // To be updated with application oriented logging.
 
-
         log.info("Uploading services");
-        for (File file : msmTtlTcFiles) {
+        for (int i = 0; i < MAX_DOCS && i < msmTtlTcFiles.length; i++) {
             // rest assured
             given().log().all().                                                // Log requests
                     sessionId(cookie.getValue()).                                   // Keep the session along
                     redirects().follow(true).                                       // Follow redirects introduced by Shiro
-                    multiPart("file", file, MediaType.TEXT_TURTLE.getMediaType()).  // Submit file
+                    multiPart("file", msmTtlTcFiles[i], MediaType.TEXT_TURTLE.getMediaType()).  // Submit file
                     expect().log().all().                                           // Log responses
                     response().statusCode(201).                                     // We should get a 201 created (if we have the rights)
                     when().post("/services");

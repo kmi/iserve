@@ -792,6 +792,7 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      */
     @Override
     public void initialise() {
+        super.initialise();
         this.graphStoreManager.initialise();
     }
 
@@ -801,6 +802,7 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      */
     @Override
     public void shutdown() {
+        super.shutdown();
         this.graphStoreManager.shutdown();
     }
 }

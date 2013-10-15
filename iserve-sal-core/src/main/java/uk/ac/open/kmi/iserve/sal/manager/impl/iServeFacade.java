@@ -56,7 +56,6 @@ public class iServeFacade extends IntegratedComponent {
 
     private static final Logger log = LoggerFactory.getLogger(iServeFacade.class);
 
-    private static final String CONFIG_PROPERTIES_FILENAME = "config.properties";
     private static final int HALF_MB = 512 * 1024;
 
     private DocumentManager docManager;
