@@ -25,19 +25,30 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import junit.framework.Assert;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
+import org.jukito.JukitoRunner;
+import org.jukito.UseModules;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.commons.io.TransformationException;
 import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
+import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
+import uk.ac.open.kmi.iserve.sal.manager.impl.iServeManagementModule;
 
+import javax.inject.Inject;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -47,15 +58,19 @@ import java.util.Set;
 import static org.junit.Assert.assertTrue;
 
 /**
- * SparqlIndexedLogicConceptMatcherWSC08Test
+ * ConceptMatcherWSC08Test tests Concept Matchers using WSC dataset.
+ * The first test to be tried may incur in additional execution time due to initialisation
+ * We need to explore this to obtain consistent results.
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @author <a href="mailto:pablo.rodriguez.mier@usc.es">Pablo Rodriguez Mier</a> (CiTIUS, University of Santiago de Compostela)
  * @since 01/08/2013
  */
-public class SparqlIndexedLogicConceptMatcherWSC08Test {
+@RunWith(JukitoRunner.class)
+@UseModules(iServeManagementModule.class)
+public class ConceptMatcherWSC08Test {
 
-    private static final Logger log = LoggerFactory.getLogger(SparqlIndexedLogicConceptMatcherWSC08Test.class);
+    private static final Logger log = LoggerFactory.getLogger(ConceptMatcherWSC08Test.class);
 
     private static final String WSC08_01 = "/WSC08/wsc08_datasets/01/";
     private static final String WSC08_01_SERVICES = WSC08_01 + "services.xml";
@@ -65,14 +80,27 @@ public class SparqlIndexedLogicConceptMatcherWSC08Test {
 
     private static final String MEDIATYPE = "text/xml";
 
-    private static final String ISERVE_TEST_URI = "http://localhost:9090/iserve";
-    private static final String ISERVE_TEST_QUERY_URI = "http://localhost:8080/openrdf-sesame/repositories/Test";
-    private static final String ISERVE_TEST_UPDATE_URI = "http://localhost:8080/openrdf-sesame/repositories/Test/statements";
-    private static final String ISERVE_TEST_SERVICE_URI = "http://localhost:8080/openrdf-sesame/repositories/Test/rdf-graphs/service";
-
-
-    private static ConceptMatcher conceptMatcher;
     private static iServeFacade manager;
+
+    @Inject
+    private ConceptMatcher conceptMatcher;
+
+    /**
+     * JukitoModule.
+     */
+    public static class InnerModule extends ConfiguredTestModule {
+        @Override
+        protected void configureTest() {
+            // Get properties
+            super.configureTest();
+            // bind
+//            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
+            bind(ConceptMatcher.class).to(SparqlIndexedLogicConceptMatcher.class);
+
+            // Necessary to verify interaction with the real object
+            bindSpy(SparqlIndexedLogicConceptMatcher.class);
+        }
+    }
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -83,37 +111,49 @@ public class SparqlIndexedLogicConceptMatcherWSC08Test {
 
         // Clean the whole thing before testing
         manager.clearRegistry();
+        uploadWscTaxonomy();
+        importWscServices();
+    }
 
-        // Create matcher.
-        SparqlLogicConceptMatcher backendLoader = new SparqlLogicConceptMatcher(ISERVE_TEST_QUERY_URI);
-        conceptMatcher = new SparqlIndexedLogicConceptMatcher(backendLoader);
+    @AfterClass
+    public static void tearDown() throws Exception {
+        manager.shutdown();
+    }
 
-        log.info("Importing WSC 2008 services");
-        String file = SparqlLogicConceptMatcherWSC08Test.class.getResource(WSC08_01_SERVICES).getFile();
-        log.debug("Using " + file);
-        File services = new File(file);
 
-        // Get base url
-        URL base = SparqlLogicConceptMatcherWSC08Test.class.getResource(WSC08_01);
-
+    private static void uploadWscTaxonomy() throws URISyntaxException {
         // First load the ontology in the server to avoid issues
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         // Fetch the model
-        String taxonomyFile = SparqlLogicConceptMatcherWSC08Test.class.getResource(WSC08_01_TAXONOMY_FILE).toURI().toASCIIString();
+        String taxonomyFile = ConceptMatcherWSC08Test.class.getResource(WSC08_01_TAXONOMY_FILE).toURI().toASCIIString();
         model.read(taxonomyFile);
 
         // Upload the model first (it won't be automatically fetched as the URIs won't resolve so we do it manually)
         manager.getKnowledgeBaseManager().uploadModel(URI.create(WSC_01_TAXONOMY_URL), model, true);
+    }
 
-        //List<Service> result = new WSCImporter().transform(new FileInputStream(services), null);
-        // Automatic plugin discovery
+    private static void importWscServices() throws TransformationException, SalException, URISyntaxException, FileNotFoundException {
+        log.info("Importing WSC Dataset");
+        String file = OperationMatchTest.class.getResource(WSC08_01_SERVICES).getFile();
+        log.info("Services XML file {}", file);
+        File services = new File(file);
+        URL base = OperationMatchTest.class.getResource(WSC08_01);
+        log.info("Dataset Base URI {}", base.toURI().toASCIIString());
+
         List<Service> result = Transformer.getInstance().transform(services, base.toURI().toASCIIString(), MEDIATYPE);
+        //List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
+        if (result.size() == 0) {
+            Assert.fail("No services transformed!");
+        }
         // Import all services
+        int counter = 0;
         for (Service s : result) {
             URI uri = manager.getServiceManager().addService(s);
             Assert.assertNotNull(uri);
             log.info("Service added: " + uri.toASCIIString());
+            counter++;
         }
+        log.debug("Total services added {}", counter);
     }
 
     @Test
@@ -134,12 +174,12 @@ public class SparqlIndexedLogicConceptMatcherWSC08Test {
     @Test
     public void testDirectSubsumeMatch() throws Exception {
 
-        URI origin = URI.create(WSC_01_TAXONOMY_NS + "con1655991159");
-        URI destination = URI.create(WSC_01_TAXONOMY_NS + "con409488015");
+        URI origin = URI.create(WSC_01_TAXONOMY_NS + "con409488015");
+        URI destination = URI.create(WSC_01_TAXONOMY_NS + "con1655991159");
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
-        MatchResult match = this.conceptMatcher.match(destination, origin);
+        MatchResult match = this.conceptMatcher.match(origin, destination);
         stopwatch.stop();
 
         log.info("Obtained match in {} \n {}", stopwatch, match);
@@ -224,8 +264,10 @@ public class SparqlIndexedLogicConceptMatcherWSC08Test {
         System.out.println("Total services " + candidates.size());
     }
 
+
+    // With indexed matchers this test can easily be run
     @Test
-//    @Ignore("Integration test (not a proper unit test), takes too long to complete")
+    @Ignore("Integration test (not a proper unit test), takes too long to complete")
     public void discoverAllCandidates() throws Exception {
 
         String[][] expectedServices = {{"serv1529824753", "serv1253734327", "serv1462031026", "serv212250832", "serv906573162", "serv144457143", "serv1599256986", "serv75024910", "serv561050541", "serv2015850384", "serv1668689219", "serv213889376", "serv837140929", "serv1667050675", "serv7231183", "serv1323166560"},

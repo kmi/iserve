@@ -1,40 +1,72 @@
+/*
+ * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.common.collect.Table;
+import com.google.inject.Inject;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import es.usc.citius.composit.importer.wsc.wscxml.WSCDataset;
 import junit.framework.Assert;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
+import org.jukito.JukitoRunner;
+import org.jukito.UseModules;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.commons.io.TransformationException;
 import uk.ac.open.kmi.iserve.commons.io.Transformer;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
+import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
+import uk.ac.open.kmi.iserve.sal.manager.impl.iServeManagementModule;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
+ * Test for Operation Matcher based on Jukito to deal with Guice
+ *
  * @author Pablo Rodríguez Mier
+ * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  */
+@RunWith(JukitoRunner.class)
+@UseModules(iServeManagementModule.class)
 public class OperationMatchTest {
-    private static final Logger log = LoggerFactory.getLogger(SparqlLogicConceptMatcherWSC08Test.class);
+
+    private static final Logger log = LoggerFactory.getLogger(OperationMatchTest.class);
 
     private static final String MEDIATYPE = "text/xml";
-
-    private static final String SPARQL_ENDPOINT = "http://localhost:8080/openrdf-sesame/repositories/Test";
 
     private static final String WSC08_01 = "/WSC08/wsc08_datasets/01/";
     private static final String WSC08_01_SERVICES = WSC08_01 + "services.xml";
@@ -42,8 +74,27 @@ public class OperationMatchTest {
     private static final String WSC_01_TAXONOMY_URL = "http://localhost/wsc/01/taxonomy.owl";
     private static final String WSC_01_TAXONOMY_NS = "http://localhost/wsc/01/taxonomy.owl#";
 
-    private static ConceptMatcher conceptMatcher;
     private static iServeFacade manager;
+
+    @Inject
+    private ConceptMatcher conceptMatcher;
+
+    /**
+     * JukitoModule.
+     */
+    public static class InnerModule extends ConfiguredTestModule {
+        @Override
+        protected void configureTest() {
+            // Get properties
+            super.configureTest();
+
+            // bind
+            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
+
+            // Necessary to verify interaction with the real object
+            bindSpy(SparqlLogicConceptMatcher.class);
+        }
+    }
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -51,50 +102,62 @@ public class OperationMatchTest {
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
 
         manager = iServeFacade.getInstance();
-
-        // Clean the whole thing before testing
         manager.clearRegistry();
+        uploadWscTaxonomy();
+        importWscServices();
+    }
 
-        conceptMatcher = new SparqlLogicConceptMatcher(SPARQL_ENDPOINT);
+    @AfterClass
+    public static void tearDown() throws Exception {
+        manager.shutdown();
+    }
 
-        log.info("Importing WSC 2008 services");
-        String file = SparqlLogicConceptMatcherWSC08Test.class.getResource(WSC08_01_SERVICES).getFile();
-        log.debug("Using " + file);
-        File services = new File(file);
 
-        // Get base url
-        URL base = SparqlLogicConceptMatcherWSC08Test.class.getResource(WSC08_01);
-
+    private static void uploadWscTaxonomy() throws URISyntaxException {
         // First load the ontology in the server to avoid issues
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         // Fetch the model
-        String taxonomyFile = SparqlLogicConceptMatcherWSC08Test.class.getResource(WSC08_01_TAXONOMY_FILE).toURI().toASCIIString();
+        String taxonomyFile = OperationMatchTest.class.getResource(WSC08_01_TAXONOMY_FILE).toURI().toASCIIString();
         model.read(taxonomyFile);
 
         // Upload the model first (it won't be automatically fetched as the URIs won't resolve so we do it manually)
         manager.getKnowledgeBaseManager().uploadModel(URI.create(WSC_01_TAXONOMY_URL), model, true);
+    }
 
-        //List<Service> result = new WSCImporter().transform(new FileInputStream(services), null);
-        // Automatic plugin discovery
+    private static void importWscServices() throws TransformationException, SalException, URISyntaxException, FileNotFoundException {
+        log.info("Importing WSC Dataset");
+        String file = OperationMatchTest.class.getResource(WSC08_01_SERVICES).getFile();
+        log.info("Services XML file {}", file);
+        File services = new File(file);
+        URL base = OperationMatchTest.class.getResource(WSC08_01);
+        log.info("Dataset Base URI {}", base.toURI().toASCIIString());
+
         List<Service> result = Transformer.getInstance().transform(services, base.toURI().toASCIIString(), MEDIATYPE);
+        //List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
+        if (result.size() == 0) {
+            Assert.fail("No services transformed!");
+        }
         // Import all services
+        int counter = 0;
         for (Service s : result) {
             URI uri = manager.getServiceManager().addService(s);
             Assert.assertNotNull(uri);
             log.info("Service added: " + uri.toASCIIString());
+            counter++;
         }
+        log.debug("Total services added {}", counter);
     }
 
     private Service find(String name) throws ServiceException {
-        for(URI srvUri : manager.getServiceManager().listServices()){
-            if (srvUri.toASCIIString().contains(name)){
+        for (URI srvUri : manager.getServiceManager().listServices()) {
+            if (srvUri.toASCIIString().contains(name)) {
                 return manager.getServiceManager().getService(srvUri);
             }
         }
         return null;
     }
 
-    private MatchType dataFlowMatch(Operation op1, Operation op2){
+    private MatchType dataFlowMatch(Operation op1, Operation op2) {
         MessageContent outOp1 = op1.getOutputs().iterator().next();
         Set<URI> outputsOp1 = getModelReferences(outOp1);
 
@@ -102,43 +165,43 @@ public class OperationMatchTest {
         Set<URI> inputsOp2 = getModelReferences(inOp2);
 
         // Match
-        Table<URI,URI, MatchResult> result = conceptMatcher.match(outputsOp1, inputsOp2);
+        Table<URI, URI, MatchResult> result = conceptMatcher.match(outputsOp1, inputsOp2);
         // TODO: This should be independent of the match type used. MatchTypes.getHighest();
         MatchType best = LogicConceptMatchType.Exact;
-        for(URI dest :inputsOp2){
+        for (URI dest : inputsOp2) {
             // Get all matchers and find the best
             MatchType localBest = LogicConceptMatchType.Fail;
             Map<URI, MatchResult> matches = result.column(dest);
             // If there is no match, fail is assumed
-            if (matches != null){
-                for(MatchResult matchResult : matches.values()){
-                    if (matchResult.getMatchType().compareTo(localBest)>=0){
+            if (matches != null) {
+                for (MatchResult matchResult : matches.values()) {
+                    if (matchResult.getMatchType().compareTo(localBest) >= 0) {
                         localBest = matchResult.getMatchType();
                     }
                 }
             }
             // Downgrade the best if the local Best for the match is worse than the global best
-            if (localBest.compareTo(best)<=0){
+            if (localBest.compareTo(best) <= 0) {
                 best = localBest;
             }
         }
         return best;
     }
 
-    public Set<URI> getModelReferences(MessageContent msg){
+    public Set<URI> getModelReferences(MessageContent msg) {
         Set<URI> uris = new HashSet<URI>();
-        for(MessagePart p : msg.getMandatoryParts()){
-            for(uk.ac.open.kmi.iserve.commons.model.Resource r : p.getModelReferences()){
+        for (MessagePart p : msg.getMandatoryParts()) {
+            for (uk.ac.open.kmi.iserve.commons.model.Resource r : p.getModelReferences()) {
                 uris.add(r.getUri());
             }
         }
         return uris;
     }
 
-    private Operation createOperationWithOutputs(Set<URI> outputs){
+    private Operation createOperationWithOutputs(Set<URI> outputs) {
         Operation op = new Operation(URI.create("http://localhost/op"));
         MessageContent content = new MessageContent(URI.create("http://localhost/msg"));
-        for(URI output : outputs){
+        for (URI output : outputs) {
             MessagePart part = new MessagePart(output);
             part.addModelReference(new Resource(output));
             content.addMandatoryPart(part);
