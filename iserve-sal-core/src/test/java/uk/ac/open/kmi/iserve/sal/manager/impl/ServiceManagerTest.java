@@ -20,7 +20,6 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import junit.framework.Assert;
 import org.jukito.JukitoRunner;
-import org.jukito.TestScope;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -73,7 +72,7 @@ public class ServiceManagerTest {
             super.configureTest();
 
             // bind all the implementations
-            bind(ServiceManager.class).to(ServiceManagerIndexRdf.class).in(TestScope.SINGLETON);
+            bind(ServiceManager.class).to(ServiceManagerIndexRdf.class);
 
             // Necessary to verify interaction with the real object
 //            bindSpy(ServiceManagerSparql.class);
