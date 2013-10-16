@@ -27,7 +27,7 @@ import java.util.Comparator;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @author <a href="mailto:pablo.rodriguez.mier@usc.es">Pablo Rodriguez Mier</a> (CITIUS - Universidad de Santiago de Compostela)
  */
-public enum MatchComparator implements Comparator<MatchResult> {
+public enum MatchResultComparators implements Comparator<MatchResult> {
 
     /**
      * Simple comparator for Match Results based on the URIs of the match results

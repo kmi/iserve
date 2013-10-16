@@ -29,7 +29,7 @@ import java.net.URI;
  * @author <a href="mailto:pablo.rodriguez.mier@usc.es">Pablo Rodriguez Mier</a> (CITIUS - Universidad de Santiago de Compostela)
  * @since 26/07/2013
  */
-public class AtomicMatchResult implements MatchResult {
+public class AtomicMatchResult<T extends MatchType> implements MatchResult<MatchType> {
 
     private URI resourceToMatch;
     private URI matchedResource;
@@ -86,5 +86,10 @@ public class AtomicMatchResult implements MatchResult {
     @Override
     public MatchType getMatchType() {
         return this.matchType;
+    }
+
+    @Override
+    public int compareTo(MatchType matchType) {
+        return 0;  // TODO: implement
     }
 }

@@ -68,6 +68,14 @@
             <version>${guava.version}</version>
         </dependency>
 
+        <!-- Add dependency to jsr305 as necessary Guava predicates -->
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>2.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!--Add Guice for dependency injection -->
         <dependency>
             <groupId>com.google.inject</groupId>
