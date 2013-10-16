@@ -17,77 +17,43 @@
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
-import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.commons.io.ServiceReaderImpl;
-import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
-import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
 import uk.ac.open.kmi.iserve.commons.model.*;
-import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.core.SystemConfiguration;
-import uk.ac.open.kmi.iserve.sal.events.ServiceCreatedEvent;
-import uk.ac.open.kmi.iserve.sal.events.ServiceDeletedEvent;
-import uk.ac.open.kmi.iserve.sal.events.ServicesClearedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
-import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
-import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
 import javax.inject.Named;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class ServiceManagerIndexRdf extends IntegratedComponent implements ServiceManager {
+public class ServiceManagerIndexRdf extends ServiceManagerSparql implements ServiceManager {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceManagerIndexRdf.class);
 
-    // Default path for service and documents URIs.
-    // Note that any change here should also affect the REST API
-    // Keep the trailing slash
-    private static final String SERVICES_URL_PATH = "id/services/";
-
-    private final URI servicesUri;
-
+    // Service -> Operations
     private ConcurrentMap<URI, Set<URI>> svcOpMap;
+    // Operation -> Inputs
     private ConcurrentMap<URI, Set<URI>> opInputMap;
+    // Inputs - > Mandatory Parts
     private ConcurrentMap<URI, Set<URI>> messageMandatoryPartsMap;
+    // Inputs - > Optional Parts
     private ConcurrentMap<URI, Set<URI>> messageOptionalPartsMap;
+    // Operation -> Output
     private ConcurrentMap<URI, Set<URI>> opOutputMap;
+    // Element -> Model Refs
     private ConcurrentMap<URI, Set<URI>> modelReferencesMap;
-
-    // To load
-    private static final URI WSMO_LITE_URI = URI.create("http://www.wsmo.org/ns/wsmo-lite");
-    private static final URI MSM_URI = URI.create("http://iserve.kmi.open.ac.uk/ns/msm");
-    private static final URI HRESTS_URI = URI.create("http://iserve.kmi.open.ac.uk/ns/hrests");
-    private static final URI MSM_WSDL_URI = URI.create("http://iserve.kmi.open.ac.uk/ns/msm-wsdl");
-    private static final URI SAWSDL_URI = URI.create("http://www.w3.org/ns/sawsdl");
-    private static final URI HTTP_VOCAB_URI = URI.create("http://www.w3.org/2011/http");
-    private static final URI HTTP_METHODS_URI = URI.create("http://www.w3.org/2011/http-methods");
-    private static final URI FOAF_0_1_URI = URI.create("http://xmlns.com/foaf/0.1/");
-    private static final URI CONTENT_VOCAB_URI = URI.create("http://www.w3.org/2011/content#");
-    private static final URI DCTERMS_URI = URI.create("http://purl.org/dc/terms/");
-
-    private final SparqlGraphStoreManager graphStoreManager;
 
     @Inject
     ServiceManagerIndexRdf(EventBus eventBus,
@@ -97,30 +63,7 @@ public class ServiceManagerIndexRdf extends IntegratedComponent implements Servi
                            @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_UPDATE_PROP) String sparqlUpdateEndpoint,
                            @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_SERVICE_PROP) String sparqlServiceEndpoint) throws SalException {
 
-        super(eventBus, iServeUri);
-        this.servicesUri = this.getIserveUri().resolve(SERVICES_URL_PATH);
-
-        // Configuration of base models to be loaded
-        Set<URI> defaultModelsToLoad = ImmutableSet.of(WSMO_LITE_URI, MSM_URI, HRESTS_URI, MSM_WSDL_URI, HTTP_VOCAB_URI, HTTP_METHODS_URI);
-
-        // Configuration for quick retrieval of ontologies by resolving them to local files.
-        ImmutableMap.Builder<String, String> mappingsBuilder = ImmutableMap.builder();
-        mappingsBuilder.put(FOAF_0_1_URI.toASCIIString(), this.getClass().getResource("/foaf-2010-08-09.rdf").toString());
-        mappingsBuilder.put(HRESTS_URI.toASCIIString(), this.getClass().getResource("/hrests-2013-10-03.ttl").toString());
-        mappingsBuilder.put(MSM_URI.toASCIIString(), this.getClass().getResource("/msm-2013-05-03.ttl").toString());
-        mappingsBuilder.put(MSM_WSDL_URI.toASCIIString(), this.getClass().getResource("/msm-wsdl-2013-05-30.ttl").toString());
-        mappingsBuilder.put(SAWSDL_URI.toASCIIString(), this.getClass().getResource("/sawsdl-2007-08-28.ttl").toString());
-        mappingsBuilder.put(WSMO_LITE_URI.toASCIIString(), this.getClass().getResource("/wsmo-lite-2013-05-03.ttl").toString());
-        mappingsBuilder.put(HTTP_VOCAB_URI.toASCIIString(), this.getClass().getResource("/http-2011-04-29.ttl").toString());
-        mappingsBuilder.put(HTTP_METHODS_URI.toASCIIString(), this.getClass().getResource("/http-methods-2011-04-29.ttl").toString());
-        mappingsBuilder.put(CONTENT_VOCAB_URI.toASCIIString(), this.getClass().getResource("/content-2011-04-29.ttl").toString());
-        mappingsBuilder.put(DCTERMS_URI.toASCIIString(), this.getClass().getResource("/dcterms-2012-06-14.ttl").toString());
-
-        // Configuration for avoiding the import of certain files
-        ImmutableSet<String> ignoredImports = ImmutableSet.of();
-
-        this.graphStoreManager = graphStoreFactory.create(sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint, defaultModelsToLoad, mappingsBuilder.build(), ignoredImports);
-
+        super(eventBus, graphStoreFactory, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
         this.initialiseCache();
     }
 
@@ -132,16 +75,6 @@ public class ServiceManagerIndexRdf extends IntegratedComponent implements Servi
     @Override
     public Set<URI> listServices() {
         return this.svcOpMap.keySet();
-    }
-
-    private Set<URI> loadListServices() {
-
-        String queryStr = new StringBuilder()
-                .append("select DISTINCT ?svc where { \n")
-                .append("?svc ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.Service.getURI()).append(">").append(" . }")
-                .toString();
-
-        return this.graphStoreManager.listResourcesByQuery(queryStr, "svc");
     }
 
     /**
@@ -188,7 +121,16 @@ public class ServiceManagerIndexRdf extends IntegratedComponent implements Servi
      */
     @Override
     public Multimap<URI, URI> listTypedInputs(URI operationUri) {
-        return null;  // TODO: implement
+        if (operationUri == null) {
+            return ImmutableMultimap.of();
+        }
+
+        ImmutableMultimap.Builder<URI, URI> result = ImmutableMultimap.builder();
+        for (URI input : this.opInputMap.get(operationUri)) {
+            result.putAll(input, this.modelReferencesMap.get(input));
+        }
+
+        return result.build();
     }
 
     /**
@@ -203,7 +145,7 @@ public class ServiceManagerIndexRdf extends IntegratedComponent implements Servi
             return ImmutableSet.of();
         }
 
-        return ImmutableSet.<URI>copyOf(this.opOutputMap.get(operationUri));
+        return ImmutableSet.copyOf(this.opOutputMap.get(operationUri));
     }
 
     /**
@@ -215,7 +157,16 @@ public class ServiceManagerIndexRdf extends IntegratedComponent implements Servi
      */
     @Override
     public Multimap<URI, URI> listTypedOutputs(URI operationUri) {
-        return null;  // TODO: implement
+        if (operationUri == null) {
+            return ImmutableMultimap.of();
+        }
+
+        ImmutableMultimap.Builder<URI, URI> result = ImmutableMultimap.builder();
+        for (URI output : this.opOutputMap.get(operationUri)) {
+            result.putAll(output, this.modelReferencesMap.get(output));
+        }
+
+        return result.build();
     }
 
     /**
@@ -230,7 +181,7 @@ public class ServiceManagerIndexRdf extends IntegratedComponent implements Servi
             return ImmutableSet.of();
         }
 
-        return ImmutableSet.<URI>copyOf(this.messageMandatoryPartsMap.get(messageContent));
+        return ImmutableSet.copyOf(this.messageMandatoryPartsMap.get(messageContent));
     }
 
     /**
@@ -245,354 +196,104 @@ public class ServiceManagerIndexRdf extends IntegratedComponent implements Servi
             return ImmutableSet.of();
         }
 
-        return ImmutableSet.<URI>copyOf(this.messageOptionalPartsMap.get(messageContent));
+        return ImmutableSet.copyOf(this.messageOptionalPartsMap.get(messageContent));
     }
 
     /**
-     * Obtains the service description of the service identified by the URI
+     * Creates a Service Description in the system.
+     * Only needs to be fed with an MSM Service description.
+     * <p/>
+     * After successfully adding a service, implementations of this method should raise a {@code ServiceCreatedEvent}
      *
-     * @param serviceUri the URI of the service to obtain
-     * @return the service description if it exists or null otherwise
-     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
+     * @param service the input service description in terms of MSM
+     * @return the URI this service description was saved to
+     * @throws ServiceException
      */
     @Override
-    public Service getService(URI serviceUri) throws ServiceException {
-        if (serviceUri == null || !serviceUri.isAbsolute()) {
-            log.warn("The Service URI is either absent or relative. Provide an absolute URI");
-            return null;
-        }
-
-        OntModel model = null;
-        try {
-            model = this.graphStoreManager.getGraph(URIUtil.getNameSpace(serviceUri));
-        } catch (URISyntaxException e) {
-            log.error("The namespace of the service is not a correct URI", e);
-            return null;
-        }
-
-        // Parse the service. There should only be one in the response
-        ServiceReaderImpl reader = new ServiceReaderImpl();
-        List<Service> services = reader.parseService(model);
-        if (services != null && !services.isEmpty()) {
-            return services.get(0);
-        }
-
-        return null;
-    }
-
-    /**
-     * Obtains the service descriptions for all the services identified by the URI Set
-     *
-     * @param serviceUris the URIs of the service to obtain
-     * @return the list of all services that could be obtained. If none could be obtained the list will be empty.
-     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
-     */
-    @Override
-    public Set<Service> getServices(Set<URI> serviceUris) throws ServiceException {
-        ImmutableSet.Builder<Service> result = ImmutableSet.builder();
-        Service svc;
-        for (URI svcUri : serviceUris) {
-            svc = this.getService(svcUri);
-            if (svc != null) {
-                result.add(svc);
-            }
-        }
-        return result.build();
-    }
-
-    /**
-     * Lists all documents related to a given service
-     *
-     * @param serviceUri the service URI
-     * @return the List of the URIs of all the documents related to the service
-     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
-     */
-    @Override
-    public Set<URI> listDocumentsForService(URI serviceUri) throws ServiceException {
-        return ImmutableSet.of(); // TODO: Implement
-    }
-
-
     public URI addService(Service service) throws ServiceException {
 
-        // Check input and exit early
-        if (service == null)
-            throw new ServiceException("No service provided.");
-
-        if (!this.graphStoreManager.canBeModified()) {
-            log.warn("The dataset cannot be modified. Unable to store the service.");
-            return null;
+        URI serviceUri = super.addService(service);
+        if (serviceUri != null) {
+            // Index service
+            this.indexService(service);
         }
-
-        URI newBaseServiceUri = this.generateUniqueServiceUri();
-        // Replace URIs in service description
-        try {
-            replaceUris(service, newBaseServiceUri);
-        } catch (URISyntaxException e) {
-            log.error("Unable to create URI for service", e);
-            throw new ServiceException("Unable to create URI for service", e);
-        }
-
-        // Store in backend
-        ServiceWriterImpl writer = new ServiceWriterImpl();
-        Model svcModel = writer.generateModel(service);
-        log.info("Adding service - {}", service.getUri().toASCIIString());
-        // The graph id corresponds is the base id
-        this.graphStoreManager.putGraph(newBaseServiceUri, svcModel);
-
-        // Index service
-        this.indexService(service);
-
-        // Generate Event
-        this.getEventBus().post(new ServiceCreatedEvent(new Date(), service));
 
         return service.getUri();
     }
 
     /**
-     * Relates a given document to a service. The relationship is just a generic one.
+     * Deletes the given service
+     * <p/>
+     * After successfully deleting a service, implementations of this method should raise a {@code ServiceDeletedEvent}
      *
-     * @param serviceUri      the service URI
-     * @param relatedDocument the related document URI
-     * @return True if successful or False otherwise
-     * @throws uk.ac.open.kmi.iserve.sal.exception.SalException
-     *
-     */
-    @Override
-    public boolean addRelatedDocumentToService(URI serviceUri, URI relatedDocument) throws ServiceException {
-        return false;  //TODO: Implement
-    }
-
-    private URI generateUniqueServiceUri() {
-        return this.servicesUri.resolve(UriUtil.generateUniqueId());
-    }
-
-    /**
-     * Given a Resource and the new Uri base to use, modify each and every URL accordingly.
-     * This methods maintains the naming used by the service already.
-     * Recursive implementation that traverses the entire graph
-     *
-     * @param resource   The service that will be modified
-     * @param newUriBase The new URI base
-     */
-    private void replaceUris(uk.ac.open.kmi.iserve.commons.model.Resource resource, URI newUriBase) throws URISyntaxException {
-
-        // Exit early
-        if (resource == null || newUriBase == null || !newUriBase.isAbsolute())
-            return;
-
-        resource.setUri(URIUtil.replaceNamespace(resource.getUri(), newUriBase));
-
-        // Replace recursively each of the URLs of the inner elements
-        // Handling of Service
-        if (resource instanceof Service) {
-            // Replace Operations
-            List<Operation> operations = ((Service) resource).getOperations();
-            for (Operation op : operations) {
-                replaceUris(op, resource.getUri());
-            }
-        }
-
-        // Handling of Operation
-        if (resource instanceof Operation) {
-            List<MessageContent> mcs;
-            // Replace Inputs, Outputs, InFaults, and Outfaults
-            mcs = ((Operation) resource).getInputs();
-            for (MessageContent mc : mcs) {
-                replaceUris(mc, resource.getUri());
-            }
-
-            mcs = ((Operation) resource).getInputFaults();
-            for (MessageContent mc : mcs) {
-                replaceUris(mc, resource.getUri());
-            }
-
-            mcs = ((Operation) resource).getOutputs();
-            for (MessageContent mc : mcs) {
-                replaceUris(mc, resource.getUri());
-            }
-
-            mcs = ((Operation) resource).getOutputFaults();
-            for (MessageContent mc : mcs) {
-                replaceUris(mc, resource.getUri());
-            }
-        }
-
-        // Handling for MessageParts
-        if (resource instanceof MessagePart) {
-            // Deal with optional and mandatory parts
-            List<MessagePart> mps;
-            mps = ((MessagePart) resource).getMandatoryParts();
-            for (MessagePart mp : mps) {
-                replaceUris(mp, resource.getUri());
-            }
-
-            mps = ((MessagePart) resource).getOptionalParts();
-            for (MessagePart mp : mps) {
-                replaceUris(mp, resource.getUri());
-            }
-        }
-
-        // Handling for Invocable Entities
-        if (resource instanceof InvocableEntity) {
-            // Replace Effects
-            List<Effect> effects = ((InvocableEntity) resource).getEffects();
-            for (Effect effect : effects) {
-                replaceUris(effect, resource.getUri());
-            }
-
-            // Replace Conditions
-            List<Condition> conditions = ((InvocableEntity) resource).getConditions();
-            for (Condition condition : conditions) {
-                replaceUris(condition, resource.getUri());
-            }
-        }
-
-        // Handling for Annotable Resources
-        if (resource instanceof AnnotableResource) {
-            // Replace NFPs
-            List<NonFunctionalProperty> nfps = ((AnnotableResource) resource).getNfps();
-            for (NonFunctionalProperty nfp : nfps) {
-                replaceUris(nfp, resource.getUri());
-            }
-        }
-    }
-
-    /**
-     * Returns the URI of the document defining the service, i.e., without the
-     * fragment.
-     *
-     * @param serviceId the unique id of the service
-     * @return the URI of the service document
-     */
-    private URI getServiceBaseUri(String serviceId) {
-        return this.servicesUri.resolve(serviceId);
-    }
-
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#deleteService(java.lang.String)
+     * @param serviceUri the URI of the service to delete
+     * @return True if it was deleted or false otherwise
+     * @throws ServiceException
      */
     @Override
     public boolean deleteService(URI serviceUri) throws ServiceException {
-        if (serviceUri == null || !serviceUri.isAbsolute()) {
-            log.warn("The Service URI is either absent or relative. Provide an absolute URI");
-            return false;
+
+        if (super.deleteService(serviceUri)) {
+            // Update cache
+            this.removeServiceFromCache(serviceUri);
+            return true;
         }
 
-        if (!this.graphStoreManager.canBeModified()) {
-            log.warn("The dataset cannot be modified.");
-            return false;
-        }
-
-        log.info("Deleting service - {}", serviceUri.toASCIIString());
-        try {
-            this.graphStoreManager.deleteGraph(URIUtil.getNameSpace(serviceUri));
-        } catch (URISyntaxException e) {
-            log.error("The namespace of the service is an incorrect URI", e);
-            throw new ServiceException("The namespace of the service is an incorrect URI", e);
-        }
-
-        // Update cache
-        this.removeServiceFromCache(serviceUri);
-
-        // Generate Event
-        this.getEventBus().post(new ServiceDeletedEvent(new Date(), new Service(serviceUri)));
-
-        return true;
+        return false;
     }
 
+    /**
+     * Deletes the given service
+     * <p/>
+     * After successfully deleting a service, implementations of this method should raise a {@code ServiceDeletedEvent}
+     *
+     * @param service the service to delete
+     * @return True if it was deleted or false otherwise
+     * @throws ServiceException
+     */
     @Override
     public boolean deleteService(Service service) throws ServiceException {
-        return deleteService(service.getUri());
+        if (super.deleteService(service)) {
+            // Update cache
+            this.removeServiceFromCache(service.getUri());
+            return true;
+        }
+
+        return false;
     }
 
     /**
      * Deletes all the services on the registry.
      * This operation cannot be undone. Use with care.
+     * <p/>
+     * After successfully clearing the services, implementations of this method should raise a {@code ServicesClearedEvent}
      *
-     * @return
-     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
+     * @return true if the service registry was cleared.
+     * @throws ServiceException
      */
     @Override
     public boolean clearServices() throws ServiceException {
 
-
-        if (!this.graphStoreManager.canBeModified()) {
-            log.warn("The dataset cannot be modified.");
-            return false;
+        if (super.clearServices()) {
+            // Initialise cache
+            this.initialiseCache();
+            return true;
         }
-
-        log.info("Clearing services registry.");
-        this.graphStoreManager.clearDataset();
-
-        // Initialise cache
-        this.initialiseCache();
-        // Generate Event
-        this.getEventBus().post(new ServicesClearedEvent(new Date()));
 
         return true;
 
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.ServiceManager#serviceExists(java.net.URI)
+    /**
+     * Determines whether a service is known to the registry
+     *
+     * @param serviceUri the URI of the service being looked up
+     * @return True if it is registered in the server
+     * @throws ServiceException
      */
     @Override
     public boolean serviceExists(URI serviceUri) throws ServiceException {
-        if (serviceUri == null || !serviceUri.isAbsolute()) {
-            log.warn("The Service URI is either absent or relative. Provide an absolute URI");
-            return false;
-        }
-
-        String queryStr = null;
-        try {
-            queryStr = new StringBuilder()
-                    .append("ASK { \n")
-                    .append("GRAPH <").append(URIUtil.getNameSpace(serviceUri).toASCIIString()).append("> {")
-                    .append("<").append(serviceUri.toASCIIString()).append("> <").append(RDF.type.getURI()).append("> <").append(MSM.Service).append("> }\n}").toString();
-        } catch (URISyntaxException e) {
-            log.error("The namespace of the URI of the service is incorrect.", e);
-            throw new ServiceException("The namespace of the URI of the service is incorrect.", e);
-        }
-
-        Query query = QueryFactory.create(queryStr);
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.graphStoreManager.getSparqlQueryEndpoint().toASCIIString(), query);
-        try {
-            return qexec.execAsk();
-        } finally {
-            qexec.close();
-        }
-    }
-
-
-    /**
-     * Given the URI of an element, this method returns the URI of the element from the Minimal Service Model it
-     * corresponds to. That is, it will say if it is a service, operation, etc.
-     * This method uses SPARQL 1.1 to avoid using regexs for performance.
-     *
-     * @param elementUri the URI to get the element type for.
-     * @return the URI of the MSM type it corresponds to.
-     */
-    @Override
-    public Set<URI> getMsmType(URI elementUri) {
-        if (elementUri == null || !elementUri.isAbsolute()) {
-            log.warn("The Element URI is either absent or relative. Provide an absolute URI");
-            return null;
-        }
-
-        String queryStr = null;
-        queryStr = new StringBuilder()
-                .append("SELECT * WHERE { \n")
-                .append("<").append(elementUri.toASCIIString()).append("> <").append(RDF.type.getURI()).append("> ?type .")
-                .append("FILTER(STRSTARTS(STR(?type), \"").append(MSM.NAMESPACE.getURI()).append("\"))")
-                .append("\n }")
-                .toString();
-
-        return this.graphStoreManager.listResourcesByQuery(queryStr, "type");
+        return this.svcOpMap.containsKey(serviceUri);
     }
 
     /**
@@ -607,67 +308,7 @@ public class ServiceManagerIndexRdf extends IntegratedComponent implements Servi
             return ImmutableSet.of();
         }
 
-        return ImmutableSet.<URI>copyOf(this.modelReferencesMap.get(elementUri));
-    }
-
-    /**
-     * Given a modelReference, this method finds all the elements that have been annotated with it. This method finds
-     * exact annotations. Note that the elements can be services, operations, inputs, etc.
-     *
-     * @param modelReference the actual annotation we are looking for
-     * @return a set of URIs for elements that have been annotated with the requested modelReferences.
-     */
-    @Override
-    public Set<URI> listElementsAnnotatedWith(URI modelReference) {
-        return null;  // TODO: implement
-    }
-
-    /**
-     * Given the URI of a type (i.e., a modelReference), this method figures out all the operations
-     * that have this as part of their inputs.
-     *
-     * @param modelReference the type of input sought for
-     * @return a Set of URIs of operations that can take this as input type.
-     */
-    @Override
-    public Set<URI> listOperationsWithInputType(URI modelReference) {
-        return null;  // TODO: implement
-    }
-
-    /**
-     * Given the URI of a type (i.e., a modelReference), this method figures out all the operations
-     * that have this as part of their inputs.
-     *
-     * @param modelReference the type of output sought for
-     * @return a Set of URIs of operations that generate this output type.
-     */
-    @Override
-    public Set<URI> listOperationsWithOutputType(URI modelReference) {
-        return null;  // TODO: implement
-    }
-
-    /**
-     * Given the URI of a type (i.e., a modelReference), this method figures out all the services
-     * that have this as part of their inputs.
-     *
-     * @param modelReference the type of input sought for
-     * @return a Set of URIs of services that can take this as input type.
-     */
-    @Override
-    public Set<URI> listServicesWithInputType(URI modelReference) {
-        return null;  // TODO: implement
-    }
-
-    /**
-     * Given the URI of a type (i.e., a modelReference), this method figures out all the services
-     * that have this as part of their inputs.
-     *
-     * @param modelReference the type of output sought for
-     * @return a Set of URIs of services that generate this output type.
-     */
-    @Override
-    public Set<URI> listServicesWithOutputType(URI modelReference) {
-        return null;  // TODO: implement
+        return ImmutableSet.copyOf(this.modelReferencesMap.get(elementUri));
     }
 
     /**
@@ -676,9 +317,7 @@ public class ServiceManagerIndexRdf extends IntegratedComponent implements Servi
      */
     @Override
     public void initialise() {
-
         initialiseCache();
-        log.info("Populating cache.");
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.start();
         populateCache();
@@ -696,7 +335,7 @@ public class ServiceManagerIndexRdf extends IntegratedComponent implements Servi
     }
 
     private void populateCache() {
-        Set<URI> services = this.loadListServices();
+        Set<URI> services = super.listServices();
         for (URI svc : services) {
             Service service = null;
             try {
@@ -840,6 +479,6 @@ public class ServiceManagerIndexRdf extends IntegratedComponent implements Servi
      */
     @Override
     public void shutdown() {
-        this.graphStoreManager.shutdown();
+        super.shutdown();
     }
 }

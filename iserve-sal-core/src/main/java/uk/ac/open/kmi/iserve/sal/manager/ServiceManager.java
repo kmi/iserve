@@ -254,7 +254,7 @@ public interface ServiceManager extends iServeComponent {
      * <p/>
      * After successfully clearing the services, implementations of this method should raise a {@code ServicesClearedEvent}
      *
-     * @return
+     * @return true if the service registry was cleared.
      * @throws ServiceException
      */
     public abstract boolean clearServices()
