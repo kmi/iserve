@@ -64,7 +64,15 @@ public class ServiceManagerIndexRdf extends ServiceManagerSparql implements Serv
                            @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_SERVICE_PROP) String sparqlServiceEndpoint) throws SalException {
 
         super(eventBus, graphStoreFactory, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
-        this.initialiseCache();
+
+        this.svcOpMap = new ConcurrentHashMap<URI, Set<URI>>();
+        this.opInputMap = new ConcurrentHashMap<URI, Set<URI>>();
+        this.messageMandatoryPartsMap = new ConcurrentHashMap<URI, Set<URI>>();
+        this.messageOptionalPartsMap = new ConcurrentHashMap<URI, Set<URI>>();
+        this.opOutputMap = new ConcurrentHashMap<URI, Set<URI>>();
+        this.modelReferencesMap = new ConcurrentHashMap<URI, Set<URI>>();
+
+        initialise();
     }
 
     /**
@@ -275,8 +283,8 @@ public class ServiceManagerIndexRdf extends ServiceManagerSparql implements Serv
     public boolean clearServices() throws ServiceException {
 
         if (super.clearServices()) {
-            // Initialise cache
-            this.initialiseCache();
+            // Initialise
+            initialise();
             return true;
         }
 
@@ -315,9 +323,7 @@ public class ServiceManagerIndexRdf extends ServiceManagerSparql implements Serv
      * This method will be called when the server is initialised.
      * If necessary it should take care of updating any indexes on boot time.
      */
-    @Override
-    public void initialise() {
-        initialiseCache();
+    private void initialise() {
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.start();
         populateCache();
@@ -325,16 +331,16 @@ public class ServiceManagerIndexRdf extends ServiceManagerSparql implements Serv
         log.info("Cache populated. Time taken {}", stopwatch);
     }
 
-    private void initialiseCache() {
-        this.svcOpMap = new ConcurrentHashMap<URI, Set<URI>>();
-        this.opInputMap = new ConcurrentHashMap<URI, Set<URI>>();
-        this.messageMandatoryPartsMap = new ConcurrentHashMap<URI, Set<URI>>();
-        this.messageOptionalPartsMap = new ConcurrentHashMap<URI, Set<URI>>();
-        this.opOutputMap = new ConcurrentHashMap<URI, Set<URI>>();
-        this.modelReferencesMap = new ConcurrentHashMap<URI, Set<URI>>();
-    }
-
     private void populateCache() {
+        // clear
+        this.svcOpMap.clear();
+        this.opInputMap.clear();
+        this.messageMandatoryPartsMap.clear();
+        this.messageOptionalPartsMap.clear();
+        this.opOutputMap.clear();
+        this.modelReferencesMap.clear();
+
+        // fill up
         Set<URI> services = super.listServices();
         for (URI svc : services) {
             Service service = null;

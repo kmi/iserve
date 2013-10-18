@@ -23,7 +23,6 @@ import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import junit.framework.Assert;
 import org.jukito.JukitoRunner;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -38,11 +37,9 @@ import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoverer;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoverer;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
-import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
-import uk.ac.open.kmi.iserve.sal.manager.impl.ServiceManagerSparql;
 import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
+import uk.ac.open.kmi.iserve.sal.manager.impl.iServeManagementModule;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
@@ -70,12 +67,6 @@ public class GenericLogicDiscovererTest {
     private static final String WSC_01_TAXONOMY_URL = "http://localhost/wsc/01/taxonomy.owl";
     private static final String WSC_01_TAXONOMY_NS = "http://localhost/wsc/01/taxonomy.owl#";
 
-    @Inject
-    private static OperationDiscoverer opDiscoverer;
-
-    @Inject
-    private static ServiceDiscoverer svcDiscoverer;
-
     /**
      * JukitoModule.
      */
@@ -85,15 +76,17 @@ public class GenericLogicDiscovererTest {
             // Get properties
             super.configureTest();
 
-            bind(ServiceManager.class).to(ServiceManagerSparql.class);
-            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
+            // Add dependency
+            install(new iServeManagementModule());
 
             // bind
+//            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
+            bind(ConceptMatcher.class).to(SparqlIndexedLogicConceptMatcher.class);
+
+            // bind
+//            bind(GenericLogicDiscoverer.class).in(Singleton.class);
             bind(OperationDiscoverer.class).to(GenericLogicDiscoverer.class);
             bind(ServiceDiscoverer.class).to(GenericLogicDiscoverer.class);
-
-            // Necessary to verify interaction with the real object
-            bindSpy(GenericLogicDiscoverer.class);
         }
     }
 
@@ -105,16 +98,11 @@ public class GenericLogicDiscovererTest {
         importWscServices();
     }
 
-    @AfterClass
-    public static void tearDown() throws Exception {
-        iServeFacade.getInstance().shutdown();
-    }
-
     private static void uploadWscTaxonomy() throws URISyntaxException {
         // First load the ontology in the server to avoid issues
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         // Fetch the model
-        String taxonomyFile = ConceptMatcherWSC08Test.class.getResource(WSC08_01_TAXONOMY_FILE).toURI().toASCIIString();
+        String taxonomyFile = GenericLogicDiscovererTest.class.getResource(WSC08_01_TAXONOMY_FILE).toURI().toASCIIString();
         model.read(taxonomyFile);
 
         // Upload the model first (it won't be automatically fetched as the URIs won't resolve so we do it manually)
@@ -123,10 +111,10 @@ public class GenericLogicDiscovererTest {
 
     private static void importWscServices() throws TransformationException, SalException, URISyntaxException, FileNotFoundException {
         log.info("Importing WSC Dataset");
-        String file = OperationMatchTest.class.getResource(WSC08_01_SERVICES).getFile();
+        String file = GenericLogicDiscovererTest.class.getResource(WSC08_01_SERVICES).getFile();
         log.info("Services XML file {}", file);
         File services = new File(file);
-        URL base = OperationMatchTest.class.getResource(WSC08_01);
+        URL base = GenericLogicDiscovererTest.class.getResource(WSC08_01);
         log.info("Dataset Base URI {}", base.toURI().toASCIIString());
 
         List<Service> result = Transformer.getInstance().transform(services, base.toURI().toASCIIString(), MEDIATYPE);
@@ -168,14 +156,14 @@ public class GenericLogicDiscovererTest {
 
 
     @Test
-    public void testFindOperationsConsumingAll() throws Exception {
+    public void testFindOperationsConsumingAll(OperationDiscoverer opDiscoverer) throws Exception {
 
         URI input1Uri = URI.create(WSC_01_TAXONOMY_NS + "con332477359");
         URI input2Uri = URI.create(WSC_01_TAXONOMY_NS + "con1794855625");
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
-        Map<URI, MatchResult> matches = this.opDiscoverer.findOperationsConsumingAll(ImmutableSet.of(input1Uri, input2Uri));
+        Map<URI, MatchResult> matches = opDiscoverer.findOperationsConsumingAll(ImmutableSet.of(input1Uri, input2Uri));
         stopwatch.stop();
 
         log.info("Obtained ({}) matches in {} \n {}", matches.size(), stopwatch, matches);
@@ -183,13 +171,13 @@ public class GenericLogicDiscovererTest {
     }
 
     @Test
-    public void testFindOperationsConsumingSome() throws Exception {
+    public void testFindOperationsConsumingSome(OperationDiscoverer opDiscoverer) throws Exception {
 
         URI inputUri = URI.create(WSC_01_TAXONOMY_NS + "con332477359");
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
-        Map<URI, MatchResult> matches = this.opDiscoverer.findOperationsConsumingSome(ImmutableSet.of(inputUri));
+        Map<URI, MatchResult> matches = opDiscoverer.findOperationsConsumingSome(ImmutableSet.of(inputUri));
         stopwatch.stop();
 
         log.info("Obtained ({}) matches in {} \n {}", matches.size(), stopwatch, matches);

@@ -31,7 +31,7 @@ import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 import uk.ac.open.kmi.iserve.discovery.api.impl.AbstractMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
-import uk.ac.open.kmi.iserve.discovery.util.MatchComparator;
+import uk.ac.open.kmi.iserve.discovery.util.MatchResultComparators;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 
@@ -49,8 +49,8 @@ import static uk.ac.open.kmi.iserve.discovery.disco.MatchResultsMerger.INTERSECT
  */
 public class OperationDataflowMatcher extends AbstractMatcher implements DataflowMatcher {
 
-
     private static final Logger log = LoggerFactory.getLogger(OperationDataflowMatcher.class);
+
     private final ServiceManager serviceManager;
     private final ConceptMatcher conceptMatcher;
 
@@ -104,7 +104,7 @@ public class OperationDataflowMatcher extends AbstractMatcher implements Dataflo
 
         for (Map.Entry<URI, Map<URI, MatchResult>> entry : matches.columnMap().entrySet()) {
             Map<URI, MatchResult> matchesMap = entry.getValue();
-            Ordering<URI> valueComparator = Ordering.from(MatchComparator.BY_TYPE)
+            Ordering<URI> valueComparator = Ordering.from(MatchResultComparators.BY_TYPE)
                     .onResultOf(Functions.forMap(matchesMap))  // Order by value
                     .compound(Ordering.natural());  // Order by URI eventually
 

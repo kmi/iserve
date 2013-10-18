@@ -17,8 +17,8 @@
 package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 
-import com.google.common.collect.Sets;
-import com.google.common.collect.Table;
+import com.google.common.base.Function;
+import com.google.common.collect.*;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
@@ -30,12 +30,13 @@ import uk.ac.open.kmi.iserve.discovery.api.impl.AbstractMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.AtomicMatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
+import uk.ac.open.kmi.iserve.discovery.util.MatchResultPredicates;
 import uk.ac.open.kmi.iserve.sal.events.OntologyCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.OntologyDeletedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
+import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
 
-import javax.inject.Singleton;
+import javax.annotation.Nullable;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Map;
@@ -46,22 +47,21 @@ import java.util.Set;
  * We are assuming here that the ontologies are in a remote server exposed through a SPARQL endpoint. If we can sit in
  * the same server we should try and use the libraries from the store directly to avoid replicating the index.
  */
-@Singleton
 public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements ConceptMatcher {
 
     private static final Logger log = LoggerFactory.getLogger(SparqlIndexedLogicConceptMatcher.class);
 
     private Table<URI, URI, MatchResult> indexedMatches;
-    private final iServeFacade manager;
-    private SparqlLogicConceptMatcher sparqlMatcher;
+    private final iServeManager manager;
+    private final SparqlLogicConceptMatcher sparqlMatcher;
 
     @Inject
-    protected SparqlIndexedLogicConceptMatcher(SparqlLogicConceptMatcher sparqlMatcher) throws SalException {
+    protected SparqlIndexedLogicConceptMatcher(iServeManager registryManager, SparqlLogicConceptMatcher sparqlMatcher) throws SalException {
 
         super(EnumMatchTypes.of(LogicConceptMatchType.class));
 
         this.sparqlMatcher = sparqlMatcher;
-        this.manager = iServeFacade.getInstance();
+        this.manager = registryManager;
         this.manager.registerAsObserver(this);
         this.indexedMatches = populate();
     }
@@ -127,7 +127,25 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
      */
     @Override
     public Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType) {
-        return null;  // TODO: implement
+
+        if (origin == null || minType == null | maxType == null) {
+            return ImmutableMap.of();
+        }
+
+        Function<MatchResult, MatchType> getTypeFunction = new Function<MatchResult, MatchType>() {
+            @Override
+            public MatchType apply(@Nullable MatchResult matchResult) {
+                if (matchResult != null) {
+                    return matchResult.getMatchType();
+                }
+                return null;
+            }
+        };
+
+        // Get all the matches
+        Map<URI, MatchResult> matches = this.indexedMatches.row(origin);
+        // Return an immutable map out of the filtered view. Drop copyOf to obtain a live view
+        return ImmutableMap.copyOf(Maps.filterValues(matches, MatchResultPredicates.withinRange(minType, BoundType.CLOSED, maxType, BoundType.CLOSED)));
     }
 
     // Process events to update the indexes

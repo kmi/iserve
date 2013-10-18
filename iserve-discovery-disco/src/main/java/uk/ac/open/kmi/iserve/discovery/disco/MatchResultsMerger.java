@@ -21,7 +21,7 @@ import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 import uk.ac.open.kmi.iserve.discovery.api.Matcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.CompositeMatchResult;
-import uk.ac.open.kmi.iserve.discovery.util.MatchComparator;
+import uk.ac.open.kmi.iserve.discovery.util.MatchResultComparators;
 
 import java.net.URI;
 import java.util.Collection;
@@ -70,7 +70,7 @@ public enum MatchResultsMerger implements Function<Collection<MatchResult>, Matc
             URI resourceToMatch = match.getResourceToMatch();
             Matcher matcher = match.getMatcher();
 
-            SortedSet<MatchResult> innerMatches = new TreeSet<MatchResult>(MatchComparator.BY_TYPE);
+            SortedSet<MatchResult> innerMatches = new TreeSet<MatchResult>(MatchResultComparators.BY_TYPE);
             innerMatches.add(match);
 
             while (it.hasNext()) {
@@ -115,7 +115,7 @@ public enum MatchResultsMerger implements Function<Collection<MatchResult>, Matc
             URI resourceToMatch = match.getResourceToMatch();
             Matcher matcher = match.getMatcher();
 
-            SortedSet<MatchResult> innerMatches = new TreeSet<MatchResult>(MatchComparator.BY_TYPE);
+            SortedSet<MatchResult> innerMatches = new TreeSet<MatchResult>(MatchResultComparators.BY_TYPE);
             innerMatches.add(match);
 
             while (it.hasNext()) {
