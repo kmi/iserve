@@ -23,11 +23,7 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import junit.framework.Assert;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
 import org.jukito.JukitoRunner;
-import org.jukito.UseModules;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -67,7 +63,6 @@ import static org.junit.Assert.assertTrue;
  * @since 01/08/2013
  */
 @RunWith(JukitoRunner.class)
-@UseModules(iServeManagementModule.class)
 public class ConceptMatcherWSC08Test {
 
     private static final Logger log = LoggerFactory.getLogger(ConceptMatcherWSC08Test.class);
@@ -80,8 +75,6 @@ public class ConceptMatcherWSC08Test {
 
     private static final String MEDIATYPE = "text/xml";
 
-    private static iServeFacade manager;
-
     @Inject
     private ConceptMatcher conceptMatcher;
 
@@ -93,9 +86,12 @@ public class ConceptMatcherWSC08Test {
         protected void configureTest() {
             // Get properties
             super.configureTest();
+
             // bind
-//            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
+            install(new iServeManagementModule());
+
             bind(ConceptMatcher.class).to(SparqlIndexedLogicConceptMatcher.class);
+//                        bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
 
             // Necessary to verify interaction with the real object
             bindSpy(SparqlIndexedLogicConceptMatcher.class);
@@ -104,22 +100,11 @@ public class ConceptMatcherWSC08Test {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        BasicConfigurator.configure();
-        org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
-        // do your one-time setup here
-        manager = iServeFacade.getInstance();
-
         // Clean the whole thing before testing
-        manager.clearRegistry();
+        iServeFacade.getInstance().clearRegistry();
         uploadWscTaxonomy();
         importWscServices();
     }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        manager.shutdown();
-    }
-
 
     private static void uploadWscTaxonomy() throws URISyntaxException {
         // First load the ontology in the server to avoid issues
@@ -129,7 +114,7 @@ public class ConceptMatcherWSC08Test {
         model.read(taxonomyFile);
 
         // Upload the model first (it won't be automatically fetched as the URIs won't resolve so we do it manually)
-        manager.getKnowledgeBaseManager().uploadModel(URI.create(WSC_01_TAXONOMY_URL), model, true);
+        iServeFacade.getInstance().getKnowledgeBaseManager().uploadModel(URI.create(WSC_01_TAXONOMY_URL), model, true);
     }
 
     private static void importWscServices() throws TransformationException, SalException, URISyntaxException, FileNotFoundException {
@@ -148,7 +133,7 @@ public class ConceptMatcherWSC08Test {
         // Import all services
         int counter = 0;
         for (Service s : result) {
-            URI uri = manager.getServiceManager().addService(s);
+            URI uri = iServeFacade.getInstance().getServiceManager().addService(s);
             Assert.assertNotNull(uri);
             log.info("Service added: " + uri.toASCIIString());
             counter++;
@@ -234,9 +219,9 @@ public class ConceptMatcherWSC08Test {
 
         // Discover executable services
         Set<String> candidates = new HashSet<String>();
-        for (URI service : this.manager.getServiceManager().listServices()) {
+        for (URI service : iServeFacade.getInstance().getServiceManager().listServices()) {
             // Load the service
-            Service srv = this.manager.getServiceManager().getService(service);
+            Service srv = iServeFacade.getInstance().getServiceManager().getService(service);
             // Load operations
             opLoop:
             for (Operation op : srv.getOperations()) {
@@ -294,8 +279,8 @@ public class ConceptMatcherWSC08Test {
         // Preload servide models
         // TODO; Discovery operations without loading the entire service model.
         Set<Service> services = new HashSet<Service>();
-        for (URI srvURI : this.manager.getServiceManager().listServices()) {
-            services.add(this.manager.getServiceManager().getService(srvURI));
+        for (URI srvURI : iServeFacade.getInstance().getServiceManager().listServices()) {
+            services.add(iServeFacade.getInstance().getServiceManager().getService(srvURI));
         }
         int pass = 0;
         while (!newInputs.isEmpty()) {
