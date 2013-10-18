@@ -31,7 +31,6 @@ import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterForTransformer;
 import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
 
-import javax.inject.Inject;
 import java.io.*;
 import java.net.URI;
 import java.util.Iterator;
@@ -65,9 +64,6 @@ public class DocumentManagerTest {
     private File[] msmTtlTcFiles;
     private File[] owlsTcFiles;
 
-    @Inject
-    private DocumentManager documentManager;
-
     /**
      * JukitoModule.
      */
@@ -99,17 +95,17 @@ public class DocumentManagerTest {
     }
 
     @Test
-    public void testCreateDocument() throws Exception {
+    public void testCreateDocument(DocumentManager documentManager) throws Exception {
 
         // Clear and upload data
         documentManager.clearDocuments();
-        int count = uploadMsmFiles();
+        int count = uploadMsmFiles(documentManager);
         Assert.assertEquals(Math.min(msmTtlTcFiles.length, MAX_DOCS), count);
 
         // TODO: We should check the content is correct
     }
 
-    private int uploadMsmFiles() throws FileNotFoundException, DocumentException {
+    private int uploadMsmFiles(DocumentManager documentManager) throws FileNotFoundException, DocumentException {
 
         InputStream in;
         URI docUri;
@@ -128,11 +124,11 @@ public class DocumentManagerTest {
     }
 
     @Test
-    public void testDeleteDocument() throws Exception {
+    public void testDeleteDocument(DocumentManager documentManager) throws Exception {
 
         // Clear and upload data
         documentManager.clearDocuments();
-        int count = uploadMsmFiles();
+        int count = uploadMsmFiles(documentManager);
 
         boolean result;
         URI docUri;
@@ -160,22 +156,22 @@ public class DocumentManagerTest {
     }
 
     @Test
-    public void testListDocuments() throws Exception {
+    public void testListDocuments(DocumentManager documentManager) throws Exception {
 
         // Clear and upload data
         documentManager.clearDocuments();
-        int count = uploadMsmFiles();
+        int count = uploadMsmFiles(documentManager);
 
         Set<URI> documents = documentManager.listDocuments();
         Assert.assertEquals(count, documents.size());
     }
 
     @Test
-    public void testGetDocument() throws Exception {
+    public void testGetDocument(DocumentManager documentManager) throws Exception {
 
         // Clear and upload data
         documentManager.clearDocuments();
-        int count = uploadMsmFiles();
+        int count = uploadMsmFiles(documentManager);
 
         InputStream is;
         URI docUri;
