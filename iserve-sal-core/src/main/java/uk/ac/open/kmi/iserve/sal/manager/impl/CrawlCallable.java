@@ -65,7 +65,7 @@ public class CrawlCallable implements Callable<Boolean> {
      * that imported the common one will not have it available any more.
      * TODO: To be fixed
      *
-     * @return True if the model was fetched and uploaded or false otherwise
+     * @return True if the model was fetched or is already uploaded. False if it could not be obtained
      */
     @Override
     public Boolean call() {
@@ -73,11 +73,13 @@ public class CrawlCallable implements Callable<Boolean> {
         // If the model has not been uploaded fetch it and upload the graph
         if (!this.graphStoreManager.containsGraph(this.modelUri)) {
             Model model = fetchModel(this.modelUri, this.syntax);
+            if (model == null || model.isEmpty()) {
+                return Boolean.FALSE;
+            }
             this.graphStoreManager.putGraph(this.modelUri, model);
-            return Boolean.TRUE;
         }
 
-        return Boolean.FALSE;
+        return Boolean.TRUE;
     }
 
     private Model fetchModel(URI modelUri, String syntax) {
