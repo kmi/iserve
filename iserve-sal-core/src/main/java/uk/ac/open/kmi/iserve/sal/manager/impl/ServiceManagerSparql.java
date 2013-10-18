@@ -113,7 +113,8 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
         // Configuration for avoiding the import of certain files
         ImmutableSet<String> ignoredImports = ImmutableSet.of();
 
-        this.graphStoreManager = graphStoreFactory.create(sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint, defaultModelsToLoad, mappingsBuilder.build(), ignoredImports);
+        this.graphStoreManager = graphStoreFactory.create(sparqlQueryEndpoint, sparqlUpdateEndpoint,
+                sparqlServiceEndpoint, defaultModelsToLoad, mappingsBuilder.build(), ignoredImports);
     }
 
     /**
@@ -784,16 +785,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
     @Override
     public Set<URI> listServicesWithOutputType(URI modelReference) {
         return this.listEntitiesByDataModel(MSM.Service, MSM.hasOutput, modelReference);
-    }
-
-    /**
-     * This method will be called when the server is initialised.
-     * If necessary it should take care of updating any indexes on boot time.
-     */
-    @Override
-    public void initialise() {
-        super.initialise();
-        this.graphStoreManager.initialise();
     }
 
     /**
