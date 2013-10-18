@@ -22,6 +22,7 @@ import org.glassfish.jersey.server.mvc.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
+import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import javax.ws.rs.DELETE;
@@ -51,7 +52,7 @@ public class RegistryResource {
     @Context
     UriInfo uriInfo;
 
-    private final iServeFacade manager;
+    private final iServeManager manager;
 
     public RegistryResource() {
         this.manager = iServeFacade.getInstance();
