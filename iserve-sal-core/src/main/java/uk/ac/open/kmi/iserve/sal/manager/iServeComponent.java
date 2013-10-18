@@ -23,11 +23,6 @@ package uk.ac.open.kmi.iserve.sal.manager;
  * @since 06/09/2013
  */
 public interface iServeComponent {
-    /**
-     * This method will be called when the server is initialised.
-     * If necessary it should take care of updating any indexes on boot time.
-     */
-    void initialise();
 
     /**
      * This method will be called when the server is being shutdown.

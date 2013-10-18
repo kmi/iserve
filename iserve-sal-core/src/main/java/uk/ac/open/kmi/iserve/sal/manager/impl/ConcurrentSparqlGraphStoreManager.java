@@ -65,7 +65,7 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
 
     private static final String JAVA_PROXY_HOST_PROP = "http.proxyHost";
     private static final String JAVA_PROXY_PORT_PROP = "http.proxyPort";
-    private static final int NUM_THREADS = 4;
+    private static final int NUM_THREADS = 2;
 
     // Set backed by a ConcurrentHashMap to avoid race conditions
     private Set<URI> loadedModels;
@@ -114,21 +114,7 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
             @Assisted("ignoredImports") Set<String> ignoredImports,
             ProxyConfiguration proxyCfg) throws SalException {
 
-        this.loadedModels = Collections.newSetFromMap(new ConcurrentHashMap<URI, Boolean>());
-        this.loadedModels.addAll(CORE_MODELS);
-
-        this.baseModels = baseModels;
-
-        this.fetchingMap = new ConcurrentHashMap<URI, Future<Boolean>>();
-
-        // Configure proxy if necessary
-        configureProxy(proxyCfg);
-
-        setupModelSpecification(locationMappings, ignoredImports);
-
-        // set the executor
-        executor = Executors.newFixedThreadPool(NUM_THREADS);
-//        executor = Executors.newSingleThreadExecutor();
+        // Setup backend access
 
         if (sparqlQueryEndpoint == null) {
             log.error(ConcurrentSparqlGraphStoreManager.class.getSimpleName() + " requires a SPARQL Query endpoint.");
@@ -150,6 +136,23 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
         } catch (URISyntaxException e) {
             log.error("URI error configuring SPARQL Graph Store Manager", e);
         }
+
+        this.loadedModels = Collections.newSetFromMap(new ConcurrentHashMap<URI, Boolean>());
+        this.loadedModels.addAll(CORE_MODELS);
+        this.baseModels = baseModels;
+        this.fetchingMap = new ConcurrentHashMap<URI, Future<Boolean>>();
+
+        // Configure proxy if necessary
+        configureProxy(proxyCfg);
+
+        setupModelSpecification(locationMappings, ignoredImports);
+
+        // Initialise the thread pool
+        this.executor = Executors.newFixedThreadPool(NUM_THREADS);
+        // this.executor = Executors.newSingleThreadExecutor();
+
+        // Finally initialise indexes and other structures
+        initialise();
     }
 
     private void configureProxy(ProxyConfiguration proxyCfg) {
@@ -200,8 +203,7 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
      * This method will be called when the server is initialised.
      * If necessary it should take care of updating any indexes on boot time.
      */
-    @Override
-    public void initialise() {
+    private void initialise() {
         // Figure out models loaded
         this.loadedModels.addAll(listStoredGraphs());
         // Check and load default models
@@ -215,12 +217,20 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
     @Override
     public void shutdown() {
         log.info("Shutting down Ontology crawlers.");
-        this.executor.shutdown();
-        // waiting 2 seconds
+        this.executor.shutdown(); // Disable new tasks from being submitted
         try {
-            this.executor.awaitTermination(2, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            log.error("Interrupted while waiting for threads to conclude crawling.", e);
+            // Wait a while for existing tasks to terminate
+            if (!this.executor.awaitTermination(5, TimeUnit.SECONDS)) {
+                this.executor.shutdownNow(); // Cancel currently executing tasks
+                // Wait a while for tasks to respond to being cancelled
+                if (!this.executor.awaitTermination(2, TimeUnit.SECONDS))
+                    log.error("Pool did not terminate");
+            }
+        } catch (InterruptedException ie) {
+            // (Re-)Cancel if current thread also interrupted
+            this.executor.shutdownNow();
+            // Preserve interrupt status
+            Thread.currentThread().interrupt();
         }
     }
 
