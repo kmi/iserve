@@ -24,7 +24,6 @@ import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import junit.framework.Assert;
 import org.jukito.JukitoRunner;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -39,6 +38,7 @@ import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
+import uk.ac.open.kmi.iserve.sal.manager.impl.iServeManagementModule;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -86,9 +86,12 @@ public class ConceptMatcherWSC08Test {
         protected void configureTest() {
             // Get properties
             super.configureTest();
+
             // bind
-//            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
+            install(new iServeManagementModule());
+
             bind(ConceptMatcher.class).to(SparqlIndexedLogicConceptMatcher.class);
+//                        bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
 
             // Necessary to verify interaction with the real object
             bindSpy(SparqlIndexedLogicConceptMatcher.class);
@@ -102,12 +105,6 @@ public class ConceptMatcherWSC08Test {
         uploadWscTaxonomy();
         importWscServices();
     }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        iServeFacade.getInstance().shutdown();
-    }
-
 
     private static void uploadWscTaxonomy() throws URISyntaxException {
         // First load the ontology in the server to avoid issues

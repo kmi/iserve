@@ -34,6 +34,7 @@ import uk.ac.open.kmi.iserve.commons.io.MediaType;
 import uk.ac.open.kmi.iserve.commons.io.Syntax;
 import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterBySyntax;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
+import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import java.io.File;
@@ -80,7 +81,7 @@ public class ServiceResourceIT {
 
     // For HTML testing (logging via forms, etc)
     private final WebClient webClient = new WebClient();
-    private iServeFacade manager;
+    private iServeManager manager;
 
     /**
      * @throws java.lang.Exception

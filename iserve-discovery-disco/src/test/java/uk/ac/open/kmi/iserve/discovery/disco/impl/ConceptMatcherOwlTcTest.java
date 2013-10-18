@@ -20,8 +20,6 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.Table;
 import junit.framework.Assert;
 import org.jukito.JukitoRunner;
-import org.jukito.TestScope;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -73,7 +71,7 @@ public class ConceptMatcherOwlTcTest {
             // Get properties
             super.configureTest();
             // bind
-            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class).in(TestScope.SINGLETON);
+            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
 
             // Necessary to verify interaction with the real object
             bindSpy(SparqlLogicConceptMatcher.class);
@@ -81,14 +79,9 @@ public class ConceptMatcherOwlTcTest {
     }
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void setupTests() throws Exception {
         iServeFacade.getInstance().clearRegistry();
         uploadOwlsTc();
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        iServeFacade.getInstance().shutdown();
     }
 
     private static void uploadOwlsTc() throws URISyntaxException, FileNotFoundException, SalException {

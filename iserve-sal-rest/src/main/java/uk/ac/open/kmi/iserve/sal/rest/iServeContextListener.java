@@ -60,7 +60,7 @@ public class iServeContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         log.info("iServe initialising ...");
-        iServeFacade.getInstance().initialise();
+        iServeFacade.getInstance();
     }
 
     /**

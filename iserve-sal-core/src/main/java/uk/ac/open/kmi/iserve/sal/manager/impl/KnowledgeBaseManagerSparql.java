@@ -97,16 +97,6 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
     }
 
     /**
-     * This method will be called when the server is initialised.
-     * If necessary it should take care of updating any indexes on boot time.
-     */
-    @Override
-    public void initialise() {
-        super.initialise();
-        this.graphStoreManager.initialise();
-    }
-
-    /**
      * This method will be called when the server is being shutdown.
      * Ensure a clean shutdown.
      */

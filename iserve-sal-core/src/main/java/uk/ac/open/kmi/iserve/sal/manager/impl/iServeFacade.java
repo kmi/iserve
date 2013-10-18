@@ -27,15 +27,11 @@ import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
-import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
-import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
-import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
+import uk.ac.open.kmi.iserve.sal.manager.*;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -51,18 +47,16 @@ import java.util.Set;
  *
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
-@Singleton
-public class iServeFacade extends IntegratedComponent {
+//@Singleton
+public class iServeFacade extends IntegratedComponent implements iServeManager {
 
     private static final Logger log = LoggerFactory.getLogger(iServeFacade.class);
-
-    private static final int HALF_MB = 512 * 1024;
 
     private DocumentManager docManager;
     private ServiceManager serviceManager;
     private KnowledgeBaseManager kbManager;
 
-    private static Injector injector;
+    private static iServeManager instance;
 
     @Inject
     private iServeFacade(EventBus eventBus,
@@ -78,17 +72,19 @@ public class iServeFacade extends IntegratedComponent {
     }
 
     /**
-     * Obtains the iServeFacade
+     * Obtains the iServeManager
      *
-     * @return the iServeFacade instance
+     * @return the iServeManager instance
      */
-    public static iServeFacade getInstance() {
+    public static iServeManager getInstance() {
 
-        if (injector == null) {
+        Injector injector;
+        if (instance == null) {
             injector = Guice.createInjector(new iServeManagementModule());
+            instance = injector.getInstance(iServeManager.class);
         }
 
-        return injector.getInstance(iServeFacade.class);
+        return instance;
     }
 
     /**
@@ -100,8 +96,19 @@ public class iServeFacade extends IntegratedComponent {
      *
      * @param obj The observer
      */
+    @Override
     public void registerAsObserver(Object obj) {
         this.getEventBus().register(obj);
+    }
+
+    /**
+     * Unregister observer. Events won't be notified to this observer any longer.
+     *
+     * @param obj The observer
+     */
+    @Override
+    public void unregisterObserver(Object obj) {
+        this.getEventBus().unregister(obj);
     }
 
     /**
@@ -109,6 +116,7 @@ public class iServeFacade extends IntegratedComponent {
      *
      * @return the Service Manager
      */
+    @Override
     public ServiceManager getServiceManager() {
         return this.serviceManager;
     }
@@ -118,6 +126,7 @@ public class iServeFacade extends IntegratedComponent {
      *
      * @return the Knowledge Base Manager
      */
+    @Override
     public KnowledgeBaseManager getKnowledgeBaseManager() {
         return this.kbManager;
     }
@@ -127,24 +136,16 @@ public class iServeFacade extends IntegratedComponent {
      *
      * @return the Document Manager
      */
+    @Override
     public DocumentManager getDocumentManager() {
         return this.docManager;
-    }
-
-    /**
-     * This method will be called when the server is initialised.
-     * If necessary it should take care of updating any indexes on boot time.
-     */
-    public void initialise() {
-        this.serviceManager.initialise();
-        this.docManager.initialise();
-        this.kbManager.initialise();
     }
 
     /**
      * This method will be called when the server is being shutdown.
      * Ensure a clean shutdown.
      */
+    @Override
     public void shutdown() {
         this.serviceManager.shutdown();
         this.docManager.shutdown();
@@ -160,6 +161,7 @@ public class iServeFacade extends IntegratedComponent {
      * @return the List of URIs of the services imported
      * @throws SalException
      */
+    @Override
     public List<URI> importServices(InputStream servicesContentStream,
                                     String mediaType) throws SalException {
 
@@ -272,6 +274,7 @@ public class iServeFacade extends IntegratedComponent {
      * @return true if the registry was cleared.
      * @throws SalException
      */
+    @Override
     public boolean clearRegistry() throws SalException {
         boolean result = this.serviceManager.clearServices();
         // Only try if we could delete the services
@@ -291,6 +294,7 @@ public class iServeFacade extends IntegratedComponent {
      * @return the List of URIs of the services registered
      * @throws SalException
      */
+    @Override
     public List<URI> registerServices(URI sourceDocumentUri, String mediaType) throws SalException {
 
         boolean isNativeFormat = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.containsKey(mediaType);
@@ -345,6 +349,7 @@ public class iServeFacade extends IntegratedComponent {
      * @return true if it was properly unregistered, false otherwise.
      * @throws SalException
      */
+    @Override
     public boolean unregisterService(URI serviceUri) throws SalException {
 
         // Check the URI is correct and belongs to the server
@@ -374,6 +379,7 @@ public class iServeFacade extends IntegratedComponent {
      * @return the String representation of the service in the given format
      * @throws ServiceException
      */
+    @Override
     public String exportService(URI serviceUri, String mediaType)
             throws ServiceException {
         //		return this.serviceManager.getServiceSerialisation(serviceUri, syntax);
