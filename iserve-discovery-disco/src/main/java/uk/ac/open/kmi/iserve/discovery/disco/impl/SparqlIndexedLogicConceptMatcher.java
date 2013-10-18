@@ -33,6 +33,7 @@ import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.sal.events.OntologyCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.OntologyDeletedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
+import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import javax.inject.Singleton;
@@ -52,7 +53,7 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
     private static final Logger log = LoggerFactory.getLogger(SparqlIndexedLogicConceptMatcher.class);
 
     private Table<URI, URI, MatchResult> indexedMatches;
-    private final iServeFacade manager;
+    private final iServeManager manager;
     private SparqlLogicConceptMatcher sparqlMatcher;
 
     @Inject
