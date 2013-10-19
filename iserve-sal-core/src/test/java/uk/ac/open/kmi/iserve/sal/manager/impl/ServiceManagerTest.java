@@ -70,7 +70,8 @@ public class ServiceManagerTest {
             super.configureTest();
 
             // bind all the implementations
-            bind(ServiceManager.class).to(ServiceManagerIndexRdf.class);
+            bind(ServiceManager.class).to(ServiceManagerSparql.class);
+//            bind(ServiceManager.class).to(ServiceManagerIndexRdf.class);
 //            bindMany(ServiceManager.class, ServiceManagerSparql.class, ServiceManagerIndexRdf.class);
 
             // Necessary to verify interaction with the real object

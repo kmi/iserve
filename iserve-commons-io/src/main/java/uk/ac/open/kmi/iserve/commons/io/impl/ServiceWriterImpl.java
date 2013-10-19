@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.open.kmi.iserve.commons.io;
+package uk.ac.open.kmi.iserve.commons.io.impl;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
@@ -25,6 +25,8 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.commons.io.ServiceWriter;
+import uk.ac.open.kmi.iserve.commons.io.Syntax;
 import uk.ac.open.kmi.iserve.commons.io.extensionTypes.PddlType;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.commons.model.util.Vocabularies;

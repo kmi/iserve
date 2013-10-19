@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.open.kmi.iserve.commons.io;
+package uk.ac.open.kmi.iserve.commons.io.impl;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
@@ -26,6 +26,8 @@ import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.commons.io.ServiceReader;
+import uk.ac.open.kmi.iserve.commons.io.Syntax;
 import uk.ac.open.kmi.iserve.commons.io.util.FilterByRdfType;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;

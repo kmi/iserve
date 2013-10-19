@@ -26,6 +26,8 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.tidy.Tidy;
 import uk.ac.open.kmi.iserve.commons.io.*;
+import uk.ac.open.kmi.iserve.commons.io.impl.ServiceReaderImpl;
+import uk.ac.open.kmi.iserve.commons.io.impl.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 
 import javax.xml.transform.Transformer;

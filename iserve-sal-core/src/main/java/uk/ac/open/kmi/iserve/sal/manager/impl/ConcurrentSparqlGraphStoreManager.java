@@ -194,8 +194,11 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
 //        documentManager.setProcessImports(true);
         documentManager.setProcessImports(false);
 
+        documentManager.setCacheModels(false);
+
         // No inferencing here. Leaving this for the backend
         this.modelSpec = new OntModelSpec(OntModelSpec.OWL_MEM);
+//        this.modelSpec = new OntModelSpec(OntModelSpec.OWL_MEM_MICRO_RULE_INF);
         this.modelSpec.setDocumentManager(documentManager);
     }
 
@@ -458,7 +461,8 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
         Query query = QueryFactory.create(queryStr.toString());
         QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
         // Note that we are not using the store specification here to avoid retrieving remote models
-        OntModel resultModel = ModelFactory.createOntologyModel();
+//        OntModel resultModel = ModelFactory.createOntologyModel();
+        OntModel resultModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF);
         try {
             qexec.execConstruct(resultModel);
             return resultModel;
@@ -592,7 +596,7 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
 
         ImmutableSet.Builder<URI> result = ImmutableSet.builder();
         // If the SPARQL endpoint does not exist return immediately.
-        if (this.getSparqlQueryEndpoint() == null) {
+        if (this.getSparqlQueryEndpoint() == null || queryStr == null || queryStr.isEmpty()) {
             return result.build();
         }
 
@@ -653,10 +657,10 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
             }
 
         } catch (InterruptedException e) {
-            log.error("The system was interrupted while trying to fetch and store a remote model", e);
+            log.error("The system was interrupted while trying to fetch and store a remote model - " + modelUri, e);
             return false;
         } catch (ExecutionException e) {
-            log.error("There was an error while trying to fetch and store a remote model", e);
+            log.error("There was an error while trying to fetch and store a remote model - " + modelUri, e);
             return false;
         }
         return fetched;

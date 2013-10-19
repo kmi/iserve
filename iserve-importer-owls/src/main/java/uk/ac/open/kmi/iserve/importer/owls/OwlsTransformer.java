@@ -35,9 +35,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.ServiceTransformer;
 import uk.ac.open.kmi.iserve.commons.io.ServiceWriter;
-import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.io.TransformationException;
 import uk.ac.open.kmi.iserve.commons.io.extensionTypes.PddlType;
+import uk.ac.open.kmi.iserve.commons.io.impl.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.commons.model.util.Vocabularies;
 
