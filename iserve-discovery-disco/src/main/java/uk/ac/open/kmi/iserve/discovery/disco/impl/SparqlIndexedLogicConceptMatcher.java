@@ -47,14 +47,13 @@ import java.util.Set;
  * We are assuming here that the ontologies are in a remote server exposed through a SPARQL endpoint. If we can sit in
  * the same server we should try and use the libraries from the store directly to avoid replicating the index.
  */
-@Singleton
 public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements ConceptMatcher {
 
     private static final Logger log = LoggerFactory.getLogger(SparqlIndexedLogicConceptMatcher.class);
 
     private Table<URI, URI, MatchResult> indexedMatches;
     private final iServeManager manager;
-    private SparqlLogicConceptMatcher sparqlMatcher;
+    private final SparqlLogicConceptMatcher sparqlMatcher;
 
     @Inject
     protected SparqlIndexedLogicConceptMatcher(iServeManager registryManager, SparqlLogicConceptMatcher sparqlMatcher) throws SalException {
@@ -62,7 +61,7 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
         super(EnumMatchTypes.of(LogicConceptMatchType.class));
 
         this.sparqlMatcher = sparqlMatcher;
-        this.manager = iServeFacade.getInstance();
+        this.manager = registryManager;
         this.manager.registerAsObserver(this);
         this.indexedMatches = populate();
     }
