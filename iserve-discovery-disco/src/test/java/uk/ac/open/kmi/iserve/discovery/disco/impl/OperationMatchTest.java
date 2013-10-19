@@ -22,10 +22,7 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import junit.framework.Assert;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
 import org.jukito.JukitoRunner;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,19 +90,10 @@ public class OperationMatchTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        BasicConfigurator.configure();
-        org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
-
         iServeFacade.getInstance().clearRegistry();
         uploadWscTaxonomy();
         importWscServices();
     }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        iServeFacade.getInstance().shutdown();
-    }
-
 
     private static void uploadWscTaxonomy() throws URISyntaxException {
         // First load the ontology in the server to avoid issues

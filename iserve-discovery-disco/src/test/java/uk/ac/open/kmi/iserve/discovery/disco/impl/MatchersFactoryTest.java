@@ -47,13 +47,19 @@ public class MatchersFactoryTest {
         // check we get one
         matcher = MatchersFactory.createConceptMatcher();
         Assert.assertNotNull(matcher);
-        log.info("Obtained a concept matcher, {}", matcher.getClass().getName());
+        log.info("Obtained a concept matcher - {}", matcher.toString());
 
         // Check we get one of the class requested
         matcher = MatchersFactory.createConceptMatcher(SparqlLogicConceptMatcher.class.getName());
         Assert.assertNotNull(matcher);
-        log.info("Obtained a concept matcher, {}", matcher.getClass().getName());
+        log.info("Obtained a SparqlLogicConceptMatcher - {}", matcher.toString());
         Assert.assertEquals(matcher.getClass(), SparqlLogicConceptMatcher.class);
+
+        // Check we get one of the class requested
+        matcher = MatchersFactory.createConceptMatcher(SparqlIndexedLogicConceptMatcher.class.getName());
+        Assert.assertNotNull(matcher);
+        log.info("Obtained a SparqlIndexedLogicConceptMatcher - {}", matcher.toString());
+        Assert.assertEquals(matcher.getClass(), SparqlIndexedLogicConceptMatcher.class);
 
     }
 

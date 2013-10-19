@@ -41,7 +41,7 @@ public class MatchersFactory {
     private static MatchersFactory instance = null;
 
     // Bind to the provider for lazy instance creation
-    private Map<String, Provider<ConceptMatcher>> conceptMatcherBindings = null;
+    private Map<String, Provider<ConceptMatcher>> conceptMatcherProviders = null;
 
     // TODO: Add configuration details
     @Inject(optional = true)
@@ -49,8 +49,8 @@ public class MatchersFactory {
     private final String defaultConceptMatcher = null;
 
     @Inject
-    protected MatchersFactory(Map<String, Provider<ConceptMatcher>> conceptMatcherBindings) {
-        this.conceptMatcherBindings = conceptMatcherBindings;
+    protected MatchersFactory(Map<String, Provider<ConceptMatcher>> conceptMatcherProviders) {
+        this.conceptMatcherProviders = conceptMatcherProviders;
     }
 
     private static void init() {
@@ -63,13 +63,13 @@ public class MatchersFactory {
     public static ConceptMatcher createConceptMatcher() {
         checkAndInit();
 
-        if (instance.conceptMatcherBindings != null && !instance.conceptMatcherBindings.isEmpty()) {
+        if (instance.conceptMatcherProviders != null && !instance.conceptMatcherProviders.isEmpty()) {
             // Get the default one
             if (instance.defaultConceptMatcher != null) {
-                return instance.conceptMatcherBindings.get(instance.defaultConceptMatcher).get();
+                return instance.conceptMatcherProviders.get(instance.defaultConceptMatcher).get();
             }
             // Just return the first one otherwise
-            return instance.conceptMatcherBindings.values().iterator().next().get();
+            return instance.conceptMatcherProviders.values().iterator().next().get();
         }
 
         return null;
@@ -78,8 +78,8 @@ public class MatchersFactory {
     public static ConceptMatcher createConceptMatcher(String className) {
         checkAndInit();
 
-        if (instance.conceptMatcherBindings != null && !instance.conceptMatcherBindings.isEmpty()) {
-            return instance.conceptMatcherBindings.get(className).get();
+        if (instance.conceptMatcherProviders != null && !instance.conceptMatcherProviders.isEmpty()) {
+            return instance.conceptMatcherProviders.get(className).get();
         }
 
         return null;
@@ -87,7 +87,7 @@ public class MatchersFactory {
 
     public static Set<String> listAvailableMatchers() {
         checkAndInit();
-        return new HashSet<String>(instance.conceptMatcherBindings.keySet());
+        return new HashSet<String>(instance.conceptMatcherProviders.keySet());
     }
 
     private static void checkAndInit() {

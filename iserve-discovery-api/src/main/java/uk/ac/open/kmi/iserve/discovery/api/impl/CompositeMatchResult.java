@@ -32,7 +32,7 @@ import java.util.SortedSet;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @author <a href="mailto:pablo.rodriguez.mier@usc.es">Pablo Rodriguez Mier</a> (CITIUS - Universidad de Santiago de Compostela)
  */
-public class CompositeMatchResult extends AtomicMatchResult {
+public class CompositeMatchResult<T extends MatchType> extends AtomicMatchResult<T> {
 
     private SortedSet<MatchResult> innerMatches;
 

@@ -31,8 +31,8 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.commons.io.ServiceReaderImpl;
-import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
+import uk.ac.open.kmi.iserve.commons.io.impl.ServiceReaderImpl;
+import uk.ac.open.kmi.iserve.commons.io.impl.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
 import uk.ac.open.kmi.iserve.commons.model.*;
 import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
@@ -113,7 +113,8 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
         // Configuration for avoiding the import of certain files
         ImmutableSet<String> ignoredImports = ImmutableSet.of();
 
-        this.graphStoreManager = graphStoreFactory.create(sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint, defaultModelsToLoad, mappingsBuilder.build(), ignoredImports);
+        this.graphStoreManager = graphStoreFactory.create(sparqlQueryEndpoint, sparqlUpdateEndpoint,
+                sparqlServiceEndpoint, defaultModelsToLoad, mappingsBuilder.build(), ignoredImports);
     }
 
     /**
@@ -124,8 +125,11 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
     @Override
     public Set<URI> listServices() {
         String queryStr = new StringBuilder()
-                .append("select DISTINCT ?svc where { \n")
-                .append("?svc ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.Service.getURI()).append(">").append(" . }")
+                .append("SELECT DISTINCT ?svc WHERE { \n")
+                .append(" GRAPH ?g { \n")
+                .append("?svc ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.Service.getURI()).append("> . \n")
+                .append(" } \n")
+                .append("} \n")
                 .toString();
 
         return this.graphStoreManager.listResourcesByQuery(queryStr, "svc");
@@ -144,16 +148,32 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
             log.warn("The Service URI is either absent or relative. Provide an absolute URI");
             return ImmutableSet.of();
         }
-        // TODO; serviceUri not used? should be used within the query
+
+        URI graphUri;
+        try {
+            graphUri = getGraphUriForElement(serviceUri);
+        } catch (URISyntaxException e) {
+            log.warn("The namespace of the URI of the service is incorrect.", e);
+            return ImmutableSet.of();
+        }
+
+        if (graphUri == null) {
+            log.warn("Could not obtain a graph URI for the element. The URI may not be managed by the server - " + serviceUri);
+            return ImmutableSet.of();
+        }
+
         String queryStr = new StringBuilder()
-                .append("select DISTINCT ?op where { \n")
-                .append("<").append(serviceUri.toASCIIString()).append("> ").append("<").append(MSM.hasOperation.getURI()).append(">").append(" ?op .")
-                .append("?op ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.Operation.getURI()).append("> .")
-                .append(" }")
+                .append("SELECT DISTINCT ?op WHERE { \n")
+                .append(" GRAPH <").append(graphUri.toASCIIString()).append("> { \n")
+                .append(" <").append(serviceUri.toASCIIString()).append("> ").append("<").append(MSM.hasOperation.getURI()).append(">").append(" ?op . ")
+                .append(" ?op ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.Operation.getURI()).append("> . \n")
+                .append(" } \n ")
+                .append("} \n ")
                 .toString();
 
         return this.graphStoreManager.listResourcesByQuery(queryStr, "op");
     }
+
 
     /**
      * Obtains the list of input URIs for a given Operation
@@ -168,14 +188,29 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
             log.warn("The Operation URI is either absent or relative. Provide an absolute URI");
             return ImmutableSet.of();
         }
-        // TODO; operationUri is not used. This function retrieves all inputs in the repository, not just the
-        // inputs of the operation
+
+        URI graphUri;
+        try {
+            graphUri = getGraphUriForElement(operationUri);
+        } catch (URISyntaxException e) {
+            log.warn("The namespace of the URI of the operation is incorrect.", e);
+            return ImmutableSet.of();
+        }
+
+        if (graphUri == null) {
+            log.warn("Could not obtain a graph URI for the element. The URI may not be managed by the server - " + operationUri);
+            return ImmutableSet.of();
+        }
+
         String queryStr = new StringBuilder()
-                .append("select DISTINCT ?input where { \n")
+                .append("SELECT DISTINCT ?input WHERE { \n")
+                .append(" GRAPH <").append(graphUri.toASCIIString()).append("> { \n")
                 .append("<").append(operationUri.toASCIIString()).append("> ").append("<").append(MSM.hasInput.getURI()).append(">").append(" ?input .")
                 .append("?input ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.MessageContent.getURI()).append("> .")
-                .append(" }")
+                .append(" } \n ")
+                .append("} \n ")
                 .toString();
+
 
         return this.graphStoreManager.listResourcesByQuery(queryStr, "input");
     }
@@ -206,11 +241,26 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
             return ImmutableSet.of();
         }
 
+        URI graphUri;
+        try {
+            graphUri = getGraphUriForElement(operationUri);
+        } catch (URISyntaxException e) {
+            log.warn("The namespace of the URI of the operation is incorrect.", e);
+            return ImmutableSet.of();
+        }
+
+        if (graphUri == null) {
+            log.warn("Could not obtain a graph URI for the element. The URI may not be managed by the server - " + operationUri);
+            return ImmutableSet.of();
+        }
+
         String queryStr = new StringBuilder()
-                .append("select DISTINCT ?output where { \n")
+                .append("SELECT DISTINCT ?output WHERE { \n")
+                .append(" GRAPH <").append(graphUri.toASCIIString()).append("> { \n")
                 .append("<").append(operationUri.toASCIIString()).append("> ").append("<").append(MSM.hasOutput.getURI()).append(">").append(" ?output .")
                 .append("?output ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.MessageContent.getURI()).append("> .")
-                .append(" }")
+                .append(" } \n ")
+                .append("} \n ")
                 .toString();
 
         return this.graphStoreManager.listResourcesByQuery(queryStr, "output");
@@ -241,11 +291,26 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
             return ImmutableSet.of();
         }
 
+        URI graphUri;
+        try {
+            graphUri = getGraphUriForElement(messageContent);
+        } catch (URISyntaxException e) {
+            log.warn("The namespace of the URI of the message content is incorrect.", e);
+            return ImmutableSet.of();
+        }
+
+        if (graphUri == null) {
+            log.warn("Could not obtain a graph URI for the element. The URI may not be managed by the server - " + messageContent);
+            return ImmutableSet.of();
+        }
+
         String queryStr = new StringBuilder()
-                .append("select DISTINCT ?part where { \n")
+                .append("SELECT DISTINCT ?part WHERE { \n")
+                .append(" GRAPH <").append(graphUri.toASCIIString()).append("> { \n")
                 .append("<").append(messageContent.toASCIIString()).append("> ").append("<").append(MSM.hasMandatoryPart.getURI()).append(">").append(" ?part .")
                 .append("?part ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.MessagePart.getURI()).append("> .")
-                .append(" }")
+                .append(" } \n ")
+                .append("} \n ")
                 .toString();
 
         return this.graphStoreManager.listResourcesByQuery(queryStr, "part");
@@ -264,11 +329,26 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
             return ImmutableSet.of();
         }
 
+        URI graphUri;
+        try {
+            graphUri = getGraphUriForElement(messageContent);
+        } catch (URISyntaxException e) {
+            log.warn("The namespace of the URI of the message content is incorrect.", e);
+            return ImmutableSet.of();
+        }
+
+        if (graphUri == null) {
+            log.warn("Could not obtain a graph URI for the element. The URI may not be managed by the server - " + messageContent);
+            return ImmutableSet.of();
+        }
+
         String queryStr = new StringBuilder()
-                .append("select DISTINCT ?part where { \n")
+                .append("SELECT DISTINCT ?part WHERE { \n")
+                .append(" GRAPH <").append(graphUri.toASCIIString()).append("> { \n")
                 .append("<").append(messageContent.toASCIIString()).append("> ").append("<").append(MSM.hasOptionalPart.getURI()).append(">").append(" ?part .")
                 .append("?part ").append("<").append(RDF.type.getURI()).append(">").append(" ").append("<").append(MSM.MessagePart.getURI()).append("> .")
-                .append(" }")
+                .append(" } \n ")
+                .append("} \n ")
                 .toString();
 
         return this.graphStoreManager.listResourcesByQuery(queryStr, "part");
@@ -399,8 +479,371 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
         return false;  //TODO: Implement
     }
 
-    private URI generateUniqueServiceUri() {
-        return this.servicesUri.resolve(UriUtil.generateUniqueId());
+    /**
+     * Deletes the given service
+     * <p/>
+     * After successfully deleting a service, implementations of this method should raise a {@code ServiceDeletedEvent}
+     *
+     * @param serviceUri the URI of the service to delete
+     * @return True if it was deleted or false otherwise
+     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
+     *
+     */
+    @Override
+    public boolean deleteService(URI serviceUri) throws ServiceException {
+        if (serviceUri == null || !serviceUri.isAbsolute()) {
+            log.warn("The Service URI is either absent or relative. Provide an absolute URI");
+            return false;
+        }
+
+        if (!this.graphStoreManager.canBeModified()) {
+            log.warn("The dataset cannot be modified.");
+            return false;
+        }
+
+        log.info("Deleting service - {}", serviceUri.toASCIIString());
+        try {
+            this.graphStoreManager.deleteGraph(getGraphUriForElement(serviceUri));
+        } catch (URISyntaxException e) {
+            log.error("The namespace of the service is an incorrect URI", e);
+            throw new ServiceException("The namespace of the service is an incorrect URI", e);
+        }
+
+        // Generate Event
+        this.getEventBus().post(new ServiceDeletedEvent(new Date(), new Service(serviceUri)));
+
+        return true;
+    }
+
+    /**
+     * Deletes the given service
+     * <p/>
+     * After successfully deleting a service, implementations of this method should raise a {@code ServiceDeletedEvent}
+     *
+     * @param service the service to delete
+     * @return True if it was deleted or false otherwise
+     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
+     *
+     */
+    @Override
+    public boolean deleteService(Service service) throws ServiceException {
+        return deleteService(service.getUri());
+    }
+
+    /**
+     * Deletes all the services on the registry.
+     * This operation cannot be undone. Use with care.
+     *
+     * @return
+     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
+     *
+     */
+    @Override
+    public boolean clearServices() throws ServiceException {
+
+        if (!this.graphStoreManager.canBeModified()) {
+            log.warn("The dataset cannot be modified.");
+            return false;
+        }
+
+        log.info("Clearing services registry.");
+        this.graphStoreManager.clearDataset();
+
+        // Generate Event
+        this.getEventBus().post(new ServicesClearedEvent(new Date()));
+
+        return true;
+    }
+
+    /**
+     * Determines whether a service is known to the registry
+     *
+     * @param serviceUri the URI of the service being looked up
+     * @return True if it is registered in the server
+     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
+     *
+     */
+    @Override
+    public boolean serviceExists(URI serviceUri) throws ServiceException {
+        if (serviceUri == null || !serviceUri.isAbsolute()) {
+            log.warn("The Service URI is either absent or relative. Provide an absolute URI");
+            return false;
+        }
+
+        URI graphUri;
+        try {
+            graphUri = getGraphUriForElement(serviceUri);
+        } catch (URISyntaxException e) {
+            log.warn("The namespace of the URI of the message content is incorrect.", e);
+            return Boolean.FALSE;
+        }
+
+        if (graphUri == null) {
+            log.warn("Could not obtain a graph URI for the element. The URI may not be managed by the server - " + serviceUri);
+            return Boolean.FALSE;
+        }
+
+        String queryStr = new StringBuilder()
+                .append("ASK { \n")
+                .append("GRAPH <").append(graphUri.toASCIIString()).append("> {")
+                .append("<").append(serviceUri.toASCIIString()).append("> <").append(RDF.type.getURI()).append("> <").append(MSM.Service).append("> }\n}").toString();
+
+        Query query = QueryFactory.create(queryStr);
+        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.graphStoreManager.getSparqlQueryEndpoint().toASCIIString(), query);
+        try {
+            return qexec.execAsk();
+        } finally {
+            qexec.close();
+        }
+    }
+
+
+    /**
+     * Given the URI of an element, this method returns the URI of the element from the Minimal Service Model it
+     * corresponds to. That is, it will say if it is a service, operation, etc.
+     * This method uses SPARQL 1.1 to avoid using regexs for performance.
+     *
+     * @param elementUri the URI to get the element type for.
+     * @return the URI of the MSM type it corresponds to.
+     */
+    @Override
+    public Set<URI> getMsmType(URI elementUri) {
+        if (elementUri == null || !elementUri.isAbsolute()) {
+            log.warn("The Element URI is either absent or relative. Provide an absolute URI");
+            return ImmutableSet.of();
+        }
+
+        URI graphUri;
+        try {
+            graphUri = getGraphUriForElement(elementUri);
+        } catch (URISyntaxException e) {
+            log.warn("The namespace of the URI of the message content is incorrect.", e);
+            return ImmutableSet.of();
+        }
+
+        if (graphUri == null) {
+            log.warn("Could not obtain a graph URI for the element. The URI may not be managed by the server - " + elementUri);
+            return ImmutableSet.of();
+        }
+
+        String queryStr = new StringBuilder()
+                .append("SELECT * WHERE { \n")
+                .append(" GRAPH <").append(graphUri.toASCIIString()).append("> { \n")
+                .append("<").append(elementUri.toASCIIString()).append("> <").append(RDF.type.getURI()).append("> ?type .")
+                .append("FILTER(STRSTARTS(STR(?type), \"").append(MSM.NAMESPACE.getURI()).append("\"))")
+                .append(" } \n ")
+                .append("} \n ")
+                .toString();
+
+        return this.graphStoreManager.listResourcesByQuery(queryStr, "type");
+    }
+
+    /**
+     * Obtains the list of model references for a given element.
+     *
+     * @param elementUri the URI of the element for which we want to obtain the model references
+     * @return a Set of URIs with the model references of the given element. If there are no model references the Set should be empty NOT null.
+     */
+    @Override
+    public Set<URI> listModelReferences(URI elementUri) {
+        if (elementUri == null) {
+            return ImmutableSet.of();
+        }
+
+        URI graphUri;
+        try {
+            graphUri = getGraphUriForElement(elementUri);
+        } catch (URISyntaxException e) {
+            log.warn("The namespace of the URI of the message content is incorrect.", e);
+            return ImmutableSet.of();
+        }
+
+        if (graphUri == null) {
+            log.warn("Could not obtain a graph URI for the element. The URI may not be managed by the server - " + elementUri);
+            return ImmutableSet.of();
+        }
+
+        String queryStr = new StringBuilder()
+                .append("SELECT DISTINCT ?model WHERE { \n")
+                .append(" GRAPH <").append(graphUri.toASCIIString()).append("> { \n")
+                .append("<").append(elementUri.toASCIIString()).append("> <").append(SAWSDL.modelReference.getURI()).append("> ?model")
+                .append(" } \n ")
+                .append("} \n ")
+                .toString();
+
+        return this.graphStoreManager.listResourcesByQuery(queryStr, "model");
+    }
+
+    /**
+     * Given a modelReference, this method finds all the elements that have been annotated with it. This method finds
+     * exact annotations. Note that the elements can be services, operations, inputs, etc.
+     *
+     * @param modelReference the actual annotation we are looking for
+     * @return a set of URIs for elements that have been annotated with the requested modelReferences.
+     */
+    @Override
+    public Set<URI> listElementsAnnotatedWith(URI modelReference) {
+        if (modelReference == null) {
+            return ImmutableSet.of();
+        }
+
+        String queryStr = new StringBuilder()
+                .append("SELECT DISTINCT ?element WHERE { \n")
+                .append(" GRAPH ?g { \n")
+                .append(" ?element <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .")
+                .append(" } \n ")
+                .append("} \n ")
+                .toString();
+
+        return this.graphStoreManager.listResourcesByQuery(queryStr, "element");
+    }
+
+    /**
+     * Given the URI of a type (i.e., a modelReference), this method figures out all the operations
+     * that have this as part of their inputs.
+     *
+     * @param modelReference the type of input sought for
+     * @return a Set of URIs of operations that can take this as input type.
+     */
+    @Override
+    public Set<URI> listOperationsWithInputType(URI modelReference) {
+        return this.listEntitiesByDataModel(MSM.Operation, MSM.hasInput, modelReference);
+    }
+
+    /**
+     * Given the URI of a type (i.e., a modelReference), this method figures out all the operations
+     * that have this as part of their inputs.
+     *
+     * @param modelReference the type of output sought for
+     * @return a Set of URIs of operations that generate this output type.
+     */
+    @Override
+    public Set<URI> listOperationsWithOutputType(URI modelReference) {
+        return this.listEntitiesByDataModel(MSM.Operation, MSM.hasOutput, modelReference);
+    }
+
+    /**
+     * Given the URI of a type (i.e., a modelReference), this method figures out all the services
+     * that have this as part of their inputs.
+     *
+     * @param modelReference the type of input sought for
+     * @return a Set of URIs of services that can take this as input type.
+     */
+    @Override
+    public Set<URI> listServicesWithInputType(URI modelReference) {
+        return this.listEntitiesByDataModel(MSM.Service, MSM.hasInput, modelReference);
+    }
+
+    /**
+     * Given the URI of a type (i.e., a modelReference), this method figures out all the services
+     * that have this as part of their inputs.
+     *
+     * @param modelReference the type of output sought for
+     * @return a Set of URIs of services that generate this output type.
+     */
+    @Override
+    public Set<URI> listServicesWithOutputType(URI modelReference) {
+        return this.listEntitiesByDataModel(MSM.Service, MSM.hasOutput, modelReference);
+    }
+
+    /**
+     * This method will be called when the server is being shutdown.
+     * Ensure a clean shutdown.
+     */
+    @Override
+    public void shutdown() {
+        super.shutdown();
+        this.graphStoreManager.shutdown();
+    }
+
+    /**
+     * Given the URI of a type (i.e., a modelReference), this method figures out all the entities of a type
+     * (Service or Operation are the ones that are expected) that have this as part of their inputs or outputs. What
+     * data relationship should be used is also parameterised.
+     *
+     * @param entityType       the type of entity we are looking for (i.e., service or operation)
+     * @param dataPropertyType the kind of data property we are interested in (e.g., inputs, outputs, fault)
+     * @param modelReference   the type of input sought for
+     * @return a Set of URIs of the entities that matched the request or the empty Set otherwise.
+     */
+    private Set<URI> listEntitiesByDataModel(com.hp.hpl.jena.rdf.model.Resource entityType, Property dataPropertyType, URI modelReference) {
+
+        if (modelReference == null) {
+            return ImmutableSet.of();
+        }
+
+        StringBuilder queryBuilder = new StringBuilder()
+                .append("SELECT DISTINCT ?entity WHERE { \n");
+
+        // Deal with engines that store the inference in the default graph (e.g., OWLIM)
+        queryBuilder.append("{").append("\n")
+                .append(" ?entity <").append(RDF.type.getURI()).append("> <").append(entityType.getURI()).append("> .").append("\n");
+
+        // Deal with the difference between Services and Operations
+        if (entityType.equals(MSM.Service)) {
+            queryBuilder.append(" ?entity <").append(MSM.hasOperation.getURI()).append("> ?op.").append("\n")
+                    .append(" ?op <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+        } else {
+            queryBuilder.append(" ?entity <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+        }
+
+        queryBuilder.append(" ?message <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n");
+
+        // UNION
+        queryBuilder.append("\n } UNION { \n");
+
+        queryBuilder.append(" ?entity <").append(RDF.type.getURI()).append("> <").append(entityType.getURI()).append("> .").append("\n");
+
+        // Deal with the difference between Services and Operations
+        if (entityType.equals(MSM.Service)) {
+            queryBuilder.append(" ?entity <").append(MSM.hasOperation.getURI()).append("> ?op.").append("\n")
+                    .append(" ?op <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+        } else {
+            queryBuilder.append(" ?entity <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+        }
+
+        queryBuilder.append(" ?message <").append(MSM.hasPartTransitive.getURI()).append("> ?part .").append("\n")
+                .append(" ?part <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n");
+
+        // UNION
+        queryBuilder.append("\n } UNION { \n");
+
+        // Deal with engines that store the inference in the service graph (e.g., Jena without defaultUnionGraph)
+        queryBuilder.append("GRAPH ?g { \n");
+        queryBuilder.append(" ?entity <").append(RDF.type.getURI()).append("> <").append(entityType.getURI()).append("> .").append("\n");
+
+        // Deal with the difference between Services and Operations
+        if (entityType.equals(MSM.Service)) {
+            queryBuilder.append(" ?entity <").append(MSM.hasOperation.getURI()).append("> ?op.").append("\n")
+                    .append(" ?op <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+        } else {
+            queryBuilder.append(" ?entity <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+        }
+
+        queryBuilder.append(" ?message <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n");
+        queryBuilder.append("} \n");
+        // UNION
+        queryBuilder.append("\n } UNION { \n");
+
+        queryBuilder.append("GRAPH ?g { \n");
+        queryBuilder.append(" ?entity <").append(RDF.type.getURI()).append("> <").append(entityType.getURI()).append("> .").append("\n");
+
+        // Deal with the difference between Services and Operations
+        if (entityType.equals(MSM.Service)) {
+            queryBuilder.append(" ?entity <").append(MSM.hasOperation.getURI()).append("> ?op.").append("\n")
+                    .append(" ?op <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+        } else {
+            queryBuilder.append(" ?entity <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+        }
+
+        queryBuilder.append(" ?message <").append(MSM.hasPartTransitive.getURI()).append("> ?part .").append("\n")
+                .append(" ?part <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n")
+                .append("}").append("\n");
+
+        queryBuilder.append("} \n");
+        queryBuilder.append("}");
+
+        return this.graphStoreManager.listResourcesByQuery(queryBuilder.toString(), "entity");
     }
 
     /**
@@ -494,6 +937,25 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
         }
     }
 
+
+    private URI getGraphUriForElement(URI elementUri) throws URISyntaxException {
+        // Exit early if necessary
+        if (elementUri == null || !elementUri.isAbsolute())
+            return null;
+
+        URI elmtPath = this.servicesUri.relativize(elementUri);
+        // Exit if not relative to server
+        if (elmtPath.isAbsolute())
+            return null;
+
+        String graphId = elmtPath.toASCIIString().substring(0, elmtPath.toASCIIString().indexOf('/'));
+        return this.servicesUri.resolve(graphId);
+    }
+
+    private URI generateUniqueServiceUri() {
+        return this.servicesUri.resolve(UriUtil.generateUniqueId());
+    }
+
     /**
      * Returns the URI of the document defining the service, i.e., without the
      * fragment.
@@ -503,306 +965,5 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      */
     private URI getServiceBaseUri(String serviceId) {
         return this.servicesUri.resolve(serviceId);
-    }
-
-    /**
-     * Deletes the given service
-     * <p/>
-     * After successfully deleting a service, implementations of this method should raise a {@code ServiceDeletedEvent}
-     *
-     * @param serviceUri the URI of the service to delete
-     * @return True if it was deleted or false otherwise
-     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
-     */
-    @Override
-    public boolean deleteService(URI serviceUri) throws ServiceException {
-        if (serviceUri == null || !serviceUri.isAbsolute()) {
-            log.warn("The Service URI is either absent or relative. Provide an absolute URI");
-            return false;
-        }
-
-        if (!this.graphStoreManager.canBeModified()) {
-            log.warn("The dataset cannot be modified.");
-            return false;
-        }
-
-        log.info("Deleting service - {}", serviceUri.toASCIIString());
-        try {
-            this.graphStoreManager.deleteGraph(URIUtil.getNameSpace(serviceUri));
-        } catch (URISyntaxException e) {
-            log.error("The namespace of the service is an incorrect URI", e);
-            throw new ServiceException("The namespace of the service is an incorrect URI", e);
-        }
-
-        // Generate Event
-        this.getEventBus().post(new ServiceDeletedEvent(new Date(), new Service(serviceUri)));
-
-        return true;
-    }
-
-    /**
-     * Deletes the given service
-     * <p/>
-     * After successfully deleting a service, implementations of this method should raise a {@code ServiceDeletedEvent}
-     *
-     * @param service the service to delete
-     * @return True if it was deleted or false otherwise
-     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
-     */
-    @Override
-    public boolean deleteService(Service service) throws ServiceException {
-        return deleteService(service.getUri());
-    }
-
-    /**
-     * Deletes all the services on the registry.
-     * This operation cannot be undone. Use with care.
-     *
-     * @return
-     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
-     */
-    @Override
-    public boolean clearServices() throws ServiceException {
-
-        if (!this.graphStoreManager.canBeModified()) {
-            log.warn("The dataset cannot be modified.");
-            return false;
-        }
-
-        log.info("Clearing services registry.");
-        this.graphStoreManager.clearDataset();
-
-        // Generate Event
-        this.getEventBus().post(new ServicesClearedEvent(new Date()));
-
-        return true;
-    }
-
-    /**
-     * Determines whether a service is known to the registry
-     *
-     * @param serviceUri the URI of the service being looked up
-     * @return True if it is registered in the server
-     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
-     */
-    @Override
-    public boolean serviceExists(URI serviceUri) throws ServiceException {
-        if (serviceUri == null || !serviceUri.isAbsolute()) {
-            log.warn("The Service URI is either absent or relative. Provide an absolute URI");
-            return false;
-        }
-
-        String queryStr = null;
-        try {
-            queryStr = new StringBuilder()
-                    .append("ASK { \n")
-                    .append("GRAPH <").append(URIUtil.getNameSpace(serviceUri).toASCIIString()).append("> {")
-                    .append("<").append(serviceUri.toASCIIString()).append("> <").append(RDF.type.getURI()).append("> <").append(MSM.Service).append("> }\n}").toString();
-        } catch (URISyntaxException e) {
-            log.error("The namespace of the URI of the service is incorrect.", e);
-            throw new ServiceException("The namespace of the URI of the service is incorrect.", e);
-        }
-
-        Query query = QueryFactory.create(queryStr);
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.graphStoreManager.getSparqlQueryEndpoint().toASCIIString(), query);
-        try {
-            return qexec.execAsk();
-        } finally {
-            qexec.close();
-        }
-    }
-
-
-    /**
-     * Given the URI of an element, this method returns the URI of the element from the Minimal Service Model it
-     * corresponds to. That is, it will say if it is a service, operation, etc.
-     * This method uses SPARQL 1.1 to avoid using regexs for performance.
-     *
-     * @param elementUri the URI to get the element type for.
-     * @return the URI of the MSM type it corresponds to.
-     */
-    @Override
-    public Set<URI> getMsmType(URI elementUri) {
-        if (elementUri == null || !elementUri.isAbsolute()) {
-            log.warn("The Element URI is either absent or relative. Provide an absolute URI");
-            return null;
-        }
-
-        String queryStr = null;
-        queryStr = new StringBuilder()
-                .append("SELECT * WHERE { \n")
-                .append("<").append(elementUri.toASCIIString()).append("> <").append(RDF.type.getURI()).append("> ?type .")
-                .append("FILTER(STRSTARTS(STR(?type), \"").append(MSM.NAMESPACE.getURI()).append("\"))")
-                .append("\n }")
-                .toString();
-
-        return this.graphStoreManager.listResourcesByQuery(queryStr, "type");
-    }
-
-    /**
-     * Obtains the list of model references for a given element.
-     *
-     * @param elementUri the URI of the element for which we want to obtain the model references
-     * @return a Set of URIs with the model references of the given element. If there are no model references the Set should be empty NOT null.
-     */
-    @Override
-    public Set<URI> listModelReferences(URI elementUri) {
-        if (elementUri == null) {
-            return ImmutableSet.of();
-        }
-
-        String queryStr = new StringBuilder()
-                .append("select DISTINCT ?model where { \n")
-                .append("<").append(elementUri.toASCIIString()).append("> <").append(SAWSDL.modelReference.getURI()).append("> ?model")
-                .append(" }")
-                .toString();
-
-        return this.graphStoreManager.listResourcesByQuery(queryStr, "model");
-    }
-
-    /**
-     * Given a modelReference, this method finds all the elements that have been annotated with it. This method finds
-     * exact annotations. Note that the elements can be services, operations, inputs, etc.
-     *
-     * @param modelReference the actual annotation we are looking for
-     * @return a set of URIs for elements that have been annotated with the requested modelReferences.
-     */
-    @Override
-    public Set<URI> listElementsAnnotatedWith(URI modelReference) {
-        if (modelReference == null) {
-            return ImmutableSet.of();
-        }
-
-        String queryStr = new StringBuilder()
-                .append("SELECT DISTINCT ?element where { \n")
-                .append(" ?element <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .")
-                .append(" }")
-                .toString();
-
-        return this.graphStoreManager.listResourcesByQuery(queryStr, "element");
-    }
-
-    /**
-     * Given the URI of a type (i.e., a modelReference), this method figures out all the entities of a type
-     * (Service or Operation are the ones that are expected) that have this as part of their inputs or outputs. What
-     * data relationship should be used is also parameterised.
-     *
-     * @param entityType       the type of entity we are looking for (i.e., service or operation)
-     * @param dataPropertyType the kind of data property we are interested in (e.g., inputs, outputs, fault)
-     * @param modelReference   the type of input sought for
-     * @return a Set of URIs of the entities that matched the request or the empty Set otherwise.
-     */
-    private Set<URI> listEntitiesByDataModel(com.hp.hpl.jena.rdf.model.Resource entityType, Property dataPropertyType, URI modelReference) {
-
-        if (modelReference == null) {
-            return ImmutableSet.of();
-        }
-
-        StringBuilder queryBuilder = new StringBuilder()
-                .append("SELECT DISTINCT ?entity where {").append("\n")
-                .append("{").append("\n")
-                .append(" ?entity <").append(RDF.type.getURI()).append("> <").append(entityType.getURI()).append("> .").append("\n");
-
-        // Deal with the difference between Services and Operations
-        if (entityType.equals(MSM.Service)) {
-            queryBuilder.append(" ?entity <").append(MSM.hasOperation.getURI()).append("> ?op.").append("\n")
-                    .append(" ?op <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
-        } else {
-            queryBuilder.append(" ?entity <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
-        }
-
-        queryBuilder.append(" ?message <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n")
-                .append("}")
-                .append(" UNION ")
-                .append("{").append("\n")
-                .append(" ?entity <").append(RDF.type.getURI()).append("> <").append(entityType.getURI()).append("> .").append("\n");
-
-        // Deal with the difference between Services and Operations
-        if (entityType.equals(MSM.Service)) {
-            queryBuilder.append(" ?entity <").append(MSM.hasOperation.getURI()).append("> ?op.").append("\n")
-                    .append(" ?op <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
-        } else {
-            queryBuilder.append(" ?entity <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
-        }
-
-        queryBuilder.append(" ?message <").append(MSM.hasPartTransitive.getURI()).append("> ?part .").append("\n")
-                .append(" ?part <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n")
-                .append("}").append("\n")
-                .append("}");
-
-        return this.graphStoreManager.listResourcesByQuery(queryBuilder.toString(), "entity");
-
-    }
-
-    /**
-     * Given the URI of a type (i.e., a modelReference), this method figures out all the operations
-     * that have this as part of their inputs.
-     *
-     * @param modelReference the type of input sought for
-     * @return a Set of URIs of operations that can take this as input type.
-     */
-    @Override
-    public Set<URI> listOperationsWithInputType(URI modelReference) {
-        return this.listEntitiesByDataModel(MSM.Operation, MSM.hasInput, modelReference);
-    }
-
-    /**
-     * Given the URI of a type (i.e., a modelReference), this method figures out all the operations
-     * that have this as part of their inputs.
-     *
-     * @param modelReference the type of output sought for
-     * @return a Set of URIs of operations that generate this output type.
-     */
-    @Override
-    public Set<URI> listOperationsWithOutputType(URI modelReference) {
-        return this.listEntitiesByDataModel(MSM.Operation, MSM.hasOutput, modelReference);
-    }
-
-    /**
-     * Given the URI of a type (i.e., a modelReference), this method figures out all the services
-     * that have this as part of their inputs.
-     *
-     * @param modelReference the type of input sought for
-     * @return a Set of URIs of services that can take this as input type.
-     */
-    @Override
-    public Set<URI> listServicesWithInputType(URI modelReference) {
-        return this.listEntitiesByDataModel(MSM.Service, MSM.hasInput, modelReference);
-    }
-
-    /**
-     * Given the URI of a type (i.e., a modelReference), this method figures out all the services
-     * that have this as part of their inputs.
-     *
-     * @param modelReference the type of output sought for
-     * @return a Set of URIs of services that generate this output type.
-     */
-    @Override
-    public Set<URI> listServicesWithOutputType(URI modelReference) {
-        return this.listEntitiesByDataModel(MSM.Service, MSM.hasOutput, modelReference);
-    }
-
-    /**
-     * This method will be called when the server is initialised.
-     * If necessary it should take care of updating any indexes on boot time.
-     */
-    @Override
-    public void initialise() {
-        super.initialise();
-        this.graphStoreManager.initialise();
-    }
-
-    /**
-     * This method will be called when the server is being shutdown.
-     * Ensure a clean shutdown.
-     */
-    @Override
-    public void shutdown() {
-        super.shutdown();
-        this.graphStoreManager.shutdown();
     }
 }

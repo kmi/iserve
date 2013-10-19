@@ -29,7 +29,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
+import uk.ac.open.kmi.iserve.commons.io.impl.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
@@ -94,16 +94,6 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
 
         this.graphStoreManager = graphStoreFactory.create(sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint, defaultModels, locationMappings, ignoredImports);
         this.unreachableModels = new ConcurrentHashMap<URI, Date>();
-    }
-
-    /**
-     * This method will be called when the server is initialised.
-     * If necessary it should take care of updating any indexes on boot time.
-     */
-    @Override
-    public void initialise() {
-        super.initialise();
-        this.graphStoreManager.initialise();
     }
 
     /**

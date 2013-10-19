@@ -269,20 +269,11 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
     }
 
     /**
-     * This method will be called when the server is initialised.
-     * If necessary it should take care of updating any indexes on boot time.
-     */
-    @Override
-    public void initialise() {
-        // TODO: implement
-    }
-
-    /**
      * This method will be called when the server is being shutdown.
      * Ensure a clean shutdown.
      */
     @Override
     public void shutdown() {
-        // TODO: implement
+        return;
     }
 }

@@ -23,8 +23,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.commons.io.ServiceWriter;
-import uk.ac.open.kmi.iserve.commons.io.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.io.Transformer;
+import uk.ac.open.kmi.iserve.commons.io.impl.ServiceWriterImpl;
 import uk.ac.open.kmi.iserve.commons.model.Service;
 
 import java.io.File;

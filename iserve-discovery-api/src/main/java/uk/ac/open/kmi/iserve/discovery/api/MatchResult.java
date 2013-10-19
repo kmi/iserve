@@ -24,7 +24,7 @@ import java.net.URI;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @author <a href="mailto:pablo.rodriguez.mier@usc.es">Pablo Rodriguez Mier</a> (CITIUS - Universidad de Santiago de Compostela)
  */
-public interface MatchResult {
+public interface MatchResult<T extends MatchType> extends Comparable<T> {
 
     /**
      * The resource we wanted to find matches for, i.e., the origin

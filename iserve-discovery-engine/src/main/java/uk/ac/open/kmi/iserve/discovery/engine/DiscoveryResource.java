@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.BasicScorer;
-import uk.ac.open.kmi.iserve.discovery.util.MatchComparator;
+import uk.ac.open.kmi.iserve.discovery.util.MatchResultComparators;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -318,8 +318,8 @@ public class DiscoveryResource {
 
         // Order the results by score and then by url
         Ordering<Map.Entry<URL, MatchResult>> entryOrdering =
-                Ordering.from(MatchComparator.BY_TYPE).onResultOf(getMatchResult).reverse().
-                        compound(Ordering.from(MatchComparator.BY_URI).onResultOf(getMatchResult));
+                Ordering.from(MatchResultComparators.BY_TYPE).onResultOf(getMatchResult).reverse().
+                        compound(Ordering.from(MatchResultComparators.BY_URI).onResultOf(getMatchResult));
 
         // First obtain the map with the values scored, then order it
         Map<URL, MatchResult> scoredMap = Maps.transformValues(matchingResults, new BasicScorer());

@@ -38,7 +38,7 @@ public abstract class IntegratedComponent implements iServeComponent {
 
     private static final Logger log = LoggerFactory.getLogger(IntegratedComponent.class);
 
-    private final EventBus eventBus; // inject
+    private final EventBus eventBus;
     private final URI iserveUri;
 
     @Inject
@@ -70,15 +70,6 @@ public abstract class IntegratedComponent implements iServeComponent {
 
     public URI getIserveUri() {
         return iserveUri;
-    }
-
-    /**
-     * This method will be called when the server is initialised.
-     * If necessary it should take care of updating any indexes on boot time.
-     */
-    @Override
-    public void initialise() {
-        // Add any common initialisation that should occur
     }
 
     /**
