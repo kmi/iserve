@@ -18,10 +18,7 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.common.base.Function;
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Ordering;
-import com.google.common.collect.Table;
+import com.google.common.collect.*;
 import com.google.inject.Inject;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -36,10 +33,9 @@ import uk.ac.open.kmi.iserve.discovery.api.impl.AtomicMatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.Util;
-import uk.ac.open.kmi.iserve.discovery.util.MatchComparator;
+import uk.ac.open.kmi.iserve.discovery.util.MatchResultComparators;
 
 import javax.inject.Named;
-import javax.inject.Singleton;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -55,7 +51,6 @@ import java.util.Set;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 30/07/2013
  */
-@Singleton
 public class SparqlLogicConceptMatcher implements ConceptMatcher {
 
     private static final Logger log = LoggerFactory.getLogger(SparqlLogicConceptMatcher.class);
@@ -84,8 +79,8 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
 
     // Order the results by score and then by url
     protected final Ordering<Map.Entry<URI, MatchResult>> entryOrdering =
-            Ordering.from(MatchComparator.BY_TYPE).onResultOf(getMatchResult).reverse().
-                    compound(Ordering.from(MatchComparator.BY_URI).onResultOf(getMatchResult));
+            Ordering.from(MatchResultComparators.BY_TYPE).onResultOf(getMatchResult).reverse().
+                    compound(Ordering.from(MatchResultComparators.BY_URI).onResultOf(getMatchResult));
 
     @Inject
     protected SparqlLogicConceptMatcher(@Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlEndpoint) throws URISyntaxException {
@@ -206,7 +201,7 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
 
     private Table<URI, URI, MatchResult> queryForMatchResults(String queryStr) {
 
-        Table<URI, URI, MatchResult> result = HashBasedTable.create();
+        ImmutableTable.Builder<URI, URI, MatchResult> result = ImmutableTable.builder();
 
         // Query the engine
         Query query = QueryFactory.create(queryStr);
@@ -240,7 +235,7 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
             qexec.close();
         }
 
-        return result;
+        return result.build();
     }
 
     /**

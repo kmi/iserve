@@ -20,8 +20,9 @@ import com.google.inject.multibindings.MapBinder;
 import uk.ac.open.kmi.iserve.core.ConfiguredModule;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
-
-import javax.inject.Singleton;
+import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoverer;
+import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoverer;
+import uk.ac.open.kmi.iserve.sal.manager.impl.iServeManagementModule;
 
 /**
  * DiscoMatchersPlugin is a Guice module providing a set of Matchers implementation for concept and services matching
@@ -36,8 +37,19 @@ public class DiscoMatchersPlugin extends ConfiguredModule implements MatcherPlug
         // Ensure we configure it
         super.configure();
 
-        MapBinder<String, ConceptMatcher> conceptBinder = MapBinder.newMapBinder(binder(), String.class, ConceptMatcher.class);
-        conceptBinder.addBinding(SparqlLogicConceptMatcher.class.getName()).to(SparqlLogicConceptMatcher.class).in(Singleton.class);
+        // Install iServe Management
+        install(new iServeManagementModule());
 
+        // Bind Concept Matchers
+        MapBinder<String, ConceptMatcher> conceptBinder = MapBinder.newMapBinder(binder(), String.class, ConceptMatcher.class);
+        conceptBinder.addBinding(SparqlLogicConceptMatcher.class.getName()).to(SparqlLogicConceptMatcher.class);
+        conceptBinder.addBinding(SparqlIndexedLogicConceptMatcher.class.getName()).to(SparqlIndexedLogicConceptMatcher.class);
+
+        // Bind fall back Concept Matcher
+        bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
+
+        // Single bind discoverers for now
+        bind(OperationDiscoverer.class).to(GenericLogicDiscoverer.class);
+        bind(ServiceDiscoverer.class).to(GenericLogicDiscoverer.class);
     }
 }
