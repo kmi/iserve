@@ -1,20 +1,39 @@
+/*
+ * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.ac.open.kmi.iserve.discovery.hazelcast;
 
 import com.google.common.collect.Table;
 import com.google.inject.Inject;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
-import com.hazelcast.client.nearcache.ClientNearCache;
 import com.hazelcast.config.NearCacheConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
-import uk.ac.open.kmi.iserve.discovery.api.*;
+import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
+import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
+import uk.ac.open.kmi.iserve.discovery.api.MatchType;
+import uk.ac.open.kmi.iserve.discovery.api.MatchTypes;
 import uk.ac.open.kmi.iserve.discovery.api.impl.AbstractMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.AtomicMatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.impl.SparqlLogicConceptMatcher;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
+import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import javax.inject.Named;
@@ -31,7 +50,7 @@ public class HazelcastIndexedConceptMatcher extends AbstractMatcher implements C
 
     private IMap<URI, Map<URI, String>> map;
     private SparqlLogicConceptMatcher matcher;
-    private iServeFacade facade;
+    private iServeManager facade;
 
     @Inject
     protected HazelcastIndexedConceptMatcher(SparqlLogicConceptMatcher sparqlMatcher,
@@ -63,20 +82,20 @@ public class HazelcastIndexedConceptMatcher extends AbstractMatcher implements C
         //log.debug("Map size: " + map.size());
     }
 
-    private void warmup(IMap<URI,Map<URI, String>> map) {
-        for(URI key : map.keySet()){
+    private void warmup(IMap<URI, Map<URI, String>> map) {
+        for (URI key : map.keySet()) {
             System.out.println(key + " -> " + map.get(key));
         }
     }
 
     // TODO: This should not be here. A separate crawler is required to update the index
-    private void populate(IMap<URI,Map<URI, String>> map) {
+    private void populate(IMap<URI, Map<URI, String>> map) {
         Set<URI> classes = new HashSet<URI>(this.facade.getKnowledgeBaseManager().listConcepts(null));
         Table<URI, URI, MatchResult> table = matcher.listMatchesAtLeastOfType(classes, LogicConceptMatchType.Plugin);
-        for(URI origin : table.rowKeySet()){
+        for (URI origin : table.rowKeySet()) {
             Map<URI, String> destMatch = new HashMap<URI, String>();
             Map<URI, MatchResult> dest = table.row(origin);
-            for(URI destUri : dest.keySet()){
+            for (URI destUri : dest.keySet()) {
                 destMatch.put(destUri, dest.get(destUri).getMatchType().name());
             }
             map.put(origin, destMatch);
@@ -102,7 +121,7 @@ public class HazelcastIndexedConceptMatcher extends AbstractMatcher implements C
     public MatchResult match(URI origin, URI destination) {
         // Get match by origin
         String matchType = this.map.get(origin).get(destination);
-        if (matchType!=null){
+        if (matchType != null) {
             // Disco match type
             LogicConceptMatchType type = LogicConceptMatchType.valueOf(matchType);
             return new AtomicMatchResult(origin, destination, type, this);

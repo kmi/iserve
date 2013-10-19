@@ -42,10 +42,10 @@ public class DiscoMatchersPlugin extends ConfiguredModule implements MatcherPlug
     protected void configure() {
         // Ensure we configure it
         super.configure();
-        
+
         // Install iServe Management
         install(new iServeManagementModule());
-        
+
         bind(IndexFactory.class).to(DefaultConceptMatcherIndexFactory.class);
         bind(MapFactory.class).to(ConcurrentHashMapFactory.class);
 
@@ -54,7 +54,7 @@ public class DiscoMatchersPlugin extends ConfiguredModule implements MatcherPlug
         conceptBinder.addBinding(SparqlLogicConceptMatcher.class.getName()).to(SparqlLogicConceptMatcher.class);
         conceptBinder.addBinding(SparqlIndexedLogicConceptMatcher.class.getName()).to(SparqlIndexedLogicConceptMatcher.class);
         conceptBinder.addBinding(IndexedLogicConceptMatcher.class.getName()).to(IndexedLogicConceptMatcher.class).in(Singleton.class);
-        
+
         // Bind fall back Concept Matcher
         bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
 
