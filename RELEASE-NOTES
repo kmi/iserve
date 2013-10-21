@@ -26,7 +26,7 @@ of direct access to concrete registry implementations. As a consequence a slight
 the system is entirely decoupled from concrete RDF stores implementations.
 - iServe now makes use of dependency injection and automated implementation loading to provide further modularity
 and extensibility
-- Data management has been adapted and makes further use of named graphs for better data management
+- Data management has been adapted and makes further use of named graphs for better data management and performance
 - Included a notification mechanism as part of the infrastructure to support updates when changes on the underlying data
 occur. The implementation is based on Guava's event bus
 - Better centralised configuration mechanism (old configuration files need updating)
@@ -35,6 +35,9 @@ occur. The implementation is based on Guava's event bus
     - More structured interfaces
     - Added notion of Knowledge Base manager (implementation with local indexing and/or remote SPARQL service)
 - Added new GUI based on ELDA for visualising and querying the registry
+- Provisioning of Read/Write Linked API for service descriptions
+- Added Ontology Crawling mechanism that automatically obtain required ontologies
+- Significant performance improvements both for Services manipulation as well as Concept matching
 
 
 Import
