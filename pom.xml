@@ -214,7 +214,7 @@
                 <configuration>
                     <message>Creating site for ${project.artifactId}, ${project.version}</message>
                     <!-- this does the trick to place every module in the correct subfolder -->
-                    <path>${distributionManagement.site.url}</path>
+                    <path>${project.distributionManagement.site.url}</path>
                     <merge>true</merge>
                     <!--<dryRun>true</dryRun>-->
                 </configuration>
@@ -300,6 +300,12 @@
             <id>release</id>
             <properties>
                 <site.path>${project.version}</site.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>update-latest</id>
+            <properties>
+                <site.path>latest</site.path>
             </properties>
         </profile>
     </profiles>
