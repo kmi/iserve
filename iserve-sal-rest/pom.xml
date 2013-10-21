@@ -24,9 +24,8 @@
         <groupId>uk.ac.open.kmi.iserve</groupId>
         <version>2.0.0-SNAPSHOT</version>
     </parent>
-    <groupId>uk.ac.open.kmi.iserve.sal</groupId>
+
     <artifactId>iserve-sal-rest</artifactId>
-    <version>${project.parent.version}</version>
     <packaging>war</packaging>
 
     <name>iServe SAL REST</name>
@@ -127,7 +126,7 @@
 
         <!-- iServe dependencies -->
         <dependency>
-            <groupId>uk.ac.open.kmi.iserve.sal</groupId>
+            <groupId>${project.parent.groupId}</groupId>
             <artifactId>iserve-sal-core</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -306,13 +305,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-
         <!-- Include Test Resources -->
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
@@ -422,7 +414,6 @@
 
         </plugins>
     </build>
-    <url>http://iserve.kmi.open.ac.uk/</url>
 
     <repositories>
         <repository>

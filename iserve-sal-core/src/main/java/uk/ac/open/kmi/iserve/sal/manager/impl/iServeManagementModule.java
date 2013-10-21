@@ -55,7 +55,7 @@ public class iServeManagementModule extends ConfiguredModule {
 //        bind(iServeManager.class).to(iServeFacade.class);
 
         bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
-        bind(ServiceManager.class).to(ServiceManagerIndexRdf.class);
+        bind(ServiceManager.class).to(ServiceManagerSparql.class);
         bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class);
         bind(iServeManager.class).to(iServeFacade.class);
     }

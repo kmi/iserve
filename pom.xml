@@ -59,6 +59,14 @@
         <url>https://github.com/kmi/iserve/issues</url>
     </issueManagement>
 
+    <distributionManagement>
+        <site>
+            <id>github-pages-site</id>
+            <name>Deployment through GitHub's site deployment plugin</name>
+            <url>${site.path}</url>
+        </site>
+    </distributionManagement>
+
     <developers>
         <developer>
             <id>cpedrinaci</id>
@@ -120,21 +128,11 @@
         <commons-config.version>1.9</commons-config.version>
 
         <!-- Configuration for GitHub deployment -->
-        <site.url>http://kmi.github.io/iserve/</site.url>
+        <site.path>snapshot/${project.version}</site.path>
         <github.global.server>github</github.global.server>
-        <site.deploy.id>gh-pages</site.deploy.id>
-        <site.deploy.url/>
         <repositoryName>iserve</repositoryName>
         <repositoryOwner>kmi</repositoryOwner>
     </properties>
-
-    <distributionManagement>
-        <site>
-            <id>${site.deploy.id}</id>
-            <name>Deployment through GitHub's site deployment plugin</name>
-            <url>${site.deploy.url}</url>
-        </site>
-    </distributionManagement>
 
     <modules>
         <module>iserve-commons-io</module>
@@ -151,6 +149,16 @@
         <module>iserve-test-resources</module>
         <!-- <module>iserve-analysis-engine</module> -->
     </modules>
+
+    <dependencies>
+        <!--Test dependencies-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         <pluginManagement>
@@ -202,12 +210,13 @@
                 <!-- GitHub site plug-in for deployment to GitHub pages -->
                 <groupId>com.github.github</groupId>
                 <artifactId>site-maven-plugin</artifactId>
-                <version>0.7</version>
+                <version>0.9</version>
                 <configuration>
                     <message>Creating site for ${project.artifactId}, ${project.version}</message>
                     <!-- this does the trick to place every module in the correct subfolder -->
-                    <path>${project.distributionManagement.site.url}</path>
+                    <path>${distributionManagement.site.url}</path>
                     <merge>true</merge>
+                    <!--<dryRun>true</dryRun>-->
                 </configuration>
                 <executions>
                     <execution>
@@ -225,6 +234,7 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
+                    <useReleaseProfile>true</useReleaseProfile>
                     <pushChanges>false</pushChanges>
                     <localCheckout>true</localCheckout>
                 </configuration>
@@ -285,4 +295,12 @@
         </repository>
     </repositories>
 
+    <profiles>
+        <profile>
+            <id>release</id>
+            <properties>
+                <site.path>${project.version}</site.path>
+            </properties>
+        </profile>
+    </profiles>
 </project>
