@@ -14,10 +14,10 @@
     dc:creator <http://vitvar.com/>, <http://kmi.open.ac.uk/>, <http://identifiers.kmi.open.ac.uk/people/carlos-pedrinaci/> , <http://jacek.cz/#me>;
     dc:modified "2011-12-03"^^xsd:date ;
     dc:modified "2012-03-14"^^xsd:date ;
-    dc:modified "2012-05-08"^^xsd:date ;
+    dc:modified "2013-05-08"^^xsd:date ;
     dc:modified "2013-10-03"^^xsd:date ;
     rdfs:label "Web API Grounding Model"@en ;
-    owl:versionInfo "2013-10-03" ;
+    owl:versionInfo "1.2" ;
     owl:priorVersion <http://purl.org/hrests/v2#> ;
     owl:imports <http://iserve.kmi.open.ac.uk/ns/msm> , <http://www.w3.org/2011/http>, <http://www.w3.org/2011/http-methods> .
 
