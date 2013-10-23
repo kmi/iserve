@@ -157,11 +157,14 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
 
     private void configureProxy(ProxyConfiguration proxyCfg) {
         Properties prop = System.getProperties();
-        if (proxyCfg != null && proxyCfg.proxyHost != null && proxyCfg.proxyPort != null) {
+        if (proxyCfg != null &&
+                proxyCfg.proxyHost != null && !proxyCfg.proxyHost.isEmpty() &&
+                proxyCfg.proxyPort != null && !proxyCfg.proxyPort.isEmpty()) {
             log.info("Configuring proxy: Host - {} - Port {} .", proxyCfg.proxyHost, proxyCfg.proxyPort);
             prop.put(JAVA_PROXY_HOST_PROP, proxyCfg.proxyHost);
             prop.put(JAVA_PROXY_PORT_PROP, proxyCfg.proxyPort);
         } else {
+            log.info("No proxy required.");
             prop.remove(JAVA_PROXY_HOST_PROP);
             prop.remove(JAVA_PROXY_PORT_PROP);
         }

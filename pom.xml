@@ -132,6 +132,31 @@
         <github.global.server>github</github.global.server>
         <repositoryName>iserve</repositoryName>
         <repositoryOwner>kmi</repositoryOwner>
+
+        <!-- iServe Configuration properties for deployments -->
+        <!-- If you are using the config.properties templated file, it will be automatically updated -->
+        <!-- You can configure this here or (Recommended), you can do it in your own settings.xml using profiles -->
+        <!-- See http://maven.apache.org/settings.html#Profiles -->
+        <!-- Proxy Configuration -->
+        <iserve.proxyHost></iserve.proxyHost>
+        <iserve.proxyPort></iserve.proxyPort>
+
+        <!--iServe Configuration-->
+        <iserve.url></iserve.url>
+
+        <!--Documents Server-->
+        <iserve.documents.folder></iserve.documents.folder>
+
+        <!--Core Data RDF Server-->
+        <iserve.services.sparql.query></iserve.services.sparql.query>
+        <iserve.services.sparql.update></iserve.services.sparql.update>
+        <iserve.services.sparql.service></iserve.services.sparql.service>
+
+        <!-- Configuration for Server Deployment: configure in your settings.xml -->
+        <deployment.server.url/>
+        <deployment.server.user/>
+        <deployment.server.password/>
+        <deployment.server.context/>
     </properties>
 
     <modules>
@@ -161,16 +186,6 @@
     </dependencies>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>versions-maven-plugin</artifactId>
-                    <version>2.1</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -183,8 +198,9 @@
                 <version>2.1</version>
             </plugin>
 
-            <!-- Configure Maven site plugin for Reflow skin and Markdown support -->
+
             <plugin>
+                <!-- Configure Maven site plugin for Reflow skin and Markdown support -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.3</version>
@@ -237,6 +253,34 @@
                     <useReleaseProfile>true</useReleaseProfile>
                     <pushChanges>false</pushChanges>
                     <localCheckout>true</localCheckout>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <!-- Deployment to servers -->
+                <groupId>org.codehaus.cargo</groupId>
+                <artifactId>cargo-maven2-plugin</artifactId>
+                <version>1.4.2</version>
+                <configuration>
+                    <!-- Container configuration -->
+                    <!-- Include your own setup for this -->
+                    <container>
+                        <containerId>tomcat-dev</containerId>
+                        <type>remote</type>
+                    </container>
+                    <configuration>
+                        <type>runtime</type>
+                        <properties>
+                            <cargo.tomcat.manager.url>${deployment.server.url}</cargo.tomcat.manager.url>
+                            <cargo.remote.username>${deployment.server.user}</cargo.remote.username>
+                            <cargo.remote.password>${deployment.server.password}</cargo.remote.password>
+                        </properties>
+                    </configuration>
+                    <deployables>
+                        <deployable>
+                            <context>${deployment.server.context}</context>
+                        </deployable>
+                    </deployables>
                 </configuration>
             </plugin>
         </plugins>
