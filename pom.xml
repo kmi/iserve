@@ -21,6 +21,7 @@
     <groupId>uk.ac.open.kmi.iserve</groupId>
     <artifactId>iserve-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
+
     <packaging>pom</packaging>
 
     <name>iServe</name>
@@ -132,6 +133,14 @@
         <github.global.server>github</github.global.server>
         <repositoryName>iserve</repositoryName>
         <repositoryOwner>kmi</repositoryOwner>
+
+        <shared.resources.dir>${project.build.directory}/conf</shared.resources.dir>
+
+        <!-- Configuration for Server Deployment: configure in your settings.xml -->
+        <deployment.server.url/>
+        <deployment.server.user/>
+        <deployment.server.password/>
+        <deployment.server.context/>
     </properties>
 
     <modules>
@@ -147,6 +156,8 @@
         <module>iserve-discovery-disco</module>
         <module>iserve-discovery-engine</module>
         <module>iserve-test-resources</module>
+        <module>iserve-webapp</module>
+        <module>shared-resources</module>
         <!-- <module>iserve-analysis-engine</module> -->
     </modules>
 
@@ -161,15 +172,13 @@
     </dependencies>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>versions-maven-plugin</artifactId>
-                    <version>2.1</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <!-- Include the configuration as test resources for every module -->
+        <testResources>
+            <testResource>
+                <directory>${shared.resources.dir}</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
 
         <plugins>
             <plugin>
@@ -177,14 +186,9 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.9.1</version>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.1</version>
-            </plugin>
 
-            <!-- Configure Maven site plugin for Reflow skin and Markdown support -->
             <plugin>
+                <!-- Configure Maven site plugin for Reflow skin and Markdown support -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.3</version>
@@ -239,16 +243,43 @@
                     <localCheckout>true</localCheckout>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <!-- Deployment to servers -->
+                <groupId>org.codehaus.cargo</groupId>
+                <artifactId>cargo-maven2-plugin</artifactId>
+                <version>1.4.2</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <!-- Container configuration -->
+                    <!-- Include your own setup for this -->
+                    <container>
+                        <containerId>tomcat-dev</containerId>
+                        <type>remote</type>
+                    </container>
+                    <configuration>
+                        <type>runtime</type>
+                        <properties>
+                            <cargo.tomcat.manager.url>${deployment.server.url}</cargo.tomcat.manager.url>
+                            <cargo.remote.username>${deployment.server.user}</cargo.remote.username>
+                            <cargo.remote.password>${deployment.server.password}</cargo.remote.password>
+                        </properties>
+                    </configuration>
+                    <!-- Deployables configuration -->
+                    <deployables>
+                        <deployable>
+                            <properties>
+                                <context>${deployment.server.context}</context>
+                            </properties>
+                        </deployable>
+                    </deployables>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <reporting>
         <plugins>
-            <!--<plugin>-->
-            <!--<groupId>org.apache.maven.plugins</groupId>-->
-            <!--<artifactId>maven-javadoc-plugin</artifactId>-->
-            <!--<version>2.9.1</version>-->
-            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>

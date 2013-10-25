@@ -5,8 +5,8 @@
 @prefix owlim: <http://www.ontotext.com/trree/owlim#>.
 
 [] a rep:Repository ;
-   rep:repositoryID "iserve-dev-services-owlim" ;
-   rdfs:label "iServe Dev services with OWLIM Horst" ;
+   rep:repositoryID "iserve-services-owl-horst" ;
+   rdfs:label "iServe Services with OWLIM Horst" ;
    rep:repositoryImpl [
       rep:repositoryType "openrdf:SailRepository" ;
       sr:sailImpl [
@@ -15,7 +15,6 @@
         owlim:storage-folder "storage" ;
 
         owlim:repository-type "file-repository" ;
-        owlim:base-URL "http://example.org/owlim#" ;
         owlim:imports "" ;
         owlim:defaultNS "" ;
 

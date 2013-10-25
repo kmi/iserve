@@ -76,6 +76,8 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
                 this.documentsInternalPath = this.getClass().getResource(".").toURI().resolve(this.documentsInternalPath);
             }
 
+            log.info("Documents internal path set to: {}", this.documentsInternalPath.toASCIIString());
+
         } catch (URISyntaxException e) {
             log.error("Incorrect iServe URI while initialising " + this.getClass().getSimpleName(), e);
             throw new SalException("Incorrect iServe URI while initialising " + this.getClass().getSimpleName(), e);

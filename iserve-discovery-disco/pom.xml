@@ -81,6 +81,11 @@
         </dependency>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
+            <artifactId>iserve-sal-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
             <artifactId>iserve-discovery-api</artifactId>
             <version>${project.version}</version>
             <exclusions>
@@ -178,8 +183,29 @@
 
 
     <build>
-        <finalName>iserve-sal-rest</finalName>
         <plugins>
+            <!--Obtain shared resources-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>load-resources</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <configuration>
+                            <resourceBundles>
+                                <resourceBundle>${project.groupId}:shared-resources:${project.version}</resourceBundle>
+                            </resourceBundles>
+                            <attached>false</attached>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- Obtain shared test resources and unpack them -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

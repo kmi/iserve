@@ -97,7 +97,7 @@
         <!--<version>${jersey.version}</version>-->
         <!--</dependency>-->
         <dependency>
-            <groupId>uk.ac.open.kmi.iserve.discovery</groupId>
+            <groupId>uk.ac.open.kmi.iserve</groupId>
             <artifactId>iserve-discovery-disco</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -109,16 +109,28 @@
     </dependencies>
 
     <build>
-        <finalName>iserve-discovery-engine</finalName>
         <plugins>
+            <!--Obtain shared resources-->
             <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <inherited>true</inherited>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>load-resources</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <configuration>
+                            <resourceBundles>
+                                <resourceBundle>${project.groupId}:shared-resources:${project.version}</resourceBundle>
+                            </resourceBundles>
+                            <attached>false</attached>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Enable rapid testing. Jetty will be launched and stopped automatically for testing -->
