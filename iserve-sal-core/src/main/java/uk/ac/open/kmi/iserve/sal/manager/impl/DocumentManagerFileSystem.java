@@ -58,6 +58,7 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
     DocumentManagerFileSystem(EventBus eventBus,
                               @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
                               @Named(SystemConfiguration.DOC_FOLDER_PATH_PROP) String documentsFolderPath) throws SalException {
+
         super(eventBus, iServeUri);
 
         if (documentsFolderPath == null) {
@@ -70,10 +71,16 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
             // Set the internal URI to the docs folder
             this.documentsInternalPath = new URI(documentsFolderPath + (documentsFolderPath.endsWith("/") ? "" : "/"));  // Ensure it has a final slash
 
-            if (!this.documentsInternalPath.toASCIIString().startsWith("/")) {
-                // Obtain absolute URI
-                log.warn("Configuring document manager with relative path. Documents may be deleted when the application is redeployed.");
-                this.documentsInternalPath = this.getClass().getResource(".").toURI().resolve(this.documentsInternalPath);
+            // Ensure we get an absolute file:/ URI
+            if (!this.documentsInternalPath.isAbsolute()) {
+                if (this.documentsInternalPath.toASCIIString().startsWith("/")) {
+                    this.documentsInternalPath = this.getClass().getResource("/").toURI().resolve
+                            (this.documentsInternalPath);
+                } else {
+                    // Obtain absolute URI
+                    log.warn("Configuring document manager with relative path. Documents may be deleted when the application is redeployed.");
+                    this.documentsInternalPath = this.getClass().getResource(".").toURI().resolve(this.documentsInternalPath);
+                }
             }
 
             log.info("Documents internal path set to: {}", this.documentsInternalPath.toASCIIString());

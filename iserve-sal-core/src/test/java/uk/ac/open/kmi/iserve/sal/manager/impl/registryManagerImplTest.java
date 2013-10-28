@@ -16,11 +16,17 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
+import com.google.common.eventbus.EventBus;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 import junit.framework.Assert;
+import org.jukito.JukitoRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.core.ConfigurationModule;
+import uk.ac.open.kmi.iserve.sal.manager.*;
 import uk.ac.open.kmi.msm4j.io.MediaType;
 import uk.ac.open.kmi.msm4j.io.Syntax;
 import uk.ac.open.kmi.msm4j.io.Transformer;
@@ -35,15 +41,16 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * iServeFacadeTest
+ * RegistryManagerImplTest
  * <p/>
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 06/06/2013
  * Time: 18:50
  */
-public class iServeFacadeTest {
+@RunWith(JukitoRunner.class)
+public class RegistryManagerImplTest {
 
-    private static final Logger log = LoggerFactory.getLogger(iServeFacadeTest.class);
+    private static final Logger log = LoggerFactory.getLogger(RegistryManagerImplTest.class);
 
     // Limit the number of documents to upload to the registry
     private static final int MAX_DOCS = 25;
@@ -60,23 +67,54 @@ public class iServeFacadeTest {
     private File[] msmTtlTcFiles;
     private File[] owlsTcFiles;
 
+    /**
+     * JukitoModule.
+     */
+    public static class InnerModule extends ConfiguredTestModule {
+        @Override
+        protected void configureTest() {
+            // Get properties
+            super.configureTest();
+
+            // Ensure configuration is loaded
+            install(new ConfigurationModule());
+
+            // Assisted Injection for the Graph Store Manager
+            install(new FactoryModuleBuilder()
+                    .implement(SparqlGraphStoreManager.class, ConcurrentSparqlGraphStoreManager.class)
+                    .build(SparqlGraphStoreFactory.class));
+
+            // Create the EventBus
+            final EventBus eventBus = new EventBus("iServe");
+            bind(EventBus.class).toInstance(eventBus);
+
+            bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
+            bind(ServiceManager.class).to(ServiceManagerSparql.class);
+            bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class);
+            bind(RegistryManager.class).to(RegistryManagerImpl.class);
+
+            // Necessary to verify interaction with the real object
+            bindSpy(RegistryManagerImpl.class);
+        }
+    }
+
     @Before
     public void setUp() throws Exception {
-        URI msmTestFolder = iServeFacadeTest.class.getResource(OWLS_TC3_MSM).toURI();
+        URI msmTestFolder = RegistryManagerImplTest.class.getResource(OWLS_TC3_MSM).toURI();
         ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
         File dir = new File(msmTestFolder);
         msmTtlTcFiles = dir.listFiles(ttlFilter);
 
-        URI owlsTestFolder = iServeFacadeTest.class.getResource(OWLS_TC4_PDDL).toURI();
+        URI owlsTestFolder = RegistryManagerImplTest.class.getResource(OWLS_TC4_PDDL).toURI();
         owlsFilter = new FilenameFilterForTransformer(Transformer.getInstance().getTransformer(OWLS_MEDIATYPE));
         dir = new File(owlsTestFolder);
         owlsTcFiles = dir.listFiles(owlsFilter);
     }
 
     @Test
-    public void testImportService() throws Exception {
+    public void testImportService(RegistryManager registryManager) throws Exception {
 
-        iServeFacade.getInstance().clearRegistry();
+        registryManager.clearRegistry();
         InputStream in;
         List<URI> servicesUris;
         int count = 0;
@@ -84,7 +122,7 @@ public class iServeFacadeTest {
         for (int i = 0; i < MAX_DOCS && i < msmTtlTcFiles.length; i++) {
             in = new FileInputStream(msmTtlTcFiles[i]);
             log.info("Adding service: {}", msmTtlTcFiles[i].getName());
-            servicesUris = iServeFacade.getInstance().importServices(in, MediaType.TEXT_TURTLE.getMediaType());
+            servicesUris = registryManager.importServices(in, MediaType.TEXT_TURTLE.getMediaType());
             Assert.assertNotNull(servicesUris);
             log.info("Service added: {}", servicesUris.get(0).toASCIIString());
             count++;
@@ -98,7 +136,7 @@ public class iServeFacadeTest {
         for (int i = 0; i < MAX_DOCS && i < owlsTcFiles.length; i++) {
             in = new FileInputStream(owlsTcFiles[i]);
             log.info("Adding service: {}", owlsTcFiles[i].getName());
-            servicesUris = iServeFacade.getInstance().importServices(in, OWLS_MEDIATYPE);
+            servicesUris = registryManager.importServices(in, OWLS_MEDIATYPE);
             Assert.assertNotNull(servicesUris);
             log.info("Service added: {}", servicesUris.get(0).toASCIIString());
             count++;

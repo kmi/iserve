@@ -17,8 +17,6 @@
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.eventbus.EventBus;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,43 +47,25 @@ import java.util.Set;
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
 //@Singleton
-public class iServeFacade extends IntegratedComponent implements iServeManager {
+public class RegistryManagerImpl extends IntegratedComponent implements RegistryManager {
 
-    private static final Logger log = LoggerFactory.getLogger(iServeFacade.class);
+    private static final Logger log = LoggerFactory.getLogger(RegistryManagerImpl.class);
 
     private DocumentManager docManager;
     private ServiceManager serviceManager;
     private KnowledgeBaseManager kbManager;
 
-    private static iServeManager instance;
-
     @Inject
-    private iServeFacade(EventBus eventBus,
-                         @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
-                         DocumentManager docManager,
-                         ServiceManager serviceManager,
-                         KnowledgeBaseManager kbManager) throws ConfigurationException, SalException {
+    private RegistryManagerImpl(EventBus eventBus,
+                                @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
+                                DocumentManager docManager,
+                                ServiceManager serviceManager,
+                                KnowledgeBaseManager kbManager) throws ConfigurationException, SalException {
 
         super(eventBus, iServeUri);
         this.docManager = docManager;
         this.serviceManager = serviceManager;
         this.kbManager = kbManager;
-    }
-
-    /**
-     * Obtains the iServeManager
-     *
-     * @return the iServeManager instance
-     */
-    public static iServeManager getInstance() {
-
-        Injector injector;
-        if (instance == null) {
-            injector = Guice.createInjector(new iServeManagementModule());
-            instance = injector.getInstance(iServeManager.class);
-        }
-
-        return instance;
     }
 
     /**

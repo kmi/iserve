@@ -31,9 +31,9 @@ import uk.ac.open.kmi.iserve.sal.manager.*;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 06/09/2013
  */
-public class iServeManagementModule extends AbstractModule {
+public class RegistryManagementModule extends AbstractModule {
 
-    private static final Logger log = LoggerFactory.getLogger(iServeManagementModule.class);
+    private static final Logger log = LoggerFactory.getLogger(RegistryManagementModule.class);
 
     @Override
     protected void configure() {
@@ -53,11 +53,10 @@ public class iServeManagementModule extends AbstractModule {
 //        bind(DocumentManager.class).to(DocumentManagerFileSystem.class).in(Singleton.class);
 //        bind(ServiceManager.class).to(ServiceManagerIndexRdf.class).in(Singleton.class);
 //        bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class).in(Singleton.class);
-//        bind(iServeManager.class).to(iServeFacade.class);
 
         bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
         bind(ServiceManager.class).to(ServiceManagerSparql.class);
         bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class);
-        bind(iServeManager.class).to(iServeFacade.class);
+        bind(RegistryManager.class).to(RegistryManagerImpl.class);
     }
 }

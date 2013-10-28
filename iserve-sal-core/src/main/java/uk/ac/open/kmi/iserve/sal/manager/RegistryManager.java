@@ -29,7 +29,7 @@ import java.util.List;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 17/10/2013
  */
-public interface iServeManager {
+public interface RegistryManager {
 
 
     /**

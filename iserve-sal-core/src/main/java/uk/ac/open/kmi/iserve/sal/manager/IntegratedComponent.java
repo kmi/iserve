@@ -20,6 +20,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 
 import javax.inject.Named;
@@ -42,7 +43,7 @@ public abstract class IntegratedComponent implements iServeComponent {
     private final URI iserveUri;
 
     @Inject
-    protected IntegratedComponent(EventBus eventBus, @Named("iserve.url") String iServeUri) throws SalException {
+    protected IntegratedComponent(EventBus eventBus, @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri) throws SalException {
 
         this.eventBus = eventBus;
         eventBus.register(this);
