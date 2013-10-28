@@ -1,4 +1,4 @@
-<%@ page import="uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade" %>
+<%@ page import="uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagerImpl" %>
 
 <%--
   ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
@@ -85,10 +85,10 @@
 
 <h2>Server Statistics</h2>
 
-<p>Services registered: <%= iServeFacade.getInstance().listServices().size() %>
+<p>Services registered: <%= RegistryManagerImpl.getInstance().listServices().size() %>
 </p>
 
-<p>Documents registered: <%= iServeFacade.getInstance().listDocuments().size() %>
+<p>Documents registered: <%= RegistryManagerImpl.getInstance().listDocuments().size() %>
 </p>
 
 <p>See <a href="<c:url value="/control/show-stats"/>">Elda's Statistics</a>.</p>
@@ -97,17 +97,20 @@
 
 <p>
     <button onclick="clearResources('registry')">Clear Registry</button>
-    This operation will clear entirely the registry. All content will be deleted. (Warning: This operation cannot be
+    This operation will clear entirely the registry. All content will be deleted. (Warning: This
+    operation cannot be
     reverted!)
 </p>
 <p>
     <button onclick="clearResources('id/services')">Clear Services</button>
-    This operation will clear the services in the registry. All the services registered will be deleted. (Warning: This
+    This operation will clear the services in the registry. All the services registered will be
+    deleted. (Warning: This
     operation cannot be reverted!)
 </p>
 <p>
     <button onclick="clearResources('id/documents')">Clear Documents</button>
-    This operation will clear the documents in the registry. All the documents registered will be deleted. (Warning:
+    This operation will clear the documents in the registry. All the documents registered will be
+    deleted. (Warning:
     This operation cannot be reverted!)
 </p>
 

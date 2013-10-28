@@ -32,10 +32,9 @@
     <name>iServe SAL REST</name>
     <description>
         iServe SAL REST provides a RESTful interface to the registry exposing the Linked Data hosted
-        by the registry
-        either for humnans (HTML) or for machines (RDF, JSON) as well as it enables applications to
-        create, read,
-        update or delete data from the server.
+        by the registry either for humans (HTML) or for machines (RDF, JSON) as well as it enables
+        applications to
+        create, read, update or delete data from the server.
     </description>
 
     <developers>
@@ -115,6 +114,14 @@
             <artifactId>jersey-mvc-jsp</artifactId>
             <version>${jersey.version}</version>
         </dependency>
+
+        <!--Add Guice for dependency injection -->
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+
         <!-- Jersey-Guice dependencies -->
         <dependency>
             <groupId>com.google.inject.extensions</groupId>

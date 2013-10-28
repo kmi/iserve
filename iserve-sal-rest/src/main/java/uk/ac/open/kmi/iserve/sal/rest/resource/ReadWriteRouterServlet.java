@@ -29,8 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
+import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
+import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagerImpl;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -80,7 +80,7 @@ public class ReadWriteRouterServlet extends RouterRestlet {
 
     private static final Logger log = LoggerFactory.getLogger(ReadWriteRouterServlet.class);
 
-    private final iServeManager manager;
+    private final RegistryManager manager;
 
     /**
      * Initialise this RouterRestlet. Happens a lot, so expensive
@@ -89,7 +89,7 @@ public class ReadWriteRouterServlet extends RouterRestlet {
      */
     public ReadWriteRouterServlet(@Context ServletContext con) {
         super(con);
-        this.manager = iServeFacade.getInstance();
+        this.manager = RegistryManagerImpl.getInstance();
     }
 
     @POST

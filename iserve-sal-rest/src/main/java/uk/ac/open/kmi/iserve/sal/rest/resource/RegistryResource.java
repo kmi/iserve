@@ -16,14 +16,14 @@
 
 package uk.ac.open.kmi.iserve.sal.rest.resource;
 
+import com.google.inject.Inject;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.glassfish.jersey.server.mvc.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
-import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
+import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -52,10 +52,11 @@ public class RegistryResource {
     @Context
     UriInfo uriInfo;
 
-    private final iServeManager manager;
+    private final RegistryManager manager;
 
-    public RegistryResource() {
-        this.manager = iServeFacade.getInstance();
+    @Inject
+    public RegistryResource(RegistryManager registryManager) {
+        this.manager = registryManager;
     }
 
     @GET

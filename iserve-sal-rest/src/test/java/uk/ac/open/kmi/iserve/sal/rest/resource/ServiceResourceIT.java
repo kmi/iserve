@@ -30,12 +30,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
+import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagerImpl;
 import uk.ac.open.kmi.msm4j.io.MediaType;
 import uk.ac.open.kmi.msm4j.io.Syntax;
 import uk.ac.open.kmi.msm4j.io.util.FilenameFilterBySyntax;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
-import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -81,7 +81,7 @@ public class ServiceResourceIT {
 
     // For HTML testing (logging via forms, etc)
     private final WebClient webClient = new WebClient();
-    private iServeManager manager;
+    private RegistryManager manager;
 
     /**
      * @throws java.lang.Exception
@@ -109,7 +109,7 @@ public class ServiceResourceIT {
         // Logout
         logOut();
 
-        this.manager = iServeFacade.getInstance();
+        this.manager = RegistryManagerImpl.getInstance();
 
     }
 
