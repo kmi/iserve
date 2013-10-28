@@ -21,11 +21,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.commons.io.MediaType;
-import uk.ac.open.kmi.iserve.commons.io.Syntax;
-import uk.ac.open.kmi.iserve.commons.io.Transformer;
-import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterBySyntax;
-import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterForTransformer;
+import uk.ac.open.kmi.msm4j.io.MediaType;
+import uk.ac.open.kmi.msm4j.io.Syntax;
+import uk.ac.open.kmi.msm4j.io.Transformer;
+import uk.ac.open.kmi.msm4j.io.util.FilenameFilterBySyntax;
+import uk.ac.open.kmi.msm4j.io.util.FilenameFilterForTransformer;
 
 import java.io.File;
 import java.io.FileInputStream;

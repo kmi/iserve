@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<uberwar>
+    <wars>
+        <!--Order is important since sal-rest defines a number of filters that need to run first-->
+        <war>uk.ac.open.kmi.iserve:iserve-sal-rest</war>
+        <war>uk.ac.open.kmi.iserve:iserve-discovery-rest</war>
+    </wars>
+</uberwar>

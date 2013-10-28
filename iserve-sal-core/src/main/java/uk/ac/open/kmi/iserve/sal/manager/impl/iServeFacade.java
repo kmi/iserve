@@ -22,14 +22,14 @@ import com.google.inject.Injector;
 import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.commons.io.*;
-import uk.ac.open.kmi.iserve.commons.io.impl.ServiceReaderImpl;
-import uk.ac.open.kmi.iserve.commons.model.Service;
 import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.*;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
+import uk.ac.open.kmi.msm4j.Service;
+import uk.ac.open.kmi.msm4j.io.*;
+import uk.ac.open.kmi.msm4j.io.impl.ServiceReaderImpl;
 
 import javax.inject.Inject;
 import javax.inject.Named;

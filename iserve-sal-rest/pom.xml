@@ -17,7 +17,8 @@
 
 <project
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-        xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>iserve-parent</artifactId>
@@ -30,8 +31,10 @@
 
     <name>iServe SAL REST</name>
     <description>
-        iServe SAL REST provides a RESTful interface to the registry exposing the Linked Data hosted by the registry
-        either for humnans (HTML) or for machines (RDF, JSON) as well as it enables applications to create, read,
+        iServe SAL REST provides a RESTful interface to the registry exposing the Linked Data hosted
+        by the registry
+        either for humnans (HTML) or for machines (RDF, JSON) as well as it enables applications to
+        create, read,
         update or delete data from the server.
     </description>
 
@@ -145,20 +148,6 @@
             <version>${shiro.version}</version>
         </dependency>
 
-        <!-- Log management -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-
         <!-- Deal with recursive dependency with logging mechanisms -->
         <dependency>
             <groupId>commons-logging</groupId>
@@ -227,6 +216,13 @@
             <version>1.4</version>
         </dependency>
 
+        <!--Include Log runtime binding as this is executable/deployable-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
 
         <!-- Test dependencies -->
         <!-- Jetty artifacts. Note: They do have transitive dependencies.  -->
@@ -305,11 +301,19 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Include Test Resources -->
+        <!--Include Shared Resources. Scoped to tests for now.-->
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
-            <artifactId>iserve-test-resources</artifactId>
+            <artifactId>iserve-shared-resources</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Include Test Resources -->
+        <dependency>
+            <groupId>uk.ac.open.kmi</groupId>
+            <artifactId>sws-test-collections</artifactId>
+            <version>${test-collections.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -331,7 +335,9 @@
                         </goals>
                         <configuration>
                             <resourceBundles>
-                                <resourceBundle>${project.groupId}:shared-resources:${project.version}</resourceBundle>
+                                <resourceBundle>
+                                    ${project.parent.groupId}:iserve-shared-resources:${project.version}
+                                </resourceBundle>
                             </resourceBundles>
                             <attached>false</attached>
                             <outputDirectory>${project.build.directory}</outputDirectory>
@@ -339,23 +345,47 @@
                     </execution>
                 </executions>
             </plugin>
+
             <!-- Obtain shared test resources and unpack them -->
+            <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-dependency-plugin</artifactId>-->
+            <!--<version>2.8</version>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<id>resource-dependencies</id>-->
+            <!--<phase>process-test-resources</phase>-->
+            <!--<goals>-->
+            <!--<goal>unpack-dependencies</goal>-->
+            <!--</goals>-->
+            <!--<configuration>-->
+            <!--<includeGroupIds>${project.parent.groupId}</includeGroupIds>-->
+            <!--<includeArtifactIds>iserve-test-resources</includeArtifactIds>-->
+            <!--<outputDirectory>${project.build.directory}/test-classes/</outputDirectory>-->
+            <!--<includes>OWLS-TC3-MSM/*.ttl</includes>-->
+            <!--</configuration>-->
+            <!--</execution>-->
+            <!--</executions>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.8</version>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+                <version>1.4</version>
                 <executions>
                     <execution>
-                        <id>resource-dependencies</id>
+                        <id>load-test-resources</id>
                         <phase>process-test-resources</phase>
                         <goals>
-                            <goal>unpack-dependencies</goal>
+                            <goal>process</goal>
                         </goals>
                         <configuration>
-                            <includeGroupIds>${project.parent.groupId}</includeGroupIds>
-                            <includeArtifactIds>iserve-test-resources</includeArtifactIds>
-                            <outputDirectory>${project.build.directory}/test-classes/</outputDirectory>
-                            <includes>OWLS-TC3-MSM/*.ttl</includes>
+                            <resourceBundles>
+                                <resourceBundle>
+                                    uk.ac.open.kmi:sws-test-collections:${test-collections.version}
+                                </resourceBundle>
+                            </resourceBundles>
+                            <attached>false</attached>
+                            <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -404,7 +434,8 @@
                     <stopKey>foo</stopKey>
                     <stopPort>9999</stopPort>
                     <connectors>
-                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                        <connector
+                                implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
                             <port>9090</port>
                             <maxIdleTime>60000</maxIdleTime>
                         </connector>

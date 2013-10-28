@@ -15,7 +15,8 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.ac.open.kmi.iserve</groupId>
@@ -127,6 +128,8 @@
         <guice.version>3.0</guice.version>
         <guava.version>14.0</guava.version>
         <commons-config.version>1.9</commons-config.version>
+        <msm4j.version>1.0-SNAPSHOT</msm4j.version>
+        <test-collections.version>1.0-SNAPSHOT</test-collections.version>
 
         <!-- Configuration for GitHub deployment -->
         <site.path>snapshot/${project.version}</site.path>
@@ -144,29 +147,38 @@
     </properties>
 
     <modules>
-        <module>iserve-commons-io</module>
-        <module>iserve-commons-vocabulary</module>
-        <module>iserve-importer-sawsdl</module>
-        <module>iserve-importer-hrests</module>
-        <module>iserve-importer-owls</module>
-        <module>iserve-importer-wsc</module>
         <module>iserve-sal-core</module>
         <module>iserve-sal-rest</module>
         <module>iserve-discovery-api</module>
-        <module>iserve-discovery-disco</module>
-        <module>iserve-discovery-engine</module>
-        <module>iserve-test-resources</module>
+        <module>iserve-semantic-discovery</module>
+        <module>iserve-discovery-rest</module>
         <module>iserve-webapp</module>
-        <module>shared-resources</module>
+        <module>iserve-shared-resources</module>
+        <module>iserve-integrated-engine</module>
         <!-- <module>iserve-analysis-engine</module> -->
     </modules>
 
     <dependencies>
+        <!-- Loging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
         <!--Test dependencies-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--Use log4j-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -260,9 +272,11 @@
                     <configuration>
                         <type>runtime</type>
                         <properties>
-                            <cargo.tomcat.manager.url>${deployment.server.url}</cargo.tomcat.manager.url>
+                            <cargo.tomcat.manager.url>${deployment.server.url}
+                            </cargo.tomcat.manager.url>
                             <cargo.remote.username>${deployment.server.user}</cargo.remote.username>
-                            <cargo.remote.password>${deployment.server.password}</cargo.remote.password>
+                            <cargo.remote.password>${deployment.server.password}
+                            </cargo.remote.password>
                         </properties>
                     </configuration>
                     <!-- Deployables configuration -->
@@ -318,13 +332,13 @@
         </plugins>
     </reporting>
 
-    <repositories>
-        <repository>
-            <id>apache-repo-releases</id>
-            <name>Apache Repository</name>
-            <url>https://repository.apache.org/content/repositories/releases/</url>
-        </repository>
-    </repositories>
+    <!--<repositories>-->
+    <!--<repository>-->
+    <!--<id>apache-repo-releases</id>-->
+    <!--<name>Apache Repository</name>-->
+    <!--<url>https://repository.apache.org/content/repositories/releases/</url>-->
+    <!--</repository>-->
+    <!--</repositories>-->
 
     <profiles>
         <profile>

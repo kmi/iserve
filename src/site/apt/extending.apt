@@ -199,7 +199,7 @@ uk.ac.open.kmi.iserve.discovery.disco.impl.DiscoMatchersPlugin
 ** {Testing that the Plugin Mechanism Works}
 
     Should you wish to ensure that the plugin mechanism works and picks up properly your implementation, you can simply
-    try to obtain and use your Matcher by means of the <uk.ac.open.kmi.iserve.discovery.api.impl.MatchersFactory>.
+    try to obtain and use your Matcher by means of the <uk.ac.open.kmi.iserve.api.MatchersFactory>.
     Below you have an example on how this can be done.
 
 +-----------------------------------------------------------------------------------------------------------------------+

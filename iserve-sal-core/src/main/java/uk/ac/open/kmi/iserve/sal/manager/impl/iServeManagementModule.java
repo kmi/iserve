@@ -17,10 +17,11 @@
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.eventbus.EventBus;
+import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.ConfiguredModule;
+import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.sal.manager.*;
 
 /**
@@ -30,14 +31,14 @@ import uk.ac.open.kmi.iserve.sal.manager.*;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 06/09/2013
  */
-public class iServeManagementModule extends ConfiguredModule {
+public class iServeManagementModule extends AbstractModule {
 
     private static final Logger log = LoggerFactory.getLogger(iServeManagementModule.class);
 
     @Override
     protected void configure() {
         // Ensure configuration is loaded
-        super.configure();
+        install(new ConfigurationModule());
 
         // Assisted Injection for the Graph Store Manager
         install(new FactoryModuleBuilder()

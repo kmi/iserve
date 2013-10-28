@@ -24,7 +24,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.commons.model.*;
+import uk.ac.open.kmi.msm4j.*;
 import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
@@ -371,9 +371,9 @@ public class ServiceManagerIndexRdf extends ServiceManagerSparql implements Serv
     }
 
     private void indexModelReferences(AnnotableResource annotableResource) {
-        List<uk.ac.open.kmi.iserve.commons.model.Resource> modelRefs = annotableResource.getModelReferences();
+        List<uk.ac.open.kmi.msm4j.Resource> modelRefs = annotableResource.getModelReferences();
         Set<URI> modelRefsUris = new HashSet<URI>();
-        for (uk.ac.open.kmi.iserve.commons.model.Resource modelRef : modelRefs) {
+        for (uk.ac.open.kmi.msm4j.Resource modelRef : modelRefs) {
             modelRefsUris.add(modelRef.getUri());
         }
         this.modelReferencesMap.put(annotableResource.getUri(), modelRefsUris);

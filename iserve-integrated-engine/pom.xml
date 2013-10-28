@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>iserve-parent</artifactId>
+        <groupId>uk.ac.open.kmi.iserve</groupId>
+        <version>2.0.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>iserve-integrated-engine</artifactId>
+    <name>iServe Integrated Engine</name>
+    <description>
+        iServe Integrated Engine provides a complete an integrated local version of iServe to be
+        used within Java Applications.
+        This module provides integrated programmatic access for the deployment and interaction with
+        iServe engines.
+
+        iServe is what we refer to as service warehouse which unifies service
+        publication, analysis, and discovery through the use of lightweight semantics
+        as well as advanced discovery and analytic capabilities. iServe provides the
+        typical features of service registries and additional functionality that
+        exploits service descriptions, service annotations and further data gathered and
+        derived from the analysis of these descriptions, data crawled from the Web,
+        periodic monitoring and user activities.
+    </description>
+
+    <!-- Dependencies for generating complete war -->
+    <dependencies>
+        <dependency>
+            <groupId>uk.ac.open.kmi.msm4j</groupId>
+            <artifactId>msm4j-io</artifactId>
+            <version>${msm4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.open.kmi.msm4j</groupId>
+            <artifactId>msm4j-vocabulary</artifactId>
+            <version>${msm4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.open.kmi.msm4j</groupId>
+            <artifactId>msm4j-hrests-transformer</artifactId>
+            <version>${msm4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.open.kmi.msm4j</groupId>
+            <artifactId>msm4j-sawsdl-transformer</artifactId>
+            <version>${msm4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.open.kmi.msm4j</groupId>
+            <artifactId>msm4j-owls-transformer</artifactId>
+            <version>${msm4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.open.kmi.msm4j</groupId>
+            <artifactId>msm4j-wsc-transformer</artifactId>
+            <version>${msm4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>iserve-sal-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>iserve-discovery-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>iserve-semantic-discovery</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!--Include Shared Resources-->
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>iserve-shared-resources</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>

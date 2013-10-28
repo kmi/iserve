@@ -17,7 +17,7 @@
 package uk.ac.open.kmi.iserve.sal.manager;
 
 import com.google.common.collect.Multimap;
-import uk.ac.open.kmi.iserve.commons.model.Service;
+import uk.ac.open.kmi.msm4j.Service;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 
 import java.net.URI;
