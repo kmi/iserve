@@ -17,12 +17,14 @@
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import junit.framework.Assert;
+import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.msm4j.io.MediaType;
 import uk.ac.open.kmi.msm4j.io.Syntax;
 import uk.ac.open.kmi.msm4j.io.Transformer;
@@ -67,11 +69,11 @@ public class DocumentManagerTest {
     /**
      * JukitoModule.
      */
-    public static class InnerModule extends ConfiguredTestModule {
+    public static class InnerModule extends JukitoModule {
         @Override
         protected void configureTest() {
-            // Get properties
-            super.configureTest();
+            // Get configuration
+            install(new ConfigurationModule());
             // bind
             bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
 

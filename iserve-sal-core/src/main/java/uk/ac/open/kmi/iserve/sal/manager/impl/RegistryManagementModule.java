@@ -21,7 +21,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.sal.manager.*;
 
 /**
@@ -37,8 +36,6 @@ public class RegistryManagementModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        // Ensure configuration is loaded
-        install(new ConfigurationModule());
 
         // Assisted Injection for the Graph Store Manager
         install(new FactoryModuleBuilder()

@@ -19,6 +19,7 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import junit.framework.Assert;
+import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,11 +71,9 @@ public class RegistryManagerImplTest {
     /**
      * JukitoModule.
      */
-    public static class InnerModule extends ConfiguredTestModule {
+    public static class InnerModule extends JukitoModule {
         @Override
         protected void configureTest() {
-            // Get properties
-            super.configureTest();
 
             // Ensure configuration is loaded
             install(new ConfigurationModule());

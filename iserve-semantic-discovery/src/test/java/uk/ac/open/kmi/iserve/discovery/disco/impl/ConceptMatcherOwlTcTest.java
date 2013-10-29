@@ -21,12 +21,14 @@ import com.google.common.collect.Table;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import junit.framework.Assert;
+import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
@@ -82,11 +84,12 @@ public class ConceptMatcherOwlTcTest {
     /**
      * JukitoModule.
      */
-    public static class InnerModule extends ConfiguredTestModule {
+    public static class InnerModule extends JukitoModule {
         @Override
         protected void configureTest() {
-            // Get properties
-            super.configureTest();
+            // Get configuration
+            install(new ConfigurationModule());
+
             // bind
             bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
 
@@ -97,7 +100,7 @@ public class ConceptMatcherOwlTcTest {
 
     @BeforeClass
     public static void setupTests() throws Exception {
-        Injector injector = Guice.createInjector(new RegistryManagementModule());
+        Injector injector = Guice.createInjector(new ConfigurationModule(), new RegistryManagementModule());
         RegistryManager registryManager = injector.getInstance(RegistryManager.class);
         registryManager.clearRegistry();
         uploadOwlsTc(registryManager);

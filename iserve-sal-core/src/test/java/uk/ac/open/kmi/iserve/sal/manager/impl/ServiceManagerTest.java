@@ -18,6 +18,7 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import junit.framework.Assert;
+import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -25,6 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.msm4j.io.TransformationException;
 import uk.ac.open.kmi.msm4j.io.Transformer;
 import uk.ac.open.kmi.msm4j.Service;
@@ -63,11 +65,11 @@ public class ServiceManagerTest {
     /**
      * JukitoModule.
      */
-    public static class InnerModule extends ConfiguredTestModule {
+    public static class InnerModule extends JukitoModule {
         @Override
         protected void configureTest() {
-            // Get properties
-            super.configureTest();
+            // Get configuration
+            install(new ConfigurationModule());
 
             // bind all the implementations
             bind(ServiceManager.class).to(ServiceManagerSparql.class);

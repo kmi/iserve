@@ -34,18 +34,34 @@ import java.util.Properties;
 public class ConfigurationModule extends AbstractModule {
 
     private static final Logger log = LoggerFactory.getLogger(ConfigurationModule.class);
-    private static final String CONFIG_PROPERTIES_FILENAME = "config.properties";
+
+    private static final String DEFAULT_CONFIG_FILENAME = "config.properties";
+
+    private Properties configProperties;
+
+    public ConfigurationModule() {
+        this.configProperties = getProperties(DEFAULT_CONFIG_FILENAME);
+    }
+
+    public ConfigurationModule(String configFileName) {
+        this.configProperties = getProperties(configFileName);
+    }
+
+    public ConfigurationModule(Properties configProperties) {
+        this.configProperties = configProperties;
+    }
 
     @Override
     protected void configure() {
         // Bind the configuration file to @named values
-        Names.bindProperties(binder(), getProperties());
+        Names.bindProperties(binder(), configProperties);
     }
 
-    private Properties getProperties() {
+    private Properties getProperties(String fileName) {
+        log.info("Loading configuration from - {}", fileName);
         try {
             Properties properties = new Properties();
-            properties.load(getClass().getClassLoader().getResourceAsStream(CONFIG_PROPERTIES_FILENAME));
+            properties.load(getClass().getClassLoader().getResourceAsStream(fileName));
             return properties;
         } catch (IOException ex) {
             log.error("Error obtaining plugin properties", ex);
