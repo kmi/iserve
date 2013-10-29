@@ -18,6 +18,8 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableSet;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -29,16 +31,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.msm4j.io.TransformationException;
-import uk.ac.open.kmi.msm4j.io.Transformer;
-import uk.ac.open.kmi.msm4j.Service;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoverer;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoverer;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeManagementModule;
+import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
+import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
+import uk.ac.open.kmi.msm4j.Service;
+import uk.ac.open.kmi.msm4j.io.TransformationException;
+import uk.ac.open.kmi.msm4j.io.Transformer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -77,7 +79,7 @@ public class GenericLogicDiscovererTest {
             super.configureTest();
 
             // Add dependency
-            install(new iServeManagementModule());
+            install(new RegistryManagementModule());
 
             // bind
 //            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
@@ -92,13 +94,14 @@ public class GenericLogicDiscovererTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Clean the whole thing before testing
-        iServeFacade.getInstance().clearRegistry();
-        uploadWscTaxonomy();
-        importWscServices();
+        Injector injector = Guice.createInjector(new RegistryManagementModule());
+        RegistryManager registryManager = injector.getInstance(RegistryManager.class);
+        registryManager.clearRegistry();
+        uploadWscTaxonomy(registryManager);
+        importWscServices(registryManager);
     }
 
-    private static void uploadWscTaxonomy() throws URISyntaxException {
+    private static void uploadWscTaxonomy(RegistryManager registryManager) throws URISyntaxException {
         // First load the ontology in the server to avoid issues
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         // Fetch the model
@@ -106,10 +109,10 @@ public class GenericLogicDiscovererTest {
         model.read(taxonomyFile);
 
         // Upload the model first (it won't be automatically fetched as the URIs won't resolve so we do it manually)
-        iServeFacade.getInstance().getKnowledgeBaseManager().uploadModel(URI.create(WSC_01_TAXONOMY_URL), model, true);
+        registryManager.getKnowledgeBaseManager().uploadModel(URI.create(WSC_01_TAXONOMY_URL), model, true);
     }
 
-    private static void importWscServices() throws TransformationException, SalException, URISyntaxException, FileNotFoundException {
+    private static void importWscServices(RegistryManager registryManager) throws TransformationException, SalException, URISyntaxException, FileNotFoundException {
         log.info("Importing WSC Dataset");
         String file = GenericLogicDiscovererTest.class.getResource(WSC08_01_SERVICES).getFile();
         log.info("Services XML file {}", file);
@@ -125,7 +128,7 @@ public class GenericLogicDiscovererTest {
         // Import all services
         int counter = 0;
         for (Service s : result) {
-            URI uri = iServeFacade.getInstance().getServiceManager().addService(s);
+            URI uri = registryManager.getServiceManager().addService(s);
             Assert.assertNotNull(uri);
             log.info("Service added: " + uri.toASCIIString());
             counter++;

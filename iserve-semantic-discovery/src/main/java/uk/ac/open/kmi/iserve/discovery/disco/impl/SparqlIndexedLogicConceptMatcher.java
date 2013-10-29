@@ -34,7 +34,7 @@ import uk.ac.open.kmi.iserve.discovery.util.MatchResultPredicates;
 import uk.ac.open.kmi.iserve.sal.events.OntologyCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.OntologyDeletedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
-import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
+import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 
 import javax.annotation.Nullable;
 import java.net.URI;
@@ -52,11 +52,11 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
     private static final Logger log = LoggerFactory.getLogger(SparqlIndexedLogicConceptMatcher.class);
 
     private Table<URI, URI, MatchResult> indexedMatches;
-    private final iServeManager manager;
+    private final RegistryManager manager;
     private final SparqlLogicConceptMatcher sparqlMatcher;
 
     @Inject
-    protected SparqlIndexedLogicConceptMatcher(iServeManager registryManager, SparqlLogicConceptMatcher sparqlMatcher) throws SalException {
+    protected SparqlIndexedLogicConceptMatcher(RegistryManager registryManager, SparqlLogicConceptMatcher sparqlMatcher) throws SalException {
 
         super(EnumMatchTypes.of(LogicConceptMatchType.class));
 

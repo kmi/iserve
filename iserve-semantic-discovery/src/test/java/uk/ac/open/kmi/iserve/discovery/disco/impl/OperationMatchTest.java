@@ -17,7 +17,9 @@
 package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.common.collect.Table;
+import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -28,16 +30,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.msm4j.io.TransformationException;
-import uk.ac.open.kmi.msm4j.io.Transformer;
-import uk.ac.open.kmi.msm4j.*;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
+import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
+import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
+import uk.ac.open.kmi.msm4j.*;
+import uk.ac.open.kmi.msm4j.io.TransformationException;
+import uk.ac.open.kmi.msm4j.io.Transformer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -80,6 +83,9 @@ public class OperationMatchTest {
             // Get properties
             super.configureTest();
 
+            // Add dependency
+            install(new RegistryManagementModule());
+
             // bind
             bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
 
@@ -90,12 +96,14 @@ public class OperationMatchTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        iServeFacade.getInstance().clearRegistry();
-        uploadWscTaxonomy();
-        importWscServices();
+        Injector injector = Guice.createInjector(new RegistryManagementModule());
+        RegistryManager registryManager = injector.getInstance(RegistryManager.class);
+        registryManager.clearRegistry();
+        uploadWscTaxonomy(registryManager);
+        importWscServices(registryManager);
     }
 
-    private static void uploadWscTaxonomy() throws URISyntaxException {
+    private static void uploadWscTaxonomy(RegistryManager registryManager) throws URISyntaxException {
         // First load the ontology in the server to avoid issues
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         // Fetch the model
@@ -103,10 +111,10 @@ public class OperationMatchTest {
         model.read(taxonomyFile);
 
         // Upload the model first (it won't be automatically fetched as the URIs won't resolve so we do it manually)
-        iServeFacade.getInstance().getKnowledgeBaseManager().uploadModel(URI.create(WSC_01_TAXONOMY_URL), model, true);
+        registryManager.getKnowledgeBaseManager().uploadModel(URI.create(WSC_01_TAXONOMY_URL), model, true);
     }
 
-    private static void importWscServices() throws TransformationException, SalException, URISyntaxException, FileNotFoundException {
+    private static void importWscServices(RegistryManager registryManager) throws TransformationException, SalException, URISyntaxException, FileNotFoundException {
         log.info("Importing WSC Dataset");
         String file = OperationMatchTest.class.getResource(WSC08_01_SERVICES).getFile();
         log.info("Services XML file {}", file);
@@ -122,7 +130,7 @@ public class OperationMatchTest {
         // Import all services
         int counter = 0;
         for (Service s : result) {
-            URI uri = iServeFacade.getInstance().getServiceManager().addService(s);
+            URI uri = registryManager.getServiceManager().addService(s);
             Assert.assertNotNull(uri);
             log.info("Service added: " + uri.toASCIIString());
             counter++;
@@ -130,10 +138,10 @@ public class OperationMatchTest {
         log.debug("Total services added {}", counter);
     }
 
-    private Service find(String name) throws ServiceException {
-        for (URI srvUri : iServeFacade.getInstance().getServiceManager().listServices()) {
+    private Service find(RegistryManager registryManager, String name) throws ServiceException {
+        for (URI srvUri : registryManager.getServiceManager().listServices()) {
             if (srvUri.toASCIIString().contains(name)) {
-                return iServeFacade.getInstance().getServiceManager().getService(srvUri);
+                return registryManager.getServiceManager().getService(srvUri);
             }
         }
         return null;
@@ -193,41 +201,41 @@ public class OperationMatchTest {
     }
 
     @Test
-    public void testFail() throws ServiceException {
+    public void testFail(RegistryManager registryManager) throws ServiceException {
         Set<URI> availableInputs = new HashSet<URI>();
         availableInputs.add(URI.create(WSC_01_TAXONOMY_NS + "con1233457844"));
         availableInputs.add(URI.create(WSC_01_TAXONOMY_NS + "con1849951292"));
 
         Operation fakeOp = createOperationWithOutputs(availableInputs);
-        Service service = find("serv1529824753");
+        Service service = find(registryManager, "serv1529824753");
         Operation servOp = service.getOperations().iterator().next();
         MatchType type = dataFlowMatch(fakeOp, servOp);
         Assert.assertEquals(LogicConceptMatchType.Fail, type);
     }
 
     @Test
-    public void testSubsumes() throws ServiceException {
+    public void testSubsumes(RegistryManager registryManager) throws ServiceException {
         Set<URI> availableInputs = new HashSet<URI>();
         availableInputs.add(URI.create(WSC_01_TAXONOMY_NS + "con1233457844"));
         availableInputs.add(URI.create(WSC_01_TAXONOMY_NS + "con1849951292"));
         availableInputs.add(URI.create(WSC_01_TAXONOMY_NS + "con1988815758"));
 
         Operation fakeOp = createOperationWithOutputs(availableInputs);
-        Service service = find("serv1529824753");
+        Service service = find(registryManager, "serv1529824753");
         Operation servOp = service.getOperations().iterator().next();
         MatchType type = dataFlowMatch(fakeOp, servOp);
         Assert.assertEquals(LogicConceptMatchType.Subsume, type);
     }
 
     @Test
-    public void testPlugin() throws ServiceException {
+    public void testPlugin(RegistryManager registryManager) throws ServiceException {
         Set<URI> availableInputs = new HashSet<URI>();
         availableInputs.add(URI.create(WSC_01_TAXONOMY_NS + "con1233457844"));
         availableInputs.add(URI.create(WSC_01_TAXONOMY_NS + "con1849951292"));
         availableInputs.add(URI.create(WSC_01_TAXONOMY_NS + "con864995873"));
 
         Operation fakeOp = createOperationWithOutputs(availableInputs);
-        Service service = find("serv1529824753");
+        Service service = find(registryManager, "serv1529824753");
         Operation servOp = service.getOperations().iterator().next();
         MatchType type = dataFlowMatch(fakeOp, servOp);
         Assert.assertEquals(LogicConceptMatchType.Plugin, type);
@@ -235,12 +243,12 @@ public class OperationMatchTest {
 
 
     @Test
-    public void testExact() throws ServiceException {
+    public void testExact(RegistryManager registryManager) throws ServiceException {
         Set<URI> availableInputs = new HashSet<URI>();
         availableInputs.add(URI.create(WSC_01_TAXONOMY_NS + "con1794855625"));
         availableInputs.add(URI.create(WSC_01_TAXONOMY_NS + "con332477359"));
         Operation fakeOp = createOperationWithOutputs(availableInputs);
-        Service service = find("serv904934656");
+        Service service = find(registryManager, "serv904934656");
         Operation servOp = service.getOperations().iterator().next();
         MatchType type = dataFlowMatch(fakeOp, servOp);
         Assert.assertEquals(LogicConceptMatchType.Exact, type);
