@@ -22,7 +22,6 @@ import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoverer;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoverer;
-import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
 
 /**
  * DiscoMatchersPlugin is a Guice module providing a set of Matchers implementation for concept and services matching
@@ -34,9 +33,6 @@ public class DiscoMatchersPlugin extends AbstractModule implements MatcherPlugin
 
     @Override
     protected void configure() {
-        // Install iServe Management
-        install(new RegistryManagementModule());
-
         // Bind Concept Matchers
         MapBinder<String, ConceptMatcher> conceptBinder = MapBinder.newMapBinder(binder(), String.class, ConceptMatcher.class);
         conceptBinder.addBinding(SparqlLogicConceptMatcher.class.getName()).to(SparqlLogicConceptMatcher.class);

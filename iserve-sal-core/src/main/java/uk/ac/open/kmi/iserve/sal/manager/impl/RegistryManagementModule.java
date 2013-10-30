@@ -37,6 +37,8 @@ public class RegistryManagementModule extends AbstractModule {
     @Override
     protected void configure() {
 
+//        install(new ConfigurationModule());
+
         // Assisted Injection for the Graph Store Manager
         install(new FactoryModuleBuilder()
                 .implement(SparqlGraphStoreManager.class, ConcurrentSparqlGraphStoreManager.class)

@@ -89,6 +89,8 @@ public class ConceptMatcherOwlTcTest {
         protected void configureTest() {
             // Get configuration
             install(new ConfigurationModule());
+            // Get the Registry Management
+            install(new RegistryManagementModule());
 
             // bind
             bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
