@@ -17,10 +17,8 @@
 package uk.ac.open.kmi.iserve.api;
 
 import com.google.inject.*;
-import uk.ac.open.kmi.iserve.core.PluginModuleLoader;
 import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
-import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
 
 import javax.inject.Named;
 import java.util.HashSet;
@@ -33,15 +31,10 @@ import java.util.Set;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 18/09/2013
  */
-@Singleton
 public class MatchersFactory {
 
-    private static Injector injector = null;
-
-    private static MatchersFactory instance = null;
-
     // Bind to the provider for lazy instance creation
-    private Map<String, Provider<ConceptMatcher>> conceptMatcherProviders = null;
+    private final Map<String, Provider<ConceptMatcher>> conceptMatcherProviders;
 
     // TODO: Add configuration details
     @Inject(optional = true)
@@ -53,47 +46,30 @@ public class MatchersFactory {
         this.conceptMatcherProviders = conceptMatcherProviders;
     }
 
-    private static void init() {
-        // Load all matcher plugins
-        PluginModuleLoader<MatcherPluginModule> matcherPlugin = PluginModuleLoader.of(MatcherPluginModule.class);
-        injector = Guice.createInjector(matcherPlugin);
-        instance = injector.getInstance(MatchersFactory.class);
-    }
+    public ConceptMatcher getDefaultConceptMatcher() {
 
-    public static ConceptMatcher createConceptMatcher() {
-        checkAndInit();
-
-        if (instance.conceptMatcherProviders != null && !instance.conceptMatcherProviders.isEmpty()) {
+        if (this.conceptMatcherProviders != null && !this.conceptMatcherProviders.isEmpty()) {
             // Get the default one
-            if (instance.defaultConceptMatcher != null) {
-                return instance.conceptMatcherProviders.get(instance.defaultConceptMatcher).get();
+            if (this.defaultConceptMatcher != null) {
+                return this.conceptMatcherProviders.get(this.defaultConceptMatcher).get();
             }
             // Just return the first one otherwise
-            return instance.conceptMatcherProviders.values().iterator().next().get();
+            return this.conceptMatcherProviders.values().iterator().next().get();
         }
 
         return null;
     }
 
-    public static ConceptMatcher createConceptMatcher(String className) {
-        checkAndInit();
+    public ConceptMatcher getConceptMatcher(String className) {
 
-        if (instance.conceptMatcherProviders != null && !instance.conceptMatcherProviders.isEmpty()) {
-            return instance.conceptMatcherProviders.get(className).get();
+        if (this.conceptMatcherProviders != null && !this.conceptMatcherProviders.isEmpty()) {
+            return this.conceptMatcherProviders.get(className).get();
         }
 
         return null;
     }
 
-    public static Set<String> listAvailableMatchers() {
-        checkAndInit();
-        return new HashSet<String>(instance.conceptMatcherProviders.keySet());
+    public Set<String> listAvailableMatchers() {
+        return new HashSet<String>(this.conceptMatcherProviders.keySet());
     }
-
-    private static void checkAndInit() {
-        if (instance == null) {
-            init();
-        }
-    }
-
 }

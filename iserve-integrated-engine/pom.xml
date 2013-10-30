@@ -45,6 +45,8 @@
 
     <!-- Dependencies for generating complete war -->
     <dependencies>
+
+        <!--MSM4J Dependencies-->
         <dependency>
             <groupId>uk.ac.open.kmi.msm4j</groupId>
             <artifactId>msm4j-io</artifactId>
@@ -75,6 +77,21 @@
             <artifactId>msm4j-wsc-transformer</artifactId>
             <version>${msm4j.version}</version>
         </dependency>
+
+        <!--Add Guice for dependency injection -->
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+        <!--Add assisted injection support-->
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-assistedinject</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+
+        <!--iServe dependencies-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>iserve-sal-core</artifactId>
@@ -90,6 +107,7 @@
             <artifactId>iserve-semantic-discovery</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <!--Include Shared Resources-->
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
@@ -97,5 +115,34 @@
             <version>${project.version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!--Obtain shared resources-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>load-resources</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <configuration>
+                            <resourceBundles>
+                                <resourceBundle>
+                                    ${project.parent.groupId}:iserve-shared-resources:${project.version}
+                                </resourceBundle>
+                            </resourceBundles>
+                            <attached>false</attached>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
