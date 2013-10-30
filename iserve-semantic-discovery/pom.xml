@@ -195,6 +195,7 @@
                 <artifactId>maven-remote-resources-plugin</artifactId>
                 <version>1.4</version>
                 <executions>
+                    <!--Configuration resources-->
                     <execution>
                         <id>load-resources</id>
                         <phase>initialize</phase>
@@ -211,34 +212,7 @@
                             <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>
                     </execution>
-                </executions>
-            </plugin>
-
-            <!-- Obtain shared test resources and unpack them -->
-            <!--<plugin>-->
-            <!--<groupId>org.apache.maven.plugins</groupId>-->
-            <!--<artifactId>maven-dependency-plugin</artifactId>-->
-            <!--<version>2.8</version>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<id>resource-dependencies</id>-->
-            <!--<phase>process-test-resources</phase>-->
-            <!--<goals>-->
-            <!--<goal>unpack-dependencies</goal>-->
-            <!--</goals>-->
-            <!--<configuration>-->
-            <!--<includeGroupIds>${project.parent.groupId}</includeGroupIds>-->
-            <!--<includeArtifactIds>iserve-test-resources</includeArtifactIds>-->
-            <!--<outputDirectory>${project.build.directory}/test-classes/</outputDirectory>-->
-            <!--</configuration>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--</plugin>-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-remote-resources-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
+                    <!--Test resources-->
                     <execution>
                         <id>load-test-resources</id>
                         <phase>process-test-resources</phase>
