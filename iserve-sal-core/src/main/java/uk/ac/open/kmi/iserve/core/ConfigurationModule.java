@@ -18,10 +18,12 @@ package uk.ac.open.kmi.iserve.core;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
+import org.apache.commons.configuration.ConfigurationConverter;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -58,14 +60,17 @@ public class ConfigurationModule extends AbstractModule {
     }
 
     private Properties getProperties(String fileName) {
-        log.info("Loading configuration from - {}", fileName);
+        log.info("Attempting to read configuration file - {}", fileName);
+
         try {
-            Properties properties = new Properties();
-            properties.load(getClass().getClassLoader().getResourceAsStream(fileName));
-            return properties;
-        } catch (IOException ex) {
-            log.error("Error obtaining plugin properties", ex);
+            PropertiesConfiguration config = new PropertiesConfiguration("config.properties");
+            log.debug("Properties loaded from - {}", config.getFile().toURI().toASCIIString());
+            // Return a Properties object with the results
+            return ConfigurationConverter.getProperties(config);
+
+        } catch (ConfigurationException e) {
+            log.error("Error reading the configuration properties", e);
+            return new Properties();
         }
-        return new Properties();
     }
 }
