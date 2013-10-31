@@ -155,7 +155,6 @@
         <module>iserve-webapp</module>
         <module>iserve-shared-resources</module>
         <module>iserve-integrated-engine</module>
-        <!-- <module>iserve-analysis-engine</module> -->
     </modules>
 
     <dependencies>
@@ -166,19 +165,19 @@
             <version>${slf4j.version}</version>
         </dependency>
 
+        <!--Use log4j for runtime-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
         <!--Test dependencies-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!--Use log4j-->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
