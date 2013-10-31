@@ -16,6 +16,7 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.eventbus.EventBus;
 import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
@@ -26,8 +27,12 @@ import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.*;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 import uk.ac.open.kmi.msm4j.Service;
-import uk.ac.open.kmi.msm4j.io.*;
+import uk.ac.open.kmi.msm4j.io.MediaType;
+import uk.ac.open.kmi.msm4j.io.ServiceReader;
+import uk.ac.open.kmi.msm4j.io.Syntax;
+import uk.ac.open.kmi.msm4j.io.TransformationException;
 import uk.ac.open.kmi.msm4j.io.impl.ServiceReaderImpl;
+import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -51,21 +56,24 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
 
     private static final Logger log = LoggerFactory.getLogger(RegistryManagerImpl.class);
 
-    private DocumentManager docManager;
-    private ServiceManager serviceManager;
-    private KnowledgeBaseManager kbManager;
+    private final DocumentManager docManager;
+    private final ServiceManager serviceManager;
+    private final KnowledgeBaseManager kbManager;
+    private final ServiceTransformationEngine serviceTransformationEngine;
 
     @Inject
     private RegistryManagerImpl(EventBus eventBus,
                                 @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
                                 DocumentManager docManager,
                                 ServiceManager serviceManager,
-                                KnowledgeBaseManager kbManager) throws ConfigurationException, SalException {
+                                KnowledgeBaseManager kbManager,
+                                ServiceTransformationEngine serviceTransformationEngine) throws ConfigurationException, SalException {
 
         super(eventBus, iServeUri);
         this.docManager = docManager;
         this.serviceManager = serviceManager;
         this.kbManager = kbManager;
+        this.serviceTransformationEngine = serviceTransformationEngine;
     }
 
     /**
@@ -123,6 +131,16 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
     }
 
     /**
+     * Obtains the Service Transformer for this instance
+     *
+     * @return the transformer
+     */
+    @Override
+    public ServiceTransformationEngine getServiceTransformationEngine() {
+        return this.serviceTransformationEngine;
+    }
+
+    /**
      * This method will be called when the server is being shutdown.
      * Ensure a clean shutdown.
      */
@@ -131,6 +149,31 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
         this.serviceManager.shutdown();
         this.docManager.shutdown();
         this.kbManager.shutdown();
+    }
+
+    /**
+     * Obtains the list of supported media types the engine can import
+     *
+     * @return the Set of media types
+     */
+    @Override
+    public Set<String> getSupportedInputMediaTypes() {
+        ImmutableSet.Builder<String> result = ImmutableSet.builder();
+        result.addAll(MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.keySet());
+        result.addAll(this.serviceTransformationEngine.getSupportedMediaTypes());
+        return result.build();
+    }
+
+    /**
+     * Checks if the given media type can be imported
+     *
+     * @param mediaType the media type we wish to check if it can be imported
+     * @return true if it is supported or false otherwise.
+     */
+    @Override
+    public boolean canImport(String mediaType) {
+        return (MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.containsKey(mediaType) ||
+                this.serviceTransformationEngine.canTransform(mediaType));
     }
 
     /**
@@ -148,7 +191,7 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
 
         boolean isNativeFormat = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.containsKey(mediaType);
         // Throw error if Format Unsupported
-        if (!isNativeFormat && !Transformer.getInstance().canTransform(mediaType)) {
+        if (!isNativeFormat && !this.serviceTransformationEngine.canTransform(mediaType)) {
             log.error("The media type {} is not natively supported and has no suitable transformer.", mediaType);
             throw new ServiceException("Unable to import service. Format unsupported.");
         }
@@ -226,7 +269,7 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
             // Its an external format: use the appropriate importer
             // We should have a suitable importer
             try {
-                services = Transformer.getInstance().transform(localStream, mediaType);
+                services = this.serviceTransformationEngine.transform(localStream, mediaType);
             } catch (TransformationException e) {
                 throw new ServiceException("Errors transforming the service", e);
             }
@@ -242,7 +285,7 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
             log.debug("The media type is natively supported. File extension {}", fileExtension);
         } else {
             // should not be null since it is supported
-            fileExtension = Transformer.getInstance().getFileExtension(mediaType);
+            fileExtension = this.serviceTransformationEngine.getFileExtension(mediaType);
             log.debug("The media type is supported through transformations. File extension {}", fileExtension);
         }
         return fileExtension;
@@ -280,7 +323,7 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
 
         boolean isNativeFormat = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.containsKey(mediaType);
         // Throw error if Format Unsupported
-        if (!isNativeFormat && !Transformer.getInstance().canTransform(mediaType)) {
+        if (!isNativeFormat && !this.serviceTransformationEngine.canTransform(mediaType)) {
             log.error("The media type {} is not natively supported and has no suitable transformer.", mediaType);
             throw new ServiceException("Unable to import service. Format unsupported.");
         }

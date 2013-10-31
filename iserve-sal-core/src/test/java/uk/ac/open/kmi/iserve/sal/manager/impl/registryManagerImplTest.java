@@ -30,9 +30,9 @@ import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.sal.manager.*;
 import uk.ac.open.kmi.msm4j.io.MediaType;
 import uk.ac.open.kmi.msm4j.io.Syntax;
-import uk.ac.open.kmi.msm4j.io.Transformer;
+import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
+import uk.ac.open.kmi.msm4j.io.impl.TransformerModule;
 import uk.ac.open.kmi.msm4j.io.util.FilenameFilterBySyntax;
-import uk.ac.open.kmi.msm4j.io.util.FilenameFilterForTransformer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -78,6 +78,9 @@ public class RegistryManagerImplTest {
             // Ensure configuration is loaded
             install(new ConfigurationModule());
 
+            // Add transformation module
+            install(new TransformerModule());
+
             // Assisted Injection for the Graph Store Manager
             install(new FactoryModuleBuilder()
                     .implement(SparqlGraphStoreManager.class, ConcurrentSparqlGraphStoreManager.class)
@@ -98,14 +101,14 @@ public class RegistryManagerImplTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp(ServiceTransformationEngine transformationEngine) throws Exception {
         URI msmTestFolder = RegistryManagerImplTest.class.getResource(OWLS_TC3_MSM).toURI();
         ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
         File dir = new File(msmTestFolder);
         msmTtlTcFiles = dir.listFiles(ttlFilter);
 
         URI owlsTestFolder = RegistryManagerImplTest.class.getResource(OWLS_TC4_PDDL).toURI();
-        owlsFilter = new FilenameFilterForTransformer(Transformer.getInstance().getTransformer(OWLS_MEDIATYPE));
+        owlsFilter = transformationEngine.getFilenameFilter(OWLS_MEDIATYPE);
         dir = new File(owlsTestFolder);
         owlsTcFiles = dir.listFiles(owlsFilter);
     }

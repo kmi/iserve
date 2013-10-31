@@ -18,10 +18,12 @@ package uk.ac.open.kmi.iserve.sal.manager;
 
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
+import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
 
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
 /**
  * iServe Manager provides the main entry point to the entire Storage and Access Layer of a given registry.
@@ -72,10 +74,32 @@ public interface RegistryManager {
     DocumentManager getDocumentManager();
 
     /**
+     * Obtains the Service Transformation Engine for this instance
+     *
+     * @return the ServiceTransformationEngine
+     */
+    ServiceTransformationEngine getServiceTransformationEngine();
+
+    /**
      * This method will be called when the server is being shutdown.
      * Ensure a clean shutdown.
      */
     void shutdown();
+
+    /**
+     * Obtains the list of supported media types the engine can import
+     *
+     * @return the Set of media types
+     */
+    Set<String> getSupportedInputMediaTypes();
+
+    /**
+     * Checks if the given media type can be imported
+     *
+     * @param mediaType the media type we wish to check if it can be imported
+     * @return true if it is supported or false otherwise.
+     */
+    boolean canImport(String mediaType);
 
     /**
      * Imports a new service within iServe. The original document is stored

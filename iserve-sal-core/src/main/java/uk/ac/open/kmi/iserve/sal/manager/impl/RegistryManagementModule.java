@@ -22,6 +22,7 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.sal.manager.*;
+import uk.ac.open.kmi.msm4j.io.impl.TransformerModule;
 
 /**
  * iServeModule is in charge of adequately initialising iServe by obtaining the configuration parameters
@@ -37,7 +38,8 @@ public class RegistryManagementModule extends AbstractModule {
     @Override
     protected void configure() {
 
-//        install(new ConfigurationModule());
+        // Include transformation support
+        install(new TransformerModule());
 
         // Assisted Injection for the Graph Store Manager
         install(new FactoryModuleBuilder()

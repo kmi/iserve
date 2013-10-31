@@ -25,13 +25,13 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.ConfigurationModule;
-import uk.ac.open.kmi.msm4j.io.MediaType;
-import uk.ac.open.kmi.msm4j.io.Syntax;
-import uk.ac.open.kmi.msm4j.io.Transformer;
-import uk.ac.open.kmi.msm4j.io.util.FilenameFilterBySyntax;
-import uk.ac.open.kmi.msm4j.io.util.FilenameFilterForTransformer;
 import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
+import uk.ac.open.kmi.msm4j.io.MediaType;
+import uk.ac.open.kmi.msm4j.io.Syntax;
+import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
+import uk.ac.open.kmi.msm4j.io.impl.TransformerModule;
+import uk.ac.open.kmi.msm4j.io.util.FilenameFilterBySyntax;
 
 import java.io.*;
 import java.net.URI;
@@ -74,6 +74,10 @@ public class DocumentManagerTest {
         protected void configureTest() {
             // Get configuration
             install(new ConfigurationModule());
+
+            // Add transformer module
+            install(new TransformerModule());
+
             // bind
             bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
 
@@ -83,14 +87,14 @@ public class DocumentManagerTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp(ServiceTransformationEngine transformationEngine) throws Exception {
         URI msmTestFolder = DocumentManagerTest.class.getResource(OWLS_TC3_MSM).toURI();
         ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
         File dir = new File(msmTestFolder);
         msmTtlTcFiles = dir.listFiles(ttlFilter);
 
         URI owlsTestFolder = DocumentManagerTest.class.getResource(OWLS_TC4_PDDL).toURI();
-        owlsFilter = new FilenameFilterForTransformer(Transformer.getInstance().getTransformer(OWLS_MEDIATYPE));
+        owlsFilter = transformationEngine.getFilenameFilter(OWLS_MEDIATYPE);
         dir = new File(owlsTestFolder);
         owlsTcFiles = dir.listFiles(owlsFilter);
         numServices = msmTtlTcFiles.length + owlsTcFiles.length;

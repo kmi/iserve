@@ -42,7 +42,7 @@ import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
 import uk.ac.open.kmi.msm4j.*;
 import uk.ac.open.kmi.msm4j.io.TransformationException;
-import uk.ac.open.kmi.msm4j.io.Transformer;
+import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -100,9 +100,13 @@ public class OperationMatchTest {
     public static void setUp() throws Exception {
         Injector injector = Guice.createInjector(new ConfigurationModule(), new RegistryManagementModule());
         RegistryManager registryManager = injector.getInstance(RegistryManager.class);
+        ServiceTransformationEngine transformationEngine = injector.getInstance(ServiceTransformationEngine
+                .class);
+
         registryManager.clearRegistry();
+
         uploadWscTaxonomy(registryManager);
-        importWscServices(registryManager);
+        importWscServices(transformationEngine, registryManager);
     }
 
     private static void uploadWscTaxonomy(RegistryManager registryManager) throws URISyntaxException {
@@ -116,7 +120,7 @@ public class OperationMatchTest {
         registryManager.getKnowledgeBaseManager().uploadModel(URI.create(WSC_01_TAXONOMY_URL), model, true);
     }
 
-    private static void importWscServices(RegistryManager registryManager) throws TransformationException, SalException, URISyntaxException, FileNotFoundException {
+    private static void importWscServices(ServiceTransformationEngine transformationEngine, RegistryManager registryManager) throws TransformationException, SalException, URISyntaxException, FileNotFoundException {
         log.info("Importing WSC Dataset");
         String file = OperationMatchTest.class.getResource(WSC08_01_SERVICES).getFile();
         log.info("Services XML file {}", file);
@@ -124,7 +128,7 @@ public class OperationMatchTest {
         URL base = OperationMatchTest.class.getResource(WSC08_01);
         log.info("Dataset Base URI {}", base.toURI().toASCIIString());
 
-        List<Service> result = Transformer.getInstance().transform(services, base.toURI().toASCIIString(), MEDIATYPE);
+        List<Service> result = transformationEngine.transform(services, base.toURI().toASCIIString(), MEDIATYPE);
         //List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
         if (result.size() == 0) {
             Assert.fail("No services transformed!");

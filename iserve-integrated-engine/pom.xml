@@ -113,10 +113,18 @@
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>iserve-shared-resources</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>${shared.resources.dir}</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
         <plugins>
             <!--Obtain shared resources-->
             <plugin>
@@ -124,6 +132,7 @@
                 <artifactId>maven-remote-resources-plugin</artifactId>
                 <version>1.4</version>
                 <executions>
+                    <!--Configuration resources-->
                     <execution>
                         <id>load-resources</id>
                         <phase>initialize</phase>
@@ -138,6 +147,23 @@
                             </resourceBundles>
                             <attached>false</attached>
                             <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <!--Tests resources-->
+                    <execution>
+                        <id>load-test-resources</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <configuration>
+                            <resourceBundles>
+                                <resourceBundle>
+                                    uk.ac.open.kmi:sws-test-collections:${test-collections.version}
+                                </resourceBundle>
+                            </resourceBundles>
+                            <attached>false</attached>
+                            <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
