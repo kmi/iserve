@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.open.kmi.iserve.discovery.engine;
+package uk.ac.open.kmi.iserve.discovery.engine.rest;
 
 import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Document;
@@ -44,7 +44,7 @@ public abstract class AtomBase {
 
     private static final Logger log = LoggerFactory.getLogger(AtomBase.class);
 
-    private final Abdera abdera;
+    private static final Abdera ATOM_ENGINE = new Abdera();
     private final AbderaClient abderaClient;
 
     // Base URI for this resource
@@ -110,8 +110,7 @@ public abstract class AtomBase {
 
 //        httpClient = ApacheHttpClient4.create(config);
 
-        abdera = new Abdera();
-        abderaClient = new AbderaClient(abdera);
+        abderaClient = new AbderaClient(ATOM_ENGINE);
     }
 
     // ------------------------------------------------- Contacts Public Methods
@@ -166,7 +165,7 @@ public abstract class AtomBase {
 
         //feedUpdated = extractFeedData(feeds, feedTitles, feedRights, entriesByFeed, entriesByID);
 
-        Feed combinedFeed = DiscoveryUtil.getAbderaInstance().getFactory().newFeed();
+        Feed combinedFeed = ATOM_ENGINE.getFactory().newFeed();
         combinedFeed.setId(requestURI);
         combinedFeed.addLink(requestURI, "self");
         UriBuilder ub = uriInfo.getAbsolutePathBuilder();

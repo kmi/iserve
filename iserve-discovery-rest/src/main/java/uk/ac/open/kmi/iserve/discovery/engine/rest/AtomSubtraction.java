@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package uk.ac.open.kmi.iserve.discovery.engine;
+package uk.ac.open.kmi.iserve.discovery.engine.rest;
 
 import org.apache.abdera.model.Entry;
 
@@ -26,13 +26,13 @@ import java.util.Set;
  *
  * @author Jacek Kopecky
  */
-@Path("/{operator: and|intersection}")
-public class AtomIntersection extends AtomBase {
+@Path("/{operator: andnot|minus|subtraction}")
+public class AtomSubtraction extends AtomBase {
 
     @Override
     String combinatorFeedTitle(String[] feedTitles) {
-        String title = "Intersection of entries from " + feedTitles.length + " feeds: ";
-        for (int i = 0; i < feedTitles.length; i++) {
+        String title = "Subtraction in feed \"" + (feedTitles[0] == null ? "" : feedTitles[0]) + "\" of entries from " + (feedTitles.length - 1) + " feed(s): ";
+        for (int i = 1; i < feedTitles.length; i++) {
             title += "\"" + (feedTitles[i] == null ? "" : feedTitles[i]) + "\"";
             if (i < (feedTitles.length - 1)) {
                 title += ", ";
@@ -45,7 +45,7 @@ public class AtomIntersection extends AtomBase {
 
     @Override
     String combinatorName() {
-        return "Intersection";
+        return "Subtraction";
     }
 
     /* (non-Javadoc)
@@ -53,7 +53,7 @@ public class AtomIntersection extends AtomBase {
      */
     @Override
     Set<Entry> combineResults(Set<Entry> combination, List<Entry> entries) {
-        combination.retainAll(entries);
+        combination.removeAll(entries);
         return combination;
     }
 

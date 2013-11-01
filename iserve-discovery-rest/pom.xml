@@ -28,12 +28,11 @@
     <artifactId>iserve-discovery-rest</artifactId>
     <packaging>war</packaging>
 
-    <name>iServe Discovery Engine</name>
+    <name>iServe Discovery REST</name>
     <description>
-        iServe Discovery Engine provides the basic machinery for exposing discovery plugins via a
-        RESTful interface.
-        It additionally provides support for combining diverse plugin results (Union, Intersection
-        and Subtraction).
+        iServe Discovery REST provides the basic machinery for exposing discovery plugins via a
+        RESTful interface. It additionally provides support for combining diverse plugin results
+        (Union, Intersection and Subtraction).
     </description>
 
     <developers>
@@ -78,28 +77,32 @@
         <dependency>
             <groupId>org.apache.abdera</groupId>
             <artifactId>abdera-client</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.abdera</groupId>
+            <artifactId>abdera-extensions-json</artifactId>
+            <version>1.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>${httpclient.version}</version>
         </dependency>
         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!--Jersey Dependencies-->
+        <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet-core</artifactId>
             <version>${jersey.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
-        <!--<dependency>-->
-        <!--<groupId>org.glassfish.jersey.connectors</groupId>-->
-        <!--<artifactId>jersey-apache-connector</artifactId>-->
-        <!--<version>${jersey.version}</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>uk.ac.open.kmi.iserve</groupId>
             <artifactId>iserve-semantic-discovery</artifactId>
@@ -111,6 +114,25 @@
             <version>${guava.version}</version>
         </dependency>
 
+        <!--Add Guice for dependency injection -->
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+
+        <!-- Jersey-Guice dependencies -->
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-servlet</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>guice-bridge</artifactId>
+            <version>2.1.93</version>
+        </dependency>
+
         <!--Include Shared Resources. Scoped to tests for now.-->
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
@@ -119,13 +141,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!--Include Log runtime binding as this is executable/deployable-->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>runtime</scope>
-        </dependency>
+
     </dependencies>
 
     <build>
@@ -136,6 +152,7 @@
                 <artifactId>maven-remote-resources-plugin</artifactId>
                 <version>1.4</version>
                 <executions>
+                    <!--Configuration resources-->
                     <execution>
                         <id>load-resources</id>
                         <phase>initialize</phase>
@@ -145,12 +162,72 @@
                         <configuration>
                             <resourceBundles>
                                 <resourceBundle>
-                                    ${project.groupId}:iserve-shared-resources:${project.version}
+                                    ${project.parent.groupId}:iserve-shared-resources:${project.version}
                                 </resourceBundle>
                             </resourceBundles>
                             <attached>false</attached>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>
+                    </execution>
+
+                    <!--Test resources-->
+                    <execution>
+                        <id>load-test-resources</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <configuration>
+                            <resourceBundles>
+                                <resourceBundle>
+                                    uk.ac.open.kmi:sws-test-collections:${test-collections.version}
+                                </resourceBundle>
+                            </resourceBundles>
+                            <attached>false</attached>
+                            <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--Copy resources to WEB-INF for tests-->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>copy-iserve-properties</id>
+                        <!-- run after packaging but before the integration test -->
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.build.directory}/${project.build.finalName}/WEB-INF/classes
+                            </outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${shared.resources.dir}</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Enable rapid testing. Jetty will be launched and stopped automatically for testing -->
+            <!-- You may also launch it with Jetty: use 'mvn jetty:run' -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.15</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

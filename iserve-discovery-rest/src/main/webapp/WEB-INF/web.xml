@@ -15,20 +15,45 @@
   ~ limitations under the License.
   -->
 
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
+
+    <!--
+
+        <filter>
+            <filter-name>GuiceFilter</filter-name>
+            <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+        </filter>
+        <filter-mapping>
+            <filter-name>GuiceFilter</filter-name>
+            <url-pattern>/*</url-pattern>
+        </filter-mapping>
+
+        <filter>
+            <filter-name>Discovery Endpoint</filter-name>
+            <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
+            <init-param>
+                <param-name>javax.ws.rs.Application</param-name>
+                <param-value>uk.ac.open.kmi.iserve.discovery.engine.rest.DiscoveryEngineWebApplication</param-value>
+            </init-param>
+        </filter>
+        <filter-mapping>
+            <filter-name>Discovery Endpoint</filter-name>
+            <url-pattern>/*</url-pattern>
+        </filter-mapping>
+
+    -->
 
     <servlet>
         <servlet-name>Discovery Endpoint</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-
         <init-param>
-            <param-name>com.sun.jersey.config.property.packages</param-name>
-            <param-value>uk.ac.open.kmi.iserve.discovery.engine</param-value>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>uk.ac.open.kmi.iserve.discovery.engine.rest.DiscoveryEngineWebApplication
+            </param-value>
         </init-param>
-
-        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>

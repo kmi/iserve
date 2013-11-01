@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.iserve.discovery.engine;
+package uk.ac.open.kmi.iserve.discovery.engine.rest;
 
 import org.apache.abdera.model.Entry;
 
