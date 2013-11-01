@@ -160,7 +160,7 @@ public class ConceptMatcherOwlTcTest {
         stopwatch.stop();
 
         log.info("Obtained all cross matches ({}) in {}", matches.size(), stopwatch);
-        Assert.assertEquals(matches.size(), 4);
+        Assert.assertEquals(4, matches.size());
         stopwatch.reset();
 
     }
