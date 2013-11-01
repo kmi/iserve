@@ -22,6 +22,7 @@ package uk.ac.open.kmi.iserve.discovery.engine.rest;
 
 import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Document;
+import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.writer.Writer;
 import org.slf4j.Logger;
@@ -113,11 +114,7 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
      */
     public static Feed generateFeed(String request, String matcherDetails, Map<URI, MatchResult> matchingResults) {
 
-        // Basic initialisation
-        Feed feed = ATOM_ENGINE.getFactory().newFeed();
-        feed.setUpdated(new Date());
-        //FIXME: we should include the version
-        feed.setGenerator(request, null, matcherDetails);
+        Feed feed = initialiseFeed(request, matcherDetails);
 
         // Return empty feed if null
         if (matchingResults == null) {
@@ -129,16 +126,7 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
 
         Set<Map.Entry<URI, MatchResult>> entries = matchingResults.entrySet();
         for (Map.Entry<URI, MatchResult> entry : entries) {
-            org.apache.abdera.model.Entry rssEntry =
-                    ATOM_ENGINE.newEntry();
-            rssEntry.setId(entry.getKey().toString());
-            rssEntry.addLink(entry.getKey().toString(), "alternate");
-            //rssEntry.setTitle(entry.getValue().getMatchLabel());
-            //			String content = "Matching degree: " + degree;
-            //			ExtensibleElement e = rssEntry.addExtension(entry.getValue().);
-            //			e.setAttributeValue("score", entry.getValue().getScore());
-            //			e.setText(degree);
-            rssEntry.setContent(entry.getValue().getExplanation());
+            Entry rssEntry = createMatchResultEntry(entry.getValue());
             feed.addEntry(rssEntry);
         }
 
@@ -146,6 +134,43 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
         //		feed.addLink(ui.getRequestUri().toString(),"self");
         //		feed.setTitle(plugin.getFeedTitle());
 
+        return feed;
+    }
+
+    private static Entry createMatchResultEntry(MatchResult matchResult) {
+
+        Entry rssEntry =
+                ATOM_ENGINE.newEntry();
+        rssEntry.setId(matchResult.getMatchedResource().toASCIIString());
+        rssEntry.addLink(matchResult.getMatchedResource().toASCIIString(), "alternate");
+        //rssEntry.setTitle(entry.getValue().getMatchLabel());
+        //			String content = "Matching degree: " + degree;
+        //			ExtensibleElement e = rssEntry.addExtension(entry.getValue().);
+        //			e.setAttributeValue("score", entry.getValue().getScore());
+        //			e.setText(degree);
+        rssEntry.setContent(matchResult.getExplanation());
+        return rssEntry;
+    }
+
+    private static Feed initialiseFeed(String request, String matcherDetails) {
+        // Basic initialisation
+        Feed feed = ATOM_ENGINE.getFactory().newFeed();
+        feed.setUpdated(new Date());
+        //FIXME: we should include the version
+        feed.setGenerator(request, null, matcherDetails);
+        return feed;
+    }
+
+    public Feed generateFeed(String request, String matcherDetails, MatchResult matchResult) {
+
+        Feed feed = initialiseFeed(request, matcherDetails);
+
+        // Return empty feed if null
+        if (matchResult == null) {
+            return feed;
+        }
+
+        feed.addEntry(createMatchResultEntry(matchResult));
         return feed;
     }
 }
