@@ -18,10 +18,7 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.MapBinder;
-import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
-import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
-import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoverer;
-import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoverer;
+import uk.ac.open.kmi.iserve.discovery.api.*;
 
 /**
  * DiscoMatchersPlugin is a Guice module providing a set of Matchers implementation for concept and services matching
@@ -40,6 +37,9 @@ public class DiscoMatchersPlugin extends AbstractModule implements MatcherPlugin
 
         // Bind fall back Concept Matcher
         bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
+
+        // Bind DataflowMatcher
+        bind(DataflowMatcher.class).to(OperationDataflowMatcher.class);
 
         // Single bind discoverers for now
         bind(OperationDiscoverer.class).to(GenericLogicDiscoverer.class);

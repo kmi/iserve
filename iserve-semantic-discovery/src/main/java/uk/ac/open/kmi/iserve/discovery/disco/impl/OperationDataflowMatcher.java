@@ -93,6 +93,7 @@ public class OperationDataflowMatcher extends AbstractMatcher implements Dataflo
      */
     @Override
     public MatchResult match(URI origin, URI destination) {
+
         Set<URI> originOutputs = this.serviceManager.listOutputs(origin);
         Set<URI> destinationInputs = this.serviceManager.listInputs(destination);
 
@@ -131,6 +132,20 @@ public class OperationDataflowMatcher extends AbstractMatcher implements Dataflo
      */
     @Override
     public Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType) {
-        return ImmutableMap.of();  // TODO: implement
+
+        // Input validation
+        if (origin == null)
+            return ImmutableMap.of();
+
+        if (minType == null)
+            minType = this.getMatchTypesSupported().getLowest();
+
+        if (maxType == null)
+            maxType = this.getMatchTypesSupported().getHighest();
+
+        // TODO: Implement
+        return ImmutableMap.of();
+
+
     }
 }
