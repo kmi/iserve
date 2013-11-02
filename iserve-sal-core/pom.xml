@@ -118,7 +118,6 @@
             <version>${guice.version}</version>
         </dependency>
 
-        <!-- Test dependencies -->
         <dependency>
             <groupId>uk.ac.open.kmi.msm4j</groupId>
             <artifactId>msm4j-hrests-transformer</artifactId>
@@ -139,6 +138,8 @@
             <artifactId>msm4j-wsc-transformer</artifactId>
             <version>${msm4j.version}</version>
         </dependency>
+
+        <!-- Test dependencies -->
         <dependency>
             <groupId>org.jukito</groupId>
             <artifactId>jukito</artifactId>

@@ -20,6 +20,7 @@ import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
 
+import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
@@ -100,6 +101,16 @@ public interface RegistryManager {
      * @return true if it is supported or false otherwise.
      */
     boolean canImport(String mediaType);
+
+    /**
+     * Gets the corresponding filename filter to a given media type by checking both native formats
+     * and those supported through transformation
+     *
+     * @param mediaType the media type for which to obtain the file extension
+     * @return the filename filter or null if it is not supported. Callers are advised to check
+     *         first that the media type is supported {@see canTransform} .
+     */
+    public FilenameFilter getFilenameFilter(String mediaType);
 
     /**
      * Imports a new service within iServe. The original document is stored

@@ -55,81 +55,6 @@ public class iServeImporter {
         return registryManager;
     }
 
-    public static void main(String[] args) {
-
-        Options options = new Options();
-        // automatically generate the help statement
-        HelpFormatter formatter = new HelpFormatter();
-        // create the parser
-        CommandLineParser parser = new GnuParser();
-
-        options.addOption("h", "help", false, "print this message");
-        options.addOption("i", "input", true, "input directory or file to transform");
-        options.addOption("c", "configuration", true, "iServe configuration file. Default: config" +
-                ".properties");
-        options.addOption("f", "format", true, "format to use for parsing the files. Default: " + MediaType.TEXT_TURTLE.getMediaType());
-
-        // parse the command line arguments
-        CommandLine line;
-        String input = null;
-        String configFile = null;
-        File inputFile;
-        String mediaType = null;
-        try {
-            line = parser.parse(options, args);
-            input = line.getOptionValue("i");
-            if (line.hasOption("help")) {
-                formatter.printHelp(iServeImporter.class.getCanonicalName(), options);
-                System.exit(0);
-            }
-            if (input == null) {
-                // The input should not be null
-                formatter.printHelp(80, "java " + iServeImporter.class.getCanonicalName(), "Options:", options, "You must provide an input", true);
-                System.exit(-2);
-            }
-
-            configFile = line.getOptionValue("c");
-
-            mediaType = line.getOptionValue("f", MediaType.TEXT_TURTLE.getMediaType());
-
-
-        } catch (ParseException e) {
-            formatter.printHelp(80, "java " + iServeImporter.class.getCanonicalName(), "Options:", options,
-                    "Error parsing arguments", true);
-            System.exit(-1);
-        }
-
-        inputFile = new File(input);
-        if (inputFile == null || !inputFile.exists()) {
-            formatter.printHelp(80, "java " + iServeImporter.class.getCanonicalName(), "Options:", options, "Input not found", true);
-            System.out.println(inputFile.getAbsolutePath());
-            System.exit(-2);
-        }
-
-        Injector injector = Guice.createInjector(new ConfigurationModule(configFile),
-                new RegistryManagementModule());
-
-        iServeImporter importer = injector.getInstance(iServeImporter.class);
-
-        // Check the format is supported
-        if (!importer.getRegistryManager().canImport(mediaType)) {
-            Set<String> supportedTypes = importer.getRegistryManager().getSupportedInputMediaTypes();
-            StringBuilder builder = new StringBuilder();
-            for (String type : supportedTypes) {
-                builder.append(type).append("\n");
-            }
-
-            formatter.printHelp(80, "java " + iServeImporter.class.getCanonicalName(), "Options:", options,
-                    "\nMedia type - " + mediaType + " - is not supported. Supported media types are: \n" +
-                            builder.toString(),
-                    true);
-            System.exit(-3);
-        }
-
-        int result = importer.importServices(inputFile, mediaType);
-        log.info("Imported {} files from {}", result, inputFile.toURI().toASCIIString());
-        System.exit(result);
-    }
 
     public int importServices(File file, String mediaType) {
 
@@ -140,8 +65,7 @@ public class iServeImporter {
         // Obtain input for transformation
         File[] toTransform;
         if (file.isDirectory()) {
-            FilenameFilter fileFilter = this.getRegistryManager().getServiceTransformationEngine()
-                    .getFilenameFilter(mediaType);
+            FilenameFilter fileFilter = this.getRegistryManager().getFilenameFilter(mediaType);
             toTransform = file.listFiles(fileFilter);
         } else {
             toTransform = new File[1];
@@ -185,5 +109,111 @@ public class iServeImporter {
             }
         }
         return result;
+    }
+
+    public static void main(String[] args) {
+
+        Options options = new Options();
+        // automatically generate the help statement
+        HelpFormatter formatter = new HelpFormatter();
+        // create the parser
+        CommandLineParser parser = new GnuParser();
+
+        options.addOption("h", "help", false, "print this message");
+        options.addOption("i", "input", true, "input directory or file to transform");
+        options.addOption("c", "configuration", true, "iServe configuration file. Default: config" +
+                ".properties");
+        options.addOption("f", "format", true, "format to use for parsing the files. Default: " + MediaType.TEXT_TURTLE.getMediaType());
+        options.addOption("d", "delete", false, "delete the registry before uploading.");
+
+        // parse the command line arguments
+        CommandLine line;
+        String input = null;
+        String configFileName = null;
+        File inputFile;
+        String mediaType = null;
+        boolean clearRegistry = false;
+        try {
+            line = parser.parse(options, args);
+            input = line.getOptionValue("i");
+            if (line.hasOption("help")) {
+                formatter.printHelp(iServeImporter.class.getCanonicalName(), options);
+                System.exit(0);
+            }
+            if (input == null) {
+                // The input should not be null
+                formatter.printHelp(80, "java " + iServeImporter.class.getCanonicalName(), "Options:", options, "You must provide an input", true);
+                System.exit(-2);
+            }
+
+            configFileName = line.getOptionValue("c");
+
+            mediaType = line.getOptionValue("f", MediaType.TEXT_TURTLE.getMediaType());
+
+            clearRegistry = line.hasOption("d");
+
+
+        } catch (ParseException e) {
+            formatter.printHelp(80, "java " + iServeImporter.class.getCanonicalName(), "Options:", options,
+                    "Error parsing arguments", true);
+            System.exit(-1);
+        }
+
+        inputFile = new File(input);
+        if (inputFile == null || !inputFile.exists()) {
+            formatter.printHelp(80, "java " + iServeImporter.class.getCanonicalName(), "Options:", options, "Input not found", true);
+            System.out.println(inputFile.getAbsolutePath());
+            System.exit(-2);
+        }
+
+        // Initialise the injector
+        Injector injector = null;
+        if (configFileName != null) {
+            File configFile = new File(configFileName);
+            if (!configFile.exists()) {
+                log.warn("Configuration file - {} - not found. Attempting to use default configuraiton " +
+                        "file.");
+                injector = Guice.createInjector(new ConfigurationModule(),
+                        new RegistryManagementModule());
+            } else {
+                injector = Guice.createInjector(new ConfigurationModule(configFileName),
+                        new RegistryManagementModule());
+            }
+        } else {
+            formatter.printHelp(80, "java " + iServeImporter.class.getCanonicalName(), "Options:", options,
+                    "Configuration file not found", true);
+            System.out.println(configFileName);
+            System.exit(-2);
+        }
+
+        iServeImporter importer = injector.getInstance(iServeImporter.class);
+
+        if (clearRegistry) {
+            try {
+                importer.getRegistryManager().clearRegistry();
+            } catch (SalException e) {
+                log.error("Problems clearing the registry", e);
+                System.exit(-3);
+            }
+        }
+
+        // Check the format is supported
+        if (!importer.getRegistryManager().canImport(mediaType)) {
+            Set<String> supportedTypes = importer.getRegistryManager().getSupportedInputMediaTypes();
+            StringBuilder builder = new StringBuilder();
+            for (String type : supportedTypes) {
+                builder.append(type).append("\n");
+            }
+
+            formatter.printHelp(80, "java " + iServeImporter.class.getCanonicalName(), "Options:", options,
+                    "\nMedia type - " + mediaType + " - is not supported. Supported media types are: \n" +
+                            builder.toString(),
+                    true);
+            System.exit(-4);
+        }
+
+        int result = importer.importServices(inputFile, mediaType);
+        log.info("Imported {} files from {}", result, inputFile.toURI().toASCIIString());
+        System.exit(result);
     }
 }

@@ -33,9 +33,11 @@ import uk.ac.open.kmi.msm4j.io.Syntax;
 import uk.ac.open.kmi.msm4j.io.TransformationException;
 import uk.ac.open.kmi.msm4j.io.impl.ServiceReaderImpl;
 import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
+import uk.ac.open.kmi.msm4j.io.util.FilenameFilterBySyntax;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -51,7 +53,6 @@ import java.util.Set;
  *
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
-//@Singleton
 public class RegistryManagerImpl extends IntegratedComponent implements RegistryManager {
 
     private static final Logger log = LoggerFactory.getLogger(RegistryManagerImpl.class);
@@ -174,6 +175,29 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
     public boolean canImport(String mediaType) {
         return (MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.containsKey(mediaType) ||
                 this.serviceTransformationEngine.canTransform(mediaType));
+    }
+
+    /**
+     * Gets the corresponding filename filter to a given media type by checking both native formats
+     * and those supported through transformation
+     *
+     * @param mediaType the media type for which to obtain the file extension
+     * @return the filename filter or null if it is not supported. Callers are advised to check
+     *         first that the media type is supported {@see canTransform} .
+     */
+    @Override
+    public FilenameFilter getFilenameFilter(String mediaType) {
+        if (mediaType == null) {
+            return null;
+        }
+
+        if (MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.containsKey(mediaType)) {
+            return new FilenameFilterBySyntax(MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.get(mediaType));
+        } else if (this.getServiceTransformationEngine().canTransform(mediaType)) {
+            return this.getServiceTransformationEngine().getFilenameFilter(mediaType);
+        }
+
+        return null;
     }
 
     /**
