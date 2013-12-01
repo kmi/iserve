@@ -16,8 +16,6 @@
 
 package uk.ac.open.kmi.iserve.discovery.engine.rest;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.jvnet.hk2.guice.bridge.api.GuiceBridge;
@@ -49,8 +47,8 @@ public class DiscoveryEngineWebApplication extends ResourceConfig {
         GuiceBridge.getGuiceBridge().initializeGuiceBridge(serviceLocator);
 
         GuiceIntoHK2Bridge guiceBridge = serviceLocator.getService(GuiceIntoHK2Bridge.class);
-        Injector injector = Guice.createInjector(new DiscoveryRestModule());
+//        Injector injector = Guice.createInjector(new DiscoveryRestModule());
 //        injector.createChildInjector(new Hk2Module(serviceLocator));
-        guiceBridge.bridgeGuiceInjector(injector);
+        guiceBridge.bridgeGuiceInjector(Main.injector);
     }
 }
