@@ -1,6 +1,8 @@
 package uk.ac.open.kmi.iserve.discovery.engine.rest;
 
 import org.apache.abdera.model.Feed;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
@@ -24,6 +26,7 @@ import java.util.Map;
 @Path("/concept")
 public class ConceptMatcherResource {
 
+    private static final Logger log = LoggerFactory.getLogger(ConceptMatcherResource.class);
     private final ConceptMatcher conceptMatcher;
 
     // Base URI info for this object
@@ -75,6 +78,8 @@ public class ConceptMatcherResource {
             throw new BadRequestException("You must provide correct min and max match types. Correct " +
                     "values are: " + builder.toString());
         }
+
+        log.info("Obtaining Concept matches for {}, within range {} - {}", conceptUri, minType, maxType);
 
         Map<URI, MatchResult> matchResults = conceptMatcher.listMatchesWithinRange(conceptUri, minType, maxType);
         Feed feed = new AbderaAtomFeedProvider().generateFeed(uriInfo.getRequestUri().toASCIIString(),
