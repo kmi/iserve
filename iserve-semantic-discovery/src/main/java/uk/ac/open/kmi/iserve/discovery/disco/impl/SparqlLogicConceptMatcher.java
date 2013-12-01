@@ -99,7 +99,7 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
      */
     @Override
     public String getMatcherDescription() {
-        return null;  // TODO: implement
+        return SparqlLogicConceptMatcher.class.getCanonicalName();
     }
 
     /**
@@ -109,7 +109,7 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
      */
     @Override
     public String getMatcherVersion() {
-        return null;  // TODO: implement
+        return "v1.0-SNAPSHOT";  // TODO: auto configure
     }
 
     /**

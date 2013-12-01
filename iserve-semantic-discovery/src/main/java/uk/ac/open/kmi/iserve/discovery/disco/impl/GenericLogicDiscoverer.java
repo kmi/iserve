@@ -18,7 +18,6 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.common.collect.*;
 import com.google.inject.Inject;
-import uk.ac.open.kmi.msm4j.vocabulary.MSM;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoverer;
@@ -26,6 +25,7 @@ import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoverer;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.MatchResultsMerger;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
+import uk.ac.open.kmi.msm4j.vocabulary.MSM;
 
 import java.net.URI;
 import java.util.Map;

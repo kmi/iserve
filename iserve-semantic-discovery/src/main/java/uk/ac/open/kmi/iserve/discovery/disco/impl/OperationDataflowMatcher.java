@@ -70,7 +70,7 @@ public class OperationDataflowMatcher extends AbstractMatcher implements Dataflo
      */
     @Override
     public String getMatcherDescription() {
-        return null;  // TODO: implement
+        return OperationDataflowMatcher.class.getCanonicalName();
     }
 
     /**
@@ -80,7 +80,7 @@ public class OperationDataflowMatcher extends AbstractMatcher implements Dataflo
      */
     @Override
     public String getMatcherVersion() {
-        return null;  // TODO: implement
+        return "v1.0-SNAPSHOT";  // TODO: auto configure
     }
 
     /**
