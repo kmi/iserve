@@ -126,24 +126,20 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
 
         Set<Map.Entry<URI, MatchResult>> entries = matchingResults.entrySet();
         for (Map.Entry<URI, MatchResult> entry : entries) {
-            Entry rssEntry = createMatchResultEntry(entry.getValue());
+            Entry rssEntry = createMatchResultEntry(entry.getKey(), entry.getValue());
             feed.addEntry(rssEntry);
         }
-
-        //		feed.setId(ui.getRequestUri().toString());
-        //		feed.addLink(ui.getRequestUri().toString(),"self");
-        //		feed.setTitle(plugin.getFeedTitle());
 
         return feed;
     }
 
-    private static Entry createMatchResultEntry(MatchResult matchResult) {
+    private static Entry createMatchResultEntry(URI matchUri, MatchResult matchResult) {
 
         Entry rssEntry =
                 ATOM_ENGINE.newEntry();
-        rssEntry.setId(matchResult.getMatchedResource().toASCIIString());
-        rssEntry.addLink(matchResult.getMatchedResource().toASCIIString(), "alternate");
-        //rssEntry.setTitle(entry.getValue().getMatchLabel());
+        rssEntry.setId(matchUri.toASCIIString());
+        rssEntry.addLink(matchUri.toASCIIString(), "alternate");
+        rssEntry.setTitle(matchUri.toASCIIString());
         //			String content = "Matching degree: " + degree;
         //			ExtensibleElement e = rssEntry.addExtension(entry.getValue().);
         //			e.setAttributeValue("score", entry.getValue().getScore());
@@ -158,6 +154,10 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
         feed.setUpdated(new Date());
         //FIXME: we should include the version
         feed.setGenerator(request, null, matcherDetails);
+        feed.setId(request);
+        feed.addLink(request,"self");
+        feed.setTitle("Match Results");
+
         return feed;
     }
 
@@ -170,7 +170,7 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
             return feed;
         }
 
-        feed.addEntry(createMatchResultEntry(matchResult));
+        feed.addEntry(createMatchResultEntry(matchResult.getMatchedResource(), matchResult));
         return feed;
     }
 }
