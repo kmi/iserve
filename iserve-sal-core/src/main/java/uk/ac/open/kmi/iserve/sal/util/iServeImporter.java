@@ -89,6 +89,7 @@ public class iServeImporter {
         int result = 0;
         for (File file : toTransform) {
             try {
+                log.info("Importing services from file: {}", file);
                 in = new FileInputStream(file);
                 importedUris = this.registryManager.importServices(in, mediaType);
                 result += importedUris.size();
@@ -171,7 +172,7 @@ public class iServeImporter {
         if (configFileName != null) {
             File configFile = new File(configFileName);
             if (!configFile.exists()) {
-                log.warn("Configuration file - {} - not found. Attempting to use default configuraiton " +
+                log.warn("Configuration file - {} - not found. Attempting to use default configuration " +
                         "file.");
                 injector = Guice.createInjector(new ConfigurationModule(),
                         new RegistryManagementModule());
