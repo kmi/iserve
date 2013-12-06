@@ -17,10 +17,14 @@
 package uk.ac.open.kmi.iserve.sal.rest;
 
 import com.epimorphics.lda.restlets.*;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.mvc.jsp.JspMvcFeature;
+import org.jvnet.hk2.guice.bridge.api.GuiceBridge;
+import org.jvnet.hk2.guice.bridge.api.GuiceIntoHK2Bridge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,13 +39,13 @@ import javax.inject.Inject;
  *         Date: 25/06/2013
  *         Time: 17:58
  */
-public class iServeWebApplication extends ResourceConfig {
+public class RegistryManagementWebApplication extends ResourceConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(iServeWebApplication.class);
+    private static final Logger log = LoggerFactory.getLogger(RegistryManagementWebApplication.class);
 
 
     @Inject
-    public iServeWebApplication(ServiceLocator serviceLocator) {
+    public RegistryManagementWebApplication(ServiceLocator serviceLocator) {
         // Set package to look for resources in
         packages("uk.ac.open.kmi.iserve.sal.rest.resource");
 
@@ -58,11 +62,12 @@ public class iServeWebApplication extends ResourceConfig {
         register(MultiPartFeature.class);
         register(JspMvcFeature.class);
 
-//        log.info("Registering injectables");
-//        GuiceBridge.getGuiceBridge().initializeGuiceBridge(serviceLocator);
-//
-//        GuiceIntoHK2Bridge guiceBridge = serviceLocator.getService(GuiceIntoHK2Bridge.class);
-//        guiceBridge.bridgeGuiceInjector(iServeContextListener.injector);
+        log.info("Registering injectables");
+        GuiceBridge.getGuiceBridge().initializeGuiceBridge(serviceLocator);
+
+        GuiceIntoHK2Bridge guiceBridge = serviceLocator.getService(GuiceIntoHK2Bridge.class);
+        Injector injector = Guice.createInjector(new SalRestModule());
+        guiceBridge.bridgeGuiceInjector(injector);
 
     }
 

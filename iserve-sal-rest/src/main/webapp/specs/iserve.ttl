@@ -73,12 +73,11 @@ spec:api a api:API;
 # Viewers Definitions
 spec:serviceViewer a api:Viewer ;
 	api:name "service" ;
-#	api:properties "label,type,hasPart.label,hasMandatoryPart.label, hasOptionalPart.label" .
-	api:properties "label,type,modelReference,hasOperation.label,hasOperation.modelReference,hasOperation.hasInput.label,hasOperation.hasInput.modelReference,hasOperation.hasInput.label,hasOperation.hasOutput.modelReference,source,isGroundedIn" .
+	api:properties "label,comment,created,type,modelReference,modelReference.type,modelReference.value,hasOperation.label,hasOperation.modelReference,hasOperation.modelReference.type,hasOperation.modelReference.value,hasOperation.hasInput.label,hasOperation.hasInput.modelReference,hasOperation.hasOutput.label,hasOperation.hasOutput.modelReference,source,isGroundedIn" .
 
 spec:operationViewer a api:Viewer ;
 	api:name "operation" ;
-	api:properties "label,type,hasInput.label,hasInput.modelReference,hasOutput.label,hasOutput.modelReference,hasInputFault.label,hasOutputFault.label,hasOutputFault.label,hasOutputFault.type,source,isGroundedIn" .
+	api:properties "label,type,modelReference,modelReference.type,modelReference.value,hasInput.label,hasInput.modelReference,hasOutput.label,hasOutput.modelReference,hasInputFault.label,hasOutputFault.label,hasOutputFault.label,hasOutputFault.type,source,isGroundedIn" .
 
 spec:messagePartViewer a api:Viewer ;
 	api:name "messagePart" ;
@@ -337,33 +336,82 @@ msm:Operation api:label "Operation" .
 
 msm:Service api:label "Service" .
 
-msm:hasInput api:label "hasInput" .
+msm:hasInput 
+	api:label "hasInput" ;
+   	api:multiValued true ;
+   	rdfs:range msm:MessageContent 
+   	.
 
-msm:hasInputFault api:label "hasInputFault" .
+msm:hasInputFault
+	api:label "hasInputFault" ;
+	rdfs:range msm:MessageContent 
+	.
 
-msm:hasMandatoryPart api:label "hasMandatoryPart" .
+msm:hasMandatoryPart 
+	api:label "hasMandatoryPart" ;
+	api:multiValued true ;
+	rdfs:range msm:MessagePart 
+	.
 
 msm:hasName api:label "hasName" .
 
-msm:hasOperation api:label "hasOperation" .
+msm:hasOperation
+	api:label "hasOperation" ;
+	api:multiValued true ;
+	rdfs:range msm:Operation 
+	.
 
-msm:hasOptionalPart api:label "hasOptionalPart" .
+msm:hasOptionalPart 
+	api:label "hasOptionalPart" ;
+	api:multiValued true ;
+	rdfs:range msm:MessagePart 
+	.
 
-msm:hasOutput api:label "hasOutput".
+msm:hasOutput 
+	api:label "hasOutput" ;
+   	api:multiValued true ;
+   	rdfs:range msm:MessageContent 
+   	.
 
-msm:hasOutputFault api:label "hasOutputFault" .
+msm:hasOutputFault 
+	api:label "hasOutputFault"  ;
+	rdfs:range msm:MessageContent 
+	.
 
-msm:hasPart api:label "hasPart" .
+msm:hasPart 
+	api:label "hasPart"  ;
+	api:multiValued true ;
+	rdfs:range msm:MessagePart 
+	.
 
-msm:hasPartTransitive api:label "hasPartTransitive" .
+msm:hasPartTransitive 
+	api:label "hasPartTransitive" ;
+	api:multiValued true ;
+	rdfs:range msm:MessagePart 
+	.
 
 # MSM-WSDL
-msm-wsdl:isGroundedIn api:label "isGroundedIn" .
+msm-wsdl:isGroundedIn 
+	api:label "isGroundedIn" ;
+	rdfs:range rdf:Resource 
+	.
 
 # SAWSDL	
-sawsdl:modelReference api:label "modelReference" .	
-sawsdl:liftingSchemaMapping api:label "liftingSchemaMapping" .
-sawsdl:loweringSchemaMapping api:label "loweringSchemaMapping" .
+sawsdl:modelReference 
+	api:label "modelReference" ;
+	api:multiValued true ;
+	rdfs:range rdf:Resource 
+	.
+	
+sawsdl:liftingSchemaMapping 
+	api:label "liftingSchemaMapping" ;
+	rdfs:range rdf:Resource 
+	.
+	
+sawsdl:loweringSchemaMapping 
+	api:label "loweringSchemaMapping" ;
+	rdfs:range rdf:Resource 
+	.
 
 # WSMO-Lite	
 wl:NonfunctionalParameter api:label "NonFunctionalParameter" .

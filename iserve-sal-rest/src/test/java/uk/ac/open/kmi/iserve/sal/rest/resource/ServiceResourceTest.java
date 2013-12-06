@@ -24,18 +24,21 @@ import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.jayway.restassured.RestAssured;
 import org.apache.commons.httpclient.Cookie;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagerImpl;
+import uk.ac.open.kmi.iserve.core.ConfigurationModule;
+import uk.ac.open.kmi.iserve.sal.exception.SalException;
+import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
+import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
 import uk.ac.open.kmi.msm4j.io.MediaType;
 import uk.ac.open.kmi.msm4j.io.Syntax;
 import uk.ac.open.kmi.msm4j.io.util.FilenameFilterBySyntax;
-import uk.ac.open.kmi.iserve.sal.exception.SalException;
-import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -72,19 +75,19 @@ public class ServiceResourceTest extends AbstractContainerTest {
     private static final String ROOT_USER = "root";
     private static final String ROOT_PASSWD = "secret";
 
-    private URI testFolder;
+    private static URI testFolder;
 
-    private File[] msmTtlTcFiles;
+    private static File[] msmTtlTcFiles;
 
     // For HTML testing (logging via forms, etc)
-    private final WebClient webClient = new WebClient();
-    private RegistryManager manager;
+    private static final WebClient webClient = new WebClient();
+    private static RegistryManager manager;
 
     /**
      * @throws Exception
      */
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
 
         testFolder = ServiceResourceTest.class.getResource(OWLS_TC_SERVICES).toURI();
         FilenameFilter ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
@@ -108,11 +111,12 @@ public class ServiceResourceTest extends AbstractContainerTest {
         // Logout
         logOut();
 
-        this.manager = RegistryManagerImpl.getInstance();
+        Injector injector = Guice.createInjector(new ConfigurationModule(), new RegistryManagementModule());
+        manager = injector.getInstance(RegistryManager.class);
 
     }
 
-    private void logOut() throws IOException {
+    private static void logOut() throws IOException {
         // Make sure we are logged out
         final HtmlPage homePage = webClient.getPage(HOME_PAGE_URI);
         try {

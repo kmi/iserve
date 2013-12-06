@@ -22,31 +22,32 @@
 
     <!--IMPORTANT: Ordering is essential. 1st Shiro (security), then the rest -->
     <!--For Security Management  -->
-    <listener>
-        <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
-    </listener>
+    <!--
+        <listener>
+            <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
+        </listener>
 
-    <filter>
-        <filter-name>ShiroFilter</filter-name>
-        <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
-    </filter>
+        <filter>
+            <filter-name>ShiroFilter</filter-name>
+            <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+        </filter>
 
-    <filter-mapping>
-        <filter-name>ShiroFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>FORWARD</dispatcher>
-        <dispatcher>INCLUDE</dispatcher>
-        <dispatcher>ERROR</dispatcher>
-    </filter-mapping>
+        <filter-mapping>
+            <filter-name>ShiroFilter</filter-name>
+            <url-pattern>/*</url-pattern>
+            <dispatcher>REQUEST</dispatcher>
+            <dispatcher>FORWARD</dispatcher>
+            <dispatcher>INCLUDE</dispatcher>
+            <dispatcher>ERROR</dispatcher>
+        </filter-mapping>
+    -->
 
-    <!-- Guice Filter should also come early -->
     <!--
         <listener>
             <listener-class>uk.ac.open.kmi.iserve.sal.rest.RegistryManagerContextListener</listener-class>
         </listener>
     -->
-
+    <!-- Guice Filter should also come early -->
     <!--
         <filter>
             <filter-name>guiceFilter</filter-name>

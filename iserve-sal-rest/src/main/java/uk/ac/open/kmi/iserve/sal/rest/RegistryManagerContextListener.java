@@ -32,23 +32,22 @@ package uk.ac.open.kmi.iserve.sal.rest;/*
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagerImpl;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 /**
- * iServeContextListener
+ * RegistryManagerContextListener
  * Basic Servlet Context Listener implementation to ensure that proper initialisation and shutdown take place.
  * <p/>
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 19/06/2013
  * Time: 16:01
  */
-//public class iServeContextListener extends GuiceServletContextListener {
-public class iServeContextListener implements ServletContextListener {
+//public class RegistryManagerContextListener extends GuiceServletContextListener {
+public class RegistryManagerContextListener implements ServletContextListener {
 
-    private static final Logger log = LoggerFactory.getLogger(iServeContextListener.class);
+    private static final Logger log = LoggerFactory.getLogger(RegistryManagerContextListener.class);
 
     /**
      * Notification that the web application initialization
@@ -60,7 +59,7 @@ public class iServeContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         log.info("iServe initialising ...");
-        RegistryManagerImpl.getInstance();
+
     }
 
     /**
@@ -71,7 +70,7 @@ public class iServeContextListener implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         log.info("iServe shutting down ...");
-        RegistryManagerImpl.getInstance().shutdown();
+
     }
 
 }
