@@ -102,7 +102,7 @@ spec:definitionViewer a api:Viewer ;
 spec:HtmlFormatter a api:XsltFormatter ; 
 	api:name "html" ;
 	api:mimeType "text/html; charset=utf-8" ;
-	api:stylesheet "xslt/result-osm-trimmed.xsl" .
+	api:stylesheet "lda-assets/xslt/result-osm-trimmed.xsl" .
 	
 #
 # Selectors
