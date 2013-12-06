@@ -70,8 +70,8 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
-            <scope>compile</scope>
+            <version>${servlet.version}</version>
+            <scope>provided</scope>
         </dependency>
         <!-- JSPs -->
         <dependency>
@@ -84,13 +84,13 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
-            <!--<scope>provided</scope>-->
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>taglibs</groupId>
             <artifactId>standard</artifactId>
             <version>1.1.2</version>
-            <!--<scope>provided</scope>-->
+            <scope>provided</scope>
         </dependency>
 
         <!--Jersey Dependencies-->
@@ -223,14 +223,6 @@
             <version>1.4</version>
         </dependency>
 
-        <!--Include Log runtime binding as this is executable/deployable-->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-
         <!-- Test dependencies -->
         <!-- Jetty artifacts. Note: They do have transitive dependencies.  -->
         <dependency>
@@ -238,6 +230,16 @@
             <artifactId>jetty-jsp</artifactId>
             <version>${jetty.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>javax.servlet</artifactId>
+                    <groupId>org.eclipse.jetty.orbit</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>javax.servlet.jsp</artifactId>
+                    <groupId>org.eclipse.jetty.orbit</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
