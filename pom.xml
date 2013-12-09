@@ -52,8 +52,8 @@
 
     <scm>
         <url>https://github.com/kmi/iserve</url>
-        <connection>scm:git:https://github.com/kmi/iserve.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:kmi/iserve.git</developerConnection>
+        <connection>scm:git:git@github.com:kmi/iserve.git</connection>
+        <developerConnection>scm:git:git@github.com:kmi/iserve.git</developerConnection>
     </scm>
 
     <issueManagement>
@@ -128,8 +128,8 @@
         <guice.version>3.0</guice.version>
         <guava.version>14.0</guava.version>
         <commons-config.version>1.9</commons-config.version>
-        <msm4j.version>1.0-SNAPSHOT</msm4j.version>
-        <test-collections.version>1.0-SNAPSHOT</test-collections.version>
+        <msm4j.version>1.0</msm4j.version>
+        <test-collections.version>1.0</test-collections.version>
         <servlet.version>3.0.1</servlet.version>
 
         <!-- Configuration for GitHub deployment -->
