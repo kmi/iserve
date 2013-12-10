@@ -41,7 +41,7 @@ import java.lang.reflect.Type;
 /**
  * Taken from Apache Wink
  */
-@Produces( {MediaType.APPLICATION_ATOM_XML, MediaType.APPLICATION_JSON})
+@Produces({MediaType.APPLICATION_ATOM_XML, MediaType.APPLICATION_JSON})
 @Consumes(MediaType.APPLICATION_ATOM_XML)
 @Provider
 public class AbderaAtomEntryProvider implements MessageBodyReader<Entry>, MessageBodyWriter<Entry> {

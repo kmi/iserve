@@ -49,7 +49,7 @@ import java.util.Set;
 /**
  * Taken from Apache Wink
  */
-@Produces( {MediaType.APPLICATION_ATOM_XML, MediaType.APPLICATION_JSON})
+@Produces({MediaType.APPLICATION_ATOM_XML, MediaType.APPLICATION_JSON})
 @Consumes(MediaType.APPLICATION_ATOM_XML)
 @Provider
 public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageBodyReader<Feed> {
@@ -155,7 +155,7 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
         //FIXME: we should include the version
         feed.setGenerator(request, null, matcherDetails);
         feed.setId(request);
-        feed.addLink(request,"self");
+        feed.addLink(request, "self");
         feed.setTitle("Match Results");
 
         return feed;

@@ -22,7 +22,6 @@ import com.google.inject.Inject;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.msm4j.io.util.FileUtil;
 import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.events.DocumentCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.DocumentDeletedEvent;
@@ -32,6 +31,7 @@ import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
 import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
+import uk.ac.open.kmi.msm4j.io.util.FileUtil;
 
 import javax.inject.Named;
 import java.io.*;

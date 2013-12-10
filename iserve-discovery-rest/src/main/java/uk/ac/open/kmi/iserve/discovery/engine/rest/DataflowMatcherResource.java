@@ -96,7 +96,7 @@ public class DataflowMatcherResource {
         }
 
         // Validate operation
-        if (originOperation == null || originOperation.isEmpty()  ||
+        if (originOperation == null || originOperation.isEmpty() ||
                 destinationOperation == null || destinationOperation.isEmpty()) {
             throw new BadRequestException("You must provide two operations to be matched.");
         }

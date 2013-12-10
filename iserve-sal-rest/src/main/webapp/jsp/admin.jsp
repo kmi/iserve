@@ -1,4 +1,5 @@
-<%@ page import="uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagerImpl" %>
+<%@ page import="com.google.inject.Injector" %>
+<%@ page import="uk.ac.open.kmi.iserve.sal.manager.RegistryManager" %>
 
 <%--
   ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
@@ -17,6 +18,11 @@
   --%>
 
 <%@ include file="./include.jsp" %>
+<%
+    // http://turbomanage.wordpress.com/2009/12/11/how-to-inject-guice-objects-in-a-jsp/
+    Injector inj = (Injector) pageContext.getServletContext().getAttribute(Injector.class.getName());
+    RegistryManager registryManager = inj.getInstance(RegistryManager.class);
+%>
 
 <html>
 <head>
@@ -85,10 +91,10 @@
 
 <h2>Server Statistics</h2>
 
-<p>Services registered: <%= RegistryManagerImpl.getInstance().listServices().size() %>
+<p>Services registered: <%= registryManager.getServiceManager().listServices().size() %>
 </p>
 
-<p>Documents registered: <%= RegistryManagerImpl.getInstance().listDocuments().size() %>
+<p>Documents registered: <%= registryManager.getDocumentManager().listDocuments().size() %>
 </p>
 
 <p>See <a href="<c:url value="/control/show-stats"/>">Elda's Statistics</a>.</p>

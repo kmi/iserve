@@ -96,7 +96,7 @@ public class ReadWriteRouterServlet extends RouterRestlet {
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces({MediaType.TEXT_HTML})
-//    @Path("id/services")
+    @Path("/id/services")
     public Response addService(
             @PathParam("path") String pathstub,
             @FormDataParam("file") FormDataBodyPart bodyPart,
@@ -198,7 +198,7 @@ public class ReadWriteRouterServlet extends RouterRestlet {
      * @return
      */
     @DELETE
-//    @Path("id/services/{uniqueId}/{serviceName}")
+    @Path("/id/services/{uniqueId}/{serviceName}")
     @Produces({MediaType.TEXT_HTML})
     public Response deleteService(@PathParam("path") String pathstub,
                                   @Context UriInfo ui) {

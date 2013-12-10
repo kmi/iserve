@@ -83,6 +83,12 @@
             <groupId>org.apache.abdera</groupId>
             <artifactId>abdera-extensions-json</artifactId>
             <version>1.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>servlet-api</artifactId>
+                    <groupId>javax.servlet</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

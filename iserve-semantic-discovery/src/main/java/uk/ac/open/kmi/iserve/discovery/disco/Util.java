@@ -25,9 +25,9 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.msm4j.io.util.URIUtil;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
+import uk.ac.open.kmi.msm4j.io.util.URIUtil;
 
 import java.net.MalformedURLException;
 import java.net.URI;

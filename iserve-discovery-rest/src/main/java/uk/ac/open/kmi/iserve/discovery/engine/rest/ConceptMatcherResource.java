@@ -45,7 +45,7 @@ public class ConceptMatcherResource {
     public Response matchConcepts(
             @QueryParam("uri") String concept,
             @DefaultValue("Plugin") @QueryParam("minMatch") String minMatch,
-            @DefaultValue("Exact") @QueryParam("maxMatch") String maxMatch ) throws
+            @DefaultValue("Exact") @QueryParam("maxMatch") String maxMatch) throws
             WebApplicationException {
 
         if (conceptMatcher == null) {
@@ -54,7 +54,7 @@ public class ConceptMatcherResource {
 
         // Validate concept
         if (concept == null || concept.isEmpty()) {
-           throw new BadRequestException("You must provide a concept to be matched.");
+            throw new BadRequestException("You must provide a concept to be matched.");
         }
 
         URI conceptUri;

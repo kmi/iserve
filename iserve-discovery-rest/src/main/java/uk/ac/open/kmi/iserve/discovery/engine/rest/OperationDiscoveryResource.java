@@ -47,7 +47,7 @@ public class OperationDiscoveryResource {
     public Response discoverOperations(
             @DefaultValue("some") @QueryParam("mode") String mode,
             @QueryParam("in") List<String> inputs,
-            @QueryParam("out") List<String> outputs ) throws
+            @QueryParam("out") List<String> outputs) throws
             WebApplicationException {
 
         if (opDiscoverer == null) {
@@ -55,19 +55,19 @@ public class OperationDiscoveryResource {
         }
 
         // Validate params
-        if ( (inputs == null || inputs.isEmpty()) && (outputs == null || outputs.isEmpty()) ) {
+        if ((inputs == null || inputs.isEmpty()) && (outputs == null || outputs.isEmpty())) {
             throw new BadRequestException("You must provide either inputs or outputs that characterise the " +
                     "services to discover");
         }
 
 
         log.info("Discoverying operations with mode {}, having these inputs \n {} \n and these outputs \n " +
-                "{}", mode, inputs, outputs );
+                "{}", mode, inputs, outputs);
 
 
         Set<URI> inputsSet = new HashSet<URI>();
         if (!inputs.isEmpty()) {
-            for(String input : inputs) {
+            for (String input : inputs) {
                 try {
                     inputsSet.add(new URI(input));
                 } catch (URISyntaxException e) {
@@ -79,7 +79,7 @@ public class OperationDiscoveryResource {
 
         Set<URI> outputsSet = new HashSet<URI>();
         if (!outputs.isEmpty()) {
-            for(String output : outputs) {
+            for (String output : outputs) {
                 try {
                     outputsSet.add(new URI(output));
                 } catch (URISyntaxException e) {

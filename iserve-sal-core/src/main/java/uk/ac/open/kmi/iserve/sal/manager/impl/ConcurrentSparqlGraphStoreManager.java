@@ -43,8 +43,8 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
-import uk.ac.open.kmi.msm4j.util.Vocabularies;
 import uk.ac.open.kmi.msm4j.io.Syntax;
+import uk.ac.open.kmi.msm4j.util.Vocabularies;
 
 import javax.inject.Named;
 import java.io.StringWriter;

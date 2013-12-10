@@ -84,7 +84,26 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
-            <scope>provided</scope>
+        </dependency>
+        <!--Apparent issues with Tomcat and JSTL: http://stackoverflow.com/questions/6094329/tomcat-7-and-jstl -->
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jstl-impl</artifactId>
+            <version>1.2</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>servlet-api</artifactId>
+                    <groupId>javax.servlet</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jsp-api</artifactId>
+                    <groupId>javax.servlet.jsp</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jstl-api</artifactId>
+                    <groupId>javax.servlet.jsp.jstl</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>taglibs</groupId>

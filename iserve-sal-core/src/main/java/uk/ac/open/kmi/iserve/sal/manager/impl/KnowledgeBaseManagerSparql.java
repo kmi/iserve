@@ -29,7 +29,6 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.msm4j.vocabulary.SAWSDL;
 import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.events.OntologyCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServiceCreatedEvent;
@@ -40,6 +39,7 @@ import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
 import uk.ac.open.kmi.msm4j.Service;
 import uk.ac.open.kmi.msm4j.io.impl.ServiceWriterImpl;
 import uk.ac.open.kmi.msm4j.io.util.URIUtil;
+import uk.ac.open.kmi.msm4j.vocabulary.SAWSDL;
 
 import javax.inject.Named;
 import java.net.URI;

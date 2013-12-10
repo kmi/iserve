@@ -27,11 +27,11 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.ConfigurationModule;
-import uk.ac.open.kmi.msm4j.io.TransformationException;
-import uk.ac.open.kmi.msm4j.Service;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
+import uk.ac.open.kmi.msm4j.Service;
+import uk.ac.open.kmi.msm4j.io.TransformationException;
 import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
 import uk.ac.open.kmi.msm4j.io.impl.TransformerModule;
 

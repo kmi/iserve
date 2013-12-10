@@ -16,7 +16,8 @@
 
 package uk.ac.open.kmi.iserve.api;
 
-import com.google.inject.*;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 

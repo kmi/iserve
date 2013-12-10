@@ -183,7 +183,7 @@ public class ConceptMatcherOwlTcTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) plugin matches - {} - in {} \n", matches.size(), matches, stopwatch);
-        Assert.assertTrue( matches.size() == 5 || matches.size() == 6 );
+        Assert.assertTrue(matches.size() == 5 || matches.size() == 6);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
@@ -230,7 +230,7 @@ public class ConceptMatcherOwlTcTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) At least Plugin matches - {} - in {} \n", matches.size(), matches, stopwatch);
-        Assert.assertTrue( matches.size() == 6 || matches.size() == 7 );
+        Assert.assertTrue(matches.size() == 6 || matches.size() == 7);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
@@ -249,7 +249,7 @@ public class ConceptMatcherOwlTcTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) At least Subsumes matches - {] - in {} \n", matches.size(), matches, stopwatch);
-        Assert.assertTrue( matches.size() == 6 || matches.size() == 8 );
+        Assert.assertTrue(matches.size() == 6 || matches.size() == 8);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
@@ -270,7 +270,7 @@ public class ConceptMatcherOwlTcTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) At least Fail matches - {} - in {} \n", matches.size(), matches, stopwatch);
-        Assert.assertTrue( matches.size() == 6 || matches.size() == 8 );
+        Assert.assertTrue(matches.size() == 6 || matches.size() == 8);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
@@ -295,7 +295,7 @@ public class ConceptMatcherOwlTcTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) At most Exact matches - {} - in {} \n", matches.size(), matches, stopwatch);
-        Assert.assertTrue( matches.size() == 6 || matches.size() == 8 );
+        Assert.assertTrue(matches.size() == 6 || matches.size() == 8);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
@@ -316,7 +316,7 @@ public class ConceptMatcherOwlTcTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) At most Plugin matches - {} - in {} \n", matches.size(), matches, stopwatch);
-        Assert.assertTrue( matches.size() == 5 || matches.size() == 7 );
+        Assert.assertTrue(matches.size() == 5 || matches.size() == 7);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
@@ -336,7 +336,7 @@ public class ConceptMatcherOwlTcTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) At most Subsumes matches - {} - in {} \n", matches.size(), matches, stopwatch);
-        Assert.assertTrue( matches.size() == 0 || matches.size() == 1 );
+        Assert.assertTrue(matches.size() == 0 || matches.size() == 1);
 
         // Depending on the reasoning use there should be owl:Nothing
         if (matches.size() == 1) {
@@ -364,7 +364,7 @@ public class ConceptMatcherOwlTcTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) all matches - {} - in {} \n", matches.size(), matches, stopwatch);
-        Assert.assertTrue( matches.size() == 6 || matches.size() == 8 );
+        Assert.assertTrue(matches.size() == 6 || matches.size() == 8);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
@@ -395,7 +395,7 @@ public class ConceptMatcherOwlTcTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) matches >= Plugin - {} - in {} \n", matches.size(), matches, stopwatch);
-        Assert.assertTrue( matches.size() == 6 || matches.size() == 7 );
+        Assert.assertTrue(matches.size() == 6 || matches.size() == 7);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
@@ -416,7 +416,7 @@ public class ConceptMatcherOwlTcTest {
 
         log.info("Obtained ({}) Subsumes >= matches >= Plugin - {} - in {} \n", matches.size(),
                 matches, stopwatch);
-        Assert.assertTrue( matches.size() == 5 || matches.size() == 7 );
+        Assert.assertTrue(matches.size() == 5 || matches.size() == 7);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
