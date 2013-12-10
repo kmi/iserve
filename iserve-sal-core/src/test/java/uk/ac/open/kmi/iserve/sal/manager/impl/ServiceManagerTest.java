@@ -18,6 +18,7 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import junit.framework.Assert;
+import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -25,12 +26,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.commons.io.TransformationException;
-import uk.ac.open.kmi.iserve.commons.io.Transformer;
-import uk.ac.open.kmi.iserve.commons.model.Service;
+import uk.ac.open.kmi.iserve.core.ConfigurationModule;
+import uk.ac.open.kmi.msm4j.io.TransformationException;
+import uk.ac.open.kmi.msm4j.Service;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
+import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
+import uk.ac.open.kmi.msm4j.io.impl.TransformerModule;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,11 +66,13 @@ public class ServiceManagerTest {
     /**
      * JukitoModule.
      */
-    public static class InnerModule extends ConfiguredTestModule {
+    public static class InnerModule extends JukitoModule {
         @Override
         protected void configureTest() {
-            // Get properties
-            super.configureTest();
+            // Get configuration
+            install(new ConfigurationModule());
+
+            install(new TransformerModule());
 
             // bind all the implementations
             bind(ServiceManager.class).to(ServiceManagerSparql.class);
@@ -107,27 +112,31 @@ public class ServiceManagerTest {
         }
     }
 
-    public void checkAndImportServices(ServiceManager serviceManager) throws Exception {
+    public void checkAndImportServices(ServiceTransformationEngine transformationEngine,
+                                       ServiceManager serviceManager) throws
+            Exception {
         URL resource = ServiceManagerTest.class.getResource("init.check");
         if (resource != null) {
             File file = new File(resource.toURI());
             if (file.exists()) {
                 serviceManager.clearServices();
-                importWscServices(serviceManager);
+                importWscServices(transformationEngine, serviceManager);
                 file.delete();
             }
         }
     }
 
-    private void importWscServices(ServiceManager serviceManager) throws TransformationException, ServiceException, URISyntaxException {
+    private void importWscServices(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager) throws
+            TransformationException,
+            ServiceException, URISyntaxException {
         log.info("Importing WSC Dataset");
         String file = this.getClass().getResource(WSC08_01_SERVICES).getFile();
         log.info("Services XML file {}", file);
         File servicesFile = new File(file);
         URL base = this.getClass().getResource(WSC08_01);
         log.info("Dataset Base URI {}", base.toURI().toASCIIString());
-        List<Service> services = Transformer.getInstance().transform(servicesFile, base.toURI().toASCIIString(), MEDIATYPE);
-        //List<Service> result = Transformer.getInstance().transform(services, null, MEDIATYPE);
+        List<Service> services = transformationEngine.transform(servicesFile, base.toURI().toASCIIString(), MEDIATYPE);
+        //List<Service> result = transformationEngine.transform(services, null, MEDIATYPE);
         if (services.size() == 0) {
             fail("No services transformed!");
         }
@@ -144,10 +153,10 @@ public class ServiceManagerTest {
     }
 
     @Test
-    public void testListServices(ServiceManager serviceManager) throws Exception {
+    public void testListServices(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager) throws Exception {
 
         //check and import services
-        checkAndImportServices(serviceManager);
+        checkAndImportServices(transformationEngine, serviceManager);
 
         Set<URI> services = serviceManager.listServices();
         // Check the original list of retrieved URIs
@@ -177,10 +186,10 @@ public class ServiceManagerTest {
 
     @Test
     //@Ignore
-    public void testListOperations(ServiceManager serviceManager) throws Exception {
+    public void testListOperations(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager) throws Exception {
 
         //check and import services
-        checkAndImportServices(serviceManager);
+        checkAndImportServices(transformationEngine, serviceManager);
 
         URI op = findServiceURI(serviceManager, "serv1323166560");
         if (op != null) {
@@ -195,10 +204,10 @@ public class ServiceManagerTest {
 
     @Test
     //@Ignore
-    public void testListInputs(ServiceManager serviceManager) throws Exception {
+    public void testListInputs(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager) throws Exception {
 
         //check and import services
-        checkAndImportServices(serviceManager);
+        checkAndImportServices(transformationEngine, serviceManager);
 
         URI op = findServiceURI(serviceManager, "serv1323166560");
         if (op != null) {
@@ -213,10 +222,10 @@ public class ServiceManagerTest {
     }
 
     @Test
-    public void testInputParts(ServiceManager serviceManager) throws Exception {
+    public void testInputParts(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager) throws Exception {
 
         //check and import services
-        checkAndImportServices(serviceManager);
+        checkAndImportServices(transformationEngine, serviceManager);
 
         URI op = findServiceURI(serviceManager, "serv1323166560");
         String[] expected = {"con241744282", "con1849951292", "con1653328292"};
@@ -243,10 +252,10 @@ public class ServiceManagerTest {
     }
 
     @Test
-    public void testListOutputs(ServiceManager serviceManager) throws Exception {
+    public void testListOutputs(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager) throws Exception {
 
         //check and import services
-        checkAndImportServices(serviceManager);
+        checkAndImportServices(transformationEngine, serviceManager);
 
         URI op = findServiceURI(serviceManager, "serv1323166560");
         if (op != null) {
@@ -261,10 +270,11 @@ public class ServiceManagerTest {
     }
 
     @Test
-    public void testListOperationsWithInputType(ServiceManager serviceManager) throws Exception {
+    public void testListOperationsWithInputType(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager)
+            throws Exception {
 
         //check and import services
-        checkAndImportServices(serviceManager);
+        checkAndImportServices(transformationEngine, serviceManager);
 
         Set<URI> result;
 
@@ -294,10 +304,11 @@ public class ServiceManagerTest {
 
 
     @Test
-    public void testListOperationsWithOutputType(ServiceManager serviceManager) throws Exception {
+    public void testListOperationsWithOutputType(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager)
+            throws Exception {
 
         //check and import services
-        checkAndImportServices(serviceManager);
+        checkAndImportServices(transformationEngine, serviceManager);
 
         Set<URI> result;
 
@@ -326,10 +337,11 @@ public class ServiceManagerTest {
     }
 
     @Test
-    public void testListServicesWithInputType(ServiceManager serviceManager) throws Exception {
+    public void testListServicesWithInputType(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager) throws
+            Exception {
 
         //check and import services
-        checkAndImportServices(serviceManager);
+        checkAndImportServices(transformationEngine, serviceManager);
 
         Set<URI> result;
 
@@ -359,10 +371,11 @@ public class ServiceManagerTest {
 
 
     @Test
-    public void testListServicesWithOutputType(ServiceManager serviceManager) throws Exception {
+    public void testListServicesWithOutputType(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager)
+            throws Exception {
 
         //check and import services
-        checkAndImportServices(serviceManager);
+        checkAndImportServices(transformationEngine, serviceManager);
 
         Set<URI> result;
 

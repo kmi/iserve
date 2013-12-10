@@ -29,9 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
+import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -80,16 +80,17 @@ public class ReadWriteRouterServlet extends RouterRestlet {
 
     private static final Logger log = LoggerFactory.getLogger(ReadWriteRouterServlet.class);
 
-    private final iServeManager manager;
+    private final RegistryManager manager;
 
     /**
      * Initialise this RouterRestlet. Happens a lot, so expensive
      * initialisations should be cached. Sets the router used by
      * this instance according to the appropriate LDA configs.
      */
-    public ReadWriteRouterServlet(@Context ServletContext con) {
+    @Inject
+    public ReadWriteRouterServlet(@Context ServletContext con, RegistryManager registryManager) {
         super(con);
-        this.manager = iServeFacade.getInstance();
+        this.manager = registryManager;
     }
 
     @POST

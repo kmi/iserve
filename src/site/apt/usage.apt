@@ -57,7 +57,7 @@ Service service = facade.getServiceManager().getService(svcUri);
 
     iServe provides a Matching API that can be used programmatically from Java. Although, work is ongoing to provide a
     more advanced and richer API, you can already work with it within your applications. Should you wish to obtain a
-    Matcher, you can simply do so by means of the <uk.ac.open.kmi.iserve.discovery.api.impl.MatchersFactory>.
+    Matcher, you can simply do so by means of the <uk.ac.open.kmi.iserve.api.MatchersFactory>.
     This factory takes care of locating Matcher implementations by means of a plugin mechanism, and will automatically
     create the plugin of your choice at runtime. Currently, the code only provides a ConceptMatcher allowing you to
     find matches between concepts loaded in the server by relying directly on SPARQL queries. Further matches are under

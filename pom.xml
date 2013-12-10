@@ -50,8 +50,8 @@
 
     <scm>
         <url>https://github.com/kmi/iserve</url>
-        <connection>scm:git:https://github.com/kmi/iserve.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:kmi/iserve.git</developerConnection>
+        <connection>scm:git:git@github.com:kmi/iserve.git</connection>
+        <developerConnection>scm:git:git@github.com:kmi/iserve.git</developerConnection>
     </scm>
 
     <issueManagement>
@@ -126,6 +126,9 @@
         <guice.version>3.0</guice.version>
         <guava.version>14.0</guava.version>
         <commons-config.version>1.9</commons-config.version>
+        <msm4j.version>1.0</msm4j.version>
+        <test-collections.version>1.0</test-collections.version>
+        <servlet.version>3.0.1</servlet.version>
 
         <!-- Configuration for GitHub deployment -->
         <site.path>snapshot/${project.version}</site.path>
@@ -133,49 +136,36 @@
         <repositoryName>iserve</repositoryName>
         <repositoryOwner>kmi</repositoryOwner>
 
-        <!-- iServe Configuration properties for deployments -->
-        <!-- If you are using the config.properties templated file, it will be automatically updated -->
-        <!-- You can configure this here or (Recommended), you can do it in your own settings.xml using profiles -->
-        <!-- See http://maven.apache.org/settings.html#Profiles -->
-        <!-- Proxy Configuration -->
-        <iserve.proxyHost></iserve.proxyHost>
-        <iserve.proxyPort></iserve.proxyPort>
-
-        <!--iServe Configuration-->
-        <iserve.url></iserve.url>
-
-        <!--Documents Server-->
-        <iserve.documents.folder></iserve.documents.folder>
-
-        <!--Core Data RDF Server-->
-        <iserve.services.sparql.query></iserve.services.sparql.query>
-        <iserve.services.sparql.update></iserve.services.sparql.update>
-        <iserve.services.sparql.service></iserve.services.sparql.service>
-
-        <!-- Configuration for Server Deployment: configure in your settings.xml -->
-        <deployment.server.url/>
-        <deployment.server.user/>
-        <deployment.server.password/>
-        <deployment.server.context/>
+        <shared.resources.dir>${project.build.directory}/conf</shared.resources.dir>
     </properties>
 
     <modules>
-        <module>iserve-commons-io</module>
-        <module>iserve-commons-vocabulary</module>
-        <module>iserve-importer-sawsdl</module>
-        <module>iserve-importer-hrests</module>
-        <module>iserve-importer-owls</module>
-        <module>iserve-importer-wsc</module>
         <module>iserve-sal-core</module>
         <module>iserve-sal-rest</module>
         <module>iserve-discovery-api</module>
-        <module>iserve-discovery-disco</module>
-        <module>iserve-discovery-engine</module>
-        <module>iserve-test-resources</module>
-        <!-- <module>iserve-analysis-engine</module> -->
+        <module>iserve-semantic-discovery</module>
+        <module>iserve-discovery-rest</module>
+        <module>iserve-webapp</module>
+        <module>iserve-shared-resources</module>
+        <module>iserve-integrated-engine</module>
     </modules>
 
     <dependencies>
+        <!-- Loging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <!--Use log4j for runtime-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
         <!--Test dependencies-->
         <dependency>
             <groupId>junit</groupId>
@@ -186,18 +176,20 @@
     </dependencies>
 
     <build>
+        <!-- Include the configuration as test resources for every module -->
+        <testResources>
+            <testResource>
+                <directory>${shared.resources.dir}</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.9.1</version>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.1</version>
-            </plugin>
-
 
             <plugin>
                 <!-- Configure Maven site plugin for Reflow skin and Markdown support -->
@@ -255,44 +247,31 @@
                     <localCheckout>true</localCheckout>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <!-- Deployment to servers -->
-                <groupId>org.codehaus.cargo</groupId>
-                <artifactId>cargo-maven2-plugin</artifactId>
-                <version>1.4.2</version>
-                <configuration>
-                    <!-- Container configuration -->
-                    <!-- Include your own setup for this -->
-                    <container>
-                        <containerId>tomcat-dev</containerId>
-                        <type>remote</type>
-                    </container>
-                    <configuration>
-                        <type>runtime</type>
-                        <properties>
-                            <cargo.tomcat.manager.url>${deployment.server.url}</cargo.tomcat.manager.url>
-                            <cargo.remote.username>${deployment.server.user}</cargo.remote.username>
-                            <cargo.remote.password>${deployment.server.password}</cargo.remote.password>
-                        </properties>
-                    </configuration>
-                    <deployables>
-                        <deployable>
-                            <context>${deployment.server.context}</context>
-                        </deployable>
-                    </deployables>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
     <reporting>
         <plugins>
-            <!--<plugin>-->
-            <!--<groupId>org.apache.maven.plugins</groupId>-->
-            <!--<artifactId>maven-javadoc-plugin</artifactId>-->
-            <!--<version>2.9.1</version>-->
-            <!--</plugin>-->
+            <!--Javadoc-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <configuration>
+                    <aggregate>true</aggregate>
+                    <links>
+                        <link>http://download.oracle.com/javase/1.5.0/docs/api/</link>
+                    </links>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports><!-- select non-aggregate reports -->
+                            <report>javadoc</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>

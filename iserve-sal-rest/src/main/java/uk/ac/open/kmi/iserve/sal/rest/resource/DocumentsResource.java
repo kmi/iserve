@@ -20,7 +20,6 @@ import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 import uk.ac.open.kmi.iserve.sal.exception.LogException;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -42,8 +41,8 @@ public class DocumentsResource {
     private final DocumentManager docManager;
 
     @Inject
-    public DocumentsResource() {
-        this.docManager = iServeFacade.getInstance().getDocumentManager();
+    public DocumentsResource(DocumentManager documentManager) {
+        this.docManager = documentManager;
     }
 
     @POST

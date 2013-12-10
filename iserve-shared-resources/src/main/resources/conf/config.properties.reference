@@ -1,0 +1,22 @@
+#####################################
+# Information details DO NOT MODIFY
+iserve.version = ${pom.version}
+####################################
+
+# Proxy Configuration
+# http.proxyHost = proxy.company.com
+# http.proxyPort = 80
+
+# iServe Configuration
+iserve.url = http://localhost:9090/iserve
+
+# Documents Server
+# It is recommended that you use absolute paths for storing documents as these may be deleted when redeploying the server otherwise
+iserve.documents.folder = /tmp/iserve/service-docs/
+
+# Core Data RDF Server
+iserve.services.sparql.query = http://localhost:8080/openrdf-sesame/repositories/iserve
+iserve.services.sparql.update = http://localhost:8080/openrdf-sesame/repositories/iserve/statements
+iserve.services.sparql.service = http://localhost:8080/openrdf-sesame/repositories/iserve/rdf-graphs/service
+
+

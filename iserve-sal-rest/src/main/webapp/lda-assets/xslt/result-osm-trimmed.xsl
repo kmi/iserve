@@ -19,6 +19,7 @@ $prefLabel, $altLabel, $title and $name variables.
     indent="yes"/>
  -->
 
+    <xsl:param name="_APP">/</xsl:param>
     <xsl:param name="_resourceRoot">/</xsl:param>
 
     <xsl:param name="visibleSparqlEndpoint"/>
@@ -56,11 +57,11 @@ $prefLabel, $altLabel, $title and $name variables.
     </xsl:template>
 
     <xsl:template match="result" mode="title">
-        <title>Search Results</title>
+        <title>iServe Search Results</title>
     </xsl:template>
 
     <xsl:template match="result" mode="meta">
-        <link rel="shortcut icon" href="{$_resourceRoot}images/datagovuk_favicon.png" type="image/x-icon"/>
+        <link rel="shortcut icon" href="{$_resourceRoot}images/iserve-favicon.ico" type="image/x-icon"/>
         <xsl:apply-templates select="first | prev | next | last" mode="metalink"/>
         <xsl:apply-templates select="hasFormat/item" mode="metalink"/>
     </xsl:template>
@@ -219,8 +220,8 @@ $prefLabel, $altLabel, $title and $name variables.
                 <xsl:variable name="latParam" select="concat($mapParam, '.', $lat)" />
                 -->
                 <xsl:variable name="properties">
-                    <xsl:if test="not(/result/items)">_properties=<xsl:value-of select="$longParam"/>,<xsl:value-of
-                            select="$latParam"/>&amp;
+                    <xsl:if test="not(/result/items)">_properties=<xsl:value-of
+                            select="$longParam"/>,<xsl:value-of select="$latParam"/>&amp;
                     </xsl:if>
                 </xsl:variable>
                 initMap();
@@ -252,7 +253,8 @@ $prefLabel, $altLabel, $title and $name variables.
                                         <xsl:with-param name="uri">
                                             <xsl:call-template name="substituteParam">
                                                 <xsl:with-param name="value" select="''"/>
-                                                <xsl:with-param name="param">max-<xsl:value-of select="$latParam"/>
+                                                <xsl:with-param name="param">max-<xsl:value-of
+                                                        select="$latParam"/>
                                                 </xsl:with-param>
                                                 <xsl:with-param name="uri" select="$uri"/>
                                             </xsl:call-template>
@@ -263,9 +265,11 @@ $prefLabel, $altLabel, $title and $name variables.
                         </xsl:with-param>
                     </xsl:call-template>
                 </xsl:variable>
-                window.location = '<xsl:value-of select="concat($windowUri, $sep, $properties)"/>min-<xsl:value-of
-                    select="$longParam"/>=' + minLong + '&amp;max-<xsl:value-of select="$longParam"/>=' + maxLong + '&amp;min-<xsl:value-of
-                    select="$latParam"/>=' + minLat + '&amp;max-<xsl:value-of select="$latParam"/>=' + maxLat;
+                window.location = '<xsl:value-of
+                    select="concat($windowUri, $sep, $properties)"/>min-<xsl:value-of select="$longParam"/>='
+                + minLong + '&amp;max-<xsl:value-of select="$longParam"/>=' + maxLong +
+                '&amp;min-<xsl:value-of select="$latParam"/>=' + minLat + '&amp;max-<xsl:value-of
+                    select="$latParam"/>=' + maxLat;
                 });
             </xsl:if>
             });
@@ -349,20 +353,34 @@ $prefLabel, $altLabel, $title and $name variables.
     </xsl:template>
 
     <xsl:template match="result" mode="header">
-        <nav class="site">
-            <xsl:apply-templates select="." mode="formats"/>
-        </nav>
-        <header>
-            <h1>
-                <a href="/">Linked Data API</a>
-            </h1>
-        </header>
+        <!--<nav class="site">-->
+        <!--<xsl:apply-templates select="." mode="directory" />-->
+        <!--</nav>-->
+        <!--<header>-->
+        <!--<h1><a href="{$_APP}">Linked Data API</a></h1>-->
+        <!--</header>-->
+    </xsl:template>
+
+    <xsl:template match="result" mode="directory">
+        <section class="directory">
+            <ul>
+                <li>
+                    <a href="{$_APP}/doc/services">Services</a>
+                </li>
+                <li>
+                    <a href="{$_APP}/doc/operations">Operations</a>
+                </li>
+            </ul>
+        </section>
     </xsl:template>
 
     <xsl:template match="result" mode="footer">
         <footer>
             <xsl:apply-templates select="wasResultOf" mode="footer"/>
             <p>
+                <xsl:text>Linked Services Engine powered by </xsl:text>
+                <a href="https://github.com/kmi/iserve">iServe</a>
+                <br/>
                 <xsl:text>Powered by </xsl:text>
                 <xsl:apply-templates select="wasResultOf/processor" mode="footer"/>
                 <xsl:text>an implementation of the </xsl:text>
@@ -516,23 +534,38 @@ $prefLabel, $altLabel, $title and $name variables.
     </xsl:template>
 
     <xsl:template match="result" mode="formats">
-        <section class="formats">
+        <!--
+    <section class="formats">
+        <ul>
+            <xsl:for-each select="hasFormat/item">
+                &lt;!&ndash; make sure a labelled or unabelled html sorts in the right position &ndash;&gt;
+                <xsl:sort select="concat(label,'html')"/>
+                <li>
+                    <xsl:if test="position() = 1">
+                        <xsl:attribute name="class">first</xsl:attribute>
+                    </xsl:if>
+                    <xsl:if test="position() = last()">
+                        <xsl:attribute name="class">last</xsl:attribute>
+                    </xsl:if>
+                    <xsl:apply-templates select="." mode="nav" />
+                </li>
+            </xsl:for-each>
+        </ul>
+    </section>
+-->
+        <section class="summary">
+            <h1>Obtain the data</h1>
             <ul>
                 <xsl:for-each select="hasFormat/item">
                     <!-- make sure a labelled or unabelled html sorts in the right position -->
                     <xsl:sort select="concat(label,'html')"/>
                     <li>
-                        <xsl:if test="position() = 1">
-                            <xsl:attribute name="class">first</xsl:attribute>
-                        </xsl:if>
-                        <xsl:if test="position() = last()">
-                            <xsl:attribute name="class">last</xsl:attribute>
-                        </xsl:if>
                         <xsl:apply-templates select="." mode="nav"/>
                     </li>
                 </xsl:for-each>
             </ul>
         </section>
+
     </xsl:template>
 
     <xsl:template match="result" mode="lastmod">
@@ -572,6 +605,7 @@ $prefLabel, $altLabel, $title and $name variables.
     <xsl:template match="result" mode="topnav">
         <xsl:variable name="hasResults" select="items/item[@href]"/>
         <xsl:variable name="isItem" select="not(items) and primaryTopic"/>
+
         <nav class="topnav">
             <xsl:apply-templates select="." mode="moreinfo"/>
             <xsl:apply-templates select="." mode="map"/>
@@ -593,6 +627,11 @@ $prefLabel, $altLabel, $title and $name variables.
             <xsl:if test="$hasResults">
                 <xsl:apply-templates select="." mode="sizenav"/>
             </xsl:if>
+
+            <xsl:if test="$hasResults or $isItem">
+                <xsl:apply-templates select="." mode="formats"/>
+            </xsl:if>
+
         </nav>
     </xsl:template>
 
@@ -720,9 +759,9 @@ $prefLabel, $altLabel, $title and $name variables.
                         var info;
                         <xsl:choose>
                             <xsl:when test="$multipleMarkers">
-                                var bounds = new OpenLayers.Bounds(<xsl:value-of select="$minLong"/>, <xsl:value-of
-                                    select="$minLat"/>, <xsl:value-of select="$maxLong"/>, <xsl:value-of
-                                    select="$maxLat"/>).transform(wgs84,summaryMap.getProjectionObject());
+                                var bounds = new OpenLayers.Bounds(<xsl:value-of select="$minLong"/>,
+                                <xsl:value-of select="$minLat"/>, <xsl:value-of select="$maxLong"/>,
+                                <xsl:value-of select="$maxLat"/>).transform(wgs84,summaryMap.getProjectionObject());
                                 var zoom = summaryMap.getZoomForExtent(bounds);
                                 var center = new OpenLayers.LonLat(<xsl:value-of
                                     select="$minLong + (($maxLong - $minLong) div 2)"/>, <xsl:value-of
@@ -730,14 +769,15 @@ $prefLabel, $altLabel, $title and $name variables.
                                 summaryMap.setCenter(center, zoom &lt; 14 ? zoom : 14 );
                             </xsl:when>
                             <xsl:when test="$markers">
-                                var center = new OpenLayers.LonLat(<xsl:value-of select="$markers/*[name(.) = $long]"/>,
-                                <xsl:value-of select="$markers/*[name(.) = $lat]"/>).transform(wgs84,summaryMap.getProjectionObject());
+                                var center = new OpenLayers.LonLat(<xsl:value-of
+                                    select="$markers/*[name(.) = $long]"/>, <xsl:value-of
+                                    select="$markers/*[name(.) = $lat]"/>).transform(wgs84,summaryMap.getProjectionObject());
                                 summaryMap.setCenter(center, 14);
                             </xsl:when>
                             <xsl:otherwise>
-                                var bounds = new OpenLayers.Bounds(<xsl:value-of select="$minLong"/>, <xsl:value-of
-                                    select="$minLat"/>, <xsl:value-of select="$maxLong"/>, <xsl:value-of
-                                    select="$maxLat"/>).transform(wgs84,summaryMap.getProjectionObject());
+                                var bounds = new OpenLayers.Bounds(<xsl:value-of select="$minLong"/>,
+                                <xsl:value-of select="$minLat"/>, <xsl:value-of select="$maxLong"/>,
+                                <xsl:value-of select="$maxLat"/>).transform(wgs84,summaryMap.getProjectionObject());
                                 summaryMap.zoomToExtent(bounds);
                             </xsl:otherwise>
                         </xsl:choose>
@@ -745,15 +785,15 @@ $prefLabel, $altLabel, $title and $name variables.
                         summaryMap.addLayer(markers);
                         var size = new OpenLayers.Size(16,16);
                         var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-                        var icon = new OpenLayers.Icon('<xsl:value-of select="$activeImageBase"/>/Target.png', size,
-                        offset);
+                        var icon = new OpenLayers.Icon('<xsl:value-of select="$activeImageBase"/>/Target.png',
+                        size, offset);
                         var pos;
                         var marker;
                         <xsl:for-each select="$markers">
                             <xsl:sort select="*[name(.) = $lat]" order="descending" data-type="number"/>
                             <xsl:sort select="*[name(.) = $long]" order="descending" data-type="number"/>
-                            pos = new OpenLayers.LonLat(<xsl:value-of select="*[name(.) = $long]"/>, <xsl:value-of
-                                select="*[name(.) = $lat]"/>).transform(wgs84,summaryMap.getProjectionObject());
+                            pos = new OpenLayers.LonLat(<xsl:value-of select="*[name(.) = $long]"/>,
+                            <xsl:value-of select="*[name(.) = $lat]"/>).transform(wgs84,summaryMap.getProjectionObject());
                             marker = new OpenLayers.Marker(pos, icon.clone());
                             <!-- 
                       <xsl:if test="/result/items">
@@ -789,10 +829,10 @@ $prefLabel, $altLabel, $title and $name variables.
                             osMap.addLayer(markers);
                             var size = new OpenLayers.Size(16,16);
                             var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-                            var icon = new OpenLayers.Icon('<xsl:value-of select="$activeImageBase"/>/Target.png', size,
-                            offset);
-                            var pos = new OpenLayers.LonLat(<xsl:value-of select="*[name(.) = $long]"/>, <xsl:value-of
-                                select="*[name(.) = $lat]"/>).transform(wgs84,osMap.getProjectionObject());
+                            var icon = new OpenLayers.Icon('<xsl:value-of select="$activeImageBase"/>/Target.png',
+                            size, offset);
+                            var pos = new OpenLayers.LonLat(<xsl:value-of select="*[name(.) = $long]"/>,
+                            <xsl:value-of select="*[name(.) = $lat]"/>).transform(wgs84,osMap.getProjectionObject());
                             var marker = new OpenLayers.Marker(pos, icon);
                             markers.addMarker(marker);
                         </xsl:for-each>
@@ -824,8 +864,8 @@ $prefLabel, $altLabel, $title and $name variables.
             <section class="graphs">
                 <h1>Graphs</h1>
                 <xsl:call-template name="createInfo">
-                    <xsl:with-param name="text">These graphs summarise the values of the numeric properties of these
-                        items.
+                    <xsl:with-param name="text">These graphs summarise the values of the numeric properties of
+                        these items.
                     </xsl:with-param>
                 </xsl:call-template>
                 <table>
@@ -949,8 +989,8 @@ $prefLabel, $altLabel, $title and $name variables.
                         <td class="linegraph" id="linegraph{generate-id(.)}">
                             <script type="text/javascript">
                                 $('#linegraph<xsl:value-of select="generate-id(.)"/>').sparkline(<xsl:value-of
-                                    select="$valueArray"/>, { lineColor: '<xsl:value-of select="$graphColour"/>',
-                                fillColor: false, width: '100%' });
+                                    select="$valueArray"/>, { lineColor: '<xsl:value-of
+                                    select="$graphColour"/>', fillColor: false, width: '100%' });
                             </script>
                         </td>
                     </tr>
@@ -1035,8 +1075,8 @@ $prefLabel, $altLabel, $title and $name variables.
             <section class="summary">
                 <h1>On This Page</h1>
                 <xsl:call-template name="createInfo">
-                    <xsl:with-param name="text">Links to the items within this page, and to the previous and/or next
-                        pages of results.
+                    <xsl:with-param name="text">Links to the items within this page, and to the previous
+                        and/or next pages of results.
                     </xsl:with-param>
                 </xsl:call-template>
                 <ul>
@@ -1145,8 +1185,8 @@ $prefLabel, $altLabel, $title and $name variables.
             <section class="filter">
                 <h1>Filter</h1>
                 <xsl:call-template name="createInfo">
-                    <xsl:with-param name="text">These are the filters currently being used to limit the search results.
-                        Click on the
+                    <xsl:with-param name="text">These are the filters currently being used to limit the search
+                        results. Click on the
                         <img src="{$activeImageBase}/Back.png" alt="remove filter"/>
                         icon to remove the filter.
                     </xsl:with-param>
@@ -1482,8 +1522,8 @@ $prefLabel, $altLabel, $title and $name variables.
         <section class="size">
             <h1>Items per page</h1>
             <xsl:call-template name="createInfo">
-                <xsl:with-param name="text">Choose how many items to view on each page. The more items you view, the
-                    longer the page will take to load.
+                <xsl:with-param name="text">Choose how many items to view on each page. The more items you
+                    view, the longer the page will take to load.
                 </xsl:with-param>
             </xsl:call-template>
             <ul>
@@ -1627,7 +1667,8 @@ $prefLabel, $altLabel, $title and $name variables.
                                                                 select="substring-after($orderBy, 'desc')"/>
                                             </xsl:call-template>
                                         </xsl:attribute>
-                                        <img src="{$activeImageBase}/Arrow3%20Down.png" alt="sort in ascending order"/>
+                                        <img src="{$activeImageBase}/Arrow3%20Down.png"
+                                             alt="sort in ascending order"/>
                                     </a>
                                     <xsl:value-of select="$description"/>
                                 </xsl:when>
@@ -1641,7 +1682,8 @@ $prefLabel, $altLabel, $title and $name variables.
                                                                 select="concat('desc', substring-after($orderBy, 'asc'))"/>
                                             </xsl:call-template>
                                         </xsl:attribute>
-                                        <img src="{$activeImageBase}/Arrow3%20Up.png" alt="sort in descending order"/>
+                                        <img src="{$activeImageBase}/Arrow3%20Up.png"
+                                             alt="sort in descending order"/>
                                     </a>
                                     <xsl:value-of select="$description"/>
                                 </xsl:when>
@@ -1651,10 +1693,12 @@ $prefLabel, $altLabel, $title and $name variables.
                                             <xsl:call-template name="substituteParam">
                                                 <xsl:with-param name="uri" select="$baseURI"/>
                                                 <xsl:with-param name="param" select="'_orderBy'"/>
-                                                <xsl:with-param name="value" select="concat('desc', $orderBy)"/>
+                                                <xsl:with-param name="value"
+                                                                select="concat('desc', $orderBy)"/>
                                             </xsl:call-template>
                                         </xsl:attribute>
-                                        <img src="{$activeImageBase}/Arrow3%20Up.png" alt="sort in descending order"/>
+                                        <img src="{$activeImageBase}/Arrow3%20Up.png"
+                                             alt="sort in descending order"/>
                                     </a>
                                     <xsl:value-of select="$description"/>
                                 </xsl:otherwise>
@@ -1668,7 +1712,8 @@ $prefLabel, $altLabel, $title and $name variables.
                         </xsl:apply-templates>
                     </xsl:when>
                 </xsl:choose>
-                <xsl:for-each select="items/item/*[generate-id(key('properties', name(.))[1]) = generate-id(.)]">
+                <xsl:for-each
+                        select="items/item/*[generate-id(key('properties', name(.))[1]) = generate-id(.)]">
                     <xsl:sort select="name(.) = $prefLabel" order="descending"/>
                     <xsl:sort select="name(.) = $name" order="descending"/>
                     <xsl:sort select="name(.) = $title" order="descending"/>
@@ -2243,8 +2288,9 @@ $prefLabel, $altLabel, $title and $name variables.
         </tr>
     </xsl:template>
 
-    <xsl:template match="primaryTopicOf[@href = /result/@href or (count(item) = 1 and item/@href = /result/@href)]"
-                  mode="row"/>
+    <xsl:template
+            match="primaryTopicOf[@href = /result/@href or (count(item) = 1 and item/@href = /result/@href)]"
+            mode="row"/>
     <xsl:template match="wasResultOf" mode="row"/>
 
     <xsl:template match="*" mode="row">
@@ -2441,7 +2487,8 @@ $prefLabel, $altLabel, $title and $name variables.
         </xsl:choose>
     </xsl:template>
 
-    <xsl:template match="*[@datatype = 'date' or @datatype = 'dateTime' or @datatype = 'time']" mode="display">
+    <xsl:template match="*[@datatype = 'date' or @datatype = 'dateTime' or @datatype = 'time']"
+                  mode="display">
         <time datetime="{.}">
             <xsl:choose>
                 <xsl:when test="@datatype = 'date' or @datatype = 'dateTime'">
@@ -2663,7 +2710,8 @@ $prefLabel, $altLabel, $title and $name variables.
                 <xsl:variable name="after" select="substring-after($normalisedProperties, $entry)"/>
                 <xsl:variable name="value">
                     <xsl:value-of select="substring($before, 2)"/>
-                    <xsl:if test="not($before = ',' or $before = '') and not($after = ',' or $after = '')">,</xsl:if>
+                    <xsl:if test="not($before = ',' or $before = '') and not($after = ',' or $after = '')">,
+                    </xsl:if>
                     <xsl:value-of select="substring($after, 1, string-length($after) - 1)"/>
                 </xsl:variable>
                 <xsl:variable name="href">
@@ -2672,7 +2720,8 @@ $prefLabel, $altLabel, $title and $name variables.
                         <xsl:with-param name="param" select="'_properties'"/>
                         <xsl:with-param name="value">
                             <xsl:value-of select="substring($before, 2)"/>
-                            <xsl:if test="not($before = ',' or $before = '') and not($after = ',' or $after = '')">,
+                            <xsl:if test="not($before = ',' or $before = '') and not($after = ',' or $after = '')">
+                                ,
                             </xsl:if>
                             <xsl:value-of select="substring($after, 1, string-length($after) - 1)"/>
                         </xsl:with-param>
@@ -2792,7 +2841,8 @@ $prefLabel, $altLabel, $title and $name variables.
                                     <img src="{$activeImageBase}/Arrow3%20Left.png" alt="less than {$value}"/>
                                 </xsl:when>
                                 <xsl:otherwise>
-                                    <img src="{$inactiveImageBase}/Arrow3%20Left.png" alt="less than {$value}"/>
+                                    <img src="{$inactiveImageBase}/Arrow3%20Left.png"
+                                         alt="less than {$value}"/>
                                 </xsl:otherwise>
                             </xsl:choose>
                         </a>
@@ -2842,10 +2892,12 @@ $prefLabel, $altLabel, $title and $name variables.
                             </xsl:attribute>
                             <xsl:choose>
                                 <xsl:when test="$min != ''">
-                                    <img src="{$activeImageBase}/Arrow3%20Right.png" alt="more than {$value}"/>
+                                    <img src="{$activeImageBase}/Arrow3%20Right.png"
+                                         alt="more than {$value}"/>
                                 </xsl:when>
                                 <xsl:otherwise>
-                                    <img src="{$inactiveImageBase}/Arrow3%20Right.png" alt="more than {$value}"/>
+                                    <img src="{$inactiveImageBase}/Arrow3%20Right.png"
+                                         alt="more than {$value}"/>
                                 </xsl:otherwise>
                             </xsl:choose>
                         </a>
