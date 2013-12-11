@@ -40,11 +40,11 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.commons.io.Syntax;
-import uk.ac.open.kmi.iserve.commons.model.util.Vocabularies;
 import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
+import uk.ac.open.kmi.msm4j.io.Syntax;
+import uk.ac.open.kmi.msm4j.util.Vocabularies;
 
 import javax.inject.Named;
 import java.io.StringWriter;
@@ -157,11 +157,14 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
 
     private void configureProxy(ProxyConfiguration proxyCfg) {
         Properties prop = System.getProperties();
-        if (proxyCfg != null && proxyCfg.proxyHost != null && proxyCfg.proxyPort != null) {
+        if (proxyCfg != null &&
+                proxyCfg.proxyHost != null && !proxyCfg.proxyHost.isEmpty() &&
+                proxyCfg.proxyPort != null && !proxyCfg.proxyPort.isEmpty()) {
             log.info("Configuring proxy: Host - {} - Port {} .", proxyCfg.proxyHost, proxyCfg.proxyPort);
             prop.put(JAVA_PROXY_HOST_PROP, proxyCfg.proxyHost);
             prop.put(JAVA_PROXY_PORT_PROP, proxyCfg.proxyPort);
         } else {
+            log.info("No proxy required.");
             prop.remove(JAVA_PROXY_HOST_PROP);
             prop.remove(JAVA_PROXY_PORT_PROP);
         }
@@ -533,7 +536,7 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
     private String generateInsertRequest(URI graphUri, Model data) {
 
         StringWriter out = new StringWriter();
-        data.write(out, uk.ac.open.kmi.iserve.commons.io.Syntax.TTL.getName());
+        data.write(out, uk.ac.open.kmi.msm4j.io.Syntax.TTL.getName());
         StringBuilder updateSB = new StringBuilder();
         updateSB.append("INSERT DATA { \n");
         // If a graph is given use it, otherwise insert in the default graph.

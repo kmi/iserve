@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>iserve-parent</artifactId>
+        <groupId>uk.ac.open.kmi.iserve</groupId>
+        <version>2.0.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>iserve-webapp</artifactId>
+    <packaging>uberwar</packaging>
+
+    <name>iServe Web Application</name>
+    <description>
+        iServe Web provides all the functionality of iServe in an integrated Web application.
+    </description>
+
+    <properties>
+        <!-- Configuration for Server Deployment: configure in your settings.xml -->
+        <deployment.server.url/>
+        <deployment.server.user/>
+        <deployment.server.password/>
+        <deployment.server.context/>
+    </properties>
+
+    <!-- Dependencies for generating complete war -->
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>iserve-discovery-rest</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>iserve-sal-rest</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+
+        <!--Include Shared Resources-->
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>iserve-shared-resources</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!--Obtain shared resources-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>load-resources</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <configuration>
+                            <resourceBundles>
+                                <resourceBundle>
+                                    ${project.groupId}:iserve-shared-resources:${project.version}
+                                </resourceBundle>
+                            </resourceBundles>
+                            <attached>false</attached>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Deployment to servers -->
+            <plugin>
+                <groupId>org.codehaus.cargo</groupId>
+                <artifactId>cargo-maven2-plugin</artifactId>
+                <version>1.4.2</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <descriptor>src/assemble/merge.xml</descriptor>
+                    <!-- Container configuration -->
+                    <!-- Include your own setup for this -->
+                    <container>
+                        <containerId>tomcat7x</containerId>
+                        <type>remote</type>
+                    </container>
+                    <configuration>
+                        <type>runtime</type>
+                        <properties>
+                            <cargo.tomcat.manager.url>${deployment.server.url}</cargo.tomcat.manager.url>
+                            <cargo.remote.username>${deployment.server.user}</cargo.remote.username>
+                            <cargo.remote.password>${deployment.server.password}</cargo.remote.password>
+                        </properties>
+                    </configuration>
+                    <!-- Deployables configuration -->
+                    <deployables>
+                        <deployable>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>${project.artifactId}</artifactId>
+                            <type>war</type>
+                            <properties>
+                                <context>${deployment.server.context}</context>
+                            </properties>
+                        </deployable>
+                    </deployables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

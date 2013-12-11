@@ -23,25 +23,29 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.jayway.restassured.RestAssured;
-import org.apache.commons.httpclient.Cookie;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.commons.io.MediaType;
-import uk.ac.open.kmi.iserve.commons.io.Syntax;
-import uk.ac.open.kmi.iserve.commons.io.util.FilenameFilterBySyntax;
+import uk.ac.open.kmi.iserve.core.ConfigurationModule;
+import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
-import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
+import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
+import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
+import uk.ac.open.kmi.msm4j.io.MediaType;
+import uk.ac.open.kmi.msm4j.io.Syntax;
+import uk.ac.open.kmi.msm4j.io.util.FilenameFilterBySyntax;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
+import java.util.Properties;
 import java.util.Set;
 
 import static com.jayway.restassured.RestAssured.given;
@@ -58,13 +62,12 @@ public class ServiceResourceIT {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceResourceIT.class);
 
-    private static final String HOST = "http://localhost";
-    private static final int PORT = 9090;
-    //            private static final int PORT = 10000;
-    private static final String BASE_CONTEXT = "/iserve";
-    private static final String SERVICES_PATH = BASE_CONTEXT + "/services";
-    private static final String WEB_APP_URI = HOST + ":" + PORT + BASE_CONTEXT;
-    private static final String SERVICES_URI = WEB_APP_URI + "/services";
+//    private static final String HOST = "http://localhost";
+//    private static final int PORT = 9090;
+//    //            private static final int PORT = 10000;
+//    private static final String BASE_CONTEXT = "/iserve";
+//    private static final String WEB_APP_URI = HOST + ":" + PORT + BASE_CONTEXT;
+//    private static final String SERVICES_URI = WEB_APP_URI + "/services";
 
     private static final String OWLS_TC_SERVICES = "/OWLS-TC3-MSM";
 
@@ -74,20 +77,24 @@ public class ServiceResourceIT {
 
     // Limit the number of documents to upload to the registry
     private static final int MAX_DOCS = 25;
+    private static final String CONFIG_PROPERTIES = "config.properties";
 
-    private URI testFolder;
+    private static Properties configProperties;
 
-    private File[] msmTtlTcFiles;
+    private static URI testFolder;
+
+    private static File[] msmTtlTcFiles;
 
     // For HTML testing (logging via forms, etc)
-    private final WebClient webClient = new WebClient();
-    private iServeManager manager;
+    private static final WebClient webClient = new WebClient();
+    private static RegistryManager manager;
+    private static URL iserveUrl;
 
     /**
      * @throws java.lang.Exception
      */
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
 
         testFolder = ServiceResourceIT.class.getResource(OWLS_TC_SERVICES).toURI();
         FilenameFilter ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
@@ -95,52 +102,71 @@ public class ServiceResourceIT {
         msmTtlTcFiles = dir.listFiles(ttlFilter);
         int numServices = msmTtlTcFiles.length;
 
-        // Set default values for rest assured
-        RestAssured.baseURI = HOST;
-        RestAssured.port = PORT;
-        RestAssured.basePath = BASE_CONTEXT;
-
         // Setup Web client
         webClient.setThrowExceptionOnFailingStatusCode(true);
         CookieManager cookieMan = new CookieManager();
         cookieMan = webClient.getCookieManager();
         cookieMan.setCookiesEnabled(true);
 
+        Injector injector = Guice.createInjector(new ConfigurationModule(), new RegistryManagementModule());
+        manager = injector.getInstance(RegistryManager.class);
+
+        configProperties = getProperties(CONFIG_PROPERTIES);
+        iserveUrl = new URL(configProperties.getProperty(SystemConfiguration.ISERVE_URL_PROP));
+
+        // Set default values for rest assured
+        RestAssured.baseURI = new StringBuilder()
+                .append(iserveUrl.getProtocol()).append("://").append(iserveUrl.getHost()).toString();
+
+        RestAssured.port = iserveUrl.getPort();
+        RestAssured.basePath = iserveUrl.getPath();
+
         // Logout
-        logOut();
-
-        this.manager = iServeFacade.getInstance();
-
+//        logOut();
     }
 
-    private void logOut() throws IOException {
-        // Make sure we are logged out
-        final HtmlPage homePage = webClient.getPage(WEB_APP_URI);
+    private static Properties getProperties(String fileName) {
+        log.info("Loading configuration from - {} - within folder {}", fileName,
+                ServiceResourceIT.class.getClassLoader().getResource("."));
         try {
-            homePage.getAnchorByHref("/logout.jsp").click();
+            Properties properties = new Properties();
+            properties.load(ServiceResourceIT.class.getClassLoader().getResourceAsStream(fileName));
+            return properties;
+        } catch (IOException ex) {
+            log.error("Error obtaining plugin properties", ex);
+        }
+        return new Properties();
+    }
+
+    private static void logOut() throws IOException {
+        log.info("Logging out...");
+        // Make sure we are logged out
+        final HtmlPage homePage = webClient.getPage(iserveUrl);
+        try {
+            homePage.getAnchorByHref("/jsp/logout.jsp").click();
         } catch (ElementNotFoundException e) {
             //Ignore
         }
     }
 
+    @Ignore("Ignore until Shiro REST is fixed")
     @Test
-    @Ignore("To be fixed again")
-    public void logIn() throws FailingHttpStatusCodeException, MalformedURLException, IOException, InterruptedException {
+    public void logIn() throws FailingHttpStatusCodeException, IOException, InterruptedException {
 
-        HtmlPage page = webClient.getPage(WEB_APP_URI + "/login.jsp");
+        HtmlPage page = webClient.getPage(iserveUrl.toString() + "/jsp/login.jsp");
         HtmlForm form = page.getFormByName("loginform");
         form.<HtmlInput>getInputByName("username").setValueAttribute(ROOT_USER);
         form.<HtmlInput>getInputByName("password").setValueAttribute(ROOT_PASSWD);
         page = form.<HtmlInput>getInputByName("submit").click();
         // This'll throw an expection if not logged in
-        page.getAnchorByHref("/iserve/logout.jsp");
+        page.getAnchorByHref("/iserve/jsp/logout.jsp");
     }
 
     /**
      * Test method for AddService.
      */
+    @Ignore("Ignore until Shiro REST, and Guice + Jersey are fixed")
     @Test
-    @Ignore("To be fixed again")
     public final void testAddService() throws IOException {
         // Clean the whole thing before testing
         try {
@@ -153,6 +179,9 @@ public class ServiceResourceIT {
         log.info("Uploading services");
         log.info("Test collection: " + testFolder);
 
+ /*
+        // Disable until Shiro REST is sorted out
+
         log.info("Trying without logging in");
         given().log().all().                                                                // Log requests
                 redirects().follow(true).                                                       // Follow redirects introduced by Shiro
@@ -163,18 +192,22 @@ public class ServiceResourceIT {
 
         log.info("Correctly redirected");
 
+
         // Now log into Shiro with "rememberMe" set and try again
         log.info("Now logging in");
 
-        HtmlPage page = webClient.getPage(WEB_APP_URI + "/login.jsp");
+        HtmlPage page = webClient.getPage(iserveUrl.toString() + "/login.jsp");
         HtmlForm form = page.getFormByName("loginform");
         form.<HtmlInput>getInputByName("username").setValueAttribute(ROOT_USER);
         form.<HtmlInput>getInputByName("password").setValueAttribute(ROOT_PASSWD);
 //        HtmlCheckBoxInput checkbox = form.getInputByName("rememberMe");
 //        checkbox.setChecked(true);
         page = form.<HtmlInput>getInputByName("submit").click();
+
         Cookie cookie = webClient.getCookieManager().getCookie("JSESSIONID");
         log.info("Cookie data: " + cookie.toString());
+  */
+
 
         // Test oriented towards individuals.
         // To be updated with application oriented logging.
@@ -183,44 +216,46 @@ public class ServiceResourceIT {
         for (int i = 0; i < MAX_DOCS && i < msmTtlTcFiles.length; i++) {
             // rest assured
             given().log().all().                                                // Log requests
-                    sessionId(cookie.getValue()).                                   // Keep the session along
+//                    sessionId(cookie.getValue()).                                   // Keep the session along
                     redirects().follow(true).                                       // Follow redirects introduced by Shiro
                     multiPart("file", msmTtlTcFiles[i], MediaType.TEXT_TURTLE.getMediaType()).  // Submit file
                     expect().log().all().                                           // Log responses
                     response().statusCode(201).                                     // We should get a 201 created (if we have the rights)
-                    when().post("/services");
+                    when().post("/id/services");
         }
     }
 
+    @Ignore("Ignore until Shiro REST, and Guice + Jersey are fixed")
     @Test
-    @Ignore("To be fixed again")
     public void testDeleteService() throws Exception {
 
         Set<URI> existingServices = manager.getServiceManager().listServices();
 
         log.info("Deleting services");
+        // Disable until Shiro for REST is sorted out
         // Try to delete endpoint
-        given().expect().response().statusCode(405).
-                when().delete("/services");
+//        given().expect().response().statusCode(405).
+//                when().delete("/services");
 
         // Try to delete non existing svcs (directly at the graph level)
         for (int i = 0; i < 10; i++) {
             given().expect().response().statusCode(404).
-                    when().delete("/services/" + i);
+                    when().delete("/id/services/" + i);
         }
 
         // Try to delete non existing svcs
         for (int i = 0; i < 10; i++) {
             given().expect().response().statusCode(404).
-                    when().delete("/services/" + i + "/serviceName");
+                    when().delete("/id/services/" + i + "/serviceName");
         }
 
         // Try to delete services using their entire URIs
         for (URI uri : existingServices) {
-            String relativeUri = URI.create(SERVICES_URI).relativize(uri).toASCIIString();
+            String relativeUri = iserveUrl.toURI().resolve("services").relativize(uri)
+                    .toASCIIString();
             log.info("Deleting service id: " + uri);
             given().expect().response().statusCode(410).
-                    when().delete("/services/" + relativeUri);
+                    when().delete("/id/services/" + relativeUri);
         }
 
     }

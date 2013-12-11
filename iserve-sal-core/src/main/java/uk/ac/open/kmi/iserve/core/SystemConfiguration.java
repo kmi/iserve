@@ -24,8 +24,8 @@ package uk.ac.open.kmi.iserve.core;
 public class SystemConfiguration {
 
     // Configuration properties
-    public static final String PROXY_HOST_NAME_PROP = "http.proxyHost";
-    public static final String PROXY_PORT_PROP = "http.proxyPort";
+    public static final String PROXY_HOST_NAME_PROP = "iserve.proxyHost";
+    public static final String PROXY_PORT_PROP = "iserve.proxyPort";
     public static final String ISERVE_URL_PROP = "iserve.url";
     public static final String ISERVE_VERSION_PROP = "iserve.version";
 

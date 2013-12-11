@@ -16,7 +16,7 @@
 
 package uk.ac.open.kmi.iserve.sal.events;
 
-import uk.ac.open.kmi.iserve.commons.model.Service;
+import uk.ac.open.kmi.msm4j.Service;
 
 import java.util.Date;
 

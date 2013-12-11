@@ -31,12 +31,6 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.commons.io.impl.ServiceReaderImpl;
-import uk.ac.open.kmi.iserve.commons.io.impl.ServiceWriterImpl;
-import uk.ac.open.kmi.iserve.commons.io.util.URIUtil;
-import uk.ac.open.kmi.iserve.commons.model.*;
-import uk.ac.open.kmi.iserve.commons.vocabulary.MSM;
-import uk.ac.open.kmi.iserve.commons.vocabulary.SAWSDL;
 import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.events.ServiceCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServiceDeletedEvent;
@@ -47,6 +41,12 @@ import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
+import uk.ac.open.kmi.msm4j.*;
+import uk.ac.open.kmi.msm4j.io.impl.ServiceReaderImpl;
+import uk.ac.open.kmi.msm4j.io.impl.ServiceWriterImpl;
+import uk.ac.open.kmi.msm4j.io.util.URIUtil;
+import uk.ac.open.kmi.msm4j.vocabulary.MSM;
+import uk.ac.open.kmi.msm4j.vocabulary.SAWSDL;
 
 import javax.inject.Named;
 import java.net.URI;
@@ -854,7 +854,8 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      * @param resource   The service that will be modified
      * @param newUriBase The new URI base
      */
-    private void replaceUris(uk.ac.open.kmi.iserve.commons.model.Resource resource, URI newUriBase) throws URISyntaxException {
+    private void replaceUris(uk.ac.open.kmi.msm4j.Resource resource,
+                             URI newUriBase) throws URISyntaxException {
 
         // Exit early
         if (resource == null || newUriBase == null || !newUriBase.isAbsolute())

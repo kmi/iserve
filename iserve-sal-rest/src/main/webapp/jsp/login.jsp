@@ -18,8 +18,7 @@
 
 <html>
 <head>
-    <link type="text/css" rel="stylesheet" href="<c:url value="
-    /css/style.css"/>"/>
+    <link type="text/css" rel="stylesheet" href="<c:url value="/css/style.css"/>"/>
 </head>
 <body>
 
@@ -90,7 +89,8 @@
             <td><input type="password" name="password" maxlength="30"></td>
         </tr>
         <tr>
-            <td colspan="2" align="left"><input type="checkbox" name="rememberMe"><font size="2">Remember Me</font></td>
+            <td colspan="2" align="left"><input type="checkbox" name="rememberMe"><font size="2">Remember
+                Me</font></td>
         </tr>
         <tr>
             <td colspan="2" align="right"><input type="submit" name="submit" value="Login"></td>

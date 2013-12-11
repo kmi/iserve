@@ -21,8 +21,8 @@ iserve.version = ${pom.version}
 ####################################
 
 # Proxy Configuration
-# http.proxyHost = proxy.company.com
-# http.proxyPort = 80
+# iserve.proxyHost = proxy.company.com
+# iserve.proxyPort = 80
 
 # iServe Configuration
 iserve.url = http://localhost:9090/iserve
@@ -32,21 +32,9 @@ iserve.url = http://localhost:9090/iserve
 iserve.documents.folder = file:///tmp/iserve/service-docs/
 
 # Core Data RDF Server
-iserve.services.rdfserver = http://localhost:8080/openrdf-sesame
-iserve.services.repository = iserve-services
 iserve.services.sparql.query = http://localhost:8080/openrdf-sesame/repositories/iserve
 iserve.services.sparql.update = http://localhost:8080/openrdf-sesame/repositories/iserve/statements
 iserve.services.sparql.service = http://localhost:8080/openrdf-sesame/repositories/Test/rdf-graphs/service
 
-# Logs Server
-log.server = http://localhost:8080/openrdf-sesame
-log.repository = test-logs
-
-# Users Data Server
-users.server = http://localhost:8080/openrdf-sesame
-users.repository = test-logs
-
-# Ratings, Comments and Tags Server
-lufURL = http://soa4all.isoco.net/luf
 
 

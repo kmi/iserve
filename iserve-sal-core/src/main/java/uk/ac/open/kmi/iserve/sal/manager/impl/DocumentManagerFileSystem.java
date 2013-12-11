@@ -22,7 +22,6 @@ import com.google.inject.Inject;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.commons.io.util.FileUtil;
 import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.events.DocumentCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.DocumentDeletedEvent;
@@ -32,6 +31,7 @@ import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
 import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
+import uk.ac.open.kmi.msm4j.io.util.FileUtil;
 
 import javax.inject.Named;
 import java.io.*;
@@ -49,7 +49,7 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
     // Keep the trailing slash
     private static final String DEFAULT_DOC_URL_PATH = "id/documents/";
 
-    private static final String DEFAULT_DOC_FOLDER_PATH = "/tmp/";
+    private static final String DEFAULT_DOC_FOLDER_PATH = "/tmp/iserve-docs/";
 
     private URI documentsInternalPath;
     private URI documentsPublicUri;
@@ -58,6 +58,7 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
     DocumentManagerFileSystem(EventBus eventBus,
                               @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
                               @Named(SystemConfiguration.DOC_FOLDER_PATH_PROP) String documentsFolderPath) throws SalException {
+
         super(eventBus, iServeUri);
 
         if (documentsFolderPath == null) {
@@ -70,11 +71,19 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
             // Set the internal URI to the docs folder
             this.documentsInternalPath = new URI(documentsFolderPath + (documentsFolderPath.endsWith("/") ? "" : "/"));  // Ensure it has a final slash
 
+            // Ensure we get an absolute file:/ URI
             if (!this.documentsInternalPath.isAbsolute()) {
-                // Obtain absolute URI
-                log.warn("Configuring document manager with relative path. Documents may be deleted when the application is redeployed.");
-                this.documentsInternalPath = this.getClass().getResource(".").toURI().resolve(this.documentsInternalPath);
+                if (this.documentsInternalPath.toASCIIString().startsWith("/")) {
+                    this.documentsInternalPath = this.getClass().getResource("/").toURI().resolve
+                            (this.documentsInternalPath);
+                } else {
+                    // Obtain absolute URI
+                    log.warn("Configuring document manager with relative path. Documents may be deleted when the application is redeployed.");
+                    this.documentsInternalPath = this.getClass().getResource(".").toURI().resolve(this.documentsInternalPath);
+                }
             }
+
+            log.info("Documents internal path set to: {}", this.documentsInternalPath.toASCIIString());
 
         } catch (URISyntaxException e) {
             log.error("Incorrect iServe URI while initialising " + this.getClass().getSimpleName(), e);

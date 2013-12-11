@@ -75,7 +75,13 @@ public class AtomicMatchResult<T extends MatchType> implements MatchResult<Match
 
     @Override
     public String getExplanation() {
-        return this.matchType.name() + " match.";
+        return new StringBuilder()
+                .append(resourceToMatch.toASCIIString())
+                .append(" matched to ")
+                .append(matchedResource.toASCIIString())
+                .append(" with match type ")
+                .append(matchType.name())
+                .toString();
     }
 
     /**
