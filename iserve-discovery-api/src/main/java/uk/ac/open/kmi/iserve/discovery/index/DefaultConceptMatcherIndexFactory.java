@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.open.kmi.iserve.discovery.infinispan.index;
+package uk.ac.open.kmi.iserve.discovery.index;
 
 import com.google.common.collect.Table;
-import org.infinispan.Cache;
-import org.infinispan.manager.DefaultCacheManager;
-import uk.ac.open.kmi.iserve.api.iServeEngine;
-import uk.ac.open.kmi.iserve.api.iServeEngineFactory;
+import com.google.inject.Inject;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
-import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
-import uk.ac.open.kmi.iserve.discovery.index.IndexFactory;
 import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
 
 import java.net.URI;
@@ -37,27 +32,25 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * @author Pablo Rodríguez Mier
  */
-public class InfinispanIndexFactory implements IndexFactory<URI, Map<URI, String>> {
+public class DefaultConceptMatcherIndexFactory implements IndexFactory<URI, Map<URI, String>> {
+
     private ConceptMatcher delegatedMatcher;
     private KnowledgeBaseManager kb;
+    private MapFactory factory;
 
-    public InfinispanIndexFactory() {
-        // Get the default iServe facade
-        iServeEngine engine = iServeEngineFactory.createEngine();
-        // Get the default concept matcher to populate the index
-        delegatedMatcher = engine.getDefaultConceptMatcher();
-        kb = engine.getRegistryManager().getKnowledgeBaseManager();
+    public DefaultConceptMatcherIndexFactory() {
+        //delegatedMatcher = MatchersFactory.createConceptMatcher();
     }
 
-    public InfinispanIndexFactory(KnowledgeBaseManager kb, ConceptMatcher matcher) {
-        // Get the default concept matcher to populate the index
-        this.delegatedMatcher = matcher;
-        this.kb = kb;
+    @Inject
+    public DefaultConceptMatcherIndexFactory(MapFactory factory) {
+
     }
 
-    private void populate(Cache<URI, Map<URI, String>> cache) {
+
+    private void populate(Map<URI, Map<URI, String>> cache) {
         Set<URI> classes = new HashSet<URI>(kb.listConcepts(null));
-        Table<URI, URI, MatchResult> table = delegatedMatcher.listMatchesAtLeastOfType(classes, LogicConceptMatchType.Plugin);
+        Table<URI, URI, MatchResult> table = null; //delegatedMatcher.listMatchesAtLeastOfType(classes, LogicConceptMatchType.Plugin);
         for (URI origin : table.rowKeySet()) {
             Map<URI, String> destMatch = new HashMap<URI, String>();
             Map<URI, MatchResult> dest = table.row(origin);
@@ -71,8 +64,8 @@ public class InfinispanIndexFactory implements IndexFactory<URI, Map<URI, String
 
     @Override
     public ConcurrentMap<URI, Map<URI, String>> createIndex() {
-        Cache<URI, Map<URI, String>> cache = new DefaultCacheManager().getCache();
-        populate(cache);
-        return cache;
+        ConcurrentMap<URI, Map<URI, String>> index = this.factory.createMap();
+        populate(index);
+        return index;
     }
 }

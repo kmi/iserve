@@ -20,17 +20,17 @@
         <dependency>
             <groupId>uk.ac.open.kmi.iserve.sal</groupId>
             <artifactId>iserve-sal-core</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.open.kmi.iserve.discovery</groupId>
             <artifactId>iserve-discovery-api</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>uk.ac.open.kmi.iserve.discovery</groupId>
-            <artifactId>iserve-discovery-disco</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <groupId>uk.ac.open.kmi.iserve</groupId>
+            <artifactId>iserve-semantic-discovery</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
     </dependencies>

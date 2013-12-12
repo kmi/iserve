@@ -4,8 +4,6 @@ import com.google.inject.multibindings.MapBinder;
 import uk.ac.open.kmi.iserve.core.ConfiguredModule;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
-import uk.ac.open.kmi.iserve.discovery.disco.index.IndexFactory;
-import uk.ac.open.kmi.iserve.discovery.infinispan.index.InfinispanIndexFactory;
 
 import javax.inject.Singleton;
 

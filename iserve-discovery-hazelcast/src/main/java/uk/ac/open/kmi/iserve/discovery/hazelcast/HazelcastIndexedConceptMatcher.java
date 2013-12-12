@@ -33,8 +33,7 @@ import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.impl.SparqlLogicConceptMatcher;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
-import uk.ac.open.kmi.iserve.sal.manager.iServeManager;
-import uk.ac.open.kmi.iserve.sal.manager.impl.iServeFacade;
+import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
 
 import javax.inject.Named;
 import java.net.URI;
@@ -50,15 +49,16 @@ public class HazelcastIndexedConceptMatcher extends AbstractMatcher implements C
 
     private IMap<URI, Map<URI, String>> map;
     private SparqlLogicConceptMatcher matcher;
-    private iServeManager facade;
+    private KnowledgeBaseManager kb;
 
     @Inject
     protected HazelcastIndexedConceptMatcher(SparqlLogicConceptMatcher sparqlMatcher,
+                                             KnowledgeBaseManager kb,
                                              @Named("hazelcast.addresss") String address,
                                              @Named("hazelcast.map.id") String hzMapId) throws SalException {
 
         super(EnumMatchTypes.of(LogicConceptMatchType.class));
-        this.facade = iServeFacade.getInstance();
+        this.kb = kb;
         // Load config from properties? injected through the constructor?
         ClientConfig clientConfig = new ClientConfig();
         NearCacheConfig cfg = new NearCacheConfig();
@@ -90,7 +90,7 @@ public class HazelcastIndexedConceptMatcher extends AbstractMatcher implements C
 
     // TODO: This should not be here. A separate crawler is required to update the index
     private void populate(IMap<URI, Map<URI, String>> map) {
-        Set<URI> classes = new HashSet<URI>(this.facade.getKnowledgeBaseManager().listConcepts(null));
+        Set<URI> classes = new HashSet<URI>(this.kb.listConcepts(null));
         Table<URI, URI, MatchResult> table = matcher.listMatchesAtLeastOfType(classes, LogicConceptMatchType.Plugin);
         for (URI origin : table.rowKeySet()) {
             Map<URI, String> destMatch = new HashMap<URI, String>();
