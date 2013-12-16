@@ -85,4 +85,9 @@ public class iServeEngineImpl implements iServeEngine {
         return matchersFactory.listAvailableMatchers();
     }
 
+    @Override
+    public void shutdown() {
+        registryManager.shutdown();
+    }
+
 }

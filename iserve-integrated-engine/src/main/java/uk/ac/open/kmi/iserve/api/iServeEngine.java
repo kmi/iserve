@@ -41,4 +41,6 @@ public interface iServeEngine {
      * @return a Set with all the concept matcher implementations available
      */
     Set<String> listAvailableMatchers();
+
+    void shutdown();
 }
