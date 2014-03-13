@@ -107,6 +107,11 @@
             <artifactId>iserve-semantic-discovery</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>iserve-discovery-infinispan</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!--Include Shared Resources-->
         <dependency>
