@@ -27,12 +27,15 @@ package uk.ac.open.kmi.iserve.core;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ServiceLoader;
 
 public class PluginModuleLoader<M extends Module> extends AbstractModule {
 
     private final Class<M> type;
+    private static final Logger log = LoggerFactory.getLogger(PluginModuleLoader.class);
 
     public PluginModuleLoader(Class<M> type) {
         this.type = type;
@@ -46,6 +49,7 @@ public class PluginModuleLoader<M extends Module> extends AbstractModule {
     protected void configure() {
         ServiceLoader<M> modules = ServiceLoader.load(type);
         for (Module module : modules) {
+            log.info("Installing module {}, type {}", module, type);
             install(module);
         }
     }
