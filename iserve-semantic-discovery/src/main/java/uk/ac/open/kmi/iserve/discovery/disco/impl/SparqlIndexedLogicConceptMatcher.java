@@ -18,6 +18,7 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 
 import com.google.common.base.Function;
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.*;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
@@ -63,7 +64,10 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
         this.sparqlMatcher = sparqlMatcher;
         this.manager = registryManager;
         this.manager.registerAsObserver(this);
+        log.info("Populating Matcher Index...");
+        Stopwatch w = new Stopwatch().start();
         this.indexedMatches = populate();
+        log.info("Population done in {}. Number of entries {}", w.stop().toString(), indexedMatches.size());
     }
 
     private Table<URI, URI, MatchResult> populate() {
