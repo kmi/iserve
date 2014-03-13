@@ -1,5 +1,9 @@
 package uk.ac.open.kmi.iserve.discovery.infinispan;
 
+import com.google.common.collect.BoundType;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
@@ -9,6 +13,8 @@ import uk.ac.open.kmi.iserve.discovery.api.impl.AtomicMatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.discovery.infinispan.index.InfinispanIndexFactory;
+import uk.ac.open.kmi.iserve.discovery.util.MatchResultPredicates;
+import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
 
 import java.net.URI;
 import java.util.Map;
@@ -19,11 +25,12 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class InfinispanIndexedConceptMatcher extends AbstractMatcher implements ConceptMatcher {
 
-    private ConcurrentMap<URI, Map<URI, String>> map;
+    private ConcurrentMap<URI, Map<URI, MatchResult>> map;
 
-    public InfinispanIndexedConceptMatcher() {
+    @Inject
+    public InfinispanIndexedConceptMatcher(ConceptMatcher delegatedMatcher, KnowledgeBaseManager kb) {
         super(EnumMatchTypes.of(LogicConceptMatchType.class));
-        this.map = new InfinispanIndexFactory().createIndex();
+        this.map = new InfinispanIndexFactory(delegatedMatcher, kb).createIndex();
     }
 
     @Override
@@ -44,12 +51,9 @@ public class InfinispanIndexedConceptMatcher extends AbstractMatcher implements 
     @Override
     public MatchResult match(URI origin, URI destination) {
         // Get match by origin
-        String matchType = this.map.get(origin).get(destination);
-        if (matchType!=null){
-            // Disco match type
-            LogicConceptMatchType type = LogicConceptMatchType.valueOf(matchType);
-            return new AtomicMatchResult(origin, destination, type, this);
-
+        MatchResult result = this.map.get(origin).get(destination);
+        if (result!=null){
+            return result;
         }
         // Return fail
         return new AtomicMatchResult(origin, destination, LogicConceptMatchType.Fail, this);
@@ -57,7 +61,13 @@ public class InfinispanIndexedConceptMatcher extends AbstractMatcher implements 
 
     @Override
     public Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType) {
-        throw new UnsupportedOperationException();
+        if (origin == null || minType == null | maxType == null) {
+            return ImmutableMap.of();
+        }
+
+        // Return an immutable map out of the filtered view. Drop copyOf to obtain a live view
+        return ImmutableMap.copyOf(Maps.filterValues(this.map.get(origin), MatchResultPredicates.withinRange(minType, BoundType.CLOSED, maxType, BoundType.CLOSED)));
+
     }
 
 }

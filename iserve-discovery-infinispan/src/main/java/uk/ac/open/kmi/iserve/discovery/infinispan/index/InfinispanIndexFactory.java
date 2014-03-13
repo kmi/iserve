@@ -17,10 +17,9 @@
 package uk.ac.open.kmi.iserve.discovery.infinispan.index;
 
 import com.google.common.collect.Table;
+import com.google.inject.Inject;
 import org.infinispan.Cache;
 import org.infinispan.manager.DefaultCacheManager;
-import uk.ac.open.kmi.iserve.api.iServeEngine;
-import uk.ac.open.kmi.iserve.api.iServeEngineFactory;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
@@ -37,16 +36,14 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * @author Pablo Rodríguez Mier
  */
-public class InfinispanIndexFactory implements IndexFactory<URI, Map<URI, String>> {
+public class InfinispanIndexFactory implements IndexFactory<URI, Map<URI, MatchResult>> {
     private ConceptMatcher delegatedMatcher;
     private KnowledgeBaseManager kb;
 
-    public InfinispanIndexFactory() {
-        // Get the default iServe facade
-        iServeEngine engine = iServeEngineFactory.createEngine();
+    public InfinispanIndexFactory(ConceptMatcher delegatedMatcher, KnowledgeBaseManager kb) {
         // Get the default concept matcher to populate the index
-        delegatedMatcher = engine.getDefaultConceptMatcher();
-        kb = engine.getRegistryManager().getKnowledgeBaseManager();
+        this.delegatedMatcher = delegatedMatcher;
+        this.kb = kb;
     }
 
     public InfinispanIndexFactory(KnowledgeBaseManager kb, ConceptMatcher matcher) {
@@ -55,23 +52,18 @@ public class InfinispanIndexFactory implements IndexFactory<URI, Map<URI, String
         this.kb = kb;
     }
 
-    private void populate(Cache<URI, Map<URI, String>> cache) {
+    private void populate(Cache<URI, Map<URI, MatchResult>> cache) {
         Set<URI> classes = new HashSet<URI>(kb.listConcepts(null));
-        Table<URI, URI, MatchResult> table = delegatedMatcher.listMatchesAtLeastOfType(classes, LogicConceptMatchType.Plugin);
+        Table<URI, URI, MatchResult> table = delegatedMatcher.listMatchesAtLeastOfType(classes, LogicConceptMatchType.Subsume);
         for (URI origin : table.rowKeySet()) {
-            Map<URI, String> destMatch = new HashMap<URI, String>();
             Map<URI, MatchResult> dest = table.row(origin);
-            for (URI destUri : dest.keySet()) {
-                destMatch.put(destUri, dest.get(destUri).getMatchType().name());
-            }
-            cache.put(origin, destMatch);
+            cache.put(origin, dest);
         }
-
     }
 
     @Override
-    public ConcurrentMap<URI, Map<URI, String>> createIndex() {
-        Cache<URI, Map<URI, String>> cache = new DefaultCacheManager().getCache();
+    public ConcurrentMap<URI, Map<URI, MatchResult>> createIndex() {
+        Cache<URI, Map<URI, MatchResult>> cache = new DefaultCacheManager().getCache();
         populate(cache);
         return cache;
     }

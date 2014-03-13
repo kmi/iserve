@@ -2,13 +2,12 @@ package uk.ac.open.kmi.iserve.discovery.infinispan.index;
 
 import org.infinispan.manager.DefaultCacheManager;
 import uk.ac.open.kmi.iserve.discovery.index.MapFactory;
-
 import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Pablo Rodríguez Mier
  */
-public class InfinispanMapFactory implements MapFactory {
+public class InfinispanMapFactory implements MapFactory  {
     // TODO; This is not a proper configuration for a cache manager. Improve this
     private static final DefaultCacheManager manager = new DefaultCacheManager();
 
