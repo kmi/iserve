@@ -18,6 +18,7 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 
 import com.google.common.base.Function;
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.*;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
@@ -63,7 +64,10 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
         this.sparqlMatcher = sparqlMatcher;
         this.manager = registryManager;
         this.manager.registerAsObserver(this);
+        log.info("Populating Matcher Index...");
+        Stopwatch w = new Stopwatch().start();
         this.indexedMatches = populate();
+        log.info("Population done in {}. Number of entries {}", w.stop().toString(), indexedMatches.size());
     }
 
     private Table<URI, URI, MatchResult> populate() {
@@ -123,7 +127,7 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
      * @param minType the minimum MatchType we want to obtain
      * @param maxType the maximum MatchType we want to obtain
      * @return a Map containing indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
-     *         result is found the Map should be empty not null.
+     * result is found the Map should be empty not null.
      */
     @Override
     public Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType) {
