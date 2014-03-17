@@ -68,7 +68,7 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
 
         // Expand the input types to get all that match enough to be consumed
         Table<URI, URI, MatchResult> expandedTypes =
-                this.conceptMatcher.listMatchesAtLeastOfType(types, LogicConceptMatchType.Subsume);
+                this.conceptMatcher.listMatchesAtLeastOfType(types, LogicConceptMatchType.Plugin);
 
         // Track all the results in a multimap to push the details up the stack
         Multimap<URI, MatchResult> result = ArrayListMultimap.create();
