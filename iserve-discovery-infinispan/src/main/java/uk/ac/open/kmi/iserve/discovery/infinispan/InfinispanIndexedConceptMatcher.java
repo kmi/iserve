@@ -4,6 +4,8 @@ import com.google.common.collect.BoundType;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
@@ -26,10 +28,12 @@ import java.util.concurrent.ConcurrentMap;
 public class InfinispanIndexedConceptMatcher extends AbstractMatcher implements ConceptMatcher {
 
     private ConcurrentMap<URI, Map<URI, MatchResult>> map;
+    private static final Logger log = LoggerFactory.getLogger(InfinispanIndexedConceptMatcher.class);
 
     @Inject
     public InfinispanIndexedConceptMatcher(ConceptMatcher delegatedMatcher, KnowledgeBaseManager kb) {
         super(EnumMatchTypes.of(LogicConceptMatchType.class));
+        log.info("Loading infinispan cached concept matcher...");
         this.map = new InfinispanIndexFactory(delegatedMatcher, kb).createIndex();
     }
 

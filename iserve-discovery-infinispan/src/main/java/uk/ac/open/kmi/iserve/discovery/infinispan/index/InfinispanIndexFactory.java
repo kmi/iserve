@@ -17,7 +17,6 @@
 package uk.ac.open.kmi.iserve.discovery.infinispan.index;
 
 import com.google.common.collect.Table;
-import com.google.inject.Inject;
 import org.infinispan.Cache;
 import org.infinispan.manager.DefaultCacheManager;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
@@ -27,7 +26,6 @@ import uk.ac.open.kmi.iserve.discovery.index.IndexFactory;
 import uk.ac.open.kmi.iserve.sal.manager.KnowledgeBaseManager;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -43,12 +41,6 @@ public class InfinispanIndexFactory implements IndexFactory<URI, Map<URI, MatchR
     public InfinispanIndexFactory(ConceptMatcher delegatedMatcher, KnowledgeBaseManager kb) {
         // Get the default concept matcher to populate the index
         this.delegatedMatcher = delegatedMatcher;
-        this.kb = kb;
-    }
-
-    public InfinispanIndexFactory(KnowledgeBaseManager kb, ConceptMatcher matcher) {
-        // Get the default concept matcher to populate the index
-        this.delegatedMatcher = matcher;
         this.kb = kb;
     }
 
