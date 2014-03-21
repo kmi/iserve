@@ -34,6 +34,7 @@ import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.Util;
 import uk.ac.open.kmi.iserve.discovery.util.MatchResultComparators;
+import uk.ac.open.kmi.iserve.sal.util.MonitoredQueryExecution;
 
 import javax.inject.Named;
 import java.net.URI;
@@ -149,7 +150,8 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
         MatchType type = LogicConceptMatchType.Fail;
         // Query the engine
         Query query = QueryFactory.create(queryStr);
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.sparqlEndpoint.toASCIIString(), query);
+        QueryExecution qe = QueryExecutionFactory.sparqlService(this.sparqlEndpoint.toASCIIString(), query);
+        MonitoredQueryExecution qexec = new MonitoredQueryExecution(qe);
 
         try {
             Stopwatch stopwatch = new Stopwatch().start();
@@ -205,8 +207,8 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
 
         // Query the engine
         Query query = QueryFactory.create(queryStr);
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.sparqlEndpoint.toASCIIString(), query);
-
+        QueryExecution qe = QueryExecutionFactory.sparqlService(this.sparqlEndpoint.toASCIIString(), query);
+        MonitoredQueryExecution qexec = new MonitoredQueryExecution(qe);
         try {
             Stopwatch stopwatch = new Stopwatch().start();
             ResultSet qResults = qexec.execSelect();
@@ -244,7 +246,7 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
      * @param origin URI to match
      * @param type   the MatchType we want to obtain
      * @return an ImmutableMap sorted by value indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
-     *         result is found the Map should be empty not null.
+     * result is found the Map should be empty not null.
      */
     @Override
     public Map<URI, MatchResult> listMatchesOfType(URI origin, MatchType type) {
@@ -270,7 +272,7 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
      * @param origin  URI to match
      * @param minType the minimum MatchType we want to obtain
      * @return an ImmutableMap sorted by value indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
-     *         result is found the Map should be empty not null.
+     * result is found the Map should be empty not null.
      */
     @Override
     public Map<URI, MatchResult> listMatchesAtLeastOfType(URI origin, MatchType minType) {
@@ -309,7 +311,7 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
      * @param origin  URI to match
      * @param maxType the maximum MatchType we want to obtain
      * @return an ImmutableMap sorted by value indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
-     *         result is found the Map should be empty not null.
+     * result is found the Map should be empty not null.
      */
     @Override
     public Map<URI, MatchResult> listMatchesAtMostOfType(URI origin, MatchType maxType) {
@@ -336,7 +338,7 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
      * @param minType the minimum MatchType we want to obtain
      * @param maxType the maximum MatchType we want to obtain
      * @return an ImmutableMap sorted by value containing indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
-     *         result is found the Map should be empty not null.
+     * result is found the Map should be empty not null.
      */
     @Override
     public Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType) {
@@ -406,8 +408,8 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
 
         // Query the engine
         Query query = QueryFactory.create(queryStr);
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.sparqlEndpoint.toASCIIString(), query);
-
+        QueryExecution qe = QueryExecutionFactory.sparqlService(this.sparqlEndpoint.toASCIIString(), query);
+        MonitoredQueryExecution qexec = new MonitoredQueryExecution(qe);
         try {
             Stopwatch stopwatch = new Stopwatch().start();
             ResultSet qResults = qexec.execSelect();

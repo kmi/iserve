@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
+import uk.ac.open.kmi.iserve.sal.util.MonitoredQueryExecution;
 import uk.ac.open.kmi.msm4j.io.Syntax;
 import uk.ac.open.kmi.msm4j.util.Vocabularies;
 
@@ -352,7 +353,9 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
         StringBuilder queryStr = new StringBuilder("ASK { GRAPH <").append(graphUri).append("> {?s a ?o} } \n");
 
         Query query = QueryFactory.create(queryStr.toString());
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
+        QueryExecution qe = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
+        MonitoredQueryExecution qexec = new MonitoredQueryExecution(qe);
+
         try {
             return qexec.execAsk();
         } finally {
@@ -462,7 +465,8 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
         log.debug("Querying graph store: {}", queryStr.toString());
 
         Query query = QueryFactory.create(queryStr.toString());
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
+        QueryExecution qe = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
+        MonitoredQueryExecution qexec = new MonitoredQueryExecution(qe);
         // Note that we are not using the store specification here to avoid retrieving remote models
 //        OntModel resultModel = ModelFactory.createOntologyModel();
         OntModel resultModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF);
@@ -606,7 +610,8 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
         // Query the engine
         log.debug("Evaluating SPARQL query in Knowledge Base: \n {}", queryStr);
         Query query = QueryFactory.create(queryStr);
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
+        QueryExecution qe = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
+        MonitoredQueryExecution qexec = new MonitoredQueryExecution(qe);
 
         try {
             Stopwatch stopwatch = new Stopwatch();

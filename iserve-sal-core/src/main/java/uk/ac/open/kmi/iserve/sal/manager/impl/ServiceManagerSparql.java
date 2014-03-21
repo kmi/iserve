@@ -40,6 +40,7 @@ import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
+import uk.ac.open.kmi.iserve.sal.util.MonitoredQueryExecution;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 import uk.ac.open.kmi.msm4j.*;
 import uk.ac.open.kmi.msm4j.io.impl.ServiceReaderImpl;
@@ -360,7 +361,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      * @param serviceUri the URI of the service to obtain
      * @return the service description if it exists or null otherwise
      * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
      */
     @Override
     public Service getService(URI serviceUri) throws ServiceException {
@@ -393,7 +393,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      * @param serviceUris the URIs of the service to obtain
      * @return the list of all services that could be obtained. If none could be obtained the list will be empty.
      * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
      */
     @Override
     public Set<Service> getServices(Set<URI> serviceUris) throws ServiceException {
@@ -414,7 +413,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      * @param serviceUri the service URI
      * @return the List of the URIs of all the documents related to the service
      * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
      */
     @Override
     public Set<URI> listDocumentsForService(URI serviceUri) throws ServiceException {
@@ -430,7 +428,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      * @param service the input service description in terms of MSM
      * @return the URI this service description was saved to
      * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
      */
     @Override
     public URI addService(Service service) throws ServiceException {
@@ -472,7 +469,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      * @param relatedDocument the related document URI
      * @return True if successful or False otherwise
      * @throws uk.ac.open.kmi.iserve.sal.exception.SalException
-     *
      */
     @Override
     public boolean addRelatedDocumentToService(URI serviceUri, URI relatedDocument) throws ServiceException {
@@ -487,7 +483,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      * @param serviceUri the URI of the service to delete
      * @return True if it was deleted or false otherwise
      * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
      */
     @Override
     public boolean deleteService(URI serviceUri) throws ServiceException {
@@ -523,7 +518,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      * @param service the service to delete
      * @return True if it was deleted or false otherwise
      * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
      */
     @Override
     public boolean deleteService(Service service) throws ServiceException {
@@ -536,7 +530,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      *
      * @return
      * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
      */
     @Override
     public boolean clearServices() throws ServiceException {
@@ -561,7 +554,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      * @param serviceUri the URI of the service being looked up
      * @return True if it is registered in the server
      * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
      */
     @Override
     public boolean serviceExists(URI serviceUri) throws ServiceException {
@@ -589,7 +581,8 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
                 .append("<").append(serviceUri.toASCIIString()).append("> <").append(RDF.type.getURI()).append("> <").append(MSM.Service).append("> }\n}").toString();
 
         Query query = QueryFactory.create(queryStr);
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.graphStoreManager.getSparqlQueryEndpoint().toASCIIString(), query);
+        QueryExecution qe = QueryExecutionFactory.sparqlService(this.graphStoreManager.getSparqlQueryEndpoint().toASCIIString(), query);
+        MonitoredQueryExecution qexec = new MonitoredQueryExecution(qe);
         try {
             return qexec.execAsk();
         } finally {
@@ -604,7 +597,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      *
      * @param modelReference the type of output sought for
      * @return a Set of URIs of operations that generate this output type.
-     *
      */
 
     @Override
