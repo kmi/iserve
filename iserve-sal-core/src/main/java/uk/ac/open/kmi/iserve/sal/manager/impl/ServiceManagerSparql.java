@@ -40,6 +40,7 @@ import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
+import uk.ac.open.kmi.iserve.sal.util.MonitoredQueryExecution;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 import uk.ac.open.kmi.msm4j.*;
 import uk.ac.open.kmi.msm4j.io.impl.ServiceReaderImpl;
@@ -589,7 +590,8 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
                 .append("<").append(serviceUri.toASCIIString()).append("> <").append(RDF.type.getURI()).append("> <").append(MSM.Service).append("> }\n}").toString();
 
         Query query = QueryFactory.create(queryStr);
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.graphStoreManager.getSparqlQueryEndpoint().toASCIIString(), query);
+        QueryExecution qe = QueryExecutionFactory.sparqlService(this.graphStoreManager.getSparqlQueryEndpoint().toASCIIString(), query);
+        MonitoredQueryExecution qexec = new MonitoredQueryExecution(qe);
         try {
             return qexec.execAsk();
         } finally {

@@ -34,6 +34,7 @@ import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.Util;
 import uk.ac.open.kmi.iserve.discovery.util.MatchResultComparators;
+import uk.ac.open.kmi.iserve.sal.util.MonitoredQueryExecution;
 
 import javax.inject.Named;
 import java.net.URI;
@@ -149,7 +150,8 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
         MatchType type = LogicConceptMatchType.Fail;
         // Query the engine
         Query query = QueryFactory.create(queryStr);
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.sparqlEndpoint.toASCIIString(), query);
+        QueryExecution qe = QueryExecutionFactory.sparqlService(this.sparqlEndpoint.toASCIIString(), query);
+        MonitoredQueryExecution qexec = new MonitoredQueryExecution(qe);
 
         try {
             Stopwatch stopwatch = new Stopwatch().start();
@@ -205,8 +207,8 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
 
         // Query the engine
         Query query = QueryFactory.create(queryStr);
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.sparqlEndpoint.toASCIIString(), query);
-
+        QueryExecution qe = QueryExecutionFactory.sparqlService(this.sparqlEndpoint.toASCIIString(), query);
+        MonitoredQueryExecution qexec = new MonitoredQueryExecution(qe);
         try {
             Stopwatch stopwatch = new Stopwatch().start();
             ResultSet qResults = qexec.execSelect();
@@ -406,8 +408,8 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
 
         // Query the engine
         Query query = QueryFactory.create(queryStr);
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.sparqlEndpoint.toASCIIString(), query);
-
+        QueryExecution qe = QueryExecutionFactory.sparqlService(this.sparqlEndpoint.toASCIIString(), query);
+        MonitoredQueryExecution qexec = new MonitoredQueryExecution(qe);
         try {
             Stopwatch stopwatch = new Stopwatch().start();
             ResultSet qResults = qexec.execSelect();
