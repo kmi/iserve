@@ -59,8 +59,10 @@ public class iServeImporter {
     public int importServices(File file, String mediaType) {
 
         // Validate input
-        if (mediaType == null || file == null)
+        if (mediaType == null || file == null || !file.exists()) {
+            log.warn("No file was provided or it does not exist.");
             return 0;
+        }
 
         // Obtain input for transformation
         File[] toTransform;
@@ -94,17 +96,17 @@ public class iServeImporter {
                 importedUris = this.registryManager.importServices(in, mediaType);
                 result += importedUris.size();
             } catch (FileNotFoundException e) {
-                log.error("Could not find file " + file.toURI().toASCIIString(), e);
+                log.error("Could not find file {}", file, e);
                 return result;
             } catch (SalException e) {
-                log.error("Error importing file " + file.toURI().toASCIIString(), e);
+                log.error("Error importing file {}", file, e);
                 return result;
             } finally {
                 if (in != null) {
                     try {
                         in.close();
                     } catch (IOException e) {
-                        log.error("Error closing file " + file.toURI().toASCIIString(), e);
+                        log.error("Error closing file {}", file, e);
                     }
                 }
             }
