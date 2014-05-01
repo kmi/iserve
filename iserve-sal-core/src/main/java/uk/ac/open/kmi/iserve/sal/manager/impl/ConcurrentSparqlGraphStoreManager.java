@@ -138,8 +138,6 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
             log.error("URI error configuring SPARQL Graph Store Manager", e);
         }
 
-        this.loadedModels = Collections.newSetFromMap(new ConcurrentHashMap<URI, Boolean>());
-        this.loadedModels.addAll(CORE_MODELS);
         this.baseModels = baseModels;
         this.fetchingMap = new ConcurrentHashMap<URI, Future<Boolean>>();
 
@@ -212,6 +210,14 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
      */
     private void initialise() {
         // Figure out models loaded
+        if (this.loadedModels != null) {
+            this.loadedModels.clear();
+        } else {
+            this.loadedModels = Collections.newSetFromMap(new ConcurrentHashMap<URI, Boolean>());
+        }
+        // Add models that are present by definition in the store
+        this.loadedModels.addAll(CORE_MODELS);
+        // Index those that are present in the store
         this.loadedModels.addAll(listStoredGraphs());
         // Check and load default models
         loadDefaultModels();
@@ -246,13 +252,15 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
      * NOTE: For now models with local mappings cannot be TTL for Jena does not guess the format properly in that case.
      * We need to specify the format while loading in this case.
      *
+     * This method pre-checks the presence of the model already in loadedModels
+     *
      * @return True if they were all added correctly. False otherwise.
      */
     private boolean loadDefaultModels() {
 
         Map<URI, Future<Boolean>> concurrentTasks = new HashMap<URI, Future<Boolean>>();
         for (URI modelUri : baseModels) {
-            if (modelUri != null && modelUri.isAbsolute()) {
+            if (modelUri != null && modelUri.isAbsolute() && !this.loadedModels.contains(modelUri)) {
                 concurrentTasks.put(modelUri, this.asyncFetchModel(modelUri, Syntax.N3.getName()));
             }
         }

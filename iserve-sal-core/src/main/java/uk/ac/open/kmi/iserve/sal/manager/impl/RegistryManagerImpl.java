@@ -329,6 +329,10 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
         if (result)
             result = result & this.docManager.clearDocuments();
 
+        // Only try if we could delete the services and the docs
+        if (result)
+            result = result & this.kbManager.clearKnowledgeBase();
+
         return result;
     }
 
