@@ -141,11 +141,11 @@
 
     <modules>
         <module>iserve-sal-core</module>
-        <!--<module>iserve-sal-rest</module>-->
+        <module>iserve-sal-rest</module>
         <module>iserve-discovery-api</module>
         <module>iserve-semantic-discovery</module>
         <module>iserve-discovery-rest</module>
-        <!--<module>iserve-webapp</module>-->
+        <module>iserve-webapp</module>
         <module>iserve-shared-resources</module>
         <module>iserve-integrated-engine</module>
         <module>iserve-discovery-hazelcast</module>
