@@ -183,7 +183,7 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
      *
      * @param mediaType the media type for which to obtain the file extension
      * @return the filename filter or null if it is not supported. Callers are advised to check
-     *         first that the media type is supported {@see canTransform} .
+     * first that the media type is supported {@see canTransform} .
      */
     @Override
     public FilenameFilter getFilenameFilter(String mediaType) {
@@ -328,6 +328,10 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
         // Only try if we could delete the services
         if (result)
             result = result & this.docManager.clearDocuments();
+
+        // Only try if we could delete the services and the docs
+        if (result)
+            result = result & this.kbManager.clearKnowledgeBase();
 
         return result;
     }
