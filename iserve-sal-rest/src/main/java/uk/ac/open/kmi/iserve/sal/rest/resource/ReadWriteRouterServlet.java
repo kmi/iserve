@@ -21,8 +21,6 @@ import com.epimorphics.lda.restlets.RouterRestlet;
 import com.epimorphics.lda.routing.ServletUtils;
 import com.epimorphics.util.Couple;
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -93,10 +91,11 @@ public class ReadWriteRouterServlet extends RouterRestlet {
         this.manager = registryManager;
     }
 
+
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces({MediaType.TEXT_HTML})
-    @Path("/id/services")
+//    @Path("/id/services")
     public Response addService(
             @PathParam("path") String pathstub,
             @FormDataParam("file") FormDataBodyPart bodyPart,
@@ -116,16 +115,16 @@ public class ReadWriteRouterServlet extends RouterRestlet {
             return Response.status(Response.Status.NOT_FOUND).entity(htmlString).build();
         }
 
-        // Check first that the user is allowed to upload a service
-        Subject currentUser = SecurityUtils.getSubject();
-        if (!currentUser.isPermitted("services:create")) {
-            log.warn("User without the appropriate permissions attempted to create a service: " + currentUser.getPrincipal());
-
-            String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                    "  <body>\n You have not got the appropriate permissions for creating a service. Please login and ensure you have the correct permissions. </body>\n</html>";
-
-            return Response.status(Response.Status.FORBIDDEN).entity(htmlString).build();
-        }
+//        // Check first that the user is allowed to upload a service
+//        Subject currentUser = SecurityUtils.getSubject();
+//        if (!currentUser.isPermitted("services:create")) {
+//            log.warn("User without the appropriate permissions attempted to create a service: " + currentUser.getPrincipal());
+//
+//            String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+//                    "  <body>\n You have not got the appropriate permissions for creating a service. Please login and ensure you have the correct permissions. </body>\n</html>";
+//
+//            return Response.status(Response.Status.FORBIDDEN).entity(htmlString).build();
+//        }
 
         // The user is allowed to create services
         String mediaType = null;
@@ -198,8 +197,8 @@ public class ReadWriteRouterServlet extends RouterRestlet {
      * @return
      */
     @DELETE
-    @Path("/id/services/{uniqueId}/{serviceName}")
     @Produces({MediaType.TEXT_HTML})
+//    @Path("/id/services/{uniqueId}/{serviceName}")
     public Response deleteService(@PathParam("path") String pathstub,
                                   @Context UriInfo ui) {
 
@@ -212,16 +211,16 @@ public class ReadWriteRouterServlet extends RouterRestlet {
             return Response.status(Response.Status.NOT_FOUND).entity(htmlString).build();
         }
 
-        // Check first that the user is allowed to upload a service
-        Subject currentUser = SecurityUtils.getSubject();
-        if (!currentUser.isPermitted("services:delete")) {
-            log.warn("User without the appropriate permissions attempted to delete a service: " + currentUser.getPrincipal());
-
-            String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                    "  <body>\n You have not got the appropriate permissions for deleting a service. Please login and ensure you have the correct permissions. </body>\n</html>";
-
-            return Response.status(Response.Status.FORBIDDEN).entity(htmlString).build();
-        }
+//        // Check first that the user is allowed to upload a service
+//        Subject currentUser = SecurityUtils.getSubject();
+//        if (!currentUser.isPermitted("services:delete")) {
+//            log.warn("User without the appropriate permissions attempted to delete a service: " + currentUser.getPrincipal());
+//
+//            String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+//                    "  <body>\n You have not got the appropriate permissions for deleting a service. Please login and ensure you have the correct permissions. </body>\n</html>";
+//
+//            return Response.status(Response.Status.FORBIDDEN).entity(htmlString).build();
+//        }
 
         URI serviceUri = ui.getRequestUri();
 
@@ -257,5 +256,6 @@ public class ReadWriteRouterServlet extends RouterRestlet {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(response).build();
         }
     }
+
 }
 
