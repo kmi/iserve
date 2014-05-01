@@ -69,6 +69,7 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         }
 
         // Expand the input types to get all that match enough to be consumed
+        // The structure is: <OriginalType, MatchingType, MatchResult>
         Table<URI, URI, MatchResult> expandedTypes =
                 this.conceptMatcher.listMatchesAtLeastOfType(types, LogicConceptMatchType.Plugin);
 
@@ -79,7 +80,9 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         boolean firstTime = true;
         Map<URI, MatchResult> intermediateMatches;
         Map<URI, Map<URI, MatchResult>> rowMap = expandedTypes.rowMap();
+        // For each original type
         for (URI inputType : rowMap.keySet()) {
+            // obtain those entities that match any of the expanded matching types
             intermediateMatches = findSome(entityType, relationship, rowMap.get(inputType).keySet());
             if (firstTime) {
                 // Add all entries
@@ -95,6 +98,7 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
                 }
 
                 // Drop all the values from the difference
+                // Use an immutable copy since the views will be changed
                 Set<URI> difference = Sets.difference(result.keySet(), intermediateMatches.keySet()).immutableCopy();
                 for (URI opUri : difference) {
                     result.removeAll(opUri);
@@ -126,6 +130,7 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         }
 
         // Expand the input types to get all that match enough to be consumed
+        // TODO: The leastOfType should be configurable
         Table<URI, URI, MatchResult> expandedTypes =
                 this.conceptMatcher.listMatchesAtLeastOfType(types, LogicConceptMatchType.Plugin);
 
@@ -137,12 +142,11 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         Map<URI, Map<URI, MatchResult>> columnMap = expandedTypes.columnMap();
         for (URI type : columnMap.keySet()) {
             Set<URI> entities = ImmutableSet.of();
-            if (relationship.toASCIIString().equals(SAWSDL.modelReference.getURI())){
-                entities = listEntitesWithModelReference(entityType,type);
-            } else if (relationship.toASCIIString().equals(MSM.hasInput.getURI()) || relationship.toASCIIString().equals(MSM.hasOutput.getURI())){
+            if (relationship.toASCIIString().equals(SAWSDL.modelReference.getURI())) {
+                entities = listEntitesWithModelReference(entityType, type);
+            } else if (relationship.toASCIIString().equals(MSM.hasInput.getURI()) || relationship.toASCIIString().equals(MSM.hasOutput.getURI())) {
                 entities = listEntitiesWithType(entityType, relationship, type);
             }
-
 
             for (URI entity : entities) {
                 result.putAll(entity, columnMap.get(type).values());
@@ -154,11 +158,10 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
 
     }
 
-
     /**
      * Generic implementation for finding all the Services or Operations that have one specific model reference.
      *
-     * @param entityType   the MSM URI of the type of entity we are looking for. Only supports Service and Operation.
+     * @param entityType     the MSM URI of the type of entity we are looking for. Only supports Service and Operation.
      * @param modelReference the model reference URI we are looking for.
      * @returns a Set of URIs of matching services/operations. Note that this method makes no use of reasoning and therefore
      * the match will always be exact in this case.
@@ -168,9 +171,9 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         Set<URI> entities = ImmutableSet.of();
         // Deal with services
         if (entityType.toASCIIString().equals(MSM.Service.getURI())) {
-                entities = this.serviceManager.listServicesWithModelReference(modelReference);
+            entities = this.serviceManager.listServicesWithModelReference(modelReference);
         } else if (entityType.toASCIIString().equals(MSM.Operation.getURI())) {
-                entities = this.serviceManager.listOperationsWithModelReference(modelReference);
+            entities = this.serviceManager.listOperationsWithModelReference(modelReference);
         }
         return entities;
     }
