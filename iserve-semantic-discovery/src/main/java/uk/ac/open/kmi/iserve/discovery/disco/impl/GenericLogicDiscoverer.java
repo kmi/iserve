@@ -67,17 +67,20 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         }
 
         // Expand the input types to get all that match enough to be consumed
+        // The structure is: <OriginalType, MatchingType, MatchResult>
         Table<URI, URI, MatchResult> expandedTypes =
                 this.conceptMatcher.listMatchesAtLeastOfType(types, LogicConceptMatchType.Plugin);
 
         // Track all the results in a multimap to push the details up the stack
-        Multimap<URI, MatchResult> result = ArrayListMultimap.create();
+        ListMultimap<URI, MatchResult> result = ArrayListMultimap.create();
 
         // Do the intersection of those operations that can consume each of the inputs separately
         boolean firstTime = true;
         Map<URI, MatchResult> intermediateMatches;
         Map<URI, Map<URI, MatchResult>> rowMap = expandedTypes.rowMap();
+        // For each original type
         for (URI inputType : rowMap.keySet()) {
+            // obtain those entities that match any of the expanded matching types
             intermediateMatches = findSome(entityType, relationship, rowMap.get(inputType).keySet());
             if (firstTime) {
                 // Add all entries
@@ -93,7 +96,8 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
                 }
 
                 // Drop all the values from the difference
-                Set<URI> difference = Sets.difference(result.keySet(), intermediateMatches.keySet());
+                // Use an immutable copy since the views will be changed
+                Set<URI> difference = Sets.difference(result.keySet(), intermediateMatches.keySet()).immutableCopy();
                 for (URI opUri : difference) {
                     result.removeAll(opUri);
                 }

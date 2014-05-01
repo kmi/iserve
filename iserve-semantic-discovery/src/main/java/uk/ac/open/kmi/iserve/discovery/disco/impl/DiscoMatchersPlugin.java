@@ -36,6 +36,7 @@ public class DiscoMatchersPlugin extends AbstractModule implements MatcherPlugin
         conceptBinder.addBinding(SparqlIndexedLogicConceptMatcher.class.getName()).to(SparqlIndexedLogicConceptMatcher.class);
 
         // Bind fall back Concept Matcher
+        // TODO: Define a way for different modules to define their own chains of matchers on a per module basis
         bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
 
         // Bind DataflowMatcher

@@ -54,7 +54,7 @@ import java.util.Map;
 
 /**
  * GenericLogicDiscovererTest
- * TODO: Provide Description
+ * TODO: GenericLogicDiscovererTest.testFindOperationsConsumingAll:175 » ConcurrentModification
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 04/10/2013
