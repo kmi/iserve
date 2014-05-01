@@ -30,6 +30,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.SystemConfiguration;
+import uk.ac.open.kmi.iserve.sal.events.KnowledgeBaseClearedEvent;
 import uk.ac.open.kmi.iserve.sal.events.OntologyCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServiceCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
@@ -94,6 +95,29 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
 
         this.graphStoreManager = graphStoreFactory.create(sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint, defaultModels, locationMappings, ignoredImports);
         this.unreachableModels = new ConcurrentHashMap<URI, Date>();
+    }
+
+    /**
+     * Deletes all the ontologies from a Knowledge Base.
+     * This operation cannot be undone. Use with care.
+     *
+     * @return
+     */
+    @Override
+    public boolean clearKnowledgeBase() {
+
+        if (!this.graphStoreManager.canBeModified()) {
+            log.warn("The dataset cannot be modified.");
+            return false;
+        }
+
+        log.info("Clearing knowledge base.");
+        this.graphStoreManager.clearDataset();
+
+        // Generate Event
+        this.getEventBus().post(new KnowledgeBaseClearedEvent(new Date()));
+
+        return true;
     }
 
     /**

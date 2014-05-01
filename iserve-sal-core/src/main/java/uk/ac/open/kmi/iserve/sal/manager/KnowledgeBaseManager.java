@@ -32,6 +32,14 @@ import java.util.Set;
 public interface KnowledgeBaseManager extends iServeComponent {
 
     /**
+     * Deletes all the ontologies from a Knowledge Base.
+     * This operation cannot be undone. Use with care.
+     *
+     * @return
+     */
+    public boolean clearKnowledgeBase();
+
+    /**
      * Checks whether the model has already been uploaded
      *
      * @param modelUri URI of the model to be checked
