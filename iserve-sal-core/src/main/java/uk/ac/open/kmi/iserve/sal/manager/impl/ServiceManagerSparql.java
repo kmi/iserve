@@ -597,6 +597,57 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
         }
     }
 
+    /**
+     * Given the URI of a modelReference, this method figures out all the services
+     * that have this as model references.
+     * This method uses SPARQL 1.1 to avoid using regexs for performance.
+     *
+     * @param modelReference the type of output sought for
+     * @return a Set of URIs of operations that generate this output type.
+     *
+     */
+
+    @Override
+    public Set<URI> listServicesWithModelReference(URI modelReference) {
+        if (modelReference == null) {
+            return ImmutableSet.of();
+        }
+
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder
+                .append("PREFIX msm: <").append(MSM.getURI()).append("> ")
+                .append("PREFIX rdf: <").append(RDF.getURI()).append("> ")
+                .append("PREFIX sawsdl: <").append(SAWSDL.getURI()).append("> ")
+                .append("SELECT ?service WHERE { ?service sawsdl:modelReference <").append(modelReference).append("> . }");
+        String query = queryBuilder.toString();
+        return this.graphStoreManager.listResourcesByQuery(query, "service");
+    }
+
+    /**
+     * Given the URI of a modelReference, this method figures out all the operations
+     * of which services have this as model references.
+     * This method uses SPARQL 1.1 to avoid using regexs for performance.
+     *
+     * @param modelReference the type of output sought for
+     * @return a Set of URIs of operations that generate this output type.
+     */
+
+    @Override
+    public Set<URI> listOperationsWithModelReference(URI modelReference) {
+        if (modelReference == null) {
+            return ImmutableSet.of();
+        }
+
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder
+                .append("PREFIX msm: <").append(MSM.getURI()).append("> ")
+                .append("PREFIX rdf: <").append(RDF.getURI()).append("> ")
+                .append("PREFIX sawsdl: <").append(SAWSDL.getURI()).append("> ")
+                .append("SELECT ?operation WHERE { ?service msm:hasOperation ?operation . ?service sawsdl:modelReference <").append(modelReference).append("> . }");
+        String query = queryBuilder.toString();
+        return this.graphStoreManager.listResourcesByQuery(query, "operation");
+    }
+
 
     /**
      * Given the URI of an element, this method returns the URI of the element from the Minimal Service Model it
