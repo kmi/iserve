@@ -54,30 +54,7 @@ import java.util.List;
 @Path("{path: .*}")
 public class ReadWriteRouterServlet extends RouterRestlet {
 
-    public static class Init implements ServletContextListener {
-
-        static boolean announced = false;
-
-        @Override
-        public void contextInitialized(ServletContextEvent sce) {
-            ServletContext sc = sce.getServletContext();
-            if (announced == false) {
-                String baseFilePath = ServletUtils.withTrailingSlash(sc.getRealPath("/"));
-                String propertiesFile = "log4j.properties";
-                PropertyConfigurator.configure(baseFilePath + propertiesFile);
-                log.info("\n\n    =>=> Starting Elda " + Version.string + "\n");
-                announced = true;
-            }
-            getRouterFor(sc);  // Note: changed to public in RouterRestlet from ELDA
-        }
-
-        @Override
-        public void contextDestroyed(ServletContextEvent sce) {
-        }
-    }
-
     private static final Logger log = LoggerFactory.getLogger(ReadWriteRouterServlet.class);
-
     private final RegistryManager manager;
 
     /**
@@ -90,7 +67,6 @@ public class ReadWriteRouterServlet extends RouterRestlet {
         super(con);
         this.manager = registryManager;
     }
-
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -204,7 +180,7 @@ public class ReadWriteRouterServlet extends RouterRestlet {
 
         // FIXME: Better filtering
         Couple<String, String> pathAndType = parse(pathstub);
-        if (!pathstub.matches("id/services/*/*")) {
+        if (!pathstub.matches("id/services/(.*)/(.*)")) {
             String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                     "  <body>\n Submitting data to " + pathstub + " is not supported. </body>\n</html>";
 
@@ -254,6 +230,28 @@ public class ReadWriteRouterServlet extends RouterRestlet {
             // TODO: Add logging
             log.error("SAL Exception while deleting service", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(response).build();
+        }
+    }
+
+    public static class Init implements ServletContextListener {
+
+        static boolean announced = false;
+
+        @Override
+        public void contextInitialized(ServletContextEvent sce) {
+            ServletContext sc = sce.getServletContext();
+            if (announced == false) {
+                String baseFilePath = ServletUtils.withTrailingSlash(sc.getRealPath("/"));
+                String propertiesFile = "log4j.properties";
+                PropertyConfigurator.configure(baseFilePath + propertiesFile);
+                log.info("\n\n    =>=> Starting Elda " + Version.string + "\n");
+                announced = true;
+            }
+            getRouterFor(sc);  // Note: changed to public in RouterRestlet from ELDA
+        }
+
+        @Override
+        public void contextDestroyed(ServletContextEvent sce) {
         }
     }
 
