@@ -1,0 +1,18 @@
+@prefix hr:    <http://iserve.kmi.open.ac.uk/ns/hrests#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix wl:    <http://www.wsmo.org/ns/wsmo-lite#> .
+@prefix sawsdl: <http://www.w3.org/ns/sawsdl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix msm:   <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix msm-wsdl: <http://iserve.kmi.open.ac.uk/ns/msm-wsdl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://google-custom-search>
+        a                      msm:Service ;
+        rdfs:comment           "From their site: You can now exploit the full power of your ideas to dynamically generate Custom Search Engines. You host the CSE specification on your web site and include the url for this specification in your CSE search request. Google retrieves the CSE specification from your website when your user searches in the CSE." ;
+        rdfs:label             "Google Custom Search" ;
+        rdfs:seeAlso           <http://www.programmableweb.com/api/google-custom-search> ;
+        dcterms:created        "2014-06-12"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        dcterms:publisher      <http://google.com> ;
+        sawsdl:modelReference  <http://schema.org/SearchAction> .

@@ -1,0 +1,18 @@
+@prefix hr:    <http://iserve.kmi.open.ac.uk/ns/hrests#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix wl:    <http://www.wsmo.org/ns/wsmo-lite#> .
+@prefix sawsdl: <http://www.w3.org/ns/sawsdl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix msm:   <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix msm-wsdl: <http://iserve.kmi.open.ac.uk/ns/msm-wsdl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://google-street-view-image>
+        a                      msm:Service ;
+        rdfs:comment           "Google's Street View Image API lets users retrieve Street View panorama or thumbnail images with parameterized HTTP requests. This web service allows these images to be embedded into a web page, without the use of JavaScript.\n\nThe viewport size, direction, location, pitch, and field of view (fov) can all be manipulated by parameters included in the HTTP request. Since the size of the image and the fov can be specified, users can effectively control the zoom level of the image. Finally, there is a parameter that can specify the request is coming from a device with location sensor information, enabling the service to be integrated with, for example, GPS enabled mobile phones." ;
+        rdfs:label             "Google Street View Image" ;
+        rdfs:seeAlso           <http://www.programmableweb.com/api/google-street-view-image> ;
+        dcterms:created        "2014-06-12"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        dcterms:publisher      <http://developers.google.com> ;
+        sawsdl:modelReference  <http://schema.org/ViewAction> , <http://schema.org/PhotographAction> , <http://schema.org/DiscoverAction> , <http://schema.org/SearchAction> , <http://schema.org/ReadAction> .

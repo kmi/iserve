@@ -1,0 +1,18 @@
+@prefix hr:    <http://iserve.kmi.open.ac.uk/ns/hrests#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix wl:    <http://www.wsmo.org/ns/wsmo-lite#> .
+@prefix sawsdl: <http://www.w3.org/ns/sawsdl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix msm:   <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix msm-wsdl: <http://iserve.kmi.open.ac.uk/ns/msm-wsdl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://google-books>
+        a                      msm:Service ;
+        rdfs:comment           "Use the Google Book Search Data API to get and modify Book Search content via feeds. Submit full-text searches for books and get book information, ratings, and reviews. Optionally get individual users' library collections and public reviews. Submit authenticated requests to create and modify library collections, ratings, labels, reviews, and more." ;
+        rdfs:label             "Google Books" ;
+        rdfs:seeAlso           <http://www.programmableweb.com/api/google-books> ;
+        dcterms:created        "2014-06-12"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        dcterms:publisher      <http://google.com> ;
+        sawsdl:modelReference  <http://schema.org/SearchAction> .

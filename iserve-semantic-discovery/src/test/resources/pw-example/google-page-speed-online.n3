@@ -1,0 +1,17 @@
+@prefix hr:    <http://iserve.kmi.open.ac.uk/ns/hrests#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix wl:    <http://www.wsmo.org/ns/wsmo-lite#> .
+@prefix sawsdl: <http://www.w3.org/ns/sawsdl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix msm:   <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix msm-wsdl: <http://iserve.kmi.open.ac.uk/ns/msm-wsdl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://google-page-speed-online>
+        a                  msm:Service ;
+        rdfs:comment       "Page Speed is an open-source project to help developers optimize their web pages by analyzing the pages and generating tailored suggestions to make the pages faster. Developers can use the Page Speed Online API to programatically generate Page Speed scores and suggestions. The API uses RESTful calls and responses are formatted in JSON and JSONP." ;
+        rdfs:label         "Google Page Speed Online" ;
+        rdfs:seeAlso       <http://www.programmableweb.com/api/google-page-speed-online> ;
+        dcterms:created    "2014-06-12"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        dcterms:publisher  <http://google.com/> .
