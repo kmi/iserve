@@ -1,0 +1,18 @@
+@prefix hr:    <http://iserve.kmi.open.ac.uk/ns/hrests#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix wl:    <http://www.wsmo.org/ns/wsmo-lite#> .
+@prefix sawsdl: <http://www.w3.org/ns/sawsdl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix msm:   <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix msm-wsdl: <http://iserve.kmi.open.ac.uk/ns/msm-wsdl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://google-play-in-app-billing>
+        a                      msm:Service ;
+        rdfs:comment           "The Google Play In-app Billing API for Android allows for online or app-based sales of digital content or digital subscriptions using Google Play and Google Wallet. Currently suppported only for apps on Google Play." ;
+        rdfs:label             "Google Play In-app Billing" ;
+        rdfs:seeAlso           <http://www.programmableweb.com/api/google-play-in-app-billing> ;
+        dcterms:created        "2014-06-12"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        dcterms:publisher      <http://www.android.com/> ;
+        sawsdl:modelReference  <http://schema.org/OrderAction> , <http://schema.org/BuyAction> .

@@ -1,0 +1,18 @@
+@prefix hr:    <http://iserve.kmi.open.ac.uk/ns/hrests#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix wl:    <http://www.wsmo.org/ns/wsmo-lite#> .
+@prefix sawsdl: <http://www.w3.org/ns/sawsdl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix msm:   <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix msm-wsdl: <http://iserve.kmi.open.ac.uk/ns/msm-wsdl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://google-directions>
+        a                      msm:Service ;
+        rdfs:comment           "The Google Directions Web Service web service calculates directions between locations using an REST request. Directions may specify origins, destinations and waypoints either as text strings (e.g. \"Chicago, IL\") or as latitude/longitude coordinates. The Directions web service can return multi-part directions using a series of waypoints.\n\nThis service is designed for giving directions for static addresses for placement of application content on a map and this service is not designed to respond in real time to user input, for example. \n\nThe Directions Web Service is a companion to the existing Geocoding and Elevation Web Services, and allows applications to obtain Driving, Bicycling, and Walking directions through an XML/JSON REST interface. All of the features of the Map API v3 Directions service are supported, including ï¿½avoid highwaysï¿½, ï¿½avoid tollsï¿½, and waypoint optimization (travelling salesman solver)." ;
+        rdfs:label             "Google Directions" ;
+        rdfs:seeAlso           <http://www.programmableweb.com/api/google-directions> ;
+        dcterms:created        "2014-06-12"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        dcterms:publisher      <http://www.google.com> ;
+        sawsdl:modelReference  <http://schema.org/DiscoverAction> , <http://schema.org/SearchAction> , <http://schema.org/ReadAction> .

@@ -1,0 +1,18 @@
+@prefix hr:    <http://iserve.kmi.open.ac.uk/ns/hrests#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix wl:    <http://www.wsmo.org/ns/wsmo-lite#> .
+@prefix sawsdl: <http://www.w3.org/ns/sawsdl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix msm:   <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix msm-wsdl: <http://iserve.kmi.open.ac.uk/ns/msm-wsdl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://google-calendar>
+        a                      msm:Service ;
+        rdfs:comment           "The Calendar Data API lets users perform most of the operations a normal Google Calendar user can on the Google Calendar website. Google Calendar allows client applications to view and update calendar events in the form of Google data API, GData, feeds. The Calendar Data API lets users incorporate Calendar functionality into their own application or website. Users can edit calendars, create and delete events, query for events that match particular criteria, send invitations, and more.\n\nThere are many possible uses for the Calendar data API. For example, users can create a web front end for a group calendar that uses Google Calendar as a back end. Or a public calendar can be generated for Google Calendar to display, based on a company event database. Or users can search relevant calendars to display a list of upcoming events on those calendars." ;
+        rdfs:label             "Google Calendar" ;
+        rdfs:seeAlso           <http://www.programmableweb.com/api/google-calendar> ;
+        dcterms:created        "2014-06-12"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        dcterms:publisher      <http://google.com> ;
+        sawsdl:modelReference  <http://schema.org/OrganizeAction> , <http://schema.org/PlanAction> .

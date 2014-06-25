@@ -1,0 +1,16 @@
+@prefix hr:    <http://iserve.kmi.open.ac.uk/ns/hrests#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix wl:    <http://www.wsmo.org/ns/wsmo-lite#> .
+@prefix sawsdl: <http://www.w3.org/ns/sawsdl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix msm:   <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix msm-wsdl: <http://iserve.kmi.open.ac.uk/ns/msm-wsdl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://google-font>  a    msm:Service ;
+        rdfs:comment       "The Google Font API helps developers add web fonts to any web page. The advantages of the Google Font API include: a choice of high quality open source fonts, works in most browsers, and is easy to use. Include this by adding a special stylesheet link to your HTML document, then refer to the font in a CSS style.\n\nA library of fonts is available in the Google Font Directory.\n\nThe WebFont Loader is a JavaScript library that gives you more control over font loading than the Google Font API provides. The WebFont Loader also lets you use multiple web-font providers. It was co-developed by Google and TypeKit." ;
+        rdfs:label         "Google Font" ;
+        rdfs:seeAlso       <http://www.programmableweb.com/api/google-font> ;
+        dcterms:created    "2014-06-12"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        dcterms:publisher  <http://www.google.com> .

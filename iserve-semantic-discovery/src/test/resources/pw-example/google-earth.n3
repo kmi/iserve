@@ -1,0 +1,18 @@
+@prefix hr:    <http://iserve.kmi.open.ac.uk/ns/hrests#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix wl:    <http://www.wsmo.org/ns/wsmo-lite#> .
+@prefix sawsdl: <http://www.w3.org/ns/sawsdl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix msm:   <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix msm-wsdl: <http://iserve.kmi.open.ac.uk/ns/msm-wsdl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://google-earth>
+        a                      msm:Service ;
+        rdfs:comment           "The Google Earth API is a JavaScript library that allows developers to add Earth plug-in objects to their sites. The API also provides programmatic access to the plug-in objects and the features inside of them. Web site developers can use the API to facilitate interaction between standard HTML elements and Earth plug-in instances. Using the API you can draw markers and lines, drape images over the terrain, add 3D models, or load KML files, allowing you to build sophisticated 3D map applications. If you have an existing Maps API site, you can 3D-enable your page with as little as one line of code." ;
+        rdfs:label             "Google Earth" ;
+        rdfs:seeAlso           <http://www.programmableweb.com/api/google-earth> ;
+        dcterms:created        "2014-06-12"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        dcterms:publisher      <http://google.com> ;
+        sawsdl:modelReference  <http://schema.org/DiscoverAction> , <http://schema.org/SearchAction> , <http://schema.org/ReadAction> .
