@@ -12,9 +12,22 @@ Using iServe
     you want to interact with its CRUD interface to add services, documents, or ontologies, or with its matching
     interface if you want to discover services.
 
+    Should you wish to integrate iServe within a Maven project you may add the dependency as follows:
+
++----------------------------------------------------------------------------------+
+ <dependency>
+     <artifactId>iserve-integrated-engine</artifactId>
+     <groupId>uk.ac.open.kmi.iserve</groupId>
+     <version>${pom.version}</version>
+     </exclusions>
+ </dependency>
++----------------------------------------------------------------------------------+
+
+     At moment we do not publish the jars in a public repository. You will have to compile and install it locally.
+
 ** CRUD Interface
 
-    Access to the CRUD interface is obtained by means of iServeEngine facage. Therein you will get access to
+    Access to the CRUD interface is obtained by means of iServeEngine facade. Therein you will get access to
     the main data managers in charge of services, documents, and ontologies. For convenience iServeEngine provides methods that
     take care of automatically transforming services prior to importing them, keeping all data managers synchronized,
     and when necessary, obtaining remote ontologies referred to by the imported services.
