@@ -35,6 +35,7 @@ uk.ac.open.kmi.iserve.discovery.api.impl
 uk.ac.open.kmi.iserve.discovery.disco
 uk.ac.open.kmi.iserve.discovery.disco.impl
 uk.ac.open.kmi.iserve.discovery.engine.rest
+uk.ac.open.kmi.iserve.discovery.index
 uk.ac.open.kmi.iserve.discovery.util
 uk.ac.open.kmi.iserve.sal.events
 uk.ac.open.kmi.iserve.sal.exception
@@ -45,3 +46,4 @@ uk.ac.open.kmi.iserve.sal.rest.auth
 uk.ac.open.kmi.iserve.sal.rest.auth.oauth
 uk.ac.open.kmi.iserve.sal.rest.resource
 uk.ac.open.kmi.iserve.sal.util
+uk.ac.open.kmi.iserve.sal.util.metrics
