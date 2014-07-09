@@ -55,9 +55,6 @@ import java.util.Set;
 public class SparqlLogicConceptMatcher implements ConceptMatcher {
 
     private static final Logger log = LoggerFactory.getLogger(SparqlLogicConceptMatcher.class);
-
-    private static String NL = System.getProperty("line.separator");
-
     // Variable names used in queries
     private static final String MATCH_VAR = "match";
     private static final String EXACT_VAR = "exact";
@@ -65,11 +62,8 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
     private static final String SUPER_VAR = "super";
     private static final String ORIGIN_VAR = "origin";
     private static final String DESTINATION_VAR = "destination";
-
     private static final MatchTypes<MatchType> matchTypes = EnumMatchTypes.of(LogicConceptMatchType.class);
-
-    private URI sparqlEndpoint = null;
-
+    private static String NL = System.getProperty("line.separator");
     // Function to getMatchResult from a Map
     protected final Function<Map.Entry<URI, MatchResult>, MatchResult> getMatchResult =
             new Function<Map.Entry<URI, MatchResult>, MatchResult>() {
@@ -77,11 +71,11 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
                     return entry.getValue();
                 }
             };
-
     // Order the results by score and then by url
     protected final Ordering<Map.Entry<URI, MatchResult>> entryOrdering =
             Ordering.from(MatchResultComparators.BY_TYPE).onResultOf(getMatchResult).reverse().
                     compound(Ordering.from(MatchResultComparators.BY_URI).onResultOf(getMatchResult));
+    private URI sparqlEndpoint = null;
 
     @Inject
     protected SparqlLogicConceptMatcher(@Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlEndpoint) throws URISyntaxException {
@@ -470,13 +464,13 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
     private List<String> generatePatterns(URI origin, String destinationVar, MatchType minType, MatchType maxType) {
         List<String> patterns = new ArrayList<String>();
         if (minType.compareTo(LogicConceptMatchType.Subsume) <= 0 && maxType.compareTo(LogicConceptMatchType.Subsume) >= 0) {
-            // Match the origin concept to strict subclasses
-            patterns.add(Util.generateMatchStrictSubclassesPattern(origin, destinationVar, SUB_VAR, true));
+            // Match the origin concept to strict superclasses
+            patterns.add(Util.generateMatchStrictSuperclassesPattern(origin, destinationVar, SUPER_VAR, true));
         }
 
         if (minType.compareTo(LogicConceptMatchType.Plugin) <= 0 && maxType.compareTo(LogicConceptMatchType.Plugin) >= 0) {
-            // Match the origin concept to strict superclasses
-            patterns.add(Util.generateMatchStrictSuperclassesPattern(origin, destinationVar, SUPER_VAR, true));
+            // Match the origin concept to strict subclasses
+            patterns.add(Util.generateMatchStrictSubclassesPattern(origin, destinationVar, SUB_VAR, true));
         }
 
         if (minType.compareTo(LogicConceptMatchType.Exact) <= 0 && maxType.compareTo(LogicConceptMatchType.Exact) >= 0) {
