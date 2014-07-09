@@ -212,6 +212,7 @@ public class GenericLogicDiscovererTest {
     }
 
     @Test
+    @Ignore
     public void testFindOperationsProducingSome() throws Exception {
 
     }
@@ -260,8 +261,8 @@ public class GenericLogicDiscovererTest {
 
     @Test
     public void testFindServicesClassifiedByAll(ServiceDiscoverer serviceDiscoverer) throws Exception {
-        URI modelA = URI.create("http://schema.org/PhotographAction");
-        URI modelB = URI.create("http://schema.org/FilmAction");
+        URI modelA = URI.create("http://schema.org/CreateAction");
+        URI modelB = URI.create("http://schema.org/SearchAction");
 
         Stopwatch stopwatch = new Stopwatch().start();
         Map<URI, MatchResult> matches = serviceDiscoverer.findServicesClassifiedByAll(ImmutableSet.of(modelA, modelB));
@@ -273,17 +274,16 @@ public class GenericLogicDiscovererTest {
 
     @Test
     public void testFindServicesClassifiedBySome(ServiceDiscoverer serviceDiscoverer) throws Exception {
-        URI modelA = URI.create("http://schema.org/PhotographAction");
-        URI modelB = URI.create("http://schema.org/FilmAction");
+        URI modelA = URI.create("http://schema.org/CreateAction");
+        URI modelB = URI.create("http://schema.org/SearchAction");
 
         Stopwatch stopwatch = new Stopwatch().start();
         Map<URI, MatchResult> matches = serviceDiscoverer.findServicesClassifiedBySome(ImmutableSet.of(modelA, modelB));
         stopwatch.stop();
 
         log.info("Obtained ({}) matches in {} \n {}", matches.size(), stopwatch, matches);
-        Assert.assertTrue(matches.size() == 3);
+        Assert.assertTrue(matches.size() == 13);
     }
-
     @Test
     @Ignore
     public void testFindServicesInvocableWith() throws Exception {
@@ -303,8 +303,8 @@ public class GenericLogicDiscovererTest {
             install(new RegistryManagementModule());
 
             // bind
-//            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
-            bind(ConceptMatcher.class).to(SparqlIndexedLogicConceptMatcher.class);
+            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
+//            bind(ConceptMatcher.class).to(SparqlIndexedLogicConceptMatcher.class);
 
             // bind
 //            bind(GenericLogicDiscoverer.class).in(Singleton.class);
