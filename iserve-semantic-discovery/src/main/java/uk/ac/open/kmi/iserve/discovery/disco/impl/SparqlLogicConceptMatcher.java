@@ -368,10 +368,10 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
             return LogicConceptMatchType.Exact;
 
         if (soln.contains(SUPER_VAR))
-            return LogicConceptMatchType.Plugin;
+            return LogicConceptMatchType.Subsume;
 
         if (soln.contains(SUB_VAR))
-            return LogicConceptMatchType.Subsume;
+            return LogicConceptMatchType.Plugin;
 
         return LogicConceptMatchType.Fail;
     }
