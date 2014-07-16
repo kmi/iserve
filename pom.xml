@@ -15,7 +15,7 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.ac.open.kmi.iserve</groupId>
@@ -126,7 +126,7 @@
         <guice.version>3.0</guice.version>
         <guava.version>14.0</guava.version>
         <commons-config.version>1.9</commons-config.version>
-        <msm4j.version>1.1-SNAPSHOT</msm4j.version>
+        <msm4j.version>1.2-SNAPSHOT</msm4j.version>
         <test-collections.version>1.0</test-collections.version>
         <servlet.version>3.0.1</servlet.version>
 
