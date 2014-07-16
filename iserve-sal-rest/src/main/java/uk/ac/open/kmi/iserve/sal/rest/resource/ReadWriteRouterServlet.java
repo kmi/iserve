@@ -17,7 +17,6 @@
 package uk.ac.open.kmi.iserve.sal.rest.resource;
 
 import com.epimorphics.lda.Version;
-import com.epimorphics.lda.restlets.RouterRestlet;
 import com.epimorphics.lda.routing.ServletUtils;
 import com.epimorphics.util.Couple;
 import org.apache.log4j.PropertyConfigurator;
@@ -28,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
+import uk.ac.open.kmi.iserve.sal.rest.elda.EldaRouterRestlet;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -52,7 +52,7 @@ import java.util.List;
  * @since 11/07/2013
  */
 @Path("{path: .*}")
-public class ReadWriteRouterServlet extends RouterRestlet {
+public class ReadWriteRouterServlet extends EldaRouterRestlet {
 
     private static final Logger log = LoggerFactory.getLogger(ReadWriteRouterServlet.class);
     private final RegistryManager manager;

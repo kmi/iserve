@@ -16,8 +16,8 @@
   -->
 
 <!--suppress WebProperties, WebProperties -->
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
     <!--IMPORTANT: Ordering is essential. 1st Shiro (security), then the rest -->
@@ -60,6 +60,16 @@
         </filter-mapping>
     -->
 
+    <!-- For direct load of static content> -->
+    <filter>
+        <filter-name>default</filter-name>
+        <filter-class>uk.ac.open.kmi.iserve.sal.rest.DefaultFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>default</filter-name>
+        <url-pattern>/lda-assets/*</url-pattern>
+        <url-pattern>*.ico</url-pattern>
+    </filter-mapping>
 
     <!-- For Elda -->
     <context-param>
