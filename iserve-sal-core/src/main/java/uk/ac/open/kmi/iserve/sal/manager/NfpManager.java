@@ -16,8 +16,6 @@
 
 package uk.ac.open.kmi.iserve.sal.manager;
 
-import com.google.common.collect.Table;
-
 import java.net.URI;
 import java.util.Map;
 import java.util.Set;
@@ -49,7 +47,7 @@ public interface NfpManager extends iServeComponent {
 
     public Map<URI, Object> getAllPropertyValuesOfResource(URI resource);
 
-    public Table<URI, URI, Object> getPropertyValuesOfResources(Set<URI> resources, Map<URI, Class> propertyValueClassMap);
+    public Map<URI, Map<URI, Object>> getPropertyValuesOfResources(Set<URI> resources, Map<URI, Class> propertyValueClassMap);
 
     // UPDATE (return boolean or throw exception?)
 
