@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ * Copyright (c) 2014. Knowledge Media Institute - The Open University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,12 @@ public class SystemConfiguration {
     public static final String SERVICES_REPOSITORY_SPARQL_PROP = "iserve.services.sparql.query";
     public static final String SERVICES_REPOSITORY_SPARQL_UPDATE_PROP = "iserve.services.sparql.update";
     public static final String SERVICES_REPOSITORY_SPARQL_SERVICE_PROP = "iserve.services.sparql.service";
+
+    // NFP data
+    public static final String NFP_REPOSITORY_SPARQL_PROP = "iserve.nfp.sparql.query";
+    public static final String NFP_REPOSITORY_SPARQL_UPDATE_PROP = "iserve.nfp.sparql.update";
+    public static final String NFP_REPOSITORY_SPARQL_SERVICE_PROP = "iserve.nfp.sparql.service";
+
 
     // Discovery config
     public static final String DEFAULT_CONCEPT_MATCHER_PROP = "discovery.default.conceptMatcher";
