@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ * Copyright (c) 2014. Knowledge Media Institute - The Open University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,6 +73,14 @@ public interface RegistryManager {
      * @return the Document Manager
      */
     DocumentManager getDocumentManager();
+
+    /**
+     * Obtains the NFP Manager for this instance of iServe
+     *
+     * @return the NFP Manager
+     */
+    NfpManager getNfpManager();
+
 
     /**
      * Obtains the Service Transformation Engine for this instance
