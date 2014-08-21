@@ -17,12 +17,14 @@
 package uk.ac.open.kmi.iserve.discovery.ranking.test;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.ImmutableList;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.multibindings.Multibinder;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import junit.framework.Assert;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.BeforeClass;
@@ -48,16 +50,14 @@ import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
 import uk.ac.open.kmi.msm4j.Service;
 import uk.ac.open.kmi.msm4j.io.ServiceReader;
-import uk.ac.open.kmi.msm4j.io.ServiceWriter;
 import uk.ac.open.kmi.msm4j.io.Syntax;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.net.URI;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Luca Panziera on 01/05/2014.
@@ -74,37 +74,24 @@ public class PopularityBasedRankingTest {
 
         RegistryManager registryManager = injector.getInstance(RegistryManager.class);
         ServiceReader serviceReader = injector.getInstance(ServiceReader.class);
-        ServiceWriter serviceWriter = injector.getInstance(ServiceWriter.class);
 
-        // descriptions creation
+        registryManager.clearRegistry();
 
-//        logger.info("Description building...");
-//
-//        Set<File> descriptions = new DescriptionBuilder(serviceWriter).createPwDescriptions();
-//
-//        Set<URI> services = registryManager.getServiceManager().listServices();
-//
-//        for (URI service : services) {
-//            String pwid = service.toString().substring(service.toString().lastIndexOf("/") + 1);
-//            if (descriptions.contains(new File("onto/" + pwid + ".n3"))) {
-//                descriptions.remove(new File("onto/" + pwid + ".n3"));
-//            }
-//        }
-//
-//        registryManager.getServiceManager().clearServices();
-//
-//        // descriptions storage
-//
-//        logger.info("Description storage...");
-//
-//        storeDescriptions(new File("schema.rdf"), descriptions, registryManager, serviceReader);
-
+        importPWapis(registryManager, serviceReader);
 
     }
 
-    private static void storeDescriptions(File schemaFile, Set<File> descriptions, RegistryManager registryManager, ServiceReader serviceReader) {
+    private static void importPWapis(RegistryManager registryManager, ServiceReader serviceReader) {
+
+
+        Set<File> descriptions = new TreeSet<File>();
+        File ontoDir = new File(PopularityBasedRankingTest.class.getResource("/pw-example").getFile());
+        if (ontoDir.exists() && ontoDir.isDirectory() && ontoDir.listFiles().length > 0) {
+            descriptions.addAll(Arrays.asList(ontoDir.listFiles(new Notation3ExtFilter())));
+        }
+
         OntModel schemaModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
-        schemaModel.read(schemaFile.getAbsolutePath());
+        schemaModel.read(PopularityBasedRankingTest.class.getResource("/pw-example/schema.rdf").getFile());
         registryManager.getKnowledgeBaseManager().uploadModel(URI.create("http://schema.org/"), schemaModel, true);
 
         for (File desc : descriptions) {
@@ -123,32 +110,39 @@ public class PopularityBasedRankingTest {
         }
     }
 
+    private static void storeDescriptions(File schemaFile, Set<File> descriptions, RegistryManager registryManager, ServiceReader serviceReader) {
+        OntModel schemaModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+        schemaModel.read(schemaFile.getAbsolutePath());
+        registryManager.getKnowledgeBaseManager().uploadModel(URI.create("http://schema.org/"), schemaModel, true);
+
+        for (File desc : descriptions) {
+            try {
+                List<Service> services = serviceReader.parse(new FileInputStream(desc), "http://" + desc.getName(), Syntax.N3);
+                for (Service service : services) {
+                    registryManager.getServiceManager().addService(service);
+                }
+            } catch (ServiceException e) {
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
     @Test
     public void discoveryTest(DiscoveryEngine discoveryEngine) {
 
-        URI modelA = URI.create("http://schema.org/InformAction");
-        URI modelB = URI.create("http://schema.org/TravelAction");
-
-        String query = "service-class " + modelA + " intersection service-class " + modelB + " rank";
+        String query = "service-class http://schema.org/Action rank";
 
         Stopwatch stopwatch = new Stopwatch().start();
         Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
         stopwatch.stop();
 
         logger.info("Discovery complete in {}", stopwatch);
-
-        stopwatch = new Stopwatch().start();
-        result = discoveryEngine.discover(query);
-        stopwatch.stop();
-
-        logger.info("Discovery complete in {}", stopwatch);
         logger.info("Result contains {} resources", result.size());
-
-        int i = 0;
-        for (URI resource : result.keySet()) {
-            i++;
-            logger.info("{} - {} -> {}", i, resource.toString(), result.get(resource).getLeft());
-        }
+        ImmutableList<URI> services = ImmutableList.copyOf(result.keySet());
+        Assert.assertTrue(services.get(0).toString().contains("google-visualization"));
 
     }
 
@@ -183,6 +177,13 @@ public class PopularityBasedRankingTest {
 
         }
 
+    }
+
+    public static class Notation3ExtFilter implements FilenameFilter {
+
+        public boolean accept(File dir, String name) {
+            return (name.endsWith(".n3"));
+        }
     }
 
 }

@@ -1,0 +1,29 @@
+@prefix hr:    <http://iserve.kmi.open.ac.uk/ns/hrests#> .
+@prefix schema: <http://schema.org/> .
+@prefix sioc:  <http://rdfs.org/sioc/ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix wl:    <http://www.wsmo.org/ns/wsmo-lite#> .
+@prefix msm-nfp: <http://iserve.kmi.open.ac.uk/ns/msm-nfp#> .
+@prefix sawsdl: <http://www.w3.org/ns/sawsdl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix msm:   <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix msm-wsdl: <http://iserve.kmi.open.ac.uk/ns/msm-wsdl#> .
+@prefix cc:    <http://creativecommons.org/ns#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://google-distance-matrix>
+        a                      msm:Service ;
+        rdfs:label             "Google Distance Matrix" ;
+        rdfs:seeAlso           <http://www.programmableweb.com/api/google-distance-matrix> , <https://developers.google.com/maps/documentation/distancematrix/> ;
+        dcterms:created        "2014-08-05"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        schema:provider        <http://iserve.kmi.open.ac.uk/iserve/id/providers/provider821> ;
+        sawsdl:modelReference  schema:DiscoverAction , schema:SearchAction , schema:ReadAction .
+
+<http://iserve.kmi.open.ac.uk/iserve/id/providers/provider821>
+        a                      schema:Organization ;
+        rdfs:label             "Google" ;
+        rdfs:seeAlso           <https://www.freebase.com/en/google> ;
+        msm-nfp:hasPopularity  "99.6"^^<http://www.w3.org/2001/XMLSchema#double> ;
+        <http://www.w3.org/2002/07/owl#sameAs>
+                <http://dbpedia.org/resource/Google> , <http://rdf.freebase.com/ns/m.045c7b> , <http://yago-knowledge.org/resource/Google> , <http://www.wikidata.org/entity/Q95> , <http://sw.cyc.com/concept/Mx4rb5DJZAb4EduAAADggVaqvw> .
