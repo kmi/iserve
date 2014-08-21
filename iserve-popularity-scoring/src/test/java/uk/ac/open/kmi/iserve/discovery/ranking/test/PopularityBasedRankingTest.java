@@ -110,26 +110,6 @@ public class PopularityBasedRankingTest {
         }
     }
 
-    private static void storeDescriptions(File schemaFile, Set<File> descriptions, RegistryManager registryManager, ServiceReader serviceReader) {
-        OntModel schemaModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
-        schemaModel.read(schemaFile.getAbsolutePath());
-        registryManager.getKnowledgeBaseManager().uploadModel(URI.create("http://schema.org/"), schemaModel, true);
-
-        for (File desc : descriptions) {
-            try {
-                List<Service> services = serviceReader.parse(new FileInputStream(desc), "http://" + desc.getName(), Syntax.N3);
-                for (Service service : services) {
-                    registryManager.getServiceManager().addService(service);
-                }
-            } catch (ServiceException e) {
-                e.printStackTrace();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
     @Test
     public void discoveryTest(DiscoveryEngine discoveryEngine) {
 
