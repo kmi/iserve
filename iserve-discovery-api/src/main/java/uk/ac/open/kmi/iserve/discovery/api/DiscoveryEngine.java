@@ -173,7 +173,7 @@ public class DiscoveryEngine {
             descriptionBuilder.append("}\n");
         }
         if (!scorers.isEmpty()) {
-            descriptionBuilder.append("Filters: { ");
+            descriptionBuilder.append("Scorers: { ");
             for (Scorer scorer : scorers) {
                 descriptionBuilder.append(scorer.getClass().getName()).append(" ");
             }

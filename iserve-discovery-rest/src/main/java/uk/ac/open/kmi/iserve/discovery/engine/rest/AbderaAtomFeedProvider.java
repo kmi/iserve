@@ -21,6 +21,7 @@ package uk.ac.open.kmi.iserve.discovery.engine.rest;
  *******************************************************************************/
 
 import org.apache.abdera.Abdera;
+import org.apache.abdera.model.Content;
 import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
@@ -104,6 +105,7 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
         return doc.getRoot();
     }
 
+
     /**
      * TODO: Implement properly
      * <p/>
@@ -133,6 +135,45 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
         return feed;
     }
 
+    /**
+     * TODO: Implement properly
+     * <p/>
+     * We require the request URL
+     *
+     * @param discoveryResults
+     * @return
+     */
+    public static Feed generateDiscoveryFeed(String request, String matcherDetails, Map<URI, DiscoveryResult> discoveryResults) {
+
+        Feed feed = initialiseFeed(request, matcherDetails);
+
+        // Return empty feed if null
+        if (discoveryResults == null) {
+            return feed;
+        }
+
+        log.debug(discoveryResults.keySet().toString());
+
+
+        for (URI resource:discoveryResults.keySet()) {
+            Entry rssEntry = createDiscoveryResultEntry(resource, discoveryResults.get(resource));
+            feed.addEntry(rssEntry);
+        }
+
+        return feed;
+    }
+
+    private static Entry createDiscoveryResultEntry(URI resource, DiscoveryResult discoveryResult) {
+
+            Entry rssEntry =
+                    ATOM_ENGINE.newEntry();
+            rssEntry.setId(resource.toASCIIString());
+            rssEntry.addLink(resource.toASCIIString(), "alternate");
+            rssEntry.setTitle(resource.toASCIIString());
+            rssEntry.setContent(discoveryResult.toXML(), Content.Type.XML);
+            return rssEntry;
+    }
+
     private static Entry createMatchResultEntry(URI matchUri, MatchResult matchResult) {
 
         Entry rssEntry =
@@ -140,10 +181,7 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
         rssEntry.setId(matchUri.toASCIIString());
         rssEntry.addLink(matchUri.toASCIIString(), "alternate");
         rssEntry.setTitle(matchUri.toASCIIString());
-        //			String content = "Matching degree: " + degree;
-        //			ExtensibleElement e = rssEntry.addExtension(entry.getValue().);
-        //			e.setAttributeValue("score", entry.getValue().getScore());
-        //			e.setText(degree);
+
         rssEntry.setContent(matchResult.getExplanation());
         return rssEntry;
     }
@@ -156,7 +194,7 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
         feed.setGenerator(request, null, matcherDetails);
         feed.setId(request);
         feed.addLink(request, "self");
-        feed.setTitle("Match Results");
+        feed.setTitle("Results");
 
         return feed;
     }
@@ -173,4 +211,6 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
         feed.addEntry(createMatchResultEntry(matchResult.getMatchedResource(), matchResult));
         return feed;
     }
+
+
 }
