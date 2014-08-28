@@ -19,7 +19,9 @@ import uk.ac.open.kmi.iserve.discovery.api.ranking.Filter;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.Ranker;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.ScoreComposer;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.Scorer;
+import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
+import uk.ac.open.kmi.msm4j.vocabulary.MSM;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -39,11 +41,13 @@ public class DiscoveryEngineResource {
     private Logger logger = LoggerFactory.getLogger(DiscoveryEngineResource.class);
     private DiscoveryEngine discoveryEngine;
     private DiscoveryResultsBuilderPlugin discoveryResultsBuilder;
+    private FreeTextSearchPlugin freeTextSearchPlugin;
 
     @Inject
-    DiscoveryEngineResource(ServiceDiscoverer serviceDiscoverer, OperationDiscoverer operationDiscoverer, Set<Filter> filters, Set<Scorer> scorers, ScoreComposer scoreComposer, Ranker ranker, DiscoveryResultsBuilderPlugin discoveryResultsBuilder) {
+    DiscoveryEngineResource(ServiceDiscoverer serviceDiscoverer, OperationDiscoverer operationDiscoverer, Set<Filter> filters, Set<Scorer> scorers, ScoreComposer scoreComposer, Ranker ranker, DiscoveryResultsBuilderPlugin discoveryResultsBuilder, FreeTextSearchPlugin freeTextSearchPlugin) {
         discoveryEngine = new DiscoveryEngine(serviceDiscoverer, operationDiscoverer, filters, scorers, scoreComposer, ranker);
         this.discoveryResultsBuilder = discoveryResultsBuilder;
+        this.freeTextSearchPlugin = freeTextSearchPlugin;
     }
 
     @Path("/func-rdfs")
@@ -258,4 +262,41 @@ public class DiscoveryEngineResource {
 
         return query;
     }
+
+    @Path("/search")
+    @GET
+    @Produces("application/json")
+    public Response searchAsJson(@PathParam("type") String type, @QueryParam("q") String query) {
+        logger.info("Searching {} by keywords: {}", type, query);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Set<URI> result;
+        if (type.equals("svc")) {
+            result = freeTextSearchPlugin.search(query, URI.create(MSM.Service.getURI()));
+        } else if (type.equals("op")) {
+            result = freeTextSearchPlugin.search(query, URI.create(MSM.Operation.getURI()));
+        } else {
+            result = freeTextSearchPlugin.search(query);
+        }
+        String json = gson.toJson(result);
+        return Response.ok(json).build();
+    }
+
+    @Path("/search")
+    @GET
+    @Produces("application/atom+xml")
+    public Response searchAsAtom(@PathParam("type") String type, @QueryParam("q") String query) {
+        logger.info("Searching {} by keywords: {}", type, query);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Set<URI> result;
+        if (type.equals("svc")) {
+            result = freeTextSearchPlugin.search(query, URI.create(MSM.Service.getURI()));
+        } else if (type.equals("op")) {
+            result = freeTextSearchPlugin.search(query, URI.create(MSM.Operation.getURI()));
+        } else {
+            result = freeTextSearchPlugin.search(query);
+        }
+        Feed feed = new AbderaAtomFeedProvider().generateSearchFeed(uriInfo.getRequestUri().toASCIIString(), freeTextSearchPlugin.getClass().toString(), result);
+        return Response.ok(feed).build();
+    }
+
 }

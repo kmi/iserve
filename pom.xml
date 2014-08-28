@@ -149,6 +149,7 @@
         <module>iserve-shared-resources</module>
         <module>iserve-integrated-engine</module>
         <module>iserve-popularity-scoring</module>
+        <module>iserve-free-text-search</module>
     </modules>
 
     <dependencies>

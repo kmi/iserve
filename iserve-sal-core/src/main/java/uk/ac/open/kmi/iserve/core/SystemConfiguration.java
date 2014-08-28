@@ -41,7 +41,9 @@ public class SystemConfiguration {
     public static final String NFP_REPOSITORY_SPARQL_UPDATE_PROP = "iserve.nfp.sparql.update";
     public static final String NFP_REPOSITORY_SPARQL_SERVICE_PROP = "iserve.nfp.sparql.service";
 
-
     // Discovery config
     public static final String DEFAULT_CONCEPT_MATCHER_PROP = "discovery.default.conceptMatcher";
+
+    // Free text search plugin
+    public static final String FREE_TEXT_SEARCH_PLUGIN = "iserve.freetextsearch.plugin";
 }

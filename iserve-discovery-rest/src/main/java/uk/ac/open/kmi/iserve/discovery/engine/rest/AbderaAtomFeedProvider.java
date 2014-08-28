@@ -58,54 +58,6 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
     private static final Logger log = LoggerFactory.getLogger(AbderaAtomFeedProvider.class);
     private static final Abdera ATOM_ENGINE = new Abdera();
 
-    public long getSize(Feed feed,
-                        Class<?> type,
-                        Type genericType,
-                        Annotation[] annotations,
-                        MediaType mediaType) {
-        return -1;
-    }
-
-    public boolean isWriteable(Class<?> type,
-                               Type genericType,
-                               Annotation[] annotations,
-                               MediaType mediaType) {
-        return Feed.class.isAssignableFrom(type);
-    }
-
-    public void writeTo(Feed feed,
-                        Class<?> type,
-                        Type genericType,
-                        Annotation[] annotations,
-                        MediaType mediaType,
-                        MultivaluedMap<String, Object> httpHeaders,
-                        OutputStream entityStream) throws IOException {
-        if (MediaType.APPLICATION_JSON_TYPE.isCompatible(mediaType)) {
-            Writer w = ATOM_ENGINE.getWriterFactory().getWriter("json"); //$NON-NLS-1$
-            feed.writeTo(w, entityStream);
-        } else {
-            feed.writeTo(entityStream);
-        }
-    }
-
-    public boolean isReadable(Class<?> type,
-                              Type genericType,
-                              Annotation[] annotations,
-                              MediaType mediaType) {
-        return Feed.class == type;
-    }
-
-    public Feed readFrom(Class<Feed> type,
-                         Type genericType,
-                         Annotation[] annotations,
-                         MediaType mediaType,
-                         MultivaluedMap<String, String> httpHeaders,
-                         InputStream entityStream) throws IOException {
-        Document<Feed> doc = ATOM_ENGINE.getParser().parse(entityStream);
-        return doc.getRoot();
-    }
-
-
     /**
      * TODO: Implement properly
      * <p/>
@@ -155,7 +107,7 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
         log.debug(discoveryResults.keySet().toString());
 
 
-        for (URI resource:discoveryResults.keySet()) {
+        for (URI resource : discoveryResults.keySet()) {
             Entry rssEntry = createDiscoveryResultEntry(resource, discoveryResults.get(resource));
             feed.addEntry(rssEntry);
         }
@@ -165,13 +117,13 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
 
     private static Entry createDiscoveryResultEntry(URI resource, DiscoveryResult discoveryResult) {
 
-            Entry rssEntry =
-                    ATOM_ENGINE.newEntry();
-            rssEntry.setId(resource.toASCIIString());
-            rssEntry.addLink(resource.toASCIIString(), "alternate");
-            rssEntry.setTitle(resource.toASCIIString());
-            rssEntry.setContent(discoveryResult.toXML(), Content.Type.XML);
-            return rssEntry;
+        Entry rssEntry =
+                ATOM_ENGINE.newEntry();
+        rssEntry.setId(resource.toASCIIString());
+        rssEntry.addLink(resource.toASCIIString(), "alternate");
+        rssEntry.setTitle(resource.toASCIIString());
+        rssEntry.setContent(discoveryResult.toXML(), Content.Type.XML);
+        return rssEntry;
     }
 
     private static Entry createMatchResultEntry(URI matchUri, MatchResult matchResult) {
@@ -199,6 +151,53 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
         return feed;
     }
 
+    public long getSize(Feed feed,
+                        Class<?> type,
+                        Type genericType,
+                        Annotation[] annotations,
+                        MediaType mediaType) {
+        return -1;
+    }
+
+    public boolean isWriteable(Class<?> type,
+                               Type genericType,
+                               Annotation[] annotations,
+                               MediaType mediaType) {
+        return Feed.class.isAssignableFrom(type);
+    }
+
+    public void writeTo(Feed feed,
+                        Class<?> type,
+                        Type genericType,
+                        Annotation[] annotations,
+                        MediaType mediaType,
+                        MultivaluedMap<String, Object> httpHeaders,
+                        OutputStream entityStream) throws IOException {
+        if (MediaType.APPLICATION_JSON_TYPE.isCompatible(mediaType)) {
+            Writer w = ATOM_ENGINE.getWriterFactory().getWriter("json"); //$NON-NLS-1$
+            feed.writeTo(w, entityStream);
+        } else {
+            feed.writeTo(entityStream);
+        }
+    }
+
+    public boolean isReadable(Class<?> type,
+                              Type genericType,
+                              Annotation[] annotations,
+                              MediaType mediaType) {
+        return Feed.class == type;
+    }
+
+    public Feed readFrom(Class<Feed> type,
+                         Type genericType,
+                         Annotation[] annotations,
+                         MediaType mediaType,
+                         MultivaluedMap<String, String> httpHeaders,
+                         InputStream entityStream) throws IOException {
+        Document<Feed> doc = ATOM_ENGINE.getParser().parse(entityStream);
+        return doc.getRoot();
+    }
+
     public Feed generateFeed(String request, String matcherDetails, MatchResult matchResult) {
 
         Feed feed = initialiseFeed(request, matcherDetails);
@@ -213,4 +212,32 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
     }
 
 
+    public Feed generateSearchFeed(String request, String searchPlugin, Set<URI> result) {
+        Feed feed = initialiseFeed(request, searchPlugin);
+
+        // Return empty feed if null
+        if (result == null) {
+            return feed;
+        }
+
+        log.debug(result.toString());
+
+
+        for (URI resource : result) {
+            Entry rssEntry = createSearchResultEntry(resource);
+            feed.addEntry(rssEntry);
+        }
+
+        return feed;
+    }
+
+    private Entry createSearchResultEntry(URI resource) {
+        Entry rssEntry =
+                ATOM_ENGINE.newEntry();
+        rssEntry.setId(resource.toASCIIString());
+        rssEntry.addLink(resource.toASCIIString(), "alternate");
+        rssEntry.setTitle(resource.toASCIIString());
+        rssEntry.setContent(resource.toASCIIString());
+        return rssEntry;
+    }
 }

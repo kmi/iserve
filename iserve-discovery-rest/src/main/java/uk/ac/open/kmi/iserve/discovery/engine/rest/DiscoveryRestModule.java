@@ -18,6 +18,7 @@ import uk.ac.open.kmi.iserve.discovery.api.ranking.ScoreComposer;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.Scorer;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.BasicScoreComposer;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.StandardRanker;
+import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchProvider;
 import uk.ac.open.kmi.iserve.discovery.ranking.impl.CommunityVitalityScorer;
 import uk.ac.open.kmi.iserve.discovery.ranking.impl.ProviderPopularityScorer;
 import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
@@ -47,6 +48,9 @@ public class DiscoveryRestModule extends AbstractModule {
         bind(Ranker.class).to(StandardRanker.class);
         bind(NfpManager.class).to(NfpManagerSparql.class);
         bind(DiscoveryResultsBuilderPlugin.class).to(DiscoveryResultsBuilder.class);
+
+        //Free text search
+        install(new FreeTextSearchProvider());
 
     }
 }
