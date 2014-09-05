@@ -70,6 +70,7 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
     private static final URI MSM_URI = URI.create("http://iserve.kmi.open.ac.uk/ns/msm");
     private static final URI HRESTS_URI = URI.create("http://iserve.kmi.open.ac.uk/ns/hrests");
     private static final URI MSM_WSDL_URI = URI.create("http://iserve.kmi.open.ac.uk/ns/msm-wsdl");
+    private static final URI MSM_SWAGGER_URI = URI.create("http://iserve.kmi.open.ac.uk/ns/msm-swagger");
     private static final URI SAWSDL_URI = URI.create("http://www.w3.org/ns/sawsdl");
     private static final URI HTTP_VOCAB_URI = URI.create("http://www.w3.org/2011/http");
     private static final URI HTTP_METHODS_URI = URI.create("http://www.w3.org/2011/http-methods");
@@ -102,8 +103,9 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
         ImmutableMap.Builder<String, String> mappingsBuilder = ImmutableMap.builder();
         mappingsBuilder.put(FOAF_0_1_URI.toASCIIString(), this.getClass().getResource("/foaf-2010-08-09.rdf").toString());
         mappingsBuilder.put(HRESTS_URI.toASCIIString(), this.getClass().getResource("/hrests-2013-10-03.ttl").toString());
-        mappingsBuilder.put(MSM_URI.toASCIIString(), this.getClass().getResource("/msm-2013-05-03.ttl").toString());
-        mappingsBuilder.put(MSM_WSDL_URI.toASCIIString(), this.getClass().getResource("/msm-wsdl-2013-05-30.ttl").toString());
+        mappingsBuilder.put(MSM_URI.toASCIIString(), this.getClass().getResource("/msm-2014-09-03.ttl").toString());
+        mappingsBuilder.put(MSM_WSDL_URI.toASCIIString(), this.getClass().getResource("/msm-wsdl-2014-09-03.ttl").toString());
+        mappingsBuilder.put(MSM_SWAGGER_URI.toASCIIString(), this.getClass().getResource("/msm-swagger-2014-09-03.ttl").toString());
         mappingsBuilder.put(SAWSDL_URI.toASCIIString(), this.getClass().getResource("/sawsdl-2007-08-28.ttl").toString());
         mappingsBuilder.put(WSMO_LITE_URI.toASCIIString(), this.getClass().getResource("/wsmo-lite-2013-05-03.ttl").toString());
         mappingsBuilder.put(HTTP_VOCAB_URI.toASCIIString(), this.getClass().getResource("/http-2011-04-29.ttl").toString());
