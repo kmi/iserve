@@ -310,7 +310,7 @@ public class DiscoveryEngineResource {
     public Response searchAsJson(
             @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, \"svc\" for discovering services and \"all\" for any kind of service component", required = true, allowableValues = "svc,op,all")
             @PathParam("type") String type,
-            @ApiParam(value = "Parameter indicating a query that specifies keywords to search. Regular expressions are allowed.", required = true, allowableValues = "svc,op,all")
+            @ApiParam(value = "Parameter indicating a query that specifies keywords to search. Regular expressions are allowed.", required = true)
             @QueryParam("q") String query
     ) {
         logger.info("Searching {} by keywords: {}", type, query);
@@ -337,7 +337,7 @@ public class DiscoveryEngineResource {
     public Response searchAsAtom(
             @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, \"svc\" for discovering services and \"all\" for any kind of service component", required = true, allowableValues = "svc,op,all")
             @PathParam("type") String type,
-            @ApiParam(value = "Parameter indicating a query that specifies keywords to search. Regular expressions are allowed.", required = true, allowableValues = "svc,op,all")
+            @ApiParam(value = "Parameter indicating a query that specifies keywords to search. Regular expressions are allowed.", required = true)
             @QueryParam("q") String query
     ) {
         logger.info("Searching {} by keywords: {}", type, query);
