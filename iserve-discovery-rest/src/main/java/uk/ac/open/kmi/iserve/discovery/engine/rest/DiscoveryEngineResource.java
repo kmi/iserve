@@ -8,6 +8,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import org.apache.abdera.model.Feed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Path("/{type}")
+@Path("/")
+@Api(value = "/discovery", description = "Service discovery operations")
 public class DiscoveryEngineResource {
 
     @Context
@@ -50,13 +54,21 @@ public class DiscoveryEngineResource {
         this.freeTextSearchPlugin = freeTextSearchPlugin;
     }
 
-    @Path("/func-rdfs")
+    @Path("{type}/func-rdfs")
     @GET
     @Produces("application/atom+xml")
+    @ApiOperation(
+            value = "Get services or operations classified by specific RDF classes.",
+            response = Feed.class, notes = "The search is performed through RDFS-based reasoning."
+    )
     public Response classificationBasedDiscoveryAsAtom(
+            @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, and \"svc\" for discovering services.", required = true, allowableValues = "svc,op")
             @PathParam("type") String type,
+            @ApiParam(value = "Type of matching. The value should be either \"and\" or \"or\". The result should be the set- based conjunction or disjunction depending on the classes selected.", allowableValues = "and,or")
             @QueryParam("f") String function,
+            @ApiParam(value = "Multivalued parameter indicating the functional classifications to match. The class should be the URL of the concept to match. This URL should be URL encoded.", required = true, allowMultiple = true)
             @QueryParam("class") List<String> resources,
+            @ApiParam(value = "Popularity-based ranking. The value should be \"standard\" to rank the results according the popularity of the provider.", allowableValues = "standard")
             @QueryParam("ranking") String rankingType,
             @DefaultValue("disabled") @QueryParam("filtering") String filtering
     ) throws
@@ -72,13 +84,21 @@ public class DiscoveryEngineResource {
         return Response.ok(feed).build();
     }
 
-    @Path("/func-rdfs")
+    @Path("{type}/func-rdfs")
     @GET
     @Produces("application/json")
+    @ApiOperation(
+            value = "Get services or operations classified by specific RDF classes.",
+            notes = "The search is performed through RDFS-based reasoning."
+    )
     public Response classificationBasedDiscoveryAsJson(
+            @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, and \"svc\" for discovering services.", required = true, allowableValues = "svc,op")
             @PathParam("type") String type,
+            @ApiParam(value = "Type of matching. The value should be either \"and\" or \"or\". The result should be the set- based conjunction or disjunction depending on the classes selected.", allowableValues = "and,or")
             @QueryParam("f") String function,
+            @ApiParam(value = "Multivalued parameter indicating the functional classifications to match. The class should be the URL of the concept to match. This URL should be URL encoded.", required = true, allowMultiple = true)
             @QueryParam("class") List<String> resources,
+            @ApiParam(value = "Popularity-based ranking. The value should be \"standard\" to rank the results according the popularity of the provider.", allowableValues = "standard")
             @QueryParam("ranking") String rankingType,
             @DefaultValue("disabled") @QueryParam("filtering") String filtering
     ) throws
@@ -96,15 +116,24 @@ public class DiscoveryEngineResource {
         return Response.ok(json).build();
     }
 
-    @Path("/io-rdfs")
+    @Path("{type}/io-rdfs")
     @GET
     @Produces("application/atom+xml")
+    @ApiOperation(
+            value = "Get services or operations that have inputs or/and outputs classified by specific RDF classes.",
+            response = Feed.class, notes = "The search is performed through RDFS-based reasoning."
+    )
     public Response IODiscoveryAsAtom(
+            @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, and \"svc\" for discovering services.", required = true, allowableValues = "svc,op")
             @PathParam("type") String type,
+            @ApiParam(value = "type of matching. The value should be either \"and\" or \"or\". The result should be the set- based conjunction or disjunction depending on the value selected between the services matching the inputs and those matching the outputs.", allowableValues = "and,or")
             @QueryParam("f") String function,
+            @ApiParam(value = "Popularity-based ranking. The value should be \"standard\" to rank the results according the popularity of the provider.", allowableValues = "standard")
             @QueryParam("ranking") String rankingType,
             @DefaultValue("disabled") @QueryParam("filtering") String filtering,
+            @ApiParam(value = "Multivalued parameter indicating the classes that the input of the service should match to. The classes are indicated with the URL of the concept to match. This URL should be URL encoded.", required = true, allowMultiple = true)
             @QueryParam("i") List<String> inputs,
+            @ApiParam(value = "Multivalued parameter indicating the classes that the output of the service should match to. The classes are indicated with the URL of the concept to match. This URL should be URL encoded.", allowMultiple = true)
             @QueryParam("o") List<String> outputs
     ) throws
             WebApplicationException {
@@ -120,15 +149,24 @@ public class DiscoveryEngineResource {
         return Response.ok(feed).build();
     }
 
-    @Path("/io-rdfs")
+    @Path("{type}/io-rdfs")
     @GET
     @Produces("application/json")
+    @ApiOperation(
+            value = "Get services or operations that have inputs or/and outputs classified by specific RDF classes.",
+            notes = "The search is performed through RDFS-based reasoning."
+    )
     public Response IODiscoveryAsJson(
+            @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, and \"svc\" for discovering services.", required = true, allowableValues = "svc,op")
             @PathParam("type") String type,
+            @ApiParam(value = "type of matching. The value should be either \"and\" or \"or\". The result should be the set- based conjunction or disjunction depending on the value selected between the services matching the inputs and those matching the outputs.", allowableValues = "and,or")
             @QueryParam("f") String function,
+            @ApiParam(value = "Popularity-based ranking. The value should be \"standard\" to rank the results according the popularity of the provider.", allowableValues = "standard")
             @QueryParam("ranking") String rankingType,
             @DefaultValue("disabled") @QueryParam("filtering") String filtering,
+            @ApiParam(value = "Multivalued parameter indicating the classes that the input of the service should match to. The classes are indicated with the URL of the concept to match. This URL should be URL encoded.", required = true, allowMultiple = true)
             @QueryParam("i") List<String> inputs,
+            @ApiParam(value = "Multivalued parameter indicating the classes that the output of the service should match to. The classes are indicated with the URL of the concept to match. This URL should be URL encoded.", allowMultiple = true)
             @QueryParam("o") List<String> outputs
     ) throws
             WebApplicationException {
@@ -263,10 +301,18 @@ public class DiscoveryEngineResource {
         return query;
     }
 
-    @Path("/search")
+    @Path("{type}/search")
     @GET
     @Produces("application/json")
-    public Response searchAsJson(@PathParam("type") String type, @QueryParam("q") String query) {
+    @ApiOperation(
+            value = "Free text-based search of services, operations or service parts"
+    )
+    public Response searchAsJson(
+            @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, \"svc\" for discovering services and \"all\" for any kind of service component", required = true, allowableValues = "svc,op,all")
+            @PathParam("type") String type,
+            @ApiParam(value = "Parameter indicating a query that specifies keywords to search. Regular expressions are allowed.", required = true, allowableValues = "svc,op,all")
+            @QueryParam("q") String query
+    ) {
         logger.info("Searching {} by keywords: {}", type, query);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Set<URI> result;
@@ -281,10 +327,19 @@ public class DiscoveryEngineResource {
         return Response.ok(json).build();
     }
 
-    @Path("/search")
+    @Path("{type}/search")
     @GET
     @Produces("application/atom+xml")
-    public Response searchAsAtom(@PathParam("type") String type, @QueryParam("q") String query) {
+    @ApiOperation(
+            value = "Free text-based search of services, operations or service parts",
+            response = Feed.class, notes = "The search is performed through RDFS-based reasoning."
+    )
+    public Response searchAsAtom(
+            @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, \"svc\" for discovering services and \"all\" for any kind of service component", required = true, allowableValues = "svc,op,all")
+            @PathParam("type") String type,
+            @ApiParam(value = "Parameter indicating a query that specifies keywords to search. Regular expressions are allowed.", required = true, allowableValues = "svc,op,all")
+            @QueryParam("q") String query
+    ) {
         logger.info("Searching {} by keywords: {}", type, query);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Set<URI> result;

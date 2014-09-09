@@ -19,6 +19,7 @@ package uk.ac.open.kmi.iserve.discovery.engine.rest;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
+import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 
 /**
  * Main
@@ -34,8 +35,9 @@ public class Main extends GuiceServletContextListener {
     @Override
     protected Injector getInjector() {
         System.out.println("Getting injector");
-
-        injector = Guice.createInjector(new DiscoveryRestModule());
+        ConfigurationModule configurationModule = new ConfigurationModule();
+        Injector configInjector = Guice.createInjector(configurationModule);
+        injector = Guice.createInjector(configInjector.getInstance(DiscoveryRestModule.class));
         return injector;
 
     }

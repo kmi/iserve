@@ -16,6 +16,9 @@
 
 package uk.ac.open.kmi.iserve.discovery.engine.rest;
 
+import com.wordnik.swagger.jersey.listing.ApiListingResourceJSON;
+import com.wordnik.swagger.jersey.listing.JerseyApiDeclarationProvider;
+import com.wordnik.swagger.jersey.listing.JerseyResourceListingProvider;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.jvnet.hk2.guice.bridge.api.GuiceBridge;
@@ -50,5 +53,11 @@ public class DiscoveryEngineWebApplication extends ResourceConfig {
 //        Injector injector = Guice.createInjector(new DiscoveryRestModule());
 //        injector.createChildInjector(new Hk2Module(serviceLocator));
         guiceBridge.bridgeGuiceInjector(Main.injector);
+
+        packages("com.wordnik.swagger.jaxrs.json").
+
+                register(ApiListingResourceJSON.class).
+                register(JerseyApiDeclarationProvider.class).
+                register(JerseyResourceListingProvider.class);
     }
 }

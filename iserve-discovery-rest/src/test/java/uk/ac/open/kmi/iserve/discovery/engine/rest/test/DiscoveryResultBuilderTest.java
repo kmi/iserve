@@ -1,12 +1,15 @@
 package uk.ac.open.kmi.iserve.discovery.engine.rest.test;
 
 import com.google.common.base.Stopwatch;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryEngine;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.engine.rest.DiscoveryRestModule;
@@ -49,8 +52,8 @@ public class DiscoveryResultBuilderTest {
     public static class InnerModule extends JukitoModule {
         @Override
         protected void configureTest() {
-            install(new DiscoveryRestModule());
-
+            Injector injector = Guice.createInjector(new ConfigurationModule());
+            install(injector.getInstance(DiscoveryRestModule.class));
         }
 
     }
