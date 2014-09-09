@@ -77,7 +77,7 @@ public class DiscoveryEngineResource {
         String query = buildClassQuery(type, function, resources, rankingType, filtering);
 
         Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
-        Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result,rankingType);
+        Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result, rankingType);
 
         Feed feed = new AbderaAtomFeedProvider().generateDiscoveryFeed(uriInfo.getRequestUri().toASCIIString(), discoveryEngine.toString(), discoveryResults);
 
@@ -108,7 +108,7 @@ public class DiscoveryEngineResource {
 
         Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
 
-        Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result,rankingType);
+        Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result, rankingType);
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(discoveryResults);
@@ -142,7 +142,7 @@ public class DiscoveryEngineResource {
 
         Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
 
-        Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result,rankingType);
+        Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result, rankingType);
 
         Feed feed = new AbderaAtomFeedProvider().generateDiscoveryFeed(uriInfo.getRequestUri().toASCIIString(), discoveryEngine.toString(), discoveryResults);
 
@@ -178,7 +178,7 @@ public class DiscoveryEngineResource {
         for (URI matchedResource : result.keySet()) {
             output.put(matchedResource, result.get(matchedResource).getRight());
         }
-        Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result,rankingType);
+        Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result, rankingType);
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(discoveryResults);
@@ -341,7 +341,6 @@ public class DiscoveryEngineResource {
             @QueryParam("q") String query
     ) {
         logger.info("Searching {} by keywords: {}", type, query);
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Set<URI> result;
         if (type.equals("svc")) {
             result = freeTextSearchPlugin.search(query, URI.create(MSM.Service.getURI()));
