@@ -121,10 +121,10 @@ public class DiscoveryRestModule extends ServletModule {
                 "This is te documentation to the iServe functionalities for service discovery.  You can find out more about iServe" +
                         "at <a href=\"http://iserve.kmi.open.ac.uk\">http://iserve.kmi.open.ac.uk</a> or on irc.freenode.net, #swagger.  For this sample, " +
                         "you can use the api key \"special-key\" to test the authorization filters",
-                "http://creativecommons.org/licenses/by-sa/3.0/",                  /* TOS URL */
+                "",                  /* TOS URL */
                 "iserve-general@googlegroups.com",                            /* Contact */
-                "Apache 2.0",                                     /* license */
-                "http://www.apache.org/licenses/LICENSE-2.0.html" /* license URL */
+                "Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)",                                     /* license */
+                "http://creativecommons.org/licenses/by-sa/3.0/l" /* license URL */
         );
 
         //  ConfigFactory.config().addAuthorization(oauth);
