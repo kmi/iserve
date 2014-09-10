@@ -55,7 +55,6 @@ public class DiscoveryEngineWebApplication extends ResourceConfig {
         guiceBridge.bridgeGuiceInjector(Main.injector);
 
         packages("com.wordnik.swagger.jaxrs.json").
-
                 register(ApiListingResourceJSON.class).
                 register(JerseyApiDeclarationProvider.class).
                 register(JerseyResourceListingProvider.class);
