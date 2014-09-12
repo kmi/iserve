@@ -27,7 +27,7 @@
 @prefix wl:					<http://www.wsmo.org/ns/wsmo-lite#> .
 
 # Prefix for the local specification
-@prefix spec:               <http://localhost:9090/iserve/api-config#> .
+@prefix spec:               <http://localhost:8080/iserve/api-config#> .
 
 # ---------------------------------------------------------------------
 # API config
@@ -254,12 +254,12 @@ spec:operationInputsList a api:ListEndpoint ;
 	# Define a variable that represents that actual operation ID.
 	api:variable [
     	api:name "operation" ;
-    	api:value "http://localhost:9090/iserve/id/services/{svcId}/{serviceName}/{opName}" ;
+    	api:value "http://localhost:8080/iserve/id/services/{svcId}/{serviceName}/{opName}" ;
     	api:type rdfs:Resource ;
    	] ;
    	api:variable [
         	api:name "service" ;
-        	api:value "http://localhost:9090/iserve/id/services/{svcId}/{serviceName}" ;
+        	api:value "http://localhost:8080/iserve/id/services/{svcId}/{serviceName}" ;
         	api:type rdfs:Resource ;
        	] ;
 	api:selector spec:operationInputsSelect ;
@@ -274,7 +274,7 @@ spec:operationInputsList a api:ListEndpoint ;
 spec:scheme-ns a api:ItemEndpoint ;
    rdfs:comment "Returns information about the vocabulary."@en;
    api:uriTemplate "/doc/def/{scheme}/" ;
-   api:itemTemplate "http://localhost:9090/iserve/id/def/{scheme}/" ;
+   api:itemTemplate "http://localhost:8080/iserve/id/def/{scheme}/" ;
    api:viewer spec:schemeViewer, api:describeViewer, api:basicViewer;
    api:defaultViewer spec:schemeViewer;
    .
@@ -290,17 +290,17 @@ spec:definition a api:ItemEndpoint ;
 spec:serviceItem a api:ItemEndpoint ;
     rdfs:label "Service"@en ;
     api:uriTemplate "/doc/services/{svcId}/{serviceName}" ;
-	api:itemTemplate "http://localhost:9090/iserve/id/services/{svcId}/{serviceName}" ;
+	api:itemTemplate "http://localhost:8080/iserve/id/services/{svcId}/{serviceName}" ;
     api:viewer api:describeViewer, api:basicViewer, spec:serviceViewer ;
     api:defaultViewer spec:serviceViewer .
 	
 spec:operationItem a api:ItemEndpoint ;
     rdfs:label "Operation"@en ;
     api:uriTemplate "/doc/services/{svcId}/{serviceName}/{opName}" ;
-    api:itemTemplate "http://localhost:9090/iserve/id/services/{svcId}/{serviceName}/{opName}" ;
+    api:itemTemplate "http://localhost:8080/iserve/id/services/{svcId}/{serviceName}/{opName}" ;
     api:variable [
             	api:name "service" ;
-            	api:value "http://localhost:9090/iserve/id/services/{svcId}/{serviceName}" ;
+            	api:value "http://localhost:8080/iserve/id/services/{svcId}/{serviceName}" ;
             	api:type rdfs:Resource ;
            	] ;
     api:viewer api:describeViewer, api:basicViewer, spec:operationViewer ;
@@ -309,14 +309,14 @@ spec:operationItem a api:ItemEndpoint ;
 spec:messageItem a api:ItemEndpoint ;
     rdfs:label "Message Content"@en ;
     api:uriTemplate "/doc/services/{svcId}/{serviceName}/{opName}/{messageName}" ;
-    api:itemTemplate "http://localhost:9090/iserve/id/services/{svcId}/{serviceName}/{opName}/{messageName}" ;
+    api:itemTemplate "http://localhost:8080/iserve/id/services/{svcId}/{serviceName}/{opName}/{messageName}" ;
     api:viewer api:describeViewer, api:basicViewer, spec:messagePartViewer ;
     api:defaultViewer spec:messagePartViewer .
 
 spec:messagePart a api:ItemEndpoint ;
     rdfs:label "Message Part"@en ;
     api:uriTemplate "/doc/services/{svcId}/{serviceName}/{opName}/{messageName}/{messagePart}" ;
-    api:itemTemplate "http://localhost:9090/iserve/id/services/{svcId}/{serviceName}/{opName}/{messageName}/{messagePart}" ;
+    api:itemTemplate "http://localhost:8080/iserve/id/services/{svcId}/{serviceName}/{opName}/{messageName}/{messagePart}" ;
     api:viewer api:describeViewer, api:basicViewer, spec:messagePartViewer ;
     api:defaultViewer spec:messagePartViewer .
 

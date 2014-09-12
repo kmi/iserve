@@ -17,19 +17,9 @@
 package uk.ac.open.kmi.iserve.elda;
 
 import com.epimorphics.lda.restlets.*;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import org.glassfish.hk2.api.ServiceLocator;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.mvc.jsp.JspMvcFeature;
-import org.jvnet.hk2.guice.bridge.api.GuiceBridge;
-import org.jvnet.hk2.guice.bridge.api.GuiceIntoHK2Bridge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.ConfigurationModule;
-
-import javax.inject.Inject;
 
 /**
  * Portable JAX-RS application.
@@ -44,13 +34,10 @@ public class EldaWebApplication extends ResourceConfig {
 
     private static final Logger log = LoggerFactory.getLogger(EldaWebApplication.class);
 
-    @Inject
-    public EldaWebApplication(ServiceLocator serviceLocator) {
-        // Set package to look for resources in
+    public EldaWebApplication() {
+
         log.debug("Loading Elda Web App");
         register(EldaRouterRestlet.class);
-
-        // Add Elda's resources except for RouterRestlet as it is already covered by our own R/W Servlet
         register(ControlRestlet.class);
         register(ConfigRestlet.class);
         register(ClearCache.class);
@@ -58,15 +45,7 @@ public class EldaWebApplication extends ResourceConfig {
         register(ResetCacheCounts.class);
         register(ShowCache.class);
         register(ShowStats.class);
-
-        register(MultiPartFeature.class);
-        register(JspMvcFeature.class);
-
-        GuiceBridge.getGuiceBridge().initializeGuiceBridge(serviceLocator);
-
-        GuiceIntoHK2Bridge guiceBridge = serviceLocator.getService(GuiceIntoHK2Bridge.class);
-        Injector injector = Guice.createInjector(new ConfigurationModule());
-        guiceBridge.bridgeGuiceInjector(injector);
+        ;
 
     }
 }

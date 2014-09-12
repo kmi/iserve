@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -23,14 +24,18 @@ public class EldaFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        logger.debug(httpRequest.getRequestURI());
-        defaultRequestDispatcher.forward(request, response);
-//        if(httpRequest.getMethod().equalsIgnoreCase("GET") && !(httpRequest.getRequestURI().matches("/iserve/discovery.*") || httpRequest.getRequestURI().matches("/iserve/id/api-docs.*"))){
-//            logger.debug("Forwarding request to ELDA");
-//
-//        } else {
-//            chain.doFilter(request, response);
-//        }
+        if (httpRequest.getMethod().equalsIgnoreCase("GET") && !(httpRequest.getRequestURI().matches("/iserve/discovery.*") || httpRequest.getRequestURI().matches("/iserve/api-docs.*"))) {
+            logger.debug(httpRequest.getRequestURI());
+            if (httpRequest.getRequestURI().equals("/iserve/")) {
+                logger.debug("Redirecting request");
+                ((HttpServletResponse) response).sendRedirect(((HttpServletRequest) request).getContextPath() + "/doc/services");
+            } else {
+                logger.debug("Forwarding request to ELDA");
+                defaultRequestDispatcher.forward(request, response);
+            }
+        } else {
+            chain.doFilter(request, response);
+        }
     }
 
     @Override
