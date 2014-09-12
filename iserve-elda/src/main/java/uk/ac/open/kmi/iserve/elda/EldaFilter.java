@@ -15,6 +15,8 @@ public class EldaFilter implements Filter {
 
     private Logger logger = LoggerFactory.getLogger(EldaFilter.class);
     private RequestDispatcher defaultRequestDispatcher;
+    private RequestDispatcher eldaRequestDispatcher;
+
 
     @Override
     public void destroy() {
@@ -24,14 +26,17 @@ public class EldaFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
+        logger.debug(httpRequest.getRequestURI());
         if (httpRequest.getMethod().equalsIgnoreCase("GET") && !(httpRequest.getRequestURI().matches("/iserve/discovery.*") || httpRequest.getRequestURI().matches("/iserve/api-docs.*"))) {
-            logger.debug(httpRequest.getRequestURI());
             if (httpRequest.getRequestURI().equals("/iserve/")) {
                 logger.debug("Redirecting request");
                 ((HttpServletResponse) response).sendRedirect(((HttpServletRequest) request).getContextPath() + "/doc/services");
+            } else if (httpRequest.getRequestURI().matches("/iserve/lda-assets/.*")) {
+                logger.debug("Forwarding request to Defaul filter");
+                defaultRequestDispatcher.forward(request, response);
             } else {
                 logger.debug("Forwarding request to ELDA");
-                defaultRequestDispatcher.forward(request, response);
+                eldaRequestDispatcher.forward(request, response);
             }
         } else {
             chain.doFilter(request, response);
@@ -40,7 +45,9 @@ public class EldaFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        this.defaultRequestDispatcher =
+        this.eldaRequestDispatcher =
                 filterConfig.getServletContext().getNamedDispatcher("Elda");
+        this.defaultRequestDispatcher =
+                filterConfig.getServletContext().getNamedDispatcher("default");
     }
 }

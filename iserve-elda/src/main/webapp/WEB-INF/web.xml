@@ -46,13 +46,6 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>/lda-assets/*</url-pattern>
-    </servlet-mapping>
-
-
     <listener>
         <listener-class>uk.ac.open.kmi.iserve.elda.EldaRouterRestlet$Init</listener-class>
     </listener>
