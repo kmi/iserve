@@ -61,37 +61,48 @@
     -->
 
     <!-- For direct load of static content> -->
-    <filter>
-        <filter-name>default</filter-name>
-        <filter-class>uk.ac.open.kmi.iserve.sal.rest.DefaultFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>default</filter-name>
-        <url-pattern>/lda-assets/*</url-pattern>
-        <url-pattern>*.ico</url-pattern>
-    </filter-mapping>
+    <!--<filter>-->
+    <!--<filter-name>default</filter-name>-->
+    <!--<filter-class>uk.ac.open.kmi.iserve.sal.rest.DefaultFilter</filter-class>-->
+    <!--</filter>-->
+    <!--<filter-mapping>-->
+    <!--<filter-name>default</filter-name>-->
+    <!--<url-pattern>/lda-assets/*</url-pattern>-->
+    <!--<url-pattern>*.ico</url-pattern>-->
+    <!--</filter-mapping>-->
 
     <!-- For Elda -->
-    <context-param>
-        <param-name>com.epimorphics.api.initialSpecFile</param-name>
-        <param-value>
-            specs/iserve.ttl
-        </param-value>
-    </context-param>
+    <!--<context-param>-->
+    <!--<param-name>com.epimorphics.api.initialSpecFile</param-name>-->
+    <!--<param-value>-->
+    <!--specs/iserve.ttl-->
+    <!--</param-value>-->
+    <!--</context-param>-->
 
     <!--<listener>-->
     <!--<listener-class>com.epimorphics.lda.restlets.RouterRestlet$Init</listener-class>-->
     <!--</listener>-->
 
     <!-- Replace with our own R/W one -->
-    <listener>
-        <listener-class>uk.ac.open.kmi.iserve.sal.rest.resource.ReadWriteRouterServlet$Init</listener-class>
-    </listener>
+    <!--<listener>-->
+    <!--<listener-class>uk.ac.open.kmi.iserve.sal.rest.resource.ReadWriteRouterServlet$Init</listener-class>-->
+    <!--</listener>-->
 
     <filter>
-        <filter-name>iServe SAL REST</filter-name>
-        <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
+        <filter-name>iServe SAL REST Filter</filter-name>
+        <filter-class>uk.ac.open.kmi.iserve.sal.rest.SalRestFilter</filter-class>
+    </filter>
 
+    <filter-mapping>
+        <filter-name>iServe SAL REST Filter</filter-name>
+        <url-pattern>/id/*</url-pattern>
+        <url-pattern>/api-docs/*</url-pattern>
+    </filter-mapping>
+
+
+    <servlet>
+        <servlet-name>iServe SAL REST Endpoint</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
             <param-value>uk.ac.open.kmi.iserve.sal.rest.RegistryManagementWebApplication</param-value>
@@ -121,15 +132,17 @@
             <param-name>org.glassfish.jersey.spi.container.ContainerRequestFilters</param-name>
             <param-value>org.glassfish.jersey.api.container.filter.PostReplaceFilter</param-value>
         </init-param>
-    </filter>
+    </servlet>
 
-    <filter-mapping>
-        <filter-name>iServe SAL REST</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+    <servlet-mapping>
+        <servlet-name>iServe SAL REST Endpoint</servlet-name>
+        <url-pattern>/id/*</url-pattern>
+        <url-pattern>/api-docs/*</url-pattern>
+    </servlet-mapping>
 
-    <welcome-file-list>
-        <welcome-file>jsp/index.jsp</welcome-file>
-    </welcome-file-list>
+
+    <!--<welcome-file-list>-->
+    <!--<welcome-file>jsp/index.jsp</welcome-file>-->
+    <!--</welcome-file-list>-->
 
 </web-app>

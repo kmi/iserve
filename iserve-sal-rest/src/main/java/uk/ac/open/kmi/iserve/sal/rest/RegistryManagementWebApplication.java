@@ -19,6 +19,9 @@ package uk.ac.open.kmi.iserve.sal.rest;
 import com.epimorphics.lda.restlets.*;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.wordnik.swagger.jersey.listing.ApiListingResourceJSON;
+import com.wordnik.swagger.jersey.listing.JerseyApiDeclarationProvider;
+import com.wordnik.swagger.jersey.listing.JerseyResourceListingProvider;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -27,6 +30,7 @@ import org.jvnet.hk2.guice.bridge.api.GuiceBridge;
 import org.jvnet.hk2.guice.bridge.api.GuiceIntoHK2Bridge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 
 import javax.inject.Inject;
 
@@ -62,11 +66,18 @@ public class RegistryManagementWebApplication extends ResourceConfig {
         register(MultiPartFeature.class);
         register(JspMvcFeature.class);
 
+        packages("com.wordnik.swagger.jaxrs.json").
+                register(ApiListingResourceJSON.class).
+                register(JerseyApiDeclarationProvider.class).
+                register(JerseyResourceListingProvider.class);
+
         log.info("Registering injectables");
         GuiceBridge.getGuiceBridge().initializeGuiceBridge(serviceLocator);
 
         GuiceIntoHK2Bridge guiceBridge = serviceLocator.getService(GuiceIntoHK2Bridge.class);
-        Injector injector = Guice.createInjector(new SalRestModule());
+        ConfigurationModule configurationModule = new ConfigurationModule();
+        Injector configInjector = Guice.createInjector(configurationModule);
+        Injector injector = Guice.createInjector(configurationModule, configInjector.getInstance(SalRestModule.class));
         guiceBridge.bridgeGuiceInjector(injector);
 
     }

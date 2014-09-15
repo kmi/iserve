@@ -17,6 +17,7 @@
 package uk.ac.open.kmi.iserve.sal.rest.resource;
 
 import com.google.inject.Inject;
+import com.wordnik.swagger.annotations.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -37,24 +38,20 @@ import java.util.List;
 
 /**
  * Services Resource
- * This Resource is effectively disabled for now given that {@link ReadWriteRouterServlet}
- * catches all requests. It should be re-enabled in the REST Application configuration.
  *
  * @author Dong Liu (Knowledge Media Institute - The Open University)
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
-//@Path("/id/services")
+@Path("/services")
+@Api(value = "/id/services", description = "Operations about services")
 public class ServicesResource {
 
     private static final Logger log = LoggerFactory.getLogger(ServicesResource.class);
-
+    private final RegistryManager manager;
     @Context
     UriInfo uriInfo;
-
     @Context
     SecurityContext security;
-
-    private final RegistryManager manager;
 
     @Inject
     public ServicesResource(RegistryManager registryManager) {
@@ -64,9 +61,19 @@ public class ServicesResource {
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces({MediaType.TEXT_HTML})
-    public Response addService(@FormDataParam("file") FormDataBodyPart bodyPart,
-                               @FormDataParam("file") InputStream file,
-                               @HeaderParam("Content-Location") String locationUri) {
+    @ApiOperation(value = "Add a new service",
+            notes = "Returns a HTML document which contains the URI of the added service")
+    @ApiResponses(
+            value = {@ApiResponse(code = 201, message = "Created document"),
+                    @ApiResponse(code = 403, message = "You have not got the appropriate permissions for creating a service"),
+                    @ApiResponse(code = 500, message = "Internal error")})
+    public Response addService(
+            @ApiParam(value = "Service description passed as body part")
+            @FormDataParam("bodyPart") FormDataBodyPart bodyPart,
+            @ApiParam(value = "Service description passed as file")
+            @FormDataParam("file") InputStream file,
+            @ApiParam(value = "Service description passed as location URI")
+            @HeaderParam("Content-Location") String locationUri) {
 
         log.debug("Invocation to addService - bodyPart {}, file {}, content-location {}",
                 bodyPart, file, locationUri);
@@ -154,7 +161,21 @@ public class ServicesResource {
     @DELETE
     @Path("/{uniqueId}/{serviceName}")
     @Produces({MediaType.TEXT_HTML})
-    public Response deleteService() {
+    @ApiOperation(value = "Delete a service",
+            notes = "Returns a HTML document which confirms the service deletion")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Service deleted"),
+                    @ApiResponse(code = 404, message = "Service not found"),
+                    @ApiResponse(code = 304, message = "The service could not be deleted from the server"),
+                    @ApiResponse(code = 403, message = "You have not got the appropriate permissions for deleting a service"),
+                    @ApiResponse(code = 500, message = "Internal error")})
+    public Response deleteService(
+            @ApiParam(value = "Service ID", required = true)
+            @PathParam("uniqueId") String uniqueId,
+            @ApiParam(value = "Service name", required = true)
+            @PathParam("serviceName") String serviceName
+    ) {
 
         // Check first that the user is allowed to upload a service
         Subject currentUser = SecurityUtils.getSubject();
@@ -217,6 +238,14 @@ public class ServicesResource {
      */
     @DELETE
     @Produces({MediaType.TEXT_HTML})
+    @ApiOperation(value = "Delete all the registered services",
+            notes = "BE CAREFUL! You can lose all your data. It returns a HTML document which confirms all the service deletions.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Registry cleaned. All the services are deleted."),
+                    @ApiResponse(code = 304, message = "The services could not be cleared."),
+                    @ApiResponse(code = 403, message = "You have not got the appropriate permissions for clearing the services"),
+                    @ApiResponse(code = 500, message = "Internal error")})
     public Response clearServices() {
 
         // Check first that the user is allowed to upload a service
@@ -256,6 +285,35 @@ public class ServicesResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(response).build();
         }
 
+    }
+
+    @GET
+    @Produces
+            ({
+                    "application/rdf+xml"
+                    , "application/atom+xml"
+                    , "application/json"
+                    , "application/xml"
+                    , "text/turtle"
+                    , "text/html"
+                    , "text/xml"
+                    , "text/plain"
+            })
+    @Path("/{uniqueId}/{serviceName}")
+    @ApiOperation(value = "Get a service",
+            notes = "It returns a service description according to MSM formalism")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Service fouund"),
+                    @ApiResponse(code = 404, message = "Service not found"),
+                    @ApiResponse(code = 403, message = "You have not got the appropriate permissions for access the service"),
+                    @ApiResponse(code = 500, message = "Internal error")})
+    public Response getService(
+            @ApiParam(value = "Service ID", required = true)
+            @PathParam("uniqueId") String uniqueId,
+            @ApiParam(value = "Service name", required = true)
+            @PathParam("serviceName") String serviceName) {
+        return null;
     }
 
 }
