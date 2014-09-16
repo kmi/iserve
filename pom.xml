@@ -214,28 +214,28 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <!-- GitHub site plug-in for deployment to GitHub pages -->
-                <groupId>com.github.github</groupId>
-                <artifactId>site-maven-plugin</artifactId>
-                <version>0.9</version>
-                <configuration>
-                    <message>Creating site for ${project.artifactId}, ${project.version}</message>
-                    <!-- this does the trick to place every module in the correct subfolder -->
-                    <path>${project.distributionManagement.site.url}</path>
-                    <merge>true</merge>
-                    <!--<dryRun>true</dryRun>-->
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>github-site</id>
-                        <goals>
-                            <goal>site</goal>
-                        </goals>
-                        <phase>site-deploy</phase>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+            <!--&lt;!&ndash; GitHub site plug-in for deployment to GitHub pages &ndash;&gt;-->
+            <!--<groupId>com.github.github</groupId>-->
+            <!--<artifactId>site-maven-plugin</artifactId>-->
+            <!--<version>0.9</version>-->
+            <!--<configuration>-->
+            <!--<message>Creating site for ${project.artifactId}, ${project.version}</message>-->
+            <!--&lt;!&ndash; this does the trick to place every module in the correct subfolder &ndash;&gt;-->
+            <!--<path>${project.distributionManagement.site.url}</path>-->
+            <!--<merge>true</merge>-->
+            <!--&lt;!&ndash;<dryRun>true</dryRun>&ndash;&gt;-->
+            <!--</configuration>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<id>github-site</id>-->
+            <!--<goals>-->
+            <!--<goal>site</goal>-->
+            <!--</goals>-->
+            <!--<phase>site-deploy</phase>-->
+            <!--</execution>-->
+            <!--</executions>-->
+            <!--</plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

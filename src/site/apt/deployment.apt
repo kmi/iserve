@@ -1,0 +1,68 @@
+            ----------------------
+            iServe Quick Deployment
+            ----------------------
+
+iServe Quick Deployment
+
+    A deployable WAR, which contains the last iServe version, is available at the {{{https://github.com/kmi/iserve/releases}iServe release page}}.
+    As described in details in the {{{./configuration.html}configuration page}}, iServe requires a RDF triple store and exploits {{{https://github.com/epimorphics/elda/}Elda}} as UI to navigate through
+    its dataset.
+
+
+* Default configuration
+
+    To be deployed, the iServe WAR file requires a Java servlet container that supports Servlet 2.5 or higher version.
+    The WAR file is tested to work with Apache Tomcat 6 and 7 and it is configured by default:
+        * to run on a servlet container that is installed on <localhost> and replies to HTTP request on port 8080;
+        * to use a {{{http://www.openrdf.org/}Sesame}} or {{{http://owlim.ontotext.com}OWLIM}} triple store
+    that provides a repository available through SPARQL at <http://localhost:8080/openrdf-sesame/repositories/iserve> .
+
+
+* Setting up a repository on an alternative SPARQL endpoint
+
+    It is possible to configure a repository available through a different SPARQL endpoint by following these two steps:
+
+    [[i]] modifying the iServe configuration file at <[webapps-root]/iserve/WEB-INF/classes/config.properties> as follows
+
++----------------------------------------------------------------------------------+
+...
+iserve.services.sparql.query = [URL of the SPARQL endpoint]         # to read the repository
+iserve.services.sparql.update = [URL of the SPARQL update endpoint] # to modify the repository
+...
++----------------------------------------------------------------------------------+
+
+    [[ii]] modifying the Elda UI configuration file at <[webapps-root]/iserve/specs/iserve.ttl> as follows
+
++----------------------------------------------------------------------------------+
+...
+spec:api a api:API;
+    api:sparqlEndpoint <[URL of the SPARQL endpoint]> ;
+...
++----------------------------------------------------------------------------------+
+
+
+    iServe is able to interact with any RDF store, such as {{{http://jena.apache.org/documentation/serving_data/}Fuseki}} and {{{http://virtuoso.openlinksw.com/}Virtuoso}}.
+    However, to use RDF stores that support semantic reasoning (e.g., {{{http://www.openrdf.org/}Sesame}} or {{{http://owlim.ontotext.com}OWLIM}}) is strongly recommended in order to
+    allow iServe to perform more effective service discovery.
+
+
+
+* Deployment on another port or host
+
+    It is possible to deploy the WAR file on a specific host or port by editing the following two files:
+
+    [[i]] the iServe configuration file at <[webapps-root]/iserve/WEB-INF/classes/config.properties> must be modified as follows
+
++----------------------------------------------------------------------------------+
+...
+iserve.url = [URL of the iserve deployment] # e.g., http://example.com:9090/iserve
+...
++----------------------------------------------------------------------------------+
+
+    [[ii]] all the occurrences of <localhost:8080> must be substituted with the actual hostname and port
+    in the Elda UI configuration file located in <[webapps-root]/iserve/specs/iserve.ttl>.
+
+* Additional configurations
+
+    Details on general configuration of iServe backend are available at the {{{./configuration.html}configuration page}}.
+    Instead, for Elda UI customizations, it is possible to refer to the {{{http://epimorphics.github.io/elda/}Elda documentation}}.
