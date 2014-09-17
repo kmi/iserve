@@ -151,6 +151,7 @@
         <module>iserve-popularity-scoring</module>
         <module>iserve-free-text-search</module>
         <module>iserve-elda</module>
+        <module>iserve-swagger</module>
     </modules>
 
     <dependencies>
