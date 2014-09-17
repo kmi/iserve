@@ -15,7 +15,6 @@ import com.wordnik.swagger.config.FilterFactory;
 import com.wordnik.swagger.config.ScannerFactory;
 import com.wordnik.swagger.config.SwaggerConfig;
 import com.wordnik.swagger.core.filter.SwaggerSpecFilter;
-import com.wordnik.swagger.jaxrs.config.DefaultJaxrsScanner;
 import com.wordnik.swagger.jaxrs.config.ReflectiveJaxrsScanner;
 import com.wordnik.swagger.jaxrs.reader.DefaultJaxrsApiReader;
 import com.wordnik.swagger.model.ApiDescription;
@@ -27,7 +26,6 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.SystemConfiguration;
-import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,11 +42,7 @@ public class SwaggerModule extends ServletModule {
 
     @Override
     protected void configureServlets() {
-        logger.debug("Loading SAL Rest module...");
-
-        logger.debug("Loading Registry iServe components...");
-
-        install(new RegistryManagementModule());
+        logger.debug("Loading Swagger module...");
 
         bind(ServletContainer.class).in(Singleton.class);
 
@@ -58,9 +52,7 @@ public class SwaggerModule extends ServletModule {
         serve("/*").with(ServletContainer.class, props);
 
         ReflectiveJaxrsScanner scanner = new ReflectiveJaxrsScanner();
-        scanner.setResourcePackage("uk.ac.open.kmi.iserve.discovery.engine.rest");
-        scanner.setResourcePackage("uk.ac.open.kmi.iserve.sal.rest.resource");
-        logger.debug(String.valueOf(scanner.classes()));
+        scanner.setResourcePackage("uk.ac.open.kmi.iserve");
         ScannerFactory.setScanner(scanner);
         SwaggerConfig config = ConfigFactory.config();
         config.setApiVersion("2.0");
@@ -69,7 +61,7 @@ public class SwaggerModule extends ServletModule {
         config.setBasePath(basePath);
         ConfigFactory.setConfig(config);
 
-        ScannerFactory.setScanner(new DefaultJaxrsScanner());
+        //ScannerFactory.setScanner(new DefaultJaxrsScanner());
         ClassReaders.setReader(new DefaultJaxrsApiReader());
 
         bootstrap();

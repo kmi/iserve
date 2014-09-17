@@ -26,8 +26,16 @@
 @prefix sawsdl:				<http://www.w3.org/ns/sawsdl#> .
 @prefix wl:					<http://www.wsmo.org/ns/wsmo-lite#> .
 
+# Prefix for NFPs
+@prefix msm-nfp:            <http://iserve.kmi.open.ac.uk/ns/msm-nfp#> .
+@prefix sioc:               <http://rdfs.org/sioc/ns#> .
+@prefix schema:             <http://schema.org/> .
+@prefix cc:                 <http://creativecommons.org/ns#> .
+@prefix freebase:           <http://rdf.freebase.com/ns/>.
+@prefix lucene:                <http://www.ontotext.com/owlim/lucene#> .
+
 # Prefix for the local specification
-@prefix spec:               <http://localhost:8080/iserve/api-config#> .
+@prefix spec:               <http://iserve.kmi.open.ac.uk/iserve/api-config#> .
 
 # ---------------------------------------------------------------------
 # API config
@@ -66,22 +74,72 @@ spec:api a api:API;
 		spec:operationItem ,
 		spec:operationInputsList ,
 		spec:messageItem ,
-		spec:messagePart .
+		spec:messagePart, 
+	    spec:providerList ,
+	    spec:providerItem ,
+		spec:about ,
+		spec:anything ,
+		spec:mentions
+	        . 
 	
-# Endpoint definition	
+# Endpoint definition
+<http://iserve-dev.kmi.open.ac.uk:8080/openrdf-sesame/repositories/iserve>
+        elda:textSearchOperand "?_search" ;
+        elda:textQueryProperty lucene:entityIndex ;
+        elda:supportsNestedSelect true ;
+        .	
 					
 # Viewers Definitions
+
+#
+## Describe a generic 'thing' as an example of an itemEndpoint.
+##
+spec:about a api:ItemEndpoint
+	; api:uriTemplate     "/about?resource={uri}"
+        ; rdfs:comment        "A generic item endpoint API for asking about a specific thing by 'uri'."
+        ; api:itemTemplate    "{uri}"
+        ; api:viewer          api:basicViewer, api:describeViewer, api:labelledDescribeViewer
+        ; api:defaultViewer   api:describeViewer
+        .
+
+#
+# List 'anything' endpoint
+#
+spec:anything a api:ListEndpoint
+        ; api:name            	"anything" 
+        ; rdfs:comment        	"A generic listing endpoint for listing things based solely on URI based filter parameters"@en
+        ; api:uriTemplate		"/anything"
+        ; api:selector			[api:where   " ?item a ?v1 . FILTER (!isBlank(?item)) "]
+        ; api:exampleRequestPath  "/anything"
+###
+### no selector - defers everything to URI params
+###
+        ; api:viewer api:describeViewer, api:basicViewer, api:labelledDescribeViewer
+        ; api:defaultViewer   api:describeViewer
+        .
+
+#
+# List things related to a 'mentions' as an example of a ListEndpoint.
+#
+spec:mentions a api:ListEndpoint
+       	; api:uriTemplate     "/mentions?resource={uri}"
+	; api:variable [api:name "uri"; api:type rdfs:Resource]
+  	; api:selector [api:where "?item ?p ?uri . FILTER (!isBlank(?item))"]
+        ; api:viewer api:basicViewer, api:describeViewer, api:labelledDescribeViewer
+        ; api:defaultViewer   api:describeViewer;
+        .
+
 spec:serviceViewer a api:Viewer ;
 	api:name "service" ;
-	api:properties "label,comment,created,type,modelReference,modelReference.type,modelReference.value,hasOperation.label,hasOperation.modelReference,hasOperation.modelReference.type,hasOperation.modelReference.value,hasOperation.hasInput.label,hasOperation.hasInput.modelReference,hasOperation.hasOutput.label,hasOperation.hasOutput.modelReference,source,isGroundedIn" .
+	api:properties "label,comment,created,issued,type,modelReference,modelReference,hasOperation.label,hasOperation.modelReference,hasOperation.modelReference.type,hasOperation.modelReference.value,hasOperation.hasInput.label,hasOperation.hasInput.modelReference,hasOperation.hasOutput.label,hasOperation.hasOutput.modelReference,source,isGroundedIn,provider.label,provider.hasPopularity,hasForum.label,hasForum.hasVitality,hasTotalMashups,hasRecentMashups,seeAlso" .
 
 spec:operationViewer a api:Viewer ;
 	api:name "operation" ;
-	api:properties "label,type,modelReference,modelReference.type,modelReference.value,hasInput.label,hasInput.modelReference,hasOutput.label,hasOutput.modelReference,hasInputFault.label,hasOutputFault.label,hasOutputFault.label,hasOutputFault.type,source,isGroundedIn" .
+	api:properties "label,comment,type,modelReference,modelReference.type,modelReference.value,hasInput.label,hasInput.modelReference,hasOutput.label,hasOutput.modelReference,hasInputFault.label,hasOutputFault.label,hasOutputFault.label,hasOutputFault.type,source,isGroundedIn" .
 
 spec:messagePartViewer a api:Viewer ;
 	api:name "messagePart" ;
-	api:properties "label,type,modelReference,hasMandatoryPart.label,hasMandatoryPart.modelReference,hasOptionalPart.label,hasOptionalPart.modelReference,source,isGroundedIn" .
+	api:properties "label,comment,type,modelReference,hasMandatoryPart.label,hasMandatoryPart.modelReference,hasOptionalPart.label,hasOptionalPart.modelReference,source,isGroundedIn" .
 										
 
 spec:schemeViewer a api:Viewer ;
@@ -89,12 +147,16 @@ spec:schemeViewer a api:Viewer ;
 	api:properties "type,comment,label,altLabel,note,scopeNote,topConcept.prefLabel,comment" ;
 	.
 
+spec:providerViewer a api:Viewer ;
+        api:name "provider" ;
+        api:properties "label,comment,hasPopularity,seeAlso,sameAs" ;
+        .
+
 spec:definitionViewer a api:Viewer ;
   api:name "definition" ;
   api:properties "prefLabel,altLabel,label,topConceptOf,broader.prefLabel,narrower.prefLabel,comment,range,domain,type.label,isDefinedBy.label,subClassOf.label,subPropertyOf.label" ;
   .
 
-#
 # This XSLT formatter produces rich HTML from the viewer properties.
 #
 	
@@ -158,6 +220,7 @@ spec:properties-selector
 # Services Selectors
 	
 spec:servicesSelect a api:Selector ;
+	api:from "<http://www.ontotext.com/disable-SameAs>";
 	api:filter "type=Service" ;
 	api:sort "label" .
 
@@ -168,8 +231,13 @@ spec:operationsSelect a api:Selector ;
 spec:operationInputsSelect a api:Selector ;
 	api:filter "type=MessageContent" ;
 	# To be fixed as the code is not really used properly
-	api:where "?operation msm:hasInput ?item ." ;
-	api:sort "label" . 
+	api:where "?operation msm:hasInput ?item . " ;
+	api:sort "label" .
+ 
+spec:providerSelect a api:Selector ;
+        api:where "?service schema:provider ?item . FILTER(STRSTARTS(STR(?item), \"http://iserve.kmi.open.ac.uk/iserve/\")) " ;
+        api:sort "label" .
+
 
 #
 # List Endpoints
@@ -264,7 +332,14 @@ spec:operationInputsList a api:ListEndpoint ;
        	] ;
 	api:selector spec:operationInputsSelect ;
     api:viewer api:describeViewer, api:basicViewer, spec:operationViewer ;
-    api:defaultViewer spec:operationViewer .  	 
+    api:defaultViewer spec:operationViewer . 
+
+spec:providerList a api:ListEndpoint ;
+        rdfs:label "Providers List"@en ;
+        api:uriTemplate "/doc/providers" ;
+        api:selector spec:providerSelect ;
+    api:viewer api:describeViewer, api:basicViewer, spec:providerViewer ;
+    api:defaultViewer spec:providerViewer . 	 
 
 #
 #Items Endpoints
@@ -320,7 +395,12 @@ spec:messagePart a api:ItemEndpoint ;
     api:viewer api:describeViewer, api:basicViewer, spec:messagePartViewer ;
     api:defaultViewer spec:messagePartViewer .
 
-
+spec:providerItem a api:ItemEndpoint ;
+    rdfs:label "Provider"@en ;
+    api:uriTemplate "/doc/providers/{providerId}" ;
+        api:itemTemplate "http://localhost:8080/iserve/id/providers/{providerId}" ;
+    api:viewer api:describeViewer, api:basicViewer, spec:providerViewer ;
+    api:defaultViewer spec:providerViewer .
 	
 # Vocabulary Definitions
 
@@ -396,6 +476,43 @@ msm-wsdl:isGroundedIn
 	rdfs:range rdf:Resource 
 	.
 
+# MSM-NFP
+
+msm-nfp:hasPopularity 
+        api:label "hasPopularity" ;
+        a owl:DatatypeProperty ;
+        rdfs:range xsd:double ;
+  	.
+
+schema:provider api:label "provider";
+	api:where " FILTER(STRSTARTS(STR(?item), \"http://iserve.kmi.open.ac.uk/iserve/\")) ";
+	api:multiValued true ; 
+	rdfs:range schema:Organization ;
+	 .
+
+msm-nfp:hasForum 
+	api:label "hasForum" ;
+	rdfs:range sioc:Forum;
+	.
+
+sioc:Forum
+	api:label "forum" .
+
+msm-nfp:hasVitality  
+        a owl:DatatypeProperty ;
+        rdfs:range xsd:double ;
+	api:label "hasVitality" .
+
+msm-nfp:hasTotalMashups   
+	a owl:DatatypeProperty ;
+        rdfs:range xsd:int ;
+        api:label "hasTotalMashups" .
+
+msm-nfp:hasRecentMashups
+        a owl:DatatypeProperty ;
+        rdfs:range xsd:int ;
+        api:label "hasRecentMashups" .
+
 # SAWSDL	
 sawsdl:modelReference 
 	api:label "modelReference" ;
@@ -433,7 +550,7 @@ rdf:value api:label "value" .
 
 rdfs:Class api:label "Class" .
 
-rdfs:label api:label "label" ; api:multiValued true .
+rdfs:label api:label "label" ; api:multiValued false .
 
 rdfs:seeAlso api:label "seeAlso" ; api:multiValued true .
 
@@ -450,7 +567,8 @@ rdfs:subClassOf api:label "subClassOf" .
 rdfs:subPropertyOf api:label "subPropertyOf" .
 
 # OWL
-owl:sameAs api:label "sameAs" .
+owl:sameAs api:label "sameAs";
+	   api:multiValued true; .
 owl:imports api:label "imports" .
 owl:versionInfo api:label "versionInfo" .
 
@@ -525,5 +643,3 @@ dct:creator
 	rdfs:range rdfs:Resource ;
 	api:multiValued true ;
   	api:label "creator" .
-	
-

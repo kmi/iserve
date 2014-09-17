@@ -96,7 +96,6 @@
     <filter-mapping>
         <filter-name>iServe SAL REST Filter</filter-name>
         <url-pattern>/id/*</url-pattern>
-        <url-pattern>/api-docs/*</url-pattern>
     </filter-mapping>
 
 
@@ -137,7 +136,6 @@
     <servlet-mapping>
         <servlet-name>iServe SAL REST Endpoint</servlet-name>
         <url-pattern>/id/*</url-pattern>
-        <url-pattern>/api-docs/*</url-pattern>
     </servlet-mapping>
 
 
