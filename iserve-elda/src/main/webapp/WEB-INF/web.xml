@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2013. Knowledge Media Institute - The Open University
+  ~ Copyright (c) 2014. Knowledge Media Institute - The Open University
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -20,29 +20,38 @@
          xmlns="http://java.sun.com/xml/ns/javaee"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
-    <servlet>
-        <servlet-name>Elda</servlet-name>
-        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+
+    <!-- For direct load of static content> -->
+    <filter>
+        <filter-name>default</filter-name>
+        <filter-class>uk.ac.open.kmi.iserve.elda.DefaultFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>default</filter-name>
+        <url-pattern>/lda-assets/*</url-pattern>
+        <url-pattern>/index.html</url-pattern>
+    </filter-mapping>
+
+
+    <filter>
+        <filter-name>Elda</filter-name>
+        <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
             <param-value>uk.ac.open.kmi.iserve.elda.EldaWebApplication</param-value>
         </init-param>
-
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>Elda</servlet-name>
-        <url-pattern>/*</url-pattern>
-    </servlet-mapping>
-
-    <filter>
-        <filter-name>Elda Filter</filter-name>
-        <filter-class>uk.ac.open.kmi.iserve.elda.EldaFilter</filter-class>
+        <init-param>
+            <param-name>jersey.config.servlet.filter.forwardOn404</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>org.glassfish.jersey.spi.container.ContainerRequestFilters</param-name>
+            <param-value>org.glassfish.jersey.api.container.filter.PostReplaceFilter</param-value>
+        </init-param>
     </filter>
 
     <filter-mapping>
-        <filter-name>Elda Filter</filter-name>
+        <filter-name>Elda</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
