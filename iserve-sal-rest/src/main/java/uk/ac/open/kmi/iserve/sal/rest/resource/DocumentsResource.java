@@ -31,7 +31,7 @@ import java.io.InputStream;
 import java.net.URI;
 
 @Path("/documents")
-@Api(value = "/id/documents", description = "Operations about service documents")
+@Api(value = "/id/documents", description = "Operations about service documents", basePath = "id")
 public class DocumentsResource {
 
     private final DocumentManager docManager;

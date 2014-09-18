@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Path("/")
-@Api(value = "/discovery", description = "Service discovery operations")
+@Api(value = "/discovery", description = "Service discovery operations", basePath = "discovery")
 public class DiscoveryEngineResource {
 
     @Context

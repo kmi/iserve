@@ -41,7 +41,7 @@ import java.util.List;
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
 @Path("/services")
-@Api(value = "/id/services", description = "Operations about services")
+@Api(value = "/id/services", description = "Operations about services", basePath = "id")
 public class ServicesResource {
 
     private static final Logger log = LoggerFactory.getLogger(ServicesResource.class);
