@@ -20,16 +20,15 @@
          xmlns="http://java.sun.com/xml/ns/javaee"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
-
-    <!-- For direct load of static content> -->
     <filter>
-        <filter-name>default</filter-name>
-        <filter-class>uk.ac.open.kmi.iserve.elda.DefaultFilter</filter-class>
+        <filter-name>Elda Filter</filter-name>
+        <filter-class>uk.ac.open.kmi.iserve.elda.EldaFilter</filter-class>
     </filter>
     <filter-mapping>
-        <filter-name>default</filter-name>
+        <filter-name>Elda Filter</filter-name>
         <url-pattern>/lda-assets/*</url-pattern>
         <url-pattern>/index.html</url-pattern>
+        <url-pattern>/id/*</url-pattern>
     </filter-mapping>
 
 

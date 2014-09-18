@@ -60,44 +60,6 @@
         </filter-mapping>
     -->
 
-    <!-- For direct load of static content> -->
-    <!--<filter>-->
-    <!--<filter-name>default</filter-name>-->
-    <!--<filter-class>uk.ac.open.kmi.iserve.sal.rest.DefaultFilter</filter-class>-->
-    <!--</filter>-->
-    <!--<filter-mapping>-->
-    <!--<filter-name>default</filter-name>-->
-    <!--<url-pattern>/lda-assets/*</url-pattern>-->
-    <!--<url-pattern>*.ico</url-pattern>-->
-    <!--</filter-mapping>-->
-
-    <!-- For Elda -->
-    <!--<context-param>-->
-    <!--<param-name>com.epimorphics.api.initialSpecFile</param-name>-->
-    <!--<param-value>-->
-    <!--specs/iserve.ttl-->
-    <!--</param-value>-->
-    <!--</context-param>-->
-
-    <!--<listener>-->
-    <!--<listener-class>com.epimorphics.lda.restlets.RouterRestlet$Init</listener-class>-->
-    <!--</listener>-->
-
-    <!-- Replace with our own R/W one -->
-    <!--<listener>-->
-    <!--<listener-class>uk.ac.open.kmi.iserve.sal.rest.resource.ReadWriteRouterServlet$Init</listener-class>-->
-    <!--</listener>-->
-
-    <filter>
-        <filter-name>iServe SAL REST Filter</filter-name>
-        <filter-class>uk.ac.open.kmi.iserve.sal.rest.SalRestFilter</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>iServe SAL REST Filter</filter-name>
-        <url-pattern>/id/*</url-pattern>
-    </filter-mapping>
-
 
     <servlet>
         <servlet-name>iServe SAL REST Endpoint</servlet-name>

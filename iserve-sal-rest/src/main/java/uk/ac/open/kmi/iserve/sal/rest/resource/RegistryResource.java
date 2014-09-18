@@ -16,12 +16,12 @@
 
 package uk.ac.open.kmi.iserve.sal.rest.resource;
 
-import com.google.inject.Inject;
 import org.glassfish.jersey.server.mvc.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;

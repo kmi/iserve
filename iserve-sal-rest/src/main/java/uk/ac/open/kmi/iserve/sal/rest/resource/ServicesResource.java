@@ -16,10 +16,7 @@
 
 package uk.ac.open.kmi.iserve.sal.rest.resource;
 
-import com.google.inject.Inject;
 import com.wordnik.swagger.annotations.*;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -28,6 +25,7 @@ import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
@@ -79,15 +77,15 @@ public class ServicesResource {
                 bodyPart, file, locationUri);
 
         // Check first that the user is allowed to upload a service
-        Subject currentUser = SecurityUtils.getSubject();
-        if (!currentUser.isPermitted("services:create")) {
-            log.warn("User without the appropriate permissions attempted to create a service: " + currentUser.getPrincipal());
-
-            String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                    "  <body>\n You have not got the appropriate permissions for creating a service. Please login and ensure you have the correct permissions. </body>\n</html>";
-
-            return Response.status(Status.FORBIDDEN).entity(htmlString).build();
-        }
+//        Subject currentUser = SecurityUtils.getSubject();
+//        if (!currentUser.isPermitted("services:create")) {
+//            log.warn("User without the appropriate permissions attempted to create a service: " + currentUser.getPrincipal());
+//
+//            String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+//                    "  <body>\n You have not got the appropriate permissions for creating a service. Please login and ensure you have the correct permissions. </body>\n</html>";
+//
+//            return Response.status(Status.FORBIDDEN).entity(htmlString).build();
+//        }
 
         // The user is allowed to create services
         String mediaType = null;
@@ -178,15 +176,15 @@ public class ServicesResource {
     ) {
 
         // Check first that the user is allowed to upload a service
-        Subject currentUser = SecurityUtils.getSubject();
-        if (!currentUser.isPermitted("services:delete")) {
-            log.warn("User without the appropriate permissions attempted to delete a service: " + currentUser.getPrincipal());
-
-            String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                    "  <body>\n You have not got the appropriate permissions for deleting a service. Please login and ensure you have the correct permissions. </body>\n</html>";
-
-            return Response.status(Status.FORBIDDEN).entity(htmlString).build();
-        }
+//        Subject currentUser = SecurityUtils.getSubject();
+//        if (!currentUser.isPermitted("services:delete")) {
+//            log.warn("User without the appropriate permissions attempted to delete a service: " + currentUser.getPrincipal());
+//
+//            String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+//                    "  <body>\n You have not got the appropriate permissions for deleting a service. Please login and ensure you have the correct permissions. </body>\n</html>";
+//
+//            return Response.status(Status.FORBIDDEN).entity(htmlString).build();
+//        }
 
         URI serviceUri = uriInfo.getRequestUri();
 
@@ -249,15 +247,15 @@ public class ServicesResource {
     public Response clearServices() {
 
         // Check first that the user is allowed to upload a service
-        Subject currentUser = SecurityUtils.getSubject();
-        if (!currentUser.isPermitted("services:delete")) {
-            log.warn("User without the appropriate permissions attempted to clear the services: " + currentUser.getPrincipal());
-
-            String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                    "  <body>\n You have not got the appropriate permissions for clearing the services. Please login and ensure you have the correct permissions. </body>\n</html>";
-
-            return Response.status(Response.Status.FORBIDDEN).entity(htmlString).build();
-        }
+//        Subject currentUser = SecurityUtils.getSubject();
+//        if (!currentUser.isPermitted("services:delete")) {
+//            log.warn("User without the appropriate permissions attempted to clear the services: " + currentUser.getPrincipal());
+//
+//            String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+//                    "  <body>\n You have not got the appropriate permissions for clearing the services. Please login and ensure you have the correct permissions. </body>\n</html>";
+//
+//            return Response.status(Response.Status.FORBIDDEN).entity(htmlString).build();
+//        }
 
         URI serviceUri = uriInfo.getRequestUri();
 
@@ -285,35 +283,6 @@ public class ServicesResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(response).build();
         }
 
-    }
-
-    @GET
-    @Produces
-            ({
-                    "application/rdf+xml"
-                    , "application/atom+xml"
-                    , "application/json"
-                    , "application/xml"
-                    , "text/turtle"
-                    , "text/html"
-                    , "text/xml"
-                    , "text/plain"
-            })
-    @Path("/{uniqueId}/{serviceName}")
-    @ApiOperation(value = "Get a service",
-            notes = "It returns a service description according to MSM formalism")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(code = 200, message = "Service fouund"),
-                    @ApiResponse(code = 404, message = "Service not found"),
-                    @ApiResponse(code = 403, message = "You have not got the appropriate permissions for access the service"),
-                    @ApiResponse(code = 500, message = "Internal error")})
-    public Response getService(
-            @ApiParam(value = "Service ID", required = true)
-            @PathParam("uniqueId") String uniqueId,
-            @ApiParam(value = "Service name", required = true)
-            @PathParam("serviceName") String serviceName) {
-        return null;
     }
 
 }

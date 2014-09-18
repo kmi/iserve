@@ -61,7 +61,6 @@ public class SwaggerModule extends ServletModule {
         config.setBasePath(basePath);
         ConfigFactory.setConfig(config);
 
-        //ScannerFactory.setScanner(new DefaultJaxrsScanner());
         ClassReaders.setReader(new DefaultJaxrsApiReader());
 
         bootstrap();
