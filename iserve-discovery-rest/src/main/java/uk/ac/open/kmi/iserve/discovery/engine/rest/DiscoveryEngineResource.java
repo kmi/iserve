@@ -63,9 +63,11 @@ public class DiscoveryEngineResource {
     @Path("{type}/func-rdfs")
     @ApiOperation(
             value = "Get services or operations classified by specific RDF classes.",
-            notes = "The search is performed through RDFS-based reasoning."
-    )
+            notes = "The search is performed through RDFS-based reasoning.",
+            response = DiscoveryResult.class
 
+    )
+    @Produces({"application/atom+xml", "application/json"})
     public Response classificationBasedDiscovery(
             @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, and \"svc\" for discovering services.", required = true, allowableValues = "svc,op")
             @PathParam("type") String type,
@@ -74,14 +76,13 @@ public class DiscoveryEngineResource {
             @ApiParam(value = "Multivalued parameter indicating the functional classifications to match. The class should be the URL of the concept to match. This URL should be URL encoded.", required = true, allowMultiple = true)
             @QueryParam("class") List<String> resources,
             @ApiParam(value = "Popularity-based ranking. The value should be \"standard\" to rank the results according the popularity of the provider.", allowableValues = "standard")
-            @QueryParam("ranking") String rankingType,
-            @DefaultValue("disabled") @QueryParam("filtering") String filtering
+            @QueryParam("ranking") String rankingType
     ) throws
             WebApplicationException {
         if (request.getHeader("Content-Type") == null || request.getHeader("Content-Type").equals("application/atom+xml")) {
-            return classificationBasedDiscoveryAsAtom(type, function, resources, rankingType, filtering);
+            return classificationBasedDiscoveryAsAtom(type, function, resources, rankingType, "");
         } else if (request.getHeader("Content-Type").equals("application/json")) {
-            return classificationBasedDiscoveryAsJson(type, function, resources, rankingType, filtering);
+            return classificationBasedDiscoveryAsJson(type, function, resources, rankingType, "");
         }
 
         return Response.ok(null).build();
@@ -128,12 +129,15 @@ public class DiscoveryEngineResource {
         return Response.ok(json).build();
     }
 
-    @Path("{type}/io-rdfs")
+
     @GET
+    @Path("{type}/io-rdfs")
     @ApiOperation(
             value = "Get services or operations that have inputs or/and outputs classified by specific RDF classes.",
-            notes = "The search is performed through RDFS-based reasoning."
+            notes = "The search is performed through RDFS-based reasoning.",
+            response = DiscoveryResult.class
     )
+    @Produces({"application/atom+xml", "application/json"})
     public Response ioDiscovery(
             @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, and \"svc\" for discovering services.", required = true, allowableValues = "svc,op")
             @PathParam("type") String type,
@@ -318,11 +322,14 @@ public class DiscoveryEngineResource {
         return query;
     }
 
-    @Path("{type}/search")
+
     @GET
+    @Path("{type}/search")
     @ApiOperation(
-            value = "Free text-based search of services, operations or service parts"
+            value = "Free text-based search of services, operations or service parts",
+            response = URI.class
     )
+    @Produces({"application/atom+xml", "application/json"})
     public Response search(
             @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, \"svc\" for discovering services and \"all\" for any kind of service component", required = true, allowableValues = "svc,op,all")
             @PathParam("type") String type,

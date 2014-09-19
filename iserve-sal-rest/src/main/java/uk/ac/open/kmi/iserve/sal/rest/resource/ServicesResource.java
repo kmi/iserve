@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
+import uk.ac.open.kmi.msm4j.Service;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -285,13 +286,11 @@ public class ServicesResource {
 
     }
 
+
     @GET
-    @Path("/{uniqueId}/{serviceName}")
     @Produces
             ({
-                    "text/javascript"
-                    , "application/javascript"
-                    , "application/rdf+xml"
+                    "application/rdf+xml"
                     , "application/atom+xml"
                     , "application/json"
                     , "application/xml"
@@ -300,14 +299,39 @@ public class ServicesResource {
                     , "text/xml"
                     , "text/plain"
             })
-    @ApiOperation(value = "Get a service")
+    @ApiOperation(value = "List all services", response = Service.class)
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Services found"),
+                    @ApiResponse(code = 404, message = "Services not found"),
+                    @ApiResponse(code = 403, message = "You have not got the appropriate permissions for reading services"),
+                    @ApiResponse(code = 500, message = "Internal error")})
+    public Response getServices() {
+        URI serviceUri = uriInfo.getRequestUri();
+        return Response.status(Response.Status.OK).contentLocation(serviceUri).entity(serviceUri).build();
+    }
+
+    @GET
+    @Path("/{uniqueId}/{serviceName}")
+    @Produces
+            ({
+                    "application/rdf+xml"
+                    , "application/atom+xml"
+                    , "application/json"
+                    , "application/xml"
+                    , "text/turtle"
+                    , "text/html"
+                    , "text/xml"
+                    , "text/plain"
+            })
+    @ApiOperation(value = "Get a service", response = Service.class)
     @ApiResponses(
             value = {
                     @ApiResponse(code = 200, message = "Service found"),
                     @ApiResponse(code = 404, message = "Service not found"),
-                    @ApiResponse(code = 403, message = "You have not got the appropriate permissions for deleting a service"),
+                    @ApiResponse(code = 403, message = "You have not got the appropriate permissions for reading the service"),
                     @ApiResponse(code = 500, message = "Internal error")})
-    public Response getServices(
+    public Response getService(
             @ApiParam(value = "Service ID", required = true)
             @PathParam("uniqueId") String uniqueId,
             @ApiParam(value = "Service name", required = true)

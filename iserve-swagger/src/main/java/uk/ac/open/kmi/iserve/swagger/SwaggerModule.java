@@ -71,8 +71,8 @@ public class SwaggerModule extends ServletModule {
         FilterFactory.setFilter(new CustomFilter());
         logger.debug("Setting Swagger API info");
         ApiInfo info = new ApiInfo(
-                "iServe RESTful APIs",                             /* title */
-                "This is the documentation of the RESTful APIs to access iServe functionalities. You can find out more about iServe " +
+                "iServe RESTful API",                             /* title */
+                "This is the documentation of the RESTful API to access iServe functionalities. You can find out more about iServe " +
                         "at <a href=\"http://iserve.kmi.open.ac.uk\">http://iserve.kmi.open.ac.uk</a>.",
                 "",                  /* TOS URL */
                 "iserve-general@googlegroups.com",                            /* Contact */
