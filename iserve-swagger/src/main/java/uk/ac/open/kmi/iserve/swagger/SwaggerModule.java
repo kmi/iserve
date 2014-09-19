@@ -45,6 +45,7 @@ public class SwaggerModule extends ServletModule {
         logger.debug("Loading Swagger module...");
 
         bind(ServletContainer.class).in(Singleton.class);
+        bind(SwaggerFilter.class).in(Singleton.class);
 
         Map<String, String> props = new HashMap<String, String>();
         props.put("javax.ws.rs.Application", SwaggerWebApplication.class.getName());
@@ -64,7 +65,6 @@ public class SwaggerModule extends ServletModule {
         ClassReaders.setReader(new DefaultJaxrsApiReader());
 
         bootstrap();
-
     }
 
     private void bootstrap() {

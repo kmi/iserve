@@ -27,6 +27,7 @@ import uk.ac.open.kmi.iserve.discovery.util.Pair;
 import uk.ac.open.kmi.msm4j.vocabulary.MSM;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -38,10 +39,13 @@ import java.util.Set;
 
 @Path("/")
 @Api(value = "/discovery", description = "Service discovery operations", basePath = "discovery")
+@Produces({"application/atom+xml", "application/json"})
 public class DiscoveryEngineResource {
 
     @Context
     UriInfo uriInfo;
+    @Context
+    HttpServletRequest request;
     private Logger logger = LoggerFactory.getLogger(DiscoveryEngineResource.class);
     private DiscoveryEngine discoveryEngine;
     private DiscoveryResultsBuilderPlugin discoveryResultsBuilder;
@@ -56,12 +60,12 @@ public class DiscoveryEngineResource {
 
     @Path("{type}/func-rdfs")
     @GET
-    @Produces("application/atom+xml")
     @ApiOperation(
             value = "Get services or operations classified by specific RDF classes.",
-            response = Feed.class, notes = "The search is performed through RDFS-based reasoning."
+            notes = "The search is performed through RDFS-based reasoning."
     )
-    public Response classificationBasedDiscoveryAsAtom(
+    @Produces({"application/atom+xml", "application/json"})
+    public Response classificationBasedDiscovery(
             @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, and \"svc\" for discovering services.", required = true, allowableValues = "svc,op")
             @PathParam("type") String type,
             @ApiParam(value = "Type of matching. The value should be either \"and\" or \"or\". The result should be the set- based conjunction or disjunction depending on the classes selected.", allowableValues = "and,or")
@@ -71,6 +75,24 @@ public class DiscoveryEngineResource {
             @ApiParam(value = "Popularity-based ranking. The value should be \"standard\" to rank the results according the popularity of the provider.", allowableValues = "standard")
             @QueryParam("ranking") String rankingType,
             @DefaultValue("disabled") @QueryParam("filtering") String filtering
+    ) throws
+            WebApplicationException {
+        if (request.getHeader("Content-Type") == null || request.getHeader("Content-Type").equals("application/atom+xml")) {
+            return classificationBasedDiscoveryAsAtom(type, function, resources, rankingType, filtering);
+        } else if (request.getHeader("Content-Type").equals("application/json")) {
+            return classificationBasedDiscoveryAsJson(type, function, resources, rankingType, filtering);
+        }
+
+        return Response.ok(null).build();
+
+    }
+
+    public Response classificationBasedDiscoveryAsAtom(
+            String type,
+            String function,
+            List<String> resources,
+            String rankingType,
+            String filtering
     ) throws
             WebApplicationException {
 
@@ -84,23 +106,12 @@ public class DiscoveryEngineResource {
         return Response.ok(feed).build();
     }
 
-    @Path("{type}/func-rdfs")
-    @GET
-    @Produces("application/json")
-    @ApiOperation(
-            value = "Get services or operations classified by specific RDF classes.",
-            notes = "The search is performed through RDFS-based reasoning."
-    )
     public Response classificationBasedDiscoveryAsJson(
-            @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, and \"svc\" for discovering services.", required = true, allowableValues = "svc,op")
-            @PathParam("type") String type,
-            @ApiParam(value = "Type of matching. The value should be either \"and\" or \"or\". The result should be the set- based conjunction or disjunction depending on the classes selected.", allowableValues = "and,or")
-            @QueryParam("f") String function,
-            @ApiParam(value = "Multivalued parameter indicating the functional classifications to match. The class should be the URL of the concept to match. This URL should be URL encoded.", required = true, allowMultiple = true)
-            @QueryParam("class") List<String> resources,
-            @ApiParam(value = "Popularity-based ranking. The value should be \"standard\" to rank the results according the popularity of the provider.", allowableValues = "standard")
-            @QueryParam("ranking") String rankingType,
-            @DefaultValue("disabled") @QueryParam("filtering") String filtering
+            String type,
+            String function,
+            List<String> resources,
+            String rankingType,
+            String filtering
     ) throws
             WebApplicationException {
 
@@ -118,12 +129,12 @@ public class DiscoveryEngineResource {
 
     @Path("{type}/io-rdfs")
     @GET
-    @Produces("application/atom+xml")
     @ApiOperation(
             value = "Get services or operations that have inputs or/and outputs classified by specific RDF classes.",
-            response = Feed.class, notes = "The search is performed through RDFS-based reasoning."
+            notes = "The search is performed through RDFS-based reasoning."
     )
-    public Response IODiscoveryAsAtom(
+    @Produces({"application/atom+xml", "application/json"})
+    public Response ioDiscovery(
             @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, and \"svc\" for discovering services.", required = true, allowableValues = "svc,op")
             @PathParam("type") String type,
             @ApiParam(value = "type of matching. The value should be either \"and\" or \"or\". The result should be the set- based conjunction or disjunction depending on the value selected between the services matching the inputs and those matching the outputs.", allowableValues = "and,or")
@@ -135,6 +146,24 @@ public class DiscoveryEngineResource {
             @QueryParam("i") List<String> inputs,
             @ApiParam(value = "Multivalued parameter indicating the classes that the output of the service should match to. The classes are indicated with the URL of the concept to match. This URL should be URL encoded.", allowMultiple = true)
             @QueryParam("o") List<String> outputs
+    ) throws
+            WebApplicationException {
+        if (request.getHeader("Content-Type") == null || request.getHeader("Content-Type").equals("application/atom+xml")) {
+            return ioDiscoveryAsAtom(type, function, rankingType, filtering, inputs, outputs);
+        } else if (request.getHeader("Content-Type").equals("application/json")) {
+            return ioDiscoveryAsJson(type, function, rankingType, filtering, inputs, outputs);
+        }
+        return Response.ok(null).build();
+    }
+
+
+    public Response ioDiscoveryAsAtom(
+            String type,
+            String function,
+            String rankingType,
+            String filtering,
+            List<String> inputs,
+            List<String> outputs
     ) throws
             WebApplicationException {
 
@@ -149,25 +178,13 @@ public class DiscoveryEngineResource {
         return Response.ok(feed).build();
     }
 
-    @Path("{type}/io-rdfs")
-    @GET
-    @Produces("application/json")
-    @ApiOperation(
-            value = "Get services or operations that have inputs or/and outputs classified by specific RDF classes.",
-            notes = "The search is performed through RDFS-based reasoning."
-    )
-    public Response IODiscoveryAsJson(
-            @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, and \"svc\" for discovering services.", required = true, allowableValues = "svc,op")
-            @PathParam("type") String type,
-            @ApiParam(value = "type of matching. The value should be either \"and\" or \"or\". The result should be the set- based conjunction or disjunction depending on the value selected between the services matching the inputs and those matching the outputs.", allowableValues = "and,or")
-            @QueryParam("f") String function,
-            @ApiParam(value = "Popularity-based ranking. The value should be \"standard\" to rank the results according the popularity of the provider.", allowableValues = "standard")
-            @QueryParam("ranking") String rankingType,
-            @DefaultValue("disabled") @QueryParam("filtering") String filtering,
-            @ApiParam(value = "Multivalued parameter indicating the classes that the input of the service should match to. The classes are indicated with the URL of the concept to match. This URL should be URL encoded.", required = true, allowMultiple = true)
-            @QueryParam("i") List<String> inputs,
-            @ApiParam(value = "Multivalued parameter indicating the classes that the output of the service should match to. The classes are indicated with the URL of the concept to match. This URL should be URL encoded.", allowMultiple = true)
-            @QueryParam("o") List<String> outputs
+    public Response ioDiscoveryAsJson(
+            String type,
+            String function,
+            String rankingType,
+            String filtering,
+            List<String> inputs,
+            List<String> outputs
     ) throws
             WebApplicationException {
 
@@ -303,11 +320,11 @@ public class DiscoveryEngineResource {
 
     @Path("{type}/search")
     @GET
-    @Produces("application/json")
     @ApiOperation(
             value = "Free text-based search of services, operations or service parts"
     )
-    public Response searchAsJson(
+    @Produces({"application/atom+xml", "application/json"})
+    public Response search(
             @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, \"svc\" for discovering services and \"all\" for any kind of service component", required = true, allowableValues = "svc,op,all")
             @PathParam("type") String type,
             @ApiParam(value = "Parameter indicating a query that specifies keywords to search. Regular expressions are allowed.", required = true)
@@ -323,34 +340,16 @@ public class DiscoveryEngineResource {
         } else {
             result = freeTextSearchPlugin.search(query);
         }
-        String json = gson.toJson(result);
-        return Response.ok(json).build();
-    }
 
-    @Path("{type}/search")
-    @GET
-    @Produces("application/atom+xml")
-    @ApiOperation(
-            value = "Free text-based search of services, operations or service parts",
-            response = Feed.class, notes = "The search is performed through RDFS-based reasoning."
-    )
-    public Response searchAsAtom(
-            @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, \"svc\" for discovering services and \"all\" for any kind of service component", required = true, allowableValues = "svc,op,all")
-            @PathParam("type") String type,
-            @ApiParam(value = "Parameter indicating a query that specifies keywords to search. Regular expressions are allowed.", required = true)
-            @QueryParam("q") String query
-    ) {
-        logger.info("Searching {} by keywords: {}", type, query);
-        Set<URI> result;
-        if (type.equals("svc")) {
-            result = freeTextSearchPlugin.search(query, URI.create(MSM.Service.getURI()));
-        } else if (type.equals("op")) {
-            result = freeTextSearchPlugin.search(query, URI.create(MSM.Operation.getURI()));
-        } else {
-            result = freeTextSearchPlugin.search(query);
+        if (request.getHeader("Content-Type") == null || request.getHeader("Content-Type").equals("application/atom+xml")) {
+            Feed feed = new AbderaAtomFeedProvider().generateSearchFeed(uriInfo.getRequestUri().toASCIIString(), freeTextSearchPlugin.getClass().toString(), result);
+            return Response.ok(feed).build();
+        } else if (request.getHeader("Content-Type").equals("application/json")) {
+            String json = gson.toJson(result);
+            return Response.ok(json).build();
         }
-        Feed feed = new AbderaAtomFeedProvider().generateSearchFeed(uriInfo.getRequestUri().toASCIIString(), freeTextSearchPlugin.getClass().toString(), result);
-        return Response.ok(feed).build();
+
+        return Response.ok(null).build();
     }
 
 }
