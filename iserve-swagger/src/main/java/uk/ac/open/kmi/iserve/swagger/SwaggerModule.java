@@ -72,8 +72,8 @@ public class SwaggerModule extends ServletModule {
         logger.debug("Setting Swagger API info");
         ApiInfo info = new ApiInfo(
                 "iServe RESTful APIs",                             /* title */
-                "This is the documentation to the iServe functionalities of the service registry. You can find out more about iServe " +
-                        "at <a href=\"http://iserve.kmi.open.ac.uk\">http://iserve.kmi.open.ac.uk</a>",
+                "This is the documentation of the RESTful APIs to access iServe functionalities. You can find out more about iServe " +
+                        "at <a href=\"http://iserve.kmi.open.ac.uk\">http://iserve.kmi.open.ac.uk</a>.",
                 "",                  /* TOS URL */
                 "iserve-general@googlegroups.com",                            /* Contact */
                 "Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)",                                     /* license */
