@@ -285,4 +285,35 @@ public class ServicesResource {
 
     }
 
+    @GET
+    @Path("/{uniqueId}/{serviceName}")
+    @Produces
+            ({
+                    "text/javascript"
+                    , "application/javascript"
+                    , "application/rdf+xml"
+                    , "application/atom+xml"
+                    , "application/json"
+                    , "application/xml"
+                    , "text/turtle"
+                    , "text/html"
+                    , "text/xml"
+                    , "text/plain"
+            })
+    @ApiOperation(value = "Get a service")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Service found"),
+                    @ApiResponse(code = 404, message = "Service not found"),
+                    @ApiResponse(code = 403, message = "You have not got the appropriate permissions for deleting a service"),
+                    @ApiResponse(code = 500, message = "Internal error")})
+    public Response getServices(
+            @ApiParam(value = "Service ID", required = true)
+            @PathParam("uniqueId") String uniqueId,
+            @ApiParam(value = "Service name", required = true)
+            @PathParam("serviceName") String serviceName) {
+        URI serviceUri = uriInfo.getRequestUri();
+        return Response.status(Response.Status.OK).contentLocation(serviceUri).entity(serviceUri).build();
+    }
+
 }

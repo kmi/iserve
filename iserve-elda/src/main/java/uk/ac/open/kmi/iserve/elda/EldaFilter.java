@@ -27,7 +27,7 @@ public class EldaFilter implements Filter {
         res.addHeader("Access-Control-Allow-Headers", "Content-Type");
         if (httpRequest.getRequestURI().matches("/iserve/id.*") && !httpRequest.getMethod().equalsIgnoreCase("GET")) {
             salRestRequestDispatcher.forward(request, response);
-        } else if (httpRequest.getRequestURI().matches("/iserve/id.*") && httpRequest.getMethod().equalsIgnoreCase("GET")) {
+        } else if ((httpRequest.getRequestURI().matches("/iserve/id.*") && httpRequest.getMethod().equalsIgnoreCase("GET") || (httpRequest.getRequestURI().matches("/iserve/api-docs.*")))) {
             chain.doFilter(request, response);
         } else {
             defaultRequestDispatcher.forward(request, response);

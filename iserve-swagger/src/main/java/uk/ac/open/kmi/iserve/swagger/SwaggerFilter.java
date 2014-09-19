@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -23,13 +24,18 @@ public class SwaggerFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        logger.debug("Forwarding the request to Swagger");
+
+        HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         res.addHeader("Access-Control-Allow-Origin", "*");
         res.addHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
         res.addHeader("Access-Control-Allow-Headers", "Content-Type");
         logger.debug("Forward to swagger servlet");
-        swaggerRequestDispatcher.forward(request, response);
+        if (req.getRequestURI().matches("/iserve/api-docs.*")) {
+            logger.debug("Forwarding the request to Swagger");
+            swaggerRequestDispatcher.forward(request, response);
+        }
+        chain.doFilter(request, response);
 
     }
 

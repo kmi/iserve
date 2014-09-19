@@ -58,13 +58,14 @@ public class DiscoveryEngineResource {
         this.freeTextSearchPlugin = freeTextSearchPlugin;
     }
 
-    @Path("{type}/func-rdfs")
+
     @GET
+    @Path("{type}/func-rdfs")
     @ApiOperation(
             value = "Get services or operations classified by specific RDF classes.",
             notes = "The search is performed through RDFS-based reasoning."
     )
-    @Produces({"application/atom+xml", "application/json"})
+
     public Response classificationBasedDiscovery(
             @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, and \"svc\" for discovering services.", required = true, allowableValues = "svc,op")
             @PathParam("type") String type,
@@ -133,7 +134,6 @@ public class DiscoveryEngineResource {
             value = "Get services or operations that have inputs or/and outputs classified by specific RDF classes.",
             notes = "The search is performed through RDFS-based reasoning."
     )
-    @Produces({"application/atom+xml", "application/json"})
     public Response ioDiscovery(
             @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, and \"svc\" for discovering services.", required = true, allowableValues = "svc,op")
             @PathParam("type") String type,
@@ -323,7 +323,6 @@ public class DiscoveryEngineResource {
     @ApiOperation(
             value = "Free text-based search of services, operations or service parts"
     )
-    @Produces({"application/atom+xml", "application/json"})
     public Response search(
             @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, \"svc\" for discovering services and \"all\" for any kind of service component", required = true, allowableValues = "svc,op,all")
             @PathParam("type") String type,
