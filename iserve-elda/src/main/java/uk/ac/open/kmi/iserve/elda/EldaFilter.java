@@ -25,9 +25,12 @@ public class EldaFilter implements Filter {
         res.addHeader("Access-Control-Allow-Origin", "*");
         res.addHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
         res.addHeader("Access-Control-Allow-Headers", "Content-Type");
-        if (httpRequest.getRequestURI().matches("/iserve/id.*") && !httpRequest.getMethod().equalsIgnoreCase("GET")) {
+        if (httpRequest.getRequestURI().equals("/iserve/id/services")) {
+            // TODO Fix this by debugging Elda config file
+            res.sendRedirect("/iserve/doc/services");
+        } else if (httpRequest.getRequestURI().matches("/iserve/id.*") && !httpRequest.getMethod().equalsIgnoreCase("GET")) {
             salRestRequestDispatcher.forward(request, response);
-        } else if ((httpRequest.getRequestURI().matches("/iserve/id.*") && httpRequest.getMethod().equalsIgnoreCase("GET") || (httpRequest.getRequestURI().matches("/iserve/api-docs.*")))) {
+        } else if ((httpRequest.getRequestURI().matches("/iserve/id.*") && httpRequest.getMethod().equalsIgnoreCase("GET")) || (httpRequest.getRequestURI().matches("/iserve/api-docs.*"))) {
             chain.doFilter(request, response);
         } else {
             defaultRequestDispatcher.forward(request, response);
