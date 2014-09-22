@@ -80,12 +80,10 @@ public class DiscoveryEngineResource {
     ) throws
             WebApplicationException {
 
-        if (request.getHeader("Content-Type") == null || request.getHeader("Accept") == null || request.getHeader("Content-Type").equals("application/atom+xml") || request.getHeader("Accept").equals("application/atom+xml")) {
-            return classificationBasedDiscoveryAsAtom(type, function, resources, rankingType, "");
-        } else if (request.getHeader("Content-Type").equals("application/json") || request.getHeader("Accept").equals("application/json")) {
+        if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
             return classificationBasedDiscoveryAsJson(type, function, resources, rankingType, "");
         }
-        return Response.ok(null).build();
+        return classificationBasedDiscoveryAsAtom(type, function, resources, rankingType, "");
 
     }
 
@@ -152,12 +150,11 @@ public class DiscoveryEngineResource {
             @QueryParam("o") List<String> outputs
     ) throws
             WebApplicationException {
-        if (request.getHeader("Content-Type") == null || request.getHeader("Accept") == null || request.getHeader("Content-Type").equals("application/atom+xml") || request.getHeader("Accept").equals("application/atom+xml")) {
-            return ioDiscoveryAsAtom(type, function, rankingType, filtering, inputs, outputs);
-        } else if (request.getHeader("Content-Type").equals("application/json") || request.getHeader("Accept").equals("application/json")) {
+        if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
             return ioDiscoveryAsJson(type, function, rankingType, filtering, inputs, outputs);
         }
-        return Response.ok(null).build();
+
+        return ioDiscoveryAsAtom(type, function, rankingType, filtering, inputs, outputs);
     }
 
 
@@ -346,16 +343,13 @@ public class DiscoveryEngineResource {
         } else {
             result = freeTextSearchPlugin.search(query);
         }
-
-        if (request.getHeader("Content-Type") == null || request.getHeader("Accept") == null || request.getHeader("Content-Type").equals("application/atom+xml") || request.getHeader("Accept").equals("application/atom+xml")) {
-            Feed feed = new AbderaAtomFeedProvider().generateSearchFeed(uriInfo.getRequestUri().toASCIIString(), freeTextSearchPlugin.getClass().toString(), result);
-            return Response.ok(feed).build();
-        } else if (request.getHeader("Content-Type").equals("application/json") || request.getHeader("Accept").equals("application/json")) {
+        if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
             String json = gson.toJson(result);
             return Response.ok(json).build();
-        }
 
-        return Response.ok(null).build();
+        }
+        Feed feed = new AbderaAtomFeedProvider().generateSearchFeed(uriInfo.getRequestUri().toASCIIString(), freeTextSearchPlugin.getClass().toString(), result);
+        return Response.ok(feed).build();
     }
 
 }
