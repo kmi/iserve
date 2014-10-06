@@ -6,14 +6,25 @@
  */
 package uk.ac.open.kmi.iserve.sal.rest;
 
-import com.google.inject.AbstractModule;
+import com.google.inject.servlet.ServletModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
 
-public class SalRestModule extends AbstractModule {
+public class SalRestModule extends ServletModule {
 
-    protected void configure() {
+    private Logger logger = LoggerFactory.getLogger(SalRestModule.class);
+
+    @Override
+    protected void configureServlets() {
+        logger.debug("Loading SAL Rest module...");
+
+        logger.debug("Loading Registry iServe components...");
+
         install(new ConfigurationModule());
+
         install(new RegistryManagementModule());
+
     }
 }

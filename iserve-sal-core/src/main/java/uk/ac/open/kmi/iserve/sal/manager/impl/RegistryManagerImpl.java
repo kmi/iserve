@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ * Copyright (c) 2014. Knowledge Media Institute - The Open University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,6 +61,7 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
     private final ServiceManager serviceManager;
     private final KnowledgeBaseManager kbManager;
     private final ServiceTransformationEngine serviceTransformationEngine;
+    private final NfpManager nfpManager;
 
     @Inject
     private RegistryManagerImpl(EventBus eventBus,
@@ -68,13 +69,15 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
                                 DocumentManager docManager,
                                 ServiceManager serviceManager,
                                 KnowledgeBaseManager kbManager,
-                                ServiceTransformationEngine serviceTransformationEngine) throws ConfigurationException, SalException {
+                                ServiceTransformationEngine serviceTransformationEngine,
+                                NfpManager nfpManager) throws ConfigurationException, SalException {
 
         super(eventBus, iServeUri);
         this.docManager = docManager;
         this.serviceManager = serviceManager;
         this.kbManager = kbManager;
         this.serviceTransformationEngine = serviceTransformationEngine;
+        this.nfpManager = nfpManager;
     }
 
     /**
@@ -129,6 +132,11 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
     @Override
     public DocumentManager getDocumentManager() {
         return this.docManager;
+    }
+
+    @Override
+    public NfpManager getNfpManager() {
+        return nfpManager;
     }
 
     /**

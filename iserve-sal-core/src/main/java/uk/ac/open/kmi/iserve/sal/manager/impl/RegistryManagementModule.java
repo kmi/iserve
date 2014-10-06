@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ * Copyright (c) 2014. Knowledge Media Institute - The Open University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,6 +58,7 @@ public class RegistryManagementModule extends AbstractModule {
         bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
         bind(ServiceManager.class).to(ServiceManagerSparql.class);
         bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class);
+        bind(NfpManager.class).to(NfpManagerSparql.class);
         bind(RegistryManager.class).to(RegistryManagerImpl.class);
     }
 }

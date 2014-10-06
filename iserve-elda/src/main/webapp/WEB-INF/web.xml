@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2014. Knowledge Media Institute - The Open University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!--suppress WebProperties, WebProperties -->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+    <filter>
+        <filter-name>Elda Filter</filter-name>
+        <filter-class>uk.ac.open.kmi.iserve.elda.EldaFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>Elda Filter</filter-name>
+        <url-pattern>/lda-assets/*</url-pattern>
+        <url-pattern>/index.html</url-pattern>
+        <url-pattern>/id/*</url-pattern>
+        <url-pattern>/docs/*</url-pattern>
+    </filter-mapping>
+
+
+    <filter>
+        <filter-name>Elda</filter-name>
+        <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>uk.ac.open.kmi.iserve.elda.EldaWebApplication</param-value>
+        </init-param>
+        <init-param>
+            <param-name>jersey.config.servlet.filter.forwardOn404</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>org.glassfish.jersey.spi.container.ContainerRequestFilters</param-name>
+            <param-value>org.glassfish.jersey.api.container.filter.PostReplaceFilter</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>Elda</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <listener>
+        <listener-class>uk.ac.open.kmi.iserve.elda.EldaRouterRestlet$Init</listener-class>
+    </listener>
+
+    <context-param>
+        <param-name>com.epimorphics.api.initialSpecFile</param-name>
+        <param-value>
+            specs/iserve.ttl
+        </param-value>
+    </context-param>
+
+
+</web-app>

@@ -16,6 +16,7 @@
 
 package uk.ac.open.kmi.iserve.sal.rest.resource;
 
+import com.wordnik.swagger.annotations.*;
 import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 import uk.ac.open.kmi.iserve.sal.exception.LogException;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
@@ -29,16 +30,15 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
 
-@Path("/id/documents")
+@Path("/documents")
+@Api(value = "/id/documents", description = "Operations about service documents", basePath = "id")
 public class DocumentsResource {
 
+    private final DocumentManager docManager;
     @Context
     UriInfo uriInfo;
-
     @Context
     SecurityContext security;
-
-    private final DocumentManager docManager;
 
     @Inject
     public DocumentsResource(DocumentManager documentManager) {
@@ -46,11 +46,20 @@ public class DocumentsResource {
     }
 
     @POST
+    @ApiOperation(value = "Add a new service document",
+            notes = "Returns a HTML document which contains the URI of the added document")
+    @ApiResponses(
+            value = {@ApiResponse(code = 201, message = "Created document"),
+                    @ApiResponse(code = 500, message = "Internal error")})
     @Consumes({MediaType.TEXT_HTML, MediaType.TEXT_XML, MediaType.APPLICATION_XML, "application/rdf+xml",
             "text/turtle", "text/n3", "text/rdf+n3", MediaType.TEXT_PLAIN})
     @Produces({MediaType.TEXT_HTML})
-    public Response addDocument(String document, @HeaderParam("Content-Location") String locationUri,
-                                @HeaderParam("Content-Type") String contentType) {
+    public Response addDocument(
+            String document,
+            @ApiParam(value = "Document location", required = true)
+            @HeaderParam("Content-Location") String locationUri,
+            @ApiParam(value = "Document Media type", required = true)
+            @HeaderParam("Content-Type") String contentType) {
 
         // TODO: Re add security
 //        if ( security.getUserPrincipal() == null ) {
@@ -106,8 +115,17 @@ public class DocumentsResource {
 
     @DELETE
     @Path("/{id}")
+    @ApiOperation(value = "Delete a service document",
+            notes = "Returns a HTML document which confirms the deletion of the document")
+    @ApiResponses(
+            value = {@ApiResponse(code = 401, message = "Deleted document"),
+                    @ApiResponse(code = 500, message = "Internal error")})
     @Produces({MediaType.TEXT_HTML})
-    public Response deleteDocument(@Context UriInfo uriInfo) throws DocumentException, LogException {
+    public Response deleteDocument(
+            @Context UriInfo uriInfo,
+            @ApiParam(value = "Description ID", required = true)
+            @PathParam("id") String id
+    ) throws DocumentException, LogException {
 
         // TODO: Re add security
 //        if ( security.getUserPrincipal() == null ) {

@@ -21,6 +21,7 @@ package uk.ac.open.kmi.iserve.discovery.engine.rest;
  *******************************************************************************/
 
 import org.apache.abdera.Abdera;
+import org.apache.abdera.model.Content;
 import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
@@ -56,6 +57,99 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
 
     private static final Logger log = LoggerFactory.getLogger(AbderaAtomFeedProvider.class);
     private static final Abdera ATOM_ENGINE = new Abdera();
+
+    /**
+     * TODO: Implement properly
+     * <p/>
+     * We require the request URL
+     *
+     * @param matchingResults
+     * @return
+     */
+    public static Feed generateFeed(String request, String matcherDetails, Map<URI, MatchResult> matchingResults) {
+
+        Feed feed = initialiseFeed(request, matcherDetails);
+
+        // Return empty feed if null
+        if (matchingResults == null) {
+            return feed;
+        }
+
+        int numResults = matchingResults.size();
+        log.debug(matchingResults.keySet().toString());
+
+        Set<Map.Entry<URI, MatchResult>> entries = matchingResults.entrySet();
+        for (Map.Entry<URI, MatchResult> entry : entries) {
+            Entry rssEntry = createMatchResultEntry(entry.getKey(), entry.getValue());
+            feed.addEntry(rssEntry);
+        }
+
+        return feed;
+    }
+
+    /**
+     * TODO: Implement properly
+     * <p/>
+     * We require the request URL
+     *
+     * @param discoveryResults
+     * @return
+     */
+    public static Feed generateDiscoveryFeed(String request, String matcherDetails, Map<URI, DiscoveryResult> discoveryResults) {
+
+        Feed feed = initialiseFeed(request, matcherDetails);
+
+        // Return empty feed if null
+        if (discoveryResults == null) {
+            return feed;
+        }
+
+        log.debug(discoveryResults.keySet().toString());
+
+
+        for (URI resource : discoveryResults.keySet()) {
+            Entry rssEntry = createDiscoveryResultEntry(resource, discoveryResults.get(resource));
+            feed.addEntry(rssEntry);
+        }
+
+        return feed;
+    }
+
+    private static Entry createDiscoveryResultEntry(URI resource, DiscoveryResult discoveryResult) {
+
+        Entry rssEntry =
+                ATOM_ENGINE.newEntry();
+        rssEntry.setId(resource.toASCIIString());
+        rssEntry.addLink(resource.toASCIIString(), "alternate");
+        rssEntry.setTitle(resource.toASCIIString());
+        rssEntry.setContent(discoveryResult.toXML(), Content.Type.XML);
+        return rssEntry;
+    }
+
+    private static Entry createMatchResultEntry(URI matchUri, MatchResult matchResult) {
+
+        Entry rssEntry =
+                ATOM_ENGINE.newEntry();
+        rssEntry.setId(matchUri.toASCIIString());
+        rssEntry.addLink(matchUri.toASCIIString(), "alternate");
+        rssEntry.setTitle(matchUri.toASCIIString());
+
+        rssEntry.setContent(matchResult.getExplanation());
+        return rssEntry;
+    }
+
+    private static Feed initialiseFeed(String request, String matcherDetails) {
+        // Basic initialisation
+        Feed feed = ATOM_ENGINE.getFactory().newFeed();
+        feed.setUpdated(new Date());
+        //FIXME: we should include the version
+        feed.setGenerator(request, null, matcherDetails);
+        feed.setId(request);
+        feed.addLink(request, "self");
+        feed.setTitle("Results");
+
+        return feed;
+    }
 
     public long getSize(Feed feed,
                         Class<?> type,
@@ -104,63 +198,6 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
         return doc.getRoot();
     }
 
-    /**
-     * TODO: Implement properly
-     * <p/>
-     * We require the request URL
-     *
-     * @param matchingResults
-     * @return
-     */
-    public static Feed generateFeed(String request, String matcherDetails, Map<URI, MatchResult> matchingResults) {
-
-        Feed feed = initialiseFeed(request, matcherDetails);
-
-        // Return empty feed if null
-        if (matchingResults == null) {
-            return feed;
-        }
-
-        int numResults = matchingResults.size();
-        log.debug(matchingResults.keySet().toString());
-
-        Set<Map.Entry<URI, MatchResult>> entries = matchingResults.entrySet();
-        for (Map.Entry<URI, MatchResult> entry : entries) {
-            Entry rssEntry = createMatchResultEntry(entry.getKey(), entry.getValue());
-            feed.addEntry(rssEntry);
-        }
-
-        return feed;
-    }
-
-    private static Entry createMatchResultEntry(URI matchUri, MatchResult matchResult) {
-
-        Entry rssEntry =
-                ATOM_ENGINE.newEntry();
-        rssEntry.setId(matchUri.toASCIIString());
-        rssEntry.addLink(matchUri.toASCIIString(), "alternate");
-        rssEntry.setTitle(matchUri.toASCIIString());
-        //			String content = "Matching degree: " + degree;
-        //			ExtensibleElement e = rssEntry.addExtension(entry.getValue().);
-        //			e.setAttributeValue("score", entry.getValue().getScore());
-        //			e.setText(degree);
-        rssEntry.setContent(matchResult.getExplanation());
-        return rssEntry;
-    }
-
-    private static Feed initialiseFeed(String request, String matcherDetails) {
-        // Basic initialisation
-        Feed feed = ATOM_ENGINE.getFactory().newFeed();
-        feed.setUpdated(new Date());
-        //FIXME: we should include the version
-        feed.setGenerator(request, null, matcherDetails);
-        feed.setId(request);
-        feed.addLink(request, "self");
-        feed.setTitle("Match Results");
-
-        return feed;
-    }
-
     public Feed generateFeed(String request, String matcherDetails, MatchResult matchResult) {
 
         Feed feed = initialiseFeed(request, matcherDetails);
@@ -172,5 +209,35 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
 
         feed.addEntry(createMatchResultEntry(matchResult.getMatchedResource(), matchResult));
         return feed;
+    }
+
+
+    public Feed generateSearchFeed(String request, String searchPlugin, Set<URI> result) {
+        Feed feed = initialiseFeed(request, searchPlugin);
+
+        // Return empty feed if null
+        if (result == null) {
+            return feed;
+        }
+
+        log.debug(result.toString());
+
+
+        for (URI resource : result) {
+            Entry rssEntry = createSearchResultEntry(resource);
+            feed.addEntry(rssEntry);
+        }
+
+        return feed;
+    }
+
+    private Entry createSearchResultEntry(URI resource) {
+        Entry rssEntry =
+                ATOM_ENGINE.newEntry();
+        rssEntry.setId(resource.toASCIIString());
+        rssEntry.addLink(resource.toASCIIString(), "alternate");
+        rssEntry.setTitle(resource.toASCIIString());
+        rssEntry.setContent(resource.toASCIIString());
+        return rssEntry;
     }
 }
