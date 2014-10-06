@@ -34,15 +34,15 @@ public class AbderaAtomGenerationTest {
 
         URI modelA = URI.create("http://schema.org/InformAction");
 
-        String query = "service-class " + modelA + " rank" ;
+        String query = "service-class " + modelA + " rank";
 
         Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
 
         Stopwatch stopwatch = new Stopwatch().start();
-        Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result,"standard");
+        Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result, "standard");
         stopwatch.stop();
 
-        Feed feed = new AbderaAtomFeedProvider().generateDiscoveryFeed("test",discoveryEngine.toString(),discoveryResults);
+        Feed feed = new AbderaAtomFeedProvider().generateDiscoveryFeed("test", discoveryEngine.toString(), discoveryResults);
 
         logger.info("Discovery Result building complete in {}", stopwatch);
         logger.info(feed.toString());

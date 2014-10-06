@@ -35,24 +35,14 @@
 @prefix lucene:                <http://www.ontotext.com/owlim/lucene#> .
 
 # Prefix for the local specification
-<<<<<<< HEAD:iserve-sal-rest/src/main/webapp/specs/iserve.ttl
+
 @prefix spec:               <http://localhost:8080/iserve/api-config#> .
-=======
-@prefix spec:               <http://iserve.kmi.open.ac.uk/iserve/api-config#> .
->>>>>>> discovery-ranking:iserve-elda/src/main/webapp/specs/iserve.ttl
 
 # ---------------------------------------------------------------------
 # API config
 
-<<<<<<< HEAD:iserve-sal-rest/src/main/webapp/specs/iserve.ttl
 spec:api a api:API;
 	api:sparqlEndpoint <http://localhost:8080/openrdf-sesame/repositories/iserve> ;
-
-=======
-spec:api a api:API; 
-	api:sparqlEndpoint <http://localhost:8080/openrdf-sesame/repositories/iserve> ;
-	
->>>>>>> discovery-ranking:iserve-elda/src/main/webapp/specs/iserve.ttl
 	rdfs:label "iServe API"@en ;
 	api:lang "en,none";
 #	api:vocabulary "http://iserve.kmi.open.ac.uk/ns/msm#" ;
@@ -84,13 +74,7 @@ spec:api a api:API;
 		spec:operationItem ,
 		spec:operationInputsList ,
 		spec:messageItem ,
-<<<<<<< HEAD:iserve-sal-rest/src/main/webapp/specs/iserve.ttl
-		spec:messagePart .
-
-# Endpoint definition
-
-=======
-		spec:messagePart, 
+		spec:messagePart,
 	    spec:providerList ,
 	    spec:providerItem ,
 		spec:about ,
@@ -104,8 +88,7 @@ spec:api a api:API;
         elda:textQueryProperty lucene:entityIndex ;
         elda:supportsNestedSelect true ;
         .	
-					
->>>>>>> discovery-ranking:iserve-elda/src/main/webapp/specs/iserve.ttl
+
 # Viewers Definitions
 
 #
@@ -156,13 +139,7 @@ spec:operationViewer a api:Viewer ;
 
 spec:messagePartViewer a api:Viewer ;
 	api:name "messagePart" ;
-<<<<<<< HEAD:iserve-sal-rest/src/main/webapp/specs/iserve.ttl
-	api:properties "label,type,modelReference,hasMandatoryPart.label,hasMandatoryPart.modelReference,hasOptionalPart.label,hasOptionalPart.modelReference,source,isGroundedIn" .
-
-=======
 	api:properties "label,comment,type,modelReference,hasMandatoryPart.label,hasMandatoryPart.modelReference,hasOptionalPart.label,hasOptionalPart.modelReference,source,isGroundedIn" .
-										
->>>>>>> discovery-ranking:iserve-elda/src/main/webapp/specs/iserve.ttl
 
 spec:schemeViewer a api:Viewer ;
 	api:name "scheme" ;
@@ -253,10 +230,6 @@ spec:operationsSelect a api:Selector ;
 spec:operationInputsSelect a api:Selector ;
 	api:filter "type=MessageContent" ;
 	# To be fixed as the code is not really used properly
-<<<<<<< HEAD:iserve-sal-rest/src/main/webapp/specs/iserve.ttl
-	api:where "?operation msm:hasInput ?item ." ;
-	api:sort "label" .
-=======
 	api:where "?operation msm:hasInput ?item . " ;
 	api:sort "label" .
  
@@ -264,7 +237,6 @@ spec:providerSelect a api:Selector ;
         api:where "?service schema:provider ?item . FILTER(STRSTARTS(STR(?item), \"http://iserve.kmi.open.ac.uk/iserve/\")) " ;
         api:sort "label" .
 
->>>>>>> discovery-ranking:iserve-elda/src/main/webapp/specs/iserve.ttl
 
 #
 # List Endpoints
@@ -359,10 +331,7 @@ spec:operationInputsList a api:ListEndpoint ;
        	] ;
 	api:selector spec:operationInputsSelect ;
     api:viewer api:describeViewer, api:basicViewer, spec:operationViewer ;
-<<<<<<< HEAD:iserve-sal-rest/src/main/webapp/specs/iserve.ttl
     api:defaultViewer spec:operationViewer .
-=======
-    api:defaultViewer spec:operationViewer . 
 
 spec:providerList a api:ListEndpoint ;
         rdfs:label "Providers List"@en ;
@@ -370,7 +339,6 @@ spec:providerList a api:ListEndpoint ;
         api:selector spec:providerSelect ;
     api:viewer api:describeViewer, api:basicViewer, spec:providerViewer ;
     api:defaultViewer spec:providerViewer . 	 
->>>>>>> discovery-ranking:iserve-elda/src/main/webapp/specs/iserve.ttl
 
 #
 #Items Endpoints

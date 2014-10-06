@@ -25,7 +25,7 @@ import java.util.Map;
 public class DiscoveryResult {
     private String label;
     private String description;
-    private Map<URI,Object> rankPropertyValues;
+    private Map<URI, Object> rankPropertyValues;
     private Double rankingScore;
     private MatchResult matchResult;
 
@@ -62,15 +62,15 @@ public class DiscoveryResult {
         this.rankPropertyValues = rankPropertyValues;
     }
 
-    public void addRankPropertyValue(URI property, Object value){
-        if(rankPropertyValues == null){
+    public void addRankPropertyValue(URI property, Object value) {
+        if (rankPropertyValues == null) {
             rankPropertyValues = Maps.newTreeMap();
         }
         rankPropertyValues.put(property, value);
     }
 
-    public Object removeRankProperty(URI property){
-        if(rankPropertyValues != null){
+    public Object removeRankProperty(URI property) {
+        if (rankPropertyValues != null) {
             return rankPropertyValues.remove(property);
         }
         return null;
@@ -84,7 +84,7 @@ public class DiscoveryResult {
         this.matchResult = matchResult;
     }
 
-    public String toXML(){
+    public String toXML() {
         try {
 
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -95,26 +95,26 @@ public class DiscoveryResult {
             Element rootElement = doc.createElement("discoveryResult");
             doc.appendChild(rootElement);
 
-            if(label != null){
+            if (label != null) {
                 Element labelEl = doc.createElement("label");
                 labelEl.appendChild(doc.createTextNode(label));
                 rootElement.appendChild(labelEl);
             }
 
-            if(description != null){
+            if (description != null) {
                 Element descriptionEl = doc.createElement("description");
                 descriptionEl.appendChild(doc.createTextNode(description));
                 rootElement.appendChild(descriptionEl);
             }
 
-            if(rankPropertyValues != null){
+            if (rankPropertyValues != null) {
                 Element propertiesEl = doc.createElement("properties");
-                for(URI property:rankPropertyValues.keySet()){
-                    if(rankPropertyValues.get(property)!=null){
+                for (URI property : rankPropertyValues.keySet()) {
+                    if (rankPropertyValues.get(property) != null) {
                         Element propertyEl = doc.createElement("property");
                         String value = (String) rankPropertyValues.get(property);
-                        propertyEl.setAttribute("name",property.toASCIIString());
-                        propertyEl.setAttribute("value",value);
+                        propertyEl.setAttribute("name", property.toASCIIString());
+                        propertyEl.setAttribute("value", value);
                         propertiesEl.appendChild(propertyEl);
                     }
 
@@ -122,18 +122,18 @@ public class DiscoveryResult {
                 rootElement.appendChild(propertiesEl);
             }
 
-            if(rankingScore != null){
+            if (rankingScore != null) {
                 Element scoreEl = doc.createElement("rankingScore");
                 scoreEl.appendChild(doc.createTextNode(rankingScore.toString()));
                 rootElement.appendChild(scoreEl);
             }
 
-            if(matchResult != null){
+            if (matchResult != null) {
                 Element matchResultEl = doc.createElement("matchResult");
-                matchResultEl.setAttribute("matchedResource",matchResult.getMatchedResource().toASCIIString());
-                matchResultEl.setAttribute("resourceToMatch",matchResult.getResourceToMatch().toASCIIString());
-                matchResultEl.setAttribute("matchType",matchResult.getMatchType().toString());
-                matchResultEl.setAttribute("explanation",matchResult.getExplanation());
+                matchResultEl.setAttribute("matchedResource", matchResult.getMatchedResource().toASCIIString());
+                matchResultEl.setAttribute("resourceToMatch", matchResult.getResourceToMatch().toASCIIString());
+                matchResultEl.setAttribute("matchType", matchResult.getMatchType().toString());
+                matchResultEl.setAttribute("explanation", matchResult.getExplanation());
                 rootElement.appendChild(matchResultEl);
             }
 

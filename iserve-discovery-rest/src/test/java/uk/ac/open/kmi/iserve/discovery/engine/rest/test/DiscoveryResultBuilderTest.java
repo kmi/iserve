@@ -32,13 +32,13 @@ public class DiscoveryResultBuilderTest {
 
         URI modelA = URI.create("http://schema.org/InformAction");
 
-        String query = "service-class " + modelA ;
+        String query = "service-class " + modelA;
 
 
         Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
 
         Stopwatch stopwatch = new Stopwatch().start();
-        Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result,"standard");
+        Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result, "standard");
         stopwatch.stop();
 
         logger.info("Discovery Result building complete in {}", stopwatch);

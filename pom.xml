@@ -148,8 +148,6 @@
         <module>iserve-webapp</module>
         <module>iserve-shared-resources</module>
         <module>iserve-integrated-engine</module>
-        <module>iserve-popularity-scoring</module>
-        <module>iserve-free-text-search</module>
         <module>iserve-elda</module>
         <module>iserve-swagger</module>
     </modules>

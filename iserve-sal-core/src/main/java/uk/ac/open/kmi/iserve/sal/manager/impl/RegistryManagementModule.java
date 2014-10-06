@@ -58,7 +58,6 @@ public class RegistryManagementModule extends AbstractModule {
         bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
         bind(ServiceManager.class).to(ServiceManagerSparql.class);
         bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class);
-        bind(NfpManager.class).to(NfpManagerSparql.class);
         bind(RegistryManager.class).to(RegistryManagerImpl.class);
     }
 }
