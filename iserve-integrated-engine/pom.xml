@@ -177,7 +177,7 @@
                         <configuration>
                             <resourceBundles>
                                 <resourceBundle>
-                                    uk.ac.open.kmi:sws-test-collections:${test-collections.version}
+                                    uk.ac.open.kmi.test-collections:sws-test-collections:${test-collections.version}
                                 </resourceBundle>
                             </resourceBundles>
                             <attached>false</attached>

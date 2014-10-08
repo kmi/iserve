@@ -110,16 +110,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>uk.ac.open.kmi.iserve</groupId>
-            <artifactId>iserve-free-text-search</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>uk.ac.open.kmi.iserve</groupId>
-            <artifactId>iserve-popularity-scoring</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
@@ -171,11 +161,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20140107</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
         </dependency>
-
 
     </dependencies>
 
@@ -215,7 +204,7 @@
                         <configuration>
                             <resourceBundles>
                                 <resourceBundle>
-                                    uk.ac.open.kmi:sws-test-collections:${test-collections.version}
+                                    uk.ac.open.kmi.test-collections:sws-test-collections:${test-collections.version}
                                 </resourceBundle>
                             </resourceBundles>
                             <attached>false</attached>

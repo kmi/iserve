@@ -62,21 +62,21 @@ public class ConceptMatcherOwlTcTest {
 
     private static final Logger log = LoggerFactory.getLogger(ConceptMatcherOwlTcTest.class);
 
-    private static final String OWLS_TC_SERVICES = "/OWLS-TC3-MSM";
+    private static final String OWLS_TC_MSM = "/services/OWLS-1.1-MSM";
 
     private static final String OWL_THING = "http://www.w3.org/2002/07/owl#Thing";
     private static final String OWL_NOTHING = "http://www.w3.org/2002/07/owl#Nothing";
 
-    private static final String SUMO_ABSTRACT = "http://127.0.0.1/ontology/SUMO.owl#Abstract";
-    private static final String SUMO_PHYSICAL_QUANTITY = "http://127.0.0.1/ontology/SUMO.owl#PhysicalQuantity";
-    private static final String SUMO_CURRENCY_MEASURE = "http://127.0.0.1/ontology/SUMO.owl#CurrencyMeasure";
-    private static final String SUMO_QUANTITY = "http://127.0.0.1/ontology/SUMO.owl#Quantity";
-    private static final String SUMO_CONSTANT_QUANTITY = "http://127.0.0.1/ontology/SUMO.owl#ConstantQuantity";
-    private static final String SUMO_EURO_DOLLAR = "http://127.0.0.1/ontology/SUMO.owl#EuroDollar";
+    private static final String SUMO_ABSTRACT = "http://127.0.0.1:8000/ontology/SUMO.owl#Abstract";
+    private static final String SUMO_PHYSICAL_QUANTITY = "http://127.0.0.1:8000/ontology/SUMO.owl#PhysicalQuantity";
+    private static final String SUMO_CURRENCY_MEASURE = "http://127.0.0.1:8000/ontology/SUMO.owl#CurrencyMeasure";
+    private static final String SUMO_QUANTITY = "http://127.0.0.1:8000/ontology/SUMO.owl#Quantity";
+    private static final String SUMO_CONSTANT_QUANTITY = "http://127.0.0.1:8000/ontology/SUMO.owl#ConstantQuantity";
+    private static final String SUMO_EURO_DOLLAR = "http://127.0.0.1:8000/ontology/SUMO.owl#EuroDollar";
 
-    private static final String SUMO_THERAPEUTIC_PROCESS = "http://127.0.0.1/ontology/SUMO.owl#TherapeuticProcess";
-    private static final String SUMO_INTENTIONAL_PROCESS = "http://127.0.0.1/ontology/SUMO.owl#IntentionalProcess";
-    private static final String SUMO_ENTITY = "http://127.0.0.1/ontology/SUMO.owl#Entity";
+    private static final String SUMO_THERAPEUTIC_PROCESS = "http://127.0.0.1:8000/ontology/SUMO.owl#TherapeuticProcess";
+    private static final String SUMO_INTENTIONAL_PROCESS = "http://127.0.0.1:8000/ontology/SUMO.owl#IntentionalProcess";
+    private static final String SUMO_ENTITY = "http://127.0.0.1:8000/ontology/SUMO.owl#Entity";
 
     @Inject
     private ConceptMatcher conceptMatcher;
@@ -111,7 +111,7 @@ public class ConceptMatcherOwlTcTest {
     private static void uploadOwlsTc(RegistryManager registryManager) throws URISyntaxException,
             FileNotFoundException, SalException {
         // Obtain service documents
-        URI testFolder = ConceptMatcherOwlTcTest.class.getResource(OWLS_TC_SERVICES).toURI();
+        URI testFolder = ConceptMatcherOwlTcTest.class.getResource(OWLS_TC_MSM).toURI();
         FilenameFilter ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
         File dir = new File(testFolder);
         File[] msmTtlTcFiles = dir.listFiles(ttlFilter);

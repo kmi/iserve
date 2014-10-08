@@ -54,8 +54,8 @@ public class DocumentManagerTest {
     // Limit the number of documents to upload to the registry
     private static final int MAX_DOCS = 25;
 
-    private static final String OWLS_TC3_MSM = "/OWLS-TC3-MSM";
-    private static final String OWLS_TC4_PDDL = "/OWLS-TC4_PDDL/htdocs/services/1.1";
+    private static final String OWLS_TC4_MSM = "/services/OWLS-1.1-MSM";
+    private static final String OWLS_TC4_PDDL = "/services/OWLS-1.1";
     private static final Syntax SYNTAX = Syntax.TTL;
     private static final String OWLS_MEDIATYPE = "application/owl+xml";
 
@@ -88,7 +88,7 @@ public class DocumentManagerTest {
 
     @Before
     public void setUp(ServiceTransformationEngine transformationEngine) throws Exception {
-        URI msmTestFolder = DocumentManagerTest.class.getResource(OWLS_TC3_MSM).toURI();
+        URI msmTestFolder = DocumentManagerTest.class.getResource(OWLS_TC4_MSM).toURI();
         ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
         File dir = new File(msmTestFolder);
         msmTtlTcFiles = dir.listFiles(ttlFilter);

@@ -298,7 +298,7 @@
 
         <!-- Include Test Resources -->
         <dependency>
-            <groupId>uk.ac.open.kmi</groupId>
+            <groupId>uk.ac.open.kmi.test-collections</groupId>
             <artifactId>sws-test-collections</artifactId>
             <version>${test-collections.version}</version>
             <scope>test</scope>
@@ -342,7 +342,7 @@
                         <configuration>
                             <resourceBundles>
                                 <resourceBundle>
-                                    uk.ac.open.kmi:sws-test-collections:${test-collections.version}
+                                    uk.ac.open.kmi.test-collections:sws-test-collections:${test-collections.version}
                                 </resourceBundle>
                             </resourceBundles>
                             <attached>false</attached>

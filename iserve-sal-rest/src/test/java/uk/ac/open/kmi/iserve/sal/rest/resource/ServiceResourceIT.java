@@ -69,7 +69,7 @@ public class ServiceResourceIT {
 //    private static final String WEB_APP_URI = HOST + ":" + PORT + BASE_CONTEXT;
 //    private static final String SERVICES_URI = WEB_APP_URI + "/services";
 
-    private static final String OWLS_TC_SERVICES = "/OWLS-TC3-MSM";
+    private static final String OWLS_TC_SERVICES = "/services/OWLS-1.1-MSM";
 
     // Ensure that these are the ones listed in shiro.ini
     private static final String ROOT_USER = "root";

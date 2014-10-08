@@ -24,7 +24,7 @@
     <packaging>pom</packaging>
 
     <name>iServe</name>
-    <url>http://kmi.github.io/iserve/</url>
+    <url>http://kmi.github.io/iserve/latest</url>
     <description>
         iServe is what we refer to as service warehouse which unifies service
         publication, analysis, and discovery through the use of lightweight semantics
@@ -44,7 +44,7 @@
         <license>
             <name>The Apache Software License, Version 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>manual</distribution>
+            <distribution>repo</distribution>
         </license>
     </licenses>
 
@@ -65,6 +65,15 @@
             <name>Deployment through GitHub's site deployment plugin</name>
             <url>${site.path}</url>
         </site>
+        <!-- Releases to repository -->
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
     </distributionManagement>
 
     <developers>
@@ -126,12 +135,13 @@
         <guice.version>3.0</guice.version>
         <guava.version>14.0</guava.version>
         <commons-config.version>1.9</commons-config.version>
-        <msm4j.version>1.2-SNAPSHOT</msm4j.version>
-        <test-collections.version>1.0</test-collections.version>
+        <msm4j.version>1.2.0</msm4j.version>
+        <test-collections.version>1.0.0</test-collections.version>
         <servlet.version>3.0.1</servlet.version>
+        <gson.version>2.2.4</gson.version>
 
         <!-- Configuration for GitHub deployment -->
-        <site.path>snapshot/${project.version}</site.path>
+        <site.path>${project.version}</site.path>
         <github.global.server>github</github.global.server>
         <repositoryName>iserve</repositoryName>
         <repositoryOwner>kmi</repositoryOwner>
@@ -177,6 +187,76 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <!-- Profile activated on release -->
+        <profile>
+            <id>release</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- Activate PGP signing only when performing a release -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Generate source jar on release -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Generate javadoc jar on release -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile for updating the latest Web page on github site -->
+        <profile>
+            <id>update-latest</id>
+            <properties>
+                <site.path>latest</site.path>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <!-- Include the configuration as test resources for every module -->
         <testResources>
@@ -187,14 +267,9 @@
         </testResources>
 
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
-            </plugin>
 
+            <!-- Configure Maven site plugin for Reflow skin and Markdown support -->
             <plugin>
-                <!-- Configure Maven site plugin for Reflow skin and Markdown support -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.3</version>
@@ -216,11 +291,11 @@
                 </configuration>
             </plugin>
 
+            <!-- GitHub site plug-in for deployment to GitHub pages -->
             <plugin>
-                <!-- GitHub site plug-in for deployment to GitHub pages -->
                 <groupId>com.github.github</groupId>
                 <artifactId>site-maven-plugin</artifactId>
-                <version>0.9</version>
+                <version>0.10</version>
                 <configuration>
                     <message>Creating site for ${project.artifactId}, ${project.version}</message>
                     <!-- this does the trick to place every module in the correct subfolder -->
@@ -239,14 +314,31 @@
                 </executions>
             </plugin>
 
+            <!-- Maven Release Configuration for nexus staging -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>2.5.1</version>
                 <configuration>
-                    <useReleaseProfile>true</useReleaseProfile>
-                    <pushChanges>false</pushChanges>
-                    <localCheckout>true</localCheckout>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <!--<goals>deploy site-deploy</goals>-->
+                    <goals>deploy</goals>
+                </configuration>
+            </plugin>
+
+            <!-- Staging to Sonatype -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.3</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
         </plugins>
@@ -311,27 +403,4 @@
             </plugin>
         </plugins>
     </reporting>
-
-    <repositories>
-        <repository>
-            <id>apache-repo-releases</id>
-            <name>Apache Repository</name>
-            <url>https://repository.apache.org/content/repositories/releases/</url>
-        </repository>
-    </repositories>
-
-    <profiles>
-        <profile>
-            <id>release</id>
-            <properties>
-                <site.path>${project.version}</site.path>
-            </properties>
-        </profile>
-        <profile>
-            <id>update-latest</id>
-            <properties>
-                <site.path>latest</site.path>
-            </properties>
-        </profile>
-    </profiles>
 </project>
