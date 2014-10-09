@@ -19,12 +19,7 @@ public class SalRestModule extends ServletModule {
     @Override
     protected void configureServlets() {
         logger.debug("Loading SAL Rest module...");
-
-        logger.debug("Loading Registry iServe components...");
-
         install(new ConfigurationModule());
-
         install(new RegistryManagementModule());
-
     }
 }

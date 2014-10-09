@@ -24,6 +24,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.Properties;
 
 /**
@@ -37,6 +38,7 @@ public class ConfigurationModule extends AbstractModule {
 
     private static final Logger log = LoggerFactory.getLogger(ConfigurationModule.class);
 
+    private final String ISERVE_HOME = System.getenv("ISERVE_HOME");
     private static final String DEFAULT_CONFIG_FILENAME = "config.properties";
 
     private Properties configProperties;
@@ -60,11 +62,22 @@ public class ConfigurationModule extends AbstractModule {
     }
 
     private Properties getProperties(String fileName) {
-        log.info("Attempting to read configuration file - {}", fileName);
-
         try {
-            PropertiesConfiguration config = new PropertiesConfiguration("config.properties");
-            log.debug("Properties loaded from - {}", config.getFile().toURI().toASCIIString());
+            PropertiesConfiguration config = null;
+            if (ISERVE_HOME != null) {
+                File configFile = new File(ISERVE_HOME, fileName);
+                log.debug("Attempting to read configuration file - {}", configFile.getAbsolutePath());
+                if (configFile.exists()) {
+                    config = new PropertiesConfiguration(configFile);
+                }
+            }
+
+            if (config == null) {
+                log.debug("Attempting to read configuration file - {}", fileName);
+                config = new PropertiesConfiguration(fileName);
+            }
+
+            log.info("Properties loaded from - {}", config.getFile().toURI().toASCIIString());
             // Return a Properties object with the results
             return ConfigurationConverter.getProperties(config);
 
