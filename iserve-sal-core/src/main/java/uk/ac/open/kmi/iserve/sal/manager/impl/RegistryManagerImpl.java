@@ -281,6 +281,104 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
         return importedServices;
     }
 
+    @Override
+    public List<URI> importServices(URI servicesContentLocation, String mediaType) throws SalException {
+        boolean isNativeFormat = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.containsKey(mediaType);
+        // Throw error if Format Unsupported
+        if (!isNativeFormat && !this.serviceTransformationEngine.canTransform(mediaType)) {
+            log.error("The media type {} is not natively supported and has no suitable transformer.", mediaType);
+            throw new ServiceException("Unable to import service. Format unsupported.");
+        }
+
+        // Obtain the file extension to use
+        String fileExtension = findFileExtensionToUse(mediaType, isNativeFormat);
+
+        List<Service> services = null;
+        List<URI> importedServices = new ArrayList<URI>();
+        URI sourceDocUri = null;
+        InputStream localStream = null;
+        try {
+            // 1st Store the document
+            sourceDocUri = this.docManager.createDocument(servicesContentLocation, fileExtension);
+            if (sourceDocUri == null) {
+                throw new ServiceException("Unable to save service document. Operation aborted.");
+            }
+
+            // 2nd Parse and Transform the document
+            // The original stream may be a one-of stream so save it first and read locally
+            services = getServicesFromRemoteLocation(mediaType, isNativeFormat, servicesContentLocation);
+
+            // 3rd - Store the resulting MSM services. There may be more than one
+            URI serviceUri = null;
+            if (services != null && !services.isEmpty()) {
+                log.info("Importing {} services", services.size());
+                for (Service service : services) {
+                    // The service is being imported -> update the source
+                    service.setSource(sourceDocUri);
+                    serviceUri = this.serviceManager.addService(service);
+                    if (serviceUri != null) {
+                        importedServices.add(serviceUri);
+                    }
+                }
+            }
+
+            // 4th Log it was all done correctly
+            // TODO: log to the system and notify observers
+            log.info("Source document imported: {}", sourceDocUri.toASCIIString());
+
+        } finally {
+            // Rollback if something went wrong
+            if ((services == null || (services != null && services.size() != importedServices.size()))
+                    && sourceDocUri != null) {
+                this.docManager.deleteDocument(sourceDocUri);
+                for (URI svcUri : importedServices) {
+                    this.serviceManager.deleteService(svcUri);
+                }
+                log.warn("There were problems importing the service. Changes undone.");
+            }
+
+            if (localStream != null)
+                try {
+                    localStream.close();
+                } catch (IOException e) {
+                    log.error("Error closing the service content stream", e);
+                }
+        }
+
+        return importedServices;
+    }
+
+    private List<Service> getServicesFromRemoteLocation(String mediaType, boolean nativeFormat, URI servicesContentLocation) throws ServiceException {
+        if (servicesContentLocation == null)
+            throw new ServiceException("Unable to parse the saved document. Operation aborted.");
+
+        List<Service> services = null;
+        if (nativeFormat) {
+            // Parse it directly
+            ServiceReader reader = new ServiceReaderImpl();
+            Syntax syntax = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.get(mediaType);
+            try {
+                services = reader.parse(servicesContentLocation.toURL().openStream(), null, syntax);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new ServiceException("Unable to retrieve the document");
+            }
+        } else {
+            // Its an external format: use the appropriate importer
+            // We should have a suitable importer
+            try {
+                services = this.serviceTransformationEngine.transform(servicesContentLocation.toURL().openStream(), servicesContentLocation.toASCIIString(), mediaType);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new ServiceException("Unable to retrieve the document");
+            } catch (TransformationException e) {
+                throw new ServiceException("Errors transforming the service", e);
+            }
+        }
+        log.debug("Services parsed:", services);
+        return services;
+    }
+
     private List<Service> getServicesFromStream(String mediaType, boolean nativeFormat, InputStream localStream) throws ServiceException {
         if (localStream == null)
             throw new ServiceException("Unable to parse the saved document. Operation aborted.");

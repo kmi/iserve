@@ -125,6 +125,19 @@ public interface RegistryManager {
                              String mediaType) throws SalException;
 
     /**
+     * Imports a new service from a remote description within iServe. The original document is stored
+     * in the server and the transformed version registered within iServe.
+     *
+     * @param servicesContentLocation
+     * @param mediaType
+     * @return the List of URIs of the services imported
+     * @throws SalException
+     */
+    List<URI> importServices(URI servicesContentLocation,
+                             String mediaType) throws SalException;
+
+
+    /**
      * Clears the registry entirely: all documents and services are deleted
      * This operation cannot be undone. Use with care.
      *

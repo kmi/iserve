@@ -46,6 +46,9 @@ public interface DocumentManager extends iServeComponent {
     public abstract URI createDocument(InputStream docContent, String fileExtension)
             throws DocumentException;
 
+    public abstract URI createDocument(URI docRemoteLocation, String fileExtension)
+            throws DocumentException;
+
     // Read Methods
     public abstract InputStream getDocument(URI documentUri)
             throws DocumentException;
@@ -81,5 +84,6 @@ public interface DocumentManager extends iServeComponent {
 
     public abstract boolean documentExists(URI documentUri)
             throws DocumentException;
+
 
 }
