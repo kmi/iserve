@@ -30,8 +30,7 @@ public class SwaggerFilter implements Filter {
         res.addHeader("Access-Control-Allow-Origin", "*");
         res.addHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
         res.addHeader("Access-Control-Allow-Headers", "Content-Type");
-        logger.debug("Forward to swagger servlet");
-        if (req.getRequestURI().matches("/iserve/api-docs.*")) {
+        if (req.getPathInfo().matches("/api-docs.*")) {
             logger.debug("Forwarding the request to Swagger");
             swaggerRequestDispatcher.forward(request, response);
         }
