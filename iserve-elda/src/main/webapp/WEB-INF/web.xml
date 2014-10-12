@@ -62,7 +62,7 @@
     <context-param>
         <param-name>com.epimorphics.api.initialSpecFile</param-name>
         <param-value>
-            specs/iserve.ttl
+            elda-specs/iserve.ttl
         </param-value>
     </context-param>
 

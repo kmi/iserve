@@ -23,7 +23,6 @@ import com.epimorphics.lda.exceptions.UnknownShortnameException;
 import com.epimorphics.lda.renderers.Renderer;
 import com.epimorphics.lda.renderers.Renderer.BytesOut;
 import com.epimorphics.lda.restlets.JerseyUtils;
-import com.epimorphics.lda.restlets.RouterRestletSupport;
 import com.epimorphics.lda.routing.Match;
 import com.epimorphics.lda.routing.Router;
 import com.epimorphics.lda.routing.ServletUtils;
@@ -95,21 +94,21 @@ public class EldaRouterRestlet {
      */
     public static synchronized Router getRouterFor(ServletContext con) {
         // log.info( "getting router for context path '" + givenContextPath + "'" );
-        String contextPath = RouterRestletSupport.flatContextPath(con.getContextPath());
+        String contextPath = EldaRouterRestletSupport.flatContextPath(con.getContextPath());
         TimestampedRouter r = routers.get(contextPath);
         long timeNow = System.currentTimeMillis();
         //
         if (r == null) {
             log.info("creating router for '" + contextPath + "'");
             long interval = getRefreshInterval(contextPath);
-            r = new TimestampedRouter(RouterRestletSupport.createRouterFor(con), timeNow, interval);
+            r = new TimestampedRouter(EldaRouterRestletSupport.createRouterFor(con), timeNow, interval);
             routers.put(contextPath, r);
         } else if (r.nextCheck < timeNow) {
-            long latestTime = RouterRestletSupport.latestConfigTime(con, contextPath);
+            long latestTime = EldaRouterRestletSupport.latestConfigTime(con, contextPath);
             if (latestTime > r.timestamp) {
                 log.info("reloading router for '" + contextPath + "'");
                 long interval = getRefreshInterval(contextPath);
-                r = new TimestampedRouter(RouterRestletSupport.createRouterFor(con), timeNow, interval);
+                r = new TimestampedRouter(EldaRouterRestletSupport.createRouterFor(con), timeNow, interval);
                 DOMUtils.clearCache();
                 Cache.Registry.clearAll();
                 routers.put(contextPath, r);
@@ -462,7 +461,7 @@ public class EldaRouterRestlet {
 
             String expiresDate = expiresAt < System.currentTimeMillis()
                     ? NO_EXPIRY
-                    : RouterRestletSupport.expiresAtAsRFC1123(expiresAt);
+                    : EldaRouterRestletSupport.expiresAtAsRFC1123(expiresAt);
 
             MediaType mt = r.getMediaType(rc);
             log.info("rendering with formatter " + mt);

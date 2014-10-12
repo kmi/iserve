@@ -83,7 +83,7 @@ spec:api a api:API;
 	        . 
 	
 # Endpoint definition
-<http://iserve-dev.kmi.open.ac.uk:8080/openrdf-sesame/repositories/iserve>
+<http://localhost:8080/openrdf-sesame/repositories/iserve>
         elda:textSearchOperand "?_search" ;
         elda:textQueryProperty lucene:entityIndex ;
         elda:supportsNestedSelect true ;
@@ -234,7 +234,7 @@ spec:operationInputsSelect a api:Selector ;
 	api:sort "label" .
  
 spec:providerSelect a api:Selector ;
-        api:where "?service schema:provider ?item . FILTER(STRSTARTS(STR(?item), \"http://iserve.kmi.open.ac.uk/iserve/\")) " ;
+        api:where "?service schema:provider ?item" ;
         api:sort "label" .
 
 
@@ -483,8 +483,8 @@ msm-nfp:hasPopularity
         rdfs:range xsd:double ;
   	.
 
-schema:provider api:label "provider";
-	api:where " FILTER(STRSTARTS(STR(?item), \"http://iserve.kmi.open.ac.uk/iserve/\")) ";
+schema:provider 
+	api:label "provider";
 	api:multiValued true ; 
 	rdfs:range schema:Organization ;
 	 .
