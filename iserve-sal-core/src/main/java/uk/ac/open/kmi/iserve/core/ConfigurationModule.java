@@ -24,7 +24,8 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -65,11 +66,9 @@ public class ConfigurationModule extends AbstractModule {
         try {
             PropertiesConfiguration config = null;
             if (ISERVE_HOME != null) {
-                File configFile = new File(ISERVE_HOME, fileName);
-                log.debug("Attempting to read configuration file - {}", configFile.getAbsolutePath());
-                if (configFile.exists()) {
-                    config = new PropertiesConfiguration(configFile);
-                }
+                URL configFileUrl = new URL(ISERVE_HOME + "/conf/" + fileName);
+                log.debug("Attempting to read configuration file - {}", configFileUrl.getFile());
+                config = new PropertiesConfiguration(configFileUrl);
             }
 
             if (config == null) {
@@ -82,6 +81,9 @@ public class ConfigurationModule extends AbstractModule {
             return ConfigurationConverter.getProperties(config);
 
         } catch (ConfigurationException e) {
+            log.error("Error reading the configuration properties", e);
+            return new Properties();
+        } catch (MalformedURLException e) {
             log.error("Error reading the configuration properties", e);
             return new Properties();
         }

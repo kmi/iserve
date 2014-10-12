@@ -137,7 +137,8 @@
         <commons-config.version>1.9</commons-config.version>
         <msm4j.version>1.2.0</msm4j.version>
         <test-collections.version>1.0.0</test-collections.version>
-        <servlet.version>3.0.1</servlet.version>
+        <!--<servlet.version>3.0.1</servlet.version>-->
+        <servlet.version>2.5</servlet.version>
         <gson.version>2.2.4</gson.version>
 
         <!-- Configuration for GitHub deployment -->
