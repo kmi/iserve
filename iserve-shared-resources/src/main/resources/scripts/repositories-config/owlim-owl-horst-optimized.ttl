@@ -5,7 +5,7 @@
 @prefix owlim: <http://www.ontotext.com/trree/owlim#>.
 
 [] a rep:Repository ;
-   rep:repositoryID "iserve-services-owl-horst" ;
+   rep:repositoryID "iserve" ;
    rdfs:label "iServe Services with OWLIM Horst" ;
    rep:repositoryImpl [
       rep:repositoryType "openrdf:SailRepository" ;
