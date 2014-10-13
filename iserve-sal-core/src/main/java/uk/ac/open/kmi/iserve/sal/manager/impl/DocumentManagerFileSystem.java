@@ -232,6 +232,7 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
     @Override
     public URI createDocument(URI docRemoteLocation, String fileExtension) throws DocumentException {
 
+        log.debug("Creating document from {} - File extension: {}", docRemoteLocation, fileExtension);
         URI newDocUri = this.generateUniqueDocumentUri();
         try {
             URI internalDocUri = this.getDocumentInternalUri(newDocUri);

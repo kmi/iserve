@@ -114,7 +114,7 @@ public class DocumentsResource {
             value = {@ApiResponse(code = 201, message = "Created document"),
                     @ApiResponse(code = 500, message = "Internal error")})
     @Consumes({MediaType.TEXT_HTML, MediaType.TEXT_XML, MediaType.APPLICATION_XML, "application/rdf+xml",
-            "text/turtle", "text/n3", "text/rdf+n3", MediaType.TEXT_PLAIN, "application/json"})
+            "text/turtle", "text/n3", "text/rdf+n3", MediaType.TEXT_PLAIN, "application/json", "application/wsdl+xml"})
     @Produces({MediaType.TEXT_HTML})
     public Response addDocument(
             String document,
