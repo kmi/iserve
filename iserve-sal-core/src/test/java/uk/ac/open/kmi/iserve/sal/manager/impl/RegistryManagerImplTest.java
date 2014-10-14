@@ -22,7 +22,6 @@ import junit.framework.Assert;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -70,6 +69,38 @@ public class RegistryManagerImplTest {
     private File[] msmTtlTcFiles;
     private File[] owlsTcFiles;
 
+    /**
+     * JukitoModule.
+     */
+    public static class InnerModule extends JukitoModule {
+        @Override
+        protected void configureTest() {
+
+            // Ensure configuration is loaded
+            install(new ConfigurationModule());
+
+            // Add transformation module
+            install(new TransformerModule());
+
+            // Assisted Injection for the Graph Store Manager
+            install(new FactoryModuleBuilder()
+                    .implement(SparqlGraphStoreManager.class, ConcurrentSparqlGraphStoreManager.class)
+                    .build(SparqlGraphStoreFactory.class));
+
+            // Create the EventBus
+            final EventBus eventBus = new EventBus("iServe");
+            bind(EventBus.class).toInstance(eventBus);
+
+            bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
+            bind(ServiceManager.class).to(ServiceManagerSparql.class);
+            bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class);
+            bind(RegistryManager.class).to(RegistryManagerImpl.class);
+
+            // Necessary to verify interaction with the real object
+            bindSpy(RegistryManagerImpl.class);
+        }
+    }
+
     @Before
     public void setUp(ServiceTransformationEngine transformationEngine) throws Exception {
         URI msmTestFolder = RegistryManagerImplTest.class.getResource(OWLS_TC4_MSM).toURI();
@@ -81,47 +112,6 @@ public class RegistryManagerImplTest {
         owlsFilter = transformationEngine.getFilenameFilter(OWLS_MEDIATYPE);
         dir = new File(owlsTestFolder);
         owlsTcFiles = dir.listFiles(owlsFilter);
-    }
-
-    @Test
-    @Ignore
-    public void testImportService(RegistryManager registryManager) throws Exception {
-
-        registryManager.clearRegistry();
-        InputStream in;
-        List<URI> servicesUris;
-        int count = 0;
-        log.info("Importing MSM TTL services");
-        for (int i = 0; i < MAX_DOCS && i < msmTtlTcFiles.length; i++) {
-            in = new FileInputStream(msmTtlTcFiles[i]);
-            log.info("Adding service: {}", msmTtlTcFiles[i].getName());
-            servicesUris = registryManager.importServices(in, MediaType.TEXT_TURTLE.getMediaType());
-            Assert.assertNotNull(servicesUris);
-            log.info("Service added: {}", servicesUris.get(0).toASCIIString());
-            count++;
-        }
-
-        Assert.assertEquals(Math.min(MAX_DOCS, msmTtlTcFiles.length), count);
-
-        // Test exploiting import plugins
-        count = 0;
-        log.info("Importing OWLS services");
-        for (int i = 0; i < MAX_DOCS && i < owlsTcFiles.length; i++) {
-            in = new FileInputStream(owlsTcFiles[i]);
-            log.info("Adding service: {}", owlsTcFiles[i].getName());
-            servicesUris = registryManager.importServices(in, OWLS_MEDIATYPE);
-            Assert.assertNotNull(servicesUris);
-            log.info("Service added: {}", servicesUris.get(0).toASCIIString());
-            count++;
-        }
-        Assert.assertEquals(Math.min(MAX_DOCS, msmTtlTcFiles.length), count);
-    }
-
-    @Test
-    public void testImportSwaggerService(RegistryManager registryManager) throws Exception {
-        registryManager.clearRegistry();
-        List<URI> services = registryManager.importServices(new URI("http://iserve.kmi.open.ac.uk/iserve/api-docs"), "application/json");
-        Assert.assertEquals(services.size(), 1);
     }
 
     /**
@@ -153,7 +143,37 @@ public class RegistryManagerImplTest {
 
             // Necessary to verify interaction with the real object
             bindSpy(RegistryManagerImpl.class);
-            bindSpy(DocumentManagerFileSystem.class);
         }
+    }    @Test
+    public void testImportService(RegistryManager registryManager) throws Exception {
+
+        registryManager.clearRegistry();
+        InputStream in;
+        List<URI> servicesUris;
+        int count = 0;
+        log.info("Importing MSM TTL services");
+        for (int i = 0; i < MAX_DOCS && i < msmTtlTcFiles.length; i++) {
+            in = new FileInputStream(msmTtlTcFiles[i]);
+            log.info("Adding service: {}", msmTtlTcFiles[i].getName());
+            servicesUris = registryManager.importServices(in, MediaType.TEXT_TURTLE.getMediaType());
+            Assert.assertNotNull(servicesUris);
+            log.info("Service added: {}", servicesUris.get(0).toASCIIString());
+            count++;
+        }
+
+        Assert.assertEquals(Math.min(MAX_DOCS, msmTtlTcFiles.length), count);
+
+        // Test exploiting import plugins
+        count = 0;
+        log.info("Importing OWLS services");
+        for (int i = 0; i < MAX_DOCS && i < owlsTcFiles.length; i++) {
+            in = new FileInputStream(owlsTcFiles[i]);
+            log.info("Adding service: {}", owlsTcFiles[i].getName());
+            servicesUris = registryManager.importServices(in, OWLS_MEDIATYPE);
+            Assert.assertNotNull(servicesUris);
+            log.info("Service added: {}", servicesUris.get(0).toASCIIString());
+            count++;
+        }
+        Assert.assertEquals(Math.min(MAX_DOCS, msmTtlTcFiles.length), count);
     }
 }

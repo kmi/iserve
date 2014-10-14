@@ -20,8 +20,3 @@ iserve.services.sparql.update = http://localhost:8080/openrdf-sesame/repositorie
 iserve.services.sparql.service = http://localhost:8080/openrdf-sesame/repositories/iserve/rdf-graphs/service
 
 
-# NFP Data RDF store
-iserve.nfp.sparql.query = http://localhost:8080/openrdf-sesame/repositories/iserve
-iserve.nfp.sparql.update = http://localhost:8080/openrdf-sesame/repositories/iserve/statements
-iserve.nfp.sparql.service = http://localhost:8080/openrdf-sesame/repositories/iserve/rdf-graphs/service
-
