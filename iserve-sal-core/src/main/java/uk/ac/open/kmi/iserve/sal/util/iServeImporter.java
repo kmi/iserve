@@ -183,10 +183,9 @@ public class iServeImporter {
                         new RegistryManagementModule());
             }
         } else {
-            formatter.printHelp(80, "java " + iServeImporter.class.getCanonicalName(), "Options:", options,
-                    "Configuration file not found", true);
-            System.out.println(configFileName);
-            System.exit(-2);
+            log.info("Using default configuration.");
+            injector = Guice.createInjector(new ConfigurationModule(),
+                    new RegistryManagementModule());
         }
 
         iServeImporter importer = injector.getInstance(iServeImporter.class);
