@@ -45,6 +45,8 @@ public abstract class IntegratedComponent implements iServeComponent {
     @Inject
     protected IntegratedComponent(EventBus eventBus, @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri) throws SalException {
 
+        log.debug("Creating integrated component with iServe URI - {}", iServeUri);
+
         this.eventBus = eventBus;
         eventBus.register(this);
 

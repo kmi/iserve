@@ -89,6 +89,9 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
 
         super(eventBus, iServeUri);
 
+        log.debug("Creating KB Manager. iServe URI - {}\n SPARQL Query - {}\n, SPARQL Update - {}\n, SPARQL Service - {}",
+                iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
+
         Set<URI> defaultModels = ImmutableSet.of();
         Map<String, String> locationMappings = ImmutableMap.of();
         Set<String> ignoredImports = ImmutableSet.of();

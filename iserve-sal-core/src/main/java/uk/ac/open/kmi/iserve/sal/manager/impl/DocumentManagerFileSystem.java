@@ -61,6 +61,9 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
 
         super(eventBus, iServeUri);
 
+        log.debug("Creating Document Manager. iServe URL - {}\n, Documents Folder - {}",
+                iServeUri, documentsFolderPath);
+
         if (documentsFolderPath == null) {
             documentsFolderPath = DEFAULT_DOC_FOLDER_PATH;
         }

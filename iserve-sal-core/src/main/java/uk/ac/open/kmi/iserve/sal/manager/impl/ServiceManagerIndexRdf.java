@@ -65,6 +65,9 @@ public class ServiceManagerIndexRdf extends ServiceManagerSparql implements Serv
 
         super(eventBus, graphStoreFactory, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
 
+        log.debug("Creating Service Manager. iServe URI - {}\n SPARQL Query - {}\n, SPARQL Update - {}\n, SPARQL Service - {}",
+                iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
+
         this.svcOpMap = new ConcurrentHashMap<URI, Set<URI>>();
         this.opInputMap = new ConcurrentHashMap<URI, Set<URI>>();
         this.messageMandatoryPartsMap = new ConcurrentHashMap<URI, Set<URI>>();

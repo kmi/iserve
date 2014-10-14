@@ -96,6 +96,9 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
         super(eventBus, iServeUri);
         this.servicesUri = this.getIserveUri().resolve(SERVICES_URL_PATH);
 
+        log.debug("Creating Service Manager SPARQL. Services URL Path - {}\n SPARQL Query - {}\n, SPARQL Update - {}\n, SPARQL Service - {}",
+                servicesUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
+
         // Configuration of base models to be loaded
         Set<URI> defaultModelsToLoad = ImmutableSet.of(WSMO_LITE_URI, MSM_URI, HRESTS_URI, MSM_WSDL_URI, HTTP_VOCAB_URI, HTTP_METHODS_URI);
 
