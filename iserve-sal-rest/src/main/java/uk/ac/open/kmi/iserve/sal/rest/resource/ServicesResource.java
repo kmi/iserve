@@ -68,7 +68,7 @@ public class ServicesResource {
                     @ApiResponse(code = 500, message = "Internal error")})
     public Response addService(
             @ApiParam(value = "Service description passed as body part")
-            @FormDataParam("bodyPart") FormDataBodyPart bodyPart,
+            @FormDataParam("file") FormDataBodyPart bodyPart,
             @ApiParam(value = "Service description passed as file")
             @FormDataParam("file") InputStream file,
             @ApiParam(value = "Service description passed as location URI")
@@ -101,11 +101,11 @@ public class ServicesResource {
         try {
             if ((locationUri != null) && (!"".equalsIgnoreCase(locationUri))) {
                 // There is a location. Just register, don't import
-                log.info("Registering the services from {} ", locationUri);
+                log.info("Registering the services from {} with media type {}", locationUri, mediaType);
                 servicesUris = manager.registerServices(URI.create(locationUri), mediaType);
             } else {
                 // There is no location. Import the entire service
-                log.info("Importing the services");
+                log.info("Importing the services within file using media type {}", mediaType);
                 servicesUris = manager.importServices(file, mediaType);
             }
             //		String oauthConsumer = ((SecurityFilter.Authorizer) security).getOAuthConsumer();
@@ -113,7 +113,7 @@ public class ServicesResource {
             StringBuilder responseBuilder = new StringBuilder()
                     .append("<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n")
                     .append("<body>\n")
-                    .append(servicesUris.size()).append(" services added.");
+                    .append(servicesUris.size()).append(" service(s) added.");
 
             for (URI svcUri : servicesUris) {
                 responseBuilder.append("Service created at <a href='").append(svcUri).append("'>").append(svcUri).append("</a>\n");
