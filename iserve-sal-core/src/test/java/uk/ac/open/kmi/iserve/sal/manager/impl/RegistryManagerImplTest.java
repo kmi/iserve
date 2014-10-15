@@ -69,38 +69,6 @@ public class RegistryManagerImplTest {
     private File[] msmTtlTcFiles;
     private File[] owlsTcFiles;
 
-    /**
-     * JukitoModule.
-     */
-    public static class InnerModule extends JukitoModule {
-        @Override
-        protected void configureTest() {
-
-            // Ensure configuration is loaded
-            install(new ConfigurationModule());
-
-            // Add transformation module
-            install(new TransformerModule());
-
-            // Assisted Injection for the Graph Store Manager
-            install(new FactoryModuleBuilder()
-                    .implement(SparqlGraphStoreManager.class, ConcurrentSparqlGraphStoreManager.class)
-                    .build(SparqlGraphStoreFactory.class));
-
-            // Create the EventBus
-            final EventBus eventBus = new EventBus("iServe");
-            bind(EventBus.class).toInstance(eventBus);
-
-            bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
-            bind(ServiceManager.class).to(ServiceManagerSparql.class);
-            bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class);
-            bind(RegistryManager.class).to(RegistryManagerImpl.class);
-
-            // Necessary to verify interaction with the real object
-            bindSpy(RegistryManagerImpl.class);
-        }
-    }
-
     @Before
     public void setUp(ServiceTransformationEngine transformationEngine) throws Exception {
         URI msmTestFolder = RegistryManagerImplTest.class.getResource(OWLS_TC4_MSM).toURI();
@@ -114,37 +82,7 @@ public class RegistryManagerImplTest {
         owlsTcFiles = dir.listFiles(owlsFilter);
     }
 
-    /**
-     * JukitoModule.
-     */
-    public static class InnerModule extends JukitoModule {
-        @Override
-        protected void configureTest() {
-
-            // Ensure configuration is loaded
-            install(new ConfigurationModule());
-
-            // Add transformation module
-            install(new TransformerModule());
-
-            // Assisted Injection for the Graph Store Manager
-            install(new FactoryModuleBuilder()
-                    .implement(SparqlGraphStoreManager.class, ConcurrentSparqlGraphStoreManager.class)
-                    .build(SparqlGraphStoreFactory.class));
-
-            // Create the EventBus
-            final EventBus eventBus = new EventBus("iServe");
-            bind(EventBus.class).toInstance(eventBus);
-
-            bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
-            bind(ServiceManager.class).to(ServiceManagerSparql.class);
-            bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class);
-            bind(RegistryManager.class).to(RegistryManagerImpl.class);
-
-            // Necessary to verify interaction with the real object
-            bindSpy(RegistryManagerImpl.class);
-        }
-    }    @Test
+    @Test
     public void testImportService(RegistryManager registryManager) throws Exception {
 
         registryManager.clearRegistry();
@@ -175,5 +113,37 @@ public class RegistryManagerImplTest {
             count++;
         }
         Assert.assertEquals(Math.min(MAX_DOCS, msmTtlTcFiles.length), count);
+    }
+
+    /**
+     * JukitoModule.
+     */
+    public static class InnerModule extends JukitoModule {
+        @Override
+        protected void configureTest() {
+
+            // Ensure configuration is loaded
+            install(new ConfigurationModule());
+
+            // Add transformation module
+            install(new TransformerModule());
+
+            // Assisted Injection for the Graph Store Manager
+            install(new FactoryModuleBuilder()
+                    .implement(SparqlGraphStoreManager.class, ConcurrentSparqlGraphStoreManager.class)
+                    .build(SparqlGraphStoreFactory.class));
+
+            // Create the EventBus
+            final EventBus eventBus = new EventBus("iServe");
+            bind(EventBus.class).toInstance(eventBus);
+
+            bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
+            bind(ServiceManager.class).to(ServiceManagerSparql.class);
+            bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class);
+            bind(RegistryManager.class).to(RegistryManagerImpl.class);
+
+            // Necessary to verify interaction with the real object
+            bindSpy(RegistryManagerImpl.class);
+        }
     }
 }
