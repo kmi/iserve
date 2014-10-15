@@ -28,9 +28,12 @@ public class EldaFilter implements Filter {
         res.addHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
         res.addHeader("Access-Control-Allow-Headers", "Content-Type");
         if (path.equals("/id/services")) {
-            // TODO Fix this by debugging Elda config file
-            res.sendRedirect("/doc/services");
-        } else if (path.matches("/id.*") && !httpRequest.getMethod().equalsIgnoreCase("GET")) {
+            if (httpRequest.getMethod().equalsIgnoreCase("GET")) {
+                res.sendRedirect("/doc/services");
+            } else {
+                salRestRequestDispatcher.forward(request, response);
+            }
+        } else if ((path.matches("/id.*") && !httpRequest.getMethod().equalsIgnoreCase("GET")) || path.matches("/id/documents.*")) {
             salRestRequestDispatcher.forward(request, response);
         } else if ((path.matches("/id.*") && httpRequest.getMethod().equalsIgnoreCase("GET")) || (path.matches("/api-docs.*"))) {
             chain.doFilter(request, response);
