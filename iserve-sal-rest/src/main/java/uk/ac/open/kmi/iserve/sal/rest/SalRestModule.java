@@ -9,7 +9,6 @@ package uk.ac.open.kmi.iserve.sal.rest;
 import com.google.inject.servlet.ServletModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
 
 public class SalRestModule extends ServletModule {
@@ -19,7 +18,6 @@ public class SalRestModule extends ServletModule {
     @Override
     protected void configureServlets() {
         logger.debug("Loading SAL Rest module...");
-        install(new ConfigurationModule());
         install(new RegistryManagementModule());
     }
 }

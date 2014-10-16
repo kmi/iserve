@@ -24,7 +24,6 @@ package uk.ac.open.kmi.iserve.api;
 
 import com.google.inject.AbstractModule;
 import uk.ac.open.kmi.iserve.api.impl.iServeEngineImpl;
-import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.core.PluginModuleLoader;
 import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
 import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
@@ -34,24 +33,26 @@ import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
  */
 public class iServeEngineModule extends AbstractModule {
 
-    private final ConfigurationModule configurationModule;
+    private final String configFile;
 
     public iServeEngineModule() {
         super();
-        this.configurationModule = new ConfigurationModule();
+        this.configFile = null;
     }
 
     public iServeEngineModule(String configFileName) {
         super();
-        this.configurationModule = new ConfigurationModule(configFileName);
+        this.configFile = configFileName;
     }
 
     @Override
     protected void configure() {
-        // Add configuration
-        install(configurationModule);
         // Add Registry Management Module
-        install(new RegistryManagementModule());
+        if (this.configFile == null) {
+            install(new RegistryManagementModule());
+        } else {
+            install(new RegistryManagementModule(configFile));
+        }
         // Load all matcher plugins
         install(PluginModuleLoader.of(MatcherPluginModule.class));
 

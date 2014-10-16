@@ -36,12 +36,29 @@ public class RegistryManagementModule extends AbstractModule {
 
     private static final Logger log = LoggerFactory.getLogger(RegistryManagementModule.class);
 
+    private final String configFile;
+
+    public RegistryManagementModule() {
+        this.configFile = null;
+    }
+
+    public RegistryManagementModule(String configFile) {
+        this.configFile = configFile;
+    }
+
     @Override
     protected void configure() {
-
         // Include Configuration Module
-        install(new ConfigurationModule());
+        if (configFile == null) {
+            install(new ConfigurationModule());
+        } else {
+            install(new ConfigurationModule(configFile));
+        }
 
+        setupRegistry();
+    }
+
+    private void setupRegistry() {
         // Include transformation support
         install(new TransformerModule());
 

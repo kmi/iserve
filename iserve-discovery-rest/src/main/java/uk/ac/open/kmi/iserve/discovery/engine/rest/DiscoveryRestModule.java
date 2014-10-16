@@ -10,7 +10,6 @@ import com.google.inject.multibindings.Multibinder;
 import com.google.inject.servlet.ServletModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.core.PluginModuleLoader;
 import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.Ranker;
@@ -27,11 +26,6 @@ public class DiscoveryRestModule extends ServletModule {
     @Override
     protected void configureServlets() {
         logger.debug("Loading Discovery Rest module...");
-
-        logger.debug("Loading Discovery iServe components...");
-
-        install(new ConfigurationModule());
-
         install(new RegistryManagementModule());
         // Load all matcher plugins
         install(PluginModuleLoader.of(MatcherPluginModule.class));

@@ -22,7 +22,8 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import javax.inject.Singleton;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
@@ -33,6 +34,7 @@ import java.util.Properties;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 15/10/2014
  */
+@Singleton
 public class SystemConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(SystemConfiguration.class);
@@ -71,45 +73,54 @@ public class SystemConfiguration {
     private Properties readConfiguration(URL configFileUrl) {
         try {
             PropertiesConfiguration properties = new PropertiesConfiguration(configFileUrl);
+            log.info("Configuration loaded from {}", configFileUrl);
             return ConfigurationConverter.getProperties(properties);
         } catch (ConfigurationException e) {
-            log.warn("Problems loading configuration file {}. Trying default locations.", configFileUrl);
-            log.warn("Original error", e);
+            log.warn("Unable to load configuration file {}. Using default values.", configFileUrl);
             return new Properties();
         }
     }
 
     private Properties readConfiguration(String configFilePath) {
-        PropertiesConfiguration properties;
-        File configFile = new File(configFilePath);
-        if (!configFile.isAbsolute()) {
-            if (ISERVE_HOME != null) {
-                // Do it relative to ISERVE_HOME
-                log.debug("ISERVE_HOME set to - {}", ISERVE_HOME);
-                configFile = new File(ISERVE_HOME + "/conf", configFilePath);
-                if (configFile.exists()) {
-                    log.debug("Attempting to read configuration file - {}", configFile);
-                    try {
-                        properties = new PropertiesConfiguration(configFile);
-                    } catch (ConfigurationException e) {
-                        log.warn("Problems loading configuration file {}. Falling back to default values.", configFile.toURI());
-                        log.warn("Original error", e);
-                        return new Properties();
-                    }
-                }
+
+        URL configFileUrl = null;
+
+        // Load as URL if it starts with file:/
+        if (configFilePath.startsWith("file:")) {
+            try {
+                configFileUrl = new URL(configFilePath);
+                log.info("Configuration loaded from {}", configFilePath);
+                return readConfiguration(configFileUrl);
+            } catch (MalformedURLException e) {
+                log.warn("The URL of the configuration file is incorrect {}. Using default configuration.",
+                        configFilePath);
+                return new Properties();
             }
         }
 
-        log.debug("Attempting to read configuration file - {}", configFilePath);
-        try {
-            properties = new PropertiesConfiguration(configFilePath);
-        } catch (ConfigurationException e) {
-            log.warn("Problems loading configuration file {}. Falling back to default values.", configFile.toURI());
-            log.warn("Original error", e);
-            return new Properties();
+        // Use default configuration file if unset
+        if (configFilePath == null || configFilePath.isEmpty()) {
+            configFilePath = DEFAULT_CONFIG_FILENAME;
         }
 
-        return ConfigurationConverter.getProperties(properties);
+        // If ISERVE_HOME is set load it relative to it
+        if (ISERVE_HOME != null) {
+            // Do it relative to ISERVE_HOME
+            log.debug("ISERVE_HOME set to - {}", ISERVE_HOME);
+            configFileUrl = SystemConfiguration.class.getResource(ISERVE_HOME + "/conf/" + configFilePath);
+            return readConfiguration(configFileUrl);
+        }
+
+        // Load properties using default procedure
+        log.debug("Attempting to read configuration file - {} from classpath or home directory.");
+        try {
+            PropertiesConfiguration properties = new PropertiesConfiguration(configFilePath);
+            log.info("Configuration loaded from {}", configFilePath);
+            return ConfigurationConverter.getProperties(properties);
+        } catch (ConfigurationException e) {
+            log.warn("Unable to load configuration file - {}. Falling back to default values.", configFilePath);
+            return new Properties();
+        }
     }
 
     public String getString(ConfigurationProperty property) {

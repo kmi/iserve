@@ -368,10 +368,10 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
             return LogicConceptMatchType.Exact;
 
         if (soln.contains(SUPER_VAR))
-            return LogicConceptMatchType.Subsume;
+            return LogicConceptMatchType.Plugin;
 
         if (soln.contains(SUB_VAR))
-            return LogicConceptMatchType.Plugin;
+            return LogicConceptMatchType.Subsume;
 
         return LogicConceptMatchType.Fail;
     }
@@ -386,6 +386,9 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
      * @return
      */
     private Table<URI, URI, MatchResult> obtainMatchResults(Set<URI> origins, MatchType minType, MatchType maxType) {
+
+        log.debug("Obtain match results for {}, with {} <= Match Result <= {}", origins, minType, maxType);
+
         Table<URI, URI, MatchResult> result = HashBasedTable.create();
         // Exit fast if no data is provided or no matches can be found
         if (origins == null || origins.isEmpty() || minType.compareTo(maxType) > 0)
@@ -420,13 +423,6 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
                 QuerySolution soln = qResults.nextSolution();
                 origin = soln.getResource(ORIGIN_VAR);
                 destination = soln.getResource(MATCH_VAR + index);
-
-//                // Get the current matching class, we assume the results come by batches over the same class ordered
-//                // If this is not the case we should loop every time to see which class matched
-//                while (resource == null && index < uris.length) {
-//                    index++;
-//                    resource = soln.getResource(MATCH_VAR + index);
-//                }
 
                 if (origin != null && origin.isURIResource() && destination != null && destination.isURIResource()) {
                     originUri = new URI(origin.getURI());
@@ -464,13 +460,13 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
     private List<String> generatePatterns(URI origin, String destinationVar, MatchType minType, MatchType maxType) {
         List<String> patterns = new ArrayList<String>();
         if (minType.compareTo(LogicConceptMatchType.Subsume) <= 0 && maxType.compareTo(LogicConceptMatchType.Subsume) >= 0) {
-            // Match the origin concept to strict superclasses
-            patterns.add(Util.generateMatchStrictSuperclassesPattern(origin, destinationVar, SUPER_VAR, true));
+            // Match the origin concept to strict subclasses
+            patterns.add(Util.generateMatchStrictSubclassesPattern(origin, destinationVar, SUB_VAR, true));
         }
 
         if (minType.compareTo(LogicConceptMatchType.Plugin) <= 0 && maxType.compareTo(LogicConceptMatchType.Plugin) >= 0) {
-            // Match the origin concept to strict subclasses
-            patterns.add(Util.generateMatchStrictSubclassesPattern(origin, destinationVar, SUB_VAR, true));
+            // Match the origin concept to strict superclasses
+            patterns.add(Util.generateMatchStrictSuperclassesPattern(origin, destinationVar, SUPER_VAR, true));
         }
 
         if (minType.compareTo(LogicConceptMatchType.Exact) <= 0 && maxType.compareTo(LogicConceptMatchType.Exact) >= 0) {
