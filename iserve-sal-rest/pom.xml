@@ -432,6 +432,10 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <argLine>-Dlog4j.configuration=file:/Users/cp3982/Workspace/logs/log4j-debug.properties
+                    </argLine>
+                </configuration>
             </plugin>
 
             <!-- Enable rapid testing. Jetty will be launched and stopped automatically for testing -->

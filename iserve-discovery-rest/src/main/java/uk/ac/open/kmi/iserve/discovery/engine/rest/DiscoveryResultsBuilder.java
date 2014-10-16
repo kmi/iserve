@@ -2,11 +2,11 @@ package uk.ac.open.kmi.iserve.discovery.engine.rest;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import uk.ac.open.kmi.iserve.core.SystemConfiguration;
+import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
+import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
 
-import javax.inject.Named;
 import java.net.URI;
 import java.util.Map;
 
@@ -18,7 +18,7 @@ public class DiscoveryResultsBuilder implements DiscoveryResultsBuilderPlugin {
     private String sparqlEndpoint;
 
     @Inject
-    public DiscoveryResultsBuilder(@Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlEndpoint) {
+    public DiscoveryResultsBuilder(@iServeProperty(ConfigurationProperty.SERVICES_SPARQL_QUERY) String sparqlEndpoint) {
         this.sparqlEndpoint = sparqlEndpoint;
     }
 

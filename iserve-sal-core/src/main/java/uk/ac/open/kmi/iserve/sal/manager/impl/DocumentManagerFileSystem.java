@@ -22,7 +22,8 @@ import com.google.inject.Inject;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.SystemConfiguration;
+import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
+import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.sal.events.DocumentCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.DocumentDeletedEvent;
 import uk.ac.open.kmi.iserve.sal.events.DocumentsClearedEvent;
@@ -33,7 +34,6 @@ import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 import uk.ac.open.kmi.msm4j.io.util.FileUtil;
 
-import javax.inject.Named;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -49,24 +49,18 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
     // Keep the trailing slash
     private static final String DEFAULT_DOC_URL_PATH = "id/documents/";
 
-    private static final String DEFAULT_DOC_FOLDER_PATH = "/tmp/iserve-docs/";
-
     private URI documentsInternalPath;
     private URI documentsPublicUri;
 
     @Inject
     DocumentManagerFileSystem(EventBus eventBus,
-                              @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
-                              @Named(SystemConfiguration.DOC_FOLDER_PATH_PROP) String documentsFolderPath) throws SalException {
+                              @iServeProperty(ConfigurationProperty.ISERVE_URL) String iServeUri,
+                              @iServeProperty(ConfigurationProperty.DOCUMENTS_FOLDER) String documentsFolderPath) throws SalException {
 
         super(eventBus, iServeUri);
 
         log.debug("Creating Document Manager. iServe URL - {}\n, Documents Folder - {}",
                 iServeUri, documentsFolderPath);
-
-        if (documentsFolderPath == null) {
-            documentsFolderPath = DEFAULT_DOC_FOLDER_PATH;
-        }
 
         this.documentsPublicUri = this.getIserveUri().resolve(DEFAULT_DOC_URL_PATH);
 
@@ -248,7 +242,6 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
      *
      * @return
      * @throws uk.ac.open.kmi.iserve.sal.exception.DocumentException
-     *
      */
     @Override
     public boolean clearDocuments() throws DocumentException {

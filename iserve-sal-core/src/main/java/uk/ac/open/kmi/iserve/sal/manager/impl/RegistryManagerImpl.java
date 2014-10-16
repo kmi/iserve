@@ -21,7 +21,8 @@ import com.google.common.eventbus.EventBus;
 import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.SystemConfiguration;
+import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
+import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.*;
@@ -36,7 +37,6 @@ import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
 import uk.ac.open.kmi.msm4j.io.util.FilenameFilterBySyntax;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,7 +64,7 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
 
     @Inject
     private RegistryManagerImpl(EventBus eventBus,
-                                @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
+                                @iServeProperty(ConfigurationProperty.ISERVE_URL) String iServeUri,
                                 DocumentManager docManager,
                                 ServiceManager serviceManager,
                                 KnowledgeBaseManager kbManager,

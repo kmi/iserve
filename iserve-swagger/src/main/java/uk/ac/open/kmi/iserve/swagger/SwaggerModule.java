@@ -8,7 +8,6 @@ package uk.ac.open.kmi.iserve.swagger;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import com.google.inject.servlet.ServletModule;
 import com.wordnik.swagger.config.ConfigFactory;
 import com.wordnik.swagger.config.FilterFactory;
@@ -25,7 +24,8 @@ import com.wordnik.swagger.reader.ClassReaders;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.SystemConfiguration;
+import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
+import uk.ac.open.kmi.iserve.core.iServeProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +36,7 @@ public class SwaggerModule extends ServletModule {
     private String basePath;
 
     @Inject
-    public SwaggerModule(@Named(SystemConfiguration.ISERVE_URL_PROP) String iserveUri) {
+    public SwaggerModule(@iServeProperty(ConfigurationProperty.ISERVE_URL) String iserveUri) {
         basePath = iserveUri;
     }
 

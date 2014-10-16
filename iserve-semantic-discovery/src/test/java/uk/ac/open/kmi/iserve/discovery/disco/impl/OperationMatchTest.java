@@ -31,7 +31,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
@@ -82,9 +81,6 @@ public class OperationMatchTest {
     public static class InnerModule extends JukitoModule {
         @Override
         protected void configureTest() {
-            // Get configuration
-            install(new ConfigurationModule());
-
             // Add dependency
             install(new RegistryManagementModule());
 
@@ -98,7 +94,7 @@ public class OperationMatchTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        Injector injector = Guice.createInjector(new ConfigurationModule(), new RegistryManagementModule());
+        Injector injector = Guice.createInjector(new RegistryManagementModule());
         RegistryManager registryManager = injector.getInstance(RegistryManager.class);
         ServiceTransformationEngine transformationEngine = injector.getInstance(ServiceTransformationEngine
                 .class);

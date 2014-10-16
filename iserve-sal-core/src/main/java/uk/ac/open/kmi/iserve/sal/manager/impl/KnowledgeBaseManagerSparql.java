@@ -29,7 +29,8 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.SystemConfiguration;
+import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
+import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.sal.events.KnowledgeBaseClearedEvent;
 import uk.ac.open.kmi.iserve.sal.events.OntologyCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServiceCreatedEvent;
@@ -42,7 +43,6 @@ import uk.ac.open.kmi.msm4j.io.impl.ServiceWriterImpl;
 import uk.ac.open.kmi.msm4j.io.util.URIUtil;
 import uk.ac.open.kmi.msm4j.vocabulary.SAWSDL;
 
-import javax.inject.Named;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
@@ -82,10 +82,10 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
     @Inject
     KnowledgeBaseManagerSparql(EventBus eventBus,
                                SparqlGraphStoreFactory graphStoreFactory,
-                               @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
-                               @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlQueryEndpoint,
-                               @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_UPDATE_PROP) String sparqlUpdateEndpoint,
-                               @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_SERVICE_PROP) String sparqlServiceEndpoint) throws SalException {
+                               @iServeProperty(ConfigurationProperty.ISERVE_URL) String iServeUri,
+                               @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_QUERY) String sparqlQueryEndpoint,
+                               @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_UPDATE) String sparqlUpdateEndpoint,
+                               @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_SERVICE) String sparqlServiceEndpoint) throws SalException {
 
         super(eventBus, iServeUri);
 

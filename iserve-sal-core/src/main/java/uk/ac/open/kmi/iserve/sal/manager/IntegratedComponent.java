@@ -20,10 +20,10 @@ import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.SystemConfiguration;
+import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
+import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 
-import javax.inject.Named;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -43,7 +43,7 @@ public abstract class IntegratedComponent implements iServeComponent {
     private final URI iserveUri;
 
     @Inject
-    protected IntegratedComponent(EventBus eventBus, @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri) throws SalException {
+    protected IntegratedComponent(EventBus eventBus, @iServeProperty(ConfigurationProperty.ISERVE_URL) String iServeUri) throws SalException {
 
         log.debug("Creating integrated component with iServe URI - {}", iServeUri);
 

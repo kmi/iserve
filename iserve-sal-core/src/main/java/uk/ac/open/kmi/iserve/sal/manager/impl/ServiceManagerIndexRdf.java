@@ -24,13 +24,13 @@ import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.SystemConfiguration;
+import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
+import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.msm4j.*;
 
-import javax.inject.Named;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
@@ -58,10 +58,10 @@ public class ServiceManagerIndexRdf extends ServiceManagerSparql implements Serv
     @Inject
     ServiceManagerIndexRdf(EventBus eventBus,
                            SparqlGraphStoreFactory graphStoreFactory,
-                           @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
-                           @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlQueryEndpoint,
-                           @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_UPDATE_PROP) String sparqlUpdateEndpoint,
-                           @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_SERVICE_PROP) String sparqlServiceEndpoint) throws SalException {
+                           @iServeProperty(ConfigurationProperty.ISERVE_URL) String iServeUri,
+                           @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_QUERY) String sparqlQueryEndpoint,
+                           @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_UPDATE) String sparqlUpdateEndpoint,
+                           @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_SERVICE) String sparqlServiceEndpoint) throws SalException {
 
         super(eventBus, graphStoreFactory, iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
 

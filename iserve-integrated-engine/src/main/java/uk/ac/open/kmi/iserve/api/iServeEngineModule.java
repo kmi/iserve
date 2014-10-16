@@ -29,8 +29,6 @@ import uk.ac.open.kmi.iserve.core.PluginModuleLoader;
 import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
 import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
 
-import java.util.Properties;
-
 /**
  * Guice Module providing an Integrated iServe Engine
  */
@@ -46,11 +44,6 @@ public class iServeEngineModule extends AbstractModule {
     public iServeEngineModule(String configFileName) {
         super();
         this.configurationModule = new ConfigurationModule(configFileName);
-    }
-
-    public iServeEngineModule(Properties configProperties) {
-        super();
-        this.configurationModule = new ConfigurationModule(configProperties);
     }
 
     @Override

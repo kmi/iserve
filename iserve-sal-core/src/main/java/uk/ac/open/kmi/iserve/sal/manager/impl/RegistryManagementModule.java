@@ -21,6 +21,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.sal.manager.*;
 import uk.ac.open.kmi.msm4j.io.impl.TransformerModule;
 
@@ -37,6 +38,9 @@ public class RegistryManagementModule extends AbstractModule {
 
     @Override
     protected void configure() {
+
+        // Include Configuration Module
+        install(new ConfigurationModule());
 
         // Include transformation support
         install(new TransformerModule());

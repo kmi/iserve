@@ -76,7 +76,7 @@ public class GenericLogicDiscovererTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        Injector injector = Guice.createInjector(new ConfigurationModule(), new RegistryManagementModule());
+        Injector injector = Guice.createInjector(new RegistryManagementModule());
         RegistryManager registryManager = injector.getInstance(RegistryManager.class);
         ServiceTransformationEngine transformationEngine = injector.getInstance(ServiceTransformationEngine
                 .class);

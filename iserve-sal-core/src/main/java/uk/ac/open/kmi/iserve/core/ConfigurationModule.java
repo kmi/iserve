@@ -17,16 +17,8 @@
 package uk.ac.open.kmi.iserve.core;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.name.Names;
-import org.apache.commons.configuration.ConfigurationConverter;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Properties;
+import com.google.inject.Key;
+import uk.ac.open.kmi.iserve.core.impl.iServePropertyImpl;
 
 /**
  * Module providing support for reading the configuration file and mapping the configuration
@@ -37,55 +29,34 @@ import java.util.Properties;
  */
 public class ConfigurationModule extends AbstractModule {
 
-    private static final Logger log = LoggerFactory.getLogger(ConfigurationModule.class);
-
-    private final String ISERVE_HOME = System.getenv("ISERVE_HOME");
-    private static final String DEFAULT_CONFIG_FILENAME = "config.properties";
-
-    private Properties configProperties;
+    private String configurationFile = null;
 
     public ConfigurationModule() {
-        this.configProperties = getProperties(DEFAULT_CONFIG_FILENAME);
     }
 
     public ConfigurationModule(String configFileName) {
-        this.configProperties = getProperties(configFileName);
-    }
-
-    public ConfigurationModule(Properties configProperties) {
-        this.configProperties = configProperties;
+        this.configurationFile = configFileName;
     }
 
     @Override
     protected void configure() {
-        // Bind the configuration file to @named values
-        Names.bindProperties(binder(), configProperties);
+        SystemConfiguration configuration;
+        if (this.configurationFile != null) {
+            configuration = new SystemConfiguration(this.configurationFile);
+        } else {
+            configuration = new SystemConfiguration();
+        }
+
+        for (ConfigurationProperty property : ConfigurationProperty.values()) {
+            String value = getValue(configuration, property);
+            bind(Key.get(property.getValueType(), new iServePropertyImpl(property))).toInstance(value);
+        }
+
+        bind(SystemConfiguration.class).toInstance(configuration);
     }
 
-    private Properties getProperties(String fileName) {
-        try {
-            PropertiesConfiguration config = null;
-            if (ISERVE_HOME != null) {
-                URL configFileUrl = new URL(ISERVE_HOME + "/conf/" + fileName);
-                log.debug("Attempting to read configuration file - {}", configFileUrl.getFile());
-                config = new PropertiesConfiguration(configFileUrl);
-            }
-
-            if (config == null) {
-                log.debug("Attempting to read configuration file - {}", fileName);
-                config = new PropertiesConfiguration(fileName);
-            }
-
-            log.info("Properties loaded from - {}", config.getFile().toURI().toASCIIString());
-            // Return a Properties object with the results
-            return ConfigurationConverter.getProperties(config);
-
-        } catch (ConfigurationException e) {
-            log.error("Error reading the configuration properties", e);
-            return new Properties();
-        } catch (MalformedURLException e) {
-            log.error("Error reading the configuration properties", e);
-            return new Properties();
-        }
+    private String getValue(SystemConfiguration configuration, ConfigurationProperty property) {
+        String value = configuration.getString(property);
+        return value == null ? property.getDefaultValue() : value;
     }
 }
