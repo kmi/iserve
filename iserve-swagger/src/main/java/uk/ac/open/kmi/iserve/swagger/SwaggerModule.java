@@ -6,7 +6,8 @@
  */
 package uk.ac.open.kmi.iserve.swagger;
 
-import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletModule;
 import com.wordnik.swagger.config.ConfigFactory;
@@ -25,24 +26,30 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
-import uk.ac.open.kmi.iserve.core.iServeProperty;
+import uk.ac.open.kmi.iserve.core.impl.iServePropertyImpl;
 
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * TODO: This class should be revisited for adequate Guice integration
+ */
 public class SwaggerModule extends ServletModule {
 
-    private Logger logger = LoggerFactory.getLogger(SwaggerModule.class);
-    private String basePath;
+    private Logger log = LoggerFactory.getLogger(SwaggerModule.class);
+    private final Injector injector;
 
     @Inject
-    public SwaggerModule(@iServeProperty(ConfigurationProperty.ISERVE_URL) String iserveUri) {
-        basePath = iserveUri;
+    public SwaggerModule(Injector registryInjector) {
+        this.injector = registryInjector;
     }
 
     @Override
     protected void configureServlets() {
-        logger.debug("Loading Swagger module...");
+        log.debug("Loading Swagger module...");
+
+//        install(new RegistryManagementModule());
 
         bind(ServletContainer.class).in(Singleton.class);
         bind(SwaggerFilter.class).in(Singleton.class);
@@ -58,7 +65,10 @@ public class SwaggerModule extends ServletModule {
         SwaggerConfig config = ConfigFactory.config();
         config.setApiVersion("2.0");
 
-        logger.debug("Setting swagger basePath: {}", basePath);
+        String basePath = injector.getInstance(Key.get(String.class,
+                new iServePropertyImpl(ConfigurationProperty.ISERVE_URL)));
+
+        log.debug("Setting swagger basePath: {}", basePath);
         config.setBasePath(basePath);
         ConfigFactory.setConfig(config);
 
@@ -69,7 +79,7 @@ public class SwaggerModule extends ServletModule {
 
     private void bootstrap() {
         FilterFactory.setFilter(new CustomFilter());
-        logger.debug("Setting Swagger API info");
+        log.debug("Setting Swagger API info");
         ApiInfo info = new ApiInfo(
                 "iServe RESTful API",                             /* title */
                 "This is the documentation of the RESTful API to access iServe functionalities. You can find out more about iServe " +

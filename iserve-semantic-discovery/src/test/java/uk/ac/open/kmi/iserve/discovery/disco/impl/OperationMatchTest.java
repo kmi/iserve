@@ -1,18 +1,18 @@
 /*
- * Copyright (c) 2013. Knowledge Media Institute - The Open University
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (c) 2013. Knowledge Media Institute - The Open University
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
@@ -27,6 +27,7 @@ import junit.framework.Assert;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -59,6 +60,7 @@ import java.util.Set;
  * @author Pablo Rodríguez Mier
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  */
+@Ignore
 @RunWith(JukitoRunner.class)
 public class OperationMatchTest {
 
@@ -96,13 +98,11 @@ public class OperationMatchTest {
     public static void setUp() throws Exception {
         Injector injector = Guice.createInjector(new RegistryManagementModule());
         RegistryManager registryManager = injector.getInstance(RegistryManager.class);
-        ServiceTransformationEngine transformationEngine = injector.getInstance(ServiceTransformationEngine
-                .class);
 
         registryManager.clearRegistry();
 
         uploadWscTaxonomy(registryManager);
-        importWscServices(transformationEngine, registryManager);
+        importWscServices(registryManager.getServiceTransformationEngine(), registryManager);
     }
 
     private static void uploadWscTaxonomy(RegistryManager registryManager) throws URISyntaxException {

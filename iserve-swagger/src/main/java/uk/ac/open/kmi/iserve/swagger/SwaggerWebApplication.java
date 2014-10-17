@@ -13,7 +13,7 @@ import org.jvnet.hk2.guice.bridge.api.GuiceBridge;
 import org.jvnet.hk2.guice.bridge.api.GuiceIntoHK2Bridge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.ConfigurationModule;
+import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
 
 import javax.inject.Inject;
 
@@ -26,7 +26,15 @@ public class SwaggerWebApplication extends ResourceConfig {
     @Inject
     public SwaggerWebApplication(ServiceLocator serviceLocator) {
         // Set package to look for resources in
-        packages("uk.ac.open.kmi.iserve.sal.rest.resource");
+//        packages("uk.ac.open.kmi.iserve.sal.rest.resource");
+        packages("uk.ac.open.kmi.iserve.swagger");
+
+        log.info("Registering injectables");
+        GuiceBridge.getGuiceBridge().initializeGuiceBridge(serviceLocator);
+        GuiceIntoHK2Bridge guiceBridge = serviceLocator.getService(GuiceIntoHK2Bridge.class);
+        Injector firstStage = Guice.createInjector(new RegistryManagementModule());
+        Injector secondStage = firstStage.createChildInjector(new SwaggerModule(firstStage));
+        guiceBridge.bridgeGuiceInjector(secondStage);
 
         // Register MultiPart and JspMVC features
         register(MultiPartFeature.class);
@@ -36,15 +44,5 @@ public class SwaggerWebApplication extends ResourceConfig {
                 register(ApiListingResourceJSON.class).
                 register(JerseyApiDeclarationProvider.class).
                 register(JerseyResourceListingProvider.class);
-
-        log.info("Registering injectables");
-        GuiceBridge.getGuiceBridge().initializeGuiceBridge(serviceLocator);
-
-        GuiceIntoHK2Bridge guiceBridge = serviceLocator.getService(GuiceIntoHK2Bridge.class);
-        ConfigurationModule configurationModule = new ConfigurationModule();
-        Injector configInjector = Guice.createInjector(configurationModule);
-        Injector injector = Guice.createInjector(configurationModule, configInjector.getInstance(SwaggerModule.class));
-        guiceBridge.bridgeGuiceInjector(injector);
-
     }
 }
