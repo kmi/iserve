@@ -40,7 +40,6 @@ import javax.inject.Named;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -458,35 +457,60 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
 
         List<URI> registeredServices = new ArrayList<URI>();
 
-        try {
-            log.debug("Registering services from document: {}", sourceDocumentUri.toASCIIString());
-            // 1st Obtain the document and parse/transform it
-            InputStream is = sourceDocumentUri.toURL().openStream();
-            List<Service> services = getServicesFromStream(mediaType, isNativeFormat, is);
+        log.debug("Registering services from document: {}", sourceDocumentUri.toASCIIString());
+        // 1st Obtain the document and parse/transform it
+        List<Service> services = getServicesFromRemoteLocation(mediaType, isNativeFormat, sourceDocumentUri);
 
-            if (services != null && !services.isEmpty()) {
-                log.debug("Services found: {}. Registering ...", services.size());
-                URI serviceUri;
-                for (Service service : services) {
-                    // 2nd Add the service
-                    serviceUri = this.serviceManager.addService(service);
-                    if (serviceUri != null) {
-                        registeredServices.add(serviceUri);
-                    }
+        if (services != null && !services.isEmpty()) {
+            log.debug("Services found: {}. Registering ...", services.size());
+            URI serviceUri;
+            for (Service service : services) {
+                // 2nd Add the service
+                serviceUri = this.serviceManager.addService(service);
+                if (serviceUri != null) {
+                    registeredServices.add(serviceUri);
                 }
             }
+        }
 
-            if (registeredServices.size() != services.size()) {
-                log.warn("Found {} services in document {} but only imported {} services", services.size(),
-                        sourceDocumentUri, registeredServices.size());
+        if (registeredServices.size() != services.size()) {
+            log.warn("Found {} services in document {} but only imported {} services", services.size(),
+                    sourceDocumentUri, registeredServices.size());
+        }
+
+        return registeredServices;
+    }
+
+    @Override
+    public List<URI> registerServices(InputStream is, String mediaType) throws SalException {
+        boolean isNativeFormat = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.containsKey(mediaType);
+        // Throw error if Format Unsupported
+        if (!isNativeFormat && !this.serviceTransformationEngine.canTransform(mediaType)) {
+            log.error("The media type {} is not natively supported and has no suitable transformer.", mediaType);
+            throw new ServiceException("Unable to import service. Format unsupported.");
+        }
+
+        List<URI> registeredServices = new ArrayList<URI>();
+
+        log.debug("Registering services from document");
+        // 1st Obtain the document and parse/transform it
+        List<Service> services = getServicesFromStream(mediaType, isNativeFormat, is);
+
+        if (services != null && !services.isEmpty()) {
+            log.debug("Services found: {}. Registering ...", services.size());
+            URI serviceUri;
+            for (Service service : services) {
+                // 2nd Add the service
+                serviceUri = this.serviceManager.addService(service);
+                if (serviceUri != null) {
+                    registeredServices.add(serviceUri);
+                }
             }
+        }
 
-        } catch (MalformedURLException e) {
-            log.error("Error obtaining the source document. Incorrect URL. " + sourceDocumentUri.toString());
-            throw new ServiceException("Unable to register service. Incorrect source document URL.", e);
-        } catch (IOException e) {
-            log.error("Error obtaining the source document.");
-            throw new ServiceException("Unable to register service. Unable to retrieve source document.", e);
+        if (registeredServices.size() != services.size()) {
+            log.warn("Found {} services in the document but only imported {} services", services.size(),
+                    registeredServices.size());
         }
 
         return registeredServices;

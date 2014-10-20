@@ -58,7 +58,7 @@ public class ServicesResource {
     }
 
     @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Consumes({MediaType.MULTIPART_FORM_DATA})
     @Produces({MediaType.TEXT_HTML})
     @ApiOperation(value = "Add a new service",
             notes = "Returns a HTML document which contains the URI of the added service")
@@ -68,14 +68,15 @@ public class ServicesResource {
                     @ApiResponse(code = 500, message = "Internal error")})
     public Response addService(
             @ApiParam(value = "Service description passed as body part")
-            @FormDataParam("bodyPart") FormDataBodyPart bodyPart,
+            @FormDataParam("file") FormDataBodyPart bodyPart,
             @ApiParam(value = "Service description passed as file")
             @FormDataParam("file") InputStream file,
             @ApiParam(value = "Service description passed as location URI")
-            @HeaderParam("Content-Location") String locationUri) {
+            @QueryParam("store") Boolean store
+    ) {
 
-        log.debug("Invocation to addService - bodyPart {}, file {}, content-location {}",
-                bodyPart, file, locationUri);
+        log.debug("Invocation to addService - bodyPart {}, file {}",
+                bodyPart, file);
 
         // Check first that the user is allowed to upload a service
 //        Subject currentUser = SecurityUtils.getSubject();
@@ -94,20 +95,18 @@ public class ServicesResource {
 
         if (bodyPart != null) {
             mediaType = bodyPart.getMediaType().toString();
-        } else {
-            // TODO: we should obtain/guess the media type
         }
 
         try {
-            if ((locationUri != null) && (!"".equalsIgnoreCase(locationUri))) {
-                // There is a location. Just register, don't import
-                log.info("Registering the services from {} ", locationUri);
-                servicesUris = manager.registerServices(URI.create(locationUri), mediaType);
+
+            if (store != null && !store) {
+                log.info("Registering the services");
+                servicesUris = manager.registerServices(file, mediaType);
             } else {
-                // There is no location. Import the entire service
                 log.info("Importing the services");
                 servicesUris = manager.importServices(file, mediaType);
             }
+
             //		String oauthConsumer = ((SecurityFilter.Authorizer) security).getOAuthConsumer();
 
             StringBuilder responseBuilder = new StringBuilder()
@@ -144,6 +143,80 @@ public class ServicesResource {
             }
         }
     }
+
+    @POST
+    @Consumes({MediaType.TEXT_HTML, MediaType.TEXT_XML, MediaType.APPLICATION_XML, "application/rdf+xml",
+            "text/turtle", "text/n3", "text/rdf+n3", MediaType.TEXT_PLAIN, "application/json", "application/wsdl+xml"})
+    @Produces({MediaType.TEXT_HTML})
+    @ApiOperation(value = "Add a new service from a document available on the Web",
+            notes = "Returns a HTML document which contains the URI of the added service")
+    @ApiResponses(
+            value = {@ApiResponse(code = 201, message = "Created document"),
+                    @ApiResponse(code = 403, message = "You have not got the appropriate permissions for creating a service"),
+                    @ApiResponse(code = 500, message = "Internal error")})
+    public Response addService(
+            @ApiParam(value = "URI of service description", required = true)
+            @HeaderParam("Content-Location") String locationUri,
+            @ApiParam(value = "Service description Media type", required = true)
+            @HeaderParam("Content-Type") String mediaType,
+            @ApiParam(value = "Service description passed as location URI")
+            @QueryParam("store") Boolean store
+    ) {
+
+        log.debug("Invocation to addService from {}", locationUri);
+
+        // Check first that the user is allowed to upload a service
+//        Subject currentUser = SecurityUtils.getSubject();
+//        if (!currentUser.isPermitted("services:create")) {
+//            log.warn("User without the appropriate permissions attempted to create a service: " + currentUser.getPrincipal());
+//
+//            String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+//                    "  <body>\n You have not got the appropriate permissions for creating a service. Please login and ensure you have the correct permissions. </body>\n</html>";
+//
+//            return Response.status(Status.FORBIDDEN).entity(htmlString).build();
+//        }
+
+        // The user is allowed to create services
+        List<URI> servicesUris;
+
+        try {
+            if (store != null && store) {
+                log.info("Importing the services");
+                servicesUris = manager.importServices(URI.create(locationUri), mediaType);
+            } else {
+                log.info("Registering the services from {} ", locationUri);
+                servicesUris = manager.registerServices(URI.create(locationUri), mediaType);
+            }
+            //		String oauthConsumer = ((SecurityFilter.Authorizer) security).getOAuthConsumer();
+
+            StringBuilder responseBuilder = new StringBuilder()
+                    .append("<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n")
+                    .append("<body>\n")
+                    .append(servicesUris.size()).append(" services added.");
+
+            for (URI svcUri : servicesUris) {
+                responseBuilder.append("Service created at <a href='").append(svcUri).append("'>").append(svcUri).append("</a>\n");
+            }
+
+            responseBuilder.append("</body>\n</html>");
+
+            return Response.status(Status.CREATED).entity(responseBuilder.toString()).build();
+        } catch (ServiceException e) {
+            String error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                    "  <body>\nThere was an error while transforming the service descriptions: " + e.getMessage() + "\n  </body>\n</html>";
+
+            // TODO: Add logging
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+        } catch (SalException e) {
+            String error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                    "  <body>\nThere was an error while storing the service: " + e.getMessage() + "\n  </body>\n</html>";
+
+            // TODO: Add logging
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+        }
+    }
+
+
 
     /**
      * Delete a given service

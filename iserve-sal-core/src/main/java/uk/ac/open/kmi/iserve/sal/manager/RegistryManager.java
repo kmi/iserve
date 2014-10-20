@@ -158,6 +158,8 @@ public interface RegistryManager {
      */
     List<URI> registerServices(URI sourceDocumentUri, String mediaType) throws SalException;
 
+    List<URI> registerServices(InputStream file, String mediaType) throws SalException;
+
     /**
      * Unregisters a service from the registry. Effectively this will delete the service description and remove any
      * related documents on the server.
@@ -178,4 +180,6 @@ public interface RegistryManager {
      */
     String exportService(URI serviceUri, String mediaType)
             throws ServiceException;
+
+
 }
