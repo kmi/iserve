@@ -201,32 +201,6 @@
                 </executions>
             </plugin>
 
-            <!--Copy resources to WEB-INF for tests-->
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.6</version>
-                <executions>
-                    <execution>
-                        <id>copy-iserve-properties</id>
-                        <!-- run after packaging but before the integration test -->
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>
-                                ${project.build.directory}/${project.build.finalName}/WEB-INF/classes
-                            </outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${shared.resources.dir}</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
             <!-- Enable rapid testing. Jetty will be launched and stopped automatically for testing -->
             <!-- You may also launch it with Jetty: use 'mvn jetty:run' -->
             <plugin>
