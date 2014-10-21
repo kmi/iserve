@@ -111,4 +111,11 @@ public void handleOntologyCreatedEvent(OntologyCreatedEvent event) {
 
 * RESTful Interface
 
-    TBD
+    iServe provides a RESTful interface offering remote access to its functionality.
+    iServe's Web Application comes with an embedded interactive documentation of the RESTful API offered it can be found at:
+
++----------------------------------------------------------------------------------------------------+
+http://<somehost.com>/<iserve-deployed-context>/docs
++----------------------------------------------------------------------------------------------------+
+
+    See for example the {{{http://iserve.kmi.open.ac.uk/iserve/docs/} documentation of the current main public deployment of iServe}}.

@@ -19,12 +19,23 @@ Compiling iServe
  git clone https://github.com/kmi/iserve.git
 +----------------------------------------------------------------------------------+
 
-* Create the Configuration File
+* Create a Configuration File
 
-    Configure iServe by creating the file iserve/iserve-shared-resources/src/main/resources/config.properties.
-    In that folder you have a config.properties.reference file that you can use as reference.
+    iServe can be configured through several configuration properties like the SPARQL endpoint to use.
+    {{{./configuration.html} More information on iServe configuration properties}}.
+    iServe comes preconfigured to be served on http://localhost:9090/iserve
+    with a set of default properties that link it to a local Sesame compliant RDF Store.
 
-    {{{./configuration.html}More information on configuring iServe}}.
+    Indeed this may not suit your particular setup and we therefore provide you means to adapt this configuration
+    accordingly.
+
+    You may either point to your own configuration file by using a JVM system property to point to your configuration file:
+    ```-Diserve.config=/path/to/your/config.properties```
+
+    You can take the file on ```/conf/config.properties.env``` as a reference to be fine tuned.
+
+    For convenience this file provides a setup such that each and every property can be specified through JVM system properties.
+    See {{{./configuration.html} for more details}}.
 
 * First Time Compilation
 
@@ -36,9 +47,6 @@ Compiling iServe
  mvn -DskipTests=true install
 +----------------------------------------------------------------------------------+
 
-    Compiling will require having a local installed version of {{{http://kmi.github.io/msm4j/latest}MSM4J}} and {{{https://github.com/kmi/sws-test-collections}SWS-Test-Collections}} (for testing).
-    Since we currently do not publish these jars on public registries, you will have to compile and install them manually. We certainly plan to simplify this process but until then, do not fear, it is fairly easy.
-
 * Subsequent Compilations
 
 +----------------------------------------------------------------------------------+
@@ -48,14 +56,12 @@ Compiling iServe
     This will run tests as well. In order to run these tests, however, iServe needs to access some files through
     HTTP. Until we automate this you will have to launch a simple Web server locally prior to testing.
 
-    Notably within the sws-test-collections project you should serve the ./src/main/resources/OWLS-TC4_PDDL/htdocs/ folder at port 80.
+    Notably you should serve the sws-test-collections project over http at port 8000.
     Should you have Python installed you can do so easily as follows:
 
 +----------------------------------------------------------------------------------+
- sudo python -m SimpleHTTPServer 80
+ sudo python -m SimpleHTTPServer 8000
 +----------------------------------------------------------------------------------+
-
-    This requirement is inherited from the test collections that we use for testing the software unfortunately. We shall be creating our own simpler version that overcomes this issue so that it is easier for developers.
 
 * Generating the Documentation
 
