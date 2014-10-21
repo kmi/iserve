@@ -164,14 +164,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!--Include Shared Resources. Scoped to tests for now.-->
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>iserve-shared-resources</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-
         <!-- Include Test Resources -->
         <dependency>
             <groupId>uk.ac.open.kmi.test-collections</groupId>
@@ -195,23 +187,6 @@
                 <artifactId>maven-remote-resources-plugin</artifactId>
                 <version>1.4</version>
                 <executions>
-                    <!--Configuration resources-->
-                    <execution>
-                        <id>load-resources</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-                        <configuration>
-                            <resourceBundles>
-                                <resourceBundle>
-                                    ${project.parent.groupId}:iserve-shared-resources:${project.version}
-                                </resourceBundle>
-                            </resourceBundles>
-                            <attached>false</attached>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                        </configuration>
-                    </execution>
                     <!--Test resources-->
                     <execution>
                         <id>load-test-resources</id>

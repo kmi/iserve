@@ -294,14 +294,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!--Include Shared Resources. Scoped to tests for now.-->
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>iserve-shared-resources</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-
         <!-- Include Test Resources -->
         <dependency>
             <groupId>uk.ac.open.kmi.test-collections</groupId>
@@ -320,24 +312,6 @@
                 <artifactId>maven-remote-resources-plugin</artifactId>
                 <version>1.4</version>
                 <executions>
-                    <!--Configuration resources-->
-                    <execution>
-                        <id>load-resources</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-                        <configuration>
-                            <resourceBundles>
-                                <resourceBundle>
-                                    ${project.parent.groupId}:iserve-shared-resources:${project.version}
-                                </resourceBundle>
-                            </resourceBundles>
-                            <attached>false</attached>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                        </configuration>
-                    </execution>
-
                     <!--Test resources-->
                     <execution>
                         <id>load-test-resources</id>
@@ -353,57 +327,6 @@
                             </resourceBundles>
                             <attached>false</attached>
                             <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!--Copy resources to WEB-INF for tests-->
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.6</version>
-                <executions>
-                    <execution>
-                        <id>copy-log4j-properties</id>
-                        <!-- run after packaging but before the integration test -->
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>
-                                ${project.build.directory}/${project.build.finalName}
-                            </outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${shared.resources.dir}</directory>
-                                    <excludes>
-                                        <exclude>config.properties</exclude>
-                                    </excludes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>copy-iserve-properties</id>
-                        <!-- run after packaging but before the integration test -->
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>
-                                ${project.build.directory}/${project.build.finalName}/WEB-INF/classes
-                            </outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${shared.resources.dir}</directory>
-                                    <excludes>
-                                        <exclude>log4j.properties</exclude>
-                                    </excludes>
-                                </resource>
-                            </resources>
                         </configuration>
                     </execution>
                 </executions>
@@ -432,10 +355,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <argLine>-Dlog4j.configuration=file:/Users/cp3982/Workspace/logs/log4j-debug.properties
-                    </argLine>
-                </configuration>
             </plugin>
 
             <!-- Enable rapid testing. Jetty will be launched and stopped automatically for testing -->
@@ -487,12 +406,4 @@
 
         </plugins>
     </build>
-
-    <repositories>
-        <repository>
-            <id>epi-public-repo</id>
-            <name>Epimorphics Public Repository</name>
-            <url>http://repository.epimorphics.com</url>
-        </repository>
-    </repositories>
 </project>

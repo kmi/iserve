@@ -146,8 +146,6 @@
         <github.global.server>github</github.global.server>
         <repositoryName>iserve</repositoryName>
         <repositoryOwner>kmi</repositoryOwner>
-
-        <shared.resources.dir>${project.build.directory}/conf</shared.resources.dir>
     </properties>
 
     <modules>
@@ -157,7 +155,6 @@
         <module>iserve-semantic-discovery</module>
         <module>iserve-discovery-rest</module>
         <module>iserve-webapp</module>
-        <module>iserve-shared-resources</module>
         <module>iserve-integrated-engine</module>
         <module>iserve-elda</module>
         <module>iserve-swagger</module>
@@ -259,14 +256,6 @@
     </profiles>
 
     <build>
-        <!-- Include the configuration as test resources for every module -->
-        <testResources>
-            <testResource>
-                <directory>${shared.resources.dir}</directory>
-                <filtering>true</filtering>
-            </testResource>
-        </testResources>
-
         <plugins>
 
             <!-- Configure Maven site plugin for Reflow skin and Markdown support -->

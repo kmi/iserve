@@ -107,24 +107,9 @@
             <artifactId>iserve-semantic-discovery</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <!--Include Shared Resources-->
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>iserve-shared-resources</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>${shared.resources.dir}</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-
         <plugins>
             <!-- Generate a jar with dependencies too -->
             <plugin>
@@ -171,23 +156,6 @@
                 <artifactId>maven-remote-resources-plugin</artifactId>
                 <version>1.4</version>
                 <executions>
-                    <!--Configuration resources-->
-                    <execution>
-                        <id>load-resources</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-                        <configuration>
-                            <resourceBundles>
-                                <resourceBundle>
-                                    ${project.parent.groupId}:iserve-shared-resources:${project.version}
-                                </resourceBundle>
-                            </resourceBundles>
-                            <attached>false</attached>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                        </configuration>
-                    </execution>
                     <!--Tests resources-->
                     <execution>
                         <id>load-test-resources</id>
