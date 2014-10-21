@@ -84,7 +84,9 @@ public class DocumentsResource {
     @Path("/{id: .*}")
     public Response getDocument(@Context UriInfo uriInfo,
                                 @ApiParam(value = "Description ID", required = true)
-                                @PathParam("id") String id) {
+                                @PathParam("id") String id,
+                                @ApiParam(value = "Document Media type")
+                                @HeaderParam("Accept") String contentType) {
         try {
             logger.debug("Requested document: {}", uriInfo.getRequestUri());
             InputStream is = registryManager.getDocumentManager().getDocument(uriInfo.getRequestUri());
@@ -140,9 +142,9 @@ public class DocumentsResource {
             ServiceTransformationEngine transformationEngine = registryManager.getServiceTransformationEngine();
             if (document != null && !document.equals("")) {
                 InputStream is = new ByteArrayInputStream(document.getBytes("UTF-8"));
-                docUri = registryManager.getDocumentManager().createDocument(is, transformationEngine.getFileExtension(contentType));
+                docUri = registryManager.getDocumentManager().createDocument(is, transformationEngine.getFileExtension(contentType), contentType);
             } else {
-                docUri = registryManager.getDocumentManager().createDocument(new URI(locationUri), transformationEngine.getFileExtension(contentType));
+                docUri = registryManager.getDocumentManager().createDocument(new URI(locationUri), transformationEngine.getFileExtension(contentType), contentType);
             }
 
             String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +

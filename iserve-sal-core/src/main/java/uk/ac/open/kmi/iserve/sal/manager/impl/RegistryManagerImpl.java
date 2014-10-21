@@ -230,7 +230,7 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
         InputStream localStream = null;
         try {
             // 1st Store the document
-            sourceDocUri = this.docManager.createDocument(servicesContentStream, fileExtension);
+            sourceDocUri = this.docManager.createDocument(servicesContentStream, fileExtension, mediaType);
             if (sourceDocUri == null) {
                 throw new ServiceException("Unable to save service document. Operation aborted.");
             }
@@ -298,7 +298,7 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
         InputStream localStream = null;
         try {
             // 1st Store the document
-            sourceDocUri = this.docManager.createDocument(servicesContentLocation, fileExtension);
+            sourceDocUri = this.docManager.createDocument(servicesContentLocation, fileExtension, mediaType);
             if (sourceDocUri == null) {
                 throw new ServiceException("Unable to save service document. Operation aborted.");
             }

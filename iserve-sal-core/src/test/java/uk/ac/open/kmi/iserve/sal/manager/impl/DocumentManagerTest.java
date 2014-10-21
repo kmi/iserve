@@ -66,26 +66,6 @@ public class DocumentManagerTest {
     private File[] msmTtlTcFiles;
     private File[] owlsTcFiles;
 
-    /**
-     * JukitoModule.
-     */
-    public static class InnerModule extends JukitoModule {
-        @Override
-        protected void configureTest() {
-            // Get configuration
-            install(new ConfigurationModule());
-
-            // Add transformer module
-            install(new TransformerModule());
-
-            // bind
-            bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
-
-            // Necessary to verify interaction with the real object
-            bindSpy(DocumentManagerFileSystem.class);
-        }
-    }
-
     @Before
     public void setUp(ServiceTransformationEngine transformationEngine) throws Exception {
         URI msmTestFolder = DocumentManagerTest.class.getResource(OWLS_TC4_MSM).toURI();
@@ -121,7 +101,7 @@ public class DocumentManagerTest {
             in = new FileInputStream(msmTtlTcFiles[i]);
             log.info("Adding document: {}", msmTtlTcFiles[i].getName());
             String fileExt = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.get(MediaType.TEXT_TURTLE.getMediaType()).getExtension();
-            docUri = documentManager.createDocument(in, fileExt);
+            docUri = documentManager.createDocument(in, fileExt, MediaType.TEXT_TURTLE.getMediaType());
             Assert.assertNotNull(docUri);
             log.info("Service added: {}", docUri.toASCIIString());
             count++;
@@ -193,6 +173,26 @@ public class DocumentManagerTest {
             is = documentManager.getDocument(docUri);
             Assert.assertNotNull(is);
             index += delta;
+        }
+    }
+
+    /**
+     * JukitoModule.
+     */
+    public static class InnerModule extends JukitoModule {
+        @Override
+        protected void configureTest() {
+            // Get configuration
+            install(new ConfigurationModule());
+
+            // Add transformer module
+            install(new TransformerModule());
+
+            // bind
+            bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
+
+            // Necessary to verify interaction with the real object
+            bindSpy(DocumentManagerFileSystem.class);
         }
     }
 
