@@ -60,7 +60,7 @@ Compiling iServe
     Should you have Python installed you can do so easily as follows:
 
 +----------------------------------------------------------------------------------+
- sudo python -m SimpleHTTPServer 8000
+ python -m SimpleHTTPServer 8000
 +----------------------------------------------------------------------------------+
 
 * Generating the Documentation
