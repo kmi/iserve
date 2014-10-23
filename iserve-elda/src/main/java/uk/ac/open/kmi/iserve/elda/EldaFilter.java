@@ -1,5 +1,8 @@
 package uk.ac.open.kmi.iserve.elda;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,6 +13,7 @@ import java.io.IOException;
  */
 public class EldaFilter implements Filter {
 
+    private Logger logger = LoggerFactory.getLogger(EldaFilter.class);
     private RequestDispatcher defaultRequestDispatcher;
     private RequestDispatcher salRestRequestDispatcher;
 
@@ -27,17 +31,18 @@ public class EldaFilter implements Filter {
         res.addHeader("Access-Control-Allow-Origin", "*");
         res.addHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
         res.addHeader("Access-Control-Allow-Headers", "Content-Type");
-        if (path.equals("/id/services")) {
-            if (httpRequest.getMethod().equalsIgnoreCase("GET")) {
-                res.sendRedirect("/doc/services");
-            } else {
-                salRestRequestDispatcher.forward(request, response);
-            }
+        if (path.equals("/id/services") && httpRequest.getMethod().equalsIgnoreCase("GET")) {
+            // TODO Fix this by debugging Elda config file
+            logger.debug("Redirect request to /doc/services...");
+            res.sendRedirect(httpRequest.getContextPath() + "/doc/services");
         } else if ((path.matches("/id.*") && !httpRequest.getMethod().equalsIgnoreCase("GET")) || path.matches("/id/documents.*")) {
+            logger.debug("Forward request to SAL REST...");
             salRestRequestDispatcher.forward(request, response);
         } else if ((path.matches("/id.*") && httpRequest.getMethod().equalsIgnoreCase("GET")) || (path.matches("/api-docs.*"))) {
+            logger.debug("Forward request to Filter chain...");
             chain.doFilter(request, response);
         } else {
+            logger.debug("Forward request to Default servlet...");
             defaultRequestDispatcher.forward(request, response);
         }
 

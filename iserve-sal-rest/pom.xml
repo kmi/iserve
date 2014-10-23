@@ -302,6 +302,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>uk.ac.open.kmi.msm4j</groupId>
+            <artifactId>msm4j-vocabulary</artifactId>
+            <version>${msm4j.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

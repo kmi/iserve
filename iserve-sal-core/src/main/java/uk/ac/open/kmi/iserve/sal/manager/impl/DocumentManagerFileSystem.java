@@ -18,7 +18,12 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.eventbus.EventBus;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.inject.Inject;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,7 +150,7 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
         File documentsFolder = new File(this.getDocumentsInternalPath());
         File[] docsList = documentsFolder.listFiles();
         for (File doc : docsList) {
-            if (doc.isFile())
+            if (doc.isDirectory())
                 result.add(this.getDocumentPublicUri(doc));
         }
         return result.build();
@@ -161,14 +166,19 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
             return null;
         }
 
-        File file = new File(this.getDocumentInternalUri(documentUri));
-        InputStream result = null;
-        try {
-            result = new FileInputStream(file);
-        } catch (IOException e) {
-            throw new DocumentException(e);
+        File dir = new File(this.getDocumentInternalUri(documentUri));
+        for (File file : dir.listFiles()) {
+            if (file.getName().matches("^index\\..*")) {
+                InputStream result = null;
+                try {
+                    result = new FileInputStream(file);
+                } catch (IOException e) {
+                    throw new DocumentException(e);
+                }
+                return result;
+            }
         }
-        return result;
+        return null;
     }
 
 //	/* (non-Javadoc)
@@ -191,16 +201,14 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
 //		return result;
 //	}
 
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#createDocument(java.io.InputStream, java.lang.String )
-     */
     @Override
     public URI createDocument(InputStream docContent, String fileExtension) throws DocumentException {
-
-        URI newDocUri = this.generateUniqueDocumentUri(fileExtension);
+        URI newDocUri = this.generateUniqueDocumentUri();
         try {
             URI internalDocUri = this.getDocumentInternalUri(newDocUri);
-            File file = new File(internalDocUri);
+            File docDir = new File(internalDocUri);
+            FileUtil.createDirIfNotExists(docDir);
+            File file = new File(new StringBuilder(docDir.getAbsolutePath()).append("/index.").append(fileExtension).toString());
             FileOutputStream out = new FileOutputStream(file);
             FileUtil.createDirIfNotExists(file.getParentFile());
             int size = IOUtils.copy(docContent, out);
@@ -216,25 +224,99 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
     }
 
     /* (non-Javadoc)
+         * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#createDocument(java.io.InputStream, java.lang.String )
+         */
+    @Override
+    public URI createDocument(URI docRemoteLocation, String fileExtension) throws DocumentException {
+
+        log.debug("Creating document from {} - File extension: {}", docRemoteLocation, fileExtension);
+        URI newDocUri = this.generateUniqueDocumentUri();
+        try {
+            URI internalDocUri = this.getDocumentInternalUri(newDocUri);
+            File docDir = new File(internalDocUri);
+            FileUtil.createDirIfNotExists(docDir);
+            File file = new File(new StringBuilder(docDir.getAbsolutePath()).append("/index.").append(fileExtension).toString());
+            FileOutputStream out = new FileOutputStream(file);
+            FileUtil.createDirIfNotExists(file.getParentFile());
+            int size = IOUtils.copy(docRemoteLocation.toURL().openStream(), out);
+            log.info("Document internal URI - " + internalDocUri.toASCIIString() + " - " + size + " bytes.");
+            if (fileExtension.equals("json")) {
+                storeSwaggerApiDeclarations(file, docDir.getAbsolutePath(), docRemoteLocation);
+            }
+        } catch (IOException e) {
+            throw new DocumentException("Unable to add document to service.", e);
+        }
+
+        // Generate Event
+        this.getEventBus().post(new DocumentCreatedEvent(new Date(), newDocUri));
+
+        return newDocUri;
+    }
+
+    private void storeSwaggerApiDeclarations(File rootDoc, String absolutePath, URI docRemoteLocation) {
+        try {
+            JsonElement jelement = new JsonParser().parse(new InputStreamReader(new FileInputStream(rootDoc)));
+            JsonObject root = jelement.getAsJsonObject();
+            JsonArray apis = root.getAsJsonArray("apis");
+            for (JsonElement api : apis) {
+                JsonObject apiDeclaration = api.getAsJsonObject();
+                String path = apiDeclaration.get("path").toString().replaceAll("\"", "");
+                String[] dirs = path.split("/");
+                String parentPath = absolutePath;
+                for (String dir : dirs) {
+                    if (!dir.equals("")) {
+                        try {
+                            File localDir = new File(new StringBuilder(parentPath).append("/").append(dir).toString());
+                            FileUtil.createDirIfNotExists(localDir);
+                            parentPath = localDir.getAbsolutePath();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                File file = new File(new StringBuilder(parentPath).append("/index.json").toString());
+                try {
+                    URI apiDeclarationLocation = new URI(new StringBuilder(docRemoteLocation.toString()).append(path).toString());
+                    FileOutputStream out = new FileOutputStream(file);
+                    int size = IOUtils.copy(apiDeclarationLocation.toURL().openStream(), out);
+                    log.info("Document internal URI - " + file.getAbsolutePath() + " - " + size + " bytes.");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#deleteDocument(java.net.URI)
      */
     @Override
     public boolean deleteDocument(URI documentUri) throws DocumentException {
         // delete from hard disk
-        boolean result = false;
         URI fileUri = this.getDocumentInternalUri(documentUri);
         File file = new File(fileUri);
         if (file.exists()) {
-            result = file.delete();
-            if (result) {
+            try {
+                FileUtils.deleteDirectory(file);
                 log.info("File deleted: " + file.getName());
                 // Generate Event
                 this.getEventBus().post(new DocumentDeletedEvent(new Date(), documentUri));
-            } else {
+                return true;
+            } catch (IOException e) {
                 log.warn("File does not exist. Unable to delete it: " + file.getAbsolutePath());
+                e.printStackTrace();
+
             }
+
         }
-        return result;
+        return false;
     }
 
     /**
@@ -248,8 +330,13 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
         File internalFolder = new File(this.getDocumentsInternalPath());
         File[] files = internalFolder.listFiles();
         for (File file : files) {
-            file.delete();
-            log.info("File deleted: " + file.getAbsolutePath());
+            try {
+                FileUtils.deleteDirectory(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new DocumentException("Unable to delete " + file.getAbsolutePath());
+            }
+            log.info("File deleted: {}", file.getAbsolutePath());
         }
 
         // Generate Event
@@ -268,9 +355,9 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
         return file.exists();
     }
 
-    private URI generateUniqueDocumentUri(String fileExtension) {
+    private URI generateUniqueDocumentUri() {
         String uid = UriUtil.generateUniqueId();
-        return documentsPublicUri.resolve(uid + "." + fileExtension);
+        return documentsPublicUri.resolve(uid);
     }
 
     /**

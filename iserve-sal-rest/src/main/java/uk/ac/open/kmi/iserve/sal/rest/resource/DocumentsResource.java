@@ -16,11 +16,17 @@
 
 package uk.ac.open.kmi.iserve.sal.rest.resource;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.wordnik.swagger.annotations.*;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 import uk.ac.open.kmi.iserve.sal.exception.LogException;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
-import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
+import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
+import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -29,21 +35,77 @@ import javax.ws.rs.core.Response.Status;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Set;
 
 @Path("/documents")
 @Api(value = "/id/documents", description = "Operations about service documents", basePath = "id")
 public class DocumentsResource {
 
-    private final DocumentManager docManager;
+    private final RegistryManager registryManager;
     @Context
     UriInfo uriInfo;
     @Context
     SecurityContext security;
+    private Logger logger = LoggerFactory.getLogger(DocumentsResource.class);
 
     @Inject
-    public DocumentsResource(DocumentManager documentManager) {
-        this.docManager = documentManager;
+    public DocumentsResource(RegistryManager registryManager) {
+        this.registryManager = registryManager;
     }
+
+
+    @GET
+    @ApiOperation(value = "List all the service documents",
+            notes = "Returns a list of service documents")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Documents Found"),
+            @ApiResponse(code = 500, message = "Internal error")})
+    @Produces({"application/json", "text/html"})
+    public Response listDocuments() {
+        try {
+            Set<URI> result = registryManager.getDocumentManager().listDocuments();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String json = gson.toJson(result);
+            return Response.status(Status.OK).entity(json).build();
+        } catch (DocumentException e) {
+            e.printStackTrace();
+            String error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                    "  <body>\nThere was an error while loading documents. Contact the system administrator. \n  </body>\n</html>";
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+        }
+    }
+
+    @GET
+    @ApiOperation(value = "Get a service document",
+            notes = "Returns a service document")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Document Found"),
+            @ApiResponse(code = 404, message = "Document not found"),
+            @ApiResponse(code = 500, message = "Internal error")})
+    @Produces({"*/*"})
+    @Path("/{id: .*}")
+    public Response getDocument(@Context UriInfo uriInfo,
+                                @ApiParam(value = "Description ID", required = true)
+                                @PathParam("id") String id) {
+        try {
+            logger.debug("Requested document: {}", uriInfo.getRequestUri());
+            InputStream is = registryManager.getDocumentManager().getDocument(uriInfo.getRequestUri());
+            if (is != null) {
+                String result = IOUtils.toString(is, "UTF-8");
+                return Response.status(Status.OK).entity(result).build();
+            } else {
+                String error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                        "  <body>\nDocument not found.\n  </body>\n</html>";
+
+                return Response.status(Status.NOT_FOUND).entity(error).build();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            String error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                    "  <body>\nThere was an error while retrieving the document. Contact the system administrator. \n  </body>\n</html>";
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+        }
+    }
+
 
     @POST
     @ApiOperation(value = "Add a new service document",
@@ -52,7 +114,7 @@ public class DocumentsResource {
             value = {@ApiResponse(code = 201, message = "Created document"),
                     @ApiResponse(code = 500, message = "Internal error")})
     @Consumes({MediaType.TEXT_HTML, MediaType.TEXT_XML, MediaType.APPLICATION_XML, "application/rdf+xml",
-            "text/turtle", "text/n3", "text/rdf+n3", MediaType.TEXT_PLAIN})
+            "text/turtle", "text/n3", "text/rdf+n3", MediaType.TEXT_PLAIN, "application/json", "application/wsdl+xml"})
     @Produces({MediaType.TEXT_HTML})
     public Response addDocument(
             String document,
@@ -72,10 +134,16 @@ public class DocumentsResource {
 //		String userFoafId = security.getUserPrincipal().getName();
 
         // TODO check the actual encoding
-        InputStream is;
         try {
-            is = new ByteArrayInputStream(document.getBytes("UTF-8"));
-            URI docUri = docManager.createDocument(is, contentType);
+
+            URI docUri;
+            ServiceTransformationEngine transformationEngine = registryManager.getServiceTransformationEngine();
+            if (document != null && !document.equals("")) {
+                InputStream is = new ByteArrayInputStream(document.getBytes("UTF-8"));
+                docUri = registryManager.getDocumentManager().createDocument(is, transformationEngine.getFileExtension(contentType));
+            } else {
+                docUri = registryManager.getDocumentManager().createDocument(new URI(locationUri), transformationEngine.getFileExtension(contentType));
+            }
 
             String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                     "  <body>\nA document is created at <a href='" + docUri.toString() + "'>" + docUri.toString() + "</a>\n  </body>\n</html>";
@@ -84,8 +152,8 @@ public class DocumentsResource {
         } catch (Exception e) {
             String error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                     "  <body>\nThere was an error while creating a document. Contact the system administrator. \n  </body>\n</html>";
-
-            // TODO: Add logging
+            e.printStackTrace();
+            logger.error(e.toString());
 
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
         }
@@ -115,7 +183,7 @@ public class DocumentsResource {
 
     @DELETE
     @Path("/{id}")
-    @ApiOperation(value = "Delete a service document",
+    @ApiOperation(value = "Delete a service document and its sub-documents",
             notes = "Returns a HTML document which confirms the deletion of the document")
     @ApiResponses(
             value = {@ApiResponse(code = 401, message = "Deleted document"),
@@ -138,7 +206,7 @@ public class DocumentsResource {
 //		String userFoafId = security.getUserPrincipal().getName();
 
         try {
-            boolean result = docManager.deleteDocument(uriInfo.getRequestUri());
+            boolean result = registryManager.getDocumentManager().deleteDocument(uriInfo.getRequestUri());
         } catch (SalException e) {
             String error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                     "  <body>\nThere was an error while deleting a document. Contact the system administrator. \n  </body>\n</html>";
