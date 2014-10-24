@@ -150,10 +150,10 @@ $prefLabel, $altLabel, $title and $name variables.
 
             $('#openSearch')
             .toggle(function () {
-            $(this).text('Hide Search Form');
+            $(this).text('Hide Advanced Search Form');
             $('#search').slideDown('slow');
             }, function () {
-            $(this).text('Show Search Form');
+            $(this).text('Show Advanced Search Form');
             $('#search').slideUp('slow');
             });
 
@@ -353,9 +353,6 @@ $prefLabel, $altLabel, $title and $name variables.
     </xsl:template>
 
     <xsl:template match="result" mode="header">
-        <!--<nav class="site">-->
-        <!--<xsl:apply-templates select="." mode="directory" />-->
-        <!--</nav>-->
         <!--<header>-->
         <!--<h1><a href="{$_APP}">Linked Data API</a></h1>-->
         <!--</header>-->
@@ -534,11 +531,11 @@ $prefLabel, $altLabel, $title and $name variables.
     </xsl:template>
 
     <xsl:template match="result" mode="formats">
-        <!--
-    <section class="formats">
+
+        <section class="formats">
         <ul>
             <xsl:for-each select="hasFormat/item">
-                &lt;!&ndash; make sure a labelled or unabelled html sorts in the right position &ndash;&gt;
+                <!-- make sure a labelled or unabelled html sorts in the right position -->
                 <xsl:sort select="concat(label,'html')"/>
                 <li>
                     <xsl:if test="position() = 1">
@@ -552,19 +549,6 @@ $prefLabel, $altLabel, $title and $name variables.
             </xsl:for-each>
         </ul>
     </section>
--->
-        <section class="summary">
-            <h1>Obtain the data</h1>
-            <ul>
-                <xsl:for-each select="hasFormat/item">
-                    <!-- make sure a labelled or unabelled html sorts in the right position -->
-                    <xsl:sort select="concat(label,'html')"/>
-                    <li>
-                        <xsl:apply-templates select="." mode="nav"/>
-                    </li>
-                </xsl:for-each>
-            </ul>
-        </section>
 
     </xsl:template>
 
@@ -584,7 +568,7 @@ $prefLabel, $altLabel, $title and $name variables.
                     <xsl:when test="items">
                         <header>
                             <xsl:if test="items/item">
-                                <p id="openSearch">Show Search Form</p>
+                                <p id="openSearch">Show Advanced Search Form</p>
                             </xsl:if>
                             <h1>Search Results</h1>
                         </header>
@@ -607,6 +591,8 @@ $prefLabel, $altLabel, $title and $name variables.
         <xsl:variable name="isItem" select="not(items) and primaryTopic"/>
 
         <nav class="topnav">
+            <xsl:apply-templates select="." mode="textsearch"/>
+            <xsl:apply-templates select="." mode="mainentities"/>
             <xsl:apply-templates select="." mode="moreinfo"/>
             <xsl:apply-templates select="." mode="map"/>
             <xsl:if test="$hasResults">
@@ -1069,6 +1055,40 @@ $prefLabel, $altLabel, $title and $name variables.
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
+
+    <xsl:template match="result" mode="textsearch">
+        <section class="textsearch">
+            <h1>Search</h1>
+            <form id="textsearchform" action="" method="get">
+                <ul>
+                    <input type="text" name="_search"/>
+                    <a href="#" onclick="$(this).closest('form').submit()">
+                        <img src="{$inactiveImageBase}/Search.png" alt="Search"/>
+                    </a>
+                </ul>
+            </form>
+        </section>
+    </xsl:template>
+
+    <xsl:template match="result" mode="mainentities">
+        <section class="mainentities">
+            <h1>Browse iServe entities</h1>
+            <ul>
+                <li>
+                    <a href="{$_resourceRoot}../doc/services">Services</a>
+                </li>
+                <br/>
+                <li>
+                    <a href="{$_resourceRoot}../doc/operations">Operations</a>
+                </li>
+                <br/>
+                <li>
+                    <a href="{$_resourceRoot}../doc/providers">Providers</a>
+                </li>
+            </ul>
+        </section>
+    </xsl:template>
+
 
     <xsl:template match="result" mode="summary">
         <xsl:if test="count(items/item) > 1">
@@ -2080,7 +2100,7 @@ $prefLabel, $altLabel, $title and $name variables.
 
     <xsl:template match="/result/primaryTopic" mode="content" priority="10">
         <header>
-            <p id="openSearch">Show Search Form</p>
+            <p id="openSearch">Show Advanced Search Form</p>
             <h1>
                 <xsl:apply-templates select="." mode="name"/>
             </h1>

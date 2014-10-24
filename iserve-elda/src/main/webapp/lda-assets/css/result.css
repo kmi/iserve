@@ -198,6 +198,15 @@ nav.topnav section li {
 /*background: none;*/
 /*}*/
 
+nav.topnav section.textsearch input {
+    width: 80%;
+}
+
+nav.topnav section.textsearch img {
+    position: absolute;
+    right: 20px;
+}
+
 nav.topnav section.summary li {
     display: block;
     white-space: normal;
