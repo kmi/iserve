@@ -20,7 +20,7 @@
     <parent>
         <artifactId>iserve-parent</artifactId>
         <groupId>uk.ac.open.kmi.iserve</groupId>
-        <version>2.0.0-RC1</version>
+        <version>2.0.0-RC2-SNAPSHOT</version>
     </parent>
     <artifactId>iserve-semantic-discovery</artifactId>
     <name>iServe Semantic Discovery Plug-in</name>
