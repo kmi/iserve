@@ -139,7 +139,12 @@
             <version>${msm4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.google.code.gson</groupId>
+            <groupId>uk.ac.open.kmi.msm4j</groupId>
+            <artifactId>msm4j-swagger-transformer</artifactId>
+            <version>${msm4j.version}</version>
+        </dependency>
+        <dependency>
+        <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>${gson.version}</version>
         </dependency>
