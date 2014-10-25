@@ -10,7 +10,7 @@ fi
 SPARQL_ENDPOINT=$(
   case "$7" in
     ("sesame") echo "http://$4:$5/openrdf-sesame/repositories/$6" ;;
-    ("fuseki") echo "buh" ;;
+    ("fuseki") echo "http://$4:$5/$6/query" ;;
     (*) echo "$7 is an unknown RDF store. Configure manually."
         exit 1;;
   esac)
