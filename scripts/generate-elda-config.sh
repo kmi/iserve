@@ -17,5 +17,5 @@ SPARQL_ENDPOINT=$(
 
 #echo "Endpoint: $SPARQL_ENDPOINT"
 
-sed -e "s@%ISERVE_APP_NAME%@$3@g" -e "s@%ISERVE_PATH%@http://$1:$2/$3@g" -e "s@%SPARQL_ENDPOINT%@$SPARQL_ENDPOINT@g" $DIR/../conf/elda-specs/template.ttl > $DIR/../conf/elda-specs/iserve.ttl
-echo "Configuration file generated at $DIR/../conf/elda-specs/iserve.ttl"
+sed -e "s@%ISERVE_APP_NAME%@$3@g" -e "s@%ISERVE_PATH%@http://$1:$2/$3@g" -e "s@%SPARQL_ENDPOINT%@$SPARQL_ENDPOINT@g" elda-spec-template.ttl > elda-spec-iserve.ttl
+echo "Configuration file generated at $DIR/elda-spec-iserve.ttl"
