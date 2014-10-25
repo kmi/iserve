@@ -29,6 +29,7 @@ import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
@@ -42,6 +43,8 @@ import java.util.Set;
 public class DocumentsResource {
 
     private final RegistryManager registryManager;
+    @Context
+    ServletContext context;
     @Context
     UriInfo uriInfo;
     @Context
@@ -84,13 +87,25 @@ public class DocumentsResource {
     @Path("/{id: .*}")
     public Response getDocument(@Context UriInfo uriInfo,
                                 @ApiParam(value = "Description ID", required = true)
-                                @PathParam("id") String id) {
+                                @PathParam("id") String id,
+                                @ApiParam(value = "Document Media type")
+                                @HeaderParam("Accept") String accept) {
         try {
             logger.debug("Requested document: {}", uriInfo.getRequestUri());
+            logger.debug("Accept: {}", accept);
             InputStream is = registryManager.getDocumentManager().getDocument(uriInfo.getRequestUri());
+            String docMediaType = registryManager.getDocumentManager().getDocumentMediaType(uriInfo.getRequestUri());
             if (is != null) {
-                String result = IOUtils.toString(is, "UTF-8");
-                return Response.status(Status.OK).entity(result).build();
+                if (accept.contains(MediaType.TEXT_HTML) && docMediaType.equals(MediaType.APPLICATION_JSON)) {
+                    logger.debug("Generating Swagger UI");
+                    String result = generateSwaggerUI(uriInfo.getRequestUri());
+                    return Response.status(Status.OK).entity(result).build();
+                } else {
+                    logger.debug("Document found!");
+                    String result = IOUtils.toString(is, "UTF-8");
+                    return Response.status(Status.OK).header("Content-Type", docMediaType).entity(result).build();
+                }
+
             } else {
                 String error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                         "  <body>\nDocument not found.\n  </body>\n</html>";
@@ -104,6 +119,88 @@ public class DocumentsResource {
                     "  <body>\nThere was an error while retrieving the document. Contact the system administrator. \n  </body>\n</html>";
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
         }
+    }
+
+    private String generateSwaggerUI(URI requestUri) {
+        StringBuilder swaggerUiBuilder = new StringBuilder();
+        swaggerUiBuilder
+                .append("<!DOCTYPE html>\n")
+                .append("<html>\n")
+                .append("<head>\n")
+                .append("<title>Service Document</title>\n")
+                .append("<link href='//fonts.googleapis.com/css?family=DroidSans:400,700' rel='stylesheet' type='text/css'/>\n")
+                .append("<link href='").append(context.getContextPath()).append("/docs/css/reset.css' media='screen' rel='stylesheet' type='text/css'/>\n")
+                .append("<link href='").append(context.getContextPath()).append("/docs/css/screen.css' media='screen' rel='stylesheet' type='text/css'/>\n")
+                .append("<link href='").append(context.getContextPath()).append("/docs/css/reset.css' media='print' rel='stylesheet' type='text/css'/>\n")
+                .append("<link href='").append(context.getContextPath()).append("/docs/css/screen.css' media='print' rel='stylesheet' type='text/css'/>\n")
+                .append("    <script type=\"text/javascript\" src=\"").append(context.getContextPath()).append("/docs/lib/shred.bundle.js\"></script>\n")
+                .append("    <script src='").append(context.getContextPath()).append("/docs/lib/jquery-1.8.0.min.js' type='text/javascript'></script>\n")
+                .append("    <script src='").append(context.getContextPath()).append("/docs/lib/jquery.slideto.min.js' type='text/javascript'></script>\n")
+                .append("    <script src='").append(context.getContextPath()).append("/docs/lib/jquery.wiggle.min.js' type='text/javascript'></script>\n")
+                .append("    <script src='").append(context.getContextPath()).append("/docs/lib/jquery.ba-bbq.min.js' type='text/javascript'></script>\n")
+                .append("    <script src='").append(context.getContextPath()).append("/docs/lib/handlebars-1.0.0.js' type='text/javascript'></script>\n")
+                .append("    <script src='").append(context.getContextPath()).append("/docs/lib/underscore-min.js' type='text/javascript'></script>\n")
+                .append("    <script src='").append(context.getContextPath()).append("/docs/lib/backbone-min.js' type='text/javascript'></script>\n")
+                .append("    <script src='").append(context.getContextPath()).append("/docs/lib/swagger.js' type='text/javascript'></script>\n")
+                .append("    <script src='").append(context.getContextPath()).append("/docs/swagger-ui.js' type='text/javascript'></script>\n")
+                .append("    <script src='").append(context.getContextPath()).append("/docs/lib/highlight.7.3.pack.js' type='text/javascript'></script>\n")
+                .append("\n")
+                .append("    <!-- enabling this will enable oauth2 implicit scope support -->\n")
+                .append("    <script src='").append(context.getContextPath()).append("/docs/lib/swagger-oauth.js' type='text/javascript'></script>\n")
+                .append("\n")
+                .append("    <script type=\"text/javascript\">\n")
+                .append("        $(function () {\n")
+                .append("            window.swaggerUi = new SwaggerUi({\n")
+                .append("                url: \"").append(requestUri).append("\",\n")
+                .append("                dom_id: \"swagger-ui-container\",\n")
+                .append("                supportedSubmitMethods: ['get', 'post', 'put', 'delete'],\n")
+                .append("                onComplete: function (swaggerApi, swaggerUi) {\n")
+                .append("                    log(\"Loaded SwaggerUI\");\n")
+                .append("\n")
+                .append("                    if (typeof initOAuth == \"function\") {\n")
+                .append("                        /*\n")
+                .append("                         initOAuth({\n")
+                .append("                         clientId: \"your-client-id\",\n")
+                .append("                         realm: \"your-realms\",\n")
+                .append("                         appName: \"your-app-name\"\n")
+                .append("                         });\n")
+                .append("                         */\n")
+                .append("                    }\n")
+                .append("                    $('pre code').each(function (i, e) {\n")
+                .append("                        hljs.highlightBlock(e)\n")
+                .append("                    });\n")
+                .append("                },\n")
+                .append("                onFailure: function (data) {\n")
+                .append("                    log(\"Unable to Load SwaggerUI\");\n")
+                .append("                },\n")
+                .append("                docExpansion: \"none\",\n")
+                .append("                sorter: \"alpha\"\n")
+                .append("            });\n")
+                .append("\n")
+                .append("            $('#input_apiKey').change(function () {\n")
+                .append("                var key = $('#input_apiKey')[0].value;\n")
+                .append("                log(\"key: \" + key);\n")
+                .append("                if (key && key.trim() != \"\") {\n")
+                .append("                    log(\"added key \" + key);\n")
+                .append("                    window.authorizations.add(\"key\", new ApiKeyAuthorization(\"api_key\", key, \"query\"));\n")
+                .append("                }\n")
+                .append("            })\n")
+                .append("            window.swaggerUi.load();\n")
+                .append("        });\n")
+                .append("    </script>\n")
+                .append("</head>\n")
+                .append("\n")
+                .append("<body class=\"swagger-section\">\n")
+                .append("<div id='header'>\n")
+                .append("    <div class=\"swagger-ui-wrap\">\n")
+                .append("    </div>\n")
+                .append("</div>\n")
+                .append("<br/>\n")
+                .append("<div id=\"message-bar\" class=\"swagger-ui-wrap\">&nbsp;</div>\n")
+                .append("<div id=\"swagger-ui-container\" class=\"swagger-ui-wrap\"></div>\n")
+                .append("</body>\n")
+                .append("</html>");
+        return swaggerUiBuilder.toString();
     }
 
 
@@ -140,9 +237,9 @@ public class DocumentsResource {
             ServiceTransformationEngine transformationEngine = registryManager.getServiceTransformationEngine();
             if (document != null && !document.equals("")) {
                 InputStream is = new ByteArrayInputStream(document.getBytes("UTF-8"));
-                docUri = registryManager.getDocumentManager().createDocument(is, transformationEngine.getFileExtension(contentType));
+                docUri = registryManager.getDocumentManager().createDocument(is, transformationEngine.getFileExtension(contentType), contentType);
             } else {
-                docUri = registryManager.getDocumentManager().createDocument(new URI(locationUri), transformationEngine.getFileExtension(contentType));
+                docUri = registryManager.getDocumentManager().createDocument(new URI(locationUri), transformationEngine.getFileExtension(contentType), contentType);
             }
 
             String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +

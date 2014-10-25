@@ -18,10 +18,8 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.eventbus.EventBus;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -40,10 +38,10 @@ import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 import uk.ac.open.kmi.msm4j.io.util.FileUtil;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 public class DocumentManagerFileSystem extends IntegratedComponent implements DocumentManager {
 
@@ -181,6 +179,21 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
         return null;
     }
 
+    @Override
+    public String getDocumentMediaType(URI documentUri) throws DocumentException {
+        if (!documentExists(documentUri)) {
+            return null;
+        }
+
+        File dir = new File(this.getDocumentInternalUri(documentUri));
+        for (File file : dir.listFiles()) {
+            if (file.getName().matches("^index\\..*")) {
+                return getFileMediaTypeMap().get(file.getAbsolutePath());
+            }
+        }
+        return null;
+    }
+
 //	/* (non-Javadoc)
 //	 * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#addDocument(java.lang.String, java.lang.String)
 //	 */
@@ -202,7 +215,8 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
 //	}
 
     @Override
-    public URI createDocument(InputStream docContent, String fileExtension) throws DocumentException {
+    public URI createDocument(InputStream docContent, String fileExtension, String mediaType) throws DocumentException {
+
         URI newDocUri = this.generateUniqueDocumentUri();
         try {
             URI internalDocUri = this.getDocumentInternalUri(newDocUri);
@@ -213,6 +227,7 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
             FileUtil.createDirIfNotExists(file.getParentFile());
             int size = IOUtils.copy(docContent, out);
             log.info("Document internal URI - " + internalDocUri.toASCIIString() + " - " + size + " bytes.");
+            storeMediaType(file.getAbsolutePath(), mediaType);
         } catch (IOException e) {
             throw new DocumentException("Unable to add document to service.", e);
         }
@@ -223,11 +238,48 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
         return newDocUri;
     }
 
+    private synchronized void storeMediaType(String absolutePath, String mediaType) {
+        log.debug("Storing Media Type for file {}: {}", absolutePath, mediaType);
+        Map<String, String> fileMediatypeMap = getFileMediaTypeMap();
+        fileMediatypeMap.put(absolutePath, mediaType);
+        storeMediaTypeMap(fileMediatypeMap);
+    }
+
+    public Map<String, String> getFileMediaTypeMap() {
+        File mapFile = new File(URI.create(new StringBuilder(documentsInternalPath.toString()).append("/mediaTypeMap.json").toString()));
+        if (!mapFile.exists()) {
+            return new HashMap<String, String>();
+        } else {
+            try {
+                Gson gson = new GsonBuilder().create();
+                Type typeOfHashMap = new TypeToken<Map<String, String>>() {
+                }.getType();
+                return gson.fromJson(new FileReader(mapFile), typeOfHashMap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    private void storeMediaTypeMap(Map<String, String> fileMediatypeMap) {
+        try {
+            File mapFile = new File(URI.create(new StringBuilder(documentsInternalPath.toString()).append("/mediaTypeMap.json").toString()));
+            Gson gson = new GsonBuilder().create();
+            String json = gson.toJson(fileMediatypeMap);
+            FileOutputStream fos = new FileOutputStream(mapFile);
+            fos.write(json.getBytes());
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /* (non-Javadoc)
          * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#createDocument(java.io.InputStream, java.lang.String )
          */
     @Override
-    public URI createDocument(URI docRemoteLocation, String fileExtension) throws DocumentException {
+    public URI createDocument(URI docRemoteLocation, String fileExtension, String mediaType) throws DocumentException {
 
         log.debug("Creating document from {} - File extension: {}", docRemoteLocation, fileExtension);
         URI newDocUri = this.generateUniqueDocumentUri();
@@ -240,8 +292,9 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
             FileUtil.createDirIfNotExists(file.getParentFile());
             int size = IOUtils.copy(docRemoteLocation.toURL().openStream(), out);
             log.info("Document internal URI - " + internalDocUri.toASCIIString() + " - " + size + " bytes.");
+            storeMediaType(file.getAbsolutePath(), mediaType);
             if (fileExtension.equals("json")) {
-                storeSwaggerApiDeclarations(file, docDir.getAbsolutePath(), docRemoteLocation);
+                storeSwaggerApiDeclarations(file, docDir.getAbsolutePath(), docRemoteLocation, mediaType);
             }
         } catch (IOException e) {
             throw new DocumentException("Unable to add document to service.", e);
@@ -253,7 +306,7 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
         return newDocUri;
     }
 
-    private void storeSwaggerApiDeclarations(File rootDoc, String absolutePath, URI docRemoteLocation) {
+    private void storeSwaggerApiDeclarations(File rootDoc, String absolutePath, URI docRemoteLocation, String mediaType) {
         try {
             JsonElement jelement = new JsonParser().parse(new InputStreamReader(new FileInputStream(rootDoc)));
             JsonObject root = jelement.getAsJsonObject();
@@ -280,6 +333,7 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
                     FileOutputStream out = new FileOutputStream(file);
                     int size = IOUtils.copy(apiDeclarationLocation.toURL().openStream(), out);
                     log.info("Document internal URI - " + file.getAbsolutePath() + " - " + size + " bytes.");
+                    storeMediaType(file.getAbsolutePath(), mediaType);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -306,6 +360,15 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
             try {
                 FileUtils.deleteDirectory(file);
                 log.info("File deleted: " + file.getName());
+                //delete entry in mediatype map
+                Map<String, String> mediaTypeMap = getFileMediaTypeMap();
+                Set<String> filePaths = new HashSet<String>(mediaTypeMap.keySet());
+                for (String filePath : filePaths) {
+                    if (filePath.matches(new StringBuilder(file.getAbsolutePath()).append(".*").toString())) {
+                        mediaTypeMap.remove(filePath);
+                    }
+                }
+                storeMediaTypeMap(mediaTypeMap);
                 // Generate Event
                 this.getEventBus().post(new DocumentDeletedEvent(new Date(), documentUri));
                 return true;
@@ -327,6 +390,8 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
      */
     @Override
     public boolean clearDocuments() throws DocumentException {
+        File mapFile = new File(URI.create(new StringBuilder(documentsInternalPath.toString()).append("/mediaTypeMap.json").toString()));
+        mapFile.delete();
         File internalFolder = new File(this.getDocumentsInternalPath());
         File[] files = internalFolder.listFiles();
         for (File file : files) {
@@ -368,4 +433,6 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
     public void shutdown() {
         return;
     }
+
+
 }
