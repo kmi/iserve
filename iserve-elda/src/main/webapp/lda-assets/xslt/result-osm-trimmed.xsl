@@ -531,11 +531,11 @@ $prefLabel, $altLabel, $title and $name variables.
     </xsl:template>
 
     <xsl:template match="result" mode="formats">
-
-        <section class="formats">
+        <!--
+    <section class="formats">
         <ul>
             <xsl:for-each select="hasFormat/item">
-                <!-- make sure a labelled or unabelled html sorts in the right position -->
+                &lt;!&ndash; make sure a labelled or unabelled html sorts in the right position &ndash;&gt;
                 <xsl:sort select="concat(label,'html')"/>
                 <li>
                     <xsl:if test="position() = 1">
@@ -549,6 +549,19 @@ $prefLabel, $altLabel, $title and $name variables.
             </xsl:for-each>
         </ul>
     </section>
+-->
+        <section class="summary">
+            <h1>Obtain the data</h1>
+            <ul>
+                <xsl:for-each select="hasFormat/item">
+                    <!-- make sure a labelled or unabelled html sorts in the right position -->
+                    <xsl:sort select="concat(label,'html')"/>
+                    <li>
+                        <xsl:apply-templates select="." mode="nav"/>
+                    </li>
+                </xsl:for-each>
+            </ul>
+        </section>
 
     </xsl:template>
 
