@@ -1085,7 +1085,7 @@ $prefLabel, $altLabel, $title and $name variables.
 
     <xsl:template match="result" mode="mainentities">
         <section class="mainentities">
-            <h1>Browse iServe entities</h1>
+            <h1>Browse top entities</h1>
             <ul>
                 <li>
                     <a href="{$_resourceRoot}../doc/services">Services</a>
@@ -1106,7 +1106,7 @@ $prefLabel, $altLabel, $title and $name variables.
     <xsl:template match="result" mode="summary">
         <xsl:if test="count(items/item) > 1">
             <section class="summary">
-                <h1>On This Page</h1>
+                <h1>On this page</h1>
                 <xsl:call-template name="createInfo">
                     <xsl:with-param name="text">Links to the items within this page, and to the previous
                         and/or next pages of results.
