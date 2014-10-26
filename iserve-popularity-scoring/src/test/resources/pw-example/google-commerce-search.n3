@@ -1,0 +1,31 @@
+@prefix hr:    <http://iserve.kmi.open.ac.uk/ns/hrests#> .
+@prefix schema: <http://schema.org/> .
+@prefix sioc:  <http://rdfs.org/sioc/ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix wl:    <http://www.wsmo.org/ns/wsmo-lite#> .
+@prefix msm-nfp: <http://iserve.kmi.open.ac.uk/ns/msm-nfp#> .
+@prefix sawsdl: <http://www.w3.org/ns/sawsdl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix msm:   <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix msm-wsdl: <http://iserve.kmi.open.ac.uk/ns/msm-wsdl#> .
+@prefix cc:    <http://creativecommons.org/ns#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<https://groups.google.com/forum/?fromgroups#!forum/google-search-api-for-shopping>
+        a       sioc:Forum .
+
+<http://google-commerce-search>
+        a                      msm:Service ;
+        rdfs:label             "Google Commerce Search" ;
+        rdfs:seeAlso           <http://www.programmableweb.com/api/google-commerce-search> , <https://developers.google.com/commerce-search/docs/overview> ;
+        msm-nfp:hasForum       <https://groups.google.com/forum/?fromgroups#!forum/google-search-api-for-shopping> ;
+        dcterms:created        "2014-08-05"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        schema:provider        <http://iserve.kmi.open.ac.uk/iserve/id/providers/provider3168> ;
+        sawsdl:modelReference  schema:SearchAction .
+
+<http://iserve.kmi.open.ac.uk/iserve/id/providers/provider3168>
+        a                      schema:Organization ;
+        rdfs:label             "Google Commerce Search provider" ;
+        rdfs:seeAlso           <http://code.google.com/> ;
+        msm-nfp:hasPopularity  "99.4"^^<http://www.w3.org/2001/XMLSchema#double> .

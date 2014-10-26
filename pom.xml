@@ -15,7 +15,8 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.ac.open.kmi.iserve</groupId>
     <artifactId>iserve-parent</artifactId>
@@ -51,8 +52,8 @@
         <url>https://github.com/kmi/iserve</url>
         <connection>scm:git:git@github.com:kmi/iserve.git</connection>
         <developerConnection>scm:git:git@github.com:kmi/iserve.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <issueManagement>
         <system>GitHub</system>
@@ -158,6 +159,8 @@
         <module>iserve-integrated-engine</module>
         <module>iserve-elda</module>
         <module>iserve-swagger</module>
+        <module>iserve-popularity-scoring</module>
+        <module>iserve-free-text-search</module>
     </modules>
 
     <dependencies>
