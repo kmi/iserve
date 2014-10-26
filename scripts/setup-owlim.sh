@@ -1,25 +1,12 @@
 #!/bin/bash
 
 if [ $# -lt 2 ]; then
-    echo "Illegal number of parameters. Usage: `basename $0` rdf-host rdf-port setup"
-    echo "Setups supported: in-memory (default) persistent owlim"
+    echo "Illegal number of parameters. Usage: `basename $0` rdf-host rdf-port"
     exit 1
 fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-TEMPLATE=$DIR/repositories-config/sesame-rdfs.ttl 
-
-# Check if persistent
-if [ $# -eq 3 ]; then
-	
-	TEMPLATE=$(
-	  case "$3" in
-	    ("in-memory") echo "$DIR/repositories-config/sesame-rdfs.ttl" ;;
-	    ("persistent") echo "$DIR/repositories-config/native-rdfs-dt.ttl" ;;
-	    (*) echo "$3 is an unknown setup. Configure manually."
-	        exit 1;;
-	  esac)
-fi
+TEMPLATE=$DIR/repositories-config/owlim-owl-horst-optimized.ttl
 
 echo "Creating iServe repository in $1:$2"
 
@@ -40,6 +27,10 @@ while [[ RET -ne 0 ]]; do
     curl -X POST -H "Content-Type:application/x-turtle" -d "<http://iserve.kmi.open.ac.uk/data#g1> a <http://www.openrdf.org/config/repository#RepositoryContext>." http://$1:$2/openrdf-sesame/repositories/SYSTEM/statements
     RET=$?
 done
+
+echo "Configuring free text indexing..."
+
+curl -X POST -d "update=INSERT+DATA+%7B%0A++%3Chttp%3A%2F%2Fwww.ontotext.com%2Fowlim%2Flucene%23include%3E+%3Chttp%3A%2F%2Fwww.ontotext.com%2Fowlim%2Flucene%23setParam%3E+%22literal+uri%22+.%0A++%3Chttp%3A%2F%2Fwww.ontotext.com%2Fowlim%2Flucene%23index%3E+%3Chttp%3A%2F%2Fwww.ontotext.com%2Fowlim%2Flucene%23setParam%3E+%22literals%2C+uri%22+.%0A++%3Chttp%3A%2F%2Fwww.ontotext.com%2Fowlim%2Flucene%23moleculeSize%3E+%3Chttp%3A%2F%2Fwww.ontotext.com%2Fowlim%2Flucene%23setParam%3E+%221%22+.%0A++%3Chttp%3A%2F%2Fwww.ontotext.com%2Fowlim%2Flucene%23entityIndex%3E+%3Chttp%3A%2F%2Fwww.ontotext.com%2Fowlim%2Flucene%23createIndex%3E+%22true%22+.%0A%7D%0A" http://$1:$2/openrdf-sesame/repositories/iserve/statements
 
 echo "iServe repository created"
 

@@ -32,7 +32,6 @@
 @prefix schema:             <http://schema.org/> .
 @prefix cc:                 <http://creativecommons.org/ns#> .
 @prefix freebase:           <http://rdf.freebase.com/ns/>.
-@prefix lucene:                <http://www.ontotext.com/owlim/lucene#> .
 
 # Prefix for the local specification
 
@@ -85,7 +84,7 @@ spec:api a api:API;
 # Endpoint definition
 <%SPARQL_ENDPOINT%>
         elda:textSearchOperand "?_search" ;
-        elda:textQueryProperty lucene:entityIndex ;
+        %TEXT_SEARCH_CONFIG%
         elda:supportsNestedSelect true ;
         .	
 
