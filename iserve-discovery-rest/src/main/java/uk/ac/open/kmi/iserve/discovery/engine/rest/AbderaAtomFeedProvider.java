@@ -29,6 +29,7 @@ import org.apache.abdera.writer.Writer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
+import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchResult;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -212,7 +213,7 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
     }
 
 
-    public Feed generateSearchFeed(String request, String searchPlugin, Set<URI> result) {
+    public Feed generateSearchFeed(String request, String searchPlugin, Set<FreeTextSearchResult> result) {
         Feed feed = initialiseFeed(request, searchPlugin);
 
         // Return empty feed if null
@@ -223,7 +224,7 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
         log.debug(result.toString());
 
 
-        for (URI resource : result) {
+        for (FreeTextSearchResult resource : result) {
             Entry rssEntry = createSearchResultEntry(resource);
             feed.addEntry(rssEntry);
         }
@@ -231,13 +232,13 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
         return feed;
     }
 
-    private Entry createSearchResultEntry(URI resource) {
+    private Entry createSearchResultEntry(FreeTextSearchResult resource) {
         Entry rssEntry =
                 ATOM_ENGINE.newEntry();
-        rssEntry.setId(resource.toASCIIString());
-        rssEntry.addLink(resource.toASCIIString(), "alternate");
-        rssEntry.setTitle(resource.toASCIIString());
-        rssEntry.setContent(resource.toASCIIString());
+        rssEntry.setId(resource.getUri().toASCIIString());
+        rssEntry.addLink(resource.getUri().toASCIIString(), "alternate");
+        rssEntry.setTitle(resource.getLabel());
+        rssEntry.setContent(resource.getComment());
         return rssEntry;
     }
 }

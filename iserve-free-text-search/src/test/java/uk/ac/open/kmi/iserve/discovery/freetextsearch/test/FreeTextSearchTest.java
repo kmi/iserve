@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchPlugin;
 import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchProvider;
+import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchResult;
 import uk.ac.open.kmi.msm4j.vocabulary.MSM;
 
 import java.net.URI;
@@ -25,7 +26,7 @@ public class FreeTextSearchTest {
     public void searchTest(FreeTextSearchPlugin freeTextSearchPlugin) {
 
         Stopwatch stopwatch = new Stopwatch().start();
-        Set<URI> result = freeTextSearchPlugin.search("facebook");
+        Set<FreeTextSearchResult> result = freeTextSearchPlugin.search("facebook");
         stopwatch.stop();
         logger.info("Search complete in {}", stopwatch);
         logger.info(result.toString());

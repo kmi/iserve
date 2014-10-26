@@ -7,7 +7,7 @@ import java.util.Set;
  * Created by Luca Panziera on 26/08/2014.
  */
 public interface FreeTextSearchPlugin {
-    Set<URI> search(String query);
+    Set<FreeTextSearchResult> search(String query);
 
-    Set<URI> search(String query, URI type);
+    Set<FreeTextSearchResult> search(String query, URI type);
 }

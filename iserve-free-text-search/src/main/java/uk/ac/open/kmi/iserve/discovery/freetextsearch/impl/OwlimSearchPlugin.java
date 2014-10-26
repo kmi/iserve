@@ -5,7 +5,9 @@ import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.update.UpdateExecutionFactory;
 import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateProcessor;
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
 import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchPlugin;
+import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchResult;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -53,28 +56,47 @@ public class OwlimSearchPlugin implements FreeTextSearchPlugin {
     }
 
     @Override
-    public Set<URI> search(String query) {
+    public Set<FreeTextSearchResult> search(String query) {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("PREFIX luc: <http://www.ontotext.com/owlim/lucene#> ")
-                .append("SELECT ?s ")
-                .append("WHERE { ?s luc:entityIndex \"").append(query).append("\" . }");
+                .append("PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> ")
+                .append("PREFIX sawsdl:<http://www.w3.org/ns/sawsdl#> ")
+                .append("PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> ")
+                .append("SELECT * ")
+                .append("WHERE { ?s luc:entityIndex \"").append(query).append("\" . ")
+                .append("OPTIONAL { ?s rdfs:label ?label . } ")
+                .append("OPTIONAL { ?s rdfs:comment ?comment . } ")
+                .append("OPTIONAL { ?s sawsdl:modelReference  ?modelReference . } } ");
 
         Query sparqlQuery = QueryFactory.create(queryBuilder.toString());
         return search(sparqlQuery);
     }
 
-    private Set<URI> search(Query sparqlQuery) {
+    private Set<FreeTextSearchResult> search(Query sparqlQuery) {
         logger.debug("Executing SPARQL query: {}", sparqlQuery);
         QueryExecution qexec = QueryExecutionFactory.sparqlService(queryEndpoint.toString(), sparqlQuery);
         ResultSet resultSet = qexec.execSelect();
 
-        Set<URI> r = Sets.newLinkedHashSet();
+        Set<FreeTextSearchResult> r = Sets.newLinkedHashSet();
         while (resultSet.hasNext()) {
             QuerySolution solution = resultSet.next();
             RDFNode s = solution.get("s");
             if (s.isURIResource()) {
                 try {
-                    r.add(new URI(s.asResource().getURI()));
+                    FreeTextSearchResult result = new FreeTextSearchResult(new URI(s.asResource().getURI()));
+                    Literal label = solution.getLiteral("label");
+                    Literal comment = solution.getLiteral("comment");
+                    Resource modelReference = solution.getResource("modelReference");
+                    if (label != null) {
+                        result.setLabel(label.getString());
+                    }
+                    if (comment != null) {
+                        result.setComment(comment.getString());
+                    }
+                    if (modelReference != null) {
+                        result.setModelReference(new URI(modelReference.getURI()));
+                    }
+                    r.add(result);
                 } catch (URISyntaxException e) {
                     e.printStackTrace();
                 }
@@ -84,13 +106,18 @@ public class OwlimSearchPlugin implements FreeTextSearchPlugin {
     }
 
     @Override
-    public Set<URI> search(String query, URI type) {
+    public Set<FreeTextSearchResult> search(String query, URI type) {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("PREFIX luc: <http://www.ontotext.com/owlim/lucene#> ")
                 .append("PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> ")
-                .append("SELECT ?s ")
+                .append("PREFIX sawsdl:<http://www.w3.org/ns/sawsdl#> ")
+                .append("PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> ")
+                .append("SELECT * ")
                 .append("WHERE { ?s luc:entityIndex \"").append(query).append("\" . ")
-                .append("?s rdf:type <").append(type.toASCIIString()).append("> . }");
+                .append("OPTIONAL { ?s rdfs:label ?label . } ")
+                .append("OPTIONAL { ?s rdfs:comment ?comment . } ")
+                .append("OPTIONAL { ?s sawsdl:modelReference  ?modelReference . } ")
+                .append("?s rdf:type <").append(type.toASCIIString()).append("> . } ");
 
         Query sparqlQuery = QueryFactory.create(queryBuilder.toString());
         return search(sparqlQuery);

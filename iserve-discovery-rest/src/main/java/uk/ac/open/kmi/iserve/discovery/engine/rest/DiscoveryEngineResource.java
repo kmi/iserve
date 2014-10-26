@@ -23,6 +23,7 @@ import uk.ac.open.kmi.iserve.discovery.api.ranking.Ranker;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.ScoreComposer;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.Scorer;
 import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchPlugin;
+import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchResult;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
 import uk.ac.open.kmi.msm4j.vocabulary.MSM;
 
@@ -335,7 +336,7 @@ public class DiscoveryEngineResource {
     ) {
         logger.info("Searching {} by keywords: {}", type, query);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Set<URI> result;
+        Set<FreeTextSearchResult> result;
         if (type.equals("svc")) {
             result = freeTextSearchPlugin.search(query, URI.create(MSM.Service.getURI()));
         } else if (type.equals("op")) {
