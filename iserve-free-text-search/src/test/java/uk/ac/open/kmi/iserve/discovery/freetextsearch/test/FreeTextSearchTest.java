@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchPlugin;
 import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchProvider;
 import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchResult;
@@ -26,13 +27,13 @@ public class FreeTextSearchTest {
     public void searchTest(FreeTextSearchPlugin freeTextSearchPlugin) {
 
         Stopwatch stopwatch = new Stopwatch().start();
-        Set<FreeTextSearchResult> result = freeTextSearchPlugin.search("facebook");
+        Set<FreeTextSearchResult> result = freeTextSearchPlugin.search("object");
         stopwatch.stop();
         logger.info("Search complete in {}", stopwatch);
         logger.info(result.toString());
 
         stopwatch = new Stopwatch().start();
-        result = freeTextSearchPlugin.search("facebook", URI.create(MSM.Service.getURI()));
+        result = freeTextSearchPlugin.search("object", URI.create(MSM.Service.getURI()));
         stopwatch.stop();
         logger.info("Search complete in {}", stopwatch);
         logger.info(result.toString());
@@ -45,6 +46,7 @@ public class FreeTextSearchTest {
     public static class InnerModule extends JukitoModule {
         @Override
         protected void configureTest() {
+            install(new ConfigurationModule());
             install(new FreeTextSearchProvider());
         }
 
