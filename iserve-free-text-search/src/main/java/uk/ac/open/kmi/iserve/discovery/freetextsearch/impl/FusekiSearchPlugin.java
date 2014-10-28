@@ -22,7 +22,7 @@ import java.util.Set;
  */
 public class FusekiSearchPlugin implements FreeTextSearchPlugin {
 
-    private Logger logger = LoggerFactory.getLogger(OwlimSearchPlugin.class);
+    private Logger logger = LoggerFactory.getLogger(FusekiSearchPlugin.class);
     private String queryEndpoint;
     private String updateEndpoint;
 
@@ -35,7 +35,7 @@ public class FusekiSearchPlugin implements FreeTextSearchPlugin {
     @Override
     public Set<FreeTextSearchResult> search(String query) {
         StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("PREFIX luc: <http://www.ontotext.com/owlim/lucene#> ")
+        queryBuilder
                 .append("PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> ")
                 .append("PREFIX sawsdl:<http://www.w3.org/ns/sawsdl#> ")
                 .append("PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> ")
@@ -86,7 +86,7 @@ public class FusekiSearchPlugin implements FreeTextSearchPlugin {
     @Override
     public Set<FreeTextSearchResult> search(String query, URI type) {
         StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("PREFIX luc: <http://www.ontotext.com/owlim/lucene#> ")
+        queryBuilder
                 .append("PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> ")
                 .append("PREFIX sawsdl:<http://www.w3.org/ns/sawsdl#> ")
                 .append("PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> ")
