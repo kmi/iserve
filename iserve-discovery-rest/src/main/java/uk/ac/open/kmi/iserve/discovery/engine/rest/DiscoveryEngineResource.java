@@ -22,7 +22,10 @@ import uk.ac.open.kmi.iserve.discovery.api.ranking.Filter;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.Ranker;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.ScoreComposer;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.Scorer;
+import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchPlugin;
+import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchResult;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
+import uk.ac.open.kmi.msm4j.vocabulary.MSM;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -47,11 +50,13 @@ public class DiscoveryEngineResource {
     private Logger logger = LoggerFactory.getLogger(DiscoveryEngineResource.class);
     private DiscoveryEngine discoveryEngine;
     private DiscoveryResultsBuilderPlugin discoveryResultsBuilder;
+    private FreeTextSearchPlugin freeTextSearchPlugin;
 
     @Inject
-    DiscoveryEngineResource(ServiceDiscoverer serviceDiscoverer, OperationDiscoverer operationDiscoverer, Set<Filter> filters, Set<Scorer> scorers, ScoreComposer scoreComposer, Ranker ranker, DiscoveryResultsBuilderPlugin discoveryResultsBuilder) {
+    DiscoveryEngineResource(ServiceDiscoverer serviceDiscoverer, OperationDiscoverer operationDiscoverer, Set<Filter> filters, Set<Scorer> scorers, ScoreComposer scoreComposer, Ranker ranker, DiscoveryResultsBuilderPlugin discoveryResultsBuilder, FreeTextSearchPlugin freeTextSearchPlugin) {
         discoveryEngine = new DiscoveryEngine(serviceDiscoverer, operationDiscoverer, filters, scorers, scoreComposer, ranker);
         this.discoveryResultsBuilder = discoveryResultsBuilder;
+        this.freeTextSearchPlugin = freeTextSearchPlugin;
     }
 
 
@@ -70,14 +75,16 @@ public class DiscoveryEngineResource {
             @ApiParam(value = "Type of matching. The value should be either \"and\" or \"or\". The result should be the set- based conjunction or disjunction depending on the classes selected.", allowableValues = "and,or")
             @QueryParam("f") String function,
             @ApiParam(value = "Multivalued parameter indicating the functional classifications to match. The class should be the URL of the concept to match. This URL should be URL encoded.", required = true, allowMultiple = true)
-            @QueryParam("class") List<String> resources
+            @QueryParam("class") List<String> resources,
+            @ApiParam(value = "Popularity-based ranking. The value should be \"standard\" to rank the results according the popularity of the provider.", allowableValues = "standard")
+            @QueryParam("ranking") String rankingType
     ) throws
             WebApplicationException {
 
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-            return classificationBasedDiscoveryAsJson(type, function, resources, "", "");
+            return classificationBasedDiscoveryAsJson(type, function, resources, rankingType, "");
         }
-        return classificationBasedDiscoveryAsAtom(type, function, resources, "", "");
+        return classificationBasedDiscoveryAsAtom(type, function, resources, rankingType, "");
 
     }
 
@@ -135,6 +142,9 @@ public class DiscoveryEngineResource {
             @PathParam("type") String type,
             @ApiParam(value = "type of matching. The value should be either \"and\" or \"or\". The result should be the set- based conjunction or disjunction depending on the value selected between the services matching the inputs and those matching the outputs.", allowableValues = "and,or")
             @QueryParam("f") String function,
+            @ApiParam(value = "Popularity-based ranking. The value should be \"standard\" to rank the results according the popularity of the provider.", allowableValues = "standard")
+            @QueryParam("ranking") String rankingType,
+            @DefaultValue("disabled") @QueryParam("filtering") String filtering,
             @ApiParam(value = "Multivalued parameter indicating the classes that the input of the service should match to. The classes are indicated with the URL of the concept to match. This URL should be URL encoded.", required = true, allowMultiple = true)
             @QueryParam("i") List<String> inputs,
             @ApiParam(value = "Multivalued parameter indicating the classes that the output of the service should match to. The classes are indicated with the URL of the concept to match. This URL should be URL encoded.", allowMultiple = true)
@@ -142,10 +152,10 @@ public class DiscoveryEngineResource {
     ) throws
             WebApplicationException {
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-            return ioDiscoveryAsJson(type, function, "", "", inputs, outputs);
+            return ioDiscoveryAsJson(type, function, rankingType, filtering, inputs, outputs);
         }
 
-        return ioDiscoveryAsAtom(type, function, "", "", inputs, outputs);
+        return ioDiscoveryAsAtom(type, function, rankingType, filtering, inputs, outputs);
     }
 
 
@@ -308,6 +318,39 @@ public class DiscoveryEngineResource {
         logger.info("Query: {}", query);
 
         return query;
+    }
+
+
+    @GET
+    @Path("{type}/search")
+    @ApiOperation(
+            value = "Free text-based search of services, operations or service parts",
+            response = URI.class
+    )
+    @Produces({"application/atom+xml", "application/json"})
+    public Response search(
+            @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, \"svc\" for discovering services and \"all\" for any kind of service component", required = true, allowableValues = "svc,op,all")
+            @PathParam("type") String type,
+            @ApiParam(value = "Parameter indicating a query that specifies keywords to search. Regular expressions are allowed.", required = true)
+            @QueryParam("q") String query
+    ) {
+        logger.info("Searching {} by keywords: {}", type, query);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Set<FreeTextSearchResult> result;
+        if (type.equals("svc")) {
+            result = freeTextSearchPlugin.search(query, URI.create(MSM.Service.getURI()));
+        } else if (type.equals("op")) {
+            result = freeTextSearchPlugin.search(query, URI.create(MSM.Operation.getURI()));
+        } else {
+            result = freeTextSearchPlugin.search(query);
+        }
+        if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
+            String json = gson.toJson(result);
+            return Response.ok(json).build();
+
+        }
+        Feed feed = new AbderaAtomFeedProvider().generateSearchFeed(uriInfo.getRequestUri().toASCIIString(), freeTextSearchPlugin.getClass().toString(), result);
+        return Response.ok(feed).build();
     }
 
 }
