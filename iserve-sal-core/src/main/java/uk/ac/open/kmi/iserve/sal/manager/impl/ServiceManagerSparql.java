@@ -944,6 +944,11 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
             for (MessageContent mc : mcs) {
                 replaceUris(mc, resource.getUri());
             }
+
+            mcs = ((Operation) resource).getFaults();
+            for (MessageContent mc : mcs) {
+                replaceUris(mc, resource.getUri());
+            }
         }
 
         // Handling for MessageParts
