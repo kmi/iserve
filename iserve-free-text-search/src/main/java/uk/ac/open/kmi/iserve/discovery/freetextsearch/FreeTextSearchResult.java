@@ -1,6 +1,8 @@
 package uk.ac.open.kmi.iserve.discovery.freetextsearch;
 
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Luca Panziera on 26/10/2014.
@@ -9,7 +11,9 @@ public class FreeTextSearchResult {
     private URI uri;
     private String label;
     private String comment;
-    private URI modelReference;
+
+
+    private Set<URI> modelReferences;
 
     public FreeTextSearchResult(URI uri) {
         this.uri = uri;
@@ -36,11 +40,26 @@ public class FreeTextSearchResult {
         this.comment = comment;
     }
 
-    public URI getModelReference() {
-        return modelReference;
+    public Set<URI> getModelReferences() {
+        return modelReferences;
     }
 
-    public void setModelReference(URI modelReference) {
-        this.modelReference = modelReference;
+    public void setModelReferences(Set<URI> modelReferences) {
+        this.modelReferences = modelReferences;
     }
+
+    public void addModelReference(URI modelReference) {
+        if (modelReferences == null) {
+            modelReferences = new HashSet<URI>();
+        }
+        modelReferences.add(modelReference);
+    }
+
+    public void removeModelReference(URI modelReference) {
+        if (modelReferences == null) {
+            modelReferences = new HashSet<URI>();
+        }
+        modelReferences.remove(modelReference);
+    }
+
 }
