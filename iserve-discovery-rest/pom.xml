@@ -119,11 +119,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>uk.ac.open.kmi.iserve</groupId>
-            <artifactId>iserve-popularity-scoring</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>

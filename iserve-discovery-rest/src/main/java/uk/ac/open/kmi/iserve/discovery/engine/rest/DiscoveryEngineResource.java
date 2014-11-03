@@ -75,16 +75,14 @@ public class DiscoveryEngineResource {
             @ApiParam(value = "Type of matching. The value should be either \"and\" or \"or\". The result should be the set- based conjunction or disjunction depending on the classes selected.", allowableValues = "and,or")
             @QueryParam("f") String function,
             @ApiParam(value = "Multivalued parameter indicating the functional classifications to match. The class should be the URL of the concept to match. This URL should be URL encoded.", required = true, allowMultiple = true)
-            @QueryParam("class") List<String> resources,
-            @ApiParam(value = "Popularity-based ranking. The value should be \"standard\" to rank the results according the popularity of the provider.", allowableValues = "standard")
-            @QueryParam("ranking") String rankingType
+            @QueryParam("class") List<String> resources
     ) throws
             WebApplicationException {
 
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-            return classificationBasedDiscoveryAsJson(type, function, resources, rankingType, "");
+            return classificationBasedDiscoveryAsJson(type, function, resources, "", "");
         }
-        return classificationBasedDiscoveryAsAtom(type, function, resources, rankingType, "");
+        return classificationBasedDiscoveryAsAtom(type, function, resources, "", "");
 
     }
 
@@ -142,9 +140,6 @@ public class DiscoveryEngineResource {
             @PathParam("type") String type,
             @ApiParam(value = "type of matching. The value should be either \"and\" or \"or\". The result should be the set- based conjunction or disjunction depending on the value selected between the services matching the inputs and those matching the outputs.", allowableValues = "and,or")
             @QueryParam("f") String function,
-            @ApiParam(value = "Popularity-based ranking. The value should be \"standard\" to rank the results according the popularity of the provider.", allowableValues = "standard")
-            @QueryParam("ranking") String rankingType,
-            @DefaultValue("disabled") @QueryParam("filtering") String filtering,
             @ApiParam(value = "Multivalued parameter indicating the classes that the input of the service should match to. The classes are indicated with the URL of the concept to match. This URL should be URL encoded.", required = true, allowMultiple = true)
             @QueryParam("i") List<String> inputs,
             @ApiParam(value = "Multivalued parameter indicating the classes that the output of the service should match to. The classes are indicated with the URL of the concept to match. This URL should be URL encoded.", allowMultiple = true)
@@ -152,10 +147,10 @@ public class DiscoveryEngineResource {
     ) throws
             WebApplicationException {
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-            return ioDiscoveryAsJson(type, function, rankingType, filtering, inputs, outputs);
+            return ioDiscoveryAsJson(type, function, "", "", inputs, outputs);
         }
 
-        return ioDiscoveryAsAtom(type, function, rankingType, filtering, inputs, outputs);
+        return ioDiscoveryAsAtom(type, function, "", "", inputs, outputs);
     }
 
 

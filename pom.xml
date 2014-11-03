@@ -159,7 +159,6 @@
         <module>iserve-integrated-engine</module>
         <module>iserve-elda</module>
         <module>iserve-swagger</module>
-        <module>iserve-popularity-scoring</module>
         <module>iserve-free-text-search</module>
     </modules>
 
