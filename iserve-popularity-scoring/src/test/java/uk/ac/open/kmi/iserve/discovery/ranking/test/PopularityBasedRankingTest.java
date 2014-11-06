@@ -32,12 +32,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.discovery.api.*;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.Filter;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.Ranker;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.ScoreComposer;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.Scorer;
+import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.BasicScoreComposer;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.StandardRanker;
 import uk.ac.open.kmi.iserve.discovery.disco.impl.GenericLogicDiscoverer;
@@ -70,7 +66,7 @@ public class PopularityBasedRankingTest {
     public static void setUp() throws Exception {
 
 
-        Injector injector = Guice.createInjector(new ConfigurationModule(), new RegistryManagementModule());
+        Injector injector = Guice.createInjector(new RegistryManagementModule());
 
         RegistryManager registryManager = injector.getInstance(RegistryManager.class);
         ServiceReader serviceReader = injector.getInstance(ServiceReader.class);
@@ -133,7 +129,6 @@ public class PopularityBasedRankingTest {
         @Override
         protected void configureTest() {
 
-            install(new ConfigurationModule());
             install(new RegistryManagementModule());
 
             bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
@@ -143,11 +138,13 @@ public class PopularityBasedRankingTest {
 
             //Scorers configuration
             Multibinder<Filter> filterBinder = Multibinder.newSetBinder(binder(), Filter.class);
+            Multibinder<AtomicFilter> atomicFilterBinder = Multibinder.newSetBinder(binder(), AtomicFilter.class);
 
             //Scorers configuration
             Multibinder<Scorer> scorerBinder = Multibinder.newSetBinder(binder(), Scorer.class);
-            scorerBinder.addBinding().to(CommunityVitalityScorer.class);
-            scorerBinder.addBinding().to(ProviderPopularityScorer.class);
+            Multibinder<AtomicScorer> atomicScorerBinder = Multibinder.newSetBinder(binder(), AtomicScorer.class);
+            atomicScorerBinder.addBinding().to(CommunityVitalityScorer.class);
+            atomicScorerBinder.addBinding().to(ProviderPopularityScorer.class);
 
             //Score composer configuration
             bind(ScoreComposer.class).to(BasicScoreComposer.class);

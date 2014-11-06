@@ -25,15 +25,13 @@ import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.Filter;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.Ranker;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.ScoreComposer;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.Scorer;
+import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
 
 import javax.annotation.Nullable;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,13 +54,35 @@ public class DiscoveryEngine {
     private Logger logger = LoggerFactory.getLogger(DiscoveryEngine.class);
 
     @Inject
-    public DiscoveryEngine(ServiceDiscoverer serviceDiscoverer, OperationDiscoverer operationDiscoverer, Set<Filter> filters, Set<Scorer> scorers, @Nullable ScoreComposer scoreComposer, @Nullable Ranker ranker) {
+    public DiscoveryEngine(ServiceDiscoverer serviceDiscoverer, OperationDiscoverer operationDiscoverer, Set<Filter> filters, Set<Scorer> scorers, Set<AtomicFilter> atomicFilters, Set<AtomicScorer> atomicScorers, @Nullable ScoreComposer scoreComposer, @Nullable Ranker ranker) {
         this.operationDiscoverer = operationDiscoverer;
         this.serviceDiscoverer = serviceDiscoverer;
         this.filters = filters;
         this.scorers = scorers;
         this.scoreComposer = scoreComposer;
         this.ranker = ranker;
+
+        if (atomicFilters != null) {
+            if (this.filters == null) {
+                this.filters = new HashSet<Filter>();
+            } else {
+                this.filters = new HashSet<Filter>(this.filters);
+            }
+            for (AtomicFilter atomicFilter : atomicFilters) {
+                this.filters.add(new MolecularFilter(atomicFilter));
+            }
+        }
+
+        if (atomicScorers != null) {
+            if (this.scorers == null) {
+                this.scorers = new HashSet<Scorer>();
+            } else {
+                this.scorers = new HashSet<Scorer>(this.scorers);
+            }
+            for (AtomicScorer atomicScorer : atomicScorers) {
+                this.scorers.add(new MolecularScorer(atomicScorer));
+            }
+        }
     }
 
     public Map<URI, Pair<Double, MatchResult>> discover(String request) {
@@ -116,12 +136,11 @@ public class DiscoveryEngine {
         logger.info("Functional discovery");
         Map<URI, MatchResult> funcResults = discoveryFunction.invoke();
 
-        Map<URI, MatchResult> filteredResults = funcResults;
+        Set<URI> filteredResources = funcResults.keySet();
         if (filtering) {
-
             for (Filter filter : filters) {
                 logger.info("Filtering: {}", filter);
-                filteredResults = Maps.filterKeys(filteredResults, filter);
+                filteredResources = filter.apply(filteredResources);
             }
         }
 
@@ -131,8 +150,9 @@ public class DiscoveryEngine {
             } else {
                 logger.info("Scoring");
                 Map<Scorer, Map<URI, Double>> localScoresMap = Maps.newHashMap();
+
                 for (Scorer scorer : scorers) {
-                    Map<URI, Double> localScores = Maps.toMap(filteredResults.keySet(), scorer);
+                    Map<URI, Double> localScores = scorer.apply(filteredResources);
                     localScoresMap.put(scorer, localScores);
                 }
 
@@ -143,7 +163,7 @@ public class DiscoveryEngine {
 
                 ImmutableMap.Builder<URI, Pair<Double, MatchResult>> builder = ImmutableMap.builder();
                 for (URI resource : rankedURIs.keySet()) {
-                    builder.put(resource, new Pair<Double, MatchResult>(rankedURIs.get(resource), filteredResults.get(resource)));
+                    builder.put(resource, new Pair<Double, MatchResult>(rankedURIs.get(resource), funcResults.get(resource)));
                 }
 
 
@@ -151,8 +171,8 @@ public class DiscoveryEngine {
             }
         } else {
             ImmutableMap.Builder<URI, Pair<Double, MatchResult>> builder = ImmutableMap.builder();
-            for (URI resource : filteredResults.keySet()) {
-                builder.put(resource, new Pair<Double, MatchResult>(new Double(0), filteredResults.get(resource)));
+            for (URI resource : filteredResources) {
+                builder.put(resource, new Pair<Double, MatchResult>(new Double(0), funcResults.get(resource)));
             }
             return builder.build();
         }

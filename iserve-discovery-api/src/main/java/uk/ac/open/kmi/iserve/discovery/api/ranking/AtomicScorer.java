@@ -19,12 +19,10 @@ package uk.ac.open.kmi.iserve.discovery.api.ranking;
 import com.google.common.base.Function;
 
 import java.net.URI;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by Luca Panziera on 26/02/2014.
  */
-public interface Scorer extends Function<Set<URI>, Map<URI, Double>> {
-    public Map<URI, Double> apply(Set<URI> resource);
+public interface AtomicScorer extends Function<URI, Double> {
+    public Double apply(URI resource);
 }

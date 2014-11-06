@@ -17,7 +17,7 @@
 package uk.ac.open.kmi.iserve.discovery.ranking.impl;
 
 import com.google.inject.Inject;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.Scorer;
+import uk.ac.open.kmi.iserve.discovery.api.ranking.AtomicScorer;
 import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
 
 import java.net.URI;
@@ -25,7 +25,7 @@ import java.net.URI;
 /**
  * Created by Luca Panziera on 10/03/2014.
  */
-public abstract class PopularityScorer implements Scorer {
+public abstract class PopularityScorer implements AtomicScorer {
 
     private NfpManager nfpManager;
 
@@ -36,12 +36,8 @@ public abstract class PopularityScorer implements Scorer {
 
     public abstract Double apply(URI serviceId);
 
-
     public NfpManager getNfpManager() {
         return nfpManager;
     }
 
-    public void setNfpManager(NfpManager nfpManager) {
-        this.nfpManager = nfpManager;
-    }
 }

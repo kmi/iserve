@@ -16,15 +16,14 @@
 
 package uk.ac.open.kmi.iserve.discovery.api.ranking;
 
-import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 
 import java.net.URI;
-import java.util.Map;
-import java.util.Set;
+
 
 /**
  * Created by Luca Panziera on 26/02/2014.
  */
-public interface Scorer extends Function<Set<URI>, Map<URI, Double>> {
-    public Map<URI, Double> apply(Set<URI> resource);
+public interface AtomicFilter extends Predicate<URI> {
+    public boolean apply(URI resource);
 }
