@@ -21,6 +21,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -43,6 +44,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
+@Singleton
 public class DocumentManagerFileSystem extends IntegratedComponent implements DocumentManager {
 
     private static final Logger log = LoggerFactory.getLogger(DocumentManagerFileSystem.class);

@@ -18,6 +18,7 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.eventbus.EventBus;
+import com.google.inject.Singleton;
 import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,7 @@ import java.util.Set;
  *
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
+@Singleton
 public class RegistryManagerImpl extends IntegratedComponent implements RegistryManager {
 
     private static final Logger log = LoggerFactory.getLogger(RegistryManagerImpl.class);

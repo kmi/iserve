@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
@@ -38,6 +39,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+@Singleton
 public class ServiceManagerIndexRdf extends ServiceManagerSparql implements ServiceManager {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceManagerIndexRdf.class);

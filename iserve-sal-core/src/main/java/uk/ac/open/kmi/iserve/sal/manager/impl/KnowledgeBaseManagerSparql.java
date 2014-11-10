@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -61,6 +62,7 @@ import java.util.concurrent.Future;
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  */
+@Singleton
 public class KnowledgeBaseManagerSparql extends IntegratedComponent implements KnowledgeBaseManager {
 
     private static final Logger log = LoggerFactory.getLogger(KnowledgeBaseManagerSparql.class);
