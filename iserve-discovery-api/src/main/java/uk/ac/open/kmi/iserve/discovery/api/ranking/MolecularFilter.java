@@ -19,4 +19,9 @@ public class MolecularFilter implements Filter {
     public Set<URI> apply(Set<URI> resources) {
         return Sets.filter(resources, atomicFilter);
     }
+
+    @Override
+    public Set<URI> apply(Set<URI> resource, String parameters) {
+        return apply(resource);
+    }
 }

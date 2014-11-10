@@ -32,6 +32,7 @@ public class UsageScorer extends PopularityScorer {
         super(nfpManager);
     }
 
+    @Override
     public Double apply(URI serviceId) {
 
         Double r = (Double) getNfpManager().getPropertyValue(serviceId, URI.create(MSM_NFP.hasRecentMashups.getURI()), Double.class);
@@ -39,6 +40,11 @@ public class UsageScorer extends PopularityScorer {
             return r / 110;
         }
         return Double.valueOf(0);
+    }
+
+    @Override
+    public Double apply(URI resource, String parameter) {
+        return apply(resource);
     }
 
 

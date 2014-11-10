@@ -23,6 +23,6 @@ import java.util.SortedMap;
 /**
  * Created by Luca Panziera on 22/04/2014.
  */
-public interface Ranker {
+public interface Ranker extends DiscoveryModule {
     SortedMap<URI, Double> rank(Map<URI, Double> unsortedMap);
 }

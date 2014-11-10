@@ -23,6 +23,8 @@ import java.net.URI;
 /**
  * Created by Luca Panziera on 26/02/2014.
  */
-public interface AtomicScorer extends Function<URI, Double> {
+public interface AtomicScorer extends Function<URI, Double>, DiscoveryModule {
     public Double apply(URI resource);
+
+    public Double apply(URI resource, String parameter);
 }

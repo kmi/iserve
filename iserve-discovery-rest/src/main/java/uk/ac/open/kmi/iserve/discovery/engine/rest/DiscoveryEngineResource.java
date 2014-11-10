@@ -18,10 +18,7 @@ import uk.ac.open.kmi.iserve.discovery.api.DiscoveryEngine;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoverer;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoverer;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.Filter;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.Ranker;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.ScoreComposer;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.Scorer;
+import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchPlugin;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
 import uk.ac.open.kmi.msm4j.vocabulary.MSM;
@@ -52,8 +49,8 @@ public class DiscoveryEngineResource {
     private FreeTextSearchPlugin freeTextSearchPlugin;
 
     @Inject
-    DiscoveryEngineResource(ServiceDiscoverer serviceDiscoverer, OperationDiscoverer operationDiscoverer, Set<Filter> filters, Set<Scorer> scorers, ScoreComposer scoreComposer, Ranker ranker, DiscoveryResultsBuilderPlugin discoveryResultsBuilder, FreeTextSearchPlugin freeTextSearchPlugin) {
-        discoveryEngine = new DiscoveryEngine(serviceDiscoverer, operationDiscoverer, filters, scorers, scoreComposer, ranker);
+    DiscoveryEngineResource(ServiceDiscoverer serviceDiscoverer, OperationDiscoverer operationDiscoverer, Set<Filter> filters, Set<AtomicFilter> atomicFilters, Set<Scorer> scorers, Set<AtomicScorer> atomicScorers, ScoreComposer scoreComposer, Ranker ranker, DiscoveryResultsBuilderPlugin discoveryResultsBuilder, FreeTextSearchPlugin freeTextSearchPlugin) {
+        discoveryEngine = new DiscoveryEngine(serviceDiscoverer, operationDiscoverer, filters, atomicFilters, scorers, atomicScorers, scoreComposer, ranker);
         this.discoveryResultsBuilder = discoveryResultsBuilder;
         this.freeTextSearchPlugin = freeTextSearchPlugin;
     }

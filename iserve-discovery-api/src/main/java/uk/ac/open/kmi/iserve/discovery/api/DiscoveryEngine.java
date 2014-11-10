@@ -54,7 +54,15 @@ public class DiscoveryEngine {
     private Logger logger = LoggerFactory.getLogger(DiscoveryEngine.class);
 
     @Inject
-    public DiscoveryEngine(ServiceDiscoverer serviceDiscoverer, OperationDiscoverer operationDiscoverer, Set<Filter> filters, Set<Scorer> scorers, Set<AtomicFilter> atomicFilters, Set<AtomicScorer> atomicScorers, @Nullable ScoreComposer scoreComposer, @Nullable Ranker ranker) {
+    public DiscoveryEngine(ServiceDiscoverer serviceDiscoverer,
+                           OperationDiscoverer operationDiscoverer,
+                           Set<Filter> filters,
+                           Set<AtomicFilter> atomicFilters,
+                           Set<Scorer> scorers,
+                           Set<AtomicScorer> atomicScorers,
+                           @Nullable ScoreComposer scoreComposer,
+                           @Nullable Ranker ranker
+    ) {
         this.operationDiscoverer = operationDiscoverer;
         this.serviceDiscoverer = serviceDiscoverer;
         this.filters = filters;
@@ -86,7 +94,11 @@ public class DiscoveryEngine {
     }
 
     public Map<URI, Pair<Double, MatchResult>> discover(String request) {
-        return discover(parse(request));
+        return discover(parse(request), Maps.<DiscoveryModule, String>newHashMap());
+    }
+
+    public Map<URI, Pair<Double, MatchResult>> discover(String request, Map<DiscoveryModule, String> moduleParametersMap) {
+        return discover(parse(request), moduleParametersMap);
     }
 
     // TODO Implement a proper parser ()
@@ -130,8 +142,7 @@ public class DiscoveryEngine {
     }
 
 
-    public Map<URI, Pair<Double, MatchResult>> discover(DiscoveryFunction discoveryFunction) {
-
+    private Map<URI, Pair<Double, MatchResult>> discover(DiscoveryFunction discoveryFunction, Map<DiscoveryModule, String> moduleParametersMap) {
 
         logger.info("Functional discovery");
         Map<URI, MatchResult> funcResults = discoveryFunction.invoke();
@@ -140,7 +151,12 @@ public class DiscoveryEngine {
         if (filtering) {
             for (Filter filter : filters) {
                 logger.info("Filtering: {}", filter);
-                filteredResources = filter.apply(filteredResources);
+                if (moduleParametersMap.containsKey(filter)) {
+                    filteredResources = filter.apply(filteredResources, moduleParametersMap.get(filter));
+                } else {
+                    filteredResources = filter.apply(filteredResources);
+                }
+
             }
         }
 
@@ -152,7 +168,12 @@ public class DiscoveryEngine {
                 Map<Scorer, Map<URI, Double>> localScoresMap = Maps.newHashMap();
 
                 for (Scorer scorer : scorers) {
-                    Map<URI, Double> localScores = scorer.apply(filteredResources);
+                    Map<URI, Double> localScores;
+                    if (moduleParametersMap.containsKey(scorer)) {
+                        localScores = scorer.apply(filteredResources, moduleParametersMap.get(scorer));
+                    } else {
+                        localScores = scorer.apply(filteredResources);
+                    }
                     localScoresMap.put(scorer, localScores);
                 }
 

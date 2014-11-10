@@ -12,9 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.PluginModuleLoader;
 import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.Ranker;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.ScoreComposer;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.Scorer;
+import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.BasicScoreComposer;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.StandardRanker;
 import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchProvider;
@@ -44,12 +42,15 @@ public class DiscoveryRestModule extends ServletModule {
         install(new ServletModule());
 
         //Scorers configuration
-        Multibinder<uk.ac.open.kmi.iserve.discovery.api.ranking.Filter> filterBinder = Multibinder.newSetBinder(binder(), uk.ac.open.kmi.iserve.discovery.api.ranking.Filter.class);
+        Multibinder<Filter> filterBinder = Multibinder.newSetBinder(binder(), Filter.class);
+        Multibinder<AtomicFilter> atomicFilterBinder = Multibinder.newSetBinder(binder(), AtomicFilter.class);
 
         //Scorers configuration
         Multibinder<Scorer> scorerBinder = Multibinder.newSetBinder(binder(), Scorer.class);
-        scorerBinder.addBinding().to(CommunityVitalityScorer.class);
-        scorerBinder.addBinding().to(ProviderPopularityScorer.class);
+        Multibinder<AtomicScorer> atomicScorerBinder = Multibinder.newSetBinder(binder(), AtomicScorer.class);
+        atomicScorerBinder.addBinding().to(CommunityVitalityScorer.class);
+        atomicScorerBinder.addBinding().to(ProviderPopularityScorer.class);
+
         bind(ScoreComposer.class).to(BasicScoreComposer.class);
         bind(Ranker.class).to(StandardRanker.class);
         bind(NfpManager.class).to(NfpManagerSparql.class);

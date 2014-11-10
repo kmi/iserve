@@ -37,6 +37,7 @@ public class ProviderPopularityScorer extends PopularityScorer {
         super(nfpManager);
     }
 
+    @Override
     public Double apply(URI serviceId) {
 
         // Get provider
@@ -50,6 +51,11 @@ public class ProviderPopularityScorer extends PopularityScorer {
             }
         }
         return new Double(0);
+    }
+
+    @Override
+    public Double apply(URI resource, String parameter) {
+        return apply(resource);
     }
 
 }

@@ -24,6 +24,8 @@ import java.net.URI;
 /**
  * Created by Luca Panziera on 26/02/2014.
  */
-public interface AtomicFilter extends Predicate<URI> {
+public interface AtomicFilter extends Predicate<URI>, DiscoveryModule {
     public boolean apply(URI resource);
+
+    public boolean apply(URI resource, String parameter);
 }

@@ -34,6 +34,7 @@ public abstract class PopularityScorer implements AtomicScorer {
         this.nfpManager = nfpManager;
     }
 
+    @Override
     public abstract Double apply(URI serviceId);
 
     public NfpManager getNfpManager() {

@@ -25,6 +25,8 @@ import java.util.Set;
 /**
  * Created by Luca Panziera on 26/02/2014.
  */
-public interface Filter extends Function<Set<URI>, Set<URI>> {
+public interface Filter extends Function<Set<URI>, Set<URI>>, DiscoveryModule {
     public Set<URI> apply(Set<URI> resource);
+
+    public Set<URI> apply(Set<URI> resource, String parameters);
 }

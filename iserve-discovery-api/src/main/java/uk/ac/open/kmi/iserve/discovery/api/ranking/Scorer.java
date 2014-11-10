@@ -25,6 +25,8 @@ import java.util.Set;
 /**
  * Created by Luca Panziera on 26/02/2014.
  */
-public interface Scorer extends Function<Set<URI>, Map<URI, Double>> {
+public interface Scorer extends Function<Set<URI>, Map<URI, Double>>, DiscoveryModule {
     public Map<URI, Double> apply(Set<URI> resource);
+
+    public Map<URI, Double> apply(Set<URI> resource, String parameters);
 }

@@ -31,6 +31,7 @@ public class CommunityVitalityScorer extends PopularityScorer {
         super(nfpManager);
     }
 
+    @Override
     public Double apply(URI serviceId) {
 
         // Get forum
@@ -45,6 +46,11 @@ public class CommunityVitalityScorer extends PopularityScorer {
         }
 
         return Double.valueOf(0);
+    }
+
+    @Override
+    public Double apply(URI resource, String parameter) {
+        return apply(resource);
     }
 
 
