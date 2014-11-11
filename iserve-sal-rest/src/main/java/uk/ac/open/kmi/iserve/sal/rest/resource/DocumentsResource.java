@@ -91,14 +91,16 @@ public class DocumentsResource {
                                 @ApiParam(value = "Document Media type")
                                 @HeaderParam("Accept") String accept) {
         try {
-            logger.debug("Requested document: {}", uriInfo.getRequestUri());
+            logger.debug("Request: {}", uriInfo.getRequestUri());
+            logger.debug("Using absolute path for document: {}", uriInfo.getAbsolutePath());
             logger.debug("Accept: {}", accept);
-            InputStream is = registryManager.getDocumentManager().getDocument(uriInfo.getRequestUri());
-            String docMediaType = registryManager.getDocumentManager().getDocumentMediaType(uriInfo.getRequestUri());
+            URI docUri = uriInfo.getAbsolutePath(); // Drop any query parameters
+            InputStream is = registryManager.getDocumentManager().getDocument(docUri);
+            String docMediaType = registryManager.getDocumentManager().getDocumentMediaType(docUri);
             if (is != null) {
                 if (accept.contains(MediaType.TEXT_HTML) && docMediaType.equals(MediaType.APPLICATION_JSON)) {
                     logger.debug("Generating Swagger UI");
-                    String result = generateSwaggerUI(uriInfo.getRequestUri());
+                    String result = generateSwaggerUI(docUri);
                     return Response.status(Status.OK).entity(result).build();
                 } else {
                     logger.debug("Document found!");
