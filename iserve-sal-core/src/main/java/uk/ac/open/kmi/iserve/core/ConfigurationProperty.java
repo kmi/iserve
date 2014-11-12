@@ -132,7 +132,7 @@ public enum ConfigurationProperty {
             "Fully qualified name of the free text search plugin to use.",
             new TypeLiteral<String>() {
             },
-            "uk.ac.open.kmi.iserve.discovery.freetextsearch.impl.OwlimSearchPlugin"
+            "uk.ac.open.kmi.iserve.discovery.api.freetextsearch.impl.OwlimSearchPlugin"
     );
 
 

@@ -18,6 +18,7 @@ package uk.ac.open.kmi.iserve.discovery.ranking.test;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonParser;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.multibindings.Multibinder;
@@ -33,16 +34,19 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.discovery.api.*;
+import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.impl.OwlimSearchPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.BasicScoreComposer;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.StandardRanker;
 import uk.ac.open.kmi.iserve.discovery.disco.impl.GenericLogicDiscoverer;
 import uk.ac.open.kmi.iserve.discovery.disco.impl.SparqlLogicConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.ranking.impl.CommunityVitalityScorer;
 import uk.ac.open.kmi.iserve.discovery.ranking.impl.ProviderPopularityScorer;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
+import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
 import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
+import uk.ac.open.kmi.iserve.sal.manager.impl.NfpManagerSparql;
 import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
 import uk.ac.open.kmi.msm4j.Service;
 import uk.ac.open.kmi.msm4j.io.ServiceReader;
@@ -109,16 +113,57 @@ public class PopularityBasedRankingTest {
     @Test
     public void discoveryTest(DiscoveryEngine discoveryEngine) {
 
-        String query = "service-class http://schema.org/Action rank";
+        String query = "{\n" +
+                "    \"discovery\": { \"query\": \"search\" , \"type\": \"svc\"}," +
+                "    \"scoring\": [\n" +
+                "        {\n" +
+                "            \"scorerClass\": \"uk.ac.open.kmi.iserve.discovery.ranking.impl.ProviderPopularityScorer\"\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"scorerClass\": \"uk.ac.open.kmi.iserve.discovery.ranking.impl.CommunityVitalityScorer\"\n" +
+                "        }\n" +
+                "    ]" +
+                "}";
 
         Stopwatch stopwatch = new Stopwatch().start();
-        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
+        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(new JsonParser().parse(query));
         stopwatch.stop();
 
         logger.info("Discovery complete in {}", stopwatch);
         logger.info("Result contains {} resources", result.size());
         ImmutableList<URI> services = ImmutableList.copyOf(result.keySet());
-        Assert.assertTrue(services.get(0).toString().contains("google-visualization"));
+        Assert.assertTrue(services.get(0).toString().contains("google-book-search-book-viewability"));
+
+        query = "{\n" +
+                "    \"discovery\": {\n" +
+                "        \"io-rdfs\": {\n" +
+                "            \"expression\": {\n" +
+                "                \"and\": {\n" +
+                "                    \"input\": { \"or\": [ {\"and\": [\"http://schema.org/Action\", \"http://schema.org/DiscocverAction\"]}, \"http://schema.org/CreateAction\" ] },\n" +
+                "                    \"output\": { \"and\": [ \"http://schema.org/PippoAction\", \"http://schema.org/PlutoAction\", \"http://schema.org/PaperAction\"]}\n" +
+                "                }\n" +
+                "            }," +
+                "            \"type\": \"svc\"\n" +
+                "        }\n" +
+                "    }," +
+                "    \"scoring\": [\n" +
+                "        {\n" +
+                "            \"scorerClass\": \"uk.ac.open.kmi.iserve.discovery.ranking.impl.ProviderPopularityScorer\"\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"scorerClass\": \"uk.ac.open.kmi.iserve.discovery.ranking.impl.CommunityVitalityScorer\"\n" +
+                "        }\n" +
+                "    ]" +
+                "}";
+
+        stopwatch = new Stopwatch().start();
+        result = discoveryEngine.discover(new JsonParser().parse(query));
+        stopwatch.stop();
+
+        logger.info("Discovery complete in {}", stopwatch);
+        logger.info("Result contains {} resources", result.size());
+
+        Assert.assertTrue(result.isEmpty());
 
     }
 
@@ -138,7 +183,9 @@ public class PopularityBasedRankingTest {
 
             //Scorers configuration
             Multibinder<Filter> filterBinder = Multibinder.newSetBinder(binder(), Filter.class);
+            filterBinder.addBinding().to(DummyFilter.class);
             Multibinder<AtomicFilter> atomicFilterBinder = Multibinder.newSetBinder(binder(), AtomicFilter.class);
+            atomicFilterBinder.addBinding().to(DummyAtomicFilter.class);
 
             //Scorers configuration
             Multibinder<Scorer> scorerBinder = Multibinder.newSetBinder(binder(), Scorer.class);
@@ -149,8 +196,9 @@ public class PopularityBasedRankingTest {
             //Score composer configuration
             bind(ScoreComposer.class).to(BasicScoreComposer.class);
 
-            //Ranker configuration
-            bind(Ranker.class).to(StandardRanker.class);
+            bind(FreeTextSearchPlugin.class).to(OwlimSearchPlugin.class);
+
+            bind(NfpManager.class).to(NfpManagerSparql.class);
 
         }
 

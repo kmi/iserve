@@ -9,6 +9,7 @@ import java.util.Set;
  * Created by Luca Panziera on 05/11/14.
  */
 public class MolecularFilter implements Filter {
+
     private AtomicFilter atomicFilter;
 
     public MolecularFilter(AtomicFilter atomicFilter) {
@@ -23,5 +24,9 @@ public class MolecularFilter implements Filter {
     @Override
     public Set<URI> apply(Set<URI> resource, String parameters) {
         return apply(resource);
+    }
+
+    public AtomicFilter getAtomicFilter() {
+        return atomicFilter;
     }
 }

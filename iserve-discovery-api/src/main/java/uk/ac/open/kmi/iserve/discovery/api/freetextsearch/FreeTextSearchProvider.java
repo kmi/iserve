@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.iserve.discovery.freetextsearch;
+package uk.ac.open.kmi.iserve.discovery.api.freetextsearch;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;

@@ -26,4 +26,8 @@ public class MolecularScorer implements Scorer {
     public Map<URI, Double> apply(Set<URI> resource, String parameters) {
         return apply(resource);
     }
+
+    public AtomicScorer getAtomicScorer() {
+        return atomicScorer;
+    }
 }
