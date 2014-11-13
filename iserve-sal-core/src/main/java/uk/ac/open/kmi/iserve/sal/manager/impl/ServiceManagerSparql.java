@@ -79,7 +79,10 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
     private static final URI FOAF_0_1_URI = URI.create("http://xmlns.com/foaf/0.1/");
     private static final URI CONTENT_VOCAB_URI = URI.create("http://www.w3.org/2011/content#");
     private static final URI DCTERMS_URI = URI.create("http://purl.org/dc/terms/");
-
+    private static final URI HTTP_STATUS_URI = URI.create("http://www.w3.org/2011/http-statusCodes");
+    private static final URI MEDIA_TYPES_URI = URI.create("http://purl.org/NET/mediatype");
+    private static final URI MSM_NFP_URI = URI.create("http://iserve.kmi.open.ac.uk/ns/msm-nfp");
+    private static final URI SIOC_URI = URI.create("http://rdfs.org/sioc/ns");
 
 //    private static final URI WSDL_EXTENSIONS_URI = URI.create("http://www.w3.org/ns/wsdl-extensions#");
 
@@ -102,7 +105,9 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
                 servicesUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
 
         // Configuration of base models to be loaded
-        Set<URI> defaultModelsToLoad = ImmutableSet.of(WSMO_LITE_URI, MSM_URI, HRESTS_URI, MSM_WSDL_URI, HTTP_VOCAB_URI, HTTP_METHODS_URI);
+        Set<URI> defaultModelsToLoad = ImmutableSet.of(FOAF_0_1_URI, HRESTS_URI, MSM_URI, MSM_WSDL_URI,
+                MSM_SWAGGER_URI, WSMO_LITE_URI, HTTP_VOCAB_URI, HTTP_METHODS_URI, CONTENT_VOCAB_URI,
+                DCTERMS_URI, HTTP_STATUS_URI, MEDIA_TYPES_URI, MSM_NFP_URI, SIOC_URI );
 
         // Configuration for quick retrieval of ontologies by resolving them to local files.
         ImmutableMap.Builder<String, String> mappingsBuilder = ImmutableMap.builder();
@@ -117,6 +122,10 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
         mappingsBuilder.put(HTTP_METHODS_URI.toASCIIString(), this.getClass().getResource("/http-methods-2011-04-29.ttl").toString());
         mappingsBuilder.put(CONTENT_VOCAB_URI.toASCIIString(), this.getClass().getResource("/content-2011-04-29.ttl").toString());
         mappingsBuilder.put(DCTERMS_URI.toASCIIString(), this.getClass().getResource("/dcterms-2012-06-14.ttl").toString());
+        mappingsBuilder.put(HTTP_STATUS_URI.toASCIIString(), this.getClass().getResource("/http-statusCodes-2014-09-03.rdf").toString());
+        mappingsBuilder.put(MEDIA_TYPES_URI.toASCIIString(), this.getClass().getResource("/media-types-2014-09-03.rdf").toString());
+        mappingsBuilder.put(MSM_NFP_URI.toASCIIString(), this.getClass().getResource("/msm-nfp-2014-07-10.ttl").toString());
+        mappingsBuilder.put(SIOC_URI.toASCIIString(), this.getClass().getResource("/sioc-2010-03-25.rdf").toString());
 
         // Configuration for avoiding the import of certain files
         ImmutableSet<String> ignoredImports = ImmutableSet.of();
