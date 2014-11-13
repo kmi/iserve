@@ -1,0 +1,33 @@
+            ----------------------
+            iServe Quick Deployment
+            ----------------------
+
+iServe Quick Deployment
+
+    iServe can be deployed as a Web application or used in embedded mode.
+
+    For deploying it as a Web application, a deployable WAR, which contains the last iServe version, is available at the {{{https://github.com/kmi/iserve/releases}iServe release page}}.
+
+    Note that as described in detail in the {{{./configuration.html}configuration page}}, iServe requires a RDF triple store and exploits {{{https://github.com/epimorphics/elda/}Elda}} as UI to navigate through
+    its dataset.
+
+
+* Default configuration
+
+    To be deployed, the iServe WAR file requires a Java servlet container that supports Servlet 2.5 or higher version.
+
+    The WAR file is tested to work with Apache Tomcat and Jetty and it is configured by default:
+
+        * to run on a servlet container that is installed on <localhost> and replies to HTTP request on port 9090;
+
+        * to use a {{{http://www.openrdf.org/}Sesame}} or {{{http://owlim.ontotext.com}OWLIM}} triple store that provides a repository available through SPARQL at <http://localhost:8080/openrdf-sesame/repositories/iserve> .
+
+
+* Setting up a repository on an alternative SPARQL endpoint
+
+    It is possible to configure a repository available through a different SPARQL endpoint by following updating both iServe's and ELDA's configurations.
+    Further details on how to do so can be found in the {{{./configuration.html}configuration page}}.
+
+    iServe is able to interact with any RDF store, such as {{{http://jena.apache.org/documentation/serving_data/}Fuseki}} and {{{http://virtuoso.openlinksw.com/}Virtuoso}}.
+    However, to use RDF stores that support semantic reasoning (e.g., {{{http://www.openrdf.org/}Sesame}} or {{{http://owlim.ontotext.com}OWLIM}}) is strongly recommended in order to
+    allow iServe to perform more effective service discovery.

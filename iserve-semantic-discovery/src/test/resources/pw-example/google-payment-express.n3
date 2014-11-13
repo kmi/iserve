@@ -1,0 +1,18 @@
+@prefix hr:    <http://iserve.kmi.open.ac.uk/ns/hrests#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix wl:    <http://www.wsmo.org/ns/wsmo-lite#> .
+@prefix sawsdl: <http://www.w3.org/ns/sawsdl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix msm:   <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix msm-wsdl: <http://iserve.kmi.open.ac.uk/ns/msm-wsdl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://google-payment-express>
+        a                      msm:Service ;
+        rdfs:comment           "The Google Payment Express API lets merchants accept Google Wallet over mobile devices. With the API merchants can access and store payment information in the cloud. Buyers payment information from Google Wallet is passed to the merchant to complete the transaction with their own payment processor. The API currently is only for partner merchants and does require authorization to use." ;
+        rdfs:label             "Google Payment Express" ;
+        rdfs:seeAlso           <http://www.programmableweb.com/api/google-payment-express> ;
+        dcterms:created        "2014-06-12"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        dcterms:publisher      <http://google.com/> ;
+        sawsdl:modelReference  <http://schema.org/OrderAction> , <http://schema.org/BuyAction> .

@@ -33,7 +33,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
@@ -71,7 +70,7 @@ public class ConceptMatcherWSC08Test {
 
     private static final Logger log = LoggerFactory.getLogger(ConceptMatcherWSC08Test.class);
 
-    private static final String WSC08_01 = "/WSC08/wsc08_datasets/01/";
+    private static final String WSC08_01 = "/services/wsc08/01/";
     private static final String WSC08_01_SERVICES = WSC08_01 + "services.xml";
     private static final String WSC08_01_TAXONOMY_FILE = WSC08_01 + "taxonomy.owl";
     private static final String WSC_01_TAXONOMY_URL = "http://localhost/wsc/01/taxonomy.owl";
@@ -88,9 +87,6 @@ public class ConceptMatcherWSC08Test {
     public static class InnerModule extends JukitoModule {
         @Override
         protected void configureTest() {
-            // Get configuration
-            install(new ConfigurationModule());
-
             // bind
             install(new RegistryManagementModule());
 
@@ -104,7 +100,7 @@ public class ConceptMatcherWSC08Test {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        Injector injector = Guice.createInjector(new ConfigurationModule(), new RegistryManagementModule());
+        Injector injector = Guice.createInjector(new RegistryManagementModule());
         RegistryManager registryManager = injector.getInstance(RegistryManager.class);
         ServiceTransformationEngine transformationEngine = injector.getInstance(ServiceTransformationEngine
                 .class);
@@ -131,10 +127,10 @@ public class ConceptMatcherWSC08Test {
             throws TransformationException,
             SalException, URISyntaxException, FileNotFoundException {
         log.info("Importing WSC Dataset");
-        String file = OperationMatchTest.class.getResource(WSC08_01_SERVICES).getFile();
+        String file = ConceptMatcherWSC08Test.class.getResource(WSC08_01_SERVICES).getFile();
         log.info("Services XML file {}", file);
         File services = new File(file);
-        URL base = OperationMatchTest.class.getResource(WSC08_01);
+        URL base = ConceptMatcherWSC08Test.class.getResource(WSC08_01);
         log.info("Dataset Base URI {}", base.toURI().toASCIIString());
 
         List<Service> result = transformationEngine.transform(services, base.toURI().toASCIIString(), MEDIATYPE);
@@ -249,7 +245,7 @@ public class ConceptMatcherWSC08Test {
                             log.info("\t> Match " + from + "->" + to + ":" + result.getMatchType());
                             candidates.add(srv.getLabel());
                             // Check if the candidate is invokable
-                            System.out.println(isInvokable(available, op));
+                            log.info("Can the operation be invoked: {}", isInvokable(available, op));
                             assertTrue(expectedServices.contains(srv.getLabel()));
                             break opLoop;
                         }
@@ -258,7 +254,7 @@ public class ConceptMatcherWSC08Test {
                 }
             }
         }
-        System.out.println("Total services " + candidates.size());
+        log.info("Total services {}", candidates.size());
     }
 
 

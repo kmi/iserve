@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ * Copyright (c) 2014. Knowledge Media Institute - The Open University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.sal.manager.*;
 import uk.ac.open.kmi.msm4j.io.impl.TransformerModule;
 
@@ -35,9 +36,29 @@ public class RegistryManagementModule extends AbstractModule {
 
     private static final Logger log = LoggerFactory.getLogger(RegistryManagementModule.class);
 
+    private final String configFile;
+
+    public RegistryManagementModule() {
+        this.configFile = null;
+    }
+
+    public RegistryManagementModule(String configFile) {
+        this.configFile = configFile;
+    }
+
     @Override
     protected void configure() {
+        // Include Configuration Module
+        if (configFile == null) {
+            install(new ConfigurationModule());
+        } else {
+            install(new ConfigurationModule(configFile));
+        }
 
+        setupRegistry();
+    }
+
+    private void setupRegistry() {
         // Include transformation support
         install(new TransformerModule());
 

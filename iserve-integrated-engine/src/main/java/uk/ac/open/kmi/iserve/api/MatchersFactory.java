@@ -18,10 +18,10 @@ package uk.ac.open.kmi.iserve.api;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import uk.ac.open.kmi.iserve.core.SystemConfiguration;
+import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
+import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 
-import javax.inject.Named;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -39,7 +39,7 @@ public class MatchersFactory {
 
     // TODO: Add configuration details
     @Inject(optional = true)
-    @Named(SystemConfiguration.DEFAULT_CONCEPT_MATCHER_PROP)
+    @iServeProperty(ConfigurationProperty.CONCEPT_MATCHER)
     private final String defaultConceptMatcher = null;
 
     @Inject

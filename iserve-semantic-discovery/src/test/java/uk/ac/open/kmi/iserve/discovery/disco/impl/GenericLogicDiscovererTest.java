@@ -1,18 +1,18 @@
 /*
- * Copyright (c) 2013. Knowledge Media Institute - The Open University
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (c) 2013. Knowledge Media Institute - The Open University
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
@@ -32,29 +32,32 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoverer;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoverer;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
+import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
 import uk.ac.open.kmi.msm4j.Service;
+import uk.ac.open.kmi.msm4j.io.ServiceReader;
+import uk.ac.open.kmi.msm4j.io.Syntax;
 import uk.ac.open.kmi.msm4j.io.TransformationException;
 import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * GenericLogicDiscovererTest
- * TODO: GenericLogicDiscovererTest.testFindOperationsConsumingAll:175 » ConcurrentModification
+ * TODO: Provide Description
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 04/10/2013
@@ -65,7 +68,7 @@ public class GenericLogicDiscovererTest {
     private static final Logger log = LoggerFactory.getLogger(GenericLogicDiscovererTest.class);
 
     private static final String MEDIATYPE = "text/xml";
-    private static final String WSC08_01 = "/WSC08/wsc08_datasets/01/";
+    private static final String WSC08_01 = "/services/wsc08/01/";
     private static final String WSC08_01_SERVICES = WSC08_01 + "services.xml";
     private static final String WSC08_01_TAXONOMY_FILE = WSC08_01 + "taxonomy.owl";
     private static final String WSC_01_TAXONOMY_URL = "http://localhost/wsc/01/taxonomy.owl";
@@ -77,9 +80,6 @@ public class GenericLogicDiscovererTest {
     public static class InnerModule extends JukitoModule {
         @Override
         protected void configureTest() {
-            // Get configuration
-            install(new ConfigurationModule());
-
             // Add dependency
             install(new RegistryManagementModule());
 
@@ -91,20 +91,55 @@ public class GenericLogicDiscovererTest {
 //            bind(GenericLogicDiscoverer.class).in(Singleton.class);
             bind(OperationDiscoverer.class).to(GenericLogicDiscoverer.class);
             bind(ServiceDiscoverer.class).to(GenericLogicDiscoverer.class);
+
+            // Necessary to verify interaction with the real object
+            bindSpy(GenericLogicDiscoverer.class);
         }
     }
 
     @BeforeClass
     public static void setUp() throws Exception {
-        Injector injector = Guice.createInjector(new ConfigurationModule(), new RegistryManagementModule());
+        Injector injector = Guice.createInjector(new RegistryManagementModule());
         RegistryManager registryManager = injector.getInstance(RegistryManager.class);
         ServiceTransformationEngine transformationEngine = injector.getInstance(ServiceTransformationEngine
                 .class);
+
+        ServiceReader serviceReader = injector.getInstance(ServiceReader.class);
 
         registryManager.clearRegistry();
 
         uploadWscTaxonomy(registryManager);
         importWscServices(transformationEngine, registryManager);
+        importPWapis(registryManager, serviceReader);
+    }
+
+    private static void importPWapis(RegistryManager registryManager, ServiceReader serviceReader) {
+
+
+        Set<File> descriptions = new TreeSet<File>();
+        File ontoDir = new File(GenericLogicDiscovererTest.class.getResource("/pw-example").getFile());
+        if (ontoDir.exists() && ontoDir.isDirectory() && ontoDir.listFiles().length > 0) {
+            descriptions.addAll(Arrays.asList(ontoDir.listFiles(new Notation3ExtFilter())));
+        }
+
+        OntModel schemaModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+        schemaModel.read(GenericLogicDiscovererTest.class.getResource("/pw-example/schema.rdf").getFile());
+        registryManager.getKnowledgeBaseManager().uploadModel(URI.create("http://schema.org/"), schemaModel, true);
+
+        for (File desc : descriptions) {
+            try {
+                List<Service> services = serviceReader.parse(new FileInputStream(desc), "http://" + desc.getName(), Syntax.N3);
+                for (Service service : services) {
+                    log.info("Loading {}", service.getUri());
+                    registryManager.getServiceManager().addService(service);
+                }
+            } catch (ServiceException e) {
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
     private static void uploadWscTaxonomy(RegistryManager registryManager) throws URISyntaxException {
@@ -140,6 +175,21 @@ public class GenericLogicDiscovererTest {
             counter++;
         }
         log.debug("Total services added {}", counter);
+    }
+
+    @Test
+    public void testFindOperationsConsumingAll(OperationDiscoverer opDiscoverer) throws Exception {
+
+        URI input1Uri = URI.create(WSC_01_TAXONOMY_NS + "con332477359");
+        URI input2Uri = URI.create(WSC_01_TAXONOMY_NS + "con1794855625");
+
+        // Obtain matches
+        Stopwatch stopwatch = new Stopwatch().start();
+        Map<URI, MatchResult> matches = opDiscoverer.findOperationsConsumingAll(ImmutableSet.of(input1Uri, input2Uri));
+        stopwatch.stop();
+
+        log.info("Obtained ({}) matches in {} \n {}", matches.size(), stopwatch, matches);
+
     }
 
 
@@ -201,6 +251,7 @@ public class GenericLogicDiscovererTest {
     }
 
     @Test
+    @Ignore
     public void testFindOperationsProducingSome() throws Exception {
 
     }
@@ -230,6 +281,7 @@ public class GenericLogicDiscovererTest {
     }
 
     @Test
+    @Ignore
     public void testFindServicesConsumingSome() throws Exception {
 
     }
@@ -241,25 +293,47 @@ public class GenericLogicDiscovererTest {
     }
 
     @Test
+    @Ignore
     public void testFindServicesProducingSome() throws Exception {
 
     }
 
     @Test
-    @Ignore
-    public void testFindServicesClassifiedByAll() throws Exception {
+    public void testFindServicesClassifiedByAll(ServiceDiscoverer serviceDiscoverer) throws Exception {
+        URI modelA = URI.create("http://schema.org/CreateAction");
+        URI modelB = URI.create("http://schema.org/SearchAction");
 
+        Stopwatch stopwatch = new Stopwatch().start();
+        Map<URI, MatchResult> matches = serviceDiscoverer.findServicesClassifiedByAll(ImmutableSet.of(modelA, modelB));
+        stopwatch.stop();
+
+        log.info("Obtained ({}) matches in {} \n {}", matches.size(), stopwatch, matches);
+        Assert.assertTrue(matches.size() == 1);
     }
 
     @Test
-    @Ignore
-    public void testFindServicesClassifiedBySome() throws Exception {
+    public void testFindServicesClassifiedBySome(ServiceDiscoverer serviceDiscoverer) throws Exception {
+        URI modelA = URI.create("http://schema.org/CreateAction");
+        URI modelB = URI.create("http://schema.org/SearchAction");
 
+        Stopwatch stopwatch = new Stopwatch().start();
+        Map<URI, MatchResult> matches = serviceDiscoverer.findServicesClassifiedBySome(ImmutableSet.of(modelA, modelB));
+        stopwatch.stop();
+
+        log.info("Obtained ({}) matches in {} \n {}", matches.size(), stopwatch, matches);
+        Assert.assertTrue(matches.size() == 13);
     }
 
     @Test
     @Ignore
     public void testFindServicesInvocableWith() throws Exception {
 
+    }
+
+    public static class Notation3ExtFilter implements FilenameFilter {
+
+        public boolean accept(File dir, String name) {
+            return (name.endsWith(".n3"));
+        }
     }
 }

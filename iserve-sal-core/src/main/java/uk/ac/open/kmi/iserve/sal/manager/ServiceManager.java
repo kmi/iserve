@@ -29,6 +29,7 @@ import java.util.Set;
  * needed we should update this.
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
+ * @author <a href="mailto:luca.panziera@open.ac.uk">Luca Panziera</a> (KMi - The Open University)
  */
 public interface ServiceManager extends iServeComponent {
 
@@ -260,7 +261,6 @@ public interface ServiceManager extends iServeComponent {
     public abstract boolean clearServices()
             throws ServiceException;
 
-
     /**
      * Determines whether a service is known to the registry
      *
@@ -270,4 +270,21 @@ public interface ServiceManager extends iServeComponent {
      */
     public abstract boolean serviceExists(URI serviceUri) throws ServiceException;
 
+    /**
+     * Given the URI of a modelReference, this method figures out all the services
+     * that have this as model references.
+     *
+     * @param modelReference the type of output sought for
+     * @return a Set of URIs of operations that generate this output type.
+     */
+    public abstract Set<URI> listServicesWithModelReference(URI modelReference);
+
+    /**
+     * Given the URI of a modelReference, this method figures out all the operations
+     * of which services have this as model references.
+     *
+     * @param modelReference the type of output sought for
+     * @return a Set of URIs of operations that generate this output type.
+     */
+    public abstract Set<URI> listOperationsWithModelReference(URI modelReference);
 }

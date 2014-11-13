@@ -16,7 +16,6 @@
 
 package uk.ac.open.kmi.iserve.sal.rest;
 
-import com.epimorphics.lda.restlets.*;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -48,15 +47,6 @@ public class RegistryManagementWebApplication extends ResourceConfig {
     public RegistryManagementWebApplication(ServiceLocator serviceLocator) {
         // Set package to look for resources in
         packages("uk.ac.open.kmi.iserve.sal.rest.resource");
-
-        // Add Elda's resources except for RouterRestlet as it is already covered by our own R/W Servlet
-        register(ControlRestlet.class);
-        register(ConfigRestlet.class);
-        register(ClearCache.class);
-        register(MetadataRestlet.class);
-        register(ResetCacheCounts.class);
-        register(ShowCache.class);
-        register(ShowStats.class);
 
         // Register MultiPart and JspMVC features
         register(MultiPartFeature.class);

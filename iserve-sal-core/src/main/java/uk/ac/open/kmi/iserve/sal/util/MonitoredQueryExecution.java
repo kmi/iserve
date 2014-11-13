@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Decorator for Jena QueryExecution to register the number of execution
  * of queries.
- * 
+ *
  * @author Pablo Rodríguez Mier
  */
 public class MonitoredQueryExecution implements QueryExecution {

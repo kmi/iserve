@@ -1,0 +1,80 @@
+            -----------
+            Compiling iServe
+            -----------
+
+Compiling iServe
+
+    iServe is largely developed in Java and is entirely managed by Maven both for compilation and testing.
+    Below you have a quick reference on how to compile it.
+
+* Requirements
+
+    * Maven 3+
+
+    * An RDF(S) Repository for testing. (Note: Fuseki users should enable 'tdb:unionDefaultGraph true').
+
+* Obtaining the code
+
++----------------------------------------------------------------------------------+
+ git clone https://github.com/kmi/iserve.git
++----------------------------------------------------------------------------------+
+
+* Create a Configuration File
+
+    iServe can be configured through several configuration properties like the SPARQL endpoint to use.
+    {{{./configuration.html} More information on iServe configuration properties}}.
+    iServe comes preconfigured to be served on http://localhost:9090/iserve
+    with a set of default properties that link it to a local Sesame compliant RDF Store.
+
+    Indeed this may not suit your particular setup and we therefore provide you means to adapt this configuration
+    accordingly.
+
+    You may either point to your own configuration file by using a JVM system property to point to your configuration file:
+    ```-Diserve.config=/path/to/your/config.properties```
+
+    You can take the file on ```/conf/config.properties.env``` as a reference to be fine tuned.
+
+    For convenience this file provides a setup such that each and every property can be specified through JVM system properties.
+    See {{{./configuration.html} for more details}}.
+
+* First Time Compilation
+
+    The first time run the entire compilation without execution any tests to ensure everything is compiled and
+    installed. Testing takes a bit of time and some tests still depend on the capabilities of the backend
+    (e.g., reasoning support), so it is best to first ensure that everything runs fine.
+
++----------------------------------------------------------------------------------+
+ mvn -DskipTests=true install
++----------------------------------------------------------------------------------+
+
+* Subsequent Compilations
+
++----------------------------------------------------------------------------------+
+ mvn clean install
++----------------------------------------------------------------------------------+
+
+    This will run tests as well. In order to run these tests, however, iServe needs to access some files through
+    HTTP. Until we automate this you will have to launch a simple Web server locally prior to testing.
+
+    Notably you should serve the sws-test-collections project over http at port 8000.
+    Should you have Python installed you can do so easily as follows:
+
++----------------------------------------------------------------------------------+
+ python -m SimpleHTTPServer 8000
++----------------------------------------------------------------------------------+
+
+* Generating the Documentation
+
+    The source code of iServe also includes this documentation so you may keep it handy locally. To generate it:
+
++----------------------------------------------------------------------------------+
+ mvn site:site
++----------------------------------------------------------------------------------+
+
+    To view the resulting documentation:
+
++----------------------------------------------------------------------------------+
+ mvn site:run
++----------------------------------------------------------------------------------+
+
+    The documentation will be available at {{{http://localhost:10000} http://localhost:10000}}

@@ -31,7 +31,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.ConfigurationModule;
+import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
 import uk.ac.open.kmi.iserve.core.SystemConfiguration;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
@@ -45,7 +45,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Properties;
 import java.util.Set;
 
 import static com.jayway.restassured.RestAssured.given;
@@ -62,14 +61,7 @@ public class ServiceResourceIT {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceResourceIT.class);
 
-//    private static final String HOST = "http://localhost";
-//    private static final int PORT = 9090;
-//    //            private static final int PORT = 10000;
-//    private static final String BASE_CONTEXT = "/iserve";
-//    private static final String WEB_APP_URI = HOST + ":" + PORT + BASE_CONTEXT;
-//    private static final String SERVICES_URI = WEB_APP_URI + "/services";
-
-    private static final String OWLS_TC_SERVICES = "/OWLS-TC3-MSM";
+    private static final String OWLS_TC_SERVICES = "/services/OWLS-1.1-MSM";
 
     // Ensure that these are the ones listed in shiro.ini
     private static final String ROOT_USER = "root";
@@ -77,9 +69,6 @@ public class ServiceResourceIT {
 
     // Limit the number of documents to upload to the registry
     private static final int MAX_DOCS = 25;
-    private static final String CONFIG_PROPERTIES = "config.properties";
-
-    private static Properties configProperties;
 
     private static URI testFolder;
 
@@ -108,11 +97,11 @@ public class ServiceResourceIT {
         cookieMan = webClient.getCookieManager();
         cookieMan.setCookiesEnabled(true);
 
-        Injector injector = Guice.createInjector(new ConfigurationModule(), new RegistryManagementModule());
+        Injector injector = Guice.createInjector(new RegistryManagementModule());
         manager = injector.getInstance(RegistryManager.class);
 
-        configProperties = getProperties(CONFIG_PROPERTIES);
-        iserveUrl = new URL(configProperties.getProperty(SystemConfiguration.ISERVE_URL_PROP));
+        SystemConfiguration config = injector.getInstance(SystemConfiguration.class);
+        iserveUrl = new URL(config.getString(ConfigurationProperty.ISERVE_URL));
 
         // Set default values for rest assured
         RestAssured.baseURI = new StringBuilder()
@@ -123,19 +112,6 @@ public class ServiceResourceIT {
 
         // Logout
 //        logOut();
-    }
-
-    private static Properties getProperties(String fileName) {
-        log.info("Loading configuration from - {} - within folder {}", fileName,
-                ServiceResourceIT.class.getClassLoader().getResource("."));
-        try {
-            Properties properties = new Properties();
-            properties.load(ServiceResourceIT.class.getClassLoader().getResourceAsStream(fileName));
-            return properties;
-        } catch (IOException ex) {
-            log.error("Error obtaining plugin properties", ex);
-        }
-        return new Properties();
     }
 
     private static void logOut() throws IOException {

@@ -24,7 +24,8 @@ import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.SystemConfiguration;
+import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
+import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
@@ -36,7 +37,6 @@ import uk.ac.open.kmi.iserve.discovery.disco.Util;
 import uk.ac.open.kmi.iserve.discovery.util.MatchResultComparators;
 import uk.ac.open.kmi.iserve.sal.util.MonitoredQueryExecution;
 
-import javax.inject.Named;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -55,9 +55,6 @@ import java.util.Set;
 public class SparqlLogicConceptMatcher implements ConceptMatcher {
 
     private static final Logger log = LoggerFactory.getLogger(SparqlLogicConceptMatcher.class);
-
-    private static String NL = System.getProperty("line.separator");
-
     // Variable names used in queries
     private static final String MATCH_VAR = "match";
     private static final String EXACT_VAR = "exact";
@@ -65,11 +62,8 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
     private static final String SUPER_VAR = "super";
     private static final String ORIGIN_VAR = "origin";
     private static final String DESTINATION_VAR = "destination";
-
     private static final MatchTypes<MatchType> matchTypes = EnumMatchTypes.of(LogicConceptMatchType.class);
-
-    private URI sparqlEndpoint = null;
-
+    private static String NL = System.getProperty("line.separator");
     // Function to getMatchResult from a Map
     protected final Function<Map.Entry<URI, MatchResult>, MatchResult> getMatchResult =
             new Function<Map.Entry<URI, MatchResult>, MatchResult>() {
@@ -77,14 +71,14 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
                     return entry.getValue();
                 }
             };
-
     // Order the results by score and then by url
     protected final Ordering<Map.Entry<URI, MatchResult>> entryOrdering =
             Ordering.from(MatchResultComparators.BY_TYPE).onResultOf(getMatchResult).reverse().
                     compound(Ordering.from(MatchResultComparators.BY_URI).onResultOf(getMatchResult));
+    private URI sparqlEndpoint = null;
 
     @Inject
-    protected SparqlLogicConceptMatcher(@Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlEndpoint) throws URISyntaxException {
+    protected SparqlLogicConceptMatcher(@iServeProperty(ConfigurationProperty.SERVICES_SPARQL_QUERY) String sparqlEndpoint) throws URISyntaxException {
 
         if (sparqlEndpoint == null) {
             log.error("A SPARQL endpoint is currently needed for matching.");
@@ -246,7 +240,7 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
      * @param origin URI to match
      * @param type   the MatchType we want to obtain
      * @return an ImmutableMap sorted by value indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
-     *         result is found the Map should be empty not null.
+     * result is found the Map should be empty not null.
      */
     @Override
     public Map<URI, MatchResult> listMatchesOfType(URI origin, MatchType type) {
@@ -272,7 +266,7 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
      * @param origin  URI to match
      * @param minType the minimum MatchType we want to obtain
      * @return an ImmutableMap sorted by value indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
-     *         result is found the Map should be empty not null.
+     * result is found the Map should be empty not null.
      */
     @Override
     public Map<URI, MatchResult> listMatchesAtLeastOfType(URI origin, MatchType minType) {
@@ -311,7 +305,7 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
      * @param origin  URI to match
      * @param maxType the maximum MatchType we want to obtain
      * @return an ImmutableMap sorted by value indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
-     *         result is found the Map should be empty not null.
+     * result is found the Map should be empty not null.
      */
     @Override
     public Map<URI, MatchResult> listMatchesAtMostOfType(URI origin, MatchType maxType) {
@@ -338,7 +332,7 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
      * @param minType the minimum MatchType we want to obtain
      * @param maxType the maximum MatchType we want to obtain
      * @return an ImmutableMap sorted by value containing indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
-     *         result is found the Map should be empty not null.
+     * result is found the Map should be empty not null.
      */
     @Override
     public Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType) {
@@ -392,6 +386,9 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
      * @return
      */
     private Table<URI, URI, MatchResult> obtainMatchResults(Set<URI> origins, MatchType minType, MatchType maxType) {
+
+        log.debug("Obtain match results for {}, with {} <= Match Result <= {}", origins, minType, maxType);
+
         Table<URI, URI, MatchResult> result = HashBasedTable.create();
         // Exit fast if no data is provided or no matches can be found
         if (origins == null || origins.isEmpty() || minType.compareTo(maxType) > 0)
@@ -426,13 +423,6 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
                 QuerySolution soln = qResults.nextSolution();
                 origin = soln.getResource(ORIGIN_VAR);
                 destination = soln.getResource(MATCH_VAR + index);
-
-//                // Get the current matching class, we assume the results come by batches over the same class ordered
-//                // If this is not the case we should loop every time to see which class matched
-//                while (resource == null && index < uris.length) {
-//                    index++;
-//                    resource = soln.getResource(MATCH_VAR + index);
-//                }
 
                 if (origin != null && origin.isURIResource() && destination != null && destination.isURIResource()) {
                     originUri = new URI(origin.getURI());

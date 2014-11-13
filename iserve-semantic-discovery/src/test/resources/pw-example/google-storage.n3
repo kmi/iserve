@@ -1,0 +1,17 @@
+@prefix hr:    <http://iserve.kmi.open.ac.uk/ns/hrests#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix wl:    <http://www.wsmo.org/ns/wsmo-lite#> .
+@prefix sawsdl: <http://www.w3.org/ns/sawsdl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix msm:   <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix msm-wsdl: <http://iserve.kmi.open.ac.uk/ns/msm-wsdl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://google-storage>
+        a                  msm:Service ;
+        rdfs:comment       "Google Storage for Developers is a RESTful web service API for storing and accessing your data on Google's infrastructure. The service combines the performance and scalability of Google's cloud with advanced security and sharing capabilities. With this API: all data is replicated to multiple U.S. data centers, offers read-your-writes data consistency, and allows objects of hundreds of gigabytes in size per request with range-get support." ;
+        rdfs:label         "Google Storage" ;
+        rdfs:seeAlso       <http://www.programmableweb.com/api/google-storage> ;
+        dcterms:created    "2014-06-12"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        dcterms:publisher  <http://www.google.com> .

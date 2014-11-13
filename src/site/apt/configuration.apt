@@ -4,60 +4,121 @@
 
 Configuring iServe
 
-    iServe stores three main kinds of information: Service descriptions in RDF, Ontologies (described in OWL or RDF/S),
-    and Documents (e.g., WSDL files, or Web APIs HTML documentation). Service descriptions and Ontologies
-    are both stored in an RDF store, whereas Documents are directly stored in the file system. This,
-    in order to get iServe up and running in your own system you will need to carry out some basic
-    configuration steps which we detail next.
+    iServe stores three main kinds of information:
 
-    Most of iServe's configuration is stored in the <config.properties> file. For those whishing to test iServe in
-    development mode, this file can be found within the source code, in the <iserve-sal-core> module, under <resources>.
-    For convenience we provide a reference configuration file named <config.properties.reference>. You can
-    take this as starting point and adapt it to your own requirements.
+        * Service descriptions in RDF;
+
+        * Ontologies (described in OWL or RDF/S);
+
+        * Documents (e.g., WSDL files, or Web APIs HTML documentation).
+
+    Service descriptions and Ontologies are both stored in an RDF store, whereas Documents are directly stored in the file system. Therefore
+    in order to get iServe up and running in your own system you will need to carry out some basic configuration steps which we detail next.
+
+    iServe's configuration can be stored in a Java properties file. For those whishing to test iServe in
+    development mode, a reference configuration file can be found in /conf/config.properties.env with predefined
+    values for picking up the entire configuration of iServe from JVM system properties. This file is setup is a way
+    such that every one of iServe's configuration properties can be configured by including Java system properties at launch time in the form of:
+
++----------------------------------------------------------------------------------------------------+
+-Diserve.<property-name>=<actual value>
++----------------------------------------------------------------------------------------------------+
+
+    You can indeed take this file as a starting point and adapt it to your own requirements. In order to tell iServe
+    which configuration file to use you may do so at instantiation time (when using the integrated engine) or via
+    the Java system property iserve.config. You may specify this property when launching iServe by including:
+
++----------------------------------------------------------------------------------------------------+
+-Diserve.config=/path/to/my/configuration.properties
++----------------------------------------------------------------------------------------------------+
 
 
 * Setting up an RDF Store
 
     In order to store the Service descriptions and the Ontologies, you tell iServe where to find an RDF Store, including
-    notably its SPARQL Query and Update endpoints. Note, that in this last release, iServe requires and RDF Store that
-    supports {{{http://www.w3.org/TR/sparql11-query/} SPARQL 1.1}}. Most of the RDF Stores available out there already support this.
+    notably its SPARQL Query, Update, and Service endpoints. Note, that in this last release, iServe requires and RDF Store that
+    supports {{{http://www.w3.org/TR/sparql11-query/} SPARQL 1.1}}. Most of the RDF Stores available out there already support this, though.
 
     iServe does not come with an embedded RDF Store so, you should take care of the actual installation and
     configuration of one. Which one you use is certainly up to you although you should note that the discovery
     capabilities of iServe depend strongly on the actual setup of the backend RDF Store. Indeed, including support for
     highly expressive formalisms will have an impact on both the performance and discovery support provided by iServe.
-    In our tests we have used {{{http://owlim.ontotext.com}OWLIM}} with OWL Horst support and both the
+    In our tests we have used {{{http://owlim.ontotext.com}OWLIM}} with OWL Horst support and Sesame with RDFS reasoning and both the
     performance and reasoning support have been adequate. In order to make your choice you may want to run a number of
     tests but as a rule of thumb you should bear in mind that for a service registry querying response time will be more
     important than upload time. Therefore the benefits of having expressive reasoning support and
     materialising the results upon upload will most likely out weight the loading overhead incurred.
 
-* Configuration Properties
+* Core Configuration Properties
 
+    Below you have a detailed list of all the configuration properties of iServe. As indicated earlier, you may configure this through a Java properties file
+    in the form of 'property-name'='configuration value' lines.
 
-*-------------------------------+---------------------------------------------------------------------------------------+
-|| <<Configuration Property>>   || <<Description>>                                                                      |
-*-------------------------------+---------------------------------------------------------------------------------------+
-| iserve.url                    | URL where the server will be available. This will determine the URLs for services and |
-|                               | should therefore match the URL where the server is deployed in order to ensure that   |
-|                               | content is published following the Linked Data principles                             |
-*-------------------------------+---------------------------------------------------------------------------------------+
-| iserve.documents.folder       | Folder where iServe will store the service documents and other related documentation. |
-*-------------------------------+---------------------------------------------------------------------------------------+
-| iserve.services.sparql.query  | URL of the SPARQL endpoint of the RDF Store used for services and ontologies.         |
-*-------------------------------+---------------------------------------------------------------------------------------+
-| iserve.services.sparql.update | URL of the SPARQL update endpoint of the RDF Store used for services and ontologies.  |
-*-------------------------------+---------------------------------------------------------------------------------------+
-| iserve.services.sparql.service| URL of where the RDF Store implements the Graph Store procotocol. This is not strictly|
-|                               | necessary although it may speed up the uploading and deletion of services and         |
-|                               | ontologies from the server.                                                           |
-*-------------------------------+---------------------------------------------------------------------------------------+
-| <http.proxyHost (Optional)>   | Host name for the HTTP proxy to use. This is necessary in order to obtain remote data.|
-*-------------------------------+---------------------------------------------------------------------------------------+
-| <http.proxyPort (Optional)>   | Port number for the HTTP proxy to use.                                                |
-*-------------------------------+---------------------------------------------------------------------------------------+
+*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+|| <<Configuration Property>>   || <<Description>>                                                                      || <<Default Value>>                                                                |
+*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.url                    | URL where the server will be available. This will determine the URLs for services and | http://localhost:9090/iserve                                                |
+|                               | should therefore match the URL where the server is deployed in order to ensure that   |                                                                             |
+|                               | content is published following the Linked Data principles                             |                                                                             |
+*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.documents.folder       | Folder where iServe will store the service documents and other related documentation. | /tmp/iserve-docs/                                                           |
+*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.services.sparql.query  | URL of the SPARQL endpoint of the RDF Store used for services and ontologies.         | http://localhost:8080/openrdf-sesame/repositories/iserve                    |
+*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.services.sparql.update | URL of the SPARQL update endpoint of the RDF Store used for services and ontologies.  | http://localhost:8080/openrdf-sesame/repositories/iserve/statements         |
+*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.services.sparql.service| URL of where the RDF Store implements the Graph Store procotocol. This is not strictly| http://localhost:8080/openrdf-sesame/repositories/iserve/rdf-graphs/service |
+|                               | necessary although it may speed up the uploading and deletion of services and         |                                                                             |
+|                               | ontologies from the server.                                                           |                                                                             |
+*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.nfp.sparql.query       | Experimental - URL of the SPARQL endpoint of the RDF Store used for Non-functional    | http://localhost:8080/openrdf-sesame/repositories/iserve                    |
+|                               | properties (NFPs) e.g., popularity, response time, etc.                               |                                                                             |
+*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.nfp.sparql.update      | Experimental - URL of the SPARQL update endpoint of the RDF Store used for NFPs.      | http://localhost:8080/openrdf-sesame/repositories/iserve/statements         |
+*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.nfp.sparql.service     | Experimental - URL of where the NFPs RDF Store implements the Graph Store procotocol. | http://localhost:8080/openrdf-sesame/repositories/iserve/rdf-graphs/service |
+|                               | This is not strictly necessary although it may speed up the uploading and deletion of |                                                                             |
+|                               | data.                                                                                 |                                                                             |
+*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| http.proxyHost (Optional)     | Host name for the HTTP proxy to use. This is necessary in order to obtain remote data.| None                                                                        |
+*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| http.proxyPort (Optional)     | Port number for the HTTP proxy to use.                                                | None                                                                        |
+*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
 iServe Configuration Properties.
 
+* Web Interface Configuration Properties
 
-    Note: The reference configuration file has other properties but these are legacy ones which are currently not
-    in use.
+    In addition to the backend engine, iServe includes a Linked Data user interface for viewing and exposing the data it holds.
+    It is based on {{{https://github.com/epimorphics/elda}ELDA}} which is highly configurable. By default we have pre-configured
+    it to provide the main pages of information listing services, operations, providers, etc. For each of those we have different
+    views with more or less detailed information. Advanced users may refer to ELDA's documentation in order to fine tune their
+    own installation, to add new pages, etc.
+
+    In order to present the data, ELDA needs to know where it should obtain the data from, i.e., the RDF store. To simplify
+    things we have created a script for automatically generating new ELDA configurations. You can find the script in
+    ./scripts/generate-elda-config.sh
+
+    The way to use this script is as follows:
+
++----------------------------------------------------------------------------------------------------+
+generate-config.sh iserve-host iserve-port iserve-context rdf-host rdf-port repository-name type
++----------------------------------------------------------------------------------------------------+
+
+     The default ELDA configuration was for instance generated as follows:
+
++----------------------------------------------------------------------------------------------------+
+./generate-config.sh localhost 8080 iserve localhost 8080 iserve sesame
++----------------------------------------------------------------------------------------------------+
+
+    By default iServe will look for this file within the folder where iServe was deployed in:
+
++----------------------------------------------------------------------------------------------------+
+... /webapps/<iserve context>/elda-specs/iserve.ttl
++----------------------------------------------------------------------------------------------------+
+
+    Should you wish to use a different configuration file you may specify it by means of a Java system property:
+
++----------------------------------------------------------------------------------------------------+
+-Delda.specs=/path/to/your/elda-spec-file.ttl
++----------------------------------------------------------------------------------------------------+
+

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ * Copyright (c) 2014. Knowledge Media Institute - The Open University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,7 +108,7 @@ public interface RegistryManager {
      *
      * @param mediaType the media type for which to obtain the file extension
      * @return the filename filter or null if it is not supported. Callers are advised to check
-     *         first that the media type is supported {@see canTransform} .
+     * first that the media type is supported {@see canTransform} .
      */
     public FilenameFilter getFilenameFilter(String mediaType);
 
@@ -123,6 +123,19 @@ public interface RegistryManager {
      */
     List<URI> importServices(InputStream servicesContentStream,
                              String mediaType) throws SalException;
+
+    /**
+     * Imports a new service from a remote description within iServe. The original document is stored
+     * in the server and the transformed version registered within iServe.
+     *
+     * @param servicesContentLocation
+     * @param mediaType
+     * @return the List of URIs of the services imported
+     * @throws SalException
+     */
+    List<URI> importServices(URI servicesContentLocation,
+                             String mediaType) throws SalException;
+
 
     /**
      * Clears the registry entirely: all documents and services are deleted
@@ -145,6 +158,8 @@ public interface RegistryManager {
      */
     List<URI> registerServices(URI sourceDocumentUri, String mediaType) throws SalException;
 
+    List<URI> registerServices(InputStream file, String mediaType) throws SalException;
+
     /**
      * Unregisters a service from the registry. Effectively this will delete the service description and remove any
      * related documents on the server.
@@ -165,4 +180,6 @@ public interface RegistryManager {
      */
     String exportService(URI serviceUri, String mediaType)
             throws ServiceException;
+
+
 }

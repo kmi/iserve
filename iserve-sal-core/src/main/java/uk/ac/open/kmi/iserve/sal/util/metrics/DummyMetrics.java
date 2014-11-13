@@ -3,6 +3,7 @@ package uk.ac.open.kmi.iserve.sal.util.metrics;
 
 /**
  * Dummy implementation. It does not register anything.
+ *
  * @author Pablo Rodríguez Mier.
  */
 public class DummyMetrics implements CounterMetrics {

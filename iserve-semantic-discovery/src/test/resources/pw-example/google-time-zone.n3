@@ -1,0 +1,18 @@
+@prefix hr:    <http://iserve.kmi.open.ac.uk/ns/hrests#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix wl:    <http://www.wsmo.org/ns/wsmo-lite#> .
+@prefix sawsdl: <http://www.w3.org/ns/sawsdl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix msm:   <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix msm-wsdl: <http://iserve.kmi.open.ac.uk/ns/msm-wsdl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://google-time-zone>
+        a                      msm:Service ;
+        rdfs:comment           "Google Time Zone provides time zone information for locations around the world, by latitude and longitude. \n\nThe Google Time Zone API allows developers to access and integrate the data and functionality of Google Time Zone with other applications and to create new applications. The main API method is returning time zone data for locations." ;
+        rdfs:label             "Google Time Zone" ;
+        rdfs:seeAlso           <http://www.programmableweb.com/api/google-time-zone> ;
+        dcterms:created        "2014-06-12"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        dcterms:publisher      <http://www.google.com> ;
+        sawsdl:modelReference  <http://schema.org/DiscoverAction> , <http://schema.org/SearchAction> , <http://schema.org/ReadAction> .

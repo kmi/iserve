@@ -40,14 +40,14 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.SystemConfiguration;
+import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
+import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
 import uk.ac.open.kmi.iserve.sal.util.MonitoredQueryExecution;
 import uk.ac.open.kmi.msm4j.io.Syntax;
 import uk.ac.open.kmi.msm4j.util.Vocabularies;
 
-import javax.inject.Named;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -98,10 +98,10 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
      */
     static class ProxyConfiguration {
         @Inject(optional = true)
-        @Named(SystemConfiguration.PROXY_HOST_NAME_PROP)
+        @iServeProperty(ConfigurationProperty.PROXY_HOST)
         private String proxyHost = null;
         @Inject(optional = true)
-        @Named(SystemConfiguration.PROXY_PORT_PROP)
+        @iServeProperty(ConfigurationProperty.PROXY_PORT)
         private String proxyPort = null;
     }
 
@@ -251,6 +251,8 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
      * Loads the default models for this Graph Store and verifies they were correctly retrieved
      * NOTE: For now models with local mappings cannot be TTL for Jena does not guess the format properly in that case.
      * We need to specify the format while loading in this case.
+     * <p/>
+     * This method pre-checks the presence of the model already in loadedModels
      *
      * This method pre-checks the presence of the model already in loadedModels
      *

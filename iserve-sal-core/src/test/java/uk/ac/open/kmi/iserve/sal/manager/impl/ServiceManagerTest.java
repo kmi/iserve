@@ -60,7 +60,7 @@ public class ServiceManagerTest {
 
     private static final String MEDIATYPE = "text/xml";
 
-    private static final String WSC08_01 = "/WSC08/wsc08_datasets/01/";
+    private static final String WSC08_01 = "/services/wsc08/01/";
     private static final String WSC08_01_SERVICES = WSC08_01 + "services.xml";
 
     /**

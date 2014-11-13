@@ -26,6 +26,7 @@ import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.MatchResultsMerger;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
 import uk.ac.open.kmi.msm4j.vocabulary.MSM;
+import uk.ac.open.kmi.msm4j.vocabulary.SAWSDL;
 
 import java.net.URI;
 import java.util.Map;
@@ -35,6 +36,7 @@ import java.util.Set;
  * GenericLogicDiscoverer provides discovery for both Operations and Services
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
+ * @author <a href="mailto:luca.panziera@open.ac.uk">Luca Panziera</a> (KMi - The Open University)
  * @since 27/09/2013
  */
 public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDiscoverer {
@@ -61,7 +63,7 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         // Ensure that we have been given correct parameters
         if (types == null || types.isEmpty() ||
                 (!entityType.toASCIIString().equals(MSM.Service.getURI()) && !entityType.toASCIIString().equals(MSM.Operation.getURI())) ||
-                (!relationship.toASCIIString().equals(MSM.hasInput.getURI()) && !entityType.toASCIIString().equals(MSM.hasOutput.getURI()))) {
+                (!relationship.toASCIIString().equals(MSM.hasInput.getURI()) && !entityType.toASCIIString().equals(MSM.hasOutput.getURI()) && !relationship.toASCIIString().equals(SAWSDL.modelReference.getURI()))) {
 
             return ImmutableMap.of();
         }
@@ -122,7 +124,7 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         // Ensure that we have been given correct parameters
         if (types == null || types.isEmpty() ||
                 (!entityType.toASCIIString().equals(MSM.Service.getURI()) && !entityType.toASCIIString().equals(MSM.Operation.getURI())) ||
-                (!relationship.toASCIIString().equals(MSM.hasInput.getURI()) && !entityType.toASCIIString().equals(MSM.hasOutput.getURI()))) {
+                (!relationship.toASCIIString().equals(MSM.hasInput.getURI()) && !entityType.toASCIIString().equals(MSM.hasOutput.getURI()) && !relationship.toASCIIString().equals(SAWSDL.modelReference.getURI()))) {
 
             return ImmutableMap.of();
         }
@@ -139,9 +141,14 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         // The column view is the one with all the possible matches since a class will always match itself
         Map<URI, Map<URI, MatchResult>> columnMap = expandedTypes.columnMap();
         for (URI type : columnMap.keySet()) {
-            Set<URI> entities = listEntitiesWithType(entityType, relationship, type);
+            Set<URI> entities = ImmutableSet.of();
+            if (relationship.toASCIIString().equals(SAWSDL.modelReference.getURI())) {
+                entities = listEntitesWithModelReference(entityType, type);
+            } else if (relationship.toASCIIString().equals(MSM.hasInput.getURI()) || relationship.toASCIIString().equals(MSM.hasOutput.getURI())) {
+                entities = listEntitiesWithType(entityType, relationship, type);
+            }
+
             for (URI entity : entities) {
-//                result.putAll(entity, columnMap.get(entity).values());
                 result.putAll(entity, columnMap.get(type).values());
             }
         }
@@ -149,6 +156,26 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         // Merge the results into a single map using Union
         return Maps.transformValues(result.asMap(), MatchResultsMerger.UNION);
 
+    }
+
+    /**
+     * Generic implementation for finding all the Services or Operations that have one specific model reference.
+     *
+     * @param entityType     the MSM URI of the type of entity we are looking for. Only supports Service and Operation.
+     * @param modelReference the model reference URI we are looking for.
+     * @returns a Set of URIs of matching services/operations. Note that this method makes no use of reasoning and therefore
+     * the match will always be exact in this case.
+     */
+
+    private Set<URI> listEntitesWithModelReference(URI entityType, URI modelReference) {
+        Set<URI> entities = ImmutableSet.of();
+        // Deal with services
+        if (entityType.toASCIIString().equals(MSM.Service.getURI())) {
+            entities = this.serviceManager.listServicesWithModelReference(modelReference);
+        } else if (entityType.toASCIIString().equals(MSM.Operation.getURI())) {
+            entities = this.serviceManager.listOperationsWithModelReference(modelReference);
+        }
+        return entities;
     }
 
     /**
@@ -243,7 +270,7 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      */
     @Override
     public Map<URI, MatchResult> findOperationsClassifiedByAll(Set<URI> modelReferences) {
-        return ImmutableMap.of();  // TODO: implement
+        return findAll(URI.create(MSM.Operation.getURI()), URI.create(SAWSDL.modelReference.getURI()), modelReferences);
     }
 
     /**
@@ -255,7 +282,7 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      */
     @Override
     public Map<URI, MatchResult> findOperationsClassifiedBySome(Set<URI> modelReferences) {
-        return ImmutableMap.of();  // TODO: implement
+        return findSome(URI.create(MSM.Operation.getURI()), URI.create(SAWSDL.modelReference.getURI()), modelReferences);
     }
 
     /**
@@ -327,7 +354,7 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      */
     @Override
     public Map<URI, MatchResult> findServicesClassifiedByAll(Set<URI> modelReferences) {
-        return ImmutableMap.of();  // TODO: implement
+        return findAll(URI.create(MSM.Service.getURI()), URI.create(SAWSDL.modelReference.getURI()), modelReferences);
     }
 
     /**
@@ -339,7 +366,7 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      */
     @Override
     public Map<URI, MatchResult> findServicesClassifiedBySome(Set<URI> modelReferences) {
-        return ImmutableMap.of();  // TODO: implement
+        return findSome(URI.create(MSM.Service.getURI()), URI.create(SAWSDL.modelReference.getURI()), modelReferences);
     }
 
     /**

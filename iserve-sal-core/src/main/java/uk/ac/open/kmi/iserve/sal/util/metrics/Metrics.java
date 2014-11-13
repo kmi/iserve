@@ -20,16 +20,17 @@ public class Metrics {
     private Map<String, AtomicInteger> counters;
     private static boolean disabled = false;
 
-    private Metrics(){
+    private Metrics() {
         counters = new HashMap<String, AtomicInteger>();
     }
 
     /**
      * Get the default Metrics instance.
+     *
      * @return Metrics instance.
      */
-    public static CounterMetrics get(){
-        if (disabled){
+    public static CounterMetrics get() {
+        if (disabled) {
             return LazySingleton.DUMMY_IMPL;
         }
         return LazySingleton.DEFAULT_IMPL;
@@ -38,14 +39,14 @@ public class Metrics {
     /**
      * Activate the metrics (if disabled).
      */
-    public static void enable(){
+    public static void enable() {
         disabled = false;
     }
 
     /**
      * Disable metrics.
      */
-    public static void disable(){
+    public static void disable() {
         disabled = true;
     }
 

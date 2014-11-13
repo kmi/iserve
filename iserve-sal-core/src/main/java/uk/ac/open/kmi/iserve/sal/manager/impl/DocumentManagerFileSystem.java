@@ -18,11 +18,16 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.eventbus.EventBus;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.SystemConfiguration;
+import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
+import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.sal.events.DocumentCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.DocumentDeletedEvent;
 import uk.ac.open.kmi.iserve.sal.events.DocumentsClearedEvent;
@@ -33,13 +38,13 @@ import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
 import uk.ac.open.kmi.msm4j.io.util.FileUtil;
 
-import javax.inject.Named;
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
+@Singleton
 public class DocumentManagerFileSystem extends IntegratedComponent implements DocumentManager {
 
     private static final Logger log = LoggerFactory.getLogger(DocumentManagerFileSystem.class);
@@ -49,21 +54,18 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
     // Keep the trailing slash
     private static final String DEFAULT_DOC_URL_PATH = "id/documents/";
 
-    private static final String DEFAULT_DOC_FOLDER_PATH = "/tmp/iserve-docs/";
-
     private URI documentsInternalPath;
     private URI documentsPublicUri;
 
     @Inject
     DocumentManagerFileSystem(EventBus eventBus,
-                              @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
-                              @Named(SystemConfiguration.DOC_FOLDER_PATH_PROP) String documentsFolderPath) throws SalException {
+                              @iServeProperty(ConfigurationProperty.ISERVE_URL) String iServeUri,
+                              @iServeProperty(ConfigurationProperty.DOCUMENTS_FOLDER) String documentsFolderPath) throws SalException {
 
         super(eventBus, iServeUri);
 
-        if (documentsFolderPath == null) {
-            documentsFolderPath = DEFAULT_DOC_FOLDER_PATH;
-        }
+        log.debug("Creating Document Manager. iServe URL - {}\n, Documents Folder - {}",
+                iServeUri, documentsFolderPath);
 
         this.documentsPublicUri = this.getIserveUri().resolve(DEFAULT_DOC_URL_PATH);
 
@@ -148,7 +150,7 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
         File documentsFolder = new File(this.getDocumentsInternalPath());
         File[] docsList = documentsFolder.listFiles();
         for (File doc : docsList) {
-            if (doc.isFile())
+            if (doc.isDirectory())
                 result.add(this.getDocumentPublicUri(doc));
         }
         return result.build();
@@ -164,14 +166,34 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
             return null;
         }
 
-        File file = new File(this.getDocumentInternalUri(documentUri));
-        InputStream result = null;
-        try {
-            result = new FileInputStream(file);
-        } catch (IOException e) {
-            throw new DocumentException(e);
+        File dir = new File(this.getDocumentInternalUri(documentUri));
+        for (File file : dir.listFiles()) {
+            if (file.getName().matches("^index\\..*")) {
+                InputStream result = null;
+                try {
+                    result = new FileInputStream(file);
+                } catch (IOException e) {
+                    throw new DocumentException(e);
+                }
+                return result;
+            }
         }
-        return result;
+        return null;
+    }
+
+    @Override
+    public String getDocumentMediaType(URI documentUri) throws DocumentException {
+        if (!documentExists(documentUri)) {
+            return null;
+        }
+
+        File dir = new File(this.getDocumentInternalUri(documentUri));
+        for (File file : dir.listFiles()) {
+            if (file.getName().matches("^index\\..*")) {
+                return getFileMediaTypeMap().get(file.getAbsolutePath());
+            }
+        }
+        return null;
     }
 
 //	/* (non-Javadoc)
@@ -194,20 +216,20 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
 //		return result;
 //	}
 
-    /* (non-Javadoc)
-     * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#createDocument(java.io.InputStream, java.lang.String )
-     */
     @Override
-    public URI createDocument(InputStream docContent, String fileExtension) throws DocumentException {
+    public URI createDocument(InputStream docContent, String fileExtension, String mediaType) throws DocumentException {
 
-        URI newDocUri = this.generateUniqueDocumentUri(fileExtension);
+        URI newDocUri = this.generateUniqueDocumentUri();
         try {
             URI internalDocUri = this.getDocumentInternalUri(newDocUri);
-            File file = new File(internalDocUri);
+            File docDir = new File(internalDocUri);
+            FileUtil.createDirIfNotExists(docDir);
+            File file = new File(new StringBuilder(docDir.getAbsolutePath()).append("/index.").append(fileExtension).toString());
             FileOutputStream out = new FileOutputStream(file);
             FileUtil.createDirIfNotExists(file.getParentFile());
             int size = IOUtils.copy(docContent, out);
             log.info("Document internal URI - " + internalDocUri.toASCIIString() + " - " + size + " bytes.");
+            storeMediaType(file.getAbsolutePath(), mediaType);
         } catch (IOException e) {
             throw new DocumentException("Unable to add document to service.", e);
         }
@@ -218,26 +240,148 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
         return newDocUri;
     }
 
+    private synchronized void storeMediaType(String absolutePath, String mediaType) {
+        log.debug("Storing Media Type for file {}: {}", absolutePath, mediaType);
+        Map<String, String> fileMediatypeMap = getFileMediaTypeMap();
+        fileMediatypeMap.put(absolutePath, mediaType);
+        storeMediaTypeMap(fileMediatypeMap);
+    }
+
+    public Map<String, String> getFileMediaTypeMap() {
+        File mapFile = new File(URI.create(new StringBuilder(documentsInternalPath.toString()).append("/mediaTypeMap.json").toString()));
+        if (!mapFile.exists()) {
+            return new HashMap<String, String>();
+        } else {
+            try {
+                Gson gson = new GsonBuilder().create();
+                Type typeOfHashMap = new TypeToken<Map<String, String>>() {
+                }.getType();
+                return gson.fromJson(new FileReader(mapFile), typeOfHashMap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    private void storeMediaTypeMap(Map<String, String> fileMediatypeMap) {
+        try {
+            File mapFile = new File(URI.create(new StringBuilder(documentsInternalPath.toString()).append("/mediaTypeMap.json").toString()));
+            Gson gson = new GsonBuilder().create();
+            String json = gson.toJson(fileMediatypeMap);
+            FileOutputStream fos = new FileOutputStream(mapFile);
+            fos.write(json.getBytes());
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /* (non-Javadoc)
+         * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#createDocument(java.io.InputStream, java.lang.String )
+         */
+    @Override
+    public URI createDocument(URI docRemoteLocation, String fileExtension, String mediaType) throws DocumentException {
+
+        log.debug("Creating document from {} - File extension: {}", docRemoteLocation, fileExtension);
+        URI newDocUri = this.generateUniqueDocumentUri();
+        try {
+            URI internalDocUri = this.getDocumentInternalUri(newDocUri);
+            File docDir = new File(internalDocUri);
+            FileUtil.createDirIfNotExists(docDir);
+            File file = new File(new StringBuilder(docDir.getAbsolutePath()).append("/index.").append(fileExtension).toString());
+            FileOutputStream out = new FileOutputStream(file);
+            FileUtil.createDirIfNotExists(file.getParentFile());
+            int size = IOUtils.copy(docRemoteLocation.toURL().openStream(), out);
+            log.info("Document internal URI - " + internalDocUri.toASCIIString() + " - " + size + " bytes.");
+            storeMediaType(file.getAbsolutePath(), mediaType);
+            if (fileExtension.equals("json")) {
+                storeSwaggerApiDeclarations(file, docDir.getAbsolutePath(), docRemoteLocation, mediaType);
+            }
+        } catch (IOException e) {
+            throw new DocumentException("Unable to add document to service.", e);
+        }
+
+        // Generate Event
+        this.getEventBus().post(new DocumentCreatedEvent(new Date(), newDocUri));
+
+        return newDocUri;
+    }
+
+    private void storeSwaggerApiDeclarations(File rootDoc, String absolutePath, URI docRemoteLocation, String mediaType) {
+        try {
+            JsonElement jelement = new JsonParser().parse(new InputStreamReader(new FileInputStream(rootDoc)));
+            JsonObject root = jelement.getAsJsonObject();
+            JsonArray apis = root.getAsJsonArray("apis");
+            for (JsonElement api : apis) {
+                JsonObject apiDeclaration = api.getAsJsonObject();
+                String path = apiDeclaration.get("path").toString().replaceAll("\"", "");
+                String[] dirs = path.split("/");
+                String parentPath = absolutePath;
+                for (String dir : dirs) {
+                    if (!dir.equals("")) {
+                        try {
+                            File localDir = new File(new StringBuilder(parentPath).append("/").append(dir).toString());
+                            FileUtil.createDirIfNotExists(localDir);
+                            parentPath = localDir.getAbsolutePath();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                File file = new File(new StringBuilder(parentPath).append("/index.json").toString());
+                try {
+                    URI apiDeclarationLocation = new URI(new StringBuilder(docRemoteLocation.toString()).append(path).toString());
+                    FileOutputStream out = new FileOutputStream(file);
+                    int size = IOUtils.copy(apiDeclarationLocation.toURL().openStream(), out);
+                    log.info("Document internal URI - " + file.getAbsolutePath() + " - " + size + " bytes.");
+                    storeMediaType(file.getAbsolutePath(), mediaType);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     /* (non-Javadoc)
      * @see uk.ac.open.kmi.iserve.sal.manager.DocumentManager#deleteDocument(java.net.URI)
      */
     @Override
     public boolean deleteDocument(URI documentUri) throws DocumentException {
         // delete from hard disk
-        boolean result = false;
         URI fileUri = this.getDocumentInternalUri(documentUri);
         File file = new File(fileUri);
         if (file.exists()) {
-            result = file.delete();
-            if (result) {
+            try {
+                FileUtils.deleteDirectory(file);
                 log.info("File deleted: " + file.getName());
+                //delete entry in mediatype map
+                Map<String, String> mediaTypeMap = getFileMediaTypeMap();
+                Set<String> filePaths = new HashSet<String>(mediaTypeMap.keySet());
+                for (String filePath : filePaths) {
+                    if (filePath.matches(new StringBuilder(file.getAbsolutePath()).append(".*").toString())) {
+                        mediaTypeMap.remove(filePath);
+                    }
+                }
+                storeMediaTypeMap(mediaTypeMap);
                 // Generate Event
                 this.getEventBus().post(new DocumentDeletedEvent(new Date(), documentUri));
-            } else {
+                return true;
+            } catch (IOException e) {
                 log.warn("File does not exist. Unable to delete it: " + file.getAbsolutePath());
+                e.printStackTrace();
+
             }
+
         }
-        return result;
+        return false;
     }
 
     /**
@@ -245,15 +389,21 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
      *
      * @return
      * @throws uk.ac.open.kmi.iserve.sal.exception.DocumentException
-     *
      */
     @Override
     public boolean clearDocuments() throws DocumentException {
+        File mapFile = new File(URI.create(new StringBuilder(documentsInternalPath.toString()).append("/mediaTypeMap.json").toString()));
+        mapFile.delete();
         File internalFolder = new File(this.getDocumentsInternalPath());
         File[] files = internalFolder.listFiles();
         for (File file : files) {
-            file.delete();
-            log.info("File deleted: " + file.getAbsolutePath());
+            try {
+                FileUtils.deleteDirectory(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new DocumentException("Unable to delete " + file.getAbsolutePath());
+            }
+            log.info("File deleted: {}", file.getAbsolutePath());
         }
 
         // Generate Event
@@ -272,9 +422,9 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
         return file.exists();
     }
 
-    private URI generateUniqueDocumentUri(String fileExtension) {
+    private URI generateUniqueDocumentUri() {
         String uid = UriUtil.generateUniqueId();
-        return documentsPublicUri.resolve(uid + "." + fileExtension);
+        return documentsPublicUri.resolve(uid);
     }
 
     /**
@@ -285,4 +435,6 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
     public void shutdown() {
         return;
     }
+
+
 }

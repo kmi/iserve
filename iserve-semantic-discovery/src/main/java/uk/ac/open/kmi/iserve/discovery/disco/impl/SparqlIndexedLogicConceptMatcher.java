@@ -127,7 +127,7 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
      * @param minType the minimum MatchType we want to obtain
      * @param maxType the maximum MatchType we want to obtain
      * @return a Map containing indexed by the URI of the matching resource and containing the particular {@code MatchResult}. If no
-     *         result is found the Map should be empty not null.
+     * result is found the Map should be empty not null.
      */
     @Override
     public Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType) {

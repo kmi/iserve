@@ -1,0 +1,16 @@
+@prefix hr:    <http://iserve.kmi.open.ac.uk/ns/hrests#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix wl:    <http://www.wsmo.org/ns/wsmo-lite#> .
+@prefix sawsdl: <http://www.w3.org/ns/sawsdl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix msm:   <http://iserve.kmi.open.ac.uk/ns/msm#> .
+@prefix msm-wsdl: <http://iserve.kmi.open.ac.uk/ns/msm-wsdl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://google-o3d>  a     msm:Service ;
+        rdfs:comment       "O3D is a new, shader-based, low-level graphics API for creating interactive 3D applications in a web browser. O3D runs on multiple operating systems and browsers, performs well in JavaScript, and offers the capabilities developers need to create a diverse set of rich applications. O3D has an open-source JavaScript API for creating interactive 3D graphics applications that run in a browser windowï¿½games, ads, 3D model viewers, product demos, and virtual worlds." ;
+        rdfs:label         "Google O3D" ;
+        rdfs:seeAlso       <http://www.programmableweb.com/api/google-o3d> ;
+        dcterms:created    "2014-06-12"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        dcterms:publisher  <http://www.google.com> .

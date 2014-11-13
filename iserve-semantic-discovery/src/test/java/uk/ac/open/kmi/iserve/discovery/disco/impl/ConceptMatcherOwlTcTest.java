@@ -28,7 +28,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
@@ -62,21 +61,21 @@ public class ConceptMatcherOwlTcTest {
 
     private static final Logger log = LoggerFactory.getLogger(ConceptMatcherOwlTcTest.class);
 
-    private static final String OWLS_TC_SERVICES = "/OWLS-TC3-MSM";
+    private static final String OWLS_TC_MSM = "/services/OWLS-1.1-MSM";
 
     private static final String OWL_THING = "http://www.w3.org/2002/07/owl#Thing";
     private static final String OWL_NOTHING = "http://www.w3.org/2002/07/owl#Nothing";
 
-    private static final String SUMO_ABSTRACT = "http://127.0.0.1/ontology/SUMO.owl#Abstract";
-    private static final String SUMO_PHYSICAL_QUANTITY = "http://127.0.0.1/ontology/SUMO.owl#PhysicalQuantity";
-    private static final String SUMO_CURRENCY_MEASURE = "http://127.0.0.1/ontology/SUMO.owl#CurrencyMeasure";
-    private static final String SUMO_QUANTITY = "http://127.0.0.1/ontology/SUMO.owl#Quantity";
-    private static final String SUMO_CONSTANT_QUANTITY = "http://127.0.0.1/ontology/SUMO.owl#ConstantQuantity";
-    private static final String SUMO_EURO_DOLLAR = "http://127.0.0.1/ontology/SUMO.owl#EuroDollar";
+    private static final String SUMO_ABSTRACT = "http://127.0.0.1:8000/ontology/SUMO.owl#Abstract";
+    private static final String SUMO_PHYSICAL_QUANTITY = "http://127.0.0.1:8000/ontology/SUMO.owl#PhysicalQuantity";
+    private static final String SUMO_CURRENCY_MEASURE = "http://127.0.0.1:8000/ontology/SUMO.owl#CurrencyMeasure";
+    private static final String SUMO_QUANTITY = "http://127.0.0.1:8000/ontology/SUMO.owl#Quantity";
+    private static final String SUMO_CONSTANT_QUANTITY = "http://127.0.0.1:8000/ontology/SUMO.owl#ConstantQuantity";
+    private static final String SUMO_EURO_DOLLAR = "http://127.0.0.1:8000/ontology/SUMO.owl#EuroDollar";
 
-    private static final String SUMO_THERAPEUTIC_PROCESS = "http://127.0.0.1/ontology/SUMO.owl#TherapeuticProcess";
-    private static final String SUMO_INTENTIONAL_PROCESS = "http://127.0.0.1/ontology/SUMO.owl#IntentionalProcess";
-    private static final String SUMO_ENTITY = "http://127.0.0.1/ontology/SUMO.owl#Entity";
+    private static final String SUMO_THERAPEUTIC_PROCESS = "http://127.0.0.1:8000/ontology/SUMO.owl#TherapeuticProcess";
+    private static final String SUMO_INTENTIONAL_PROCESS = "http://127.0.0.1:8000/ontology/SUMO.owl#IntentionalProcess";
+    private static final String SUMO_ENTITY = "http://127.0.0.1:8000/ontology/SUMO.owl#Entity";
 
     @Inject
     private ConceptMatcher conceptMatcher;
@@ -87,8 +86,6 @@ public class ConceptMatcherOwlTcTest {
     public static class InnerModule extends JukitoModule {
         @Override
         protected void configureTest() {
-            // Get configuration
-            install(new ConfigurationModule());
             // Get the Registry Management
             install(new RegistryManagementModule());
 
@@ -102,7 +99,7 @@ public class ConceptMatcherOwlTcTest {
 
     @BeforeClass
     public static void setupTests() throws Exception {
-        Injector injector = Guice.createInjector(new ConfigurationModule(), new RegistryManagementModule());
+        Injector injector = Guice.createInjector(new RegistryManagementModule());
         RegistryManager registryManager = injector.getInstance(RegistryManager.class);
         registryManager.clearRegistry();
         uploadOwlsTc(registryManager);
@@ -111,7 +108,7 @@ public class ConceptMatcherOwlTcTest {
     private static void uploadOwlsTc(RegistryManager registryManager) throws URISyntaxException,
             FileNotFoundException, SalException {
         // Obtain service documents
-        URI testFolder = ConceptMatcherOwlTcTest.class.getResource(OWLS_TC_SERVICES).toURI();
+        URI testFolder = ConceptMatcherOwlTcTest.class.getResource(OWLS_TC_MSM).toURI();
         FilenameFilter ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
         File dir = new File(testFolder);
         File[] msmTtlTcFiles = dir.listFiles(ttlFilter);
@@ -229,7 +226,7 @@ public class ConceptMatcherOwlTcTest {
         matches = conceptMatcher.listMatchesAtLeastOfType(URI.create(SUMO_EURO_DOLLAR), LogicConceptMatchType.Plugin);
         stopwatch.stop();
 
-        log.info("Obtained ({}) At least Plugin matches - {} - in {} \n", matches.size(), matches, stopwatch);
+        log.info("Obtained ({}) At least Exact matches - {} - in {} \n", matches.size(), matches, stopwatch);
         Assert.assertTrue(matches.size() == 6 || matches.size() == 7);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
@@ -241,6 +238,7 @@ public class ConceptMatcherOwlTcTest {
         if (matches.size() == 7) {
             Assert.assertTrue(matches.containsKey(URI.create(OWL_THING)));
         }
+
         stopwatch.reset();
 
         // Obtain at least subsumes
@@ -248,7 +246,7 @@ public class ConceptMatcherOwlTcTest {
         matches = conceptMatcher.listMatchesAtLeastOfType(URI.create(SUMO_EURO_DOLLAR), LogicConceptMatchType.Subsume);
         stopwatch.stop();
 
-        log.info("Obtained ({}) At least Subsumes matches - {] - in {} \n", matches.size(), matches, stopwatch);
+        log.info("Obtained ({}) At least Plugin matches - {} - in {} \n", matches.size(), matches, stopwatch);
         Assert.assertTrue(matches.size() == 6 || matches.size() == 8);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
@@ -256,9 +254,8 @@ public class ConceptMatcherOwlTcTest {
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CONSTANT_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_EURO_DOLLAR)));
-        // Depending on the reasoning use there should also be "http://www.w3.org/2002/07/owl#Thing" and
-        // owl:Nothing
-        if (matches.size() == 8) {
+        // Depending on the reasoning use there should also be "http://www.w3.org/2002/07/owl#Thing" and Nothing
+        if (matches.size() == 7) {
             Assert.assertTrue(matches.containsKey(URI.create(OWL_THING)));
             Assert.assertTrue(matches.containsKey(URI.create(OWL_NOTHING)));
         }
@@ -310,7 +307,7 @@ public class ConceptMatcherOwlTcTest {
         }
         stopwatch.reset();
 
-        // Obtain at least plugin
+        // Obtain at most plugin
         stopwatch.start();
         matches = conceptMatcher.listMatchesAtMostOfType(URI.create(SUMO_EURO_DOLLAR), LogicConceptMatchType.Plugin);
         stopwatch.stop();
@@ -330,15 +327,14 @@ public class ConceptMatcherOwlTcTest {
         }
         stopwatch.reset();
 
-        // Obtain at least subsumes
+        // Obtain at most subsumes
         stopwatch.start();
         matches = conceptMatcher.listMatchesAtMostOfType(URI.create(SUMO_EURO_DOLLAR), LogicConceptMatchType.Subsume);
         stopwatch.stop();
 
-        log.info("Obtained ({}) At most Subsumes matches - {} - in {} \n", matches.size(), matches, stopwatch);
+        log.info("Obtained ({}) At most Subsume matches - {} - in {} \n", matches.size(), matches, stopwatch);
         Assert.assertTrue(matches.size() == 0 || matches.size() == 1);
-
-        // Depending on the reasoning use there should be owl:Nothing
+        // Depending on the reasoning use there could be owl:Nothing
         if (matches.size() == 1) {
             Assert.assertTrue(matches.containsKey(URI.create(OWL_NOTHING)));
         }
@@ -350,7 +346,7 @@ public class ConceptMatcherOwlTcTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) At most Fail matches - {} - in {} \n", matches.size(), matches, stopwatch);
-        Assert.assertEquals(0, matches.size());
+        Assert.assertTrue(matches.size() == 0);
         stopwatch.reset();
     }
 
@@ -402,8 +398,7 @@ public class ConceptMatcherOwlTcTest {
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CONSTANT_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_EURO_DOLLAR)));
-        // Depending on the reasoning use there should also be "http://www.w3.org/2002/07/owl#Thing" and
-        // owl:Nothing
+        // Depending on the reasoning use there should also be "http://www.w3.org/2002/07/owl#Thing"
         if (matches.size() == 7) {
             Assert.assertTrue(matches.containsKey(URI.create(OWL_THING)));
         }
@@ -416,7 +411,7 @@ public class ConceptMatcherOwlTcTest {
 
         log.info("Obtained ({}) Subsumes >= matches >= Plugin - {} - in {} \n", matches.size(),
                 matches, stopwatch);
-        Assert.assertTrue(matches.size() == 5 || matches.size() == 7);
+        Assert.assertTrue(matches.size() == 5 || matches.size() == 6);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
@@ -424,9 +419,8 @@ public class ConceptMatcherOwlTcTest {
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CONSTANT_QUANTITY)));
         // Depending on the reasoning use there should also be "http://www.w3.org/2002/07/owl#Thing" and
         // owl:Nothing
-        if (matches.size() == 7) {
+        if (matches.size() == 6) {
             Assert.assertTrue(matches.containsKey(URI.create(OWL_THING)));
-            Assert.assertTrue(matches.containsKey(URI.create(OWL_NOTHING)));
         }
         stopwatch.reset();
 

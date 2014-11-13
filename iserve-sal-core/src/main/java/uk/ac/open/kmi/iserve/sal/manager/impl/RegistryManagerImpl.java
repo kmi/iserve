@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013. Knowledge Media Institute - The Open University
+ * Copyright (c) 2014. Knowledge Media Institute - The Open University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,17 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.eventbus.EventBus;
+import com.google.inject.Singleton;
 import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.SystemConfiguration;
+import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
+import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.*;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
+import uk.ac.open.kmi.msm4j.Operation;
 import uk.ac.open.kmi.msm4j.Service;
 import uk.ac.open.kmi.msm4j.io.MediaType;
 import uk.ac.open.kmi.msm4j.io.ServiceReader;
@@ -36,12 +39,11 @@ import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
 import uk.ac.open.kmi.msm4j.io.util.FilenameFilterBySyntax;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -53,6 +55,7 @@ import java.util.Set;
  *
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
+@Singleton
 public class RegistryManagerImpl extends IntegratedComponent implements RegistryManager {
 
     private static final Logger log = LoggerFactory.getLogger(RegistryManagerImpl.class);
@@ -64,17 +67,19 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
 
     @Inject
     private RegistryManagerImpl(EventBus eventBus,
-                                @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
+                                @iServeProperty(ConfigurationProperty.ISERVE_URL) String iServeUri,
                                 DocumentManager docManager,
                                 ServiceManager serviceManager,
                                 KnowledgeBaseManager kbManager,
-                                ServiceTransformationEngine serviceTransformationEngine) throws ConfigurationException, SalException {
+                                ServiceTransformationEngine serviceTransformationEngine
+    ) throws ConfigurationException, SalException {
 
         super(eventBus, iServeUri);
         this.docManager = docManager;
         this.serviceManager = serviceManager;
         this.kbManager = kbManager;
         this.serviceTransformationEngine = serviceTransformationEngine;
+
     }
 
     /**
@@ -183,7 +188,7 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
      *
      * @param mediaType the media type for which to obtain the file extension
      * @return the filename filter or null if it is not supported. Callers are advised to check
-     *         first that the media type is supported {@see canTransform} .
+     * first that the media type is supported {@see canTransform} .
      */
     @Override
     public FilenameFilter getFilenameFilter(String mediaType) {
@@ -229,7 +234,7 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
         InputStream localStream = null;
         try {
             // 1st Store the document
-            sourceDocUri = this.docManager.createDocument(servicesContentStream, fileExtension);
+            sourceDocUri = this.docManager.createDocument(servicesContentStream, fileExtension, mediaType);
             if (sourceDocUri == null) {
                 throw new ServiceException("Unable to save service document. Operation aborted.");
             }
@@ -277,6 +282,119 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
         }
 
         return importedServices;
+    }
+
+    @Override
+    public List<URI> importServices(URI servicesContentLocation, String mediaType) throws SalException {
+        boolean isNativeFormat = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.containsKey(mediaType);
+        // Throw error if Format Unsupported
+        if (!isNativeFormat && !this.serviceTransformationEngine.canTransform(mediaType)) {
+            log.error("The media type {} is not natively supported and has no suitable transformer.", mediaType);
+            throw new ServiceException("Unable to import service. Format unsupported.");
+        }
+
+        // Obtain the file extension to use
+        String fileExtension = findFileExtensionToUse(mediaType, isNativeFormat);
+
+        List<Service> services = null;
+        List<URI> importedServices = new ArrayList<URI>();
+        URI sourceDocUri = null;
+        InputStream localStream = null;
+        try {
+            // 1st Store the document
+            sourceDocUri = this.docManager.createDocument(servicesContentLocation, fileExtension, mediaType);
+            if (sourceDocUri == null) {
+                throw new ServiceException("Unable to save service document. Operation aborted.");
+            }
+
+            // 2nd Parse and Transform the document
+            // The original stream may be a one-of stream so save it first and read locally
+            services = getServicesFromRemoteLocation(mediaType, isNativeFormat, servicesContentLocation);
+
+            // 3rd - Store the resulting MSM services. There may be more than one
+            URI serviceUri = null;
+            if (services != null && !services.isEmpty()) {
+                log.info("Importing {} services", services.size());
+                for (Service service : services) {
+                    // The service is being imported -> update the source
+                    URI originalSource = service.getSource();
+                    service.setSource(sourceDocUri);
+                    for (Operation op : service.getOperations()) {
+                        if (op.getSource().equals(originalSource)) {
+                            op.setSource(sourceDocUri);
+                        }
+                        if (op.getSource().toASCIIString().contains(originalSource.toASCIIString())) {
+                            String subPath = op.getSource().toASCIIString().replace(originalSource.toASCIIString(), "");
+                            try {
+                                op.setSource(new URI(new StringBuilder(sourceDocUri.toASCIIString()).append(subPath).toString()));
+                            } catch (URISyntaxException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    serviceUri = this.serviceManager.addService(service);
+                    if (serviceUri != null) {
+                        importedServices.add(serviceUri);
+                    }
+                }
+            }
+
+            // 4th Log it was all done correctly
+            // TODO: log to the system and notify observers
+            log.info("Source document imported: {}", sourceDocUri.toASCIIString());
+
+        } finally {
+            // Rollback if something went wrong
+            if ((services == null || (services != null && services.size() != importedServices.size()))
+                    && sourceDocUri != null) {
+                this.docManager.deleteDocument(sourceDocUri);
+                for (URI svcUri : importedServices) {
+                    this.serviceManager.deleteService(svcUri);
+                }
+                log.warn("There were problems importing the service. Changes undone.");
+            }
+
+            if (localStream != null)
+                try {
+                    localStream.close();
+                } catch (IOException e) {
+                    log.error("Error closing the service content stream", e);
+                }
+        }
+
+        return importedServices;
+    }
+
+    private List<Service> getServicesFromRemoteLocation(String mediaType, boolean nativeFormat, URI servicesContentLocation) throws ServiceException {
+        if (servicesContentLocation == null)
+            throw new ServiceException("Unable to parse the saved document. Operation aborted.");
+
+        List<Service> services = null;
+        if (nativeFormat) {
+            // Parse it directly
+            ServiceReader reader = new ServiceReaderImpl();
+            Syntax syntax = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.get(mediaType);
+            try {
+                services = reader.parse(servicesContentLocation.toURL().openStream(), null, syntax);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new ServiceException("Unable to retrieve the document");
+            }
+        } else {
+            // Its an external format: use the appropriate importer
+            // We should have a suitable importer
+            try {
+                services = this.serviceTransformationEngine.transform(servicesContentLocation.toURL().openStream(), servicesContentLocation.toASCIIString(), mediaType);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new ServiceException("Unable to retrieve the document");
+            } catch (TransformationException e) {
+                throw new ServiceException("Errors transforming the service", e);
+            }
+        }
+        log.debug("Services parsed:", services);
+        return services;
     }
 
     private List<Service> getServicesFromStream(String mediaType, boolean nativeFormat, InputStream localStream) throws ServiceException {
@@ -358,35 +476,60 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
 
         List<URI> registeredServices = new ArrayList<URI>();
 
-        try {
-            log.debug("Registering services from document: {}", sourceDocumentUri.toASCIIString());
-            // 1st Obtain the document and parse/transform it
-            InputStream is = sourceDocumentUri.toURL().openStream();
-            List<Service> services = getServicesFromStream(mediaType, isNativeFormat, is);
+        log.debug("Registering services from document: {}", sourceDocumentUri.toASCIIString());
+        // 1st Obtain the document and parse/transform it
+        List<Service> services = getServicesFromRemoteLocation(mediaType, isNativeFormat, sourceDocumentUri);
 
-            if (services != null && !services.isEmpty()) {
-                log.debug("Services found: {}. Registering ...", services.size());
-                URI serviceUri;
-                for (Service service : services) {
-                    // 2nd Add the service
-                    serviceUri = this.serviceManager.addService(service);
-                    if (serviceUri != null) {
-                        registeredServices.add(serviceUri);
-                    }
+        if (services != null && !services.isEmpty()) {
+            log.debug("Services found: {}. Registering ...", services.size());
+            URI serviceUri;
+            for (Service service : services) {
+                // 2nd Add the service
+                serviceUri = this.serviceManager.addService(service);
+                if (serviceUri != null) {
+                    registeredServices.add(serviceUri);
                 }
             }
+        }
 
-            if (registeredServices.size() != services.size()) {
-                log.warn("Found {} services in document {} but only imported {} services", services.size(),
-                        sourceDocumentUri, registeredServices.size());
+        if (registeredServices.size() != services.size()) {
+            log.warn("Found {} services in document {} but only imported {} services", services.size(),
+                    sourceDocumentUri, registeredServices.size());
+        }
+
+        return registeredServices;
+    }
+
+    @Override
+    public List<URI> registerServices(InputStream is, String mediaType) throws SalException {
+        boolean isNativeFormat = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.containsKey(mediaType);
+        // Throw error if Format Unsupported
+        if (!isNativeFormat && !this.serviceTransformationEngine.canTransform(mediaType)) {
+            log.error("The media type {} is not natively supported and has no suitable transformer.", mediaType);
+            throw new ServiceException("Unable to import service. Format unsupported.");
+        }
+
+        List<URI> registeredServices = new ArrayList<URI>();
+
+        log.debug("Registering services from document");
+        // 1st Obtain the document and parse/transform it
+        List<Service> services = getServicesFromStream(mediaType, isNativeFormat, is);
+
+        if (services != null && !services.isEmpty()) {
+            log.debug("Services found: {}. Registering ...", services.size());
+            URI serviceUri;
+            for (Service service : services) {
+                // 2nd Add the service
+                serviceUri = this.serviceManager.addService(service);
+                if (serviceUri != null) {
+                    registeredServices.add(serviceUri);
+                }
             }
+        }
 
-        } catch (MalformedURLException e) {
-            log.error("Error obtaining the source document. Incorrect URL. " + sourceDocumentUri.toString());
-            throw new ServiceException("Unable to register service. Incorrect source document URL.", e);
-        } catch (IOException e) {
-            log.error("Error obtaining the source document.");
-            throw new ServiceException("Unable to register service. Unable to retrieve source document.", e);
+        if (registeredServices.size() != services.size()) {
+            log.warn("Found {} services in the document but only imported {} services", services.size(),
+                    registeredServices.size());
         }
 
         return registeredServices;

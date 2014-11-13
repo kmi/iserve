@@ -54,8 +54,8 @@ public class DocumentManagerTest {
     // Limit the number of documents to upload to the registry
     private static final int MAX_DOCS = 25;
 
-    private static final String OWLS_TC3_MSM = "/OWLS-TC3-MSM";
-    private static final String OWLS_TC4_PDDL = "/OWLS-TC4_PDDL/htdocs/services/1.1";
+    private static final String OWLS_TC4_MSM = "/services/OWLS-1.1-MSM";
+    private static final String OWLS_TC4_PDDL = "/services/OWLS-1.1";
     private static final Syntax SYNTAX = Syntax.TTL;
     private static final String OWLS_MEDIATYPE = "application/owl+xml";
 
@@ -66,29 +66,9 @@ public class DocumentManagerTest {
     private File[] msmTtlTcFiles;
     private File[] owlsTcFiles;
 
-    /**
-     * JukitoModule.
-     */
-    public static class InnerModule extends JukitoModule {
-        @Override
-        protected void configureTest() {
-            // Get configuration
-            install(new ConfigurationModule());
-
-            // Add transformer module
-            install(new TransformerModule());
-
-            // bind
-            bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
-
-            // Necessary to verify interaction with the real object
-            bindSpy(DocumentManagerFileSystem.class);
-        }
-    }
-
     @Before
     public void setUp(ServiceTransformationEngine transformationEngine) throws Exception {
-        URI msmTestFolder = DocumentManagerTest.class.getResource(OWLS_TC3_MSM).toURI();
+        URI msmTestFolder = DocumentManagerTest.class.getResource(OWLS_TC4_MSM).toURI();
         ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
         File dir = new File(msmTestFolder);
         msmTtlTcFiles = dir.listFiles(ttlFilter);
@@ -121,7 +101,7 @@ public class DocumentManagerTest {
             in = new FileInputStream(msmTtlTcFiles[i]);
             log.info("Adding document: {}", msmTtlTcFiles[i].getName());
             String fileExt = MediaType.NATIVE_MEDIATYPE_SYNTAX_MAP.get(MediaType.TEXT_TURTLE.getMediaType()).getExtension();
-            docUri = documentManager.createDocument(in, fileExt);
+            docUri = documentManager.createDocument(in, fileExt, MediaType.TEXT_TURTLE.getMediaType());
             Assert.assertNotNull(docUri);
             log.info("Service added: {}", docUri.toASCIIString());
             count++;
@@ -193,6 +173,26 @@ public class DocumentManagerTest {
             is = documentManager.getDocument(docUri);
             Assert.assertNotNull(is);
             index += delta;
+        }
+    }
+
+    /**
+     * JukitoModule.
+     */
+    public static class InnerModule extends JukitoModule {
+        @Override
+        protected void configureTest() {
+            // Get configuration
+            install(new ConfigurationModule());
+
+            // Add transformer module
+            install(new TransformerModule());
+
+            // bind
+            bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
+
+            // Necessary to verify interaction with the real object
+            bindSpy(DocumentManagerFileSystem.class);
         }
     }
 

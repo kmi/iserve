@@ -20,7 +20,6 @@ import com.google.inject.Injector;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
@@ -170,23 +169,11 @@ public class iServeImporter {
         }
 
         // Initialise the injector
-        Injector injector = null;
+        Injector injector;
         if (configFileName != null) {
-            File configFile = new File(configFileName);
-            if (!configFile.exists()) {
-                log.warn("Configuration file - {} - not found. Attempting to use default configuration " +
-                        "file.");
-                injector = Guice.createInjector(new ConfigurationModule(),
-                        new RegistryManagementModule());
-            } else {
-                injector = Guice.createInjector(new ConfigurationModule(configFileName),
-                        new RegistryManagementModule());
-            }
+            injector = Guice.createInjector(new RegistryManagementModule(configFileName));
         } else {
-            formatter.printHelp(80, "java " + iServeImporter.class.getCanonicalName(), "Options:", options,
-                    "Configuration file not found", true);
-            System.out.println(configFileName);
-            System.exit(-2);
+            injector = Guice.createInjector(new RegistryManagementModule());
         }
 
         iServeImporter importer = injector.getInstance(iServeImporter.class);

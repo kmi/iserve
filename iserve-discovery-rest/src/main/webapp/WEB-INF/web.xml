@@ -15,9 +15,19 @@
   ~ limitations under the License.
   -->
 
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+    <filter>
+        <filter-name>Discovery Filter</filter-name>
+        <filter-class>uk.ac.open.kmi.iserve.discovery.engine.rest.DiscoveryFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>Discovery Filter</filter-name>
+        <url-pattern>/discovery/*</url-pattern>
+    </filter-mapping>
+
 
     <servlet>
         <servlet-name>Discovery Endpoint</servlet-name>

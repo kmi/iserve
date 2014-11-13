@@ -34,9 +34,7 @@ public class Main extends GuiceServletContextListener {
     @Override
     protected Injector getInjector() {
         System.out.println("Getting injector");
-
         injector = Guice.createInjector(new DiscoveryRestModule());
         return injector;
-
     }
 }

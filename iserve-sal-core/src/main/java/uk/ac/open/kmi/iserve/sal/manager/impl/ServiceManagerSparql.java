@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -31,7 +32,8 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.SystemConfiguration;
+import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
+import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.sal.events.ServiceCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServiceDeletedEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServicesClearedEvent;
@@ -49,13 +51,13 @@ import uk.ac.open.kmi.msm4j.io.util.URIUtil;
 import uk.ac.open.kmi.msm4j.vocabulary.MSM;
 import uk.ac.open.kmi.msm4j.vocabulary.SAWSDL;
 
-import javax.inject.Named;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+@Singleton
 public class ServiceManagerSparql extends IntegratedComponent implements ServiceManager {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceManagerSparql.class);
@@ -70,6 +72,7 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
     private static final URI MSM_URI = URI.create("http://iserve.kmi.open.ac.uk/ns/msm");
     private static final URI HRESTS_URI = URI.create("http://iserve.kmi.open.ac.uk/ns/hrests");
     private static final URI MSM_WSDL_URI = URI.create("http://iserve.kmi.open.ac.uk/ns/msm-wsdl");
+    private static final URI MSM_SWAGGER_URI = URI.create("http://iserve.kmi.open.ac.uk/ns/msm-swagger");
     private static final URI SAWSDL_URI = URI.create("http://www.w3.org/ns/sawsdl");
     private static final URI HTTP_VOCAB_URI = URI.create("http://www.w3.org/2011/http");
     private static final URI HTTP_METHODS_URI = URI.create("http://www.w3.org/2011/http-methods");
@@ -87,13 +90,16 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
     @Inject
     ServiceManagerSparql(EventBus eventBus,
                          SparqlGraphStoreFactory graphStoreFactory,
-                         @Named(SystemConfiguration.ISERVE_URL_PROP) String iServeUri,
-                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_PROP) String sparqlQueryEndpoint,
-                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_UPDATE_PROP) String sparqlUpdateEndpoint,
-                         @Named(SystemConfiguration.SERVICES_REPOSITORY_SPARQL_SERVICE_PROP) String sparqlServiceEndpoint) throws SalException {
+                         @iServeProperty(ConfigurationProperty.ISERVE_URL) String iServeUri,
+                         @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_QUERY) String sparqlQueryEndpoint,
+                         @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_UPDATE) String sparqlUpdateEndpoint,
+                         @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_SERVICE) String sparqlServiceEndpoint) throws SalException {
 
         super(eventBus, iServeUri);
         this.servicesUri = this.getIserveUri().resolve(SERVICES_URL_PATH);
+
+        log.debug("Creating Service Manager SPARQL. Services URL Path - {}\n SPARQL Query - {}\n, SPARQL Update - {}\n, SPARQL Service - {}",
+                servicesUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
 
         // Configuration of base models to be loaded
         Set<URI> defaultModelsToLoad = ImmutableSet.of(WSMO_LITE_URI, MSM_URI, HRESTS_URI, MSM_WSDL_URI, HTTP_VOCAB_URI, HTTP_METHODS_URI);
@@ -102,8 +108,9 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
         ImmutableMap.Builder<String, String> mappingsBuilder = ImmutableMap.builder();
         mappingsBuilder.put(FOAF_0_1_URI.toASCIIString(), this.getClass().getResource("/foaf-2010-08-09.rdf").toString());
         mappingsBuilder.put(HRESTS_URI.toASCIIString(), this.getClass().getResource("/hrests-2013-10-03.ttl").toString());
-        mappingsBuilder.put(MSM_URI.toASCIIString(), this.getClass().getResource("/msm-2013-05-03.ttl").toString());
-        mappingsBuilder.put(MSM_WSDL_URI.toASCIIString(), this.getClass().getResource("/msm-wsdl-2013-05-30.ttl").toString());
+        mappingsBuilder.put(MSM_URI.toASCIIString(), this.getClass().getResource("/msm-2014-09-03.ttl").toString());
+        mappingsBuilder.put(MSM_WSDL_URI.toASCIIString(), this.getClass().getResource("/msm-wsdl-2014-09-03.ttl").toString());
+        mappingsBuilder.put(MSM_SWAGGER_URI.toASCIIString(), this.getClass().getResource("/msm-swagger-2014-09-03.ttl").toString());
         mappingsBuilder.put(SAWSDL_URI.toASCIIString(), this.getClass().getResource("/sawsdl-2007-08-28.ttl").toString());
         mappingsBuilder.put(WSMO_LITE_URI.toASCIIString(), this.getClass().getResource("/wsmo-lite-2013-05-03.ttl").toString());
         mappingsBuilder.put(HTTP_VOCAB_URI.toASCIIString(), this.getClass().getResource("/http-2011-04-29.ttl").toString());
@@ -361,7 +368,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      * @param serviceUri the URI of the service to obtain
      * @return the service description if it exists or null otherwise
      * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
      */
     @Override
     public Service getService(URI serviceUri) throws ServiceException {
@@ -394,7 +400,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      * @param serviceUris the URIs of the service to obtain
      * @return the list of all services that could be obtained. If none could be obtained the list will be empty.
      * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
      */
     @Override
     public Set<Service> getServices(Set<URI> serviceUris) throws ServiceException {
@@ -415,7 +420,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      * @param serviceUri the service URI
      * @return the List of the URIs of all the documents related to the service
      * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
      */
     @Override
     public Set<URI> listDocumentsForService(URI serviceUri) throws ServiceException {
@@ -431,7 +435,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      * @param service the input service description in terms of MSM
      * @return the URI this service description was saved to
      * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
      */
     @Override
     public URI addService(Service service) throws ServiceException {
@@ -473,7 +476,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      * @param relatedDocument the related document URI
      * @return True if successful or False otherwise
      * @throws uk.ac.open.kmi.iserve.sal.exception.SalException
-     *
      */
     @Override
     public boolean addRelatedDocumentToService(URI serviceUri, URI relatedDocument) throws ServiceException {
@@ -488,7 +490,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      * @param serviceUri the URI of the service to delete
      * @return True if it was deleted or false otherwise
      * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
      */
     @Override
     public boolean deleteService(URI serviceUri) throws ServiceException {
@@ -524,7 +525,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      * @param service the service to delete
      * @return True if it was deleted or false otherwise
      * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
      */
     @Override
     public boolean deleteService(Service service) throws ServiceException {
@@ -537,7 +537,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      *
      * @return
      * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
      */
     @Override
     public boolean clearServices() throws ServiceException {
@@ -562,7 +561,6 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      * @param serviceUri the URI of the service being looked up
      * @return True if it is registered in the server
      * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
-     *
      */
     @Override
     public boolean serviceExists(URI serviceUri) throws ServiceException {
@@ -597,6 +595,56 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
         } finally {
             qexec.close();
         }
+    }
+
+    /**
+     * Given the URI of a modelReference, this method figures out all the services
+     * that have this as model references.
+     * This method uses SPARQL 1.1 to avoid using regexs for performance.
+     *
+     * @param modelReference the type of output sought for
+     * @return a Set of URIs of operations that generate this output type.
+     */
+
+    @Override
+    public Set<URI> listServicesWithModelReference(URI modelReference) {
+        if (modelReference == null) {
+            return ImmutableSet.of();
+        }
+
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder
+                .append("PREFIX msm: <").append(MSM.getURI()).append("> ")
+                .append("PREFIX rdf: <").append(RDF.getURI()).append("> ")
+                .append("PREFIX sawsdl: <").append(SAWSDL.getURI()).append("> ")
+                .append("SELECT ?service WHERE { ?service sawsdl:modelReference <").append(modelReference).append("> . }");
+        String query = queryBuilder.toString();
+        return this.graphStoreManager.listResourcesByQuery(query, "service");
+    }
+
+    /**
+     * Given the URI of a modelReference, this method figures out all the operations
+     * of which services have this as model references.
+     * This method uses SPARQL 1.1 to avoid using regexs for performance.
+     *
+     * @param modelReference the type of output sought for
+     * @return a Set of URIs of operations that generate this output type.
+     */
+
+    @Override
+    public Set<URI> listOperationsWithModelReference(URI modelReference) {
+        if (modelReference == null) {
+            return ImmutableSet.of();
+        }
+
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder
+                .append("PREFIX msm: <").append(MSM.getURI()).append("> ")
+                .append("PREFIX rdf: <").append(RDF.getURI()).append("> ")
+                .append("PREFIX sawsdl: <").append(SAWSDL.getURI()).append("> ")
+                .append("SELECT ?operation WHERE { ?service msm:hasOperation ?operation . ?service sawsdl:modelReference <").append(modelReference).append("> . }");
+        String query = queryBuilder.toString();
+        return this.graphStoreManager.listResourcesByQuery(query, "operation");
     }
 
 
@@ -895,6 +943,11 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
             }
 
             mcs = ((Operation) resource).getOutputFaults();
+            for (MessageContent mc : mcs) {
+                replaceUris(mc, resource.getUri());
+            }
+
+            mcs = ((Operation) resource).getFaults();
             for (MessageContent mc : mcs) {
                 replaceUris(mc, resource.getUri());
             }

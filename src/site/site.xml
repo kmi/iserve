@@ -16,8 +16,8 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/DECORATION/1.3.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/DECORATION/1.3.0"
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.3.0 http://maven.apache.org/xsd/decoration-1.3.0.xsd">
 
     <skin>
@@ -56,7 +56,9 @@
             <item name="Overview" href="overview.html"/>
             <item name="Data Model" href="data-model.html"/>
             <item name="Architecture" href="architecture.html"/>
-            <item name="Configuration" href="configuration.html"/>
+            <item name="Deployment" href="deployment.html"/>
+            <item name="Detailed Configuration" href="configuration.html"/>
+            <item name="Compiling iServe" href="compiling.html"/>
             <item name="Using iServe" href="usage.html"/>
             <item name="Extending iServe" href="extending.html"/>
             <!--<item name="FAQ" href="faq.html"/>-->

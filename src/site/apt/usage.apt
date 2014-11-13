@@ -12,18 +12,31 @@ Using iServe
     you want to interact with its CRUD interface to add services, documents, or ontologies, or with its matching
     interface if you want to discover services.
 
+    Should you wish to integrate iServe within a Maven project you may add the dependency as follows:
+
++----------------------------------------------------------------------------------+
+ <dependency>
+     <artifactId>iserve-integrated-engine</artifactId>
+     <groupId>uk.ac.open.kmi.iserve</groupId>
+     <version>${pom.version}</version>
+     </exclusions>
+ </dependency>
++----------------------------------------------------------------------------------+
+
+     At moment we do not publish the jars in a public repository. You will have to compile and install it locally.
+
 ** CRUD Interface
 
-    Access to the CRUD interface is obtained by means of iServeFacade. Therein you will get access to the main
-    data managers in charge of services, documents, and ontologies. For convenience iServeFacade provides methods that
+    Access to the CRUD interface is obtained by means of iServeEngine facade. Therein you will get access to
+    the main data managers in charge of services, documents, and ontologies. For convenience iServeEngine provides methods that
     take care of automatically transforming services prior to importing them, keeping all data managers synchronized,
     and when necessary, obtaining remote ontologies referred to by the imported services.
 
-*** Obtaining the Facade
+*** Creating an iServeEngine
 
 +------------------------------------------------+
 
-iServeFacade facade = iServeFacade.getInstance();
+iServeEngine engine = iServeEngineFactory.createEngine();
 
 +------------------------------------------------+
 
@@ -31,11 +44,14 @@ iServeFacade facade = iServeFacade.getInstance();
 
 +----------------------------------------------------------------------------------+
 
+// Get Registry Manager
+RegistryManager manager = engine.getRegistryManager();
+
 InputStream in;
 List<URI> servicesUris;
 for (File ttlFile : msmTtlTcFiles) {
     in = new FileInputStream(ttlFile);
-    servicesUris = facade.importServices(in, MediaType.TEXT_TURTLE.getMediaType());
+    servicesUris = manager.importServices(in, MediaType.TEXT_TURTLE.getMediaType());
 }
 
 +----------------------------------------------------------------------------------+
@@ -43,14 +59,14 @@ for (File ttlFile : msmTtlTcFiles) {
 *** Listing the Registered Services
 
 +----------------------------------------------------------------------------------+
-List<URI> services = facade.getServiceManager().listServices();
+List<URI> services = manager.getServiceManager().listServices();
 +----------------------------------------------------------------------------------+
 
 *** Obtaining the Java Representation of a Service
 
 +----------------------------------------------------------------------------------+
 URI svcUri = new URI("http://iserve.installation.org/services/id/1");
-Service service = facade.getServiceManager().getService(svcUri);
+Service service = manager.getServiceManager().getService(svcUri);
 +----------------------------------------------------------------------------------+
 
 ** The Matching Interface
@@ -76,7 +92,7 @@ ConceptMatcher matcher = MatchersFactory.createConceptMatcher(SparqlLogicConcept
     Applications can register for notifications simply by doing:
 
 +----------------------------------------------------------------------------------+
-facade.registerAsObserver(this);
+manager.registerAsObserver(this);
 +----------------------------------------------------------------------------------+
 
     This will ensure than any change on the Services, Documents or Knowledge Base Managers get automatically reported.
@@ -95,4 +111,11 @@ public void handleOntologyCreatedEvent(OntologyCreatedEvent event) {
 
 * RESTful Interface
 
-    TBD
+    iServe provides a RESTful interface offering remote access to its functionality.
+    iServe's Web Application comes with an embedded interactive documentation of the RESTful API offered it can be found at:
+
++----------------------------------------------------------------------------------------------------+
+http://<somehost.com>/<iserve-deployed-context>/docs
++----------------------------------------------------------------------------------------------------+
+
+    See for example the {{{http://iserve.kmi.open.ac.uk/iserve/docs/} documentation of the current main public deployment of iServe}}.

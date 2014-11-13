@@ -32,7 +32,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
@@ -111,7 +110,7 @@ public class ServiceResourceTest extends AbstractContainerTest {
         // Logout
         logOut();
 
-        Injector injector = Guice.createInjector(new ConfigurationModule(), new RegistryManagementModule());
+        Injector injector = Guice.createInjector(new RegistryManagementModule());
         manager = injector.getInstance(RegistryManager.class);
 
     }

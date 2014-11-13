@@ -15,16 +15,16 @@ public final class SimpleMetrics implements CounterMetrics {
     private Map<String, AtomicInteger> counters = new HashMap<String, AtomicInteger>();
 
 
-    synchronized private void checkAndInit(String name){
+    synchronized private void checkAndInit(String name) {
         AtomicInteger counter = counters.get(name);
-        if (counter == null){
+        if (counter == null) {
             // Initialize a new counter
             counter = new AtomicInteger(0);
             counters.put(name, counter);
         }
     }
 
-    public int counter(String name){
+    public int counter(String name) {
         checkAndInit(name);
         return counters.get(name).intValue();
     }
@@ -43,7 +43,7 @@ public final class SimpleMetrics implements CounterMetrics {
 
     @Override
     public synchronized void reset() {
-        for(AtomicInteger counter : counters.values()){
+        for (AtomicInteger counter : counters.values()) {
             counter.set(0);
         }
     }
@@ -51,8 +51,8 @@ public final class SimpleMetrics implements CounterMetrics {
     @Override
     public String toString() {
         String output = "";
-        for(Map.Entry<String, AtomicInteger> entry : this.counters.entrySet()){
-           output += String.format("%s : %d%n", entry.getKey(), entry.getValue().intValue());
+        for (Map.Entry<String, AtomicInteger> entry : this.counters.entrySet()) {
+            output += String.format("%s : %d%n", entry.getKey(), entry.getValue().intValue());
         }
         return output;
     }
