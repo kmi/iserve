@@ -37,14 +37,13 @@ public class MatchersFactory {
     // Bind to the provider for lazy instance creation
     private final Map<String, Provider<ConceptMatcher>> conceptMatcherProviders;
 
-    // TODO: Add configuration details
-    @Inject(optional = true)
-    @iServeProperty(ConfigurationProperty.CONCEPT_MATCHER)
-    private final String defaultConceptMatcher = null;
+    private final String defaultConceptMatcher;
 
     @Inject
-    protected MatchersFactory(Map<String, Provider<ConceptMatcher>> conceptMatcherProviders) {
+    protected MatchersFactory(Map<String, Provider<ConceptMatcher>> conceptMatcherProviders,
+                              @iServeProperty(ConfigurationProperty.CONCEPT_MATCHER) String defaultConceptMatcher) {
         this.conceptMatcherProviders = conceptMatcherProviders;
+        this.defaultConceptMatcher = defaultConceptMatcher;
     }
 
     public ConceptMatcher getDefaultConceptMatcher() {
