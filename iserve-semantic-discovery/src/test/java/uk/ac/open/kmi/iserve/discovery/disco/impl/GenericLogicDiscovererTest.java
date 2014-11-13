@@ -213,22 +213,6 @@ public class GenericLogicDiscovererTest {
 //    <http://localhost/wsc/01/taxonomy.owl#con512919114>
 //    <http://localhost/wsc/01/taxonomy.owl#con633555781>
 
-
-    @Test
-    public void testFindOperationsConsumingAll(OperationDiscoverer opDiscoverer) throws Exception {
-
-        URI input1Uri = URI.create(WSC_01_TAXONOMY_NS + "con332477359");
-        URI input2Uri = URI.create(WSC_01_TAXONOMY_NS + "con1794855625");
-
-        // Obtain matches
-        Stopwatch stopwatch = new Stopwatch().start();
-        Map<URI, MatchResult> matches = opDiscoverer.findOperationsConsumingAll(ImmutableSet.of(input1Uri, input2Uri));
-        stopwatch.stop();
-
-        log.info("Obtained ({}) matches in {} \n {}", matches.size(), stopwatch, matches);
-
-    }
-
     @Test
     public void testFindOperationsConsumingSome(OperationDiscoverer opDiscoverer) throws Exception {
 
