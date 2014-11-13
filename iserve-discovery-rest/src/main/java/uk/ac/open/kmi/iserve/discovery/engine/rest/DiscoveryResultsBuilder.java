@@ -4,8 +4,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.hp.hpl.jena.vocabulary.RDFS;
-import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
-import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
 import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
@@ -21,12 +19,11 @@ import java.util.Set;
  */
 public class DiscoveryResultsBuilder implements DiscoveryResultsBuilderPlugin {
 
-    private String sparqlEndpoint;
     private NfpManager nfpManager;
 
     @Inject
-    public DiscoveryResultsBuilder(@iServeProperty(ConfigurationProperty.SERVICES_SPARQL_QUERY) String sparqlEndpoint) {
-        this.sparqlEndpoint = sparqlEndpoint;
+    public DiscoveryResultsBuilder(NfpManager nfpManager) {
+        this.nfpManager = nfpManager;
     }
 
     public Map<URI, DiscoveryResult> build(Map<URI, Pair<Double, MatchResult>> result, String rankingType) {

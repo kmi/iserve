@@ -18,6 +18,8 @@ import uk.ac.open.kmi.iserve.core.iServeProperty;
 @Singleton
 public class OwlimSearchPlugin extends SparqlSearchPlugin {
 
+    //TODO implement it as proper singleton
+    static boolean indexed = false;
     private Logger logger = LoggerFactory.getLogger(OwlimSearchPlugin.class);
 
     @Inject
@@ -30,18 +32,22 @@ public class OwlimSearchPlugin extends SparqlSearchPlugin {
     }
 
     private void runIndexing() {
-        logger.info("Free text search indexing...");
-        StringBuilder updateBuilder = new StringBuilder();
-        updateBuilder.append("PREFIX luc: <http://www.ontotext.com/owlim/lucene#> ")
-                .append("INSERT DATA {")
-                .append("luc:include luc:setParam \"literal uri\" . ")
-                .append("luc:index luc:setParam \"literals, uri\" . ")
-                .append("luc:moleculeSize luc:setParam \"1\" . ")
-                .append("luc:entityIndex luc:createIndex \"true\" . }");
-        UpdateRequest request = UpdateFactory.create();
-        request.add(updateBuilder.toString());
-        UpdateProcessor processor = UpdateExecutionFactory.createRemoteForm(request, updateEndpoint);
-        processor.execute();
+        if (!indexed) {
+            logger.info("Free text search indexing...");
+            StringBuilder updateBuilder = new StringBuilder();
+            updateBuilder.append("PREFIX luc: <http://www.ontotext.com/owlim/lucene#> ")
+                    .append("INSERT DATA {")
+                    .append("luc:include luc:setParam \"literal uri\" . ")
+                    .append("luc:index luc:setParam \"literals, uri\" . ")
+                    .append("luc:moleculeSize luc:setParam \"1\" . ")
+                    .append("luc:entityIndex luc:createIndex \"true\" . }");
+            UpdateRequest request = UpdateFactory.create();
+            request.add(updateBuilder.toString());
+            UpdateProcessor processor = UpdateExecutionFactory.createRemoteForm(request, updateEndpoint);
+            processor.execute();
+            indexed = true;
+        }
+
     }
 
 

@@ -119,7 +119,7 @@ public class DiscoveryEngine {
             }
             discoveryFunction = new FreeTextDiscoveryFunction(freeTextSearchPlugin, discovery.get("query").getAsString(), type);
         }
-        // TODO Semantic Discovery parsing
+        //Semantic Discovery parsing
 
         if (discovery.has("func-rdfs")) {
             JsonObject functionObject = discovery.getAsJsonObject("func-rdfs");
@@ -182,7 +182,7 @@ public class DiscoveryEngine {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
+        // ranking parsing
         if (requestObject.has("ranking")) {
             rank = true;
             if (!requestObject.get("ranking").getAsString().equalsIgnoreCase("inverse")) {

@@ -19,6 +19,7 @@
          xmlns="http://java.sun.com/xml/ns/javaee"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
+
     <filter>
         <filter-name>Discovery Filter</filter-name>
         <filter-class>uk.ac.open.kmi.iserve.discovery.engine.rest.DiscoveryFilter</filter-class>
@@ -36,6 +37,10 @@
             <param-name>javax.ws.rs.Application</param-name>
             <param-value>uk.ac.open.kmi.iserve.discovery.engine.rest.DiscoveryEngineWebApplication
             </param-value>
+        </init-param>
+        <init-param>
+            <param-name>jersey.config.server.provider.classnames</param-name>
+            <param-value>org.glassfish.jersey.filter.LoggingFilter</param-value>
         </init-param>
     </servlet>
 

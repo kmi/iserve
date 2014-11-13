@@ -12,10 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.PluginModuleLoader;
 import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
+import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchProvider;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.BasicScoreComposer;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.StandardRanker;
-import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchProvider;
 import uk.ac.open.kmi.iserve.discovery.ranking.impl.CommunityVitalityScorer;
 import uk.ac.open.kmi.iserve.discovery.ranking.impl.ProviderPopularityScorer;
 import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
@@ -32,7 +32,6 @@ public class DiscoveryRestModule extends ServletModule {
 
         logger.debug("Loading Discovery iServe components...");
 
-        //install(new ConfigurationModule());
 
         install(new RegistryManagementModule());
         // Load all matcher plugins
@@ -56,7 +55,6 @@ public class DiscoveryRestModule extends ServletModule {
         bind(NfpManager.class).to(NfpManagerSparql.class);
         bind(DiscoveryResultsBuilderPlugin.class).to(DiscoveryResultsBuilder.class);
 
-        //Free text search
         install(new FreeTextSearchProvider());
 
     }

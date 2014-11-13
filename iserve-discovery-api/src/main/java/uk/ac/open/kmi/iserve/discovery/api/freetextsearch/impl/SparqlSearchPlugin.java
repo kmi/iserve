@@ -1,6 +1,7 @@
 package uk.ac.open.kmi.iserve.discovery.api.freetextsearch.impl;
 
 import com.google.common.collect.Maps;
+import com.google.inject.Singleton;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import java.util.Map;
 /**
  * Created by Luca Panziera on 03/11/14.
  */
+@Singleton
 public abstract class SparqlSearchPlugin implements FreeTextSearchPlugin {
 
     protected String queryEndpoint;
