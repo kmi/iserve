@@ -111,7 +111,7 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
 
         // Configuration for quick retrieval of ontologies by resolving them to local files.
         ImmutableMap.Builder<String, String> mappingsBuilder = ImmutableMap.builder();
-        mappingsBuilder.put(FOAF_0_1_URI.toASCIIString(), this.getClass().getResource("/foaf-2010-08-09.rdf").toString());
+        mappingsBuilder.put(FOAF_0_1_URI.toASCIIString(), this.getClass().getResource("/foaf-2010-08-09.ttl").toString());
         mappingsBuilder.put(HRESTS_URI.toASCIIString(), this.getClass().getResource("/hrests-2013-10-03.ttl").toString());
         mappingsBuilder.put(MSM_URI.toASCIIString(), this.getClass().getResource("/msm-2014-09-03.ttl").toString());
         mappingsBuilder.put(MSM_WSDL_URI.toASCIIString(), this.getClass().getResource("/msm-wsdl-2014-09-03.ttl").toString());
@@ -122,10 +122,10 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
         mappingsBuilder.put(HTTP_METHODS_URI.toASCIIString(), this.getClass().getResource("/http-methods-2011-04-29.ttl").toString());
         mappingsBuilder.put(CONTENT_VOCAB_URI.toASCIIString(), this.getClass().getResource("/content-2011-04-29.ttl").toString());
         mappingsBuilder.put(DCTERMS_URI.toASCIIString(), this.getClass().getResource("/dcterms-2012-06-14.ttl").toString());
-        mappingsBuilder.put(HTTP_STATUS_URI.toASCIIString(), this.getClass().getResource("/http-statusCodes-2014-09-03.rdf").toString());
-        mappingsBuilder.put(MEDIA_TYPES_URI.toASCIIString(), this.getClass().getResource("/media-types-2014-09-03.rdf").toString());
+        mappingsBuilder.put(HTTP_STATUS_URI.toASCIIString(), this.getClass().getResource("/http-statusCodes-2014-09-03.ttl").toString());
+        mappingsBuilder.put(MEDIA_TYPES_URI.toASCIIString(), this.getClass().getResource("/media-types-2014-09-03.ttl").toString());
         mappingsBuilder.put(MSM_NFP_URI.toASCIIString(), this.getClass().getResource("/msm-nfp-2014-07-10.ttl").toString());
-        mappingsBuilder.put(SIOC_URI.toASCIIString(), this.getClass().getResource("/sioc-2010-03-25.rdf").toString());
+        mappingsBuilder.put(SIOC_URI.toASCIIString(), this.getClass().getResource("/sioc-2010-03-25.ttl").toString());
 
         // Configuration for avoiding the import of certain files
         ImmutableSet<String> ignoredImports = ImmutableSet.of();
