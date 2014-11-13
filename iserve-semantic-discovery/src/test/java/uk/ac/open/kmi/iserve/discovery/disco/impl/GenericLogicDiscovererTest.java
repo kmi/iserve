@@ -61,7 +61,6 @@ import java.util.*;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 04/10/2013
  */
-@Ignore
 @RunWith(JukitoRunner.class)
 public class GenericLogicDiscovererTest {
 
@@ -121,10 +120,6 @@ public class GenericLogicDiscovererTest {
         if (ontoDir.exists() && ontoDir.isDirectory() && ontoDir.listFiles().length > 0) {
             descriptions.addAll(Arrays.asList(ontoDir.listFiles(new Notation3ExtFilter())));
         }
-
-        OntModel schemaModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
-        schemaModel.read(GenericLogicDiscovererTest.class.getResource("/pw-example/schema.rdf").getFile());
-        registryManager.getKnowledgeBaseManager().uploadModel(URI.create("http://schema.org/"), schemaModel, true);
 
         for (File desc : descriptions) {
             try {
@@ -283,6 +278,7 @@ public class GenericLogicDiscovererTest {
     }
 
     @Test
+    @Ignore
     public void testFindServicesClassifiedByAll(ServiceDiscoverer serviceDiscoverer) throws Exception {
         URI modelA = URI.create("http://schema.org/CreateAction");
         URI modelB = URI.create("http://schema.org/SearchAction");
@@ -296,6 +292,7 @@ public class GenericLogicDiscovererTest {
     }
 
     @Test
+    @Ignore
     public void testFindServicesClassifiedBySome(ServiceDiscoverer serviceDiscoverer) throws Exception {
         URI modelA = URI.create("http://schema.org/CreateAction");
         URI modelB = URI.create("http://schema.org/SearchAction");
