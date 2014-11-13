@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -56,6 +57,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+@Singleton
 public class ServiceManagerSparql extends IntegratedComponent implements ServiceManager {
 
     private static final Logger log = LoggerFactory.getLogger(ServiceManagerSparql.class);
@@ -941,6 +943,11 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
             }
 
             mcs = ((Operation) resource).getOutputFaults();
+            for (MessageContent mc : mcs) {
+                replaceUris(mc, resource.getUri());
+            }
+
+            mcs = ((Operation) resource).getFaults();
             for (MessageContent mc : mcs) {
                 replaceUris(mc, resource.getUri());
             }

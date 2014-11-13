@@ -18,6 +18,7 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.eventbus.EventBus;
+import com.google.inject.Singleton;
 import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.*;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
+import uk.ac.open.kmi.msm4j.Operation;
 import uk.ac.open.kmi.msm4j.Service;
 import uk.ac.open.kmi.msm4j.io.MediaType;
 import uk.ac.open.kmi.msm4j.io.ServiceReader;
@@ -41,6 +43,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -52,6 +55,7 @@ import java.util.Set;
  *
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)
  */
+@Singleton
 public class RegistryManagerImpl extends IntegratedComponent implements RegistryManager {
 
     private static final Logger log = LoggerFactory.getLogger(RegistryManagerImpl.class);
@@ -313,7 +317,22 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
                 log.info("Importing {} services", services.size());
                 for (Service service : services) {
                     // The service is being imported -> update the source
+                    URI originalSource = service.getSource();
                     service.setSource(sourceDocUri);
+                    for (Operation op : service.getOperations()) {
+                        if (op.getSource().equals(originalSource)) {
+                            op.setSource(sourceDocUri);
+                        }
+                        if (op.getSource().toASCIIString().contains(originalSource.toASCIIString())) {
+                            String subPath = op.getSource().toASCIIString().replace(originalSource.toASCIIString(), "");
+                            try {
+                                op.setSource(new URI(new StringBuilder(sourceDocUri.toASCIIString()).append(subPath).toString()));
+                            } catch (URISyntaxException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
                     serviceUri = this.serviceManager.addService(service);
                     if (serviceUri != null) {
                         importedServices.add(serviceUri);
