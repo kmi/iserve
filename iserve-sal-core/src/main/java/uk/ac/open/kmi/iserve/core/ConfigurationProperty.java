@@ -128,7 +128,7 @@ public enum ConfigurationProperty {
     ),
 
     FREE_TEXT_SEARCH(
-            "iserve.freetextsearch.plugin",
+            "iserve.discovery.freetextsearch",
             "Fully qualified name of the free text search plugin to use.",
             new TypeLiteral<String>() {
             },

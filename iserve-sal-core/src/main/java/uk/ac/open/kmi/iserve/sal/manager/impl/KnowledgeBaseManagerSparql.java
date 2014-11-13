@@ -68,6 +68,8 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
     private static final Logger log = LoggerFactory.getLogger(KnowledgeBaseManagerSparql.class);
     private static final String DIRECT_SUBCLASS = "http://www.openrdf.org/schema/sesame#directSubClassOf";
 
+    // To load
+    private static final URI SCHEMA_ORG_URI = URI.create("http://schema.org");
 
     // Set backed by a ConcurrentHashMap to avoid race conditions
     // Tracks unreachability and the moment this was last attempted
@@ -95,10 +97,14 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
                 iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
 
         Set<URI> defaultModels = ImmutableSet.of();
-        Map<String, String> locationMappings = ImmutableMap.of();
+
+        // Configuration for quick retrieval of ontologies by resolving them to local files.
+        ImmutableMap.Builder<String, String> mappingsBuilder = ImmutableMap.builder();
+        mappingsBuilder.put(SCHEMA_ORG_URI.toASCIIString(), this.getClass().getResource("/schema-dot-org-2014-04-03.rdf").toString());
+
         Set<String> ignoredImports = ImmutableSet.of();
 
-        this.graphStoreManager = graphStoreFactory.create(sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint, defaultModels, locationMappings, ignoredImports);
+        this.graphStoreManager = graphStoreFactory.create(sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint, defaultModels, mappingsBuilder.build(), ignoredImports);
         this.unreachableModels = new ConcurrentHashMap<URI, Date>();
     }
 
