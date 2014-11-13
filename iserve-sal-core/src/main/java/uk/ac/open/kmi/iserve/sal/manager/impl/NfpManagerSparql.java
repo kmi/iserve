@@ -39,6 +39,7 @@ import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -53,7 +54,7 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
     private Logger logger = LoggerFactory.getLogger(NfpManagerSparql.class);
 
     private String sparqlEndpoint;
-    private Map<URI, Map<URI, String>> propertyValueCache;
+    private Map<URI, Map<URI, Set<String>>> propertyValueCache;
 
     @Inject
     public NfpManagerSparql(EventBus eventBus, @iServeProperty(ConfigurationProperty.ISERVE_URL) String iServeUri, @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_QUERY) String sparqlEndpoint) throws SalException {
@@ -89,21 +90,50 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
             // put values in cache
             buildCacheForResource(resource);
         }
-        Map<URI, String> resourceProperties = propertyValueCache.get(resource);
+        Map<URI, Set<String>> resourceProperties = propertyValueCache.get(resource);
         if (resourceProperties != null && resourceProperties.containsKey(property)) {
-            String value = resourceProperties.get(property);
-            logger.debug("{}, {}, {}", resource, property, value);
+            Set<String> values = resourceProperties.get(property);
+            logger.debug("{}, {}, {}", resource, property, values);
 
-            if (value != null) {
+            if (values != null) {
                 if (valueClass.equals(Double.class)) {
-                    return new Double(value);
+                    if (values.size() == 1) {
+                        return new Double(values.iterator().next());
+                    } else {
+                        Set<Double> result = Sets.newHashSet();
+                        for (String value : values) {
+                            result.add(new Double(value));
+                        }
+                        return result;
+                    }
+
                 } else if (valueClass.equals(Integer.class)) {
-                    return new Integer(value);
+                    if (values.size() == 1) {
+                        return new Integer(values.iterator().next());
+                    } else {
+                        Set<Integer> result = Sets.newHashSet();
+                        for (String value : values) {
+                            result.add(new Integer(value));
+                        }
+                        return result;
+                    }
                 } else if (valueClass.equals(String.class)) {
-                    return value;
+                    if (values.size() == 1) {
+                        return values.iterator().next();
+                    } else {
+                        return values;
+                    }
                 } else if (valueClass.equals(URI.class)) {
                     try {
-                        return new URI(value);
+                        if (values.size() == 1) {
+                            return new URI(values.iterator().next());
+                        } else {
+                            Set<URI> result = Sets.newHashSet();
+                            for (String value : values) {
+                                result.add(new URI(value));
+                            }
+                            return result;
+                        }
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                         return null;
@@ -125,7 +155,7 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
         Model describeModel = getDescribeModel(resources);
         for (URI resource : resources) {
             if (!propertyValueCache.containsKey(resource)) {
-                propertyValueCache.put(resource, Maps.<URI, String>newHashMap());
+                propertyValueCache.put(resource, Maps.<URI, Set<String>>newHashMap());
             }
 
         }
@@ -148,9 +178,12 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
                     }
                     if (object != null) {
                         if (!propertyValueCache.containsKey(subjectUri)) {
-                            propertyValueCache.put(subjectUri, Maps.<URI, String>newHashMap());
+                            propertyValueCache.put(subjectUri, Maps.<URI, Set<String>>newHashMap());
                         }
-                        propertyValueCache.get(subjectUri).put(predicateUri, object);
+                        if (propertyValueCache.get(subjectUri).get(predicateUri) == null) {
+                            propertyValueCache.get(subjectUri).put(predicateUri, new HashSet<String>());
+                        }
+                        propertyValueCache.get(subjectUri).get(predicateUri).add(object);
                     }
                 }
             }

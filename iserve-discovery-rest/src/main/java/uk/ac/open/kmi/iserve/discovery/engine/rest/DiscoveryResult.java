@@ -1,6 +1,7 @@
 package uk.ac.open.kmi.iserve.discovery.engine.rest;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
@@ -17,6 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Luca Panziera on 23/07/2014.
@@ -25,6 +27,8 @@ import java.util.Map;
 public class DiscoveryResult {
     private String label;
     private String description;
+
+    private Set<URI> modelReferences;
     private Map<URI, Object> rankPropertyValues;
     private Double rankingScore;
     private MatchResult matchResult;
@@ -76,6 +80,29 @@ public class DiscoveryResult {
         return null;
     }
 
+    public void addModelReference(URI modelReference) {
+        if (modelReferences == null) {
+            modelReferences = Sets.newHashSet();
+        }
+        modelReferences.add(modelReference);
+    }
+
+    public Object removeModelReference(URI property) {
+        if (rankPropertyValues != null) {
+            return rankPropertyValues.remove(property);
+        }
+        return null;
+    }
+
+
+    public Set<URI> getModelReferences() {
+        return modelReferences;
+    }
+
+    public void setModelReferences(Set<URI> modelReferences) {
+        this.modelReferences = modelReferences;
+    }
+
     public MatchResult getMatchResult() {
         return matchResult;
     }
@@ -118,6 +145,16 @@ public class DiscoveryResult {
                         propertiesEl.appendChild(propertyEl);
                     }
 
+                }
+                rootElement.appendChild(propertiesEl);
+            }
+
+            if (modelReferences != null) {
+                Element propertiesEl = doc.createElement("modelReferences");
+                for (URI modelReference : modelReferences) {
+                    Element propertyEl = doc.createElement("modelReference");
+                    propertyEl.setAttribute("uri", modelReference.toString());
+                    propertiesEl.appendChild(propertyEl);
                 }
                 rootElement.appendChild(propertiesEl);
             }

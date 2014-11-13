@@ -291,7 +291,8 @@ public class DiscoveryEngineResource {
     @GET
     @Path("{type}/search")
     @ApiOperation(
-            value = "Free text-based search of services, operations or service parts"
+            value = "Free text-based search of services, operations or service parts",
+            response = DiscoveryResult.class
     )
     @Produces({"application/atom+xml", "application/json"})
     public Response search(
@@ -327,16 +328,15 @@ public class DiscoveryEngineResource {
     @POST
     @ApiOperation(
             value = "Advanced discovery",
-            notes = "Discovery performed by submitting a complete discovery request as JSON"
+            notes = "Discovery performed by submitting a complete discovery request as JSON",
+            response = DiscoveryResult.class
     )
     @ApiResponses(
             value = {@ApiResponse(code = 200, message = "Discovery successful"),
                     @ApiResponse(code = 500, message = "Internal error")})
     @Consumes("application/json")
-    @Produces({"application/atom+xml", "application/json", "text/plain"})
+    @Produces({"application/atom+xml", "application/json"})
     public Response advancedDiscovery(
-            @ApiParam(value = "Discovery response data format", allowableValues = "application/json,application/atom+xml")
-            @HeaderParam("Accept") String accept,
             @ApiParam(value = "JSON document that specifies the discovery strategy", required = true)
             String discoveryRequest
     ) {
@@ -350,7 +350,7 @@ public class DiscoveryEngineResource {
                 discoveryResults = discoveryResultsBuilder.build(result, "");
             }
 
-            if (accept != null && accept.contains("application/json")) {
+            if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 String json = gson.toJson(discoveryResults);
                 return Response.status(200).entity(json).build();

@@ -8,6 +8,7 @@ import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
 import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
 import uk.ac.open.kmi.msm4j.vocabulary.MSM_NFP;
+import uk.ac.open.kmi.msm4j.vocabulary.SAWSDL;
 import uk.ac.open.kmi.msm4j.vocabulary.SCHEMA;
 
 import java.net.URI;
@@ -35,6 +36,10 @@ public class DiscoveryResultsBuilder implements DiscoveryResultsBuilderPlugin {
         // Get comments
         Map<URI, Object> commentsMap = nfpManager.getPropertyValueOfResources(result.keySet(), URI.create(RDFS.comment.getURI()), String.class);
 
+        // Get modelReferences
+        Map<URI, Object> modelReferenceMap = nfpManager.getPropertyValueOfResources(result.keySet(), URI.create(SAWSDL.modelReference.getURI()), URI.class);
+
+
         if (rankingType != null && (rankingType.equals("standard") || rankingType.equals("inverse"))) {
             //Get recent mashups
             Map<URI, Object> mashupsMap = nfpManager.getPropertyValueOfResources(result.keySet(), URI.create(MSM_NFP.hasRecentMashups.getURI()), String.class);
@@ -61,6 +66,12 @@ public class DiscoveryResultsBuilder implements DiscoveryResultsBuilderPlugin {
                 DiscoveryResult discoveryResult = new DiscoveryResult();
                 discoveryResult.setLabel((String) labelsMap.get(resource));
                 discoveryResult.setDescription((String) commentsMap.get(resource));
+                if (modelReferenceMap.get(resource) instanceof URI) {
+                    discoveryResult.addModelReference((URI) modelReferenceMap.get(resource));
+                }
+                if (modelReferenceMap.get(resource) instanceof Set) {
+                    discoveryResult.setModelReferences((Set<URI>) modelReferenceMap.get(resource));
+                }
                 discoveryResult.setMatchResult(result.get(resource).getRight());
                 discoveryResult.setRankingScore(result.get(resource).getLeft());
                 discoveryResult.addRankPropertyValue(URI.create(MSM_NFP.hasRecentMashups.getURI()), mashupsMap.get(resource));
@@ -75,6 +86,12 @@ public class DiscoveryResultsBuilder implements DiscoveryResultsBuilderPlugin {
                 discoveryResult.setLabel((String) labelsMap.get(resource));
                 discoveryResult.setDescription((String) commentsMap.get(resource));
                 discoveryResult.setMatchResult(result.get(resource).getRight());
+                if (modelReferenceMap.get(resource) instanceof URI) {
+                    discoveryResult.addModelReference((URI) modelReferenceMap.get(resource));
+                }
+                if (modelReferenceMap.get(resource) instanceof Set) {
+                    discoveryResult.setModelReferences((Set<URI>) modelReferenceMap.get(resource));
+                }
                 r.put(resource, discoveryResult);
             }
         }
