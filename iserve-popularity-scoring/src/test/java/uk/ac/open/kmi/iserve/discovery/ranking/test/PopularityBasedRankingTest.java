@@ -34,8 +34,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.discovery.api.*;
-import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchPlugin;
-import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.impl.OwlimSearchPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchProvider;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.BasicScoreComposer;
 import uk.ac.open.kmi.iserve.discovery.disco.impl.GenericLogicDiscoverer;
@@ -196,7 +195,7 @@ public class PopularityBasedRankingTest {
             //Score composer configuration
             bind(ScoreComposer.class).to(BasicScoreComposer.class);
 
-            bind(FreeTextSearchPlugin.class).to(OwlimSearchPlugin.class);
+            install(new FreeTextSearchProvider());
 
             bind(NfpManager.class).to(NfpManagerSparql.class);
 

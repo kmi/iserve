@@ -2,7 +2,6 @@ package uk.ac.open.kmi.iserve.discovery.api.freetextsearch.impl;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Singleton;
-import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

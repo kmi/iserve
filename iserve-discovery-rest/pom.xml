@@ -129,6 +129,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>uk.ac.open.kmi.iserve</groupId>
+            <artifactId>iserve-free-text-search</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>

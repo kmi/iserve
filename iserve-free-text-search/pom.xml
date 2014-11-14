@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>iserve-parent</artifactId>
+        <groupId>uk.ac.open.kmi.iserve</groupId>
+        <version>2.0.0-RC2-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>iserve-free-text-search</artifactId>
+    <name>iServe Free Text Search Plugin</name>
+    <description>
+        iServe Free Text Search Plugin provides free text search interfaces
+        and their corresponding implementations.
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>uk.ac.open.kmi.iserve</groupId>
+            <artifactId>iserve-discovery-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!--Add Guice for dependency injection -->
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+        <!--Add assisted injection support-->
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-assistedinject</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.open.kmi.msm4j</groupId>
+            <artifactId>msm4j-vocabulary</artifactId>
+            <version>${msm4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>org.jukito</groupId>
+            <artifactId>jukito</artifactId>
+            <version>1.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
