@@ -387,6 +387,13 @@ $prefLabel, $altLabel, $title and $name variables.
                 by
                 <a href="http://www.axialis.com">Axialis Team</a>
             </p>
+            <p align="center">
+                <a href="{$_APP}/docs">RESTful API documentation</a>
+                |
+                <a href="http://iserve.kmi.open.ac.uk">iServe Web Site</a>
+                |
+                <a href="https://github.com/kmi/iserve">GitHub project</a>
+            </p>
         </footer>
     </xsl:template>
 
