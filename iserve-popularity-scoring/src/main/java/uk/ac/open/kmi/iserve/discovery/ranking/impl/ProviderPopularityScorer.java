@@ -48,7 +48,15 @@ public class ProviderPopularityScorer extends PopularityScorer {
         Map<URI, URI> providerMap = Maps.transformValues(providerObjectMap, new Function<Object, URI>() {
             @Override
             public URI apply(Object input) {
-                return (URI) input;
+                if (input instanceof Set) {
+                    if (((Set) input).isEmpty()) {
+                        return null;
+                    } else {
+                        return (URI) ((Set) input).iterator().next();
+                    }
+                } else {
+                    return (URI) input;
+                }
             }
         });
 
@@ -56,7 +64,16 @@ public class ProviderPopularityScorer extends PopularityScorer {
         Map<URI, Double> popMap = Maps.transformValues(popObjectsMap, new Function<Object, Double>() {
             @Override
             public Double apply(Object input) {
-                Double r = (Double) input;
+                Double r;
+                if (input instanceof Set) {
+                    if (((Set) input).isEmpty()) {
+                        return new Double(0);
+                    } else {
+                        r = (Double) ((Set) input).iterator().next();
+                    }
+                } else {
+                    r = (Double) input;
+                }
                 if (r != null && r > 0) {
                     return r / 100;
                 }
