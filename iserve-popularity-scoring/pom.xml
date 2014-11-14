@@ -83,7 +83,19 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.jukito</groupId>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>iserve-sparql-text-search</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-jdk14</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+        <groupId>org.jukito</groupId>
             <artifactId>jukito</artifactId>
             <version>1.2</version>
             <scope>test</scope>

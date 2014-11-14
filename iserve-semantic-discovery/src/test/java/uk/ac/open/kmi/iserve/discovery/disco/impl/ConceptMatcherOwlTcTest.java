@@ -24,6 +24,7 @@ import junit.framework.Assert;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -56,6 +57,7 @@ import java.util.Set;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 01/08/2013
  */
+@Ignore
 @RunWith(JukitoRunner.class)
 public class ConceptMatcherOwlTcTest {
 
@@ -79,23 +81,6 @@ public class ConceptMatcherOwlTcTest {
 
     @Inject
     private ConceptMatcher conceptMatcher;
-
-    /**
-     * JukitoModule.
-     */
-    public static class InnerModule extends JukitoModule {
-        @Override
-        protected void configureTest() {
-            // Get the Registry Management
-            install(new RegistryManagementModule());
-
-            // bind
-            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
-
-            // Necessary to verify interaction with the real object
-            bindSpy(SparqlLogicConceptMatcher.class);
-        }
-    }
 
     @BeforeClass
     public static void setupTests() throws Exception {
@@ -434,5 +419,22 @@ public class ConceptMatcherOwlTcTest {
         Assert.assertEquals(0, matches.size());
         stopwatch.reset();
 
+    }
+
+    /**
+     * JukitoModule.
+     */
+    public static class InnerModule extends JukitoModule {
+        @Override
+        protected void configureTest() {
+            // Get the Registry Management
+            install(new RegistryManagementModule());
+
+            // bind
+            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
+
+            // Necessary to verify interaction with the real object
+            bindSpy(SparqlLogicConceptMatcher.class);
+        }
     }
 }

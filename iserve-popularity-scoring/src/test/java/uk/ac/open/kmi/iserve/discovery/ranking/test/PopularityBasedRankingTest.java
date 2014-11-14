@@ -22,9 +22,6 @@ import com.google.gson.JsonParser;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.multibindings.Multibinder;
-import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntModelSpec;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import junit.framework.Assert;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
@@ -88,10 +85,6 @@ public class PopularityBasedRankingTest {
         if (ontoDir.exists() && ontoDir.isDirectory() && ontoDir.listFiles().length > 0) {
             descriptions.addAll(Arrays.asList(ontoDir.listFiles(new Notation3ExtFilter())));
         }
-
-        OntModel schemaModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
-        schemaModel.read(PopularityBasedRankingTest.class.getResource("/pw-example/schema.rdf").getFile());
-        registryManager.getKnowledgeBaseManager().uploadModel(URI.create("http://schema.org/"), schemaModel, true);
 
         for (File desc : descriptions) {
             try {
