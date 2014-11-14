@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.iserve.discovery.api.freetextsearch.impl;
+package uk.ac.open.kmi.iserve.discovery.api.freetextsearch.sparql.impl;
 
 import com.google.inject.Inject;
 import org.slf4j.Logger;
