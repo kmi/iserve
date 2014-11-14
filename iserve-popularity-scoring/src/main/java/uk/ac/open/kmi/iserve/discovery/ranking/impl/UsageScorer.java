@@ -16,11 +16,15 @@
 
 package uk.ac.open.kmi.iserve.discovery.ranking.impl;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
 import uk.ac.open.kmi.msm4j.vocabulary.MSM_NFP;
 
 import java.net.URI;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Luca Panziera on 10/03/2014.
@@ -33,19 +37,25 @@ public class UsageScorer extends PopularityScorer {
     }
 
     @Override
-    public Double apply(URI serviceId) {
+    public Map<URI, Double> apply(Set<URI> resources) {
 
-        Double r = (Double) getNfpManager().getPropertyValue(serviceId, URI.create(MSM_NFP.hasRecentMashups.getURI()), Double.class);
-        if (r != null && r > 0) {
-            return r / 110;
-        }
-        return Double.valueOf(0);
+        Map<URI, Object> popObjectsMap = getNfpManager().getPropertyValueOfResources(resources, URI.create(MSM_NFP.hasPopularity.getURI()), Double.class);
+        Map<URI, Double> result = Maps.transformValues(popObjectsMap, new Function<Object, Double>() {
+            @Override
+            public Double apply(Object input) {
+                Double r = (Double) input;
+                if (r != null && r > 0) {
+                    return r / 100;
+                }
+                return Double.valueOf(0);
+            }
+        });
+
+        return result;
     }
 
     @Override
-    public Double apply(URI resource, String parameter) {
-        return apply(resource);
+    public Map<URI, Double> apply(Set<URI> resources, String parameters) {
+        return apply(resources);
     }
-
-
 }

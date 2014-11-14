@@ -17,12 +17,17 @@
 package uk.ac.open.kmi.iserve.discovery.ranking.impl;
 
 
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
 import uk.ac.open.kmi.msm4j.vocabulary.MSM_NFP;
 import uk.ac.open.kmi.msm4j.vocabulary.SCHEMA;
 
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -38,24 +43,40 @@ public class ProviderPopularityScorer extends PopularityScorer {
     }
 
     @Override
-    public Double apply(URI serviceId) {
+    public Map<URI, Double> apply(Set<URI> resources) {
+        Map<URI, Object> providerObjectMap = getNfpManager().getPropertyValueOfResources(resources, URI.create(SCHEMA.provider.getURI()), URI.class);
+        Map<URI, URI> providerMap = Maps.transformValues(providerObjectMap, new Function<Object, URI>() {
+            @Override
+            public URI apply(Object input) {
+                return (URI) input;
+            }
+        });
 
-        // Get provider
-        URI provider = (URI) getNfpManager().getPropertyValue(serviceId, URI.create(SCHEMA.provider.getURI()), URI.class);
-
-        // Get popularity
-        if (provider != null) {
-            Double r = (Double) getNfpManager().getPropertyValue(provider, URI.create(MSM_NFP.hasPopularity.getURI()), Double.class);
-            if (r != null && r >= 0) {
-                return r / 100;
+        Map<URI, Object> popObjectsMap = getNfpManager().getPropertyValueOfResources(new HashSet<URI>(providerMap.values()), URI.create(MSM_NFP.hasPopularity.getURI()), Double.class);
+        Map<URI, Double> popMap = Maps.transformValues(popObjectsMap, new Function<Object, Double>() {
+            @Override
+            public Double apply(Object input) {
+                Double r = (Double) input;
+                if (r != null && r > 0) {
+                    return r / 100;
+                }
+                return Double.valueOf(0);
+            }
+        });
+        Map<URI, Double> result = Maps.newHashMap();
+        for (URI resource : resources) {
+            if (providerMap.get(resource) == null) {
+                result.put(resource, new Double(0));
+            } else {
+                result.put(resource, popMap.get(providerMap.get(resource)));
             }
         }
-        return new Double(0);
+
+        return result;
     }
 
     @Override
-    public Double apply(URI resource, String parameter) {
-        return apply(resource);
+    public Map<URI, Double> apply(Set<URI> resources, String parameters) {
+        return apply(resources);
     }
-
 }

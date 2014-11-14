@@ -47,8 +47,8 @@ public class DiscoveryRestModule extends ServletModule {
         //Scorers configuration
         Multibinder<Scorer> scorerBinder = Multibinder.newSetBinder(binder(), Scorer.class);
         Multibinder<AtomicScorer> atomicScorerBinder = Multibinder.newSetBinder(binder(), AtomicScorer.class);
-        atomicScorerBinder.addBinding().to(CommunityVitalityScorer.class);
-        atomicScorerBinder.addBinding().to(ProviderPopularityScorer.class);
+        scorerBinder.addBinding().to(CommunityVitalityScorer.class);
+        scorerBinder.addBinding().to(ProviderPopularityScorer.class);
 
         bind(ScoreComposer.class).to(BasicScoreComposer.class);
         bind(Ranker.class).to(StandardRanker.class);
