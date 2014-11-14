@@ -16,6 +16,8 @@ public class EldaFilter implements Filter {
     private Logger logger = LoggerFactory.getLogger(EldaFilter.class);
     private RequestDispatcher defaultRequestDispatcher;
     private RequestDispatcher salRestRequestDispatcher;
+    private RequestDispatcher discoveryRestRequestDispatcher;
+
 
     @Override
     public void destroy() {
@@ -41,6 +43,9 @@ public class EldaFilter implements Filter {
         } else if ((path.matches("/id.*") && httpRequest.getMethod().equalsIgnoreCase("GET")) || (path.matches("/api-docs.*"))) {
             logger.debug("Forward request to Filter chain...");
             chain.doFilter(request, response);
+        } else if (path.matches("/discovery.*")) {
+            logger.debug("Forward request to Discovery REST...");
+            discoveryRestRequestDispatcher.forward(request, response);
         } else {
             logger.debug("Forward request to Default servlet...");
             defaultRequestDispatcher.forward(request, response);
@@ -54,5 +59,7 @@ public class EldaFilter implements Filter {
                 filterConfig.getServletContext().getNamedDispatcher("default");
         this.salRestRequestDispatcher =
                 filterConfig.getServletContext().getNamedDispatcher("iServe SAL REST Endpoint");
+        this.discoveryRestRequestDispatcher =
+                filterConfig.getServletContext().getNamedDispatcher("Discovery Endpoint");
     }
 }

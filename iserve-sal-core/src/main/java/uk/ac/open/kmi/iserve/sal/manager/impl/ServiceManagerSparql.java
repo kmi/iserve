@@ -107,7 +107,7 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
         // Configuration of base models to be loaded
         Set<URI> defaultModelsToLoad = ImmutableSet.of(FOAF_0_1_URI, HRESTS_URI, MSM_URI, MSM_WSDL_URI,
                 MSM_SWAGGER_URI, WSMO_LITE_URI, HTTP_VOCAB_URI, HTTP_METHODS_URI, CONTENT_VOCAB_URI,
-                DCTERMS_URI, HTTP_STATUS_URI, MEDIA_TYPES_URI, MSM_NFP_URI, SIOC_URI );
+                DCTERMS_URI, HTTP_STATUS_URI, MEDIA_TYPES_URI, MSM_NFP_URI, SIOC_URI);
 
         // Configuration for quick retrieval of ontologies by resolving them to local files.
         ImmutableMap.Builder<String, String> mappingsBuilder = ImmutableMap.builder();

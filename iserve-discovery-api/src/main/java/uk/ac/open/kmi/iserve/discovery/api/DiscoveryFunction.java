@@ -16,48 +16,12 @@
 
 package uk.ac.open.kmi.iserve.discovery.api;
 
-import com.google.common.collect.ImmutableMap;
-
 import java.net.URI;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by Luca Panziera on 20/05/2014.
  */
-public class DiscoveryFunction {
-    protected String function;
-    protected Set<URI> parameters;
-    protected OperationDiscoverer operationDiscoverer;
-    protected ServiceDiscoverer serviceDiscoverer;
-
-    DiscoveryFunction(String function, Set<URI> parameters, OperationDiscoverer operationDiscoverer, ServiceDiscoverer serviceDiscoverer) {
-        this.function = function;
-        this.parameters = parameters;
-        this.operationDiscoverer = operationDiscoverer;
-        this.serviceDiscoverer = serviceDiscoverer;
-    }
-
-    Map<URI, MatchResult> invoke() {
-        if (function.equals("service-class")) {
-            return serviceDiscoverer.findServicesClassifiedBySome(parameters);
-        }
-        if (function.equals("operation-class")) {
-            return operationDiscoverer.findOperationsClassifiedBySome(parameters);
-        }
-        if (function.equals("operation-input")) {
-            return operationDiscoverer.findOperationsConsumingSome(parameters);
-        }
-        if (function.equals("operation-output")) {
-            return operationDiscoverer.findOperationsProducingSome(parameters);
-        }
-        if (function.equals("service-input")) {
-            return serviceDiscoverer.findServicesConsumingSome(parameters);
-        }
-        if (function.equals("service-output")) {
-            return serviceDiscoverer.findServicesProducingSome(parameters);
-        }
-        return ImmutableMap.of();
-    }
-
+public interface DiscoveryFunction {
+    Map<URI, MatchResult> invoke();
 }

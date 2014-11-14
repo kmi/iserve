@@ -4,13 +4,9 @@ package uk.ac.open.kmi.iserve.discovery.engine.rest;
  * Created by Luca Panziera on 29/05/2014.
  */
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import com.google.gson.*;
+import com.wordnik.swagger.annotations.*;
 import org.apache.abdera.model.Feed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,14 +14,9 @@ import uk.ac.open.kmi.iserve.discovery.api.DiscoveryEngine;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoverer;
 import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoverer;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.Filter;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.Ranker;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.ScoreComposer;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.Scorer;
-import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchPlugin;
-import uk.ac.open.kmi.iserve.discovery.freetextsearch.FreeTextSearchResult;
+import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
-import uk.ac.open.kmi.msm4j.vocabulary.MSM;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -50,15 +41,12 @@ public class DiscoveryEngineResource {
     private Logger logger = LoggerFactory.getLogger(DiscoveryEngineResource.class);
     private DiscoveryEngine discoveryEngine;
     private DiscoveryResultsBuilderPlugin discoveryResultsBuilder;
-    private FreeTextSearchPlugin freeTextSearchPlugin;
 
     @Inject
-    DiscoveryEngineResource(ServiceDiscoverer serviceDiscoverer, OperationDiscoverer operationDiscoverer, Set<Filter> filters, Set<Scorer> scorers, ScoreComposer scoreComposer, Ranker ranker, DiscoveryResultsBuilderPlugin discoveryResultsBuilder, FreeTextSearchPlugin freeTextSearchPlugin) {
-        discoveryEngine = new DiscoveryEngine(serviceDiscoverer, operationDiscoverer, filters, scorers, scoreComposer, ranker);
+    DiscoveryEngineResource(ServiceDiscoverer serviceDiscoverer, OperationDiscoverer operationDiscoverer, Set<Filter> filters, Set<AtomicFilter> atomicFilters, Set<Scorer> scorers, Set<AtomicScorer> atomicScorers, ScoreComposer scoreComposer, DiscoveryResultsBuilderPlugin discoveryResultsBuilder, FreeTextSearchPlugin freeTextSearchPlugin) {
+        discoveryEngine = new DiscoveryEngine(serviceDiscoverer, operationDiscoverer, freeTextSearchPlugin, filters, atomicFilters, scorers, atomicScorers, scoreComposer);
         this.discoveryResultsBuilder = discoveryResultsBuilder;
-        this.freeTextSearchPlugin = freeTextSearchPlugin;
     }
-
 
     @GET
     @Path("{type}/func-rdfs")
@@ -75,14 +63,18 @@ public class DiscoveryEngineResource {
             @ApiParam(value = "Type of matching. The value should be either \"and\" or \"or\". The result should be the set- based conjunction or disjunction depending on the classes selected.", allowableValues = "and,or")
             @QueryParam("f") String function,
             @ApiParam(value = "Multivalued parameter indicating the functional classifications to match. The class should be the URL of the concept to match. This URL should be URL encoded.", required = true, allowMultiple = true)
-            @QueryParam("class") List<String> resources
+            @QueryParam("class") List<String> resources,
+            @ApiParam(value = "Filtering according to specific criteria.", allowableValues = "disabled,enabled")
+            @DefaultValue("disabled") @QueryParam("filtering") String filtering,
+            @ApiParam(value = "Popularity-based ranking. The value should be \"standard\" to rank the results according the popularity of the provider.", allowableValues = "standard,inverse")
+            @QueryParam("ranking") String rankingType
     ) throws
             WebApplicationException {
 
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-            return classificationBasedDiscoveryAsJson(type, function, resources, "", "");
+            return classificationBasedDiscoveryAsJson(type, function, resources, rankingType, "");
         }
-        return classificationBasedDiscoveryAsAtom(type, function, resources, "", "");
+        return classificationBasedDiscoveryAsAtom(type, function, resources, rankingType, "");
 
     }
 
@@ -95,7 +87,7 @@ public class DiscoveryEngineResource {
     ) throws
             WebApplicationException {
 
-        String query = buildClassQuery(type, function, resources, rankingType, filtering);
+        JsonElement query = buildClassQuery(type, function, resources, rankingType, filtering);
 
         Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
         Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result, rankingType);
@@ -114,7 +106,7 @@ public class DiscoveryEngineResource {
     ) throws
             WebApplicationException {
 
-        String query = buildClassQuery(type, function, resources, rankingType, filtering);
+        JsonElement query = buildClassQuery(type, function, resources, rankingType, filtering);
 
         Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
 
@@ -140,6 +132,10 @@ public class DiscoveryEngineResource {
             @PathParam("type") String type,
             @ApiParam(value = "type of matching. The value should be either \"and\" or \"or\". The result should be the set- based conjunction or disjunction depending on the value selected between the services matching the inputs and those matching the outputs.", allowableValues = "and,or")
             @QueryParam("f") String function,
+            @ApiParam(value = "Filtering according to specific criteria.", allowableValues = "disabled,enabled")
+            @DefaultValue("disabled") @QueryParam("filtering") String filtering,
+            @ApiParam(value = "Popularity-based ranking. The value should be \"standard\" to rank the results according the popularity of the provider.", allowableValues = "standard,inverse")
+            @QueryParam("ranking") String rankingType,
             @ApiParam(value = "Multivalued parameter indicating the classes that the input of the service should match to. The classes are indicated with the URL of the concept to match. This URL should be URL encoded.", required = true, allowMultiple = true)
             @QueryParam("i") List<String> inputs,
             @ApiParam(value = "Multivalued parameter indicating the classes that the output of the service should match to. The classes are indicated with the URL of the concept to match. This URL should be URL encoded.", allowMultiple = true)
@@ -147,10 +143,10 @@ public class DiscoveryEngineResource {
     ) throws
             WebApplicationException {
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-            return ioDiscoveryAsJson(type, function, "", "", inputs, outputs);
+            return ioDiscoveryAsJson(type, function, rankingType, filtering, inputs, outputs);
         }
 
-        return ioDiscoveryAsAtom(type, function, "", "", inputs, outputs);
+        return ioDiscoveryAsAtom(type, function, rankingType, filtering, inputs, outputs);
     }
 
 
@@ -164,7 +160,7 @@ public class DiscoveryEngineResource {
     ) throws
             WebApplicationException {
 
-        String query = buildIOQuery(type, function, rankingType, filtering, inputs, outputs);
+        JsonElement query = buildIOQuery(type, function, rankingType, filtering, inputs, outputs);
 
         Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
 
@@ -185,7 +181,7 @@ public class DiscoveryEngineResource {
     ) throws
             WebApplicationException {
 
-        String query = buildIOQuery(type, function, rankingType, filtering, inputs, outputs);
+        JsonElement query = buildIOQuery(type, function, rankingType, filtering, inputs, outputs);
 
         Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
         Map<URI, MatchResult> output = Maps.newLinkedHashMap();
@@ -200,117 +196,93 @@ public class DiscoveryEngineResource {
         return Response.ok(json).build();
     }
 
-    private String buildClassQuery(String type, String function, List<String> resources, String rankingType, String filtering) {
-        StringBuilder queryBuilder = new StringBuilder();
+    private JsonElement buildClassQuery(String type, String operator, List<String> resources, String rankingType, String filtering) {
 
-        if (resources == null || resources.isEmpty()) {
-            if (type.equals("svc")) {
-                queryBuilder.append("service-class ");
-            } else if (type.equals("op")) {
-                queryBuilder.append("operation-class ");
-            }
-            queryBuilder.append("http://www.w3.org/2002/07/owl#Thing ");
-        } else {
-            List<String> copyOfRes = Lists.newArrayList(resources);
-            for (String resource : resources) {
-                if (type.equals("svc")) {
-                    queryBuilder.append("service-class ");
-                } else if (type.equals("op")) {
-                    queryBuilder.append("operation-class ");
-                }
-                queryBuilder.append(URI.create(resource)).append(" ");
-                copyOfRes.remove(resource);
-                if (!copyOfRes.isEmpty()) {
-                    if (function == null || function.equals("") || function.equals("or")) {
-                        queryBuilder.append("union ");
-                    } else if (function.equals("and")) {
-                        queryBuilder.append("intersection ");
-                    }
-                }
-            }
-
+        JsonObject query = new JsonObject();
+        JsonArray parameters = new JsonArray();
+        for (String resource : resources) {
+            parameters.add(new JsonPrimitive(resource));
         }
+        JsonObject operatorObject = new JsonObject();
+        if (operator == null || operator.equals("")) {
+            operator = "or";
+        }
+        operatorObject.add(operator, parameters);
+
+        JsonObject functionDiscoveryObject = new JsonObject();
+        functionDiscoveryObject.add("classes", operatorObject);
+        functionDiscoveryObject.add("type", new JsonPrimitive(type));
+
+        JsonObject discoveryObject = new JsonObject();
+
+        discoveryObject.add("func-rdfs", functionDiscoveryObject);
+
+        query.add("discovery", discoveryObject);
 
         if (filtering.equals("enabled")) {
-            queryBuilder.append("filtering ");
+            query.add("filtering", new JsonArray());
         }
-        if (rankingType != null) {
-            if (rankingType.equals("standard")) {
-                queryBuilder.append("rank");
-            } else if (rankingType.equals("inverse")) {
-                queryBuilder.append("inverse-rank");
-            }
+        if (rankingType != null && !rankingType.equals("")) {
+            query.add("ranking", new JsonPrimitive(rankingType));
         }
 
-        String query = queryBuilder.toString();
-
-        logger.info("Query: {}", query);
+        logger.debug("Query: {}", query);
 
         return query;
     }
 
-    private String buildIOQuery(String type, String function, String rankingType, String filtering, List<String> inputs, List<String> outputs) {
-        StringBuilder queryBuilder = new StringBuilder();
-        if ((inputs == null || inputs.isEmpty()) && (outputs == null || outputs.isEmpty())) {
-            if (type.equals("svc")) {
-                queryBuilder.append("service-input http://www.w3.org/2002/07/owl#Thing ");
-            } else if (type.equals("op")) {
-                queryBuilder.append("operation-input http://www.w3.org/2002/07/owl#Thing ");
-            }
-
-        } else {
-            List<String> copyOfinputs = Lists.newArrayList(inputs);
-            for (String resource : inputs) {
-                if (type.equals("svc")) {
-                    queryBuilder.append("service-input ");
-                } else if (type.equals("op")) {
-                    queryBuilder.append("operation-input ");
-                }
-                queryBuilder.append(URI.create(resource)).append(" ");
-                copyOfinputs.remove(resource);
-                if (!copyOfinputs.isEmpty()) {
-                    if (function == null || function.equals("") || function.equals("or")) {
-                        queryBuilder.append("union ");
-                    } else if (function.equals("and")) {
-                        queryBuilder.append("intersection ");
-                    }
-                }
-            }
-
-            List<String> copyOfoutputs = Lists.newArrayList(outputs);
-            for (String resource : outputs) {
-                if (type.equals("svc")) {
-                    queryBuilder.append("service-output ");
-                } else if (type.equals("op")) {
-                    queryBuilder.append("operation-output ");
-                }
-                queryBuilder.append(URI.create(resource)).append(" ");
-                copyOfoutputs.remove(resource);
-                if (!copyOfoutputs.isEmpty()) {
-                    if (function == null || function.equals("") || function.equals("or")) {
-                        queryBuilder.append("union ");
-                    } else if (function.equals("and")) {
-                        queryBuilder.append("intersection ");
-                    }
-                }
-            }
-
+    private JsonElement buildIOQuery(String type, String operator, String rankingType, String filtering, List<String> inputs, List<String> outputs) {
+        JsonObject query = new JsonObject();
+        JsonArray inputParameters = new JsonArray();
+        for (String resource : inputs) {
+            inputParameters.add(new JsonPrimitive(resource));
         }
+        JsonArray outputParameters = new JsonArray();
+        for (String resource : outputs) {
+            outputParameters.add(new JsonPrimitive(resource));
+        }
+        JsonObject inputObject = null;
+        if (!inputs.isEmpty()) {
+            inputObject = new JsonObject();
+            inputObject.add(operator, inputParameters);
+        }
+        JsonObject outputObject = null;
+        if (!outputs.isEmpty()) {
+            outputObject = new JsonObject();
+            outputObject.add(operator, outputParameters);
+        }
+
+        JsonObject functionObject = new JsonObject();
+        if (inputObject != null) {
+            functionObject.add("input", inputObject);
+        }
+        if (outputObject != null) {
+            functionObject.add("output", outputObject);
+        }
+
+        JsonObject operatorObject = new JsonObject();
+        if (operator.equals("")) {
+            operator = "or";
+        }
+        operatorObject.add(operator, functionObject);
+        JsonObject functionDiscoveryObject = new JsonObject();
+        functionDiscoveryObject.add("expression", operatorObject);
+        functionDiscoveryObject.add("type", new JsonPrimitive(type));
+
+        JsonObject discoveryObject = new JsonObject();
+
+        discoveryObject.add("io-rdfs", functionDiscoveryObject);
+
+        query.add("discovery", discoveryObject);
 
         if (filtering.equals("enabled")) {
-            queryBuilder.append("filtering ");
+            query.add("filtering", new JsonArray());
         }
-        if (rankingType != null) {
-            if (rankingType.equals("standard")) {
-                queryBuilder.append("rank");
-            } else if (rankingType.equals("inverse")) {
-                queryBuilder.append("inverse-rank");
-            }
+        if (rankingType != null && !rankingType.equals("")) {
+            query.add("ranking", new JsonPrimitive(rankingType));
         }
 
-        String query = queryBuilder.toString();
-
-        logger.info("Query: {}", query);
+        logger.debug("Query: {}", query);
 
         return query;
     }
@@ -320,7 +292,7 @@ public class DiscoveryEngineResource {
     @Path("{type}/search")
     @ApiOperation(
             value = "Free text-based search of services, operations or service parts",
-            response = URI.class
+            response = DiscoveryResult.class
     )
     @Produces({"application/atom+xml", "application/json"})
     public Response search(
@@ -330,22 +302,67 @@ public class DiscoveryEngineResource {
             @QueryParam("q") String query
     ) {
         logger.info("Searching {} by keywords: {}", type, query);
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Set<FreeTextSearchResult> result;
-        if (type.equals("svc")) {
-            result = freeTextSearchPlugin.search(query, URI.create(MSM.Service.getURI()));
-        } else if (type.equals("op")) {
-            result = freeTextSearchPlugin.search(query, URI.create(MSM.Operation.getURI()));
-        } else {
-            result = freeTextSearchPlugin.search(query);
-        }
+
+        //building discovery Query
+        JsonObject discoveryRequest = new JsonObject();
+        JsonObject functionObject = new JsonObject();
+        functionObject.add("query", new JsonPrimitive(query));
+        functionObject.add("type", new JsonPrimitive(type));
+        discoveryRequest.add("discovery", functionObject);
+
+        // Run discovery
+        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(discoveryRequest);
+        Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result, "");
+
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-            String json = gson.toJson(result);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String json = gson.toJson(discoveryResults);
+
             return Response.ok(json).build();
 
         }
-        Feed feed = new AbderaAtomFeedProvider().generateSearchFeed(uriInfo.getRequestUri().toASCIIString(), freeTextSearchPlugin.getClass().toString(), result);
+        Feed feed = new AbderaAtomFeedProvider().generateDiscoveryFeed(uriInfo.getRequestUri().toASCIIString(), discoveryEngine.toString(), discoveryResults);
         return Response.ok(feed).build();
+    }
+
+    @POST
+    @ApiOperation(
+            value = "Advanced discovery",
+            notes = "Discovery performed by submitting a complete discovery request as JSON",
+            response = DiscoveryResult.class
+    )
+    @ApiResponses(
+            value = {@ApiResponse(code = 200, message = "Discovery successful"),
+                    @ApiResponse(code = 500, message = "Internal error")})
+    @Consumes("application/json")
+    @Produces({"application/atom+xml", "application/json"})
+    public Response advancedDiscovery(
+            @ApiParam(value = "JSON document that specifies the discovery strategy", required = true)
+            String discoveryRequest
+    ) {
+        try {
+            logger.debug("Advanced discovery");
+            Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(new JsonParser().parse(discoveryRequest));
+            Map<URI, DiscoveryResult> discoveryResults;
+            if (discoveryRequest.contains("\"ranking\"") || discoveryRequest.contains("\"scoring\"")) {
+                discoveryResults = discoveryResultsBuilder.build(result, "standard");
+            } else {
+                discoveryResults = discoveryResultsBuilder.build(result, "");
+            }
+
+            if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                String json = gson.toJson(discoveryResults);
+                return Response.status(200).entity(json).build();
+            }
+            Feed feed = new AbderaAtomFeedProvider().generateDiscoveryFeed(uriInfo.getRequestUri().toASCIIString(), discoveryEngine.toString(), discoveryResults);
+            return Response.status(200).entity(feed).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            return Response.status(500).entity("Parsing error! The request is not properly defined.").build();
+        }
+
     }
 
 }

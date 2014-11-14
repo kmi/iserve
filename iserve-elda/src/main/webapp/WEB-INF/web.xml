@@ -30,6 +30,7 @@
         <url-pattern>/index.html</url-pattern>
         <url-pattern>/id/*</url-pattern>
         <url-pattern>/docs/*</url-pattern>
+        <url-pattern>/discovery/*</url-pattern>
     </filter-mapping>
 
 

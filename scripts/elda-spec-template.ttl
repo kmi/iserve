@@ -233,7 +233,7 @@ spec:operationInputsSelect a api:Selector ;
 	api:sort "label" .
  
 spec:providerSelect a api:Selector ;
-        api:where "?service schema:provider ?item" ;
+        api:where "?service schema:provider ?item " ;
         api:sort "label" .
 
 

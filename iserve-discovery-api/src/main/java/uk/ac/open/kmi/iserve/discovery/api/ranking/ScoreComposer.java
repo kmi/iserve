@@ -22,6 +22,6 @@ import java.util.Map;
 /**
  * Created by Luca Panziera on 23/04/2014.
  */
-public interface ScoreComposer {
+public interface ScoreComposer extends DiscoveryModule {
     Map<URI, Double> compose(Map<Scorer, Map<URI, Double>> localScoresMap);
 }

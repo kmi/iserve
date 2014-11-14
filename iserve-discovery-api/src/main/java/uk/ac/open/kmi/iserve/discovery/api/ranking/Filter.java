@@ -16,14 +16,17 @@
 
 package uk.ac.open.kmi.iserve.discovery.api.ranking;
 
-import com.google.common.base.Predicate;
+import com.google.common.base.Function;
 
 import java.net.URI;
+import java.util.Set;
 
 
 /**
  * Created by Luca Panziera on 26/02/2014.
  */
-public interface Filter extends Predicate<URI> {
-    public boolean apply(URI resource);
+public interface Filter extends Function<Set<URI>, Set<URI>>, DiscoveryModule {
+    public Set<URI> apply(Set<URI> resource);
+
+    public Set<URI> apply(Set<URI> resource, String parameters);
 }

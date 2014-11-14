@@ -16,24 +16,24 @@
 
 package uk.ac.open.kmi.iserve.discovery.api;
 
-import com.google.common.base.CharMatcher;
-import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import com.google.common.collect.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.Filter;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.Ranker;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.ScoreComposer;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.Scorer;
+import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchPlugin;
+import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
+import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.ReverseRanker;
+import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.StandardRanker;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
+import uk.ac.open.kmi.msm4j.vocabulary.MSM;
 
 import javax.annotation.Nullable;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,105 +45,247 @@ public class DiscoveryEngine {
 
     private OperationDiscoverer operationDiscoverer;
     private ServiceDiscoverer serviceDiscoverer;
+    private FreeTextSearchPlugin freeTextSearchPlugin;
     private Set<Filter> filters;
     private Set<Scorer> scorers;
     private ScoreComposer scoreComposer;
-    private Ranker ranker;
-
-    private boolean filtering = false;
-    private boolean ranking = false;
 
     private Logger logger = LoggerFactory.getLogger(DiscoveryEngine.class);
 
     @Inject
-    public DiscoveryEngine(ServiceDiscoverer serviceDiscoverer, OperationDiscoverer operationDiscoverer, Set<Filter> filters, Set<Scorer> scorers, @Nullable ScoreComposer scoreComposer, @Nullable Ranker ranker) {
+    public DiscoveryEngine(ServiceDiscoverer serviceDiscoverer,
+                           OperationDiscoverer operationDiscoverer,
+                           @Nullable FreeTextSearchPlugin freeTextSearchPlugin,
+                           Set<Filter> filters,
+                           Set<AtomicFilter> atomicFilters,
+                           Set<Scorer> scorers,
+                           Set<AtomicScorer> atomicScorers,
+                           @Nullable ScoreComposer scoreComposer
+
+    ) {
         this.operationDiscoverer = operationDiscoverer;
         this.serviceDiscoverer = serviceDiscoverer;
+        this.freeTextSearchPlugin = freeTextSearchPlugin;
         this.filters = filters;
         this.scorers = scorers;
         this.scoreComposer = scoreComposer;
-        this.ranker = ranker;
+
+        if (atomicFilters != null) {
+            if (this.filters == null) {
+                this.filters = new HashSet<Filter>();
+            } else {
+                this.filters = new HashSet<Filter>(this.filters);
+            }
+            for (AtomicFilter atomicFilter : atomicFilters) {
+                this.filters.add(new MolecularFilter(atomicFilter));
+            }
+        }
+
+        if (atomicScorers != null) {
+            if (this.scorers == null) {
+                this.scorers = new HashSet<Scorer>();
+            } else {
+                this.scorers = new HashSet<Scorer>(this.scorers);
+            }
+            for (AtomicScorer atomicScorer : atomicScorers) {
+                this.scorers.add(new MolecularScorer(atomicScorer));
+            }
+        }
     }
 
-    public Map<URI, Pair<Double, MatchResult>> discover(String request) {
+    public Map<URI, Pair<Double, MatchResult>> discover(JsonElement request) {
         return discover(parse(request));
     }
 
-    // TODO Implement a proper parser ()
-    private DiscoveryFunction parse(String request) {
-        List<String> tokens = Lists.newLinkedList(Splitter.on(CharMatcher.WHITESPACE).omitEmptyStrings().split(request));
-        if (tokens.contains("filter")) {
-            tokens.remove("filter");
-            filtering = true;
-        }
+    private DiscoveryRequest parse(JsonElement jsonRequest) {
+        boolean filter = false;
+        boolean rank = false;
+        Map<Class, String> parametersMap = Maps.newHashMap();
+        Set<Class> requestedModules = Sets.newHashSet();
+        String rankingType = null;
 
-        if (tokens.contains("rank")) {
-            tokens.remove("rank");
-            ranking = true;
-        }
+        JsonObject requestObject = jsonRequest.getAsJsonObject();
 
-        // Building of functional discovery logic
-
+        // Discovery parsing
+        JsonObject discovery = requestObject.getAsJsonObject("discovery");
         DiscoveryFunction discoveryFunction = null;
-
-        for (int i = 0; i < tokens.size(); i++) {
-            if (discoveryFunction == null) {
-                try {
-                    discoveryFunction = new DiscoveryFunction(tokens.get(i), Sets.newHashSet(new URI(tokens.get(i + 1))), operationDiscoverer, serviceDiscoverer);
-                    i += 2;
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                }
+        // Free text search parsing
+        if (discovery.has("query")) {
+            URI type = null;
+            if (discovery.get("type").getAsString().equals("svc")) {
+                type = URI.create(MSM.Service.getURI());
+            } else if (discovery.get("type").getAsString().equals("op")) {
+                type = URI.create(MSM.Operation.getURI());
             }
-            if (i < tokens.size()) {
-                try {
-                    discoveryFunction = new CompositeDiscoveryFunction(discoveryFunction, new DiscoveryFunction(tokens.get(i + 1), Sets.newHashSet(new URI(tokens.get(i + 2))), operationDiscoverer, serviceDiscoverer), tokens.get(i));
-                    i += 2;
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                }
+            discoveryFunction = new FreeTextDiscoveryFunction(freeTextSearchPlugin, discovery.get("query").getAsString(), type);
+        }
+        //Semantic Discovery parsing
+
+        if (discovery.has("func-rdfs")) {
+            JsonObject functionObject = discovery.getAsJsonObject("func-rdfs");
+            String type = functionObject.get("type").getAsString();
+            discoveryFunction = buildSemanticDiscoveryFunction("func-rdfs", type, "classes", functionObject);
+        }
+        if (discovery.has("io-rdfs")) {
+            String type = discovery.getAsJsonObject("io-rdfs").get("type").getAsString();
+            JsonObject expressionObject = discovery.getAsJsonObject("io-rdfs").getAsJsonObject("expression");
+            if (expressionObject.has("input")) {
+                discoveryFunction = buildSemanticDiscoveryFunction("io-rdfs", type, "input", expressionObject);
+            } else if (expressionObject.has("output")) {
+                discoveryFunction = buildSemanticDiscoveryFunction("io-rdfs", type, "output", expressionObject);
+            } else if (expressionObject.has("or")) {
+                List<SemanticDiscoveryFunction> subFunctions = Lists.newArrayList();
+                JsonObject or = expressionObject.getAsJsonObject("or");
+                subFunctions.add(buildSemanticDiscoveryFunction("io-rdfs", type, "input", or));
+                subFunctions.add(buildSemanticDiscoveryFunction("io-rdfs", type, "output", or));
+                discoveryFunction = new CompositeSemanticDiscoveryFunction("or", "io-rdfs", type, subFunctions, operationDiscoverer, serviceDiscoverer);
+            } else if (expressionObject.has("and")) {
+                List<SemanticDiscoveryFunction> subFunctions = Lists.newArrayList();
+                JsonObject and = expressionObject.getAsJsonObject("and");
+                subFunctions.add(buildSemanticDiscoveryFunction("io-rdfs", type, "input", and));
+                subFunctions.add(buildSemanticDiscoveryFunction("io-rdfs", type, "output", and));
+                discoveryFunction = new CompositeSemanticDiscoveryFunction("and", "io-rdfs", type, subFunctions, operationDiscoverer, serviceDiscoverer);
             }
         }
 
-        return discoveryFunction;
+        try {
+            // filtering parsing
+            if (requestObject.has("filtering")) {
+                filter = true;
+                JsonArray filters = requestObject.getAsJsonArray("filtering");
+                for (JsonElement filterElement : filters) {
+                    JsonObject filterObject = filterElement.getAsJsonObject();
+                    Class filterClass = Class.forName(filterObject.get("filterClass").getAsString());
+                    requestedModules.add(filterClass);
+                    if (filterObject.has("parameters")) {
+                        parametersMap.put(filterClass, filterObject.get("parameters").toString());
+                    }
+                }
 
+            }
+            //scoring parsing
+            if (requestObject.has("scoring")) {
+                rank = true;
+                JsonArray scorers = requestObject.getAsJsonArray("scoring");
+                for (JsonElement scorerElement : scorers) {
+                    JsonObject scorerObject = scorerElement.getAsJsonObject();
+                    Class scorerClass = Class.forName(scorerObject.get("scorerClass").getAsString());
+                    requestedModules.add(scorerClass);
+                    if (scorerObject.has("parameters")) {
+                        parametersMap.put(scorerClass, scorerObject.get("parameters").toString());
+                    }
+                }
+                rankingType = "standard";
+
+            }
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        // ranking parsing
+        if (requestObject.has("ranking")) {
+            rank = true;
+            if (!requestObject.get("ranking").getAsString().equalsIgnoreCase("inverse")) {
+                rankingType = "standard";
+            } else {
+                rankingType = requestObject.get("ranking").getAsString().toLowerCase();
+            }
+        }
+
+        DiscoveryRequest discoveryRequest = new DiscoveryRequest(discoveryFunction, requestedModules, filter, rank, parametersMap, rankingType);
+        return discoveryRequest;
+    }
+
+    private SemanticDiscoveryFunction buildSemanticDiscoveryFunction(String function, String type, String parameterType, JsonObject functionObject) {
+        try {
+            if (functionObject.get(parameterType).isJsonPrimitive()) {
+                Set<URI> parameters = ImmutableSet.of(new URI(functionObject.get(parameterType).getAsString()));
+                return new SemanticDiscoveryFunction(function, type, parameters, parameterType, operationDiscoverer, serviceDiscoverer);
+            } else if (functionObject.get(parameterType).isJsonObject()) {
+                JsonObject classes = functionObject.getAsJsonObject(parameterType);
+                return buildCompositeSemanticDiscoveryFuction(function, type, parameterType, classes);
+            }
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private CompositeSemanticDiscoveryFunction buildCompositeSemanticDiscoveryFuction(String function, String type, String parameterType, JsonObject expression) {
+        if (expression.has("or")) {
+            return new CompositeSemanticDiscoveryFunction("or", function, type, parameterType, operationDiscoverer, serviceDiscoverer, expression.get("or"));
+        }
+        if (expression.has("and")) {
+            return new CompositeSemanticDiscoveryFunction("and", function, type, parameterType, operationDiscoverer, serviceDiscoverer, expression.get("and"));
+        }
+        return null;
     }
 
 
-    public Map<URI, Pair<Double, MatchResult>> discover(DiscoveryFunction discoveryFunction) {
-
+    private Map<URI, Pair<Double, MatchResult>> discover(DiscoveryRequest discoveryRequest) {
 
         logger.info("Functional discovery");
-        Map<URI, MatchResult> funcResults = discoveryFunction.invoke();
+        Map<URI, MatchResult> funcResults = discoveryRequest.getDiscoveryFunction().invoke();
 
-        Map<URI, MatchResult> filteredResults = funcResults;
-        if (filtering) {
-
+        Set<URI> filteredResources = funcResults.keySet();
+        if (discoveryRequest.filter()) {
             for (Filter filter : filters) {
-                logger.info("Filtering: {}", filter);
-                filteredResults = Maps.filterKeys(filteredResults, filter);
+                Class filterClass;
+                if (filter instanceof MolecularFilter) {
+                    filterClass = ((MolecularFilter) filter).getAtomicFilter().getClass();
+                } else {
+                    filterClass = filter.getClass();
+                }
+                if (discoveryRequest.getRequestedModules().isEmpty() || discoveryRequest.getRequestedModules().contains(filterClass)) {
+                    logger.info("Filtering: {}", filter);
+                    if (discoveryRequest.getModuleParametersMap().containsKey(filterClass)) {
+                        filteredResources = filter.apply(filteredResources, discoveryRequest.getModuleParametersMap().get(filterClass));
+                    } else {
+                        filteredResources = filter.apply(filteredResources);
+                    }
+                }
             }
         }
 
-        if (ranking) {
+        if (discoveryRequest.rank()) {
             if (scorers == null) {
                 logger.warn("Injection of scores without score composer: Ranking omitted!");
             } else {
                 logger.info("Scoring");
                 Map<Scorer, Map<URI, Double>> localScoresMap = Maps.newHashMap();
+
                 for (Scorer scorer : scorers) {
-                    Map<URI, Double> localScores = Maps.toMap(filteredResults.keySet(), scorer);
-                    localScoresMap.put(scorer, localScores);
+                    Class scorerClass;
+                    if (scorer instanceof MolecularScorer) {
+                        scorerClass = ((MolecularScorer) scorer).getAtomicScorer().getClass();
+                    } else {
+                        scorerClass = scorer.getClass();
+                    }
+                    if (discoveryRequest.getRequestedModules().isEmpty() || discoveryRequest.getRequestedModules().contains(scorerClass)) {
+                        Map<URI, Double> localScores;
+                        if (discoveryRequest.getModuleParametersMap().containsKey(scorerClass)) {
+                            localScores = scorer.apply(filteredResources, discoveryRequest.getModuleParametersMap().get(scorerClass));
+                        } else {
+                            localScores = scorer.apply(filteredResources);
+                        }
+                        localScoresMap.put(scorer, localScores);
+                    }
                 }
 
                 Map<URI, Double> globalScores = scoreComposer.compose(localScoresMap);
 
+
                 logger.info("Ranking");
-                Map<URI, Double> rankedURIs = ranker.rank(globalScores);
+                Map<URI, Double> rankedURIs;
+                if (discoveryRequest.getRankingType().equals("standard")) {
+                    rankedURIs = new StandardRanker().rank(globalScores);
+                } else {
+                    rankedURIs = new ReverseRanker().rank(globalScores);
+                }
 
                 ImmutableMap.Builder<URI, Pair<Double, MatchResult>> builder = ImmutableMap.builder();
                 for (URI resource : rankedURIs.keySet()) {
-                    builder.put(resource, new Pair<Double, MatchResult>(rankedURIs.get(resource), filteredResults.get(resource)));
+                    builder.put(resource, new Pair<Double, MatchResult>(rankedURIs.get(resource), funcResults.get(resource)));
                 }
 
 
@@ -151,8 +293,8 @@ public class DiscoveryEngine {
             }
         } else {
             ImmutableMap.Builder<URI, Pair<Double, MatchResult>> builder = ImmutableMap.builder();
-            for (URI resource : filteredResults.keySet()) {
-                builder.put(resource, new Pair<Double, MatchResult>(new Double(0), filteredResults.get(resource)));
+            for (URI resource : filteredResources) {
+                builder.put(resource, new Pair<Double, MatchResult>(new Double(0), funcResults.get(resource)));
             }
             return builder.build();
         }

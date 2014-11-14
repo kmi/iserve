@@ -9,17 +9,16 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>iserve-free-text-search</artifactId>
-    <name>iServe Free Text Search Plugin</name>
+    <artifactId>iserve-sparql-text-search</artifactId>
+    <name>iServe Free Text Search Plugin based on SPARQL</name>
     <description>
-        iServe Free Text Search Plugin provides free text search interfaces
-        and their corresponding implementations.
+        iServe Free Text Search Plugin implementations based on SPARQL.
     </description>
 
     <dependencies>
         <dependency>
             <groupId>uk.ac.open.kmi.iserve</groupId>
-            <artifactId>iserve-sal-core</artifactId>
+            <artifactId>iserve-discovery-api</artifactId>
             <version>${project.version}</version>
         </dependency>
 

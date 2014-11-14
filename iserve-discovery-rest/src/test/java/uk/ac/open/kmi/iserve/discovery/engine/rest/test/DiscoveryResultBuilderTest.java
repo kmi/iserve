@@ -1,6 +1,7 @@
 package uk.ac.open.kmi.iserve.discovery.engine.rest.test;
 
 import com.google.common.base.Stopwatch;
+import com.google.gson.JsonParser;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.Test;
@@ -29,10 +30,9 @@ public class DiscoveryResultBuilderTest {
 
         URI modelA = URI.create("http://schema.org/InformAction");
 
-        String query = "service-class " + modelA;
+        String query = "{ \"discovery\": { \"func-rdfs\": { \"classes\": \"" + modelA + "\", \"type\":\"svc\" } }, \"ranking\":\"standard\" }";
 
-
-        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
+        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(new JsonParser().parse(query));
 
         Stopwatch stopwatch = new Stopwatch().start();
         Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result, "standard");
