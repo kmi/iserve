@@ -109,16 +109,6 @@
             <version>${jersey.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-multipart</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.ext</groupId>
-            <artifactId>jersey-mvc</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
-        <dependency>
             <groupId>uk.ac.open.kmi.iserve</groupId>
             <artifactId>iserve-semantic-discovery</artifactId>
             <version>${project.version}</version>
@@ -130,7 +120,7 @@
         </dependency>
         <dependency>
             <groupId>uk.ac.open.kmi.iserve</groupId>
-            <artifactId>iserve-free-text-search</artifactId>
+            <artifactId>iserve-sparql-text-search</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

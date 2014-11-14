@@ -61,7 +61,6 @@ import java.util.*;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 04/10/2013
  */
-@Ignore
 @RunWith(JukitoRunner.class)
 public class GenericLogicDiscovererTest {
 
@@ -73,29 +72,6 @@ public class GenericLogicDiscovererTest {
     private static final String WSC08_01_TAXONOMY_FILE = WSC08_01 + "taxonomy.owl";
     private static final String WSC_01_TAXONOMY_URL = "http://localhost/wsc/01/taxonomy.owl";
     private static final String WSC_01_TAXONOMY_NS = "http://localhost/wsc/01/taxonomy.owl#";
-
-    /**
-     * JukitoModule.
-     */
-    public static class InnerModule extends JukitoModule {
-        @Override
-        protected void configureTest() {
-            // Add dependency
-            install(new RegistryManagementModule());
-
-            // bind
-            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
-//            bind(ConceptMatcher.class).to(SparqlIndexedLogicConceptMatcher.class);
-
-            // bind
-//            bind(GenericLogicDiscoverer.class).in(Singleton.class);
-            bind(OperationDiscoverer.class).to(GenericLogicDiscoverer.class);
-            bind(ServiceDiscoverer.class).to(GenericLogicDiscoverer.class);
-
-            // Necessary to verify interaction with the real object
-            bindSpy(GenericLogicDiscoverer.class);
-        }
-    }
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -121,10 +97,6 @@ public class GenericLogicDiscovererTest {
         if (ontoDir.exists() && ontoDir.isDirectory() && ontoDir.listFiles().length > 0) {
             descriptions.addAll(Arrays.asList(ontoDir.listFiles(new Notation3ExtFilter())));
         }
-
-        OntModel schemaModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
-        schemaModel.read(GenericLogicDiscovererTest.class.getResource("/pw-example/schema.rdf").getFile());
-        registryManager.getKnowledgeBaseManager().uploadModel(URI.create("http://schema.org/"), schemaModel, true);
 
         for (File desc : descriptions) {
             try {
@@ -192,6 +164,21 @@ public class GenericLogicDiscovererTest {
 
     }
 
+    @Test
+    public void testFindOperationsConsumingSome(OperationDiscoverer opDiscoverer) throws Exception {
+
+        URI inputUri = URI.create(WSC_01_TAXONOMY_NS + "con332477359");
+
+        // Obtain matches
+        Stopwatch stopwatch = new Stopwatch().start();
+        Map<URI, MatchResult> matches = opDiscoverer.findOperationsConsumingSome(ImmutableSet.of(inputUri));
+        stopwatch.stop();
+
+        log.info("Obtained ({}) matches in {} \n {}", matches.size(), stopwatch, matches);
+//        Assert.assertEquals(LogicConceptMatchType.Plugin, match.getMatchType());
+
+    }
+
 
 //    <http://localhost/wsc/01/taxonomy.owl#con332477359>
 //
@@ -212,21 +199,6 @@ public class GenericLogicDiscovererTest {
 //    Outputs
 //    <http://localhost/wsc/01/taxonomy.owl#con512919114>
 //    <http://localhost/wsc/01/taxonomy.owl#con633555781>
-
-    @Test
-    public void testFindOperationsConsumingSome(OperationDiscoverer opDiscoverer) throws Exception {
-
-        URI inputUri = URI.create(WSC_01_TAXONOMY_NS + "con332477359");
-
-        // Obtain matches
-        Stopwatch stopwatch = new Stopwatch().start();
-        Map<URI, MatchResult> matches = opDiscoverer.findOperationsConsumingSome(ImmutableSet.of(inputUri));
-        stopwatch.stop();
-
-        log.info("Obtained ({}) matches in {} \n {}", matches.size(), stopwatch, matches);
-//        Assert.assertEquals(LogicConceptMatchType.Plugin, match.getMatchType());
-
-    }
 
     @Test
     @Ignore
@@ -283,6 +255,7 @@ public class GenericLogicDiscovererTest {
     }
 
     @Test
+    @Ignore
     public void testFindServicesClassifiedByAll(ServiceDiscoverer serviceDiscoverer) throws Exception {
         URI modelA = URI.create("http://schema.org/CreateAction");
         URI modelB = URI.create("http://schema.org/SearchAction");
@@ -296,6 +269,7 @@ public class GenericLogicDiscovererTest {
     }
 
     @Test
+    @Ignore
     public void testFindServicesClassifiedBySome(ServiceDiscoverer serviceDiscoverer) throws Exception {
         URI modelA = URI.create("http://schema.org/CreateAction");
         URI modelB = URI.create("http://schema.org/SearchAction");
@@ -312,6 +286,29 @@ public class GenericLogicDiscovererTest {
     @Ignore
     public void testFindServicesInvocableWith() throws Exception {
 
+    }
+
+    /**
+     * JukitoModule.
+     */
+    public static class InnerModule extends JukitoModule {
+        @Override
+        protected void configureTest() {
+            // Add dependency
+            install(new RegistryManagementModule());
+
+            // bind
+            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
+//            bind(ConceptMatcher.class).to(SparqlIndexedLogicConceptMatcher.class);
+
+            // bind
+//            bind(GenericLogicDiscoverer.class).in(Singleton.class);
+            bind(OperationDiscoverer.class).to(GenericLogicDiscoverer.class);
+            bind(ServiceDiscoverer.class).to(GenericLogicDiscoverer.class);
+
+            // Necessary to verify interaction with the real object
+            bindSpy(GenericLogicDiscoverer.class);
+        }
     }
 
     public static class Notation3ExtFilter implements FilenameFilter {

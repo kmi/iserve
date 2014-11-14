@@ -45,7 +45,5 @@ public class EldaWebApplication extends ResourceConfig {
         register(ResetCacheCounts.class);
         register(ShowCache.class);
         register(ShowStats.class);
-        ;
-
     }
 }
