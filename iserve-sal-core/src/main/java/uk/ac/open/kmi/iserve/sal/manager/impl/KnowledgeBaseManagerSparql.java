@@ -100,7 +100,7 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
 
         // Configuration for quick retrieval of ontologies by resolving them to local files.
         ImmutableMap.Builder<String, String> mappingsBuilder = ImmutableMap.builder();
-        mappingsBuilder.put(SCHEMA_ORG_URI.toASCIIString(), this.getClass().getResource("/schema-dot-org-2014-04-03.rdf").toString());
+        mappingsBuilder.put(SCHEMA_ORG_URI.toASCIIString(), this.getClass().getResource("/schema-dot-org-2014-04-03.ttl").toString());
 
         Set<String> ignoredImports = ImmutableSet.of();
 
