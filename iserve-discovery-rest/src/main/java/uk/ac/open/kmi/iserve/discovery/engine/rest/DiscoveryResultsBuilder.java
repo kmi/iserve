@@ -48,7 +48,12 @@ public class DiscoveryResultsBuilder implements DiscoveryResultsBuilderPlugin {
 
             Set<URI> providers = Sets.newHashSet();
             for (Object provider : providersMap.values()) {
-                providers.add((URI) provider);
+                if (provider instanceof Set) {
+                    providers.add((URI) ((Set) provider).iterator().next());
+                } else {
+                    providers.add((URI) provider);
+                }
+
             }
 
             Map<URI, Object> popularityMap = nfpManager.getPropertyValueOfResources(providers, URI.create(MSM_NFP.hasPopularity.getURI()), String.class);
