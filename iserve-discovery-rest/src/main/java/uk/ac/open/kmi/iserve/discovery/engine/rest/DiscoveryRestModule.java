@@ -15,9 +15,6 @@ import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
 import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchProvider;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.BasicScoreComposer;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.StandardRanker;
-import uk.ac.open.kmi.iserve.discovery.ranking.impl.CommunityVitalityScorer;
-import uk.ac.open.kmi.iserve.discovery.ranking.impl.ProviderPopularityScorer;
 import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.NfpManagerSparql;
 import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
@@ -40,18 +37,17 @@ public class DiscoveryRestModule extends ServletModule {
         // ServletModule defines the "request" scope. GuiceFilter creates/destroys the scope on each incoming request.
         install(new ServletModule());
 
-        //Scorers configuration
+        install(PluginModuleLoader.of(RecommendationPluginModule.class));
+
+//        //Scorers configuration
         Multibinder<Filter> filterBinder = Multibinder.newSetBinder(binder(), Filter.class);
         Multibinder<AtomicFilter> atomicFilterBinder = Multibinder.newSetBinder(binder(), AtomicFilter.class);
 
-        //Scorers configuration
+//        //Scorers configuration
         Multibinder<Scorer> scorerBinder = Multibinder.newSetBinder(binder(), Scorer.class);
         Multibinder<AtomicScorer> atomicScorerBinder = Multibinder.newSetBinder(binder(), AtomicScorer.class);
-        scorerBinder.addBinding().to(CommunityVitalityScorer.class);
-        scorerBinder.addBinding().to(ProviderPopularityScorer.class);
 
         bind(ScoreComposer.class).to(BasicScoreComposer.class);
-        bind(Ranker.class).to(StandardRanker.class);
         bind(NfpManager.class).to(NfpManagerSparql.class);
         bind(DiscoveryResultsBuilderPlugin.class).to(DiscoveryResultsBuilder.class);
 

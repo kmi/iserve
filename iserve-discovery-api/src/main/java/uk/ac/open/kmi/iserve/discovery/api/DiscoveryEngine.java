@@ -56,10 +56,10 @@ public class DiscoveryEngine {
     public DiscoveryEngine(ServiceDiscoverer serviceDiscoverer,
                            OperationDiscoverer operationDiscoverer,
                            @Nullable FreeTextSearchPlugin freeTextSearchPlugin,
-                           Set<Filter> filters,
-                           Set<AtomicFilter> atomicFilters,
-                           Set<Scorer> scorers,
-                           Set<AtomicScorer> atomicScorers,
+                           @Nullable Set<Filter> filters,
+                           @Nullable Set<AtomicFilter> atomicFilters,
+                           @Nullable Set<Scorer> scorers,
+                           @Nullable Set<AtomicScorer> atomicScorers,
                            @Nullable ScoreComposer scoreComposer
 
     ) {
