@@ -24,7 +24,6 @@ import junit.framework.Assert;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -57,7 +56,6 @@ import java.util.Set;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 01/08/2013
  */
-@Ignore
 @RunWith(JukitoRunner.class)
 public class ConceptMatcherOwlTcTest {
 
