@@ -32,7 +32,6 @@
 @prefix schema:             <http://schema.org/> .
 @prefix cc:                 <http://creativecommons.org/ns#> .
 @prefix freebase:           <http://rdf.freebase.com/ns/>.
-@prefix lucene:                <http://www.ontotext.com/owlim/lucene#> .
 
 # Prefix for the local specification
 
@@ -85,7 +84,7 @@ spec:api a api:API;
 # Endpoint definition
 <http://localhost:8080/openrdf-sesame/repositories/iserve>
         elda:textSearchOperand "?_search" ;
-        elda:textQueryProperty lucene:entityIndex ;
+        elda:textQueryProperty <http://www.ontotext.com/owlim/lucene#entityIndex> ;
         elda:supportsNestedSelect true ;
         .	
 
@@ -234,7 +233,7 @@ spec:operationInputsSelect a api:Selector ;
 	api:sort "label" .
  
 spec:providerSelect a api:Selector ;
-        api:where "?service schema:provider ?item" ;
+        api:where "?service schema:provider ?item . " ;
         api:sort "label" .
 
 
