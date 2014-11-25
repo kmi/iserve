@@ -1,9 +1,6 @@
 package uk.ac.open.kmi.iserve.discovery.api.freetextsearch;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Provides;
+import com.google.inject.*;
 import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
 import uk.ac.open.kmi.iserve.core.iServeProperty;
@@ -21,6 +18,7 @@ public class FreeTextSearchProvider extends AbstractModule {
     }
 
     @Provides
+    @Singleton
     FreeTextSearchPlugin provideFreeTextSearchPlugin(@iServeProperty(ConfigurationProperty.FREE_TEXT_SEARCH) String pluginClassName) {
         Injector injector = Guice.createInjector(configurationModule);
         try {
