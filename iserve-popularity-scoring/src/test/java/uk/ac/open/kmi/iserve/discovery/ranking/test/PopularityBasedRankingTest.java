@@ -22,6 +22,10 @@ import com.google.gson.JsonParser;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.multibindings.Multibinder;
+import com.hp.hpl.jena.update.UpdateExecutionFactory;
+import com.hp.hpl.jena.update.UpdateFactory;
+import com.hp.hpl.jena.update.UpdateProcessor;
+import com.hp.hpl.jena.update.UpdateRequest;
 import junit.framework.Assert;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
@@ -30,6 +34,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
+import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.discovery.api.*;
 import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchProvider;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
@@ -103,7 +109,20 @@ public class PopularityBasedRankingTest {
     }
 
     @Test
-    public void discoveryTest(DiscoveryEngine discoveryEngine) {
+    public void discoveryTest(DiscoveryEngine discoveryEngine, @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_UPDATE) String updateEndpoint) {
+
+        logger.info("Free text search indexing...");
+        StringBuilder updateBuilder = new StringBuilder();
+        updateBuilder.append("PREFIX luc: <http://www.ontotext.com/owlim/lucene#> ")
+                .append("INSERT DATA {")
+                .append("luc:include luc:setParam \"literal uri\" . ")
+                .append("luc:index luc:setParam \"literals, uri\" . ")
+                .append("luc:moleculeSize luc:setParam \"1\" . ")
+                .append("luc:entityIndex luc:createIndex \"true\" . }");
+        UpdateRequest request = UpdateFactory.create();
+        request.add(updateBuilder.toString());
+        UpdateProcessor processor = UpdateExecutionFactory.createRemoteForm(request, updateEndpoint);
+        processor.execute();
 
         String query = "{\n" +
                 "    \"discovery\": { \"query\": \"search\" , \"type\": \"svc\"}," +
