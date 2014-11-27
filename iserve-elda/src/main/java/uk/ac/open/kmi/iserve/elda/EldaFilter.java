@@ -17,6 +17,8 @@ public class EldaFilter implements Filter {
     private RequestDispatcher defaultRequestDispatcher;
     private RequestDispatcher salRestRequestDispatcher;
     private RequestDispatcher discoveryRestRequestDispatcher;
+    private RequestDispatcher eldaRequestDispatcher;
+    private RequestDispatcher swaggerRequestDispatcher;
 
 
     @Override
@@ -33,22 +35,31 @@ public class EldaFilter implements Filter {
         res.addHeader("Access-Control-Allow-Origin", "*");
         res.addHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
         res.addHeader("Access-Control-Allow-Headers", "Content-Type");
-        if (path.equals("/id/services") && httpRequest.getMethod().equalsIgnoreCase("GET")) {
-            // TODO Fix this by debugging Elda config file
-            logger.debug("Redirect request to /doc/services...");
+        if (path.equals("") || path.equals("/")) {
             res.sendRedirect(httpRequest.getContextPath() + "/doc/services");
-        } else if ((path.matches("/id.*") && !httpRequest.getMethod().equalsIgnoreCase("GET")) || path.matches("/id/documents.*")) {
+        } else if (path.equals("/api-docs")) {
+            swaggerRequestDispatcher.forward(request, response);
+        } else if (path.equals("/docs")) {
+            res.sendRedirect(httpRequest.getContextPath() + "/docs/");
+        } else if (path.equals("/docs/")) {
+            request.getRequestDispatcher(path + "index.html").forward(request, response);
+        } else if (path.matches("/docs/.*") || path.matches("/lda-assets.*")) {
+            defaultRequestDispatcher.forward(request, response);
+        } else if (path.matches("/doc/.*")) {
+            logger.debug("Forward request to Elda...");
+            eldaRequestDispatcher.forward(request, response);
+        } else if ((path.matches("/id/.*") && !httpRequest.getMethod().equalsIgnoreCase("GET")) || path.matches("/id/documents.*")) {
             logger.debug("Forward request to SAL REST...");
             salRestRequestDispatcher.forward(request, response);
-        } else if ((path.matches("/id.*") && httpRequest.getMethod().equalsIgnoreCase("GET")) || (path.matches("/api-docs.*"))) {
-            logger.debug("Forward request to Filter chain...");
-            chain.doFilter(request, response);
+        } else if (path.matches("/id/.*") && httpRequest.getMethod().equalsIgnoreCase("GET")) {
+            logger.debug("Redirect request to Elda...");
+            res.sendRedirect(httpRequest.getContextPath() + path.replace("/id/", "/doc/"));
         } else if (path.matches("/discovery.*")) {
             logger.debug("Forward request to Discovery REST...");
             discoveryRestRequestDispatcher.forward(request, response);
         } else {
-            logger.debug("Forward request to Default servlet...");
-            defaultRequestDispatcher.forward(request, response);
+            logger.debug("Forward request to Filter chain...");
+            chain.doFilter(request, response);
         }
 
     }
@@ -61,5 +72,8 @@ public class EldaFilter implements Filter {
                 filterConfig.getServletContext().getNamedDispatcher("iServe SAL REST Endpoint");
         this.discoveryRestRequestDispatcher =
                 filterConfig.getServletContext().getNamedDispatcher("Discovery Endpoint");
+        this.swaggerRequestDispatcher = filterConfig.getServletContext().getNamedDispatcher("Swagger");
+        this.eldaRequestDispatcher = filterConfig.getServletContext().getNamedDispatcher("Elda");
+
     }
 }
