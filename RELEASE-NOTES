@@ -9,7 +9,7 @@ most J2EE servlet containers.
 
 Requires SPARQL 1.1 compliant RDF store
 
-Requires a Servlet 3.0 compliant Web application server, e.g., Tomcat 7
+Requires a Servlet 2.5 compliant Web application server, e.g., Tomcat 7
 
 NOTE: Old configuration files need updating due to changes in the configuration
 mechanism.
@@ -40,6 +40,7 @@ occur. The implementation is based on Guava's event bus
 - Significant performance improvements both for Services manipulation as well as Concept matching
 
 
+
 Import
 ======
 - Import mechanisms now based on plugins that can be loaded at runtime
@@ -48,17 +49,19 @@ Import
 - Improved automated support for uploading referenced ontologies both synchronously and asynchronously
 - Added basic roll-back features for dealing with partial imports
 - External datasets have now been integrated and made available via maven automated downloads for testing and development
+- Added Swagger 1.0 & 1.2 import support
 
 Discovery
 =========
 - Discovery mechanisms are now pluggable and detected automatically by the system
 - Default discovery implementation can now discover operations and services
-- Discovery plugins are now accompanied by their own internal documentation
-- Basic Scoring and Ranking mechanism implemented for better results ordering
+- Discovery plugins are now accompanied by their own internal documentation exposed also via an interactive documentation GUI
+- Advanced pluggable Scoring and Ranking mechanisms implemented for better results ordering
 - Discovery results now include details on the inner matches for debugging and 
 better scoring purposes.
 - Homogeneised discovery result types within the standard discovery plugin
 - Scoring and ranking is only performed at the end to avoid recomputations
-- Developed some initial basic implementations with local indexes for much faster discovery responses
+- Developed discovery implementation with in-memory local indexes for much faster discovery responses
+- Added freetext discovery
 
  
