@@ -72,9 +72,9 @@ public class DiscoveryEngineResource {
             WebApplicationException {
 
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-            return classificationBasedDiscoveryAsJson(type, function, resources, rankingType, "");
+            return classificationBasedDiscoveryAsJson(type, function, resources, rankingType, filtering);
         }
-        return classificationBasedDiscoveryAsAtom(type, function, resources, rankingType, "");
+        return classificationBasedDiscoveryAsAtom(type, function, resources, rankingType, filtering);
 
     }
 
