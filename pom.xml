@@ -160,6 +160,7 @@
         <module>iserve-swagger</module>
         <module>iserve-popularity-scoring</module>
         <module>iserve-sparql-text-search</module>
+        <module>iserve-service-type-filtering</module>
     </modules>
 
     <dependencies>
