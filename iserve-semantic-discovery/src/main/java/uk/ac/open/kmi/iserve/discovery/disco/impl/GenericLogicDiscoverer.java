@@ -70,8 +70,12 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
 
         // Expand the input types to get all that match enough to be consumed
         // The structure is: <OriginalType, MatchingType, MatchResult>
-        Table<URI, URI, MatchResult> expandedTypes =
-                this.conceptMatcher.listMatchesAtLeastOfType(types, LogicConceptMatchType.Plugin);
+        Table<URI, URI, MatchResult> expandedTypes;
+        if (relationship.toASCIIString().equals(SAWSDL.modelReference.getURI())) {
+            expandedTypes = this.conceptMatcher.listMatchesAtMostOfType(types, LogicConceptMatchType.Subsume);
+        } else {
+            expandedTypes = this.conceptMatcher.listMatchesAtLeastOfType(types, LogicConceptMatchType.Plugin);
+        }
 
         // Track all the results in a multimap to push the details up the stack
         Multimap<URI, MatchResult> result = ArrayListMultimap.create();
@@ -131,8 +135,12 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
 
         // Expand the input types to get all that match enough to be consumed
         // TODO: The leastOfType should be configurable
-        Table<URI, URI, MatchResult> expandedTypes =
-                this.conceptMatcher.listMatchesAtLeastOfType(types, LogicConceptMatchType.Plugin);
+        Table<URI, URI, MatchResult> expandedTypes;
+        if (relationship.toASCIIString().equals(SAWSDL.modelReference.getURI())) {
+            expandedTypes = this.conceptMatcher.listMatchesAtMostOfType(types, LogicConceptMatchType.Subsume);
+        } else {
+            expandedTypes = this.conceptMatcher.listMatchesAtLeastOfType(types, LogicConceptMatchType.Plugin);
+        }
 
         // Track all the results in a multimap to push the details up the stack
         Multimap<URI, MatchResult> result = ArrayListMultimap.create();
