@@ -133,8 +133,15 @@ public enum ConfigurationProperty {
             new TypeLiteral<String>() {
             },
             "uk.ac.open.kmi.iserve.discovery.api.freetextsearch.sparql.impl.OwlimSearchPlugin"
-    );
+    ),
 
+    REDIS_ADDRESS(
+            "iserve.util.cache.redisaddress",
+            "Address of redis server",
+            new TypeLiteral<String>() {
+            },
+            "localhost:6379"
+    );
 
     private String name;
     private String description;

@@ -15,8 +15,6 @@ import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
 import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchProvider;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.BasicScoreComposer;
-import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
-import uk.ac.open.kmi.iserve.sal.manager.impl.NfpManagerSparql;
 import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
 
 public class DiscoveryRestModule extends ServletModule {
@@ -48,7 +46,6 @@ public class DiscoveryRestModule extends ServletModule {
         Multibinder<AtomicScorer> atomicScorerBinder = Multibinder.newSetBinder(binder(), AtomicScorer.class);
 
         bind(ScoreComposer.class).to(BasicScoreComposer.class);
-        bind(NfpManager.class).to(NfpManagerSparql.class);
         bind(DiscoveryResultsBuilderPlugin.class).to(DiscoveryResultsBuilder.class);
 
         install(new FreeTextSearchProvider());

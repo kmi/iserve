@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.hp.hpl.jena.query.Query;
@@ -33,9 +34,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
 import uk.ac.open.kmi.iserve.core.iServeProperty;
+import uk.ac.open.kmi.iserve.sal.events.KnowledgeBaseManagerEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
+import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
+import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -54,13 +58,16 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
     private Logger logger = LoggerFactory.getLogger(NfpManagerSparql.class);
 
     private String sparqlEndpoint;
-    private Map<URI, Map<URI, Set<String>>> propertyValueCache;
+    private Cache<String, Map<String, Set<String>>> propertyValueCache;
 
     @Inject
-    public NfpManagerSparql(EventBus eventBus, @iServeProperty(ConfigurationProperty.ISERVE_URL) String iServeUri, @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_QUERY) String sparqlEndpoint) throws SalException {
+    public NfpManagerSparql(EventBus eventBus,
+                            @iServeProperty(ConfigurationProperty.ISERVE_URL) String iServeUri,
+                            @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_QUERY) String sparqlEndpoint,
+                            CacheFactory cacheFactory) throws SalException {
         super(eventBus, iServeUri);
         this.sparqlEndpoint = sparqlEndpoint;
-        propertyValueCache = Maps.newHashMap();
+        propertyValueCache = cacheFactory.create("nfp");
     }
 
 
@@ -86,13 +93,13 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
 
     @Override
     public Object getPropertyValue(URI resource, URI property, Class valueClass) {
-        if (!propertyValueCache.keySet().contains(resource)) {
+        if (!propertyValueCache.containsKey(resource.toASCIIString())) {
             // put values in cache
             buildCacheForResource(resource);
         }
-        Map<URI, Set<String>> resourceProperties = propertyValueCache.get(resource);
-        if (resourceProperties != null && resourceProperties.containsKey(property)) {
-            Set<String> values = resourceProperties.get(property);
+        Map<String, Set<String>> resourceProperties = propertyValueCache.get(resource.toASCIIString());
+        if (resourceProperties != null && resourceProperties.containsKey(property.toASCIIString())) {
+            Set<String> values = resourceProperties.get(property.toASCIIString());
             logger.debug("{}, {}, {}", resource, property, values);
 
             if (values != null) {
@@ -154,8 +161,8 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
 
         Model describeModel = getDescribeModel(resources);
         for (URI resource : resources) {
-            if (!propertyValueCache.containsKey(resource)) {
-                propertyValueCache.put(resource, Maps.<URI, Set<String>>newHashMap());
+            if (!propertyValueCache.containsKey(resource.toASCIIString())) {
+                propertyValueCache.put(resource.toASCIIString(), Maps.<String, Set<String>>newHashMap());
             }
 
         }
@@ -177,13 +184,17 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
                         object = statement.getObject().asResource().getURI();
                     }
                     if (object != null) {
-                        if (!propertyValueCache.containsKey(subjectUri)) {
-                            propertyValueCache.put(subjectUri, Maps.<URI, Set<String>>newHashMap());
+                        Map<String, Set<String>> predicateObjectMap;
+                        if (!propertyValueCache.containsKey(subjectUri.toASCIIString())) {
+                            predicateObjectMap = Maps.newHashMap();
+                        } else {
+                            predicateObjectMap = propertyValueCache.get(subjectUri.toASCIIString());
                         }
-                        if (propertyValueCache.get(subjectUri).get(predicateUri) == null) {
-                            propertyValueCache.get(subjectUri).put(predicateUri, new HashSet<String>());
+                        if (predicateObjectMap.get(predicateUri.toASCIIString()) == null) {
+                            predicateObjectMap.put(predicateUri.toASCIIString(), new HashSet<String>());
                         }
-                        propertyValueCache.get(subjectUri).get(predicateUri).add(object);
+                        predicateObjectMap.get(predicateUri.toASCIIString()).add(object);
+                        propertyValueCache.put(subjectUri.toASCIIString(), predicateObjectMap);
                     }
                 }
             }
@@ -242,7 +253,7 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
     public Map<URI, Object> getPropertyValueOfResources(Set<URI> resources, URI property, Class valueClass) {
         Set<URI> nonCachedResources = Sets.newHashSet();
         for (URI resource : resources) {
-            if (!propertyValueCache.containsKey(resource)) {
+            if (!propertyValueCache.containsKey(resource.toASCIIString())) {
                 nonCachedResources.add(resource);
             }
         }
@@ -256,7 +267,7 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
 
     @Override
     public Map<URI, Object> getPropertyValuesOfResource(URI resource, Map<URI, Class> propertyValueClassMap) {
-        if (!propertyValueCache.containsKey(resource)) {
+        if (!propertyValueCache.containsKey(resource.toASCIIString())) {
             buildCacheForResource(resource);
         }
         Map<URI, Object> result = Maps.newHashMap();
@@ -268,12 +279,12 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
 
     @Override
     public Map<URI, Object> getAllPropertyValuesOfResource(URI resource) {
-        if (!propertyValueCache.containsKey(resource)) {
+        if (!propertyValueCache.containsKey(resource.toASCIIString())) {
             buildCacheForResource(resource);
         }
         Map<URI, Object> result = Maps.newHashMap();
-        for (URI property : propertyValueCache.get(resource).keySet()) {
-            result.put(resource, propertyValueCache.get(resource).get(property));
+        for (String property : propertyValueCache.get(resource.toASCIIString()).keySet()) {
+            result.put(resource, propertyValueCache.get(resource.toASCIIString()).get(property));
         }
         return result;
 
@@ -336,4 +347,11 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
     public void clearPropertyValues() {
 
     }
+
+    @Subscribe
+    public void clearCache(KnowledgeBaseManagerEvent e) {
+        logger.debug("Clear NFP cache");
+        propertyValueCache.clear();
+    }
+
 }

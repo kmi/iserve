@@ -23,6 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.sal.manager.*;
+import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
+import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
+import uk.ac.open.kmi.iserve.sal.util.caching.impl.RedisCache;
 import uk.ac.open.kmi.msm4j.io.impl.TransformerModule;
 
 /**
@@ -76,9 +79,16 @@ public class RegistryManagementModule extends AbstractModule {
 //        bind(ServiceManager.class).to(ServiceManagerIndexRdf.class).in(Singleton.class);
 //        bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class).in(Singleton.class);
 
+        // Cache injection
+        install(new FactoryModuleBuilder()
+                .implement(Cache.class, RedisCache.class)
+                .build(CacheFactory.class));
+
         bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
         bind(ServiceManager.class).to(ServiceManagerSparql.class);
         bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class);
         bind(RegistryManager.class).to(RegistryManagerImpl.class);
+        bind(NfpManager.class).to(NfpManagerSparql.class);
+
     }
 }
