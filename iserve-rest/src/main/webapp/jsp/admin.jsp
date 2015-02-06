@@ -17,7 +17,7 @@
   ~ limitations under the License.
   --%>
 
-<%@ include file="./include.jsp" %>
+<%@ include file="include.jsp" %>
 <%
     // http://turbomanage.wordpress.com/2009/12/11/how-to-inject-guice-objects-in-a-jsp/
     Injector inj = (Injector) pageContext.getServletContext().getAttribute(Injector.class.getName());

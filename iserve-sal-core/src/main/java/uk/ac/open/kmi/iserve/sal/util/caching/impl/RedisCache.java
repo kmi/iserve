@@ -1,6 +1,5 @@
 package uk.ac.open.kmi.iserve.sal.util.caching.impl;
 
-import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import org.redisson.Config;
@@ -21,8 +20,7 @@ public class RedisCache<K, V> implements Cache<K, V> {
     private RMap<K, V> rMap;
 
     @Inject
-    public RedisCache(@iServeProperty(ConfigurationProperty.REDIS_ADDRESS) String address, @Assisted String name, EventBus eventBus) {
-        eventBus.register(this);
+    public RedisCache(@iServeProperty(ConfigurationProperty.REDIS_ADDRESS) String address, @Assisted String name) {
         Config config = new Config();
         config.useSingleServer().setAddress(address);
 

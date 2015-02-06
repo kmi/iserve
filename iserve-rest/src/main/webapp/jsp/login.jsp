@@ -14,7 +14,7 @@
   ~ limitations under the License.
   --%>
 
-<%@ include file="./include.jsp" %>
+<%@ include file="include.jsp" %>
 
 <html>
 <head>

@@ -15,8 +15,7 @@ public class EldaFilter implements Filter {
 
     private Logger logger = LoggerFactory.getLogger(EldaFilter.class);
     private RequestDispatcher defaultRequestDispatcher;
-    private RequestDispatcher salRestRequestDispatcher;
-    private RequestDispatcher discoveryRestRequestDispatcher;
+    private RequestDispatcher restRequestDispatcher;
     private RequestDispatcher eldaRequestDispatcher;
     private RequestDispatcher swaggerRequestDispatcher;
 
@@ -50,13 +49,13 @@ public class EldaFilter implements Filter {
             eldaRequestDispatcher.forward(request, response);
         } else if ((path.matches("/id/.*") && !httpRequest.getMethod().equalsIgnoreCase("GET")) || path.matches("/id/documents.*")) {
             logger.debug("Forward request to SAL REST...");
-            salRestRequestDispatcher.forward(request, response);
+            restRequestDispatcher.forward(request, response);
         } else if (path.matches("/id/.*") && httpRequest.getMethod().equalsIgnoreCase("GET")) {
             logger.debug("Redirect request to Elda...");
             res.sendRedirect(httpRequest.getContextPath() + path.replace("/id/", "/doc/"));
         } else if (path.matches("/discovery.*")) {
             logger.debug("Forward request to Discovery REST...");
-            discoveryRestRequestDispatcher.forward(request, response);
+            restRequestDispatcher.forward(request, response);
         } else {
             logger.debug("Forward request to Filter chain...");
             chain.doFilter(request, response);
@@ -68,10 +67,8 @@ public class EldaFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
         this.defaultRequestDispatcher =
                 filterConfig.getServletContext().getNamedDispatcher("default");
-        this.salRestRequestDispatcher =
-                filterConfig.getServletContext().getNamedDispatcher("iServe SAL REST Endpoint");
-        this.discoveryRestRequestDispatcher =
-                filterConfig.getServletContext().getNamedDispatcher("Discovery Endpoint");
+        this.restRequestDispatcher =
+                filterConfig.getServletContext().getNamedDispatcher("iServe REST Endpoint");
         this.swaggerRequestDispatcher = filterConfig.getServletContext().getNamedDispatcher("Swagger");
         this.eldaRequestDispatcher = filterConfig.getServletContext().getNamedDispatcher("Elda");
 

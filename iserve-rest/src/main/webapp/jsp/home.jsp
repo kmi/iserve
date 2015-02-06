@@ -14,7 +14,7 @@
   ~ limitations under the License.
   --%>
 
-<%@ include file="./include.jsp" %>
+<%@ include file="include.jsp" %>
 
 <html>
 <head>
@@ -27,8 +27,8 @@
 <h1>Apache Shiro Quickstart</h1>
 
 <p>Hi <shiro:guest>Guest</shiro:guest><shiro:user><shiro:principal/></shiro:user>!
-    ( <shiro:user><a href="<c:url value=" logout.jsp"/>">Log out</a></shiro:user>
-    <shiro:guest><a href="<c:url value=" login.jsp"/>">Log in</a> (sample accounts provided)</shiro:guest> )
+    ( <shiro:user><a href="<c:url value="logout.jsp"/>">Log out</a></shiro:user>
+    <shiro:guest><a href="<c:url value="login.jsp"/>">Log in</a> (sample accounts provided)</shiro:guest> )
 </p>
 
 <p>Welcome to the Apache Shiro Quickstart sample application.

@@ -68,6 +68,7 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
         super(eventBus, iServeUri);
         this.sparqlEndpoint = sparqlEndpoint;
         propertyValueCache = cacheFactory.create("nfp");
+        logger.debug("Created NfpManagerSparql");
     }
 
 
