@@ -78,7 +78,7 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         }
 
         // Track all the results in a multimap to push the details up the stack
-        Multimap<URI, MatchResult> result = ArrayListMultimap.create();
+        ListMultimap<URI, MatchResult> result = ArrayListMultimap.create();
 
         // Do the intersection of those operations that can consume each of the inputs separately
         boolean firstTime = true;
