@@ -24,6 +24,8 @@ import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
+import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
@@ -39,6 +41,7 @@ import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 
 import javax.annotation.Nullable;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -51,17 +54,16 @@ import java.util.Set;
 public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements ConceptMatcher {
 
     private static final Logger log = LoggerFactory.getLogger(SparqlIndexedLogicConceptMatcher.class);
-
-    private Table<URI, URI, MatchResult> indexedMatches;
     private final RegistryManager manager;
     private final SparqlLogicConceptMatcher sparqlMatcher;
+    private Table<URI, URI, MatchResult> indexedMatches;
 
     @Inject
-    protected SparqlIndexedLogicConceptMatcher(RegistryManager registryManager, SparqlLogicConceptMatcher sparqlMatcher) throws SalException {
+    protected SparqlIndexedLogicConceptMatcher(RegistryManager registryManager, @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_QUERY) String sparqlEndpoint) throws SalException, URISyntaxException {
 
         super(EnumMatchTypes.of(LogicConceptMatchType.class));
 
-        this.sparqlMatcher = sparqlMatcher;
+        this.sparqlMatcher = new SparqlLogicConceptMatcher(sparqlEndpoint);
         this.manager = registryManager;
         this.manager.registerAsObserver(this);
         log.info("Populating Matcher Index...");

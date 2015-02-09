@@ -17,8 +17,10 @@
 package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.multibindings.MapBinder;
-import uk.ac.open.kmi.iserve.discovery.api.*;
+import uk.ac.open.kmi.iserve.discovery.api.DataflowMatcher;
+import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
+import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoverer;
+import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoverer;
 
 /**
  * DiscoMatchersPlugin is a Guice module providing a set of Matchers implementation for concept and services matching
@@ -28,16 +30,11 @@ import uk.ac.open.kmi.iserve.discovery.api.*;
  */
 public class DiscoMatchersPlugin extends AbstractModule implements MatcherPluginModule {
 
+
     @Override
     protected void configure() {
-        // Bind Concept Matchers
-        MapBinder<String, ConceptMatcher> conceptBinder = MapBinder.newMapBinder(binder(), String.class, ConceptMatcher.class);
-        conceptBinder.addBinding(SparqlLogicConceptMatcher.class.getName()).to(SparqlLogicConceptMatcher.class);
-        conceptBinder.addBinding(SparqlIndexedLogicConceptMatcher.class.getName()).to(SparqlIndexedLogicConceptMatcher.class);
 
-        // Bind fall back Concept Matcher
-        // TODO: Define a way for different modules to define their own chains of matchers on a per module basis
-        bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
+        install(new ConceptMatcherProvider());
 
         // Bind DataflowMatcher
         bind(DataflowMatcher.class).to(OperationDataflowMatcher.class);
