@@ -72,7 +72,9 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         // The structure is: <OriginalType, MatchingType, MatchResult>
         Table<URI, URI, MatchResult> expandedTypes;
         if (relationship.toASCIIString().equals(SAWSDL.modelReference.getURI())) {
-            expandedTypes = this.conceptMatcher.listMatchesAtMostOfType(types, LogicConceptMatchType.Subsume);
+            expandedTypes = HashBasedTable.create();
+            expandedTypes.putAll(this.conceptMatcher.listMatchesAtMostOfType(types, LogicConceptMatchType.Subsume));
+            expandedTypes.putAll(this.conceptMatcher.listMatchesOfType(types, LogicConceptMatchType.Exact));
         } else {
             expandedTypes = this.conceptMatcher.listMatchesAtLeastOfType(types, LogicConceptMatchType.Plugin);
         }
@@ -137,7 +139,9 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         // TODO: The leastOfType should be configurable
         Table<URI, URI, MatchResult> expandedTypes;
         if (relationship.toASCIIString().equals(SAWSDL.modelReference.getURI())) {
-            expandedTypes = this.conceptMatcher.listMatchesAtMostOfType(types, LogicConceptMatchType.Subsume);
+            expandedTypes = HashBasedTable.create();
+            expandedTypes.putAll(this.conceptMatcher.listMatchesAtMostOfType(types, LogicConceptMatchType.Subsume));
+            expandedTypes.putAll(this.conceptMatcher.listMatchesOfType(types, LogicConceptMatchType.Exact));
         } else {
             expandedTypes = this.conceptMatcher.listMatchesAtLeastOfType(types, LogicConceptMatchType.Plugin);
         }
