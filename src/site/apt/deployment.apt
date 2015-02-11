@@ -31,3 +31,8 @@ iServe Quick Deployment
     iServe is able to interact with any RDF store, such as {{{http://jena.apache.org/documentation/serving_data/}Fuseki}} and {{{http://virtuoso.openlinksw.com/}Virtuoso}}.
     However, to use RDF stores that support semantic reasoning (e.g., {{{http://www.openrdf.org/}Sesame}} or {{{http://owlim.ontotext.com}OWLIM}}) is strongly recommended in order to
     allow iServe to perform more effective service discovery.
+
+* iServe Docker Image
+
+    iServe can be quickly deployed through {{{https://www.docker.com/}Docker}}.
+    An iServe Docker image, which contains a pre-configured Sesame instance, is available on {{{https://github.com/kmi-dockerfiles/docker-iserve}GitHub}}

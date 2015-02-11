@@ -9,6 +9,8 @@ Compiling iServe
 
 * Requirements
 
+    * JDK 1.6+
+
     * Maven 3+
 
     * An RDF(S) Repository for testing. (Note: Fuseki users should enable 'tdb:unionDefaultGraph true').
