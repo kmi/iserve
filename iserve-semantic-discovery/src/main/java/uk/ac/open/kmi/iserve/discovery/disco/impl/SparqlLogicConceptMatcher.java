@@ -30,6 +30,7 @@ import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatchType;
 import uk.ac.open.kmi.iserve.discovery.api.MatchTypes;
+import uk.ac.open.kmi.iserve.discovery.api.impl.AbstractMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.impl.AtomicMatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
@@ -52,7 +53,7 @@ import java.util.Set;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @since 30/07/2013
  */
-public class SparqlLogicConceptMatcher implements ConceptMatcher {
+public class SparqlLogicConceptMatcher extends AbstractMatcher implements ConceptMatcher {
 
     private static final Logger log = LoggerFactory.getLogger(SparqlLogicConceptMatcher.class);
     // Variable names used in queries
@@ -79,6 +80,7 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
 
     @Inject
     protected SparqlLogicConceptMatcher(@iServeProperty(ConfigurationProperty.SERVICES_SPARQL_QUERY) String sparqlEndpoint) throws URISyntaxException {
+        super(EnumMatchTypes.of(LogicConceptMatchType.class));
 
         if (sparqlEndpoint == null) {
             log.error("A SPARQL endpoint is currently needed for matching.");
@@ -114,7 +116,7 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
      */
     @Override
     public MatchTypes<MatchType> getMatchTypesSupported() {
-        return this.matchTypes;
+        return matchTypes;
     }
 
 
@@ -245,18 +247,6 @@ public class SparqlLogicConceptMatcher implements ConceptMatcher {
     @Override
     public Map<URI, MatchResult> listMatchesOfType(URI origin, MatchType type) {
         return listMatchesWithinRange(origin, type, type);
-    }
-
-    /**
-     * Obtains all the matching resources that have a precise MatchType with the URIs of {@code origin}.
-     *
-     * @param origins URIs to match
-     * @param type    the MatchType we want to obtain
-     * @return a {@link com.google.common.collect.Table} with the result of the matching indexed by origin URI and then destination URI.
-     */
-    @Override
-    public Table<URI, URI, MatchResult> listMatchesOfType(Set<URI> origins, MatchType type) {
-        return null;  // TODO: implement
     }
 
 
