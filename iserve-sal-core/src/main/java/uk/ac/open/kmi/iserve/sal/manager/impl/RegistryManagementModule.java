@@ -25,7 +25,7 @@ import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.sal.manager.*;
 import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
 import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
-import uk.ac.open.kmi.iserve.sal.util.caching.impl.RedisCache;
+import uk.ac.open.kmi.iserve.sal.util.caching.impl.InMemoryCache;
 import uk.ac.open.kmi.msm4j.io.impl.TransformerModule;
 
 /**
@@ -81,7 +81,7 @@ public class RegistryManagementModule extends AbstractModule {
 
         // Cache injection
         install(new FactoryModuleBuilder()
-                .implement(Cache.class, RedisCache.class)
+                .implement(Cache.class, InMemoryCache.class)
                 .build(CacheFactory.class));
 
         bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
