@@ -16,8 +16,6 @@
 
 package uk.ac.open.kmi.iserve.rest;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -55,8 +53,6 @@ public class RestWebApplication extends ResourceConfig {
         GuiceBridge.getGuiceBridge().initializeGuiceBridge(serviceLocator);
 
         GuiceIntoHK2Bridge guiceBridge = serviceLocator.getService(GuiceIntoHK2Bridge.class);
-        Injector injector = Guice.createInjector(new RestModule());
-        guiceBridge.bridgeGuiceInjector(injector);
-
+        guiceBridge.bridgeGuiceInjector(Main.injector);
     }
 }

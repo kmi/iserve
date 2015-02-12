@@ -18,7 +18,6 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +88,7 @@ public class RegistryManagementModule extends AbstractModule {
         bind(ServiceManager.class).to(ServiceManagerSparql.class);
         bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class);
         bind(RegistryManager.class).to(RegistryManagerImpl.class);
-        bind(NfpManager.class).to(NfpManagerSparql.class).in(Singleton.class);
+        bind(NfpManager.class).to(NfpManagerSparql.class);
 
     }
 }

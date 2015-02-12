@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.open.kmi.iserve.discovery.engine.rest;
+package uk.ac.open.kmi.iserve.rest;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -34,7 +34,7 @@ public class Main extends GuiceServletContextListener {
     @Override
     protected Injector getInjector() {
         System.out.println("Getting injector");
-        injector = Guice.createInjector(new DiscoveryRestModule());
+        injector = Guice.createInjector(new RestModule());
         return injector;
     }
 }

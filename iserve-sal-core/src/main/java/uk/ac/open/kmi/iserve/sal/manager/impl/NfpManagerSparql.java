@@ -22,7 +22,6 @@ import com.google.common.collect.Sets;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -36,7 +35,6 @@ import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
 import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.sal.events.KnowledgeBaseManagerEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
-import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
 import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
 import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
@@ -50,25 +48,23 @@ import java.util.Set;
 /**
  * Created by Luca Panziera on 27/05/2014.
  */
+public class NfpManagerSparql implements NfpManager {
 
-// TODO reuse graph store manager functionality
-@Singleton
-public class NfpManagerSparql extends IntegratedComponent implements NfpManager {
-
+    private static Cache<String, Map<String, Set<String>>> propertyValueCache;
     private Logger logger = LoggerFactory.getLogger(NfpManagerSparql.class);
-
     private String sparqlEndpoint;
-    private Cache<String, Map<String, Set<String>>> propertyValueCache;
 
     @Inject
     public NfpManagerSparql(EventBus eventBus,
                             @iServeProperty(ConfigurationProperty.ISERVE_URL) String iServeUri,
                             @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_QUERY) String sparqlEndpoint,
                             CacheFactory cacheFactory) throws SalException {
-        super(eventBus, iServeUri);
         this.sparqlEndpoint = sparqlEndpoint;
-        propertyValueCache = cacheFactory.create("nfp");
+        if (propertyValueCache == null) {
+            propertyValueCache = cacheFactory.create("nfp");
+        }
         logger.debug("Created NfpManagerSparql");
+        eventBus.register(this);
     }
 
 
