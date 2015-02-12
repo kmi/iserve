@@ -54,36 +54,53 @@ Configuring iServe
     Below you have a detailed list of all the configuration properties of iServe. As indicated earlier, you may configure this through a Java properties file
     in the form of 'property-name'='configuration value' lines.
 
-*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
-|| <<Configuration Property>>   || <<Description>>                                                                      || <<Default Value>>                                                                |
-*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
-| iserve.url                    | URL where the server will be available. This will determine the URLs for services and | http://localhost:9090/iserve                                                |
-|                               | should therefore match the URL where the server is deployed in order to ensure that   |                                                                             |
-|                               | content is published following the Linked Data principles                             |                                                                             |
-*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
-| iserve.documents.folder       | Folder where iServe will store the service documents and other related documentation. | /tmp/iserve-docs/                                                           |
-*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
-| iserve.services.sparql.query  | URL of the SPARQL endpoint of the RDF Store used for services and ontologies.         | http://localhost:8080/openrdf-sesame/repositories/iserve                    |
-*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
-| iserve.services.sparql.update | URL of the SPARQL update endpoint of the RDF Store used for services and ontologies.  | http://localhost:8080/openrdf-sesame/repositories/iserve/statements         |
-*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
-| iserve.services.sparql.service| URL of where the RDF Store implements the Graph Store procotocol. This is not strictly| http://localhost:8080/openrdf-sesame/repositories/iserve/rdf-graphs/service |
-|                               | necessary although it may speed up the uploading and deletion of services and         |                                                                             |
-|                               | ontologies from the server.                                                           |                                                                             |
-*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
-| iserve.nfp.sparql.query       | Experimental - URL of the SPARQL endpoint of the RDF Store used for Non-functional    | http://localhost:8080/openrdf-sesame/repositories/iserve                    |
-|                               | properties (NFPs) e.g., popularity, response time, etc.                               |                                                                             |
-*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
-| iserve.nfp.sparql.update      | Experimental - URL of the SPARQL update endpoint of the RDF Store used for NFPs.      | http://localhost:8080/openrdf-sesame/repositories/iserve/statements         |
-*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
-| iserve.nfp.sparql.service     | Experimental - URL of where the NFPs RDF Store implements the Graph Store procotocol. | http://localhost:8080/openrdf-sesame/repositories/iserve/rdf-graphs/service |
-|                               | This is not strictly necessary although it may speed up the uploading and deletion of |                                                                             |
-|                               | data.                                                                                 |                                                                             |
-*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
-| http.proxyHost (Optional)     | Host name for the HTTP proxy to use. This is necessary in order to obtain remote data.| None                                                                        |
-*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
-| http.proxyPort (Optional)     | Port number for the HTTP proxy to use.                                                | None                                                                        |
-*-------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+*-------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+|| <<Configuration Property>>         || <<Description>>                                                                      || <<Default Value>>                                                          |
+*-------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.url                          | URL where the server will be available. This will determine the URLs for services and | http://localhost:9090/iserve                                                |
+|                                     | should therefore match the URL where the server is deployed in order to ensure that   |                                                                             |
+|                                     | content is published following the Linked Data principles                             |                                                                             |
+*-------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.documents.folder             | Folder where iServe will store the service documents and other related documentation. | /tmp/iserve-docs/                                                           |
+*-------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.services.sparql.query        | URL of the SPARQL endpoint of the RDF Store used for services and ontologies.         | http://localhost:8080/openrdf-sesame/repositories/iserve                    |
+*-------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.services.sparql.update       | URL of the SPARQL update endpoint of the RDF Store used for services and ontologies.  | http://localhost:8080/openrdf-sesame/repositories/iserve/statements         |
+*-------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.services.sparql.service      | URL of where the RDF Store implements the Graph Store procotocol. This is not strictly| http://localhost:8080/openrdf-sesame/repositories/iserve/rdf-graphs/service |
+|                                     | necessary although it may speed up the uploading and deletion of services and         |                                                                             |
+|                                     | ontologies from the server.                                                           |                                                                             |
+*-------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.nfp.sparql.query             | Experimental - URL of the SPARQL endpoint of the RDF Store used for Non-functional    | http://localhost:8080/openrdf-sesame/repositories/iserve                    |
+|                                     | properties (NFPs) e.g., popularity, response time, etc.                               |                                                                             |
+*-------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.nfp.sparql.update            | Experimental - URL of the SPARQL update endpoint of the RDF Store used for NFPs.      | http://localhost:8080/openrdf-sesame/repositories/iserve/statements         |
+*-------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.nfp.sparql.service           | Experimental - URL of where the NFPs RDF Store implements the Graph Store procotocol. | http://localhost:8080/openrdf-sesame/repositories/iserve/rdf-graphs/service |
+|                                     | This is not strictly necessary although it may speed up the uploading and deletion of |                                                                             |
+|                                     | data.                                                                                 |                                                                             |
+*-------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| http.proxyHost (Optional)           | Host name for the HTTP proxy to use. This is necessary in order to obtain remote data.| None                                                                        |
+*-------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| http.proxyPort (Optional)           | Port number for the HTTP proxy to use.                                                | None                                                                        |
+*-------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.discovery.conceptMatcher     | Java class of concept matcher plugin to be used by the discovery engine.              | uk.ac.open.kmi.iserve.discovery.disco.impl.SparqlLogicConceptMatcher        |
+|                                     | <SparqlLogicConceptMatcher> implements concept matching by performing on-the-fly      |                                                                             |
+|                                     | SPARQL queries. This matcher is ideal for knowledge bases that change frequently.     |                                                                             |
+|                                     | <SparqlIndexedLogicConceptMatcher> exploits a cached index of matching concepts       |                                                                             |
+|                                     | that is populated at setup time. This second matcher has a very low response time,    |                                                                             |
+|                                     | which  makes it ideal to combine iServe with composition engines.                     |                                                                             |
+|                                     | <N.B.: index population must be performed each time the knowledge base changes.       |                                                                             |
+|                                     | It may take several minutes according to the knowledge base size.>                    |                                                                             |
+*-------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.discovery.freetextsearch     | Java class that implements the free text search according to the adopted RDF store.   | uk.ac.open.kmi.iserve.discovery.freetextsearch.impl.OwlimSearchPlugin       |
+|                                     | If you are using OWLim, you have to configure the property as <OwlimSearchPlugin>.    |                                                                             |
+|                                     | Instead, if you are using Apache Jena Fuseki, the property value must be              |                                                                             |
+|                                     | <FusekiSearchPlugin>.                                                                 |                                                                             |
+*-------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| http.proxyPort (Optional)           | Port number for the HTTP proxy to use.                                                | None                                                                        |
+*-------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+
 iServe Configuration Properties.
 
 * Web Interface Configuration Properties

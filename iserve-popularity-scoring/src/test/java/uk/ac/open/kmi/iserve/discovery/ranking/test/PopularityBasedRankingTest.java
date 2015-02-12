@@ -36,12 +36,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
 import uk.ac.open.kmi.iserve.core.iServeProperty;
-import uk.ac.open.kmi.iserve.discovery.api.*;
+import uk.ac.open.kmi.iserve.discovery.api.DiscoveryEngine;
+import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchProvider;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.BasicScoreComposer;
-import uk.ac.open.kmi.iserve.discovery.disco.impl.GenericLogicDiscoverer;
-import uk.ac.open.kmi.iserve.discovery.disco.impl.SparqlLogicConceptMatcher;
+import uk.ac.open.kmi.iserve.discovery.disco.impl.DiscoMatchersPlugin;
 import uk.ac.open.kmi.iserve.discovery.ranking.impl.CommunityVitalityScorer;
 import uk.ac.open.kmi.iserve.discovery.ranking.impl.ProviderPopularityScorer;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
@@ -187,10 +187,7 @@ public class PopularityBasedRankingTest {
 
             install(new RegistryManagementModule());
 
-            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
-
-            bind(OperationDiscoverer.class).to(GenericLogicDiscoverer.class);
-            bind(ServiceDiscoverer.class).to(GenericLogicDiscoverer.class);
+            install(new DiscoMatchersPlugin());
 
             //Scorers configuration
             Multibinder<Filter> filterBinder = Multibinder.newSetBinder(binder(), Filter.class);

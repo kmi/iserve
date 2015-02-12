@@ -60,6 +60,7 @@
             <item name="Detailed Configuration" href="configuration.html"/>
             <item name="Compiling iServe" href="compiling.html"/>
             <item name="Using iServe" href="usage.html"/>
+            <item name="Advanced discovery" href="advanced-discovery.html"/>
             <item name="Extending iServe" href="extending.html"/>
             <!--<item name="FAQ" href="faq.html"/>-->
         </menu>

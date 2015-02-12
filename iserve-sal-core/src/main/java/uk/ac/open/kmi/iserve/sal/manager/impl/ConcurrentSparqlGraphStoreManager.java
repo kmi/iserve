@@ -254,6 +254,8 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
      * <p/>
      * This method pre-checks the presence of the model already in loadedModels
      *
+     * This method pre-checks the presence of the model already in loadedModels
+     *
      * @return True if they were all added correctly. False otherwise.
      */
     private boolean loadDefaultModels() {
@@ -628,7 +630,7 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
             ResultSet qResults = qexec.execSelect();
 
             stopwatch.stop();
-            log.info("Time taken for querying the registry: {}", stopwatch);
+            log.debug("Time taken for querying the registry: {}", stopwatch);
 
             Resource resource;
             URI matchUri;

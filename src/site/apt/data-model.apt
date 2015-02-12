@@ -14,61 +14,143 @@ iServe's Data Model
 * {Minimal Service Model}
 
     In a nutshell, MSM is a simple RDF(S) integration ontology based on the principle of minimal ontological commitment;
-    it captures the maximum common denominator between existing conceptual models for services. Thus, MSM does not  aim
+    it captures the maximum common denominator between existing conceptual models for services. Thus, MSM does not aim
     to be yet another service model to bring further heterogeneity to the services landscape; it is instead an
     integration model at the intersection of existing formalisms, able to capture the core semantics of both Web services
     and Web APIs in a common model, homogeneously supporting publication and discovery.
 
-    Minimal Service Model, denoted by the msm namespace in the Figure below, defines <Services> which have a number of
-    <Operations>. Operations in turn have <input>, <output> and <fault MessageContent> descriptions. <MessageContent>
-    may be composed of <mandatory> or <optional MessageParts>.
+    Minimal Service Model, denoted by the <<<msm>>> namespace in the Figure below, defines <<<msm:Services>>> which have a number of
+    <<<msm:Operations>>>. Operations in turn have <input>, <output> and <fault> <<<msm:MessageContent>>> descriptions. <<<msm:MessageContent>>>
+    may be composed of <mandatory> or <optional> <<<msm:MessageParts>>>.
+    The <<<msm:isGroundedIn>>> property enables to capture the grounding of elements of service descriptions defined by other models, such as WSDL, SWAGGER, WSMO and OWL-S.
+    In other terms, this property allows us to bind any other kind of structured service description to MSM elements, with the aim to make MSM an agnostic model for semantic annotation,
+    leaving the technical invocation details to other specifications.
 
 [images/data-model-base.png] Minimal Service Model.
 
-    Driven by Semantic Web best practices, MSM builds upon existing vocabularies, namely <SAWSDL>, <WSMO-Lite>, <hRESTS>,
-    <MSM WSDL>, <DC Terms>, and <FOAF> depicted in the figures using the <sawsdl>, <wl>, <hr>, <dc>, and <foaf> namespaces respectively.
+    Driven by Semantic Web best practices, MSM builds upon existing vocabularies. The most recent version of MSM (v1.3),
+    depicted in the figures, exploits the following vocabularies:
 
-    The SAWSDL vocabulary provides three properties, namely <modelReference>, <liftingSchemaMapping> and <loweringSchemaMapping>.
+        * <SAWSDL>, using the <<<sawsdl>>> namespace;
+
+        * <WSMO-Lite>, using the <<<wl>>> namespace;
+
+        * <hRESTS>, using the <<<hr>>> namespace;
+
+        * <DC Terms>, using the <<<dc>>> namespace;
+
+        * <FOAF>, using the <<<foaf>>> namespace;
+
+    In addition, MSM has some extensions that are modelled according to the minimal ontological commitment principle as well:
+
+        * <MSM-WSDL>, which provides the MSM grounding to WSDL descriptions;
+
+        * <MSM-Swagger>, which provides the MSM grounding to JSON descriptions defined according to Swagger specification;
+
+        * <MSM-NFP>, which provides useful Non-Functional Properties (NFPs) of services to support Web developers, such as service provider information and social media channels.
+
+* {SAWSDL}
+
+    The {{{http://www.w3.org/TR/sawsdl/}SAWSDL}} vocabulary provides three properties, namely <<<sawsdl:modelReference>>>, <<<sawsdl:liftingSchemaMapping>>> and <<<sawsdl:loweringSchemaMapping>>>.
     These properties enable one to link existing descriptions to semantic models (modelReference) as to scripts able to
     transform diverse serialisations into their semantic counter part and vice versa.
 
-    The WSMO-Lite vocabulary completes MSM by providing classes for describing the main service semantics and by
-    supplying type information to the generic model references. In particular, WSMO-Lite captures non-functional
-    semantics through the concept of <NonfunctionalParameter>, and functional semantics via the concepts <Condition>,
-    <Effect>, and <FunctionalClassificationRoot>.
+* {WSMO-Lite}
 
-    <hRESTS> on the other hand provides basic support for capturing grounding information necessary for Web APIs. This
-    vocabulary, see Figure below, therefore covers aspects such as URL templates, HTTP methods used, etc.
+    The {{{http://www.wsmo.org/ns/wsmo-lite/}WSMO-Lite}} vocabulary completes MSM by providing classes for describing the main service semantics and by
+    supplying type information to the generic model references. In particular, WSMO-Lite captures non-functional
+    semantics through the concept of <<<wl:NonfunctionalParameter>>>, and functional semantics via the concepts <<<wl:Condition>>>,
+    <<<wl:Effect>>>, and <<<wl:FunctionalClassificationRoot>>>.
+
+* {hRESTS}
+
+    {{{http://iserve.kmi.open.ac.uk/ns/hrests}hRESTS}} on the other hand provides basic support for capturing grounding information necessary for Web APIs. This
+    vocabulary, see Figure below, therefore covers aspects such as URL templates, HTTP methods used, etc
 
 [images/data-model-http-grounding.png] <hRESTS> extension to cover grounding for Web APIs.
 
-    <MSM-WSDL> provides one simple property, <isGroundedIn>, which enables us to capture the grounding of elements of a
-    service description, e.g., an operation, into the actual WSDL element that defines it. This property essentially
-    enables us back and forth navigation from iServe's descriptions into WSDL files as necessary to carry out invocation for example.
+    The current version of <hRESTS> (v1.2) exploits terms from the {{{http://www.w3.org/TR/HTTP-in-RDF10/}HTTP RDF vocabulary}} to define the HTTP methods used by operations.
+
+
+* {MSM-WSDL}
+
+    {{{http://iserve.kmi.open.ac.uk/ns/msm-wsdl}MSM-WSDL}} provides one simple property, <<<msm-wsml:isGroundedIn>>>, which enables us to capture the grounding of elements of a
+    service description into the actual WSDL element that defines it. This property essentially
+    provides us back and forth navigation from MSM service descriptions into WSDL files as necessary to
+    carry out invocation for example.
+
+    For the current <MSM-WSDL> version (v0.2), the WSDL element should be specified according to a WSDL {{{http://www.w3.org/TR/2007/WD-wsdl11elementidentifiers-20070131/#wsdl-iri-references}1.1}}
+    or {{{http://www.w3.org/TR/2005/WD-wsdl20-20050803/#wsdl-iri-references}2.0}} IRI-references syntax defined by a
+    {{{http://www.w3.org/TR/xptr-framework/}XPointer}} expression.
 
 [images/data-model-wsdl-grounding.png] <MSM-WSDL> extension to cover grounding for WSDL services.
 
-    Finally, both <DC Terms> and <FOAF> provide general support to capture metadata such as a textual description, the
-     creator of a service description, etc.
+
+* {MSM-Swagger}
+
+    The grounding of Swagger description is defined by an extension vocabulary, called {{{http://iserve.kmi.open.ac.uk/ns/msm-swagger}MSM-Swagger}}.
+    This ontology provides grounding to Swagger descriptions through the <<<msm-swagger:isGroundedIn>>> property.
+    Swagger elements, which are defined as JSON portion, are specified through {{{http://goessner.net/articles/JsonPath}JSONPath}} expressions.
+
+[images/data-model-swagger-grounding.png] <MSM-Swagger> extension to cover grounding for Swagger RESTful APIs.
+
+
+* {MSM-NFP}
+
+    {{{http://iserve.kmi.open.ac.uk/ns/msm-nfp}MSM-NFP}} is a <MSM> extension that aims to support the description of basic NFPs.
+    The current version of <MSM-NFP> (v0.2) focuses on the definition of properties which provide relevant information for developers which integrate services in their own applications.
+
+    To inform developers of the usage of a service, <<<msm-nfp:hasTotalMashups>>> and <<<msm-nfp:hasRecentMashups>>> properties has been defined.
+    The two properties respectively define the total number and the recent amount of mashups in which a Web API is a component.
+
+    A Web API can have a forum to support developer issues. This information can be specified through the <<<msm-nfp:hasForum>>> property, which has
+    the <<<sioc:Forum>>> class, from the {{{http://rdfs.org/sioc/spec/}SIOC vocabulary}}, as range.
+    <MSM-NFP> specifies also a measurement of the forum vitality, as average of daily users that post messages, through the <<<msm-nfp:hasVitality>>>.
+    This measure can be useful for developers to figure out the promptness of the forum community to support users issues.
+
+    Measures of service provider popularity can be specified by the <<<msm-nfp:hasPopularity>>> property as a numeric value.
+    The <<<schema:Organization>>> and <<<schema:Person>>> classes, defined by the {{{http://schema.rdfs.org/}Schema.org vocabulary}},
+    are the domain of the <<<msm-nfp:hasPopularity>>> property. These two classes allow us to define a service provider which is associated with
+    a service through the <<<schema:provider>>> property.
+
+    A provider, defined as a <<<foaf:Agent>>>, can have a Twitter account as a means to provide updates about his Web APIs.
+    A Twitter account is an instance of the <<<msm-nfp:TwitterAccount>>> class (subclass of <<<foaf:OnlineAccount>>>) which is a associated to a provider by
+    the <<<msm-nfp:hasTwitterAccount>>> property (subproperty of <<<foaf:account>>>).
+
+[images/data-model-nfp.png] <MSM-NFP> extension to define basic NFPs of services.
+
+* {Others}
+
+    Both {{{http://dublincore.org/documents/dcmi-terms/}DC Terms}} and {{{http://www.foaf-project.org/}FOAF}} provide general support to capture metadata such as a textual description, the
+    creator of a service description, etc.
+    {{{http://rdfs.org/sioc/spec/}SIOC vocabulary}} provides the main concepts and properties required to describe information from online communities, such as wikis, weblogs and forums.
+    Finally, {{{http://schema.rdfs.org/}Schema.org}} is a collection of terms that webmasters can use to markup their pages, which is introduced by Bing, Google and Yahoo! to improve the display of search engine results.
 
 * References
 
-    For convenience all RDF/S vocabularies used are included within the sources of iServe, see module <iserve-commons-vocabulary>.
-    Additionally we provide herein information about versions, namespaces, and links to the vocabularies used for your reference.
+    We provide herein information about versions, namespaces, and links to the vocabularies used for your reference.
 
-*-----------------------+----------------+------------------------------------------------------------------------------+
-|| <<Vocabulary>>       || <<Namespace>> ||  <<Link to Vocabulary>>                                                     |
-*-----------------------*----------------+------------------------------------------------------------------------------+
-| Minimal Service Model | msm            | {{http://iserve.kmi.open.ac.uk/ns/msm}}                                      |
-*-----------------------*----------------+------------------------------------------------------------------------------+
-| WSMO-Lite             | wl             | {{http://www.wsmo.org/ns/wsmo-lite}}                                         |
-*-----------------------*----------------+------------------------------------------------------------------------------+
-| hRESTS                | hr             | {{http://iserve.kmi.open.ac.uk/ns/hrests}}                                   |
-*-----------------------*----------------+------------------------------------------------------------------------------+
-| MSM-WSDL              | msm-wsdl       | {{http://iserve.kmi.open.ac.uk/ns/msm-wsdl}}                                 |
-*-----------------------*----------------+------------------------------------------------------------------------------+
-| DC Terms              | dc             | {{http://purl.org/dc/elements/1.1/}}                                         |
-*-----------------------*----------------+------------------------------------------------------------------------------+
-| FOAF                  | foaf           | {{http://xmlns.com/foaf/0.1/}}                                               |
-*-----------------------*----------------+------------------------------------------------------------------------------+
-Vocabularies Used in iServe.
+*-----------------------+----------------------+------------------------------------------------------------------------------+
+|| <<Vocabulary>>       || <<Namespace>>       ||  <<Link to Vocabulary>>                                                     |
+*-----------------------*----------------------+------------------------------------------------------------------------------+
+| Minimal Service Model | <<<msm>>>            | {{http://iserve.kmi.open.ac.uk/ns/msm}}                                      |
+*-----------------------*----------------------+------------------------------------------------------------------------------+
+| WSMO-Lite             | <<<wl>>>             | {{http://www.wsmo.org/ns/wsmo-lite}}                                         |
+*-----------------------*----------------------+------------------------------------------------------------------------------+
+| hRESTS                | <<<hr>>>             | {{http://iserve.kmi.open.ac.uk/ns/hrests}}                                   |
+*-----------------------*----------------------+------------------------------------------------------------------------------+
+| MSM-WSDL              | <<<msm-wsdl>>>       | {{http://iserve.kmi.open.ac.uk/ns/msm-wsdl}}                                 |
+*-----------------------*----------------------+------------------------------------------------------------------------------+
+| MSM-Swagger           | <<<msm-swagger>>>    | {{http://iserve.kmi.open.ac.uk/ns/msm-swagger}}                              |
+*-----------------------*----------------------+------------------------------------------------------------------------------+
+| MSM-NFP               | <<<msm-nfp>>>        | {{http://iserve.kmi.open.ac.uk/ns/msm-nfp}}                                  |
+*-----------------------*----------------------+------------------------------------------------------------------------------+
+| DC Terms              | <<<dc>>>             | {{http://purl.org/dc/elements/1.1/}}                                         |
+*-----------------------*----------------------+------------------------------------------------------------------------------+
+| FOAF                  | <<<foaf>>>           | {{http://xmlns.com/foaf/0.1/}}                                               |
+*-----------------------*----------------------+------------------------------------------------------------------------------+
+| SIOC                  | <<<sioc>>>           | {{http://rdfs.org/sioc/ns#}}                                                 |
+*-----------------------*----------------------+------------------------------------------------------------------------------+
+| Schema.org            | <<<schema>>>         | {{http://schema.org/}}                                                       |
+*-----------------------*----------------------+------------------------------------------------------------------------------+
+Vocabularies Used by iServe.

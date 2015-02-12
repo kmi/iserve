@@ -18,16 +18,16 @@ iServe Description
 
     Applications and users can interact with iServe through a number of mechanisms:
 
-        * Linked Data.
+        * Linked Data
 
-        * RESTful API.
+        * RESTful API
 
-        * HTML Front end.
+        * Web-based user front end
 
 ** Linked Data
 
     Once published in iServe, the service descriptions are exposed following Linked Data principles. In particular, each
-    service description is given a unique and resolvable HTTP URI exposing service descriptions in both HTML and RDF through
+    service description is given a unique and resolvable HTTP URI exposing service descriptions in HTML, RDF, XML and JSON through
     content negotiation. Additionally, the entire registry can be queried through a SPARQL endpoint.
 
 ** RESTful API
@@ -47,17 +47,19 @@ iServe Description
 
     In particular iServe currently supports:
 
-        * WSDL v1 and v2.
+        * {{{http://www.w3.org/TR/wsdl}WSDL}} v1 and v2
 
-        * SAWSDL.
+        * {{{http://www.w3.org/2002/ws/sawsdl/}SAWSDL}}
 
-        * OWL-S v1.1.
+        * {{{http://www.w3.org/Submission/OWL-S/}OWL-S}} v1.1
 
-        * MicroWSMO.
+        * {{{http://www.wsmo.org/TR/d38/v0.1/}MicroWSMO}}
 
-        * WSMO-Lite.
+        * {{{http://www.w3.org/Submission/WSMO-Lite/}WSMO-Lite}}
 
-        * Web Service Contest's proprietary format.
+        * {{{https://github.com/swagger-api/swagger-spec}Swagger Specification}} up to v1.2
+
+        * Web Service Contest's proprietary format
 
 
 * Discovery Algorithms Implemented
@@ -68,16 +70,33 @@ iServe Description
 
     Currently iServe provides the following discovery plugins:
 
-        * Functional Classifications with RDFS reasoning.
+        * Functional Classifications with RDFS reasoning
 
-        * SKOS categorisations.
+        * SKOS categorisations
 
-        * Inputs and Outputs with RDFS reasoning.
+        * Inputs and Outputs with RDFS reasoning
 
-        * Keywords similarity (disabled in v2.0).
+        * Keywords similarity (disabled in v2.0)
+
+        * Free text search
+
+    In order to provide a more user/domain-tailored discovery, additional filters and scorers to rank discovery results
+    can be be easily plugged in iServe. The last version provides the following embedded modules:
+
+        * Filters:
+
+            * Filter of Swagger-based Web APIs
+
+        * Scorers:
+
+            * Scorer for service provider popularity
+
+            * Scorer for vitality of online communities that support Web API developers (e.g.,communities of forums)
+
+            * Scorer for service usage
 
 
-    Note: some of these algorithms have yet to be ported to version 2.0
+    Note: some of discovery algorithms have yet to be ported to version 2.0
 
 
 

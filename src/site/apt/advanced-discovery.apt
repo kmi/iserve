@@ -1,0 +1,277 @@
+            -----------
+            Advanced Discovery
+            -----------
+
+iServe's Advanced Discovery
+
+    In order to support specific domains or user requirements, iServe is able to perform advanced discovery based on combination of semantic matching,
+    filtering, scoring and ranking through modules that can be implemented by third-party.
+
+
+* Advanced Discovery Request Syntax
+
+    As shown in the {{{http://iserve.kmi.open.ac.uk/iserve/docs/}REST API documentation}}, advanced discovery can be performed by sending a JSON document through a HTTP POST to the following URL:
+
++----------------------------------------------------------------------------------------------------+
+http://<somehost.com>/<iserve-deployed-context>/discovery/
++----------------------------------------------------------------------------------------------------+
+
+    The discovery JSON request has 4 parts:
+
+        * Discovery (mandatory)– it specifies the discovery strategy (free-text search or semantic discovery);
+
+        * Filtering (optional) – it specifies the filtering strategy;
+
+        * Scoring (optional) – it specifies the scorers list necessary for the recommendation ranking
+
+        * Ranking (optional) – it specifies the ranking strategy.
+
+
+    The high level structure is provided below:
+
++----------------------------------------------------------------------------------------------------+
+
+{
+    "discovery": { ... },
+    "filtering": [ ... ],
+    "scoring": [ ... ],
+    "ranking": " ... "
+}
+
++----------------------------------------------------------------------------------------------------+
+
+** Discovery
+
+    The discovery part is defined as a JSON object. It can assume two kinds of objects for text search and semantic discovery.
+    The text search object is defined as follows:
+
++----------------------------------------------------------------------------------------------------+
+
+{
+    "discovery": { "query" : "weather" , "type": "svc" },
+    ...
+}
+
++----------------------------------------------------------------------------------------------------+
+
+    The value associated with “query” represents the input for the text search.
+    The semantic discovery has two functionalities: functional classification discovery and I/O discovery.
+    The first discovery function provides services and operations according to a classification of them based on their functionalities (e.g., map services, photo services, etc.).
+    The following JSON object shows how to define functional classification discovery.
+
++----------------------------------------------------------------------------------------------------+
+
+{
+    "discovery": {
+        "func-rdf": {
+            "type": "svc",
+            "classes": { ... }
+        }
+    }
+}
+
++----------------------------------------------------------------------------------------------------+
+
+    “Type” assumes two values: “svc” for service discovery and “op” for operation discovery. The “classes” value can assume:
+
+	    * A string that specifies a single class. (e.g., “http://schema.org/CreateAction”);
+
+        * A JSON object that specifies an intersection of a conjunction of classes, as shown below.
+
+
++----------------------------------------------------------------------------------------------------+
+
+"classes": {"or": [{"and": ["X", "Y"]}, "Z"]}
+
++----------------------------------------------------------------------------------------------------+
+
+    The above expression specifies that the service/operation must be a member of the classes X and Y or a member of the class Z.
+
+    The I/O discovery retrieves services or operations that has inputs or outputs member of e specific class (e.g., all the service operations that has “temperature” as output).
+    The following JSON object defines the input of I/O discovery.
+
++----------------------------------------------------------------------------------------------------+
+
+{
+    "discovery": {
+        "io-rdfs": {
+            "type": "svc",
+            "expression": { ... }
+        }
+    }
+}
+
++----------------------------------------------------------------------------------------------------+
+
+    The “expression” object can be an input or an output object defined as well as the “classes” for the functional classification discovery. For instance:
+
++----------------------------------------------------------------------------------------------------+
+
+"expression": { "input": "X" }
+
++----------------------------------------------------------------------------------------------------+
+
+    or
+
++----------------------------------------------------------------------------------------------------+
+
+"expression": { "output": {"and": ["X", "Y", "Z"]} }
+
++----------------------------------------------------------------------------------------------------+
+
+    The “expression” object can be a conjunction and an intersection of inputs and outputs, as shown below:
+
++----------------------------------------------------------------------------------------------------+
+
+"expression": {"and": {"input": {"or": ["X", "Y", "W"] }, "output": "Y" } }
+
++----------------------------------------------------------------------------------------------------+
+
+
+** Filtering
+
+    Filtering is defined as JSON array of “filter” object, as shown in the example below:
+
++----------------------------------------------------------------------------------------------------+
+
+{
+    ...
+    "filtering": [
+        {
+            "filterClass": "your.custom.Filter",
+            "parameters": { ... }
+        },
+        {
+            "filterClass": "your.second.custom.Filter"
+        },
+        ...
+    ] ,
+}
+
++----------------------------------------------------------------------------------------------------+
+
+    Each “filter” object has two fields:
+
+        * filterClass (mandatory): defines the Java class that implements the filter;
+
+        * parameters (optional): defines the input of the filter as JSON object.
+
+    The “parameters” object model depends on the filter implementation.
+    The sequence of “filter” objects defines the sequence of applied filters.
+
+** Scoring
+
+    The scoring is specified as a JSON array of “scorer” objects. Each scorer returns a score according to a service property (e.g., popularity, reputation or geolocation). “Scorer” objects are similar to “Filter” objects as provided below:
+
++----------------------------------------------------------------------------------------------------+
+
+{
+    ...
+    "scoring": [
+        {
+            "scorerClass": "your.custom.Scorer"
+        },
+        {
+            "scorerClass": "your.second.custom.Scorer",
+            "parameters": { ... }
+        },
+        ...
+    ] ,
+}
+
++----------------------------------------------------------------------------------------------------+
+
+** Ranking
+
+    The ranking is specified as a string, which can assume two values:
+        * standard: it ranks services/operations by decreasing order according to the scores;
+        * inverse: it ranks services/operations by increasing order according to the scores.
+    For instance:
+
++----------------------------------------------------------------------------------------------------+
+
+{   ...,
+    "ranking": "inverse"
+}
+
++----------------------------------------------------------------------------------------------------+
+
+    If ranking is not specified, standard ranking is performed by default.
+    NB: iServe assumes that high scores are associated to services/operations that better match user request.
+
+* Available Filters and Scorers
+
+    iServe provides embedded implementation of scorers and filters as shown as follows.
+
+** Swagger API filter
+
+    The class <<<uk.ac.open.kmi.iserve.discovery.ranking.impl.SwaggerServiceFilter>>> implements Swagger API filtering.
+    By applying this filter, only services described according to Swagger specification will be returned by the discovery.
+    An request example that use the Swagger API filter is provided below.
+
++----------------------------------------------------------------------------------------------------+
+
+{
+    "discovery": {
+        "query": "weather",
+        "type": "svc"
+    },
+    "filtering": [
+        {
+            "filterClass": "uk.ac.open.kmi.iserve.discovery.ranking.impl.SwaggerServiceFilter"
+        }
+    ]
+}
+
++----------------------------------------------------------------------------------------------------+
+
+    This filter requires services annotated according to {{{http://iserve.kmi.open.ac.uk/ns/msm-swagger}MSM-Swagger}} vocabulary.
+
+** Provider popularity scorer
+
+    The class <<<uk.ac.open.kmi.iserve.discovery.ranking.impl.ProviderPopularityScorer>>> assigns a score to each service
+    according to the popularity of its provider. The example below provides a ranked list of map services according to
+    the provider popularity.
+
++----------------------------------------------------------------------------------------------------+
+
+{
+    "discovery": {
+        "query": "maps",
+        "type": "svc"
+    },
+    "scoring": [
+        {
+            "filterClass": "uk.ac.open.kmi.iserve.discovery.ranking.impl.ProviderPopularityScorer"
+        }
+    ]
+}
+
++----------------------------------------------------------------------------------------------------+
+
+    This scorer requires services annotated according to {{{http://iserve.kmi.open.ac.uk/ns/msm-nfp}MSM-NFP}} vocabulary.
+
+** Community vitality scorer
+
+    To support developers issues, Web API providers make available and manage online forums.
+    Vitality of communities behind these forums is an insight of the quality to support developers that consume a specific Web API.
+    The class <<<uk.ac.open.kmi.iserve.discovery.ranking.impl.CommunityVitalityScorer>>> assign community vitality scores for
+    services annotate according to {{{http://iserve.kmi.open.ac.uk/ns/msm-nfp}MSM-NFP}} vocabulary.
+    The below JSON shows a request that uses the community vitality scorer to rank Google Web APIs.
+
++----------------------------------------------------------------------------------------------------+
+
+{
+    "discovery": {
+        "query": "Google",
+        "type": "svc"
+    },
+    "scoring": [
+        {
+            "filterClass": "uk.ac.open.kmi.iserve.discovery.ranking.impl.CommunityVitalityScorer"
+        }
+    ]
+}
+
++----------------------------------------------------------------------------------------------------+
+
