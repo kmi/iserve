@@ -13,6 +13,15 @@ import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
  */
 public class ConceptMatcherProvider extends AbstractModule {
     private static final Logger log = LoggerFactory.getLogger(ConceptMatcherProvider.class);
+    private RegistryManagementModule registryManagementModule;
+
+    public ConceptMatcherProvider() {
+        this.registryManagementModule = new RegistryManagementModule();
+    }
+
+    public ConceptMatcherProvider(RegistryManagementModule registryManagementModule) {
+        this.registryManagementModule = registryManagementModule;
+    }
 
     @Override
     protected void configure() {
@@ -21,7 +30,7 @@ public class ConceptMatcherProvider extends AbstractModule {
     @Provides
     @Singleton
     ConceptMatcher provideConceptMatcher(@iServeProperty(ConfigurationProperty.CONCEPT_MATCHER) String pluginClassName) {
-        Injector injector = Guice.createInjector(new RegistryManagementModule());
+        Injector injector = Guice.createInjector(registryManagementModule);
         try {
             log.debug("Injecting Concept matcher: {}", pluginClassName);
             return (ConceptMatcher) injector.getInstance(Class.forName(pluginClassName));
