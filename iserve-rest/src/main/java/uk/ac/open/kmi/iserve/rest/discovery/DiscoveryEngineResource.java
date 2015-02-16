@@ -18,6 +18,7 @@ import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
 import uk.ac.open.kmi.iserve.rest.util.AbderaAtomFeedProvider;
+import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -44,8 +45,8 @@ public class DiscoveryEngineResource {
     private DiscoveryResultsBuilderPlugin discoveryResultsBuilder;
 
     @Inject
-    DiscoveryEngineResource(ServiceDiscoverer serviceDiscoverer, OperationDiscoverer operationDiscoverer, Set<Filter> filters, Set<AtomicFilter> atomicFilters, Set<Scorer> scorers, Set<AtomicScorer> atomicScorers, ScoreComposer scoreComposer, DiscoveryResultsBuilderPlugin discoveryResultsBuilder, FreeTextSearchPlugin freeTextSearchPlugin) {
-        discoveryEngine = new DiscoveryEngine(serviceDiscoverer, operationDiscoverer, freeTextSearchPlugin, filters, atomicFilters, scorers, atomicScorers, scoreComposer);
+    DiscoveryEngineResource(ServiceDiscoverer serviceDiscoverer, OperationDiscoverer operationDiscoverer, Set<Filter> filters, Set<AtomicFilter> atomicFilters, Set<Scorer> scorers, Set<AtomicScorer> atomicScorers, ScoreComposer scoreComposer, DiscoveryResultsBuilderPlugin discoveryResultsBuilder, FreeTextSearchPlugin freeTextSearchPlugin, CacheFactory cacheFactory) {
+        discoveryEngine = new DiscoveryEngine(serviceDiscoverer, operationDiscoverer, freeTextSearchPlugin, filters, atomicFilters, scorers, atomicScorers, scoreComposer, cacheFactory);
         this.discoveryResultsBuilder = discoveryResultsBuilder;
     }
 
@@ -88,7 +89,7 @@ public class DiscoveryEngineResource {
     ) throws
             WebApplicationException {
 
-        JsonElement query = buildClassQuery(type, function, resources, rankingType, filtering);
+        String query = buildClassQuery(type, function, resources, rankingType, filtering);
 
         Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
         Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result, rankingType);
@@ -107,7 +108,7 @@ public class DiscoveryEngineResource {
     ) throws
             WebApplicationException {
 
-        JsonElement query = buildClassQuery(type, function, resources, rankingType, filtering);
+        String query = buildClassQuery(type, function, resources, rankingType, filtering);
 
         Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
 
@@ -197,7 +198,7 @@ public class DiscoveryEngineResource {
         return Response.ok(json).build();
     }
 
-    private JsonElement buildClassQuery(String type, String operator, List<String> resources, String rankingType, String filtering) {
+    private String buildClassQuery(String type, String operator, List<String> resources, String rankingType, String filtering) {
 
         JsonObject query = new JsonObject();
         JsonArray parameters = new JsonArray();
@@ -229,7 +230,7 @@ public class DiscoveryEngineResource {
 
         logger.debug("Query: {}", query);
 
-        return query;
+        return query.toString();
     }
 
     private JsonElement buildIOQuery(String type, String operator, String rankingType, String filtering, List<String> inputs, List<String> outputs) {

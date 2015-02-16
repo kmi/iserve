@@ -17,9 +17,11 @@
 package uk.ac.open.kmi.iserve.discovery.api;
 
 import com.google.common.collect.*;
+import com.google.common.eventbus.EventBus;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,8 @@ import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.ReverseRanker;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.StandardRanker;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
+import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
+import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
 import uk.ac.open.kmi.msm4j.vocabulary.MSM;
 
 import javax.annotation.Nullable;
@@ -49,20 +53,24 @@ public class DiscoveryEngine {
     private Set<Filter> filters;
     private Set<Scorer> scorers;
     private ScoreComposer scoreComposer;
+    private Cache<String, Map<URI, Pair<Double, MatchResult>>> resultCache;
 
     private Logger logger = LoggerFactory.getLogger(DiscoveryEngine.class);
 
     @Inject
-    public DiscoveryEngine(ServiceDiscoverer serviceDiscoverer,
+    public DiscoveryEngine(EventBus eventBus,
+                           ServiceDiscoverer serviceDiscoverer,
                            OperationDiscoverer operationDiscoverer,
                            @Nullable FreeTextSearchPlugin freeTextSearchPlugin,
                            @Nullable Set<Filter> filters,
                            @Nullable Set<AtomicFilter> atomicFilters,
                            @Nullable Set<Scorer> scorers,
                            @Nullable Set<AtomicScorer> atomicScorers,
-                           @Nullable ScoreComposer scoreComposer
+                           @Nullable ScoreComposer scoreComposer,
+                           CacheFactory cacheFactory
 
     ) {
+        eventBus.register(this);
         this.operationDiscoverer = operationDiscoverer;
         this.serviceDiscoverer = serviceDiscoverer;
         this.freeTextSearchPlugin = freeTextSearchPlugin;
@@ -91,6 +99,19 @@ public class DiscoveryEngine {
                 this.scorers.add(new MolecularScorer(atomicScorer));
             }
         }
+
+        this.resultCache = cacheFactory.create("discovery-result");
+    }
+
+    public Map<URI, Pair<Double, MatchResult>> discover(String request) {
+        if (resultCache.containsKey(request)) {
+            return resultCache.get(request);
+        } else {
+            Map<URI, Pair<Double, MatchResult>> result = discover(new JsonParser().parse(request));
+            resultCache.put(request, result);
+            return result;
+        }
+
     }
 
     public Map<URI, Pair<Double, MatchResult>> discover(JsonElement request) {
