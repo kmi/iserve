@@ -441,7 +441,7 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
     /**
      * Creates a Service Description in the system.
      * Only needs to be fed with an MSM Service description.
-     * <p/>
+     *
      * After successfully adding a service, implementations of this method should raise a {@code ServiceCreatedEvent}
      *
      * @param service the input service description in terms of MSM
@@ -487,7 +487,7 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
      * @param serviceUri      the service URI
      * @param relatedDocument the related document URI
      * @return True if successful or False otherwise
-     * @throws uk.ac.open.kmi.iserve.sal.exception.SalException
+     * @throws uk.ac.open.kmi.iserve.sal.exception.ServiceException
      */
     @Override
     public boolean addRelatedDocumentToService(URI serviceUri, URI relatedDocument) throws ServiceException {
@@ -496,7 +496,7 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
 
     /**
      * Deletes the given service
-     * <p/>
+     *
      * After successfully deleting a service, implementations of this method should raise a {@code ServiceDeletedEvent}
      *
      * @param serviceUri the URI of the service to delete
@@ -531,7 +531,7 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
 
     /**
      * Deletes the given service
-     * <p/>
+     *
      * After successfully deleting a service, implementations of this method should raise a {@code ServiceDeletedEvent}
      *
      * @param service the service to delete

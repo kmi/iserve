@@ -17,6 +17,7 @@
 package uk.ac.open.kmi.iserve.sal.manager;
 
 import com.google.common.collect.Multimap;
+import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.msm4j.Service;
 
@@ -38,7 +39,7 @@ public interface ServiceManager extends iServeComponent {
     /**
      * Creates a Service Description in the system.
      * Only needs to be fed with an MSM Service description.
-     * <p/>
+     *
      * After successfully adding a service, implementations of this method should raise a {@code ServiceCreatedEvent}
      *
      * @param service the input service description in terms of MSM
@@ -58,7 +59,7 @@ public interface ServiceManager extends iServeComponent {
      * @throws uk.ac.open.kmi.iserve.sal.exception.SalException
      *
      */
-    public abstract boolean addRelatedDocumentToService(URI serviceUri, URI relatedDocument) throws ServiceException;
+    public abstract boolean addRelatedDocumentToService(URI serviceUri, URI relatedDocument) throws SalException;
 
     // Read Methods
 
@@ -225,7 +226,7 @@ public interface ServiceManager extends iServeComponent {
 
     /**
      * Deletes the given service
-     * <p/>
+     *
      * After successfully deleting a service, implementations of this method should raise a {@code ServiceDeletedEvent}
      *
      * @param serviceUri the URI of the service to delete
@@ -237,7 +238,7 @@ public interface ServiceManager extends iServeComponent {
 
     /**
      * Deletes the given service
-     * <p/>
+     *
      * After successfully deleting a service, implementations of this method should raise a {@code ServiceDeletedEvent}
      *
      * @param service the service to delete
@@ -252,7 +253,7 @@ public interface ServiceManager extends iServeComponent {
     /**
      * Deletes all the services on the registry.
      * This operation cannot be undone. Use with care.
-     * <p/>
+     *
      * After successfully clearing the services, implementations of this method should raise a {@code ServicesClearedEvent}
      *
      * @return true if the service registry was cleared.

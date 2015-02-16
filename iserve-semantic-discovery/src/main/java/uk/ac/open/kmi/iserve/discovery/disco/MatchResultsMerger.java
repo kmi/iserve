@@ -33,7 +33,7 @@ import java.util.TreeSet;
  * This Function supports merging two Match Results over the same item into one
  * match. This is necessary when combining different separate matches into one.
  * The resulting match would be a composite one when all the inner matches are.
- * <p/>
+ *
  * TODO: Refactor it: there is considerable redundancy in the code here.
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
@@ -92,7 +92,7 @@ public enum MatchResultsMerger implements Function<Collection<MatchResult>, Matc
      * The composite match type is determined by the worst case except when it is
      * a FAIL. In this case, if the best is EXACT or PLUGIN the composite match
      * will be PARTIAL_PLUGIN. If the best is SUBSUMES it is PARTIAL_SUBSUMES.
-     * {@see Util}
+     * @see Util
      */
     INTERSECTION {
         @Override

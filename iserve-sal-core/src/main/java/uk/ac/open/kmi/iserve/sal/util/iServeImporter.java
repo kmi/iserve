@@ -34,7 +34,7 @@ import java.util.Set;
 /**
  * Utility class for uploading service descriptions and entire folders with service descriptions to an
  * iServe instance. Includes a command line executable interface too.
- * <p/>
+ *
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 05/06/2013
  * Time: 11:39

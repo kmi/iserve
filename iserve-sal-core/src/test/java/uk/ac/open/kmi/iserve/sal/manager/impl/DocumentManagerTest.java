@@ -41,7 +41,7 @@ import java.util.Set;
 
 /**
  * DocumentManagerFileSystemTest
- * <p/>
+ *
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 06/06/2013
  * Time: 18:50

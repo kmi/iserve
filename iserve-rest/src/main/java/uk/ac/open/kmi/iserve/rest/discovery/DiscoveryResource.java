@@ -41,7 +41,7 @@ package uk.ac.open.kmi.iserve.rest.discovery;///*
 //
 ///**
 // * Resource providing access to the discovery infrastructure.
-// * <p/>
+// *
 // * TODO: Provide pagination support for discovery results
 // * TODO: Enable the configuration of ordering and scoring functionality for
 // * discovery results (composite or simple)

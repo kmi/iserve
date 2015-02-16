@@ -55,7 +55,7 @@ import java.util.concurrent.Future;
 
 /**
  * This class is a parametric tool for crawling for RDF data.
- * <p/>
+ *
  * todo parameters: timeout, max allowed file size, max allowed files, number of
  * threads, request throttling (global, per-host) todo add logging with
  * ScutterVocab?
@@ -181,7 +181,7 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
 
     /**
      * Deletes a model from the Knowledge Base Manager
-     * <p/>
+     *
      * After successfully deleting a model, implementations of this method should raise a {@code OntologyDeletedEvent}
      *
      * @param modelUri the URI of the model to remove

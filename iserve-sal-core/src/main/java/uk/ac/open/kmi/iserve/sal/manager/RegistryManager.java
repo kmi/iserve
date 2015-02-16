@@ -108,7 +108,7 @@ public interface RegistryManager {
      *
      * @param mediaType the media type for which to obtain the file extension
      * @return the filename filter or null if it is not supported. Callers are advised to check
-     * first that the media type is supported {@see canTransform} .
+     * first that the media type is supported @see canTransform .
      */
     public FilenameFilter getFilenameFilter(String mediaType);
 

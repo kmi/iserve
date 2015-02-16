@@ -215,7 +215,7 @@ public class ServiceManagerIndexRdf extends ServiceManagerSparql implements Serv
     /**
      * Creates a Service Description in the system.
      * Only needs to be fed with an MSM Service description.
-     * <p/>
+     *
      * After successfully adding a service, implementations of this method should raise a {@code ServiceCreatedEvent}
      *
      * @param service the input service description in terms of MSM
@@ -236,7 +236,7 @@ public class ServiceManagerIndexRdf extends ServiceManagerSparql implements Serv
 
     /**
      * Deletes the given service
-     * <p/>
+     *
      * After successfully deleting a service, implementations of this method should raise a {@code ServiceDeletedEvent}
      *
      * @param serviceUri the URI of the service to delete
@@ -257,7 +257,7 @@ public class ServiceManagerIndexRdf extends ServiceManagerSparql implements Serv
 
     /**
      * Deletes the given service
-     * <p/>
+     *
      * After successfully deleting a service, implementations of this method should raise a {@code ServiceDeletedEvent}
      *
      * @param service the service to delete
@@ -278,7 +278,7 @@ public class ServiceManagerIndexRdf extends ServiceManagerSparql implements Serv
     /**
      * Deletes all the services on the registry.
      * This operation cannot be undone. Use with care.
-     * <p/>
+     *
      * After successfully clearing the services, implementations of this method should raise a {@code ServicesClearedEvent}
      *
      * @return true if the service registry was cleared.

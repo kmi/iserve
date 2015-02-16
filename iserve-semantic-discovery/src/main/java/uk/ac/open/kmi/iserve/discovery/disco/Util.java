@@ -313,8 +313,8 @@ public class Util {
     /**
      * Generate a pattern for obtaining the exact matches of a concept.
      * Basically we look for those that are subclasses and superclasses
-     * Uses BIND -> Requires SPARQL 1.1
-     * <p/>
+     * Uses BIND which Requires SPARQL 1.1
+     *
      * TODO: Does not match if we don't know a certain element is a class!
      *
      * @param origin           the URL of the class we want to find exact matches for
@@ -345,8 +345,8 @@ public class Util {
     /**
      * Generate a pattern for check if two concepts have an exact match.
      * Basically we look for those that are subclasses and superclasses
-     * Uses BIND -> Requires SPARQL 1.1
-     * <p/>
+     * Uses BIND which Requires SPARQL 1.1
+     *
      * TODO: Does not match if we don't know a certain element is a class!
      *
      * @param origin           the URL of the class we want to find exact matches for
@@ -374,7 +374,7 @@ public class Util {
 
     /**
      * Generate a pattern for obtaining the strict subclasses of a concept.
-     * Uses BIND -> Requires SPARQL 1.1
+     * Uses BIND which Requires SPARQL 1.1
      *
      * @param origin           the URL of the class we want to find subclasses for
      * @param matchVariable    the model reference variable
@@ -405,7 +405,7 @@ public class Util {
 
     /**
      * Generate a pattern for obtaining the strict subclasses of a concept.
-     * Uses BIND -> Requires SPARQL 1.1
+     * Uses BIND which Requires SPARQL 1.1
      *
      * @param origin           the URL of the class we want to find exact matches for
      * @param destination      the URL of the class we are checking the match for
@@ -434,7 +434,7 @@ public class Util {
 
     /**
      * Generate a pattern for obtaining the strict superclasses of a concept.
-     * Uses BIND -> Requires SPARQL 1.1
+     * Uses BIND which Requires SPARQL 1.1
      *
      * @param origin           the URL of the class we want to find superclasses for
      * @param matchVariable    the model reference variable
@@ -462,7 +462,7 @@ public class Util {
 
     /**
      * Generate a pattern for obtaining the strict superclasses of a concept.
-     * Uses BIND -> Requires SPARQL 1.1
+     * Uses BIND which Requires SPARQL 1.1
      *
      * @param origin           the URL of the class we want to find exact matches for
      * @param destination      the URL of the class we are checking the match for
@@ -650,7 +650,7 @@ public class Util {
 
     /**
      * Obtain or generate a label for an operation.
-     * <p/>
+     *
      * TODO: Deal better with WSDL naming convention
      *
      * @param row the result from a SPARQL query

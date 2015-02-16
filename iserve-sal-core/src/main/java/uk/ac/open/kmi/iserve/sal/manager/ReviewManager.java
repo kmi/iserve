@@ -22,7 +22,7 @@ import java.util.List;
  * Interface defining the CRUD methods that any Review Manager should provide
  * Review Manager at the moment take care of Reviews, Comments, and Tags
  * Eventually we may want to take Tagging away from this interface.
- * <p/>
+ *
  * TODO: Add methods for listing all the items by a user
  */
 public interface ReviewManager extends iServeComponent {

@@ -19,7 +19,7 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 /**
  * Callable implementation in charge of obtaining the necessary models from remote ontologies referred to by
  * a service description.
- * <p/>
+ *
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 19/06/2013
  * Time: 18:19
@@ -59,7 +59,7 @@ public class CrawlCallable implements Callable<Boolean> {
      * Given the model uri, this method takes care of retrieving the remote model and any imported documents
      * and uploads them all to the graph store within the same graph. This implementation relies on Jena's embedded
      * support for retrieving ontologies and their imports.
-     * <p/>
+     *
      * ATTENTION: When deleting models (in cases where several models import a common model) we may remove the
      * first ontology uploaded, with it the imported model will also be deleted and as a result any other model
      * that imported the common one will not have it available any more.

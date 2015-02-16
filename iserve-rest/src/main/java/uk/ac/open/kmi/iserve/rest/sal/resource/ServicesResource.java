@@ -221,7 +221,7 @@ public class ServicesResource {
 
     /**
      * Delete a given service
-     * <p/>
+     *
      * From HTTP Method definition
      * 9.7 DELETE
      * A successful response SHOULD be
@@ -299,7 +299,7 @@ public class ServicesResource {
 
     /**
      * Clears the services registry
-     * <p/>
+     *
      * From HTTP Method definition
      * 9.7 DELETE
      * A successful response SHOULD be

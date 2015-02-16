@@ -64,7 +64,7 @@ public interface KnowledgeBaseManager extends iServeComponent {
 
     /**
      * Uploads a model into the Knowledge Base Manager
-     * <p/>
+     *
      * After successfully uploading a model, implementations of this method should raise a {@code OntologyCreatedEvent}
      *
      * @param modelUri    URI of the model to upload
@@ -75,7 +75,7 @@ public interface KnowledgeBaseManager extends iServeComponent {
 
     /**
      * Deletes a model from the Knowledge Base Manager
-     * <p/>
+     *
      * After successfully deleting a model, implementations of this method should raise a {@code OntologyDeletedEvent}
      *
      * @param modelUri the URI of the model to remove

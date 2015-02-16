@@ -181,7 +181,7 @@ public class EldaRouterRestletSupport {
      * Given a renderer r and a media type mt, return a new renderer which
      * behaves like r except that it announces its media type as mt. r
      * itself is not changed.
-     * <p/>
+     *
      * This code should be somewhere more sensible. In fact the whole
      * renderer-choosing machinery needs a good cleanup.
      */
