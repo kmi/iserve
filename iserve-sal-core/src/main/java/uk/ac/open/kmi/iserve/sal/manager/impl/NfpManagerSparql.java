@@ -251,14 +251,16 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
     public Map<URI, Object> getPropertyValueOfResources(Set<URI> resources, URI property, Class valueClass) {
         Set<URI> nonCachedResources = Sets.newHashSet();
         for (URI resource : resources) {
-            if (!propertyValueCache.containsKey(resource.toASCIIString())) {
+            if (resource != null && !propertyValueCache.containsKey(resource.toASCIIString())) {
                 nonCachedResources.add(resource);
             }
         }
         buildCacheForResources(nonCachedResources);
         Map<URI, Object> result = Maps.newHashMap();
         for (URI resource : resources) {
-            result.put(resource, getPropertyValue(resource, property, valueClass));
+            if (resource != null) {
+                result.put(resource, getPropertyValue(resource, property, valueClass));
+            }
         }
         return result;
     }
