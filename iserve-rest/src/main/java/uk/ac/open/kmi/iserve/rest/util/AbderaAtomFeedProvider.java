@@ -61,7 +61,7 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
 
     /**
      * TODO: Implement properly
-     * <p/>
+     *
      * We require the request URL
      *
      * @param matchingResults
@@ -90,7 +90,7 @@ public class AbderaAtomFeedProvider implements MessageBodyWriter<Feed>, MessageB
 
     /**
      * TODO: Implement properly
-     * <p/>
+     *
      * We require the request URL
      *
      * @param discoveryResults

@@ -24,7 +24,7 @@ import java.net.URI;
 /**
  * UriUtilTest
  * TODO: Provide Description
- * <p/>
+ *
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 20/06/2013
  * Time: 17:30

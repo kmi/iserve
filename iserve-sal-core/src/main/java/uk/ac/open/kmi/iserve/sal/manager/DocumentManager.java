@@ -35,7 +35,7 @@ public interface DocumentManager extends iServeComponent {
 
     /**
      * Add a document to the registry
-     * <p/>
+     *
      * After successfully creating the document, implementations of this method should raise a {@code DocumentCreatedEvent}
      *
      * @param docContent
@@ -60,7 +60,7 @@ public interface DocumentManager extends iServeComponent {
 
     /**
      * Deletes a document from the registry
-     * <p/>
+     *
      * After successfully deleting a document, implementations of this method should raise a {@code DocumentDeletedEvent}
      *
      * @param documentUri
@@ -72,7 +72,7 @@ public interface DocumentManager extends iServeComponent {
 
     /**
      * Deletes all the documents in iServe
-     * <p/>
+     *
      * After successfully clearing the documents, implementations of this method should raise a {@code DocumentsClearedEvent}
      *
      * @return

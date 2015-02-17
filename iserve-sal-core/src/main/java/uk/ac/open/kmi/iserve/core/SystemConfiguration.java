@@ -56,7 +56,7 @@ public class SystemConfiguration {
      * in the current directory
      * in the user home directory
      * in the classpath
-     * <p/>
+     *
      * If no file is provided, we will fall back to default values
      *
      * @param configFilePath

@@ -32,7 +32,7 @@ import javax.ws.rs.core.UriInfo;
 
 /**
  * Registry resource is in charge of managing the registry (clear the registry, configure it, etc)
- * <p/>
+ *
  * Author: Carlos Pedrinaci (KMi - The Open University)
  * Date: 27/06/2013
  * Time: 17:31

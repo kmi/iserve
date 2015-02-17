@@ -21,7 +21,7 @@ import java.net.URI;
 
 /**
  * Class Description
- * <p/>
+ *
  * TODO: Complete
  *
  * @author Carlos Pedrinaci (Knowledge Media Institute - The Open University)

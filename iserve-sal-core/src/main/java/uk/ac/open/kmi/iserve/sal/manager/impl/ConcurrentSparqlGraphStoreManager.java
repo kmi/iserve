@@ -251,7 +251,7 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
      * Loads the default models for this Graph Store and verifies they were correctly retrieved
      * NOTE: For now models with local mappings cannot be TTL for Jena does not guess the format properly in that case.
      * We need to specify the format while loading in this case.
-     * <p/>
+     *
      * This method pre-checks the presence of the model already in loadedModels
      *
      * This method pre-checks the presence of the model already in loadedModels

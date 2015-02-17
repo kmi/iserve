@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Portable JAX-RS application.
  * Apparently we need to create an app an inject support for multipart forms.
- * <p/>
+ *
  *
  * @author Carlos Pedrinaci (KMi - The Open University)
  *         Date: 25/06/2013

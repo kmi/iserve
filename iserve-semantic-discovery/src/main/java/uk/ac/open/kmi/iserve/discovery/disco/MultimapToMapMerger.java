@@ -35,7 +35,7 @@ public enum MultimapToMapMerger implements Function<Multimap<URI, MatchResult>, 
     /**
      * Perform the UNION of the results.
      * The resulting type of the Composite results is determined by the best match
-     * {@see MatchResultsMerger}
+     * @see MatchResultsMerger
      */
     UNION {
         @Override
@@ -50,7 +50,7 @@ public enum MultimapToMapMerger implements Function<Multimap<URI, MatchResult>, 
      * Perform the INTERSECTION of the results.
      * The resulting type of the Composite results is determined by the worst match
      * except for the FAIL cases where we may have Partial Matches
-     * {@see MatchResultsMerger}
+     * @see MatchResultsMerger
      */
     INTERSECTION {
         @Override
