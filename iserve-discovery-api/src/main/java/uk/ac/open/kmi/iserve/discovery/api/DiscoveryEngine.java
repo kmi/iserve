@@ -18,6 +18,7 @@ package uk.ac.open.kmi.iserve.discovery.api;
 
 import com.google.common.collect.*;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -30,6 +31,7 @@ import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.ReverseRanker;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.StandardRanker;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
+import uk.ac.open.kmi.iserve.sal.events.Event;
 import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
 import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
 import uk.ac.open.kmi.msm4j.vocabulary.MSM;
@@ -47,14 +49,13 @@ import java.util.Set;
  */
 public class DiscoveryEngine {
 
+    private static Cache<String, Map<URI, Pair<Double, MatchResult>>> resultCache;
     private OperationDiscoverer operationDiscoverer;
     private ServiceDiscoverer serviceDiscoverer;
     private FreeTextSearchPlugin freeTextSearchPlugin;
     private Set<Filter> filters;
     private Set<Scorer> scorers;
     private ScoreComposer scoreComposer;
-    private Cache<String, Map<URI, Pair<Double, MatchResult>>> resultCache;
-
     private Logger logger = LoggerFactory.getLogger(DiscoveryEngine.class);
 
     @Inject
@@ -100,7 +101,10 @@ public class DiscoveryEngine {
             }
         }
 
-        this.resultCache = cacheFactory.create("discovery-result");
+        if (resultCache == null) {
+            resultCache = cacheFactory.create("discovery-result");
+        }
+
     }
 
     public Map<URI, Pair<Double, MatchResult>> discover(String request) {
@@ -346,4 +350,8 @@ public class DiscoveryEngine {
         return descriptionBuilder.toString();
     }
 
+    @Subscribe
+    public void clearCache(Event e) {
+        resultCache.clear();
+    }
 }

@@ -5,6 +5,7 @@ package uk.ac.open.kmi.iserve.rest.discovery;
  */
 
 import com.google.common.collect.Maps;
+import com.google.common.eventbus.EventBus;
 import com.google.gson.*;
 import com.wordnik.swagger.annotations.*;
 import org.apache.abdera.model.Feed;
@@ -45,8 +46,18 @@ public class DiscoveryEngineResource {
     private DiscoveryResultsBuilderPlugin discoveryResultsBuilder;
 
     @Inject
-    DiscoveryEngineResource(ServiceDiscoverer serviceDiscoverer, OperationDiscoverer operationDiscoverer, Set<Filter> filters, Set<AtomicFilter> atomicFilters, Set<Scorer> scorers, Set<AtomicScorer> atomicScorers, ScoreComposer scoreComposer, DiscoveryResultsBuilderPlugin discoveryResultsBuilder, FreeTextSearchPlugin freeTextSearchPlugin, CacheFactory cacheFactory) {
-        discoveryEngine = new DiscoveryEngine(serviceDiscoverer, operationDiscoverer, freeTextSearchPlugin, filters, atomicFilters, scorers, atomicScorers, scoreComposer, cacheFactory);
+    DiscoveryEngineResource(EventBus eventBus,
+                            ServiceDiscoverer serviceDiscoverer,
+                            OperationDiscoverer operationDiscoverer,
+                            FreeTextSearchPlugin freeTextSearchPlugin,
+                            Set<Filter> filters,
+                            Set<AtomicFilter> atomicFilters,
+                            Set<Scorer> scorers,
+                            Set<AtomicScorer> atomicScorers,
+                            ScoreComposer scoreComposer,
+                            CacheFactory cacheFactory,
+                            DiscoveryResultsBuilderPlugin discoveryResultsBuilder) {
+        this.discoveryEngine = new DiscoveryEngine(eventBus, serviceDiscoverer, operationDiscoverer, freeTextSearchPlugin, filters, atomicFilters, scorers, atomicScorers, scoreComposer, cacheFactory);
         this.discoveryResultsBuilder = discoveryResultsBuilder;
     }
 
@@ -162,7 +173,7 @@ public class DiscoveryEngineResource {
     ) throws
             WebApplicationException {
 
-        JsonElement query = buildIOQuery(type, function, rankingType, filtering, inputs, outputs);
+        String query = buildIOQuery(type, function, rankingType, filtering, inputs, outputs);
 
         Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
 
@@ -183,7 +194,7 @@ public class DiscoveryEngineResource {
     ) throws
             WebApplicationException {
 
-        JsonElement query = buildIOQuery(type, function, rankingType, filtering, inputs, outputs);
+        String query = buildIOQuery(type, function, rankingType, filtering, inputs, outputs);
 
         Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
         Map<URI, MatchResult> output = Maps.newLinkedHashMap();
@@ -233,7 +244,7 @@ public class DiscoveryEngineResource {
         return query.toString();
     }
 
-    private JsonElement buildIOQuery(String type, String operator, String rankingType, String filtering, List<String> inputs, List<String> outputs) {
+    private String buildIOQuery(String type, String operator, String rankingType, String filtering, List<String> inputs, List<String> outputs) {
         JsonObject query = new JsonObject();
         JsonArray inputParameters = new JsonArray();
         for (String resource : inputs) {
@@ -286,7 +297,7 @@ public class DiscoveryEngineResource {
 
         logger.debug("Query: {}", query);
 
-        return query;
+        return query.toString();
     }
 
 
@@ -313,7 +324,7 @@ public class DiscoveryEngineResource {
         discoveryRequest.add("discovery", functionObject);
 
         // Run discovery
-        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(discoveryRequest);
+        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(discoveryRequest.toString());
         Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result, "");
 
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
@@ -344,7 +355,7 @@ public class DiscoveryEngineResource {
     ) {
         try {
             logger.debug("Advanced discovery");
-            Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(new JsonParser().parse(discoveryRequest));
+            Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(discoveryRequest.replaceAll("\\s", ""));
             Map<URI, DiscoveryResult> discoveryResults;
             if (discoveryRequest.contains("\"ranking\"") || discoveryRequest.contains("\"scoring\"")) {
                 discoveryResults = discoveryResultsBuilder.build(result, "standard");
