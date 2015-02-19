@@ -245,22 +245,36 @@ public class DiscoveryEngineResource {
     }
 
     private String buildIOQuery(String type, String operator, String rankingType, String filtering, List<String> inputs, List<String> outputs) {
+
         JsonObject query = new JsonObject();
-        JsonArray inputParameters = new JsonArray();
-        for (String resource : inputs) {
-            inputParameters.add(new JsonPrimitive(resource));
+        JsonElement inputParameters;
+        if (inputs.size() == 1) {
+            inputParameters = new JsonPrimitive(inputs.get(0));
+        } else {
+            JsonArray array = new JsonArray();
+            for (String resource : inputs) {
+                array.add(new JsonPrimitive(resource));
+            }
+            inputParameters = array;
         }
-        JsonArray outputParameters = new JsonArray();
-        for (String resource : outputs) {
-            outputParameters.add(new JsonPrimitive(resource));
+        JsonElement outputParameters;
+        if (outputs.size() == 1) {
+            outputParameters = new JsonPrimitive(outputs.get(0));
+        } else {
+            JsonArray array = new JsonArray();
+            for (String resource : outputs) {
+                array.add(new JsonPrimitive(resource));
+            }
+            outputParameters = array;
         }
+
         JsonObject inputObject = null;
-        if (!inputs.isEmpty()) {
+        if (!inputs.isEmpty() && operator != null) {
             inputObject = new JsonObject();
             inputObject.add(operator, inputParameters);
         }
         JsonObject outputObject = null;
-        if (!outputs.isEmpty()) {
+        if (!outputs.isEmpty() && operator != null) {
             outputObject = new JsonObject();
             outputObject.add(operator, outputParameters);
         }
@@ -268,18 +282,28 @@ public class DiscoveryEngineResource {
         JsonObject functionObject = new JsonObject();
         if (inputObject != null) {
             functionObject.add("input", inputObject);
-        }
-        if (outputObject != null) {
-            functionObject.add("output", outputObject);
+        } else if (!inputs.isEmpty()) {
+            functionObject.add("input", inputParameters);
         }
 
-        JsonObject operatorObject = new JsonObject();
-        if (operator.equals("")) {
-            operator = "or";
+        if (outputObject != null) {
+            functionObject.add("output", outputObject);
+        } else if (!outputs.isEmpty()) {
+            functionObject.add("output", outputParameters);
         }
-        operatorObject.add(operator, functionObject);
+
         JsonObject functionDiscoveryObject = new JsonObject();
-        functionDiscoveryObject.add("expression", operatorObject);
+        if (!inputs.isEmpty() && !outputs.isEmpty()) {
+            JsonObject operatorObject = new JsonObject();
+            if (operator == null || operator.equals("")) {
+                operator = "or";
+            }
+            operatorObject.add(operator, functionObject);
+            functionDiscoveryObject.add("expression", operatorObject);
+        } else {
+            functionDiscoveryObject.add("expression", functionObject);
+        }
+
         functionDiscoveryObject.add("type", new JsonPrimitive(type));
 
         JsonObject discoveryObject = new JsonObject();
