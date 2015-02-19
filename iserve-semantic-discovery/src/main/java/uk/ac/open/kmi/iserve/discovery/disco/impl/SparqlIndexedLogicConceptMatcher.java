@@ -19,7 +19,10 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.common.base.Function;
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.*;
+import com.google.common.collect.BoundType;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
@@ -38,6 +41,8 @@ import uk.ac.open.kmi.iserve.sal.events.OntologyCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.events.OntologyDeletedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
+import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
+import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
 
 import javax.annotation.Nullable;
 import java.net.URI;
@@ -56,25 +61,32 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
     private static final Logger log = LoggerFactory.getLogger(SparqlIndexedLogicConceptMatcher.class);
     private final RegistryManager manager;
     private final SparqlLogicConceptMatcher sparqlMatcher;
-    private Table<URI, URI, MatchResult> indexedMatches;
+    //private Table<URI, URI, MatchResult> indexedMatches;
+    private Cache<URI, Map<URI, MatchResult>> indexedMatches;
 
     @Inject
-    protected SparqlIndexedLogicConceptMatcher(RegistryManager registryManager, @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_QUERY) String sparqlEndpoint) throws SalException, URISyntaxException {
+    protected SparqlIndexedLogicConceptMatcher(RegistryManager registryManager, @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_QUERY) String sparqlEndpoint, CacheFactory cacheFactory) throws SalException, URISyntaxException {
 
         super(EnumMatchTypes.of(LogicConceptMatchType.class));
 
         this.sparqlMatcher = new SparqlLogicConceptMatcher(sparqlEndpoint);
         this.manager = registryManager;
         this.manager.registerAsObserver(this);
-        log.info("Populating Matcher Index...");
-        Stopwatch w = new Stopwatch().start();
-        this.indexedMatches = populate();
-        log.info("Population done in {}. Number of entries {}", w.stop().toString(), indexedMatches.size());
+        this.indexedMatches = cacheFactory.create("concept-matcher-index");
+        if (indexedMatches.isEmpty()) {
+            log.info("Populating Matcher Index...");// if index is empty
+            Stopwatch w = new Stopwatch().start();
+            populate();
+            log.info("Population done in {}. Number of entries {}", w.stop().toString(), indexedMatches.size());
+        }
     }
 
-    private Table<URI, URI, MatchResult> populate() {
+    private void populate() {
         Set<URI> classes = new HashSet<URI>(this.manager.getKnowledgeBaseManager().listConcepts(null));
-        return sparqlMatcher.listMatchesAtLeastOfType(classes, LogicConceptMatchType.Subsume);
+        Map<URI, Map<URI, MatchResult>> matchesTable = sparqlMatcher.listMatchesAtLeastOfType(classes, LogicConceptMatchType.Subsume).rowMap();
+        for (URI c : classes) {
+            indexedMatches.put(c, matchesTable.get(c));
+        }
     }
 
     @Override
@@ -89,7 +101,7 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
 
     @Override
     public MatchResult match(final URI origin, final URI destination) {
-        MatchResult result = this.indexedMatches.get(origin, destination);
+        MatchResult result = this.indexedMatches.get(origin).get(destination);
         // If there are no entries for origin,dest assume fail.
         if (result == null) {
             result = new AtomicMatchResult(origin, destination, LogicConceptMatchType.Fail, this);
@@ -149,7 +161,7 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
         };
 
         // Get all the matches
-        Map<URI, MatchResult> matches = this.indexedMatches.row(origin);
+        Map<URI, MatchResult> matches = this.indexedMatches.get(origin);
         // Return an immutable map out of the filtered view. Drop copyOf to obtain a live view
         return ImmutableMap.copyOf(Maps.filterValues(matches, MatchResultPredicates.withinRange(minType, BoundType.CLOSED, maxType, BoundType.CLOSED)));
     }
@@ -171,8 +183,9 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
         log.info("Fetching matches for all the {} concepts present in the ontology - {}", conceptUris.size(), event.getOntologyUri());
 
         // For each of them update their entries in the index (matched concepts will be updated later within the loop)
-        Table<URI, URI, MatchResult> matches = this.sparqlMatcher.listMatchesAtLeastOfType(conceptUris, LogicConceptMatchType.Subsume);
-        this.indexedMatches.putAll(matches);
+        for (URI c : conceptUris) {
+            indexedMatches.put(c, sparqlMatcher.listMatchesAtLeastOfType(c, LogicConceptMatchType.Subsume));
+        }
     }
 
     /**
@@ -191,14 +204,18 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
 
         // Cross reference them with those for which we have entries. The ones unmatched were defined in the previous
         // ontology (note that tse of namespaces could be abused and therefore may not be a guarantee).
-        Set<URI> difference = Sets.difference(conceptUris, this.indexedMatches.rowKeySet());
+        Set<URI> difference = Sets.difference(conceptUris, this.indexedMatches.keySet());
 
-        // Eventually remove these rows and any value having that as a column.
         for (URI conceptUri : difference) {
-            // remove all rows matched to the concept
-            this.indexedMatches.remove(conceptUri, null);
-            // remove all columns matched to the concept
-            this.indexedMatches.remove(null, conceptUri);
+            this.indexedMatches.remove(conceptUri);
+        }
+
+        for (URI indexedConcept : indexedMatches.keySet()) {
+            Map<URI, MatchResult> matchResultMap = indexedMatches.get(indexedConcept);
+            for (URI conceptUri : difference) {
+                matchResultMap.remove(conceptUri);
+            }
+            indexedMatches.put(indexedConcept, matchResultMap);
         }
 
     }
