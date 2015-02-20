@@ -4,6 +4,9 @@ package uk.ac.open.kmi.iserve.rest.discovery;
  * Created by Luca Panziera on 29/05/2014.
  */
 
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.eventbus.EventBus;
 import com.google.gson.*;
@@ -21,6 +24,7 @@ import uk.ac.open.kmi.iserve.discovery.util.Pair;
 import uk.ac.open.kmi.iserve.rest.util.AbderaAtomFeedProvider;
 import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -36,6 +40,13 @@ import java.util.Set;
 @Api(value = "/discovery", description = "Service discovery operations", basePath = "discovery")
 @Produces({"application/atom+xml", "application/json"})
 public class DiscoveryEngineResource {
+
+    /**
+     * the default page size
+     */
+    public static final int DEFAULT_PAGE_SIZE = 10;
+
+    private static final int MAX_PAGE_SIZE = 100;
 
     @Context
     UriInfo uriInfo;
@@ -80,55 +91,57 @@ public class DiscoveryEngineResource {
             @ApiParam(value = "Filtering according to specific criteria.", allowableValues = "disabled,enabled")
             @DefaultValue("disabled") @QueryParam("filtering") String filtering,
             @ApiParam(value = "Popularity-based ranking. The value should be \"standard\" to rank the results according the popularity of the provider.", allowableValues = "standard,inverse")
-            @QueryParam("ranking") String rankingType
-    ) throws
-            WebApplicationException {
+            @QueryParam("ranking") String rankingType,
+            @ApiParam(value = "Number of result page. By default, it will return the first page. Page numbering starts from 0.")
+            @QueryParam("page") Integer page,
+            @ApiParam(value = "Number of results per page. The default value is " + DEFAULT_PAGE_SIZE + " and the maximum value is " + MAX_PAGE_SIZE + ".")
+            @QueryParam("pagesize") Integer pageSize
 
-        if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-            return classificationBasedDiscoveryAsJson(type, function, resources, rankingType, filtering);
-        }
-        return classificationBasedDiscoveryAsAtom(type, function, resources, rankingType, filtering);
-
-    }
-
-    public Response classificationBasedDiscoveryAsAtom(
-            String type,
-            String function,
-            List<String> resources,
-            String rankingType,
-            String filtering
     ) throws
             WebApplicationException {
 
         String query = buildClassQuery(type, function, resources, rankingType, filtering);
+        if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
+            return transformAsJson(invokeDiscoveryEngine(query, rankingType, page,pageSize));
+        }
+        return transformAsAtom(invokeDiscoveryEngine(query, rankingType, page,pageSize));
 
-        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
-        Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result, rankingType);
+    }
 
-        Feed feed = new AbderaAtomFeedProvider().generateDiscoveryFeed(uriInfo.getRequestUri().toASCIIString(), discoveryEngine.toString(), discoveryResults);
-
+    private Response transformAsAtom(Map<URI, DiscoveryResult> discoveryResultMap) {
+        Feed feed = new AbderaAtomFeedProvider().generateDiscoveryFeed(uriInfo.getRequestUri().toASCIIString(), discoveryEngine.toString(), discoveryResultMap);
         return Response.ok(feed).build();
     }
 
-    public Response classificationBasedDiscoveryAsJson(
-            String type,
-            String function,
-            List<String> resources,
-            String rankingType,
-            String filtering
-    ) throws
-            WebApplicationException {
-
-        String query = buildClassQuery(type, function, resources, rankingType, filtering);
-
-        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
-
-        Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result, rankingType);
-
+    private Response transformAsJson(Map<URI, DiscoveryResult> discoveryResultMap) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(discoveryResults);
+        String json = gson.toJson(discoveryResultMap);
 
         return Response.ok(json).build();
+    }
+
+    private Map<URI, DiscoveryResult> invokeDiscoveryEngine(String query, String rankingType, Integer page, Integer pageSize) {
+        // Check of paging parameters consistency
+        if (page == null || page < 0) {
+            page = 0;
+        }
+        if (pageSize == null || pageSize < 1 || pageSize > MAX_PAGE_SIZE) {
+            pageSize = DEFAULT_PAGE_SIZE;
+        }
+        // Invoke discovery engine
+        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
+
+        //Create paging
+        List<URI> keys = Lists.newArrayList(result.keySet());
+        List<List<URI>> pages = Lists.partition(keys, pageSize);
+        if (page < pages.size()) {
+            List<URI> pageKeys = pages.get(page);
+            Map<URI, Pair<Double, MatchResult>> subResult = Maps.toMap(pageKeys, new SubMapFunction(result));
+            return discoveryResultsBuilder.build(subResult, rankingType);
+        } else {
+            return ImmutableMap.of();
+        }
+
     }
 
 
@@ -152,62 +165,22 @@ public class DiscoveryEngineResource {
             @ApiParam(value = "Multivalued parameter indicating the classes that the input of the service should match to. The classes are indicated with the URL of the concept to match. This URL should be URL encoded.", required = true, allowMultiple = true)
             @QueryParam("i") List<String> inputs,
             @ApiParam(value = "Multivalued parameter indicating the classes that the output of the service should match to. The classes are indicated with the URL of the concept to match. This URL should be URL encoded.", allowMultiple = true)
-            @QueryParam("o") List<String> outputs
+            @QueryParam("o") List<String> outputs,
+            @ApiParam(value = "Number of result page. By default, it will return the first page. Page numbering starts from 0.")
+            @QueryParam("page") Integer page,
+            @ApiParam(value = "Number of results per page. The default value is " + DEFAULT_PAGE_SIZE + " and the maximum value is " + MAX_PAGE_SIZE + ".")
+            @QueryParam("pagesize") Integer pageSize
     ) throws
             WebApplicationException {
+
+        String query = buildIOQuery(type, function, rankingType, filtering, inputs, outputs);
+
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-            return ioDiscoveryAsJson(type, function, rankingType, filtering, inputs, outputs);
+            return transformAsJson(invokeDiscoveryEngine(query, rankingType, page, pageSize));
         }
-
-        return ioDiscoveryAsAtom(type, function, rankingType, filtering, inputs, outputs);
+        return transformAsAtom(invokeDiscoveryEngine(query, rankingType, page, pageSize));
     }
 
-
-    public Response ioDiscoveryAsAtom(
-            String type,
-            String function,
-            String rankingType,
-            String filtering,
-            List<String> inputs,
-            List<String> outputs
-    ) throws
-            WebApplicationException {
-
-        String query = buildIOQuery(type, function, rankingType, filtering, inputs, outputs);
-
-        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
-
-        Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result, rankingType);
-
-        Feed feed = new AbderaAtomFeedProvider().generateDiscoveryFeed(uriInfo.getRequestUri().toASCIIString(), discoveryEngine.toString(), discoveryResults);
-
-        return Response.ok(feed).build();
-    }
-
-    public Response ioDiscoveryAsJson(
-            String type,
-            String function,
-            String rankingType,
-            String filtering,
-            List<String> inputs,
-            List<String> outputs
-    ) throws
-            WebApplicationException {
-
-        String query = buildIOQuery(type, function, rankingType, filtering, inputs, outputs);
-
-        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
-        Map<URI, MatchResult> output = Maps.newLinkedHashMap();
-        for (URI matchedResource : result.keySet()) {
-            output.put(matchedResource, result.get(matchedResource).getRight());
-        }
-        Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result, rankingType);
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(discoveryResults);
-
-        return Response.ok(json).build();
-    }
 
     private String buildClassQuery(String type, String operator, List<String> resources, String rankingType, String filtering) {
 
@@ -336,7 +309,11 @@ public class DiscoveryEngineResource {
             @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, \"svc\" for discovering services and \"all\" for any kind of service component", required = true, allowableValues = "svc,op,all")
             @PathParam("type") String type,
             @ApiParam(value = "Parameter indicating a query that specifies keywords to search. Regular expressions are allowed.", required = true)
-            @QueryParam("q") String query
+            @QueryParam("q") String query,
+            @ApiParam(value = "Number of result page. By default, it will return the first page. Page numbering starts from 0.")
+            @QueryParam("page") Integer page,
+            @ApiParam(value = "Number of results per page. The default value is " + DEFAULT_PAGE_SIZE + " and the maximum value is " + MAX_PAGE_SIZE + ".")
+            @QueryParam("pagesize") Integer pageSize
     ) {
         logger.info("Searching {} by keywords: {}", type, query);
 
@@ -348,18 +325,10 @@ public class DiscoveryEngineResource {
         discoveryRequest.add("discovery", functionObject);
 
         // Run discovery
-        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(discoveryRequest.toString());
-        Map<URI, DiscoveryResult> discoveryResults = discoveryResultsBuilder.build(result, "");
-
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String json = gson.toJson(discoveryResults);
-
-            return Response.ok(json).build();
-
+            return transformAsJson(invokeDiscoveryEngine(discoveryRequest.toString(), null, page, pageSize));
         }
-        Feed feed = new AbderaAtomFeedProvider().generateDiscoveryFeed(uriInfo.getRequestUri().toASCIIString(), discoveryEngine.toString(), discoveryResults);
-        return Response.ok(feed).build();
+        return transformAsAtom(invokeDiscoveryEngine(discoveryRequest.toString(), null, page, pageSize));
     }
 
     @POST
@@ -375,25 +344,26 @@ public class DiscoveryEngineResource {
     @Produces({"application/atom+xml", "application/json"})
     public Response advancedDiscovery(
             @ApiParam(value = "JSON document that specifies the discovery strategy", required = true)
-            String discoveryRequest
+            String discoveryRequest,
+            @ApiParam(value = "Number of result page. By default, it will return the first page. Page numbering starts from 0.")
+            @QueryParam("page") Integer page,
+            @ApiParam(value = "Number of results per page. The default value is " + DEFAULT_PAGE_SIZE + " and the maximum value is " + MAX_PAGE_SIZE + ".")
+            @QueryParam("pagesize") Integer pageSize
     ) {
         try {
             logger.debug("Advanced discovery");
-            Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(discoveryRequest.replaceAll("\\s", ""));
-            Map<URI, DiscoveryResult> discoveryResults;
+            discoveryRequest = discoveryRequest.replaceAll("\\s", "");
+            String rankingType;
             if (discoveryRequest.contains("\"ranking\"") || discoveryRequest.contains("\"scoring\"")) {
-                discoveryResults = discoveryResultsBuilder.build(result, "standard");
+                rankingType = "standard";
             } else {
-                discoveryResults = discoveryResultsBuilder.build(result, "");
+                rankingType = "";
             }
-
             if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-                Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                String json = gson.toJson(discoveryResults);
-                return Response.status(200).entity(json).build();
+                return transformAsJson(invokeDiscoveryEngine(discoveryRequest, rankingType, page,pageSize));
             }
-            Feed feed = new AbderaAtomFeedProvider().generateDiscoveryFeed(uriInfo.getRequestUri().toASCIIString(), discoveryEngine.toString(), discoveryResults);
-            return Response.status(200).entity(feed).build();
+            return transformAsAtom(invokeDiscoveryEngine(discoveryRequest, rankingType, page,pageSize));
+
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -402,4 +372,17 @@ public class DiscoveryEngineResource {
 
     }
 
+    private class SubMapFunction implements Function<URI, Pair<Double, MatchResult>> {
+        private Map<URI, Pair<Double, MatchResult>> map;
+
+        public SubMapFunction(Map<URI, Pair<Double, MatchResult>> map) {
+            this.map = map;
+        }
+
+        @Nullable
+        @Override
+        public Pair<Double, MatchResult> apply(@Nullable URI uri) {
+            return map.get(uri);
+        }
+    }
 }
