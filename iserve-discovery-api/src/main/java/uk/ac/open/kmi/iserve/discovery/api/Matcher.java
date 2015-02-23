@@ -18,6 +18,7 @@ package uk.ac.open.kmi.iserve.discovery.api;
 
 import com.google.common.collect.Table;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Map;
 import java.util.Set;
@@ -29,7 +30,7 @@ import java.util.Set;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @author <a href="mailto:pablo.rodriguez.mier@usc.es">Pablo Rodriguez Mier</a> (CITIUS - Universidad de Santiago de Compostela)
  */
-public interface Matcher {
+public interface Matcher extends Serializable {
 
     // Information about the matcher
 

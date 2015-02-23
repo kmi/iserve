@@ -16,6 +16,8 @@
 
 package uk.ac.open.kmi.iserve.discovery.api;
 
+import java.io.Serializable;
+
 /**
  * CarlosMatchTypes
  * TODO: Provide Description
@@ -24,7 +26,7 @@ package uk.ac.open.kmi.iserve.discovery.api;
  * @author <a href="mailto:pablo.rodriguez.mier@usc.es">Pablo Rodriguez Mier</a> (CITIUS - Universidad de Santiago de Compostela)
  * @since 25/07/2013
  */
-public interface MatchTypes<T extends MatchType> {
+public interface MatchTypes<T extends MatchType> extends Serializable {
 
     public T getLowest();
 

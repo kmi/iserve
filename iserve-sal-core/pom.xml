@@ -15,7 +15,8 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>iserve-parent</artifactId>
@@ -145,10 +146,16 @@
             <artifactId>gson</artifactId>
             <version>${gson.version}</version>
         </dependency>
+        <!-- Dependencies for caching based on redis -->
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
             <version>1.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>biz.source_code</groupId>
+            <artifactId>base64coder</artifactId>
+            <version>2010-09-21</version>
         </dependency>
 
 

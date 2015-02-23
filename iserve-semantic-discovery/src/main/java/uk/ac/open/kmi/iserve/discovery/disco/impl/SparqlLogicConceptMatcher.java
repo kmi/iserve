@@ -16,9 +16,11 @@
 
 package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
-import com.google.common.base.Function;
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.*;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Table;
 import com.google.inject.Inject;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -35,7 +37,6 @@ import uk.ac.open.kmi.iserve.discovery.api.impl.AtomicMatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.impl.EnumMatchTypes;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.Util;
-import uk.ac.open.kmi.iserve.discovery.util.MatchResultComparators;
 import uk.ac.open.kmi.iserve.sal.util.MonitoredQueryExecution;
 
 import java.net.URI;
@@ -66,16 +67,6 @@ public class SparqlLogicConceptMatcher extends AbstractMatcher implements Concep
     private static final MatchTypes<MatchType> matchTypes = EnumMatchTypes.of(LogicConceptMatchType.class);
     private static String NL = System.getProperty("line.separator");
     // Function to getMatchResult from a Map
-    protected final Function<Map.Entry<URI, MatchResult>, MatchResult> getMatchResult =
-            new Function<Map.Entry<URI, MatchResult>, MatchResult>() {
-                public MatchResult apply(Map.Entry<URI, MatchResult> entry) {
-                    return entry.getValue();
-                }
-            };
-    // Order the results by score and then by url
-    protected final Ordering<Map.Entry<URI, MatchResult>> entryOrdering =
-            Ordering.from(MatchResultComparators.BY_TYPE).onResultOf(getMatchResult).reverse().
-                    compound(Ordering.from(MatchResultComparators.BY_URI).onResultOf(getMatchResult));
     private URI sparqlEndpoint = null;
 
     @Inject

@@ -1,5 +1,9 @@
 package uk.ac.open.kmi.iserve.sal.util.caching.impl;
 
+import biz.source_code.base64Coder.Base64Coder;
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import org.redisson.Config;
@@ -9,6 +13,8 @@ import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
 import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
 
+import java.io.*;
+import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -17,15 +23,52 @@ import java.util.Set;
  * Created by Luca Panziera on 04/02/15.
  */
 public class RedisCache<K, V> implements Cache<K, V> {
-    private RMap<K, V> rMap;
+    private RMap<K, String> rMap;
+    private Redisson redisson;
 
     @Inject
     public RedisCache(@iServeProperty(ConfigurationProperty.REDIS_ADDRESS) String address, @Assisted String name) {
         Config config = new Config();
         config.useSingleServer().setAddress(address);
 
-        Redisson redisson = Redisson.create(config);
+        redisson = Redisson.create(config);
         rMap = redisson.getMap(name);
+    }
+
+    /**
+     * Read the object from Base64 string.
+     */
+    private static Object fromString(String s) {
+        try {
+            byte[] data = Base64Coder.decode(s);
+            ObjectInputStream ois = new ObjectInputStream(
+                    new ByteArrayInputStream(data));
+            Object o = ois.readObject();
+            ois.close();
+            return o;
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Write the object to a Base64 string.
+     */
+    private static String toString(Serializable o) {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(o);
+            oos.close();
+            return new String(Base64Coder.encode(baos.toByteArray()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -50,22 +93,25 @@ public class RedisCache<K, V> implements Cache<K, V> {
 
     @Override
     public V get(Object key) {
-        return rMap.get(key);
+        String serializedV = rMap.get(key);
+        return (V) fromString(serializedV);
     }
 
     @Override
     public Object put(Object key, Object value) {
-        return rMap.put((K) key, (V) value);
+        String serializedValue = toString((Serializable) value);
+        return rMap.put((K) key, serializedValue);
     }
 
     @Override
     public V remove(Object key) {
-        return rMap.remove(key);
+        return (V) fromString(rMap.remove(key));
     }
 
     @Override
     public void putAll(Map m) {
-        rMap.putAll(m);
+        Map<K, String> r = Maps.transformValues(m, new ToStringFunction());
+        rMap.putAll(r);
     }
 
     @Override
@@ -85,7 +131,22 @@ public class RedisCache<K, V> implements Cache<K, V> {
 
     @Override
     public Set<Entry<K, V>> entrySet() {
-        return rMap.entrySet();
+        Set<Entry<K, V>> r = Sets.newHashSet();
+        for (Entry<K, String> e : rMap.entrySet()) {
+            r.add(new AbstractMap.SimpleEntry<K, V>(e.getKey(), (V) fromString(e.getValue())));
+        }
+        return r;
     }
 
+    public void finalize() {
+        redisson.shutdown();
+    }
+
+    private class ToStringFunction implements Function<V, String> {
+
+        @Override
+        public String apply(V v) {
+            return RedisCache.toString((Serializable) v);
+        }
+    }
 }

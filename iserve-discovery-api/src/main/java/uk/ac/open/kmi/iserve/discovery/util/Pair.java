@@ -16,10 +16,12 @@
 
 package uk.ac.open.kmi.iserve.discovery.util;
 
+import java.io.Serializable;
+
 /**
  * Created by Luca Panziera on 22/05/2014.
  */
-public class Pair<L, R> {
+public class Pair<L, R> implements Serializable {
 
     private final L left;
     private final R right;

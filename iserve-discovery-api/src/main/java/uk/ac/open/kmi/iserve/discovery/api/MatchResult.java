@@ -16,6 +16,7 @@
 
 package uk.ac.open.kmi.iserve.discovery.api;
 
+import java.io.Serializable;
 import java.net.URI;
 
 /**
@@ -24,7 +25,7 @@ import java.net.URI;
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  * @author <a href="mailto:pablo.rodriguez.mier@usc.es">Pablo Rodriguez Mier</a> (CITIUS - Universidad de Santiago de Compostela)
  */
-public interface MatchResult<T extends MatchType> extends Comparable<T> {
+public interface MatchResult<T extends MatchType> extends Comparable<T>, Serializable {
 
     /**
      * The resource we wanted to find matches for, i.e., the origin
