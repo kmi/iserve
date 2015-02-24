@@ -135,12 +135,19 @@ public enum ConfigurationProperty {
             "uk.ac.open.kmi.iserve.discovery.api.freetextsearch.sparql.impl.OwlimSearchPlugin"
     ),
 
-    REDIS_ADDRESS(
-            "iserve.util.cache.redisaddress",
-            "Address of redis server",
+    REDIS_HOST(
+            "iserve.util.cache.redis.host",
+            "Host of redis server",
             new TypeLiteral<String>() {
             },
-            "localhost:6379"
+            "localhost"
+    ),
+    REDIS_PORT(
+            "iserve.util.cache.redis.port",
+            "Port of redis server",
+            new TypeLiteral<String>() {
+            },
+            "6379"
     );
 
     private String name;

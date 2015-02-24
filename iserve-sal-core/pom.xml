@@ -157,6 +157,13 @@
             <artifactId>base64coder</artifactId>
             <version>2010-09-21</version>
         </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.6.2</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
 
 
         <!-- Test dependencies -->

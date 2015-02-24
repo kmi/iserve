@@ -33,6 +33,7 @@ import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.StandardRanker;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
 import uk.ac.open.kmi.iserve.sal.events.Event;
 import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
+import uk.ac.open.kmi.iserve.sal.util.caching.CacheException;
 import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
 import uk.ac.open.kmi.msm4j.vocabulary.MSM;
 
@@ -102,7 +103,12 @@ public class DiscoveryEngine {
         }
 
         if (resultCache == null) {
-            resultCache = cacheFactory.create("discovery-result");
+            try {
+                resultCache = cacheFactory.createPersistentCache("discovery-result");
+            } catch (CacheException e) {
+                resultCache = cacheFactory.createInMemoryCache("discovery-result");
+            }
+
         }
 
     }

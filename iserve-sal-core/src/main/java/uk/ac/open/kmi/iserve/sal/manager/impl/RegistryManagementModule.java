@@ -19,12 +19,14 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
+import com.google.inject.name.Names;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.sal.manager.*;
 import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
 import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
+import uk.ac.open.kmi.iserve.sal.util.caching.impl.InMemoryCache;
 import uk.ac.open.kmi.iserve.sal.util.caching.impl.RedisCache;
 import uk.ac.open.kmi.msm4j.io.impl.TransformerModule;
 
@@ -81,7 +83,8 @@ public class RegistryManagementModule extends AbstractModule {
 
         // Cache injection
         install(new FactoryModuleBuilder()
-                .implement(Cache.class, RedisCache.class)
+                .implement(Cache.class, Names.named("in-memory"), InMemoryCache.class)
+                .implement(Cache.class, Names.named("persistent"), RedisCache.class)
                 .build(CacheFactory.class));
 
         bind(DocumentManager.class).to(DocumentManagerFileSystem.class);

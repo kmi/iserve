@@ -2,22 +2,26 @@ package uk.ac.open.kmi.iserve.sal.util.caching.impl;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by Luca Panziera on 12/02/15.
  */
 public class InMemoryCache<K, V> implements Cache<K, V> {
-
-    private Map<K, V> cacheMap;
+    private Logger log = LoggerFactory.getLogger(RedisCache.class);
+    private ConcurrentMap<K, V> cacheMap;
 
     @Inject
     public InMemoryCache(@Assisted String name) {
+        log.debug("Creating in-memory cache named {}...", name);
         cacheMap = new ConcurrentHashMap<K, V>();
     }
 
@@ -79,5 +83,25 @@ public class InMemoryCache<K, V> implements Cache<K, V> {
     @Override
     public Set<Entry<K, V>> entrySet() {
         return cacheMap.entrySet();
+    }
+
+    @Override
+    public V putIfAbsent(K key, V value) {
+        return cacheMap.putIfAbsent(key, value);
+    }
+
+    @Override
+    public boolean remove(Object key, Object value) {
+        return cacheMap.remove(key, value);
+    }
+
+    @Override
+    public boolean replace(K key, V oldValue, V newValue) {
+        return cacheMap.replace(key, oldValue, newValue);
+    }
+
+    @Override
+    public V replace(K key, V value) {
+        return cacheMap.replace(key, value);
     }
 }

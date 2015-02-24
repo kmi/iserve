@@ -46,6 +46,8 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by Luca Panziera on 27/05/2014.
@@ -53,7 +55,7 @@ import java.util.Set;
 @Singleton
 public class NfpManagerSparql extends IntegratedComponent implements NfpManager {
 
-    private static Cache<String, Map<String, Set<String>>> propertyValueCache;
+    private static Cache<String, ConcurrentMap<String, Set<String>>> propertyValueCache;
     private Logger logger = LoggerFactory.getLogger(NfpManagerSparql.class);
     private String sparqlEndpoint;
 
@@ -64,7 +66,7 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
                             CacheFactory cacheFactory) throws SalException {
         super(eventBus, iServeUri);
         this.sparqlEndpoint = sparqlEndpoint;
-        propertyValueCache = cacheFactory.create("nfp");
+        propertyValueCache = cacheFactory.createInMemoryCache("nfp");
         logger.debug("Created NfpManagerSparql");
     }
 
@@ -160,7 +162,7 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
         Model describeModel = getDescribeModel(resources);
         for (URI resource : resources) {
             if (!propertyValueCache.containsKey(resource.toASCIIString())) {
-                propertyValueCache.put(resource.toASCIIString(), Maps.<String, Set<String>>newHashMap());
+                propertyValueCache.put(resource.toASCIIString(), new ConcurrentHashMap<String, Set<String>>());
             }
 
         }
@@ -182,9 +184,9 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
                         object = statement.getObject().asResource().getURI();
                     }
                     if (object != null) {
-                        Map<String, Set<String>> predicateObjectMap;
+                        ConcurrentMap<String, Set<String>> predicateObjectMap;
                         if (!propertyValueCache.containsKey(subjectUri.toASCIIString())) {
-                            predicateObjectMap = Maps.newHashMap();
+                            predicateObjectMap = new ConcurrentHashMap<String, Set<String>>();
                         } else {
                             predicateObjectMap = propertyValueCache.get(subjectUri.toASCIIString());
                         }

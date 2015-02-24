@@ -9,9 +9,13 @@ import com.google.inject.assistedinject.Assisted;
 import org.redisson.Config;
 import org.redisson.Redisson;
 import org.redisson.core.RMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import redis.clients.jedis.Jedis;
 import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
 import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
+import uk.ac.open.kmi.iserve.sal.util.caching.CacheException;
 
 import java.io.*;
 import java.util.AbstractMap;
@@ -23,16 +27,29 @@ import java.util.Set;
  * Created by Luca Panziera on 04/02/15.
  */
 public class RedisCache<K, V> implements Cache<K, V> {
+    private Logger log = LoggerFactory.getLogger(RedisCache.class);
     private RMap<K, String> rMap;
     private Redisson redisson;
 
     @Inject
-    public RedisCache(@iServeProperty(ConfigurationProperty.REDIS_ADDRESS) String address, @Assisted String name) {
+    public RedisCache(@iServeProperty(ConfigurationProperty.REDIS_HOST) String host, @iServeProperty(ConfigurationProperty.REDIS_PORT) String port, @Assisted String name) throws CacheException {
+        log.debug("Creating Redis-based cache named {}...", name);
+        // TODO remove use of jedis
+        try {
+            Jedis jedis = new Jedis(host, Integer.valueOf(port));
+            jedis.randomKey();
+            jedis.close();
+        } catch (Exception e) {
+            log.debug("Unable to connect to the Redis server");
+            throw new CacheException("Unable to connect to the Redis server");
+        }
+
         Config config = new Config();
-        config.useSingleServer().setAddress(address);
+        config.useSingleServer().setAddress(host + ":" + port);
 
         redisson = Redisson.create(config);
         rMap = redisson.getMap(name);
+        log.debug("Cache created");
     }
 
     /**
@@ -138,8 +155,32 @@ public class RedisCache<K, V> implements Cache<K, V> {
         return r;
     }
 
-    public void finalize() {
-        redisson.shutdown();
+    @Override
+    public V putIfAbsent(K key, V value) {
+        String serializedValue = toString((Serializable) value);
+        String r = rMap.putIfAbsent(key, serializedValue);
+        if (r == null) {
+            return null;
+        } else {
+            return (V) fromString(r);
+        }
+    }
+
+    @Override
+    public boolean remove(Object key, Object value) {
+        return rMap.remove(key, toString((Serializable) value));
+    }
+
+    @Override
+    public boolean replace(K key, V oldValue, V newValue) {
+        return rMap.replace(key, toString((Serializable) oldValue), toString((Serializable) newValue));
+    }
+
+    @Override
+    public V replace(K key, V value) {
+        if (rMap.containsKey(key)) {
+            return (V) fromString(rMap.put(key, toString((Serializable) value)));
+        } else return null;
     }
 
     private class ToStringFunction implements Function<V, String> {
@@ -149,4 +190,5 @@ public class RedisCache<K, V> implements Cache<K, V> {
             return RedisCache.toString((Serializable) v);
         }
     }
+
 }

@@ -42,6 +42,7 @@ import uk.ac.open.kmi.iserve.sal.events.OntologyDeletedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
+import uk.ac.open.kmi.iserve.sal.util.caching.CacheException;
 import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
 
 import javax.annotation.Nullable;
@@ -50,6 +51,8 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Rudimentary implementation of an in-memory index for logic matching.
@@ -61,8 +64,7 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
     private static final Logger log = LoggerFactory.getLogger(SparqlIndexedLogicConceptMatcher.class);
     private final RegistryManager manager;
     private final SparqlLogicConceptMatcher sparqlMatcher;
-    //private Table<URI, URI, MatchResult> indexedMatches;
-    private Cache<URI, Map<URI, MatchResult>> indexedMatches;
+    private transient Cache<URI, ConcurrentMap<URI, MatchResult>> indexedMatches;
 
     @Inject
     protected SparqlIndexedLogicConceptMatcher(RegistryManager registryManager, @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_QUERY) String sparqlEndpoint, CacheFactory cacheFactory) throws SalException, URISyntaxException {
@@ -72,20 +74,27 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
         this.sparqlMatcher = new SparqlLogicConceptMatcher(sparqlEndpoint);
         this.manager = registryManager;
         this.manager.registerAsObserver(this);
-        this.indexedMatches = cacheFactory.create("concept-matcher-index");
+        if (indexedMatches == null) {
+            try {
+                this.indexedMatches = cacheFactory.createPersistentCache("concept-matcher-index");
+            } catch (CacheException e) {
+                this.indexedMatches = cacheFactory.createInMemoryCache("concept-matcher-index");
+            }
+        }
         if (indexedMatches.isEmpty()) {
             log.info("Populating Matcher Index...");// if index is empty
             Stopwatch w = new Stopwatch().start();
             populate();
             log.info("Population done in {}. Number of entries {}", w.stop().toString(), indexedMatches.size());
         }
+
     }
 
     private void populate() {
         Set<URI> classes = new HashSet<URI>(this.manager.getKnowledgeBaseManager().listConcepts(null));
         Map<URI, Map<URI, MatchResult>> matchesTable = sparqlMatcher.listMatchesAtLeastOfType(classes, LogicConceptMatchType.Subsume).rowMap();
         for (URI c : classes) {
-            indexedMatches.put(c, matchesTable.get(c));
+            indexedMatches.put(c, new ConcurrentHashMap(matchesTable.get(c)));
         }
     }
 
@@ -184,7 +193,7 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
 
         // For each of them update their entries in the index (matched concepts will be updated later within the loop)
         for (URI c : conceptUris) {
-            indexedMatches.put(c, sparqlMatcher.listMatchesAtLeastOfType(c, LogicConceptMatchType.Subsume));
+            indexedMatches.put(c, new ConcurrentHashMap<URI, MatchResult>(sparqlMatcher.listMatchesAtLeastOfType(c, LogicConceptMatchType.Subsume)));
         }
     }
 
@@ -215,7 +224,7 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
             for (URI conceptUri : difference) {
                 matchResultMap.remove(conceptUri);
             }
-            indexedMatches.put(indexedConcept, matchResultMap);
+            indexedMatches.put(indexedConcept, new ConcurrentHashMap<URI, MatchResult>(matchResultMap));
         }
 
     }
