@@ -40,7 +40,7 @@ import uk.ac.open.kmi.msm4j.io.impl.TransformerModule;
 public class RegistryManagementModule extends AbstractModule {
 
     private static final Logger log = LoggerFactory.getLogger(RegistryManagementModule.class);
-
+    private static final EventBus eventBus = new EventBus("iServe");
     private final String configFile;
 
     public RegistryManagementModule() {
@@ -73,7 +73,6 @@ public class RegistryManagementModule extends AbstractModule {
                 .build(SparqlGraphStoreFactory.class));
 
         // Create the EventBus
-        final EventBus eventBus = new EventBus("iServe");
         bind(EventBus.class).toInstance(eventBus);
 
         // Bind each of the managers

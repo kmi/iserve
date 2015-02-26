@@ -8,7 +8,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.eventbus.EventBus;
 import com.google.gson.*;
 import com.wordnik.swagger.annotations.*;
 import org.apache.abdera.model.Feed;
@@ -16,13 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryEngine;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
-import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoverer;
-import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoverer;
-import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchPlugin;
-import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
 import uk.ac.open.kmi.iserve.rest.util.AbderaAtomFeedProvider;
-import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -34,7 +28,6 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Path("/")
 @Api(value = "/discovery", description = "Service discovery operations", basePath = "discovery")
@@ -57,18 +50,9 @@ public class DiscoveryEngineResource {
     private DiscoveryResultsBuilderPlugin discoveryResultsBuilder;
 
     @Inject
-    DiscoveryEngineResource(EventBus eventBus,
-                            ServiceDiscoverer serviceDiscoverer,
-                            OperationDiscoverer operationDiscoverer,
-                            FreeTextSearchPlugin freeTextSearchPlugin,
-                            Set<Filter> filters,
-                            Set<AtomicFilter> atomicFilters,
-                            Set<Scorer> scorers,
-                            Set<AtomicScorer> atomicScorers,
-                            ScoreComposer scoreComposer,
-                            CacheFactory cacheFactory,
+    DiscoveryEngineResource(DiscoveryEngine discoveryEngine,
                             DiscoveryResultsBuilderPlugin discoveryResultsBuilder) {
-        this.discoveryEngine = new DiscoveryEngine(eventBus, serviceDiscoverer, operationDiscoverer, freeTextSearchPlugin, filters, atomicFilters, scorers, atomicScorers, scoreComposer, cacheFactory);
+        this.discoveryEngine = discoveryEngine;
         this.discoveryResultsBuilder = discoveryResultsBuilder;
     }
 

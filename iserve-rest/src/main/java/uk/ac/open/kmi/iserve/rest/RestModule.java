@@ -11,6 +11,8 @@ import com.google.inject.servlet.ServletModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.PluginModuleLoader;
+import uk.ac.open.kmi.iserve.discovery.api.DiscoveryEngine;
+import uk.ac.open.kmi.iserve.discovery.api.DiscoveryEngineImpl;
 import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
 import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchProvider;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
@@ -51,6 +53,8 @@ public class RestModule extends ServletModule {
         bind(DiscoveryResultsBuilderPlugin.class).to(DiscoveryResultsBuilder.class);
 
         install(new FreeTextSearchProvider());
+
+        bind(DiscoveryEngine.class).to(DiscoveryEngineImpl.class);
 
     }
 

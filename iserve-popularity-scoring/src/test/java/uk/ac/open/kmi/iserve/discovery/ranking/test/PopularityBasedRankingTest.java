@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
 import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryEngine;
+import uk.ac.open.kmi.iserve.discovery.api.DiscoveryEngineImpl;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchProvider;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
@@ -207,6 +208,7 @@ public class PopularityBasedRankingTest {
             install(new FreeTextSearchProvider());
 
             bind(NfpManager.class).to(NfpManagerSparql.class);
+            bind(DiscoveryEngine.class).to(DiscoveryEngineImpl.class);
 
         }
 
