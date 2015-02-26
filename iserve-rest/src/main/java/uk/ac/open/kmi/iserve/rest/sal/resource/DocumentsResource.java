@@ -17,13 +17,13 @@
 package uk.ac.open.kmi.iserve.rest.sal.resource;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.wordnik.swagger.annotations.*;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
-import uk.ac.open.kmi.iserve.sal.exception.LogException;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
@@ -56,23 +56,49 @@ public class DocumentsResource {
         this.registryManager = registryManager;
     }
 
-
     @GET
     @ApiOperation(value = "List all the service documents",
             notes = "Returns a list of service documents")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Documents Found"),
             @ApiResponse(code = 500, message = "Internal error")})
     @Produces({"application/json", "text/html"})
-    public Response listDocuments() {
+    public Response listDocuments(@HeaderParam("Accept") String accept) {
         try {
             Set<URI> result = registryManager.getDocumentManager().listDocuments();
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String json = gson.toJson(result);
-            return Response.status(Status.OK).entity(json).build();
+            String response;
+            if (accept.contains(MediaType.TEXT_HTML)) {
+                StringBuilder responseBuilder = new StringBuilder()
+                        .append("<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n")
+                        .append("<body>\n")
+                        .append(result.size()).append(" documents are available.")
+                        .append("<ul>");
+
+                for (URI docUri : result) {
+                    responseBuilder.append("<li><a href='").append(docUri).append("'>").append(docUri).append("</a></li>\n");
+                }
+
+                responseBuilder.append("</ul></body>\n</html>");
+                response = responseBuilder.toString();
+            } else {
+                Gson gson = new Gson();
+                JsonObject message = new JsonObject();
+                message.add("message", new JsonPrimitive(result.size() + " documents are available."));
+                message.add("uris", gson.toJsonTree(result));
+                response = message.toString();
+            }
+
+            return Response.status(Status.OK).entity(response).build();
         } catch (DocumentException e) {
             e.printStackTrace();
-            String error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                    "  <body>\nThere was an error while loading documents. Contact the system administrator. \n  </body>\n</html>";
+            String error;
+            if (accept.contains(MediaType.TEXT_HTML)) {
+                error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                        "<body>\nThere was an error while loading documents. Contact the system administrator. \n  </body>\n</html>";
+            } else {
+                JsonObject message = new JsonObject();
+                message.add("message", new JsonPrimitive("There was an error while loading documents. Contact the system administrator."));
+                error = message.toString();
+            }
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
         }
     }
@@ -208,19 +234,20 @@ public class DocumentsResource {
 
     @POST
     @ApiOperation(value = "Add a new service document",
-            notes = "Returns a HTML document which contains the URI of the added document")
+            notes = "Returns a message which contains the URI of the added document")
     @ApiResponses(
             value = {@ApiResponse(code = 201, message = "Created document"),
                     @ApiResponse(code = 500, message = "Internal error")})
     @Consumes({MediaType.TEXT_HTML, MediaType.TEXT_XML, MediaType.APPLICATION_XML, "application/rdf+xml",
             "text/turtle", "text/n3", "text/rdf+n3", MediaType.TEXT_PLAIN, "application/json", "application/wsdl+xml"})
-    @Produces({MediaType.TEXT_HTML})
+    @Produces({MediaType.TEXT_HTML, "application/json"})
     public Response addDocument(
             String document,
             @ApiParam(value = "Document location", required = true)
             @HeaderParam("Content-Location") String locationUri,
             @ApiParam(value = "Document Media type", required = true)
-            @HeaderParam("Content-Type") String contentType) {
+            @HeaderParam("Content-Type") String contentType,
+            @HeaderParam("Accept") String accept) {
 
         // TODO: Re add security
 //        if ( security.getUserPrincipal() == null ) {
@@ -243,14 +270,28 @@ public class DocumentsResource {
             } else {
                 docUri = registryManager.getDocumentManager().createDocument(new URI(locationUri), transformationEngine.getFileExtension(contentType), contentType);
             }
+            String response;
+            if (accept.contains(MediaType.TEXT_HTML)) {
+                response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                        "<body>\nA document is created at <a href='" + docUri.toString() + "'>" + docUri.toString() + "</a>\n  </body>\n</html>";
+            } else {
+                JsonObject message = new JsonObject();
+                message.add("message", new JsonPrimitive("A document is created at " + docUri.toString()));
+                message.add("uri", new JsonPrimitive(docUri.toASCIIString()));
+                response = message.toString();
+            }
+            return Response.status(Status.CREATED).contentLocation(docUri).entity(response).build();
 
-            String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                    "  <body>\nA document is created at <a href='" + docUri.toString() + "'>" + docUri.toString() + "</a>\n  </body>\n</html>";
-
-            return Response.status(Status.CREATED).contentLocation(docUri).entity(htmlString).build();
         } catch (Exception e) {
-            String error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                    "  <body>\nThere was an error while creating a document. Contact the system administrator. \n  </body>\n</html>";
+            String error;
+            if (accept.contains(MediaType.TEXT_HTML)) {
+                error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                        "<body>\nThere was an error while creating a document. Contact the system administrator. \n  </body>\n</html>";
+            } else {
+                JsonObject message = new JsonObject();
+                message.add("message", new JsonPrimitive("There was an error while creating a document. Contact the system administrator."));
+                error = message.toString();
+            }
             e.printStackTrace();
             logger.error(e.toString());
 
@@ -282,17 +323,17 @@ public class DocumentsResource {
 
     @DELETE
     @Path("/{id}")
+    @Produces({MediaType.TEXT_HTML, "application/json"})
     @ApiOperation(value = "Delete a service document and its sub-documents",
-            notes = "Returns a HTML document which confirms the deletion of the document")
+            notes = "Returns a message which confirms the deletion of the document")
     @ApiResponses(
             value = {@ApiResponse(code = 401, message = "Deleted document"),
                     @ApiResponse(code = 500, message = "Internal error")})
-    @Produces({MediaType.TEXT_HTML})
     public Response deleteDocument(
-            @Context UriInfo uriInfo,
             @ApiParam(value = "Description ID", required = true)
-            @PathParam("id") String id
-    ) throws DocumentException, LogException {
+            @PathParam("id") String id,
+            @HeaderParam("Accept") String accept
+    ) {
 
         // TODO: Re add security
 //        if ( security.getUserPrincipal() == null ) {
@@ -305,19 +346,35 @@ public class DocumentsResource {
 //		String userFoafId = security.getUserPrincipal().getName();
 
         try {
+            // TODO: Push this down to the above method
+//		ManagerSingleton.getInstance().log(userFoafId, LOG.ITEM_DELETING, uriString, new Date(), "REST");
             boolean result = registryManager.getDocumentManager().deleteDocument(uriInfo.getRequestUri());
+            String response;
+            if (accept.contains(MediaType.TEXT_HTML)) {
+                response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                        "<body>\nA document is removed from <a href='" + uriInfo.getRequestUri() + "'>" + uriInfo.getRequestUri() + "</a>\n  </body>\n</html>";
+
+            } else {
+                JsonObject message = new JsonObject();
+                message.add("message", new JsonPrimitive("A document is removed from" + uriInfo.getRequestUri()));
+                message.add("uri", new JsonPrimitive("uriInfo.getRequestUri()"));
+                response = message.toString();
+            }
+
+            return Response.status(Status.GONE).contentLocation(uriInfo.getRequestUri()).entity(response).build();
         } catch (SalException e) {
-            String error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                    "  <body>\nThere was an error while deleting a document. Contact the system administrator. \n  </body>\n</html>";
+            String error;
+            if (accept.contains(MediaType.TEXT_HTML)) {
+                error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                        "  <body>\nThere was an error while deleting a document. Contact the system administrator. \n  </body>\n</html>";
+
+            } else {
+                JsonObject message = new JsonObject();
+                message.add("message", new JsonPrimitive("There was an error while deleting a document. Contact the system administrator."));
+                error = message.toString();
+            }
 
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
         }
-        // TODO: Push this down to the above method
-//		ManagerSingleton.getInstance().log(userFoafId, LOG.ITEM_DELETING, uriString, new Date(), "REST");
-
-        String htmlString = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                "  <body>\nA document is removed from <a href='" + uriInfo.getRequestUri() + "'>" + uriInfo.getRequestUri() + "</a>\n  </body>\n</html>";
-
-        return Response.status(Status.GONE).contentLocation(uriInfo.getRequestUri()).entity(htmlString).build();
     }
 }

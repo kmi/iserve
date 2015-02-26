@@ -16,6 +16,9 @@
 
 package uk.ac.open.kmi.iserve.rest.sal.resource;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.wordnik.swagger.annotations.*;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -59,9 +62,9 @@ public class ServicesResource {
 
     @POST
     @Consumes({MediaType.MULTIPART_FORM_DATA})
-    @Produces({MediaType.TEXT_HTML})
+    @Produces({MediaType.TEXT_HTML, "application/json"})
     @ApiOperation(value = "Add a new service",
-            notes = "Returns a HTML document which contains the URI of the added service")
+            notes = "Returns a message which contains the URI of the added service")
     @ApiResponses(
             value = {@ApiResponse(code = 201, message = "Created document"),
                     @ApiResponse(code = 403, message = "You have not got the appropriate permissions for creating a service"),
@@ -72,7 +75,8 @@ public class ServicesResource {
             @ApiParam(value = "Service description passed as file")
             @FormDataParam("file") InputStream file,
             @ApiParam(value = "Service description passed as location URI")
-            @QueryParam("store") Boolean store
+            @QueryParam("store") Boolean store,
+            @HeaderParam("Accept") String accept
     ) {
 
         log.debug("Invocation to addService - bodyPart {}, file {}",
@@ -110,29 +114,48 @@ public class ServicesResource {
             }
 
             //		String oauthConsumer = ((SecurityFilter.Authorizer) security).getOAuthConsumer();
+            if (accept.contains(MediaType.TEXT_HTML)) {
+                StringBuilder responseBuilder = new StringBuilder()
+                        .append("<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n")
+                        .append("<body>\n")
+                        .append(servicesUris.size()).append(" service(s) added.");
 
-            StringBuilder responseBuilder = new StringBuilder()
-                    .append("<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n")
-                    .append("<body>\n")
-                    .append(servicesUris.size()).append(" service(s) added.");
+                for (URI svcUri : servicesUris) {
+                    responseBuilder.append("Service created at <a href='").append(svcUri).append("'>").append(svcUri).append("</a>\n");
+                }
 
-            for (URI svcUri : servicesUris) {
-                responseBuilder.append("Service created at <a href='").append(svcUri).append("'>").append(svcUri).append("</a>\n");
+                responseBuilder.append("</body>\n</html>");
+
+                return Response.status(Status.CREATED).entity(responseBuilder.toString()).build();
+            } else {
+                Gson gson = new Gson();
+                JsonObject message = new JsonObject();
+                message.add("message", new JsonPrimitive(servicesUris.size() + " services added"));
+                message.add("uris", gson.toJsonTree(servicesUris));
+                return Response.status(Status.CREATED).entity(message.toString()).build();
             }
-
-            responseBuilder.append("</body>\n</html>");
-
-            return Response.status(Status.CREATED).entity(responseBuilder.toString()).build();
         } catch (ServiceException e) {
-            String error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                    "  <body>\nThere was an error while transforming the service descriptions: " + e.getMessage() + "\n  </body>\n</html>";
-
+            String error;
+            if (accept.contains(MediaType.TEXT_HTML)) {
+                error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                        "  <body>\nThere was an error while transforming the service descriptions: " + e.getMessage() + "\n  </body>\n</html>";
+            } else {
+                JsonObject message = new JsonObject();
+                message.add("message", new JsonPrimitive("There was an error while transforming the service descriptions: " + e.getMessage()));
+                error = message.toString();
+            }
             // TODO: Add logging
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
         } catch (SalException e) {
-            String error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                    "  <body>\nThere was an error while storing the service: " + e.getMessage() + "\n  </body>\n</html>";
-
+            String error;
+            if (accept.contains(MediaType.TEXT_HTML)) {
+                error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                        "  <body>\nThere was an error while storing the service: " + e.getMessage() + "\n  </body>\n</html>";
+            } else {
+                JsonObject message = new JsonObject();
+                message.add("message", new JsonPrimitive("TThere was an error while storing the service: " + e.getMessage()));
+                error = message.toString();
+            }
             // TODO: Add logging
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
         } finally {
@@ -149,9 +172,9 @@ public class ServicesResource {
     @POST
     @Consumes({MediaType.TEXT_HTML, MediaType.TEXT_XML, MediaType.APPLICATION_XML, "application/rdf+xml",
             "text/turtle", "text/n3", "text/rdf+n3", MediaType.TEXT_PLAIN, "application/json", "application/wsdl+xml"})
-    @Produces({MediaType.TEXT_HTML})
+    @Produces({MediaType.TEXT_HTML, "application/json"})
     @ApiOperation(value = "Add a new service from a document available on the Web",
-            notes = "Returns a HTML document which contains the URI of the added service")
+            notes = "Returns a massage which contains the URI of the added service")
     @ApiResponses(
             value = {@ApiResponse(code = 201, message = "Created document"),
                     @ApiResponse(code = 403, message = "You have not got the appropriate permissions for creating a service"),
@@ -162,7 +185,8 @@ public class ServicesResource {
             @ApiParam(value = "Service description Media type", required = true)
             @HeaderParam("Content-Type") String mediaType,
             @ApiParam(value = "Service description passed as location URI")
-            @QueryParam("store") Boolean store
+            @QueryParam("store") Boolean store,
+            @HeaderParam("Accept") String accept
     ) {
 
         log.debug("Invocation to addService from {}", locationUri);
@@ -190,29 +214,49 @@ public class ServicesResource {
                 servicesUris = manager.registerServices(URI.create(locationUri), mediaType);
             }
             //		String oauthConsumer = ((SecurityFilter.Authorizer) security).getOAuthConsumer();
+            if (accept.contains(MediaType.TEXT_HTML)) {
+                StringBuilder responseBuilder = new StringBuilder()
+                        .append("<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n")
+                        .append("<body>\n")
+                        .append(servicesUris.size()).append(" services added.");
 
-            StringBuilder responseBuilder = new StringBuilder()
-                    .append("<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n")
-                    .append("<body>\n")
-                    .append(servicesUris.size()).append(" services added.");
+                for (URI svcUri : servicesUris) {
+                    responseBuilder.append("Service created at <a href='").append(svcUri).append("'>").append(svcUri).append("</a>\n");
+                }
 
-            for (URI svcUri : servicesUris) {
-                responseBuilder.append("Service created at <a href='").append(svcUri).append("'>").append(svcUri).append("</a>\n");
+                responseBuilder.append("</body>\n</html>");
+
+                return Response.status(Status.CREATED).entity(responseBuilder.toString()).build();
+            } else {
+                Gson gson = new Gson();
+                JsonObject message = new JsonObject();
+                message.add("message", new JsonPrimitive(servicesUris.size() + " services added"));
+                message.add("uris", gson.toJsonTree(servicesUris));
+                return Response.status(Status.CREATED).entity(message.toString()).build();
             }
 
-            responseBuilder.append("</body>\n</html>");
-
-            return Response.status(Status.CREATED).entity(responseBuilder.toString()).build();
         } catch (ServiceException e) {
-            String error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                    "  <body>\nThere was an error while transforming the service descriptions: " + e.getMessage() + "\n  </body>\n</html>";
-
+            String error;
+            if (accept.contains(MediaType.TEXT_HTML)) {
+                error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                        "  <body>\nThere was an error while transforming the service descriptions: " + e.getMessage() + "\n  </body>\n</html>";
+            } else {
+                JsonObject message = new JsonObject();
+                message.add("message", new JsonPrimitive("There was an error while transforming the service descriptions: " + e.getMessage()));
+                error = message.toString();
+            }
             // TODO: Add logging
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
         } catch (SalException e) {
-            String error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                    "  <body>\nThere was an error while storing the service: " + e.getMessage() + "\n  </body>\n</html>";
-
+            String error;
+            if (accept.contains(MediaType.TEXT_HTML)) {
+                error = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                        "  <body>\nThere was an error while storing the service: " + e.getMessage() + "\n  </body>\n</html>";
+            } else {
+                JsonObject message = new JsonObject();
+                message.add("message", new JsonPrimitive("TThere was an error while storing the service: " + e.getMessage()));
+                error = message.toString();
+            }
             // TODO: Add logging
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
         }
@@ -233,9 +277,9 @@ public class ServicesResource {
      */
     @DELETE
     @Path("/{uniqueId}/{serviceName}")
-    @Produces({MediaType.TEXT_HTML})
+    @Produces({MediaType.TEXT_HTML, "application/json"})
     @ApiOperation(value = "Delete a service",
-            notes = "Returns a HTML document which confirms the service deletion")
+            notes = "Returns a message which confirms the service deletion")
     @ApiResponses(
             value = {
                     @ApiResponse(code = 200, message = "Service deleted"),
@@ -247,7 +291,8 @@ public class ServicesResource {
             @ApiParam(value = "Service ID", required = true)
             @PathParam("uniqueId") String uniqueId,
             @ApiParam(value = "Service name", required = true)
-            @PathParam("serviceName") String serviceName
+            @PathParam("serviceName") String serviceName,
+            @HeaderParam("Accept") String accept
     ) {
 
         // Check first that the user is allowed to upload a service
@@ -265,31 +310,56 @@ public class ServicesResource {
 
         String response;
         try {
+
             if (!manager.getServiceManager().serviceExists(serviceUri)) {
                 // The service doesn't exist
-                response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                        "  <body>\n The service " + serviceUri + " is not present in the registry.\n  </body>\n</html>";
-
+                if (accept.contains(MediaType.TEXT_HTML)) {
+                    response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                            "  <body>\n The service " + serviceUri + " is not present in the registry.\n  </body>\n</html>";
+                } else {
+                    JsonObject message = new JsonObject();
+                    message.add("message", new JsonPrimitive("The service " + serviceUri + " is not present in the registry."));
+                    response = message.toString();
+                }
                 return Response.status(Status.NOT_FOUND).contentLocation(serviceUri).entity(response).build();
             }
 
             if (manager.unregisterService(serviceUri)) {
                 // The service was deleted
-                response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                        "  <body>\n The service <a href='" + serviceUri + "'>" + serviceUri + "</a> has been deleted from the server.\n  </body>\n</html>";
+                if (accept.contains(MediaType.TEXT_HTML)) {
+                    response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                            "  <body>\n The service <a href='" + serviceUri + "'>" + serviceUri + "</a> has been deleted from the server.\n  </body>\n</html>";
+
+                } else {
+                    JsonObject message = new JsonObject();
+                    message.add("message", new JsonPrimitive("The service " + serviceUri + " has been deleted from the server."));
+                    message.add("uri", new JsonPrimitive(serviceUri.toASCIIString()));
+                    response = message.toString();
+                }
 
                 return Response.status(Status.OK).contentLocation(serviceUri).entity(response).build();
             } else {
                 // The service was not deleted
-                response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                        "  <body>\n The service <a href='" + serviceUri + "'>" + serviceUri + "</a> could not be deleted from the server. Try again or contact a server administrator.\n  </body>\n</html>";
+                if (accept.contains(MediaType.TEXT_HTML)) {
+                    response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                            "  <body>\n The service <a href='" + serviceUri + "'>" + serviceUri + "</a> could not be deleted from the server. Try again or contact a server administrator.\n  </body>\n</html>";
+                } else {
+                    JsonObject message = new JsonObject();
+                    message.add("message", new JsonPrimitive("The service " + serviceUri + " could not be deleted from the server. Try again or contact a server administrator."));
+                    response = message.toString();
+                }
 
                 return Response.status(Status.NOT_MODIFIED).contentLocation(serviceUri).entity(response).build();
             }
         } catch (SalException e) {
-            response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                    "  <body>\nThere was an error while deleting the service. Contact the system administrator. \n  </body>\n</html>";
-
+            if (accept.contains(MediaType.TEXT_HTML)) {
+                response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                        "  <body>\nThere was an error while deleting the service. Contact the system administrator. \n  </body>\n</html>";
+            } else {
+                JsonObject message = new JsonObject();
+                message.add("message", new JsonPrimitive("There was an error while deleting the service. Contact the system administrator."));
+                response = message.toString();
+            }
             // TODO: Add logging
             log.error("SAL Exception while deleting service", e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(response).build();
@@ -310,16 +380,16 @@ public class ServicesResource {
      * @return
      */
     @DELETE
-    @Produces({MediaType.TEXT_HTML})
+    @Produces({MediaType.TEXT_HTML, "application/json"})
     @ApiOperation(value = "Delete all the registered services",
-            notes = "BE CAREFUL! You can lose all your data. It returns a HTML document which confirms all the service deletions.")
+            notes = "BE CAREFUL! You can lose all your data. It returns a message which confirms all the service deletions.")
     @ApiResponses(
             value = {
                     @ApiResponse(code = 200, message = "Registry cleaned. All the services are deleted."),
                     @ApiResponse(code = 304, message = "The services could not be cleared."),
                     @ApiResponse(code = 403, message = "You have not got the appropriate permissions for clearing the services"),
                     @ApiResponse(code = 500, message = "Internal error")})
-    public Response clearServices() {
+    public Response clearServices(@HeaderParam("Accept") String accept) {
 
         // Check first that the user is allowed to upload a service
 //        Subject currentUser = SecurityUtils.getSubject();
@@ -338,21 +408,36 @@ public class ServicesResource {
         try {
             if (manager.getServiceManager().clearServices()) {
                 // The registry was cleared
-                response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                        "  <body>\n The services have been cleared.\n  </body>\n</html>";
-
+                if (accept.contains(MediaType.TEXT_HTML)) {
+                    response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                            "  <body>\n The services have been cleared.\n  </body>\n</html>";
+                } else {
+                    JsonObject message = new JsonObject();
+                    message.add("message", new JsonPrimitive("The services have been cleared."));
+                    response = message.toString();
+                }
                 return Response.status(Status.OK).contentLocation(serviceUri).entity(response).build();
             } else {
                 // The registry was not cleared
+                if (accept.contains(MediaType.TEXT_HTML)) {
                 response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                         "  <body>\n The services could not be cleared. Try again or contact a server administrator.\n  </body>\n</html>";
-
+                } else {
+                    JsonObject message = new JsonObject();
+                    message.add("message", new JsonPrimitive("The services could not be cleared. Try again or contact a server administrator."));
+                    response = message.toString();
+                }
                 return Response.status(Status.NOT_MODIFIED).contentLocation(serviceUri).entity(response).build();
             }
         } catch (SalException e) {
-            response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
-                    "  <body>\nThere was an error while clearing the services. Contact the system administrator. \n  </body>\n</html>";
-
+            if (accept.contains(MediaType.TEXT_HTML)) {
+                response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                        "<body>\nThere was an error while clearing the services. Contact the system administrator. \n  </body>\n</html>";
+            } else {
+                JsonObject message = new JsonObject();
+                message.add("message", new JsonPrimitive("There was an error while clearing the services. Contact the system administrator."));
+                response = message.toString();
+            }
             // TODO: Add logging
             log.error("SAL Exception while deleting service", e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(response).build();
