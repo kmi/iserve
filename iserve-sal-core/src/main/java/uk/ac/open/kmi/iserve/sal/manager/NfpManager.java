@@ -16,6 +16,8 @@
 
 package uk.ac.open.kmi.iserve.sal.manager;
 
+import uk.ac.open.kmi.iserve.sal.exception.SalException;
+
 import java.net.URI;
 import java.util.Map;
 import java.util.Set;
@@ -31,11 +33,11 @@ import java.util.Set;
 public interface NfpManager extends iServeComponent {
     // CREATE (return boolean or throw exception?)
 
-    public void createPropertyValue(URI resource, URI property, Object value);
+    public void createPropertyValue(URI resource, URI property, Object value) throws SalException;
 
-    public void createPropertyValuesOfResource(Map<URI, Object> propertyValueMap, URI resource);
+    public void createPropertyValuesOfResource(Map<URI, Object> propertyValueMap, URI resource) throws SalException;
 
-    public void createPropertyValueOfResources(Map<URI, Object> resourceValueMap, URI property);
+    public void createPropertyValueOfResources(Map<URI, Object> resourceValueMap, URI property) throws SalException;
 
     // READ
 

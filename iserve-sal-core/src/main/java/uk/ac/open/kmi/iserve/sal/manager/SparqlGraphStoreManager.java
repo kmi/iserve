@@ -60,4 +60,6 @@ public interface SparqlGraphStoreManager extends iServeComponent {
     boolean fetchAndStore(URI modelUri, String syntax);
 
     OntModel getGraph(URI graphUri);
+
+    URI getGraphUriByResource(URI resource);
 }

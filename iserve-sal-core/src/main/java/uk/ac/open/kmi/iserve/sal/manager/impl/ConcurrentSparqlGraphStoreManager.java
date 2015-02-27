@@ -92,19 +92,6 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
     // Keeps track of currently ongoing fetching tasks
     private Map<URI, Future<Boolean>> fetchingMap;
 
-    /**
-     * Static class used for Optional constructor arguments.
-     * For more information check http://code.google.com/p/google-guice/wiki/FrequentlyAskedQuestions#How_can_I_inject_optional_parameters_into_a_constructor
-     */
-    static class ProxyConfiguration {
-        @Inject(optional = true)
-        @iServeProperty(ConfigurationProperty.PROXY_HOST)
-        private String proxyHost = null;
-        @Inject(optional = true)
-        @iServeProperty(ConfigurationProperty.PROXY_PORT)
-        private String proxyPort = null;
-    }
-
     @Inject
     ConcurrentSparqlGraphStoreManager(
             @Assisted("queryEndpoint") String sparqlQueryEndpoint,
@@ -287,7 +274,6 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
         return result;
     }
 
-
     /**
      * @return the sparqlQueryEndpoint
      */
@@ -453,6 +439,29 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
 //        } else {
         return this.getGraphSparqlQuery(graphUri);
 //        }
+    }
+
+    @Override
+    public URI getGraphUriByResource(URI resource) {
+        StringBuilder queryStr = new StringBuilder()
+                .append("SELECT DISTINCT ?g WHERE { GRAPH ?g { ")
+                .append("{ <").append(resource.toASCIIString()).append("> ?x ?y } UNION ")
+                .append("{ ?z <").append(resource.toASCIIString()).append("> ?y } UNION ")
+                .append("{ ?z ?x <").append(resource.toASCIIString()).append("> } } }");
+
+        log.debug("Querying graph store: {}", queryStr.toString());
+        Query query = QueryFactory.create(queryStr.toString());
+        QueryExecution qexec = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
+        ResultSet resultSet = qexec.execSelect();
+        if (resultSet.hasNext()) {
+            try {
+                return new URI(resultSet.next().get("g").toString());
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -694,6 +703,19 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
         Callable<Boolean> task = new CrawlCallable(this, modelSpec, modelUri, syntax);
         log.debug("Fetching model - {}", modelUri);
         return this.executor.submit(task);
+    }
+
+    /**
+     * Static class used for Optional constructor arguments.
+     * For more information check http://code.google.com/p/google-guice/wiki/FrequentlyAskedQuestions#How_can_I_inject_optional_parameters_into_a_constructor
+     */
+    static class ProxyConfiguration {
+        @Inject(optional = true)
+        @iServeProperty(ConfigurationProperty.PROXY_HOST)
+        private String proxyHost = null;
+        @Inject(optional = true)
+        @iServeProperty(ConfigurationProperty.PROXY_PORT)
+        private String proxyPort = null;
     }
 
 }

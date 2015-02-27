@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
+import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
 import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 import uk.ac.open.kmi.msm4j.Service;
 
@@ -36,6 +37,7 @@ import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 /**
@@ -50,14 +52,16 @@ public class ServicesResource {
 
     private static final Logger log = LoggerFactory.getLogger(ServicesResource.class);
     private final RegistryManager manager;
+    private final NfpManager nfpManager;
     @Context
     UriInfo uriInfo;
     @Context
     SecurityContext security;
 
     @Inject
-    public ServicesResource(RegistryManager registryManager) {
+    public ServicesResource(RegistryManager registryManager, NfpManager nfpManager) {
         this.manager = registryManager;
+        this.nfpManager = nfpManager;
     }
 
     @POST
@@ -497,6 +501,92 @@ public class ServicesResource {
             @PathParam("serviceName") String serviceName) {
         URI serviceUri = uriInfo.getRequestUri();
         return Response.status(Status.OK).contentLocation(serviceUri).entity(serviceUri).build();
+    }
+
+    @POST
+    @Path("/{uniqueId}/{serviceName}/properties")
+    @Produces({MediaType.TEXT_HTML, "application/json"})
+    @ApiOperation(value = "Add a new property to the service",
+            notes = "Returns a message which confirms the property storage")
+    @ApiResponses(
+            value = {@ApiResponse(code = 201, message = "Stored property"),
+                    @ApiResponse(code = 403, message = "You have not got the appropriate permissions for storing the property"),
+                    @ApiResponse(code = 500, message = "Internal error")})
+    public Response setProperty(@ApiParam(value = "Service ID", required = true)
+                                @PathParam("uniqueId") String uniqueId,
+                                @ApiParam(value = "Service name", required = true)
+                                @PathParam("serviceName") String serviceName,
+                                @QueryParam("resource") String resource,
+                                @QueryParam("property") String property,
+                                @QueryParam("value") String value,
+                                @HeaderParam("Accept") String accept) {
+        URI resourceUri;
+        if (resource != null && !resource.equals("")) {
+            try {
+                resourceUri = new URI(resource);
+            } catch (URISyntaxException e) {
+                return Response.status(Status.BAD_REQUEST).entity(buildErrorMessageByMediaType("The service resource must be specified as a URI", accept)).build();
+            }
+        } else {
+            resourceUri = uriInfo.getBaseUri().resolve("services/" + uniqueId + "/" + serviceName);
+        }
+
+        URI propertyUri;
+        try {
+            propertyUri = new URI(property);
+        } catch (URISyntaxException e) {
+            return Response.status(Status.BAD_REQUEST).entity(buildErrorMessageByMediaType("The service property must be specified as a URI", accept)).build();
+        }
+        Object valueObj;
+        try {
+            valueObj = new Double(value);
+        } catch (NumberFormatException nfe) {
+            try {
+                valueObj = new URI(value);
+            } catch (URISyntaxException e) {
+                valueObj = value;
+            }
+        }
+
+        try {
+            nfpManager.createPropertyValue(resourceUri, propertyUri, valueObj);
+
+        } catch (SalException e) {
+            return Response.status(Status.BAD_REQUEST).entity(buildErrorMessageByMediaType(e.getMessage(), accept)).build();
+        }
+
+        return Response.status(Status.CREATED).entity(buildSuccessMessageForPropertyStorage(resourceUri.toASCIIString(), property, value, accept)).build();
+    }
+
+    private String buildSuccessMessageForPropertyStorage(String resource, String property, String value, String accept) {
+        String response;
+        if (accept.contains(MediaType.TEXT_HTML)) {
+            response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                    "<body>\nProperty stored.\n</body>\n</html>";
+        } else {
+            JsonObject messageObj = new JsonObject();
+            messageObj.add("message", new JsonPrimitive("Property stored"));
+            JsonObject triple = new JsonObject();
+            triple.add("resource", new JsonPrimitive(resource));
+            triple.add("property", new JsonPrimitive(property));
+            triple.add("value", new JsonPrimitive(value));
+            messageObj.add("statement", triple);
+            response = messageObj.toString();
+        }
+        return response;
+    }
+
+    private String buildErrorMessageByMediaType(String message, String accept) {
+        String response;
+        if (accept.contains(MediaType.TEXT_HTML)) {
+            response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                    "<body>\n" + message + "\n</body>\n</html>";
+        } else {
+            JsonObject messageObj = new JsonObject();
+            messageObj.add("message", new JsonPrimitive(message));
+            response = messageObj.toString();
+        }
+        return response;
     }
 
 }

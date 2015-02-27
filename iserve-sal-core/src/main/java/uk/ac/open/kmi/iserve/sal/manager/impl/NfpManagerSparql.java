@@ -16,6 +16,7 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -23,13 +24,12 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.rdf.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
@@ -38,6 +38,7 @@ import uk.ac.open.kmi.iserve.sal.events.Event;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
+import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
 import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
 import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
 
@@ -58,15 +59,31 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
     private static Cache<String, ConcurrentMap<String, Set<String>>> propertyValueCache;
     private Logger logger = LoggerFactory.getLogger(NfpManagerSparql.class);
     private String sparqlEndpoint;
+    private SparqlGraphStoreManager graphStoreManager;
 
     @Inject
     public NfpManagerSparql(EventBus eventBus,
                             @iServeProperty(ConfigurationProperty.ISERVE_URL) String iServeUri,
-                            @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_QUERY) String sparqlEndpoint,
-                            CacheFactory cacheFactory) throws SalException {
+                            @iServeProperty(ConfigurationProperty.NFP_SPARQL_QUERY) String sparqlQueryEndpoint,
+                            @iServeProperty(ConfigurationProperty.NFP_SPARQL_UPDATE) String sparqlUpdateEndpoint,
+                            @iServeProperty(ConfigurationProperty.NFP_SPARQL_SERVICE) String sparqlServiceEndpoint,
+                            CacheFactory cacheFactory,
+                            SparqlGraphStoreFactory sparqlGraphStoreFactory) throws SalException {
         super(eventBus, iServeUri);
-        this.sparqlEndpoint = sparqlEndpoint;
+        this.sparqlEndpoint = sparqlQueryEndpoint;
         propertyValueCache = cacheFactory.createInMemoryCache("nfp");
+
+        Set<URI> defaultModelsToLoad = ImmutableSet.of();
+
+
+        // Configuration for quick retrieval of ontologies by resolving them to local files.
+        ImmutableMap.Builder<String, String> mappingsBuilder = ImmutableMap.builder();
+
+        // Configuration for avoiding the import of certain files
+        ImmutableSet<String> ignoredImports = ImmutableSet.of();
+
+        this.graphStoreManager = sparqlGraphStoreFactory.create(sparqlQueryEndpoint, sparqlUpdateEndpoint,
+                sparqlServiceEndpoint, defaultModelsToLoad, mappingsBuilder.build(), ignoredImports);
         logger.debug("Created NfpManagerSparql");
     }
 
@@ -77,18 +94,35 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
     }
 
     @Override
-    public void createPropertyValue(URI resource, URI property, Object value) {
-
+    public void createPropertyValue(URI resource, URI property, Object value) throws SalException {
+        OntModel model = ModelFactory.createOntologyModel();
+        RDFNode object;
+        if (value instanceof URI) {
+            object = model.createResource(((URI) value).toASCIIString());
+        } else {
+            object = model.createTypedLiteral(value);
+        }
+        Statement triple = model.createStatement(model.createResource(resource.toASCIIString()), model.createProperty(property.toASCIIString()), object);
+        model.add(triple);
+        URI graphUri = graphStoreManager.getGraphUriByResource(resource);
+        if (graphUri == null) {
+            throw new SalException("The requested resource does not exist");
+        }
+        graphStoreManager.addModelToGraph(graphUri, model);
     }
 
     @Override
-    public void createPropertyValuesOfResource(Map<URI, Object> propertyValueMap, URI resource) {
-
+    public void createPropertyValuesOfResource(Map<URI, Object> propertyValueMap, URI resource) throws SalException {
+        for (URI property : propertyValueMap.keySet()) {
+            createPropertyValue(resource, property, propertyValueMap.get(property));
+        }
     }
 
     @Override
-    public void createPropertyValueOfResources(Map<URI, Object> resourceValueMap, URI property) {
-
+    public void createPropertyValueOfResources(Map<URI, Object> resourceValueMap, URI property) throws SalException {
+        for (URI resource : resourceValueMap.keySet()) {
+            createPropertyValue(resource, property, resourceValueMap.get(resource));
+        }
     }
 
     @Override
