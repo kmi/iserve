@@ -27,10 +27,9 @@ import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.modify.request.Target;
-import com.hp.hpl.jena.sparql.modify.request.UpdateCreate;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDrop;
+import com.hp.hpl.jena.sparql.modify.request.*;
 import com.hp.hpl.jena.update.UpdateExecutionFactory;
 import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateProcessor;
@@ -462,6 +461,20 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
         }
 
         return null;
+    }
+
+    @Override
+    public void deleteStatement(Statement statement) {
+        UpdateRequest request = UpdateFactory.create();
+
+        QuadDataAcc quadAcc = new QuadDataAcc();
+
+        quadAcc.addTriple(0, statement.asTriple());
+        request.add(new UpdateDataDelete(quadAcc));
+
+        // Use create form for Sesame-based engines. TODO: Generalise and push to config.
+        UpdateProcessor processor = UpdateExecutionFactory.createRemoteForm(request, this.getSparqlUpdateEndpoint().toASCIIString());
+        processor.execute(); // TODO: anyway to know if things went ok?
     }
 
     /**

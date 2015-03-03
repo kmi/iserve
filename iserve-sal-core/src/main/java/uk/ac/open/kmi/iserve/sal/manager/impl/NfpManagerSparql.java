@@ -99,6 +99,7 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
         RDFNode object;
         if (value instanceof URI) {
             object = model.createResource(((URI) value).toASCIIString());
+            graphStoreManager.fetchAndStore((URI) value);
         } else {
             object = model.createTypedLiteral(value);
         }
@@ -109,6 +110,7 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
             throw new SalException("The requested resource does not exist");
         }
         graphStoreManager.addModelToGraph(graphUri, model);
+        propertyValueCache.remove(resource.toASCIIString());
     }
 
     @Override
@@ -355,9 +357,31 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
     }
 
     @Override
-    public void deletePropertyValue(URI resource, URI property) {
+    public void deletePropertyValue(URI resource, URI property, Object value) throws SalException {
+        OntModel model = ModelFactory.createOntologyModel();
+        RDFNode object;
+        if (value instanceof URI) {
+            object = model.createResource(((URI) value).toASCIIString());
+            graphStoreManager.fetchAndStore((URI) value);
+        } else {
+            object = model.createTypedLiteral(value);
+        }
+        Statement triple = model.createStatement(model.createResource(resource.toASCIIString()), model.createProperty(property.toASCIIString()), object);
+        model.add(triple);
+        URI graphUri = graphStoreManager.getGraphUriByResource(resource);
+        if (graphUri == null) {
+            throw new SalException("The requested resource does not exist");
+        }
+        graphStoreManager.deleteStatement(triple);
+        propertyValueCache.remove(resource.toASCIIString());
 
     }
+
+    @Override
+    public void deletePropertyValues(URI resource, URI property) {
+
+    }
+
 
     @Override
     public void deletePropertyValueOfResources(Set<URI> resource, URI property) {

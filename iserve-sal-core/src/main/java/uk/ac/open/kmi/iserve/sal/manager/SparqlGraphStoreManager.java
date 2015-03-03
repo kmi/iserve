@@ -18,6 +18,7 @@ package uk.ac.open.kmi.iserve.sal.manager;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Statement;
 
 import java.net.URI;
 import java.util.Set;
@@ -62,4 +63,6 @@ public interface SparqlGraphStoreManager extends iServeComponent {
     OntModel getGraph(URI graphUri);
 
     URI getGraphUriByResource(URI resource);
+
+    void deleteStatement(Statement triple);
 }

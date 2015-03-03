@@ -61,7 +61,9 @@ public interface NfpManager extends iServeComponent {
 
     // DELETE (return boolean or throw exception?)
 
-    public void deletePropertyValue(URI resource, URI property);
+    public void deletePropertyValue(URI resource, URI property, Object value) throws SalException;
+
+    public void deletePropertyValues(URI resource, URI property);
 
     public void deletePropertyValueOfResources(Set<URI> resources, URI property);
 
