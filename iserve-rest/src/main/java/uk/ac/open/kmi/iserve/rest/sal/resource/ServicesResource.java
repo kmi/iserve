@@ -589,4 +589,77 @@ public class ServicesResource {
         return response;
     }
 
+    @DELETE
+    @Path("/{uniqueId}/{serviceName}/properties")
+    @Produces({MediaType.TEXT_HTML, "application/json"})
+    @ApiOperation(value = "Delete a property of the service",
+            notes = "Returns a message which confirms the property deletion")
+    @ApiResponses(
+            value = {@ApiResponse(code = 200, message = "Property deleted"),
+                    @ApiResponse(code = 403, message = "You have not got the appropriate permissions for deleting the property"),
+                    @ApiResponse(code = 500, message = "Internal error")})
+    public Response deleteProperty(@ApiParam(value = "Service ID", required = true)
+                                   @PathParam("uniqueId") String uniqueId,
+                                   @ApiParam(value = "Service name", required = true)
+                                   @PathParam("serviceName") String serviceName,
+                                   @QueryParam("resource") String resource,
+                                   @QueryParam("property") String property,
+                                   @QueryParam("value") String value,
+                                   @HeaderParam("Accept") String accept) {
+        URI resourceUri;
+        if (resource != null && !resource.equals("")) {
+            try {
+                resourceUri = new URI(resource);
+            } catch (URISyntaxException e) {
+                return Response.status(Status.BAD_REQUEST).entity(buildErrorMessageByMediaType("The service resource must be specified as a URI", accept)).build();
+            }
+        } else {
+            resourceUri = uriInfo.getBaseUri().resolve("services/" + uniqueId + "/" + serviceName);
+        }
+
+        URI propertyUri;
+        try {
+            propertyUri = new URI(property);
+        } catch (URISyntaxException e) {
+            return Response.status(Status.BAD_REQUEST).entity(buildErrorMessageByMediaType("The service property must be specified as a URI", accept)).build();
+        }
+        Object valueObj;
+        try {
+            valueObj = new Double(value);
+        } catch (NumberFormatException nfe) {
+            try {
+                valueObj = new URI(value);
+            } catch (URISyntaxException e) {
+                valueObj = value;
+            }
+        }
+
+        try {
+            nfpManager.deletePropertyValue(resourceUri, propertyUri, valueObj);
+
+        } catch (SalException e) {
+            return Response.status(Status.BAD_REQUEST).entity(buildErrorMessageByMediaType(e.getMessage(), accept)).build();
+        }
+
+        return Response.status(Status.OK).entity(buildSuccessMessageForPropertyDelete(resourceUri.toASCIIString(), property, value, accept)).build();
+    }
+
+    private String buildSuccessMessageForPropertyDelete(String resource, String property, String value, String accept) {
+        String response;
+        if (accept.contains(MediaType.TEXT_HTML)) {
+            response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
+                    "<body>\nProperty deleted.\n</body>\n</html>";
+        } else {
+            JsonObject messageObj = new JsonObject();
+            messageObj.add("message", new JsonPrimitive("Property deleted"));
+            JsonObject triple = new JsonObject();
+            triple.add("resource", new JsonPrimitive(resource));
+            triple.add("property", new JsonPrimitive(property));
+            triple.add("value", new JsonPrimitive(value));
+            messageObj.add("statement", triple);
+            response = messageObj.toString();
+        }
+        return response;
+    }
+
 }
