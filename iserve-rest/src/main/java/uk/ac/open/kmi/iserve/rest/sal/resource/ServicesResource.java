@@ -80,6 +80,7 @@ public class ServicesResource {
             @FormDataParam("file") InputStream file,
             @ApiParam(value = "Service description passed as location URI")
             @QueryParam("store") Boolean store,
+            @ApiParam(value = "Response message media type", allowableValues = "application/json,text/html")
             @HeaderParam("Accept") String accept
     ) {
 
@@ -190,6 +191,7 @@ public class ServicesResource {
             @HeaderParam("Content-Type") String mediaType,
             @ApiParam(value = "Service description passed as location URI")
             @QueryParam("store") Boolean store,
+            @ApiParam(value = "Response message media type", allowableValues = "application/json,text/html")
             @HeaderParam("Accept") String accept
     ) {
 
@@ -296,6 +298,7 @@ public class ServicesResource {
             @PathParam("uniqueId") String uniqueId,
             @ApiParam(value = "Service name", required = true)
             @PathParam("serviceName") String serviceName,
+            @ApiParam(value = "Response message media type", allowableValues = "application/json,text/html")
             @HeaderParam("Accept") String accept
     ) {
 
@@ -393,7 +396,9 @@ public class ServicesResource {
                     @ApiResponse(code = 304, message = "The services could not be cleared."),
                     @ApiResponse(code = 403, message = "You have not got the appropriate permissions for clearing the services"),
                     @ApiResponse(code = 500, message = "Internal error")})
-    public Response clearServices(@HeaderParam("Accept") String accept) {
+    public Response clearServices(
+            @ApiParam(value = "Response message media type", allowableValues = "application/json,text/html")
+            @HeaderParam("Accept") String accept) {
 
         // Check first that the user is allowed to upload a service
 //        Subject currentUser = SecurityUtils.getSubject();
@@ -516,9 +521,13 @@ public class ServicesResource {
                                 @PathParam("uniqueId") String uniqueId,
                                 @ApiParam(value = "Service name", required = true)
                                 @PathParam("serviceName") String serviceName,
+                                @ApiParam(value = "URI that identifies a service resource to be associated with the property (e.g., operation or input message). If not specifies the property will be associated with the main service resource.")
                                 @QueryParam("resource") String resource,
+                                @ApiParam(value = "URI that identifies a property (e.g., http://www.w3.org/ns/sawsdl#modelReference)", required = true)
                                 @QueryParam("property") String property,
+                                @ApiParam(value = "Value of the property. The value can be a URI, a string or a number", required = true)
                                 @QueryParam("value") String value,
+                                @ApiParam(value = "Response message media type", allowableValues = "application/json,text/html")
                                 @HeaderParam("Accept") String accept) {
         URI resourceUri;
         if (resource != null && !resource.equals("")) {
@@ -602,9 +611,13 @@ public class ServicesResource {
                                    @PathParam("uniqueId") String uniqueId,
                                    @ApiParam(value = "Service name", required = true)
                                    @PathParam("serviceName") String serviceName,
+                                   @ApiParam(value = "URI that identifies a service resource to be associated with the property (e.g., operation or input message). If not specifies the property will be associated with the main service resource.")
                                    @QueryParam("resource") String resource,
+                                   @ApiParam(value = "URI that identifies a property (e.g., http://www.w3.org/ns/sawsdl#modelReference)", required = true)
                                    @QueryParam("property") String property,
+                                   @ApiParam(value = "Value of the property. The value can be a URI, a string or a number", required = true)
                                    @QueryParam("value") String value,
+                                   @ApiParam(value = "Response message media type", allowableValues = "application/json,text/html")
                                    @HeaderParam("Accept") String accept) {
         URI resourceUri;
         if (resource != null && !resource.equals("")) {

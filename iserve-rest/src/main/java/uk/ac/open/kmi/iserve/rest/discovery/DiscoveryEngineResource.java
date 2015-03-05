@@ -62,8 +62,10 @@ public class DiscoveryEngineResource {
             value = "Get services or operations classified by specific RDF classes.",
             notes = "The search is performed through RDFS-based reasoning.",
             response = DiscoveryResult.class
-
     )
+    @ApiResponses(
+            value = {@ApiResponse(code = 200, message = "Discovery successful"),
+                    @ApiResponse(code = 500, message = "Internal error")})
     @Produces({"application/atom+xml", "application/json"})
     public Response classificationBasedDiscovery(
             @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, and \"svc\" for discovering services.", required = true, allowableValues = "svc,op")
@@ -136,6 +138,9 @@ public class DiscoveryEngineResource {
             notes = "The search is performed through RDFS-based reasoning.",
             response = DiscoveryResult.class
     )
+    @ApiResponses(
+            value = {@ApiResponse(code = 200, message = "Discovery successful"),
+                    @ApiResponse(code = 500, message = "Internal error")})
     @Produces({"application/atom+xml", "application/json"})
     public Response ioDiscovery(
             @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, and \"svc\" for discovering services.", required = true, allowableValues = "svc,op")
@@ -288,6 +293,9 @@ public class DiscoveryEngineResource {
             value = "Free text-based search of services, operations or service parts",
             response = DiscoveryResult.class
     )
+    @ApiResponses(
+            value = {@ApiResponse(code = 200, message = "Discovery successful"),
+                    @ApiResponse(code = 500, message = "Internal error")})
     @Produces({"application/atom+xml", "application/json"})
     public Response search(
             @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, \"svc\" for discovering services and \"all\" for any kind of service component", required = true, allowableValues = "svc,op,all")

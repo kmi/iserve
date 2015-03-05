@@ -62,7 +62,9 @@ public class DocumentsResource {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Documents Found"),
             @ApiResponse(code = 500, message = "Internal error")})
     @Produces({"application/json", "text/html"})
-    public Response listDocuments(@HeaderParam("Accept") String accept) {
+    public Response listDocuments(
+            @ApiParam(value = "Response message media type", allowableValues = "application/json,text/html")
+            @HeaderParam("Accept") String accept) {
         try {
             Set<URI> result = registryManager.getDocumentManager().listDocuments();
             String response;
@@ -247,6 +249,7 @@ public class DocumentsResource {
             @HeaderParam("Content-Location") String locationUri,
             @ApiParam(value = "Document Media type", required = true)
             @HeaderParam("Content-Type") String contentType,
+            @ApiParam(value = "Response message media type", allowableValues = "application/json,text/html")
             @HeaderParam("Accept") String accept) {
 
         // TODO: Re add security
@@ -332,6 +335,7 @@ public class DocumentsResource {
     public Response deleteDocument(
             @ApiParam(value = "Description ID", required = true)
             @PathParam("id") String id,
+            @ApiParam(value = "Response message media type", allowableValues = "application/json,text/html")
             @HeaderParam("Accept") String accept
     ) {
 
