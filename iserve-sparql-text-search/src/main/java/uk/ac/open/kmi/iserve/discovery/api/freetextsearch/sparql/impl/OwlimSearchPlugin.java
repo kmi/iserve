@@ -32,7 +32,7 @@ public class OwlimSearchPlugin extends SparqlSearchPlugin {
         this.updateEndpoint = updateEndpoint;
         this.eventBus = eventBus;
         eventBus.register(this);
-        //runIndexing();
+        runIndexing();
     }
 
     private void runIndexing() {
