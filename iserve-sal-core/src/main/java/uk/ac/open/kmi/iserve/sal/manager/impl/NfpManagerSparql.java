@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
 import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.sal.events.Event;
+import uk.ac.open.kmi.iserve.sal.events.OntologyCreatedEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
@@ -44,6 +45,7 @@ import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -99,10 +101,17 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
         RDFNode object;
         if (value instanceof URI) {
             object = model.createResource(((URI) value).toASCIIString());
-            graphStoreManager.fetchAndStore((URI) value);
+            if (graphStoreManager.fetchAndStore((URI) value)) {
+                getEventBus().post(new OntologyCreatedEvent(new Date(), (URI) value));
+            }
         } else {
             object = model.createTypedLiteral(value);
         }
+
+        if (graphStoreManager.fetchAndStore(property)) {
+            getEventBus().post(new OntologyCreatedEvent(new Date(), property));
+        }
+
         Statement triple = model.createStatement(model.createResource(resource.toASCIIString()), model.createProperty(property.toASCIIString()), object);
         model.add(triple);
         URI graphUri = graphStoreManager.getGraphUriByResource(resource);

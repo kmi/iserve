@@ -173,7 +173,6 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
             // We are assuming here that uploading won't fail!
             // There is no way to figure this out at the moment with Jena (other than querying after)
             this.graphStoreManager.putGraph(modelUri, model);
-
             // Generate Event
             this.getEventBus().post(new OntologyCreatedEvent(new Date(), modelUri));
         }
