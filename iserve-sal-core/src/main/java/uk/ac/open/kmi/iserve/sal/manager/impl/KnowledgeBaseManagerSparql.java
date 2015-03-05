@@ -96,7 +96,7 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
         log.debug("Creating KB Manager. iServe URI - {}\n SPARQL Query - {}\n, SPARQL Update - {}\n, SPARQL Service - {}",
                 iServeUri, sparqlQueryEndpoint, sparqlUpdateEndpoint, sparqlServiceEndpoint);
 
-        Set<URI> defaultModels = ImmutableSet.of();
+        Set<URI> defaultModels = ImmutableSet.of(SCHEMA_ORG_URI);
 
         // Configuration for quick retrieval of ontologies by resolving them to local files.
         ImmutableMap.Builder<String, String> mappingsBuilder = ImmutableMap.builder();
@@ -222,6 +222,8 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
                     boolean isStored = this.graphStoreManager.fetchAndStore(modelUri);
                     if (!isStored) {
                         this.unreachableModels.put(modelUri, new Date());
+                    } else {
+                        this.getEventBus().post(new OntologyCreatedEvent(new Date(), modelUri));
                     }
                     result = result & isStored;
                 }
