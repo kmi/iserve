@@ -172,7 +172,12 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
         // Get all the matches
         Map<URI, MatchResult> matches = this.indexedMatches.get(origin);
         // Return an immutable map out of the filtered view. Drop copyOf to obtain a live view
-        return ImmutableMap.copyOf(Maps.filterValues(matches, MatchResultPredicates.withinRange(minType, BoundType.CLOSED, maxType, BoundType.CLOSED)));
+        if (matches != null) {
+            return ImmutableMap.copyOf(Maps.filterValues(matches, MatchResultPredicates.withinRange(minType, BoundType.CLOSED, maxType, BoundType.CLOSED)));
+        } else {
+            return ImmutableMap.of();
+        }
+
     }
 
     // Process events to update the indexes
