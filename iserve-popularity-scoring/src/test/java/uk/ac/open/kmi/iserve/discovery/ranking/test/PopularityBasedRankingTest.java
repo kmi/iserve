@@ -35,21 +35,18 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
+import uk.ac.open.kmi.iserve.core.PluginModuleLoader;
 import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryEngine;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryEngineImpl;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
-import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchProvider;
+import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
+import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchModule;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.BasicScoreComposer;
-import uk.ac.open.kmi.iserve.discovery.disco.impl.DiscoMatchersPlugin;
-import uk.ac.open.kmi.iserve.discovery.ranking.impl.CommunityVitalityScorer;
-import uk.ac.open.kmi.iserve.discovery.ranking.impl.ProviderPopularityScorer;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
-import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
 import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
-import uk.ac.open.kmi.iserve.sal.manager.impl.NfpManagerSparql;
 import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
 import uk.ac.open.kmi.msm4j.Service;
 import uk.ac.open.kmi.msm4j.io.ServiceReader;
@@ -186,28 +183,29 @@ public class PopularityBasedRankingTest {
         @Override
         protected void configureTest() {
 
-            install(new RegistryManagementModule());
+            RegistryManagementModule rmm = new RegistryManagementModule();
 
-            install(new DiscoMatchersPlugin());
+            install(rmm);
 
-            //Scorers configuration
+            // Load all matcher plugins
+            install(PluginModuleLoader.of(MatcherPluginModule.class));
+
+            install(PluginModuleLoader.of(RecommendationPluginModule.class));
+
+            // Scorers configuration
             Multibinder<Filter> filterBinder = Multibinder.newSetBinder(binder(), Filter.class);
-            filterBinder.addBinding().to(DummyFilter.class);
             Multibinder<AtomicFilter> atomicFilterBinder = Multibinder.newSetBinder(binder(), AtomicFilter.class);
-            atomicFilterBinder.addBinding().to(DummyAtomicFilter.class);
 
-            //Scorers configuration
+            // Scorers configuration
             Multibinder<Scorer> scorerBinder = Multibinder.newSetBinder(binder(), Scorer.class);
             Multibinder<AtomicScorer> atomicScorerBinder = Multibinder.newSetBinder(binder(), AtomicScorer.class);
-            scorerBinder.addBinding().to(CommunityVitalityScorer.class);
-            scorerBinder.addBinding().to(ProviderPopularityScorer.class);
 
-            //Score composer configuration
             bind(ScoreComposer.class).to(BasicScoreComposer.class);
 
-            install(new FreeTextSearchProvider());
+            Injector injector = Guice.createInjector(rmm);
 
-            bind(NfpManager.class).to(NfpManagerSparql.class);
+            install(injector.getInstance(FreeTextSearchModule.class));
+
             bind(DiscoveryEngine.class).to(DiscoveryEngineImpl.class);
 
         }

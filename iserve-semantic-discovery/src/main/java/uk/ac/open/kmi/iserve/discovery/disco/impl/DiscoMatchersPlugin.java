@@ -17,8 +17,11 @@
 package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.google.inject.multibindings.MapBinder;
 import uk.ac.open.kmi.iserve.discovery.api.*;
+import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
 
 /**
  * DiscoMatchersPlugin is a Guice module providing a set of Matchers implementation for concept and services matching
@@ -36,7 +39,9 @@ public class DiscoMatchersPlugin extends AbstractModule implements MatcherPlugin
         conceptBinder.addBinding(SparqlLogicConceptMatcher.class.getName()).to(SparqlLogicConceptMatcher.class);
         conceptBinder.addBinding(SparqlIndexedLogicConceptMatcher.class.getName()).to(SparqlIndexedLogicConceptMatcher.class);
 
-        install(new ConceptMatcherProvider());
+        RegistryManagementModule rmm = new RegistryManagementModule();
+        Injector injector = Guice.createInjector(rmm);
+        install(injector.getInstance(ConceptMatcherModule.class));
 
         // Bind DataflowMatcher
         bind(DataflowMatcher.class).to(OperationDataflowMatcher.class);

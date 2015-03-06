@@ -6,6 +6,8 @@
  */
 package uk.ac.open.kmi.iserve.rest;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.servlet.ServletModule;
 import org.slf4j.Logger;
@@ -14,7 +16,7 @@ import uk.ac.open.kmi.iserve.core.PluginModuleLoader;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryEngine;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryEngineImpl;
 import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
-import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchProvider;
+import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchModule;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.BasicScoreComposer;
 import uk.ac.open.kmi.iserve.rest.discovery.DiscoveryResultsBuilder;
@@ -31,8 +33,10 @@ public class RestModule extends ServletModule {
 
         logger.debug("Loading Discovery iServe components...");
 
+        RegistryManagementModule rmm = new RegistryManagementModule();
 
-        install(new RegistryManagementModule());
+        install(rmm);
+
         // Load all matcher plugins
         install(PluginModuleLoader.of(MatcherPluginModule.class));
 
@@ -52,7 +56,9 @@ public class RestModule extends ServletModule {
         bind(ScoreComposer.class).to(BasicScoreComposer.class);
         bind(DiscoveryResultsBuilderPlugin.class).to(DiscoveryResultsBuilder.class);
 
-        install(new FreeTextSearchProvider());
+        Injector injector = Guice.createInjector(rmm);
+
+        install(injector.getInstance(FreeTextSearchModule.class));
 
         bind(DiscoveryEngine.class).to(DiscoveryEngineImpl.class);
 
