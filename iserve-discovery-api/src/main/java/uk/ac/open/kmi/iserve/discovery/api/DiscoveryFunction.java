@@ -18,10 +18,11 @@ package uk.ac.open.kmi.iserve.discovery.api;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.concurrent.RecursiveTask;
 
 /**
  * Created by Luca Panziera on 20/05/2014.
  */
-public interface DiscoveryFunction {
-    Map<URI, MatchResult> invoke();
+public abstract class DiscoveryFunction extends RecursiveTask<Map<URI, MatchResult>> {
+
 }

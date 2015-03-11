@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by Luca Panziera on 10/11/14.
  */
-public class FreeTextDiscoveryFunction implements DiscoveryFunction {
+public class FreeTextDiscoveryFunction extends DiscoveryFunction {
     private FreeTextSearchPlugin freeTextSearchPlugin;
     private String query;
     private URI type;
@@ -20,7 +20,7 @@ public class FreeTextDiscoveryFunction implements DiscoveryFunction {
     }
 
     @Override
-    public Map<URI, MatchResult> invoke() {
+    public Map<URI, MatchResult> compute() {
         return freeTextSearchPlugin.search(query, type);
     }
 }

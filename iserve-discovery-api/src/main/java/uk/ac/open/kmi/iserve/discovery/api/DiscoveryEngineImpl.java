@@ -48,6 +48,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ForkJoinPool;
 
 /**
  * Created by Luca Panziera on 19/05/2014.
@@ -262,7 +263,9 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
     public Map<URI, Pair<Double, MatchResult>> discover(DiscoveryRequest discoveryRequest) {
 
         logger.info("Functional discovery");
-        Map<URI, MatchResult> funcResults = discoveryRequest.getDiscoveryFunction().invoke();
+        DiscoveryFunction discoveryFunction = discoveryRequest.getDiscoveryFunction();
+        ForkJoinPool pool = new ForkJoinPool();
+        Map<URI, MatchResult> funcResults = pool.invoke(discoveryFunction);
 
         Set<URI> filteredResources = funcResults.keySet();
         if (discoveryRequest.filter()) {

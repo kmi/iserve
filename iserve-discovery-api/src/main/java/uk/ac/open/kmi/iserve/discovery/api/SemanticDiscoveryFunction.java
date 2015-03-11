@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * Created by Luca Panziera on 20/05/2014.
  */
-public class SemanticDiscoveryFunction implements DiscoveryFunction {
+public class SemanticDiscoveryFunction extends DiscoveryFunction {
 
     protected String operator;
     protected String function;
@@ -55,7 +55,7 @@ public class SemanticDiscoveryFunction implements DiscoveryFunction {
         this.parameterType = parameterType;
     }
 
-    public Map<URI, MatchResult> invoke() {
+    public Map<URI, MatchResult> compute() {
         if (operator.equals("or")) {
             if (function.equals("func-rdfs") && type.equals("svc") && parameterType.equals("classes")) {
                 return serviceDiscoverer.findServicesClassifiedBySome(parameters);

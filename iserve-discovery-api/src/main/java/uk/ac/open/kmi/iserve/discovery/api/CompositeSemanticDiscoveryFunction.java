@@ -76,10 +76,13 @@ public class CompositeSemanticDiscoveryFunction extends SemanticDiscoveryFunctio
         this.subFunctions = subFunctions;
     }
 
-    public Map<URI, MatchResult> invoke() {
+    public Map<URI, MatchResult> compute() {
         Map<URI, MatchResult> resultMap = Maps.newHashMap();
         for (SemanticDiscoveryFunction subFunction : subFunctions) {
-            Map<URI, MatchResult> subResult = subFunction.invoke();
+            subFunction.fork();
+        }
+        for (SemanticDiscoveryFunction subFunction : subFunctions) {
+            Map<URI, MatchResult> subResult = subFunction.join();
             if (operator.equals("or")) {
                 resultMap.putAll(subResult);
             }
