@@ -16,7 +16,9 @@
 
 package uk.ac.open.kmi.iserve.discovery.api;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.gson.JsonArray;
@@ -39,13 +41,10 @@ import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
 import uk.ac.open.kmi.iserve.sal.util.caching.CacheException;
 import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
-import uk.ac.open.kmi.msm4j.vocabulary.MSM;
 
 import javax.annotation.Nullable;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
@@ -146,45 +145,7 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
 
         // Discovery parsing
         JsonObject discovery = requestObject.getAsJsonObject("discovery");
-        DiscoveryFunction discoveryFunction = null;
-        // Free text search parsing
-        if (discovery.has("query")) {
-            URI type = null;
-            if (discovery.get("type").getAsString().equals("svc")) {
-                type = URI.create(MSM.Service.getURI());
-            } else if (discovery.get("type").getAsString().equals("op")) {
-                type = URI.create(MSM.Operation.getURI());
-            }
-            discoveryFunction = new FreeTextDiscoveryFunction(freeTextSearchPlugin, discovery.get("query").getAsString(), type);
-        }
-        //Semantic Discovery parsing
-
-        if (discovery.has("func-rdfs")) {
-            JsonObject functionObject = discovery.getAsJsonObject("func-rdfs");
-            String type = functionObject.get("type").getAsString();
-            discoveryFunction = buildSemanticDiscoveryFunction("func-rdfs", type, "classes", functionObject);
-        }
-        if (discovery.has("io-rdfs")) {
-            String type = discovery.getAsJsonObject("io-rdfs").get("type").getAsString();
-            JsonObject expressionObject = discovery.getAsJsonObject("io-rdfs").getAsJsonObject("expression");
-            if (expressionObject.has("input")) {
-                discoveryFunction = buildSemanticDiscoveryFunction("io-rdfs", type, "input", expressionObject);
-            } else if (expressionObject.has("output")) {
-                discoveryFunction = buildSemanticDiscoveryFunction("io-rdfs", type, "output", expressionObject);
-            } else if (expressionObject.has("or")) {
-                List<SemanticDiscoveryFunction> subFunctions = Lists.newArrayList();
-                JsonObject or = expressionObject.getAsJsonObject("or");
-                subFunctions.add(buildSemanticDiscoveryFunction("io-rdfs", type, "input", or));
-                subFunctions.add(buildSemanticDiscoveryFunction("io-rdfs", type, "output", or));
-                discoveryFunction = new CompositeSemanticDiscoveryFunction("or", "io-rdfs", type, subFunctions, operationDiscoverer, serviceDiscoverer);
-            } else if (expressionObject.has("and")) {
-                List<SemanticDiscoveryFunction> subFunctions = Lists.newArrayList();
-                JsonObject and = expressionObject.getAsJsonObject("and");
-                subFunctions.add(buildSemanticDiscoveryFunction("io-rdfs", type, "input", and));
-                subFunctions.add(buildSemanticDiscoveryFunction("io-rdfs", type, "output", and));
-                discoveryFunction = new CompositeSemanticDiscoveryFunction("and", "io-rdfs", type, subFunctions, operationDiscoverer, serviceDiscoverer);
-            }
-        }
+        DiscoveryFunction discoveryFunction = new DiscoveryFunction(discovery, serviceDiscoverer, operationDiscoverer, freeTextSearchPlugin);
 
         try {
             // filtering parsing
@@ -233,32 +194,6 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
         DiscoveryRequest discoveryRequest = new DiscoveryRequest(discoveryFunction, requestedModules, filter, rank, parametersMap, rankingType);
         return discoveryRequest;
     }
-
-    private SemanticDiscoveryFunction buildSemanticDiscoveryFunction(String function, String type, String parameterType, JsonObject functionObject) {
-        try {
-            if (functionObject.get(parameterType).isJsonPrimitive()) {
-                Set<URI> parameters = ImmutableSet.of(new URI(functionObject.get(parameterType).getAsString()));
-                return new SemanticDiscoveryFunction(function, type, parameters, parameterType, operationDiscoverer, serviceDiscoverer);
-            } else if (functionObject.get(parameterType).isJsonObject()) {
-                JsonObject classes = functionObject.getAsJsonObject(parameterType);
-                return buildCompositeSemanticDiscoveryFuction(function, type, parameterType, classes);
-            }
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private CompositeSemanticDiscoveryFunction buildCompositeSemanticDiscoveryFuction(String function, String type, String parameterType, JsonObject expression) {
-        if (expression.has("or")) {
-            return new CompositeSemanticDiscoveryFunction("or", function, type, parameterType, operationDiscoverer, serviceDiscoverer, expression.get("or"));
-        }
-        if (expression.has("and")) {
-            return new CompositeSemanticDiscoveryFunction("and", function, type, parameterType, operationDiscoverer, serviceDiscoverer, expression.get("and"));
-        }
-        return null;
-    }
-
 
     public Map<URI, Pair<Double, MatchResult>> discover(DiscoveryRequest discoveryRequest) {
 
