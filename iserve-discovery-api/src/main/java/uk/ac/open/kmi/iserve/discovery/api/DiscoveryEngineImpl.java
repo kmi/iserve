@@ -120,11 +120,12 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
     }
 
     public Map<URI, Pair<Double, MatchResult>> discover(String request) {
-        if (resultCache.containsKey(request)) {
-            return resultCache.get(request);
+        JsonElement jsonRequest = new JsonParser().parse(request);
+        if (resultCache.containsKey(jsonRequest.toString())) {
+            return resultCache.get(jsonRequest.toString());
         } else {
-            Map<URI, Pair<Double, MatchResult>> result = discover(new JsonParser().parse(request));
-            resultCache.put(request, result);
+            Map<URI, Pair<Double, MatchResult>> result = discover(jsonRequest);
+            resultCache.put(jsonRequest.toString(), result);
             return result;
         }
 

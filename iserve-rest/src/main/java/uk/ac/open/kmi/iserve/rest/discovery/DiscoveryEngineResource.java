@@ -344,7 +344,6 @@ public class DiscoveryEngineResource {
     ) {
         try {
             logger.debug("Advanced discovery");
-            discoveryRequest = discoveryRequest.replaceAll("\\s", "");
             String rankingType;
             if (discoveryRequest.contains("\"ranking\"") || discoveryRequest.contains("\"scoring\"")) {
                 rankingType = "standard";
