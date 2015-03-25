@@ -19,6 +19,10 @@ public class FreeTextDiscoveryFunction extends DiscoveryFunction {
             type = URI.create(MSM.Service.getURI());
         } else if (discovery.get("type").getAsString().equals("op")) {
             type = URI.create(MSM.Operation.getURI());
+        } else if (discovery.get("type").getAsString().equals("i")) {
+            type = URI.create(MSM.hasInput.getURI());
+        } else if (discovery.get("type").getAsString().equals("o")) {
+            type = URI.create(MSM.hasOutput.getURI());
         }
         query = discovery.get("query").getAsString();
     }

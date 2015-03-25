@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchPlugin;
+import uk.ac.open.kmi.msm4j.vocabulary.MSM;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,7 +36,7 @@ public abstract class SparqlSearchPlugin implements FreeTextSearchPlugin {
                 .append("PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> ")
                 .append("PREFIX sawsdl:<http://www.w3.org/ns/sawsdl#> ")
                 .append("PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> ")
-                .append("SELECT * ")
+                .append("SELECT DISTINCT ?s  ")
                 .append("WHERE { ?s <").append(searchProperty).append("> \"").append(query).append("\" . } ");
 
         Query sparqlQuery = QueryFactory.create(queryBuilder.toString());
@@ -71,9 +72,18 @@ public abstract class SparqlSearchPlugin implements FreeTextSearchPlugin {
                 .append("PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> ")
                 .append("PREFIX sawsdl:<http://www.w3.org/ns/sawsdl#> ")
                 .append("PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> ")
-                .append("SELECT * ")
-                .append("WHERE { ?s <").append(searchProperty).append("> \"").append(query).append("\" . ")
-                .append("?s rdf:type <").append(type.toASCIIString()).append("> . } ");
+                .append("SELECT DISTINCT ?s ")
+                .append("WHERE { ?s <").append(searchProperty).append("> \"").append(query).append("\" . ");
+        if (type.equals(URI.create(MSM.Service.getURI())) || type.equals(URI.create(MSM.Operation.getURI()))) {
+            queryBuilder.append("?s rdf:type <").append(type.toASCIIString()).append("> . ");
+        } else {
+            queryBuilder.append("{ ?s rdf:type <").append(MSM.MessageContent.getURI()).append("> . ");
+            queryBuilder.append("?x <").append(type.toASCIIString()).append("> ?s . } ");
+            queryBuilder.append("UNION ");
+            queryBuilder.append("{ ?s rdf:type <").append(MSM.MessagePart.getURI()).append("> . ");
+            queryBuilder.append("?x <").append(type.toASCIIString()).append("> ?s . } ");
+        }
+        queryBuilder.append(" } ");
 
         Query sparqlQuery = QueryFactory.create(queryBuilder.toString());
         return search(sparqlQuery);

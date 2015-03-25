@@ -298,7 +298,7 @@ public class DiscoveryEngineResource {
                     @ApiResponse(code = 500, message = "Internal error")})
     @Produces({"application/atom+xml", "application/json"})
     public Response search(
-            @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, \"svc\" for discovering services and \"all\" for any kind of service component", required = true, allowableValues = "svc,op,all")
+            @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, \"svc\" for discovering services and \"all\" for any kind of service component", required = true, allowableValues = "svc,op,i,o,all")
             @PathParam("type") String type,
             @ApiParam(value = "Parameter indicating a query that specifies keywords to search. Regular expressions are allowed.", required = true)
             @QueryParam("q") String query,
