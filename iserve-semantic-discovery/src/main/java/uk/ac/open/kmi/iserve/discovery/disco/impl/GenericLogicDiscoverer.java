@@ -73,8 +73,10 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         Table<URI, URI, MatchResult> expandedTypes;
         if (relationship.toASCIIString().equals(SAWSDL.modelReference.getURI())) {
             expandedTypes = HashBasedTable.create();
-            expandedTypes.putAll(this.conceptMatcher.listMatchesAtMostOfType(types, LogicConceptMatchType.Subsume));
-            expandedTypes.putAll(this.conceptMatcher.listMatchesOfType(types, LogicConceptMatchType.Exact));
+            for (URI type : types) {
+                expandedTypes.putAll(this.conceptMatcher.listMatchesAtMostOfType(ImmutableSet.of(type), LogicConceptMatchType.Subsume));
+                expandedTypes.putAll(this.conceptMatcher.listMatchesOfType(ImmutableSet.of(type), LogicConceptMatchType.Exact));
+            }
         } else {
             expandedTypes = this.conceptMatcher.listMatchesAtLeastOfType(types, LogicConceptMatchType.Plugin);
         }
@@ -140,8 +142,12 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         Table<URI, URI, MatchResult> expandedTypes;
         if (relationship.toASCIIString().equals(SAWSDL.modelReference.getURI())) {
             expandedTypes = HashBasedTable.create();
-            expandedTypes.putAll(this.conceptMatcher.listMatchesAtMostOfType(types, LogicConceptMatchType.Subsume));
-            expandedTypes.putAll(this.conceptMatcher.listMatchesOfType(types, LogicConceptMatchType.Exact));
+            //TODO: fix this properly
+            for (URI type : types) {
+                expandedTypes.putAll(this.conceptMatcher.listMatchesAtMostOfType(ImmutableSet.of(type), LogicConceptMatchType.Subsume));
+                expandedTypes.putAll(this.conceptMatcher.listMatchesOfType(ImmutableSet.of(type), LogicConceptMatchType.Exact));
+            }
+
         } else {
             expandedTypes = this.conceptMatcher.listMatchesAtLeastOfType(types, LogicConceptMatchType.Plugin);
         }

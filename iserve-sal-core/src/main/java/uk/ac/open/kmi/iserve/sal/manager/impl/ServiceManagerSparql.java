@@ -629,7 +629,7 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
                 .append("PREFIX msm: <").append(MSM.getURI()).append("> ")
                 .append("PREFIX rdf: <").append(RDF.getURI()).append("> ")
                 .append("PREFIX sawsdl: <").append(SAWSDL.getURI()).append("> ")
-                .append("SELECT ?service WHERE { ?service sawsdl:modelReference <").append(modelReference).append("> . }");
+                .append("SELECT ?service WHERE { ?service rdf:type msm:Service . ?service sawsdl:modelReference <").append(modelReference).append("> . }");
         String query = queryBuilder.toString();
         return this.graphStoreManager.listResourcesByQuery(query, "service");
     }
