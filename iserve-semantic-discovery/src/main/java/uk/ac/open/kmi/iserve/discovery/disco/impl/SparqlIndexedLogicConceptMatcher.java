@@ -94,7 +94,9 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
         Set<URI> classes = new HashSet<URI>(this.manager.getKnowledgeBaseManager().listConcepts(null));
         Map<URI, Map<URI, MatchResult>> matchesTable = sparqlMatcher.listMatchesAtLeastOfType(classes, LogicConceptMatchType.Subsume).rowMap();
         for (URI c : classes) {
-            indexedMatches.put(c, new ConcurrentHashMap(matchesTable.get(c)));
+            if (matchesTable.get(c) != null) {
+                indexedMatches.put(c, new ConcurrentHashMap(matchesTable.get(c)));
+            }
         }
     }
 

@@ -98,6 +98,7 @@
         <servlet-name>iServe REST Endpoint</servlet-name>
         <url-pattern>/discovery/*</url-pattern>
         <url-pattern>/id/*</url-pattern>
+        <url-pattern>/kb/*</url-pattern>
     </servlet-mapping>
 
     <filter>

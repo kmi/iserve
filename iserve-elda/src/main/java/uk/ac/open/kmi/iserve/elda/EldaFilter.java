@@ -45,13 +45,16 @@ public class EldaFilter implements Filter {
             logger.debug("Forward request to Elda...");
             eldaRequestDispatcher.forward(request, response);
         } else if ((path.matches("/id/.*") && !httpRequest.getMethod().equalsIgnoreCase("GET")) || path.matches("/id/documents.*")) {
-            logger.debug("Forward request to SAL REST...");
+            logger.debug("Forward request to iServe REST...");
             restRequestDispatcher.forward(request, response);
         } else if (path.matches("/id/.*") && httpRequest.getMethod().equalsIgnoreCase("GET")) {
             logger.debug("Redirect request to Elda...");
             res.sendRedirect(httpRequest.getContextPath() + path.replace("/id/", "/doc/"));
+        } else if (path.matches("/kb.*")) {
+            logger.debug("Forward request to iServe REST...");
+            restRequestDispatcher.forward(request, response);
         } else if (path.matches("/discovery.*")) {
-            logger.debug("Forward request to Discovery REST...");
+            logger.debug("Forward request to iServe REST...");
             restRequestDispatcher.forward(request, response);
         } else {
             logger.debug("Forward request to Filter chain...");

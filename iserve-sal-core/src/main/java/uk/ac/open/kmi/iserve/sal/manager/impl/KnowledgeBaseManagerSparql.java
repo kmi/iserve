@@ -18,6 +18,7 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
@@ -46,10 +47,7 @@ import uk.ac.open.kmi.msm4j.vocabulary.SAWSDL;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
@@ -373,6 +371,26 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
         strBuilder.append(" } ");
 
         return this.graphStoreManager.listResourcesByQuery(strBuilder.toString(), "class");
+    }
+
+    @Override
+    public Multimap<URI, URI> listLinkedConcepts(List<URI> properties, URI sourceClass, URI targetClass) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("SELECT DISTINCT ?s ?t WHERE { ");
+        if (sourceClass != null) {
+            strBuilder.append("?s <").append(RDFS.subClassOf.getURI()).append("> <").append(sourceClass.toASCIIString()).append("> . ");
+        }
+        if (targetClass != null) {
+            strBuilder.append("?t <").append(RDFS.subClassOf.getURI()).append("> <").append(targetClass.toASCIIString()).append("> . ");
+        }
+        int c = 0;
+        for (URI property : properties) {
+            strBuilder.append("?c").append(c).append(" <").append(property.toASCIIString()).append("> ?c").append(++c).append(" . ");
+        }
+        strBuilder.append("BIND (?c0 AS ?s) ");
+        strBuilder.append("BIND (?c").append(c).append(" AS ?t) ");
+        strBuilder.append("}");
+        return this.graphStoreManager.listResourcesMapByQuery(strBuilder.toString(), "s", "t");
     }
 
     private Set<URI> obtainReferencedModelUris(Service svc) {

@@ -17,7 +17,9 @@
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.hp.hpl.jena.ontology.OntDocumentManager;
@@ -677,6 +679,54 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
             qexec.close();
         }
         return result.build();
+    }
+
+    @Override
+    public Multimap<URI, URI> listResourcesMapByQuery(String queryStr, String variableNameA, String variableNameB) {
+        Multimap<URI, URI> result = HashMultimap.create();
+        // If the SPARQL endpoint does not exist return immediately.
+        if (this.getSparqlQueryEndpoint() == null || queryStr == null || queryStr.isEmpty()) {
+            return result;
+        }
+
+        // Query the engine
+        log.debug("Evaluating SPARQL query in Knowledge Base: \n {}", queryStr);
+        Query query = QueryFactory.create(queryStr);
+        QueryExecution qe = QueryExecutionFactory.sparqlService(this.getSparqlQueryEndpoint().toASCIIString(), query);
+        MonitoredQueryExecution qexec = new MonitoredQueryExecution(qe);
+
+        try {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.start();
+
+            ResultSet qResults = qexec.execSelect();
+
+            stopwatch.stop();
+            log.debug("Time taken for querying the registry: {}", stopwatch);
+
+            Resource resourceA;
+            Resource resourceB;
+            // Iterate over the results obtained
+            while (qResults.hasNext()) {
+                QuerySolution soln = qResults.nextSolution();
+
+                // Get the match URL
+                resourceA = soln.getResource(variableNameA);
+                resourceB = soln.getResource(variableNameB);
+
+                if (resourceA != null && resourceA.isURIResource() && resourceB != null && resourceB.isURIResource()) {
+                    result.put(new URI(resourceA.getURI()), new URI(resourceB.getURI()));
+                } else {
+                    log.warn("Skipping result as the URL is null");
+                    break;
+                }
+            }
+        } catch (URISyntaxException e) {
+            log.error("Error obtaining match result. Expected a correct URI", e);
+        } finally {
+            qexec.close();
+        }
+        return result;
     }
 
     @Override

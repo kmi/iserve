@@ -16,6 +16,7 @@
 
 package uk.ac.open.kmi.iserve.sal.manager;
 
+import com.google.common.collect.Multimap;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Statement;
@@ -55,6 +56,8 @@ public interface SparqlGraphStoreManager extends iServeComponent {
     Set<URI> listStoredGraphs();
 
     Set<URI> listResourcesByQuery(String queryStr, String variableName);
+
+    Multimap<URI, URI> listResourcesMapByQuery(String queryStr, String variableNameA, String variableNameB);
 
     boolean fetchAndStore(URI modelUri);
 

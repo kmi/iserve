@@ -16,11 +16,13 @@
 
 package uk.ac.open.kmi.iserve.sal.manager;
 
+import com.google.common.collect.Multimap;
 import com.google.common.eventbus.Subscribe;
 import com.hp.hpl.jena.rdf.model.Model;
 import uk.ac.open.kmi.iserve.sal.events.ServiceCreatedEvent;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -37,7 +39,7 @@ public interface KnowledgeBaseManager extends iServeComponent {
      *
      * @return
      */
-    public boolean clearKnowledgeBase();
+    boolean clearKnowledgeBase();
 
     /**
      * Checks whether the model has already been uploaded
@@ -45,14 +47,14 @@ public interface KnowledgeBaseManager extends iServeComponent {
      * @param modelUri URI of the model to be checked
      * @return true if the model has already been uploaded, false otherwise.
      */
-    public boolean containsModel(URI modelUri);
+    boolean containsModel(URI modelUri);
 
     /**
      * Obtains a set with all the models loaded into this Knowledge Base Manager
      *
      * @return the set of loaded models
      */
-    public Set<URI> getLoadedModels();
+    Set<URI> getLoadedModels();
 
     /**
      * Obtains a set with all the models that have not been reachable at some point. These are models that should be
@@ -60,7 +62,7 @@ public interface KnowledgeBaseManager extends iServeComponent {
      *
      * @return the set of unreachable models
      */
-    public Set<URI> getUnreachableModels();
+    Set<URI> getUnreachableModels();
 
     /**
      * Uploads a model into the Knowledge Base Manager
@@ -71,7 +73,7 @@ public interface KnowledgeBaseManager extends iServeComponent {
      * @param model       the actual model to upload
      * @param forceUpdate if true the model will be updated even if already is there
      */
-    public void uploadModel(URI modelUri, Model model, boolean forceUpdate);
+    void uploadModel(URI modelUri, Model model, boolean forceUpdate);
 
     /**
      * Deletes a model from the Knowledge Base Manager
@@ -81,7 +83,7 @@ public interface KnowledgeBaseManager extends iServeComponent {
      * @param modelUri the URI of the model to remove
      * @return true if it was correctly deleted, false otherwise.
      */
-    public boolean deleteModel(URI modelUri);
+    boolean deleteModel(URI modelUri);
 
     /**
      * Answers a List all of URIs of the classes that are known to be equivalent to this class. Equivalence may be
@@ -92,7 +94,7 @@ public interface KnowledgeBaseManager extends iServeComponent {
      * @param classUri the URI of the class for which to list the equivalent classes
      * @return the List of equivalent classes
      */
-    public Set<URI> listEquivalentClasses(URI classUri);
+    Set<URI> listEquivalentClasses(URI classUri);
 
     /**
      * Answers a List of all the URIs of the classes that are declared to be sub-classes of this class.
@@ -101,7 +103,7 @@ public interface KnowledgeBaseManager extends iServeComponent {
      * @param direct   if true only the direct subclasses will be listed.
      * @return the list of subclasses
      */
-    public Set<URI> listSubClasses(URI classUri, boolean direct);
+    Set<URI> listSubClasses(URI classUri, boolean direct);
 
     /**
      * Answers a List of all the URIs of the classes that are declared to be super-classes of this class.
@@ -110,7 +112,7 @@ public interface KnowledgeBaseManager extends iServeComponent {
      * @param direct   if true only the direct super-classes will be listed.
      * @return the list of super-classes
      */
-    public Set<URI> listSuperClasses(URI classUri, boolean direct);
+    Set<URI> listSuperClasses(URI classUri, boolean direct);
 
     /**
      * List all concepts managed by the KnowledgeBaseManager.
@@ -118,7 +120,17 @@ public interface KnowledgeBaseManager extends iServeComponent {
      * @param graphID Graph URI for filtering the concepts within the specified graphID, null for all concepts.
      * @return List of concepts in the KnowledgeBaseManager
      */
-    public Set<URI> listConcepts(URI graphID);
+    Set<URI> listConcepts(URI graphID);
+
+    /**
+     * List concepts linked by a chain of properties.
+     *
+     * @param properties  chain of properties that specify the links
+     * @param sourceClass class of the source concept (optional/nullable)
+     * @param targetClass class of the target concept (optional/nullable)
+     * @return Multimap of linked concepts in the KnowledgeBaseManager
+     */
+    Multimap<URI, URI> listLinkedConcepts(List<URI> properties, URI sourceClass, URI targetClass);
 
     /**
      * The upload of services gets automatically notified via the event bus. Every Knowledge Base Manager should process
