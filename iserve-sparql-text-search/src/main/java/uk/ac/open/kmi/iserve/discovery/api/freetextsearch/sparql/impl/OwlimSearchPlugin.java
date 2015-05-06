@@ -14,6 +14,9 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
 import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.sal.events.ServiceEvent;
+import uk.ac.open.kmi.msm4j.vocabulary.MSM;
+
+import java.net.URI;
 
 /**
  * Created by Luca Panziera on 26/08/2014.
@@ -32,7 +35,16 @@ public class OwlimSearchPlugin extends SparqlSearchPlugin {
         this.updateEndpoint = updateEndpoint;
         this.eventBus = eventBus;
         eventBus.register(this);
-        runIndexing();
+        if (!isIndexed()) {
+            runIndexing();
+        } else {
+            logger.info("Service register already indexed");
+        }
+
+    }
+
+    private boolean isIndexed() {
+        return search("service").containsKey(URI.create(MSM.Service.getURI()));
     }
 
     private void runIndexing() {
