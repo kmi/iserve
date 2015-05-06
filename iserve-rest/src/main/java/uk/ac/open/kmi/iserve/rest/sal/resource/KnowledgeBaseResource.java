@@ -18,9 +18,10 @@ import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.io.StringReader;
+import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 
@@ -77,6 +78,78 @@ public class KnowledgeBaseResource {
         try {
             Set<URI> subclasses = kbManager.listSubClasses(new URI(uri), Boolean.parseBoolean(direct));
             return Response.status(Response.Status.OK).entity(createJsonMessage(createResultSet(subclasses))).build();
+        } catch (URISyntaxException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(createJsonMessage(e.getMessage())).build();
+        }
+    }
+
+
+    @GET
+    @Path("superclasses")
+    @Produces({"application/json"})
+    @ApiOperation(value = "Get superclasses of a concept",
+            notes = "It returns superclasses of a specific concept")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "List of superclasses"),
+                    @ApiResponse(code = 400, message = "Malformed input"),
+                    @ApiResponse(code = 500, message = "Internal error")})
+    public Response getSuperclasses(
+            @ApiParam(value = "URI of the concept (e.g., http://schema.org/Action)", required = true)
+            @QueryParam("uri") String uri,
+            @ApiParam(value = "If this parameter is set as TRUE, the function will return only direct superclasses", allowableValues = "true,false")
+            @QueryParam("direct") String direct) {
+        try {
+            Set<URI> classes = kbManager.listSuperClasses(new URI(uri), Boolean.parseBoolean(direct));
+            return Response.status(Response.Status.OK).entity(createJsonMessage(createResultSet(classes))).build();
+        } catch (URISyntaxException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(createJsonMessage(e.getMessage())).build();
+        }
+    }
+
+    @GET
+    @Path("equivalentClasses")
+    @Produces({"application/json"})
+    @ApiOperation(value = "List classes equivalent to a specific concept",
+            notes = "It returns a list of classes")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "List of equivalent classes"),
+                    @ApiResponse(code = 400, message = "Malformed input"),
+                    @ApiResponse(code = 500, message = "Internal error")})
+    public Response getEquivalentClasses(
+            @ApiParam(value = "URI of the concept (e.g., http://schema.org/Action)", required = true)
+            @QueryParam("uri") String uri
+    ) {
+        try {
+            Set<URI> classes = kbManager.listEquivalentClasses(new URI(uri));
+            return Response.status(Response.Status.OK).entity(createJsonMessage(createResultSet(classes))).build();
+        } catch (URISyntaxException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(createJsonMessage(e.getMessage())).build();
+        }
+    }
+
+    @GET
+    @Produces({"application/json"})
+    @ApiOperation(value = "List concepts in the knowledge base",
+            notes = "It returns a list of concepts")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "List of concepts"),
+                    @ApiResponse(code = 400, message = "Malformed input"),
+                    @ApiResponse(code = 500, message = "Internal error")})
+    public Response listConcepts(
+            @ApiParam(value = "URI of the model. If empty it will return all the concepts in the Knowledge Base")
+            @QueryParam("uri") String uri
+    ) {
+        try {
+            Set<URI> classes;
+            if (uri != null && !uri.equals("")) {
+                classes = kbManager.listConcepts(new URI(uri));
+            } else {
+                classes = kbManager.listConcepts(null);
+            }
+            return Response.status(Response.Status.OK).entity(createJsonMessage(createResultSet(classes))).build();
         } catch (URISyntaxException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(createJsonMessage(e.getMessage())).build();
         }
@@ -163,7 +236,7 @@ public class KnowledgeBaseResource {
             if (ontology == null || ontology.equals("")) {
                 model.read(uri);
             } else {
-                model.read(new StringReader(ontology), uri);
+                model.read(new ByteArrayInputStream(ontology.getBytes(StandardCharsets.UTF_8)), uri);
             }
 
             kbManager.uploadModel(new URI(uri), model, Boolean.parseBoolean(forceUpdate));
