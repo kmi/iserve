@@ -40,10 +40,10 @@ public abstract class SparqlSearchPlugin implements FreeTextSearchPlugin {
                 .append("WHERE { ?s <").append(searchProperty).append("> \"").append(query).append("\" . } ");
 
         Query sparqlQuery = QueryFactory.create(queryBuilder.toString());
-        return search(sparqlQuery);
+        return search(query, sparqlQuery);
     }
 
-    private Map<URI, MatchResult> search(Query sparqlQuery) {
+    private Map<URI, MatchResult> search(String textquery, Query sparqlQuery) {
         logger.debug("Executing SPARQL query: {}", sparqlQuery);
         QueryExecution qexec = QueryExecutionFactory.sparqlService(queryEndpoint.toString(), sparqlQuery);
         ResultSet resultSet = qexec.execSelect();
@@ -55,7 +55,7 @@ public abstract class SparqlSearchPlugin implements FreeTextSearchPlugin {
             if (s.isURIResource()) {
                 try {
                     String resource = s.asResource().getURI();
-                    FreeTextMatchResult result = new FreeTextMatchResult(new URI(searchProperty), new URI(resource));
+                    FreeTextMatchResult result = new FreeTextMatchResult(new URI(searchProperty + "?q=" + textquery), new URI(resource));
                     r.put(new URI(resource), result);
                 } catch (URISyntaxException e) {
                     e.printStackTrace();
@@ -86,7 +86,7 @@ public abstract class SparqlSearchPlugin implements FreeTextSearchPlugin {
         queryBuilder.append(" } ");
 
         Query sparqlQuery = QueryFactory.create(queryBuilder.toString());
-        return search(sparqlQuery);
+        return search(query, sparqlQuery);
     }
 
 }
