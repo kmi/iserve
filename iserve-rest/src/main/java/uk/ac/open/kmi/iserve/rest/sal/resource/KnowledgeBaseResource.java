@@ -215,7 +215,7 @@ public class KnowledgeBaseResource {
 
     @POST
     @Path("models")
-    @Consumes({"application/rdf+xml", "text/turtle", "text/n3", "text/rdf+n3"})
+    @Consumes({"application/rdf+xml", "text/turtle", "text/n3", "text/rdf+n3", "application/n-triples"})
     @Produces({"application/json"})
     @ApiOperation(value = "Upload a model in the knowledge base",
             notes = "It returns a list of models")
@@ -229,14 +229,24 @@ public class KnowledgeBaseResource {
                                 @ApiParam(value = "Ontology to by uploaded in the knowledge base")
                                 String ontology,
                                 @ApiParam(value = "Force the upload of the model", allowableValues = "true,false")
-                                @QueryParam("forceUpdate") String forceUpdate) {
+                                @QueryParam("forceUpdate") String forceUpdate,
+                                @HeaderParam("Content-Type") String contentType) {
 
         try {
             Model model = ModelFactory.createDefaultModel();
             if (ontology == null || ontology.equals("")) {
                 model.read(uri);
             } else {
-                model.read(new ByteArrayInputStream(ontology.getBytes(StandardCharsets.UTF_8)), uri);
+                String lang = "RDF/XML";
+                if (contentType.equals("text/turtle")) {
+                    lang = "TTL";
+                } else if (contentType.equals("text/n3") || contentType.equals("text/rdf+n3")) {
+                    lang = "N3";
+                } else if (contentType.equals("application/n-triples")) {
+                    lang = "N-TRIPLE";
+                }
+
+                model.read(new ByteArrayInputStream(ontology.getBytes(StandardCharsets.UTF_8)), uri, lang);
             }
 
             kbManager.uploadModel(new URI(uri), model, Boolean.parseBoolean(forceUpdate));
