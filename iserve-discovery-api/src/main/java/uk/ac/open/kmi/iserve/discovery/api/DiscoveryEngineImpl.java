@@ -17,8 +17,10 @@
 package uk.ac.open.kmi.iserve.discovery.api;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.gson.JsonArray;
@@ -35,7 +37,8 @@ import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.ReverseRanker;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.StandardRanker;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
-import uk.ac.open.kmi.iserve.sal.events.Event;
+import uk.ac.open.kmi.iserve.sal.events.OntologyEvent;
+import uk.ac.open.kmi.iserve.sal.events.ServiceEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
@@ -302,7 +305,23 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
     }
 
     @Subscribe
-    public void clearCache(Event e) {
+    @AllowConcurrentEvents
+    public void rebuildCache(ServiceEvent e) {
+        rebuildCache();
+    }
+
+    @Subscribe
+    @AllowConcurrentEvents
+    public void rebuildCache(OntologyEvent e) {
+        rebuildCache();
+    }
+
+    private void rebuildCache() {
+        logger.debug("Rebuilding discovery cache");
+        Set<String> queries = ImmutableSet.copyOf(resultCache.keySet());
         resultCache.clear();
+        for (String query : queries) {
+            resultCache.put(query, discover(query));
+        }
     }
 }

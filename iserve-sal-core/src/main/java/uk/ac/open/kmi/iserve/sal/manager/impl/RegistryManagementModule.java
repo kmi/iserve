@@ -16,6 +16,7 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
+import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
@@ -30,6 +31,8 @@ import uk.ac.open.kmi.iserve.sal.util.caching.impl.InMemoryCache;
 import uk.ac.open.kmi.iserve.sal.util.caching.impl.RedisCache;
 import uk.ac.open.kmi.msm4j.io.impl.TransformerModule;
 
+import java.util.concurrent.Executors;
+
 /**
  * iServeModule is in charge of adequately initialising iServe by obtaining the configuration parameters
  * and binding each of the interfaces to the chosen implementation.
@@ -40,7 +43,7 @@ import uk.ac.open.kmi.msm4j.io.impl.TransformerModule;
 public class RegistryManagementModule extends AbstractModule {
 
     private static final Logger log = LoggerFactory.getLogger(RegistryManagementModule.class);
-    private static final EventBus eventBus = new EventBus("iServe");
+    private static final EventBus eventBus = new AsyncEventBus("iServe", Executors.newCachedThreadPool());
     private final String configFile;
 
     public RegistryManagementModule() {
@@ -90,7 +93,7 @@ public class RegistryManagementModule extends AbstractModule {
         bind(ServiceManager.class).to(ServiceManagerSparql.class);
         bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class);
         bind(RegistryManager.class).to(RegistryManagerImpl.class);
-        bind(NfpManager.class).to(NfpManagerSparql.class);
+        bind(NfpManager.class).to(NfpManagerSparql.class).asEagerSingleton();
 
     }
 }
