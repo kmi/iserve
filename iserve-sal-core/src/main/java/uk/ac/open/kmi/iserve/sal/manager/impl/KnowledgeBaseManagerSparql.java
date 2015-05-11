@@ -312,7 +312,7 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
         if (direct) {
             strBuilder.append("?class").append(" <").append(DIRECT_SUBCLASS).append("> ").append("<").append(classUri.toASCIIString()).append("> .");
         } else {
-            strBuilder.append("?class").append(" <").append(RDFS.subClassOf.getURI()).append("> ").append("<").append(classUri.toASCIIString()).append("> .");
+            strBuilder.append("?class").append(" <").append(RDFS.subClassOf.getURI()).append(">+ ").append("<").append(classUri.toASCIIString()).append("> .");
         }
 
         strBuilder.append(" }");
@@ -378,14 +378,14 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("SELECT DISTINCT ?s ?t WHERE { ");
         if (sourceClass != null) {
-            strBuilder.append("?c0 <").append(RDFS.subClassOf.getURI()).append("> <").append(sourceClass.toASCIIString()).append("> . ");
+            strBuilder.append("?c0 <").append(RDFS.subClassOf.getURI()).append(">+ <").append(sourceClass.toASCIIString()).append("> . ");
         }
         int c = 0;
         for (URI property : properties) {
-            strBuilder.append("?c").append(c).append(" <").append(property.toASCIIString()).append("> ?c").append(++c).append(" . ");
+            strBuilder.append("?c").append(c).append(" <").append(property.toASCIIString()).append(">+ ?c").append(++c).append(" . ");
         }
         if (targetClass != null) {
-            strBuilder.append("?c").append(c).append(" <").append(RDFS.subClassOf.getURI()).append("> <").append(targetClass.toASCIIString()).append("> . ");
+            strBuilder.append("?c").append(c).append(" <").append(RDFS.subClassOf.getURI()).append(">+ <").append(targetClass.toASCIIString()).append("> . ");
         }
         strBuilder.append("BIND (?c0 AS ?s) ");
         strBuilder.append("BIND (?c").append(c).append(" AS ?t) ");
