@@ -378,14 +378,14 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("SELECT DISTINCT ?s ?t WHERE { ");
         if (sourceClass != null) {
-            strBuilder.append("?s <").append(RDFS.subClassOf.getURI()).append("> <").append(sourceClass.toASCIIString()).append("> . ");
-        }
-        if (targetClass != null) {
-            strBuilder.append("?t <").append(RDFS.subClassOf.getURI()).append("> <").append(targetClass.toASCIIString()).append("> . ");
+            strBuilder.append("?c0 <").append(RDFS.subClassOf.getURI()).append("> <").append(sourceClass.toASCIIString()).append("> . ");
         }
         int c = 0;
         for (URI property : properties) {
             strBuilder.append("?c").append(c).append(" <").append(property.toASCIIString()).append("> ?c").append(++c).append(" . ");
+        }
+        if (targetClass != null) {
+            strBuilder.append("?c").append(c).append(" <").append(RDFS.subClassOf.getURI()).append("> <").append(targetClass.toASCIIString()).append("> . ");
         }
         strBuilder.append("BIND (?c0 AS ?s) ");
         strBuilder.append("BIND (?c").append(c).append(" AS ?t) ");
