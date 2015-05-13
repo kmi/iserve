@@ -318,10 +318,18 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
 
     private void rebuildCache() {
         logger.debug("Rebuilding discovery cache");
-        Set<String> queries = ImmutableSet.copyOf(resultCache.keySet());
-        resultCache.clear();
-        for (String query : queries) {
-            resultCache.put(query, discover(query));
+        CacheRebuilder cr = new CacheRebuilder();
+        cr.setPriority(Thread.MIN_PRIORITY);
+        cr.start();
+    }
+
+    private class CacheRebuilder extends Thread {
+        public void run() {
+            Set<String> queries = ImmutableSet.copyOf(resultCache.keySet());
+            resultCache.clear();
+            for (String query : queries) {
+                resultCache.put(query, discover(query));
+            }
         }
     }
 }
