@@ -339,7 +339,7 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
         if (direct) {
             strBuilder.append("<").append(classUri.toASCIIString()).append("> ").append("<").append(DIRECT_SUBCLASS).append("> ").append("?class .");
         } else {
-            strBuilder.append("<").append(classUri.toASCIIString()).append("> ").append("<").append(RDFS.subClassOf.getURI()).append("> ").append("?class .");
+            strBuilder.append("<").append(classUri.toASCIIString()).append("> ").append("<").append(RDFS.subClassOf.getURI()).append(">+ ").append("?class .");
         }
         strBuilder.append(" }");
 
