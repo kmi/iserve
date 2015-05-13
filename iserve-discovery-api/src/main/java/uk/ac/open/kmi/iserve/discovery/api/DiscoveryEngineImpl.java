@@ -17,7 +17,6 @@
 package uk.ac.open.kmi.iserve.discovery.api;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.AllowConcurrentEvents;
@@ -58,6 +57,7 @@ import java.util.concurrent.ForkJoinPool;
 public class DiscoveryEngineImpl extends IntegratedComponent implements DiscoveryEngine {
 
     private static Cache<String, Map<URI, Pair<Double, MatchResult>>> resultCache;
+    private static Cache<String, Boolean> frequentQueries;
     private OperationDiscoverer operationDiscoverer;
     private ServiceDiscoverer serviceDiscoverer;
     private FreeTextSearchPlugin freeTextSearchPlugin;
@@ -119,11 +119,22 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
             }
 
         }
+        if (frequentQueries == null) {
+            try {
+                frequentQueries = cacheFactory.createPersistentCache("discovery-frequent-queries");
+            } catch (CacheException e) {
+                frequentQueries = cacheFactory.createInMemoryCache("discovery-frequent-queries");
+            }
+
+        }
 
     }
 
-    public Map<URI, Pair<Double, MatchResult>> discover(String request) {
+    public Map<URI, Pair<Double, MatchResult>> discover(String request, boolean frequent) {
         JsonElement jsonRequest = new JsonParser().parse(request);
+        if (frequent) {
+            frequentQueries.put(jsonRequest.toString(), frequent);
+        }
         if (resultCache.containsKey(jsonRequest.toString())) {
             return resultCache.get(jsonRequest.toString());
         } else {
@@ -325,10 +336,11 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
 
     private class CacheRebuilder extends Thread {
         public void run() {
-            Set<String> queries = ImmutableSet.copyOf(resultCache.keySet());
             resultCache.clear();
-            for (String query : queries) {
-                resultCache.put(query, discover(query));
+            for (String query : frequentQueries.keySet()) {
+                if (frequentQueries.get(query)) {
+                    resultCache.put(query, discover(query, true));
+                }
             }
         }
     }

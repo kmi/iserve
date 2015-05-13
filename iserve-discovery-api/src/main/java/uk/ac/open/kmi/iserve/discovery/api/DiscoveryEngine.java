@@ -11,12 +11,12 @@ import java.util.Map;
  */
 public interface DiscoveryEngine {
 
-    public Map<URI, Pair<Double, MatchResult>> discover(String request);
+    Map<URI, Pair<Double, MatchResult>> discover(String request, boolean frequent);
 
-    public Map<URI, Pair<Double, MatchResult>> discover(JsonElement request);
+    Map<URI, Pair<Double, MatchResult>> discover(JsonElement request);
 
-    public Map<URI, Pair<Double, MatchResult>> discover(DiscoveryRequest discoveryRequest);
+    Map<URI, Pair<Double, MatchResult>> discover(DiscoveryRequest discoveryRequest);
 
     // It returns discovery engine configuration description
-    public String toString() ;
+    String toString();
 }

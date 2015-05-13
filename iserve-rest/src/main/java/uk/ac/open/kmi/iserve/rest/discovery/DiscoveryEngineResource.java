@@ -88,9 +88,9 @@ public class DiscoveryEngineResource {
 
         String query = buildClassQuery(type, function, resources, rankingType, filtering);
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-            return transformAsJson(invokeDiscoveryEngine(query, rankingType, page,pageSize));
+            return transformAsJson(invokeDiscoveryEngine(query, rankingType, page, pageSize, false));
         }
-        return transformAsAtom(invokeDiscoveryEngine(query, rankingType, page,pageSize));
+        return transformAsAtom(invokeDiscoveryEngine(query, rankingType, page, pageSize, false));
 
     }
 
@@ -106,7 +106,7 @@ public class DiscoveryEngineResource {
         return Response.ok(json).build();
     }
 
-    private Map<URI, DiscoveryResult> invokeDiscoveryEngine(String query, String rankingType, Integer page, Integer pageSize) {
+    private Map<URI, DiscoveryResult> invokeDiscoveryEngine(String query, String rankingType, Integer page, Integer pageSize, Boolean callback) {
         // Check of paging parameters consistency
         if (page == null || page < 0) {
             page = 0;
@@ -115,7 +115,7 @@ public class DiscoveryEngineResource {
             pageSize = DEFAULT_PAGE_SIZE;
         }
         // Invoke discovery engine
-        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
+        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query, callback);
 
         //Create paging
         List<URI> keys = Lists.newArrayList(result.keySet());
@@ -165,9 +165,9 @@ public class DiscoveryEngineResource {
         String query = buildIOQuery(type, function, rankingType, filtering, inputs, outputs);
 
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-            return transformAsJson(invokeDiscoveryEngine(query, rankingType, page, pageSize));
+            return transformAsJson(invokeDiscoveryEngine(query, rankingType, page, pageSize, false));
         }
-        return transformAsAtom(invokeDiscoveryEngine(query, rankingType, page, pageSize));
+        return transformAsAtom(invokeDiscoveryEngine(query, rankingType, page, pageSize, false));
     }
 
 
@@ -318,9 +318,9 @@ public class DiscoveryEngineResource {
 
         // Run discovery
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-            return transformAsJson(invokeDiscoveryEngine(discoveryRequest.toString(), null, page, pageSize));
+            return transformAsJson(invokeDiscoveryEngine(discoveryRequest.toString(), null, page, pageSize, false));
         }
-        return transformAsAtom(invokeDiscoveryEngine(discoveryRequest.toString(), null, page, pageSize));
+        return transformAsAtom(invokeDiscoveryEngine(discoveryRequest.toString(), null, page, pageSize, false));
     }
 
     @POST
@@ -340,7 +340,9 @@ public class DiscoveryEngineResource {
             @ApiParam(value = "Number of result page. By default, it will return the first page. Page numbering starts from 0.")
             @QueryParam("page") Integer page,
             @ApiParam(value = "Number of results per page. The default value is " + DEFAULT_PAGE_SIZE + " and the maximum value is " + MAX_PAGE_SIZE + ".")
-            @QueryParam("pagesize") Integer pageSize
+            @QueryParam("pagesize") Integer pageSize,
+            @ApiParam(value = "It enables callback notification for changes in the discovery results", allowableValues = "true,false")
+            @QueryParam("callback") String callback
     ) {
         try {
             logger.debug("Advanced discovery");
@@ -351,9 +353,9 @@ public class DiscoveryEngineResource {
                 rankingType = "";
             }
             if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-                return transformAsJson(invokeDiscoveryEngine(discoveryRequest, rankingType, page,pageSize));
+                return transformAsJson(invokeDiscoveryEngine(discoveryRequest, rankingType, page, pageSize, Boolean.parseBoolean(callback)));
             }
-            return transformAsAtom(invokeDiscoveryEngine(discoveryRequest, rankingType, page,pageSize));
+            return transformAsAtom(invokeDiscoveryEngine(discoveryRequest, rankingType, page, pageSize, Boolean.parseBoolean(callback)));
 
         } catch (Exception e) {
             e.printStackTrace();
