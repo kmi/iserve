@@ -60,7 +60,7 @@ public class RestModule extends ServletModule {
 
         install(injector.getInstance(FreeTextSearchModule.class));
 
-        bind(DiscoveryEngine.class).to(DiscoveryEngineImpl.class);
+        bind(DiscoveryEngine.class).to(DiscoveryEngineImpl.class).asEagerSingleton();
 
     }
 

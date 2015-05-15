@@ -23,6 +23,7 @@ import com.google.common.collect.BoundType;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
@@ -90,7 +91,7 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
 
     }
 
-    private void populate() {
+    private synchronized void populate() {
         Set<URI> classes = new HashSet<URI>(this.manager.getKnowledgeBaseManager().listConcepts(null));
         Map<URI, Map<URI, MatchResult>> matchesTable = sparqlMatcher.listMatchesAtLeastOfType(classes, LogicConceptMatchType.Subsume).rowMap();
         for (URI c : classes) {
@@ -111,7 +112,7 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
     }
 
     @Override
-    public MatchResult match(final URI origin, final URI destination) {
+    public synchronized MatchResult match(final URI origin, final URI destination) {
         MatchResult result = this.indexedMatches.get(origin).get(destination);
         // If there are no entries for origin,dest assume fail.
         if (result == null) {
@@ -155,7 +156,7 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
      * result is found the Map should be empty not null.
      */
     @Override
-    public Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType) {
+    public synchronized Map<URI, MatchResult> listMatchesWithinRange(URI origin, MatchType minType, MatchType maxType) {
 
         if (origin == null || minType == null | maxType == null) {
             return ImmutableMap.of();
@@ -190,7 +191,8 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
      * @param event the actual event that was triggered
      */
     @Subscribe
-    public void handleOntologyCreated(OntologyCreatedEvent event) {
+    @AllowConcurrentEvents
+    public synchronized void handleOntologyCreated(OntologyCreatedEvent event) {
 
         log.info("Processing Ontology Created Event - {}", event.getOntologyUri());
 
@@ -211,7 +213,8 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
      * @param event the ontology deletion event
      */
     @Subscribe
-    public void handleOntologyDeleted(OntologyDeletedEvent event) {
+    @AllowConcurrentEvents
+    public synchronized void handleOntologyDeleted(OntologyDeletedEvent event) {
 
         log.info("Processing Ontology Deleted Event - {}", event.getOntologyUri());
 

@@ -113,18 +113,18 @@ public class ClassificationDiscoveryFunction extends DiscoveryFunction {
             }
             if (operator.equals("or")) {
                 if (type.equals("svc")) {
-                    resultMap = serviceDiscoverer.findServicesClassifiedBySome(parameters);
+                    resultMap.putAll(serviceDiscoverer.findServicesClassifiedBySome(parameters));
                 }
                 if (type.equals("op")) {
-                    resultMap = operationDiscoverer.findOperationsClassifiedBySome(parameters);
+                    resultMap.putAll(operationDiscoverer.findOperationsClassifiedBySome(parameters));
                 }
             }
             if (operator.equals("and")) {
                 if (type.equals("svc")) {
-                    resultMap = serviceDiscoverer.findServicesClassifiedByAll(parameters);
+                    resultMap.putAll(serviceDiscoverer.findServicesClassifiedByAll(parameters));
                 }
                 if (type.equals("op")) {
-                    resultMap = operationDiscoverer.findOperationsClassifiedByAll(parameters);
+                    resultMap.putAll(operationDiscoverer.findOperationsClassifiedByAll(parameters));
                 }
             }
         }

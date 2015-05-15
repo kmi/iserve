@@ -19,6 +19,8 @@ package uk.ac.open.kmi.iserve.discovery.api;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.common.eventbus.AllowConcurrentEvents;
+import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.gson.JsonArray;
@@ -34,8 +36,10 @@ import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.ReverseRanker;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.StandardRanker;
+import uk.ac.open.kmi.iserve.discovery.util.CallbackEvent;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
-import uk.ac.open.kmi.iserve.sal.events.Event;
+import uk.ac.open.kmi.iserve.sal.events.OntologyEvent;
+import uk.ac.open.kmi.iserve.sal.events.ServiceEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
@@ -43,10 +47,13 @@ import uk.ac.open.kmi.iserve.sal.util.caching.CacheException;
 import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
 
 import javax.annotation.Nullable;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 
 /**
@@ -55,6 +62,7 @@ import java.util.concurrent.ForkJoinPool;
 public class DiscoveryEngineImpl extends IntegratedComponent implements DiscoveryEngine {
 
     private static Cache<String, Map<URI, Pair<Double, MatchResult>>> resultCache;
+    private static Cache<String, String> callbackQueries;
     private OperationDiscoverer operationDiscoverer;
     private ServiceDiscoverer serviceDiscoverer;
     private FreeTextSearchPlugin freeTextSearchPlugin;
@@ -62,6 +70,7 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
     private Set<Scorer> scorers;
     private ScoreComposer scoreComposer;
     private Logger logger = LoggerFactory.getLogger(DiscoveryEngineImpl.class);
+    private EventBus callbackBus = new AsyncEventBus("callbacks", Executors.newCachedThreadPool());
 
     @Inject
     public DiscoveryEngineImpl(EventBus eventBus,
@@ -116,7 +125,22 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
             }
 
         }
+        if (callbackQueries == null) {
+            try {
+                callbackQueries = cacheFactory.createPersistentCache("callback-queries");
+            } catch (CacheException e) {
+                callbackQueries = cacheFactory.createInMemoryCache("callback-queries");
+            }
 
+        }
+
+    }
+
+    @Override
+    public Map<URI, Pair<Double, MatchResult>> discover(String request, URL callback) {
+        JsonElement jsonRequest = new JsonParser().parse(request);
+        callbackQueries.put(callback.toString(), jsonRequest.toString());
+        return discover(request);
     }
 
     public Map<URI, Pair<Double, MatchResult>> discover(String request) {
@@ -278,6 +302,11 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
         return ImmutableMap.of();
     }
 
+    @Override
+    public EventBus getCallbackBus() {
+        return callbackBus;
+    }
+
     // It returns discovery engine configuration
     public String toString() {
         StringBuilder descriptionBuilder = new StringBuilder();
@@ -302,7 +331,28 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
     }
 
     @Subscribe
-    public void clearCache(Event e) {
+    @AllowConcurrentEvents
+    public void rebuildCache(ServiceEvent e) {
+        rebuildCache();
+    }
+
+    @Subscribe
+    @AllowConcurrentEvents
+    public void rebuildCache(OntologyEvent e) {
+        rebuildCache();
+    }
+
+    private void rebuildCache() {
+        logger.debug("Rebuilding discovery cache");
         resultCache.clear();
+        for (String callback : callbackQueries.keySet()) {
+            Map<URI, Pair<Double, MatchResult>> result = discover(callbackQueries.get(callback));
+            //generate callback event
+            try {
+                callbackBus.post(new CallbackEvent(new URL(callback), result));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

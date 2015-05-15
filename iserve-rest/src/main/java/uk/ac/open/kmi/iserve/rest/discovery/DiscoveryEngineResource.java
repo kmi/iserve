@@ -8,6 +8,9 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.eventbus.AllowConcurrentEvents;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.google.gson.*;
 import com.wordnik.swagger.annotations.*;
 import org.apache.abdera.model.Feed;
@@ -15,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryEngine;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
+import uk.ac.open.kmi.iserve.discovery.util.CallbackEvent;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
 import uk.ac.open.kmi.iserve.rest.util.AbderaAtomFeedProvider;
 
@@ -25,7 +29,11 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +48,7 @@ public class DiscoveryEngineResource {
     public static final int DEFAULT_PAGE_SIZE = 10;
 
     private static final int MAX_PAGE_SIZE = 100;
-
+    private static EventBus callbackBus;
     @Context
     UriInfo uriInfo;
     @Context
@@ -54,6 +62,10 @@ public class DiscoveryEngineResource {
                             DiscoveryResultsBuilderPlugin discoveryResultsBuilder) {
         this.discoveryEngine = discoveryEngine;
         this.discoveryResultsBuilder = discoveryResultsBuilder;
+        if (callbackBus == null) {
+            callbackBus = discoveryEngine.getCallbackBus();
+            callbackBus.register(this);
+        }
     }
 
     @GET
@@ -88,9 +100,9 @@ public class DiscoveryEngineResource {
 
         String query = buildClassQuery(type, function, resources, rankingType, filtering);
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-            return transformAsJson(invokeDiscoveryEngine(query, rankingType, page,pageSize));
+            return transformAsJson(invokeDiscoveryEngine(query, rankingType, page, pageSize, null));
         }
-        return transformAsAtom(invokeDiscoveryEngine(query, rankingType, page,pageSize));
+        return transformAsAtom(invokeDiscoveryEngine(query, rankingType, page, pageSize, null));
 
     }
 
@@ -106,7 +118,7 @@ public class DiscoveryEngineResource {
         return Response.ok(json).build();
     }
 
-    private Map<URI, DiscoveryResult> invokeDiscoveryEngine(String query, String rankingType, Integer page, Integer pageSize) {
+    private Map<URI, DiscoveryResult> invokeDiscoveryEngine(String query, String rankingType, Integer page, Integer pageSize, URL callback) {
         // Check of paging parameters consistency
         if (page == null || page < 0) {
             page = 0;
@@ -115,7 +127,12 @@ public class DiscoveryEngineResource {
             pageSize = DEFAULT_PAGE_SIZE;
         }
         // Invoke discovery engine
-        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(query);
+        Map<URI, Pair<Double, MatchResult>> result;
+        if (callback != null) {
+            result = discoveryEngine.discover(query, callback);
+        } else {
+            result = discoveryEngine.discover(query);
+        }
 
         //Create paging
         List<URI> keys = Lists.newArrayList(result.keySet());
@@ -165,9 +182,9 @@ public class DiscoveryEngineResource {
         String query = buildIOQuery(type, function, rankingType, filtering, inputs, outputs);
 
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-            return transformAsJson(invokeDiscoveryEngine(query, rankingType, page, pageSize));
+            return transformAsJson(invokeDiscoveryEngine(query, rankingType, page, pageSize, null));
         }
-        return transformAsAtom(invokeDiscoveryEngine(query, rankingType, page, pageSize));
+        return transformAsAtom(invokeDiscoveryEngine(query, rankingType, page, pageSize, null));
     }
 
 
@@ -318,9 +335,9 @@ public class DiscoveryEngineResource {
 
         // Run discovery
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-            return transformAsJson(invokeDiscoveryEngine(discoveryRequest.toString(), null, page, pageSize));
+            return transformAsJson(invokeDiscoveryEngine(discoveryRequest.toString(), null, page, pageSize, null));
         }
-        return transformAsAtom(invokeDiscoveryEngine(discoveryRequest.toString(), null, page, pageSize));
+        return transformAsAtom(invokeDiscoveryEngine(discoveryRequest.toString(), null, page, pageSize, null));
     }
 
     @POST
@@ -340,7 +357,9 @@ public class DiscoveryEngineResource {
             @ApiParam(value = "Number of result page. By default, it will return the first page. Page numbering starts from 0.")
             @QueryParam("page") Integer page,
             @ApiParam(value = "Number of results per page. The default value is " + DEFAULT_PAGE_SIZE + " and the maximum value is " + MAX_PAGE_SIZE + ".")
-            @QueryParam("pagesize") Integer pageSize
+            @QueryParam("pagesize") Integer pageSize,
+            @ApiParam(value = "It will send a callback notification for changes in the discovery results to the submitted URL")
+            @QueryParam("callback") String callback
     ) {
         try {
             logger.debug("Advanced discovery");
@@ -350,17 +369,49 @@ public class DiscoveryEngineResource {
             } else {
                 rankingType = "";
             }
-            if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
-                return transformAsJson(invokeDiscoveryEngine(discoveryRequest, rankingType, page,pageSize));
+            URL callbackUrl = null;
+            if (callback != null && !callback.equals("")) {
+                callbackUrl = new URL(callback);
             }
-            return transformAsAtom(invokeDiscoveryEngine(discoveryRequest, rankingType, page,pageSize));
+            if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
+                return transformAsJson(invokeDiscoveryEngine(discoveryRequest, rankingType, page, pageSize, callbackUrl));
+            }
+            return transformAsAtom(invokeDiscoveryEngine(discoveryRequest, rankingType, page, pageSize, callbackUrl));
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            return Response.status(500).entity("Parsing error! The request is not properly defined.").build();
+            return Response.status(500).entity(e.getMessage()).build();
         }
 
+    }
+
+    @Subscribe
+    @AllowConcurrentEvents
+    public void sendCallback(CallbackEvent e) {
+        try {
+            URL callbackUrl = e.getCallback();
+            Map<URI, Pair<Double, MatchResult>> result = e.getResult();
+            logger.debug("Sending callback to {}", callbackUrl);
+            HttpURLConnection connection = (HttpURLConnection) callbackUrl.openConnection();
+            connection.setRequestMethod("PUT");
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Accept", "application/json");
+            OutputStreamWriter osw = new OutputStreamWriter(connection.getOutputStream());
+            List<URI> keys = Lists.newArrayList(result.keySet());
+            List<List<URI>> pages = Lists.partition(keys, DEFAULT_PAGE_SIZE);
+            List<URI> pageKeys = pages.get(0);
+            Map<URI, Pair<Double, MatchResult>> subResult = Maps.toMap(pageKeys, new SubMapFunction(result));
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String json = gson.toJson(discoveryResultsBuilder.build(subResult, null));
+            osw.write(json);
+            osw.flush();
+            osw.close();
+            logger.error(String.valueOf(connection.getResponseCode()));
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
     }
 
     private class SubMapFunction implements Function<URI, Pair<Double, MatchResult>> {
@@ -376,4 +427,6 @@ public class DiscoveryEngineResource {
             return map.get(uri);
         }
     }
+
+
 }

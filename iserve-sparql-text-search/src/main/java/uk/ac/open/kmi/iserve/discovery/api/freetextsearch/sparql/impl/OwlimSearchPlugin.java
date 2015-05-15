@@ -1,6 +1,7 @@
 package uk.ac.open.kmi.iserve.discovery.api.freetextsearch.sparql.impl;
 
 
+import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
@@ -64,6 +65,7 @@ public class OwlimSearchPlugin extends SparqlSearchPlugin {
     }
 
     @Subscribe
+    @AllowConcurrentEvents
     public void handleServiceEvent(ServiceEvent event) {
         logger.debug("Processing Service  Event {}", event);
         runIndexing();
