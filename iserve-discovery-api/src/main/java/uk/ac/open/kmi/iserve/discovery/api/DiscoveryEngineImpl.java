@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.AllowConcurrentEvents;
+import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.gson.JsonArray;
@@ -35,6 +36,7 @@ import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchPlugin;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.ReverseRanker;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.StandardRanker;
+import uk.ac.open.kmi.iserve.discovery.util.CallbackEvent;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
 import uk.ac.open.kmi.iserve.sal.events.OntologyEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServiceEvent;
@@ -45,10 +47,13 @@ import uk.ac.open.kmi.iserve.sal.util.caching.CacheException;
 import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
 
 import javax.annotation.Nullable;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 
 /**
@@ -57,7 +62,7 @@ import java.util.concurrent.ForkJoinPool;
 public class DiscoveryEngineImpl extends IntegratedComponent implements DiscoveryEngine {
 
     private static Cache<String, Map<URI, Pair<Double, MatchResult>>> resultCache;
-    private static Cache<String, Boolean> frequentQueries;
+    private static Cache<String, String> callbackQueries;
     private OperationDiscoverer operationDiscoverer;
     private ServiceDiscoverer serviceDiscoverer;
     private FreeTextSearchPlugin freeTextSearchPlugin;
@@ -65,6 +70,7 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
     private Set<Scorer> scorers;
     private ScoreComposer scoreComposer;
     private Logger logger = LoggerFactory.getLogger(DiscoveryEngineImpl.class);
+    private EventBus callbackBus = new AsyncEventBus("callbacks", Executors.newCachedThreadPool());
 
     @Inject
     public DiscoveryEngineImpl(EventBus eventBus,
@@ -119,22 +125,26 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
             }
 
         }
-        if (frequentQueries == null) {
+        if (callbackQueries == null) {
             try {
-                frequentQueries = cacheFactory.createPersistentCache("discovery-frequent-queries");
+                callbackQueries = cacheFactory.createPersistentCache("callback-queries");
             } catch (CacheException e) {
-                frequentQueries = cacheFactory.createInMemoryCache("discovery-frequent-queries");
+                callbackQueries = cacheFactory.createInMemoryCache("callback-queries");
             }
 
         }
 
     }
 
-    public Map<URI, Pair<Double, MatchResult>> discover(String request, boolean frequent) {
+    @Override
+    public Map<URI, Pair<Double, MatchResult>> discover(String request, URL callback) {
         JsonElement jsonRequest = new JsonParser().parse(request);
-        if (frequent) {
-            frequentQueries.put(jsonRequest.toString(), frequent);
-        }
+        callbackQueries.put(callback.toString(), jsonRequest.toString());
+        return discover(request);
+    }
+
+    public Map<URI, Pair<Double, MatchResult>> discover(String request) {
+        JsonElement jsonRequest = new JsonParser().parse(request);
         if (resultCache.containsKey(jsonRequest.toString())) {
             return resultCache.get(jsonRequest.toString());
         } else {
@@ -292,6 +302,11 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
         return ImmutableMap.of();
     }
 
+    @Override
+    public EventBus getCallbackBus() {
+        return callbackBus;
+    }
+
     // It returns discovery engine configuration
     public String toString() {
         StringBuilder descriptionBuilder = new StringBuilder();
@@ -329,18 +344,14 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
 
     private void rebuildCache() {
         logger.debug("Rebuilding discovery cache");
-        CacheRebuilder cr = new CacheRebuilder();
-        cr.setPriority(Thread.MIN_PRIORITY);
-        cr.start();
-    }
-
-    private class CacheRebuilder extends Thread {
-        public void run() {
-            resultCache.clear();
-            for (String query : frequentQueries.keySet()) {
-                if (frequentQueries.get(query)) {
-                    resultCache.put(query, discover(query, true));
-                }
+        resultCache.clear();
+        for (String callback : callbackQueries.keySet()) {
+            Map<URI, Pair<Double, MatchResult>> result = discover(callbackQueries.get(callback));
+            //generate callback event
+            try {
+                callbackBus.post(new CallbackEvent(new URL(callback), result));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
             }
         }
     }
