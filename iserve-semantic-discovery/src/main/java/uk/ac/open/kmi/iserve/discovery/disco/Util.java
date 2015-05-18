@@ -43,14 +43,12 @@ import java.util.Map.Entry;
  */
 public class Util {
 
-    private static final Logger log = LoggerFactory.getLogger(Util.class);
-
     // Common variables used for querying the RDF repository
     public static final String VAR_SVC = "svc";
     public static final String VAR_SVC_LABEL = "labelSvc";
     public static final String VAR_OP = "op";
     public static final String VAR_OP_LABEL = "labelOp";
-
+    private static final Logger log = LoggerFactory.getLogger(Util.class);
     public static String NL = System.getProperty("line.separator");
 
     /**
@@ -219,7 +217,7 @@ public class Util {
     public static String generateSubclassPattern(URI origin, String matchVariable) {
         return new StringBuilder()
                 .append("?").append(matchVariable).append(" ")
-                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append(" ")
+                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append("+ ")
                 .append(sparqlWrapUri(origin)).append(" .")
                 .toString();
     }
@@ -234,7 +232,7 @@ public class Util {
     public static String generateSubclassPattern(URI origin, URI destination) {
         return new StringBuilder()
                 .append(sparqlWrapUri(destination)).append(" ")
-                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append(" ")
+                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append("+ ")
                 .append(sparqlWrapUri(origin)).append(" .")
                 .toString();
     }
@@ -249,7 +247,7 @@ public class Util {
     public static String generateSuperclassPattern(URI origin, String matchVariable) {
         return new StringBuilder()
                 .append(sparqlWrapUri(origin)).append(" ")
-                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append(" ")
+                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append("+ ")
                 .append("?").append(matchVariable).append(" .")
                 .toString();
     }
@@ -272,7 +270,7 @@ public class Util {
     public static String generateSuperclassPattern(URI origin, URI destination) {
         return new StringBuilder()
                 .append(sparqlWrapUri(origin)).append(" ")
-                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append(" ")
+                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append("+ ")
                 .append(sparqlWrapUri(destination)).append(" .")
                 .toString();
     }

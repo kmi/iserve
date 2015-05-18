@@ -29,11 +29,16 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
@@ -391,7 +396,7 @@ public class DiscoveryEngineResource {
     public void sendCallback(CallbackEvent e) {
         try {
             URL callbackUrl = e.getCallback();
-            Map<URI, Pair<Double, MatchResult>> result = e.getResult();
+            Date updatedDate = e.getDate();
             logger.debug("Sending callback to {}", callbackUrl);
             HttpURLConnection connection = (HttpURLConnection) callbackUrl.openConnection();
             connection.setRequestMethod("PUT");
@@ -399,17 +404,23 @@ public class DiscoveryEngineResource {
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Accept", "application/json");
             OutputStreamWriter osw = new OutputStreamWriter(connection.getOutputStream());
-            List<URI> keys = Lists.newArrayList(result.keySet());
-            List<List<URI>> pages = Lists.partition(keys, DEFAULT_PAGE_SIZE);
-            List<URI> pageKeys = pages.get(0);
-            Map<URI, Pair<Double, MatchResult>> subResult = Maps.toMap(pageKeys, new SubMapFunction(result));
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String json = gson.toJson(discoveryResultsBuilder.build(subResult, null));
-            osw.write(json);
+
+            // Create message
+            JsonObject message = new JsonObject();
+            message.add("message", new JsonPrimitive("Discovery results updated"));
+            GregorianCalendar c = new GregorianCalendar();
+            c.setTime(updatedDate);
+            XMLGregorianCalendar xmlDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+            message.add("updated", new JsonPrimitive(xmlDate.toString()));
+
+            //send message
+            osw.write(message.toString());
             osw.flush();
             osw.close();
             logger.error(String.valueOf(connection.getResponseCode()));
         } catch (IOException e1) {
+            e1.printStackTrace();
+        } catch (DatatypeConfigurationException e1) {
             e1.printStackTrace();
         }
     }

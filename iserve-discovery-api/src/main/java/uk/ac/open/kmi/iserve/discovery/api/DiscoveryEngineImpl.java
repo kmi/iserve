@@ -50,6 +50,7 @@ import javax.annotation.Nullable;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -346,10 +347,10 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
         logger.debug("Rebuilding discovery cache");
         resultCache.clear();
         for (String callback : callbackQueries.keySet()) {
-            Map<URI, Pair<Double, MatchResult>> result = discover(callbackQueries.get(callback));
+            discover(callbackQueries.get(callback));
             //generate callback event
             try {
-                callbackBus.post(new CallbackEvent(new URL(callback), result));
+                callbackBus.post(new CallbackEvent(new URL(callback), new Date()));
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }

@@ -145,25 +145,23 @@ public class PopularityBasedRankingTest {
 
         query = "{\n" +
                 "    \"discovery\": {\n" +
-                "        \"io-rdfs\": {\n" +
-                "            \"expression\": {\n" +
-                "                \"and\": {\n" +
-                "                    \"input\": { \"or\": [ {\"and\": [\"http://schema.org/Action\", \"http://schema.org/DiscocverAction\"]}, \"http://schema.org/CreateAction\" ] },\n" +
-                "                    \"output\": { \"and\": [ \"http://schema.org/PippoAction\", \"http://schema.org/PlutoAction\", \"http://schema.org/PaperAction\"]}\n" +
-                "                }\n" +
-                "            }," +
+                "        \"func-rdfs\": {\n" +
+                "            \"classes\": {\n" +
+                "                \"or\": [\n" +
+                "                    {\n" +
+                "                        \"and\": [\n" +
+                "                            \"http://schema.org/BefriendAction\",\n" +
+                "                            \"http://schema.org/FollowAction\"\n" +
+                "                        ]\n" +
+                "                    },\n" +
+                "                    \"http://schema.org/DiscoverAction\"\n" +
+                "                ]\n" +
+                "            },\n" +
                 "            \"type\": \"svc\"\n" +
                 "        }\n" +
-                "    }," +
-                "    \"scoring\": [\n" +
-                "        {\n" +
-                "            \"scorerClass\": \"uk.ac.open.kmi.iserve.discovery.ranking.impl.ProviderPopularityScorer\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"scorerClass\": \"uk.ac.open.kmi.iserve.discovery.ranking.impl.CommunityVitalityScorer\"\n" +
-                "        }\n" +
-                "    ]" +
-                "}";
+                "    },\n" +
+                "    \"ranking\": \"standard\"\n" +
+                "}\n";
 
         stopwatch = new Stopwatch().start();
         result = discoveryEngine.discover(new JsonParser().parse(query));
@@ -172,7 +170,7 @@ public class PopularityBasedRankingTest {
         logger.info("Discovery complete in {}", stopwatch);
         logger.info("Result contains {} resources", result.size());
 
-        Assert.assertTrue(result.isEmpty());
+        Assert.assertTrue(!result.isEmpty());
 
     }
 
