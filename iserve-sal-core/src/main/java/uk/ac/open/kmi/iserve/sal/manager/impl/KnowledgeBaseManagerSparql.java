@@ -310,7 +310,11 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
                 .append("select DISTINCT ?class where { \n");
 
         if (direct) {
-            strBuilder.append("?class").append(" <").append(DIRECT_SUBCLASS).append("> ").append("<").append(classUri.toASCIIString()).append("> .");
+            strBuilder
+                    .append(" ?class ").append("<").append(RDFS.subClassOf.getURI()).append("> <").append(classUri).append("> . ")
+                    .append(" FILTER NOT EXISTS { ?otherSub ").append("<").append(RDFS.subClassOf.getURI()).append(">+ <").append(classUri).append("> . ")
+                    .append(" ?class ").append("<").append(RDFS.subClassOf.getURI()).append(">+ ?otherSub . ")
+                    .append(" FILTER (( ?otherSub != ?class ) && ( ?otherSub != <").append(classUri).append("> )) } ");
         } else {
             strBuilder.append("?class").append(" <").append(RDFS.subClassOf.getURI()).append(">+ ").append("<").append(classUri.toASCIIString()).append("> .");
         }
@@ -337,7 +341,10 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
                 .append("select DISTINCT ?class where { \n");
 
         if (direct) {
-            strBuilder.append("<").append(classUri.toASCIIString()).append("> ").append("<").append(DIRECT_SUBCLASS).append("> ").append("?class .");
+            strBuilder.append(" <").append(classUri).append("> ").append("<").append(RDFS.subClassOf.getURI()).append("> ?class . ")
+                    .append("         FILTER NOT EXISTS { ?otherSub ").append("<").append(RDFS.subClassOf.getURI()).append(">+ ?class . ")
+                    .append("                             <").append(classUri).append("> ").append("<").append(RDFS.subClassOf.getURI()).append(">+ ?otherSub . ")
+                    .append("                             FILTER (( ?otherSub != ?class ) && ( ?otherSub != <").append(classUri).append("> )) } ");
         } else {
             strBuilder.append("<").append(classUri.toASCIIString()).append("> ").append("<").append(RDFS.subClassOf.getURI()).append(">+ ").append("?class .");
         }
