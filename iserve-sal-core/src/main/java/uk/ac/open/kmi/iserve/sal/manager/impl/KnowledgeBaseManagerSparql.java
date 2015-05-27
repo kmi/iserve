@@ -64,7 +64,6 @@ import java.util.concurrent.Future;
 public class KnowledgeBaseManagerSparql extends IntegratedComponent implements KnowledgeBaseManager {
 
     private static final Logger log = LoggerFactory.getLogger(KnowledgeBaseManagerSparql.class);
-    private static final String DIRECT_SUBCLASS = "http://www.openrdf.org/schema/sesame#directSubClassOf";
 
     // To load
     private static final URI SCHEMA_ORG_URI = URI.create("http://schema.org");
@@ -72,8 +71,6 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
     // Set backed by a ConcurrentHashMap to avoid race conditions
     // Tracks unreachability and the moment this was last attempted
     private Map<URI, Date> unreachableModels;
-
-    private int NUM_THREADS = 4;
 
     private SparqlGraphStoreManager graphStoreManager;
 
