@@ -421,6 +421,12 @@ public class SparqlLogicConceptMatcher extends AbstractMatcher implements Concep
         } finally {
             qexec.close();
         }
+        if (minType.compareTo(LogicConceptMatchType.Exact) <= 0 && maxType.compareTo(LogicConceptMatchType.Exact) >= 0) {
+            for (URI o : origins) {
+                result.put(o, o, new AtomicMatchResult(o, o, LogicConceptMatchType.Exact, this));
+            }
+
+        }
         return result;
 
     }
