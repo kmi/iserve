@@ -47,6 +47,8 @@ public interface SparqlGraphStoreManager extends iServeComponent {
 
     void deleteGraph(URI graphUri);
 
+    void deleteStatementFromGraph(Statement statement, URI graph);
+
     void putGraph(Model data);
 
     void putGraph(URI graphUri, Model data);

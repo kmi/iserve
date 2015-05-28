@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.ontology.OntDocumentManager;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -478,6 +479,24 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
         UpdateProcessor processor = UpdateExecutionFactory.createRemoteForm(request, this.getSparqlUpdateEndpoint().toASCIIString());
         processor.execute(); // TODO: anyway to know if things went ok?
     }
+
+    @Override
+    public void deleteStatementFromGraph(Statement statement, URI graph) {
+
+        QuadDataAcc quadAcc = new QuadDataAcc();
+        quadAcc.setGraph(NodeFactory.createURI(graph.toASCIIString()));
+        quadAcc.addTriple(0, statement.asTriple());
+
+        UpdateRequest request = UpdateFactory.create();
+        request.add(new UpdateDataDelete(quadAcc));
+
+        // Use create form for Sesame-based engines. TODO: Generalise and push to config.
+        UpdateProcessor processor = UpdateExecutionFactory.createRemoteForm(request, this.getSparqlUpdateEndpoint().toASCIIString());
+        processor.execute(); // TODO: anyway to know if things went ok?
+    }
+
+
+
 
     /**
      * Obtains the OntModel within a named graph or the default graph if no graphUri is provided

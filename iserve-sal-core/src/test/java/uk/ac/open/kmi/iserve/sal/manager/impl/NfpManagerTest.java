@@ -18,6 +18,7 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.hp.hpl.jena.vocabulary.RDFS;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.Assert;
@@ -97,6 +98,19 @@ public class NfpManagerTest {
                 nfpManager.deletePropertyValue(service, URI.create(SAWSDL.modelReference.getURI()), URI.create("http://schema.org/Action"));
                 modelReferences = (Set<URI>) nfpManager.getPropertyValue(service, URI.create(SAWSDL.modelReference.getURI()), URI.class);
                 Assert.assertEquals(modelReferences.size(), 3);
+                nfpManager.createPropertyValue(service, URI.create(RDFS.comment.getURI()), "Very nice service");
+                String comment = (String) nfpManager.getPropertyValue(service, URI.create(RDFS.comment.getURI()), String.class);
+                Assert.assertNotNull(comment);
+                nfpManager.deletePropertyValue(service, URI.create(RDFS.comment.getURI()), "Very nice service");
+                comment = (String) nfpManager.getPropertyValue(service, URI.create(RDFS.comment.getURI()), String.class);
+                Assert.assertNull(comment);
+                nfpManager.createPropertyValue(service, URI.create(RDFS.comment.getURI()), new Double(3.5));
+                Double n = (Double) nfpManager.getPropertyValue(service, URI.create(RDFS.comment.getURI()), Double.class);
+                Assert.assertNotNull(n);
+                nfpManager.deletePropertyValue(service, URI.create(RDFS.comment.getURI()), new Double(3.5));
+                n = (Double) nfpManager.getPropertyValue(service, URI.create(RDFS.comment.getURI()), Double.class);
+                Assert.assertNull(n);
+
             } catch (SalException e) {
                 e.printStackTrace();
             }

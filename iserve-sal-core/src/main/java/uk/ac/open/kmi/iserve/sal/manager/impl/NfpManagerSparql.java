@@ -381,7 +381,7 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
         if (graphUri == null) {
             throw new SalException("The requested resource does not exist");
         }
-        graphStoreManager.deleteStatement(triple);
+        graphStoreManager.deleteStatementFromGraph(triple, graphUri);
         propertyValueCache.remove(resource.toASCIIString());
 
     }
