@@ -864,8 +864,14 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
             queryBuilder.append(" ?entity <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
         }
 
-        queryBuilder.append(" ?message <").append(MSM.hasPartTransitive.getURI()).append("> ?part .").append("\n")
-                .append(" ?part <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n");
+        queryBuilder.append("{ ?message <").append(MSM.hasPartTransitive.getURI()).append(">+ ?part . }").append("\n");
+        queryBuilder.append(" UNION \n");
+        queryBuilder.append("{ ?message <").append(MSM.hasPart.getURI()).append(">+ ?part . }").append("\n");
+        queryBuilder.append(" UNION \n");
+        queryBuilder.append("{ ?message <").append(MSM.hasOptionalPart.getURI()).append(">+ ?part . }").append("\n");
+        queryBuilder.append(" UNION \n");
+        queryBuilder.append("{ ?message <").append(MSM.hasMandatoryPart.getURI()).append(">+ ?part . }").append("\n");
+        queryBuilder.append(" ?part <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n");
 
         // UNION
         queryBuilder.append("\n } UNION { \n");
@@ -898,8 +904,14 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
             queryBuilder.append(" ?entity <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
         }
 
-        queryBuilder.append(" ?message <").append(MSM.hasPartTransitive.getURI()).append("> ?part .").append("\n")
-                .append(" ?part <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n")
+        queryBuilder.append("{ ?message <").append(MSM.hasPartTransitive.getURI()).append(">+ ?part . }").append("\n");
+        queryBuilder.append(" UNION \n");
+        queryBuilder.append("{ ?message <").append(MSM.hasPart.getURI()).append(">+ ?part . }").append("\n");
+        queryBuilder.append(" UNION \n");
+        queryBuilder.append("{ ?message <").append(MSM.hasOptionalPart.getURI()).append(">+ ?part . }").append("\n");
+        queryBuilder.append(" UNION \n");
+        queryBuilder.append("{ ?message <").append(MSM.hasMandatoryPart.getURI()).append(">+ ?part . }").append("\n");
+        queryBuilder.append(" ?part <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n")
                 .append("}").append("\n");
 
         queryBuilder.append("} \n");
