@@ -17,15 +17,10 @@
 package uk.ac.open.kmi.iserve.discovery.ranking.test;
 
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonParser;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.multibindings.Multibinder;
-import com.hp.hpl.jena.update.UpdateExecutionFactory;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateProcessor;
-import com.hp.hpl.jena.update.UpdateRequest;
 import junit.framework.Assert;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
@@ -34,14 +29,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
 import uk.ac.open.kmi.iserve.core.PluginModuleLoader;
-import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryEngine;
 import uk.ac.open.kmi.iserve.discovery.api.DiscoveryEngineImpl;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.api.MatcherPluginModule;
-import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchModule;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.*;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.BasicScoreComposer;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
@@ -107,43 +99,9 @@ public class PopularityBasedRankingTest {
     }
 
     @Test
-    public void discoveryTest(DiscoveryEngine discoveryEngine, @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_UPDATE) String updateEndpoint) {
-
-        logger.info("Free text search indexing...");
-        StringBuilder updateBuilder = new StringBuilder();
-        updateBuilder.append("PREFIX luc: <http://www.ontotext.com/owlim/lucene#> ")
-                .append("INSERT DATA {")
-                .append("luc:include luc:setParam \"literal uri\" . ")
-                .append("luc:index luc:setParam \"literals, uri\" . ")
-                .append("luc:moleculeSize luc:setParam \"1\" . ")
-                .append("luc:entityIndex luc:createIndex \"true\" . }");
-        UpdateRequest request = UpdateFactory.create();
-        request.add(updateBuilder.toString());
-        UpdateProcessor processor = UpdateExecutionFactory.createRemoteForm(request, updateEndpoint);
-        processor.execute();
-
+    public void discoveryTest(DiscoveryEngine discoveryEngine) {
+        
         String query = "{\n" +
-                "    \"discovery\": { \"query\": \"search\" , \"type\": \"svc\"}," +
-                "    \"scoring\": [\n" +
-                "        {\n" +
-                "            \"scorerClass\": \"uk.ac.open.kmi.iserve.discovery.ranking.impl.ProviderPopularityScorer\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"scorerClass\": \"uk.ac.open.kmi.iserve.discovery.ranking.impl.CommunityVitalityScorer\"\n" +
-                "        }\n" +
-                "    ]" +
-                "}";
-
-        Stopwatch stopwatch = new Stopwatch().start();
-        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(new JsonParser().parse(query));
-        stopwatch.stop();
-
-        logger.info("Discovery complete in {}", stopwatch);
-        logger.info("Result contains {} resources", result.size());
-        ImmutableList<URI> services = ImmutableList.copyOf(result.keySet());
-        Assert.assertTrue(services.get(0).toString().contains("google-book-search-book-viewability"));
-
-        query = "{\n" +
                 "    \"discovery\": {\n" +
                 "        \"func-rdfs\": {\n" +
                 "            \"classes\": {\n" +
@@ -163,8 +121,8 @@ public class PopularityBasedRankingTest {
                 "    \"ranking\": \"standard\"\n" +
                 "}\n";
 
-        stopwatch = new Stopwatch().start();
-        result = discoveryEngine.discover(new JsonParser().parse(query));
+        Stopwatch stopwatch = new Stopwatch().start();
+        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(new JsonParser().parse(query));
         stopwatch.stop();
 
         logger.info("Discovery complete in {}", stopwatch);
@@ -199,10 +157,6 @@ public class PopularityBasedRankingTest {
             Multibinder<AtomicScorer> atomicScorerBinder = Multibinder.newSetBinder(binder(), AtomicScorer.class);
 
             bind(ScoreComposer.class).to(BasicScoreComposer.class);
-
-            Injector injector = Guice.createInjector(rmm);
-
-            install(injector.getInstance(FreeTextSearchModule.class));
 
             bind(DiscoveryEngine.class).to(DiscoveryEngineImpl.class);
 
