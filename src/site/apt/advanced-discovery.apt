@@ -76,16 +76,16 @@ http://<somehost.com>/<iserve-deployed-context>/discovery/
 
 	    * A string that specifies a single class. (e.g., “http://schema.org/CreateAction”);
 
-        * A JSON object that specifies an intersection of a conjunction of classes, as shown below.
+        * A JSON object that specifies an intersection (<and>) , conjunction (<or>) or difference (<diff>) of classes, as shown below.
 
 
 +----------------------------------------------------------------------------------------------------+
 
-"classes": {"or": [{"and": ["X", "Y"]}, "Z"]}
+"classes": {"or": [{"and": ["http://schema.org/CreateAction", "http://schema.org/DiscoverAction"]}, "http://schema.org/FollowAction"]}
 
 +----------------------------------------------------------------------------------------------------+
 
-    The above expression specifies that the service/operation must be a member of the classes X and Y or a member of the class Z.
+    The above expression specifies that the service/operation must be a member of the classes CreateAction and DiscoverAction or a member of the class FollowAction.
 
     The I/O discovery retrieves services or operations that has inputs or outputs member of e specific class (e.g., all the service operations that has “temperature” as output).
     The following JSON object defines the input of I/O discovery.
@@ -96,7 +96,7 @@ http://<somehost.com>/<iserve-deployed-context>/discovery/
     "discovery": {
         "io-rdfs": {
             "type": "svc",
-            "expression": { ... }
+            <expression>
         }
     }
 }
@@ -107,7 +107,14 @@ http://<somehost.com>/<iserve-deployed-context>/discovery/
 
 +----------------------------------------------------------------------------------------------------+
 
-"expression": { "input": "X" }
+{
+    "discovery": {
+        "io-rdfs": {
+            "type": "svc",
+            "input": "http://schema.org/Organization"
+        }
+    }
+}
 
 +----------------------------------------------------------------------------------------------------+
 
@@ -115,18 +122,106 @@ http://<somehost.com>/<iserve-deployed-context>/discovery/
 
 +----------------------------------------------------------------------------------------------------+
 
-"expression": { "output": {"and": ["X", "Y", "Z"]} }
+{
+    "discovery": {
+        "io-rdfs": {
+            "output": {
+                "and": [
+                    "http://schema.org/Organization",
+                    "http://schema.org/Person",
+                    "http://schema.org/PostalAddress"
+                ]
+            },
+            "type": "svc"
+        }
+    }
+}
 
 +----------------------------------------------------------------------------------------------------+
 
-    The “expression” object can be a conjunction and an intersection of inputs and outputs, as shown below:
+    The “expression” object can be a conjunction, intersection or difference of inputs and outputs, as shown below:
 
 +----------------------------------------------------------------------------------------------------+
 
-"expression": {"and": {"input": {"or": ["X", "Y", "W"] }, "output": "Y" } }
+{
+    "discovery": {
+        "io-rdfs": {
+            "and": {
+                "input": {
+                    "or": [
+                        "http://schema.org/Organization",
+                        "http://schema.org/Person",
+                        "http://schema.org/PostalAddress"
+                    ]
+                },
+                "output": {
+                    "diff": [
+                        "http://schema.org/Product",
+                        "http://schema.org/Vehicle"
+                    ]
+                }
+            },
+            "type": "svc"
+        }
+    }
+}
+
 
 +----------------------------------------------------------------------------------------------------+
 
+    Combination of discovery of discovery request can be specified by using “and”, “or”, and “diff” operators.
+    For instance, a request of service classified by SearchAction and with Vehicles as output can be defined as follows:
+
++----------------------------------------------------------------------------------------------------+
+
+{
+    "discovery": {
+        "and": [
+            {
+                "func-rdfs": {
+                    "classes": "http://schema.org/SearchAction",
+                    "type": "svc"
+                }
+            },
+            {
+                "io-rdfs": {
+                    "output": "http://schema.org/Vehicle",
+                    "type": "svc"
+                }
+            }
+        ]
+    }
+}
+
++----------------------------------------------------------------------------------------------------+
+
+    Semantic discovery and text search can be also combined as shown in the following example.
+
++----------------------------------------------------------------------------------------------------+
+
+{
+    "discovery": {
+        "and": [
+            {
+                "func-rdfs": {
+                    "classes": {
+                        "diff": [
+                            "http://schema.org/CreateAction",
+                            "http://schema.org/SearchAction"
+                        ]
+                    },
+                    "type": "svc"
+                }
+            },
+            {
+                "query": "google",
+                "type": "svc"
+            }
+        ]
+    }
+}
+
++----------------------------------------------------------------------------------------------------+
 
 ** Filtering
 
