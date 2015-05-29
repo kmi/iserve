@@ -51,6 +51,7 @@ In particular iServe currently supports:
 - Web Service Contest's proprietary format
 - MicroWSMO
 - WSMO-Lite
+- Swagger Spec up to v1.2
 
 Discovery Algorithms Implemented
 ================================
