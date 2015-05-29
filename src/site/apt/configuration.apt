@@ -98,8 +98,11 @@ Configuring iServe
 |                                     | Instead, if you are using Apache Jena Fuseki, the property value must be              |                                                                             |
 |                                     | <FusekiSearchPlugin>.                                                                 |                                                                             |
 *-------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
-| http.proxyPort (Optional)           | Port number for the HTTP proxy to use.                                                | None                                                                        |
+| iserve.util.cache.redis.host        | Define the host of the instance of Redis that will be used for caching.               | localhost                                                                   |
 *-------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| iserve.util.cache.redis.port        | Define the port of the instance of Redis that will be used for caching.               | 6379                                                                        |
+*-------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+
 
 iServe Configuration Properties.
 
