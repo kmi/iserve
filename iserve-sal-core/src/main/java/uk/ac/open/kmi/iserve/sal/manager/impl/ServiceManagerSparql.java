@@ -843,13 +843,13 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
 
         // Deal with the difference between Services and Operations
         if (entityType.equals(MSM.Service)) {
-            queryBuilder.append(" ?entity <").append(MSM.hasOperation.getURI()).append("> ?op.").append("\n")
-                    .append(" ?op <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+            queryBuilder.append(" ?entity <").append(MSM.hasOperation.getURI()).append("> / ").append("\n")
+                    .append(" <").append(dataPropertyType.getURI()).append("> / ").append("\n");
         } else {
-            queryBuilder.append(" ?entity <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+            queryBuilder.append(" ?entity <").append(dataPropertyType.getURI()).append("> / ").append("\n");
         }
 
-        queryBuilder.append(" ?message <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n");
+        queryBuilder.append(" <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n");
 
         // UNION
         queryBuilder.append("\n } UNION { \n");
@@ -858,8 +858,8 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
 
         // Deal with the difference between Services and Operations
         if (entityType.equals(MSM.Service)) {
-            queryBuilder.append(" ?entity <").append(MSM.hasOperation.getURI()).append("> ?op.").append("\n")
-                    .append(" ?op <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+            queryBuilder.append(" ?entity <").append(MSM.hasOperation.getURI()).append("> / ").append("\n")
+                    .append(" <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
         } else {
             queryBuilder.append(" ?entity <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
         }
@@ -871,51 +871,51 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
         queryBuilder.append("{ ?message <").append(MSM.hasOptionalPart.getURI()).append(">+ ?part . }").append("\n");
         queryBuilder.append(" UNION \n");
         queryBuilder.append("{ ?message <").append(MSM.hasMandatoryPart.getURI()).append(">+ ?part . }").append("\n");
-        queryBuilder.append(" ?part <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n");
+        queryBuilder.append(" ?part <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n } } ");
 
-        // UNION
-        queryBuilder.append("\n } UNION { \n");
-
-        // Deal with engines that store the inference in the service graph (e.g., Jena without defaultUnionGraph)
-        queryBuilder.append("GRAPH ?g { \n");
-        queryBuilder.append(" ?entity <").append(RDF.type.getURI()).append("> <").append(entityType.getURI()).append("> .").append("\n");
-
-        // Deal with the difference between Services and Operations
-        if (entityType.equals(MSM.Service)) {
-            queryBuilder.append(" ?entity <").append(MSM.hasOperation.getURI()).append("> ?op.").append("\n")
-                    .append(" ?op <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
-        } else {
-            queryBuilder.append(" ?entity <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
-        }
-
-        queryBuilder.append(" ?message <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n");
-        queryBuilder.append("} \n");
-        // UNION
-        queryBuilder.append("\n } UNION { \n");
-
-        queryBuilder.append("GRAPH ?g { \n");
-        queryBuilder.append(" ?entity <").append(RDF.type.getURI()).append("> <").append(entityType.getURI()).append("> .").append("\n");
-
-        // Deal with the difference between Services and Operations
-        if (entityType.equals(MSM.Service)) {
-            queryBuilder.append(" ?entity <").append(MSM.hasOperation.getURI()).append("> ?op.").append("\n")
-                    .append(" ?op <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
-        } else {
-            queryBuilder.append(" ?entity <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
-        }
-
-        queryBuilder.append("{ ?message <").append(MSM.hasPartTransitive.getURI()).append(">+ ?part . }").append("\n");
-        queryBuilder.append(" UNION \n");
-        queryBuilder.append("{ ?message <").append(MSM.hasPart.getURI()).append(">+ ?part . }").append("\n");
-        queryBuilder.append(" UNION \n");
-        queryBuilder.append("{ ?message <").append(MSM.hasOptionalPart.getURI()).append(">+ ?part . }").append("\n");
-        queryBuilder.append(" UNION \n");
-        queryBuilder.append("{ ?message <").append(MSM.hasMandatoryPart.getURI()).append(">+ ?part . }").append("\n");
-        queryBuilder.append(" ?part <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n")
-                .append("}").append("\n");
-
-        queryBuilder.append("} \n");
-        queryBuilder.append("}");
+//        // UNION
+//        queryBuilder.append(" UNION { \n");
+//
+//        // Deal with engines that store the inference in the service graph (e.g., Jena without defaultUnionGraph)
+//        queryBuilder.append("GRAPH ?g { \n");
+//        queryBuilder.append(" ?entity <").append(RDF.type.getURI()).append("> <").append(entityType.getURI()).append("> .").append("\n");
+//
+//        // Deal with the difference between Services and Operations
+//        if (entityType.equals(MSM.Service)) {
+//            queryBuilder.append(" ?entity <").append(MSM.hasOperation.getURI()).append("> ?op.").append("\n")
+//                    .append(" ?op <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+//        } else {
+//            queryBuilder.append(" ?entity <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+//        }
+//
+//        queryBuilder.append(" ?message <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n");
+//        queryBuilder.append("} \n");
+//        // UNION
+//        queryBuilder.append("\n } UNION { \n");
+//
+//        queryBuilder.append("GRAPH ?g { \n");
+//        queryBuilder.append(" ?entity <").append(RDF.type.getURI()).append("> <").append(entityType.getURI()).append("> .").append("\n");
+//
+//        // Deal with the difference between Services and Operations
+//        if (entityType.equals(MSM.Service)) {
+//            queryBuilder.append(" ?entity <").append(MSM.hasOperation.getURI()).append("> ?op.").append("\n")
+//                    .append(" ?op <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+//        } else {
+//            queryBuilder.append(" ?entity <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
+//        }
+//
+//        queryBuilder.append("{ ?message <").append(MSM.hasPartTransitive.getURI()).append(">+ ?part . }").append("\n");
+//        queryBuilder.append(" UNION \n");
+//        queryBuilder.append("{ ?message <").append(MSM.hasPart.getURI()).append(">+ ?part . }").append("\n");
+//        queryBuilder.append(" UNION \n");
+//        queryBuilder.append("{ ?message <").append(MSM.hasOptionalPart.getURI()).append(">+ ?part . }").append("\n");
+//        queryBuilder.append(" UNION \n");
+//        queryBuilder.append("{ ?message <").append(MSM.hasMandatoryPart.getURI()).append(">+ ?part . }").append("\n");
+//        queryBuilder.append(" ?part <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n")
+//                .append("}").append("\n");
+//
+//        queryBuilder.append("} \n");
+//        queryBuilder.append("}");
 
         return this.graphStoreManager.listResourcesByQuery(queryBuilder.toString(), "entity");
     }
