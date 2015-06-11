@@ -11,7 +11,7 @@ Requires SPARQL 1.1 compliant RDF store
 
 Requires a Servlet 2.5 compliant Web application server, e.g., Tomcat 7
 
-NOTE: Old configuration files need updating due to changes in the configuration
+NOTE: Old configuration files will need to be updated due to changes in the configuration
 mechanism.
 
 General
@@ -29,16 +29,20 @@ and extensibility
 - Data management has been adapted and makes further use of named graphs for better data management and performance
 - Included a notification mechanism as part of the infrastructure to support updates when changes on the underlying data
 occur. The implementation is based on Guava's event bus
-- Better centralised configuration mechanism (old configuration files need updating)
+- Better centralised configuration mechanism (old configuration files will need to be updated)
 - Re-engineering of modules:
-    - Removed unnecessary modules (over fragmented)
+    - Consolidated modules for simplicitiy
     - More structured interfaces
     - Added notion of Knowledge Base manager (implementation with local indexing and/or remote SPARQL service)
+    - Added notion of Non Functional Properties Manager
 - Added new GUI based on ELDA for visualising and querying the registry
 - Provisioning of Read/Write Linked API for service descriptions
 - Added Ontology Crawling mechanism that automatically obtain required ontologies
 - Significant performance improvements both for Services manipulation as well as Concept matching
-
+- Added Indexing and Caching mechanisms for much faster discovery
+- Added Notification support for discovery queries so that clients may register queries to be notified for changes
+- We now do not require backends to support reasoning and compensate this using SPARQL 1.1 variable length paths
+- Bug fixing
 
 
 Import
@@ -59,9 +63,10 @@ Discovery
 - Advanced pluggable Scoring and Ranking mechanisms implemented for better results ordering
 - Discovery results now include details on the inner matches for debugging and 
 better scoring purposes.
-- Homogeneised discovery result types within the standard discovery plugin
+- Homogenised discovery result types within the standard discovery plugin
 - Scoring and ranking is only performed at the end to avoid recomputations
-- Developed discovery implementation with in-memory local indexes for much faster discovery responses
+- Developed discovery implementation with in-memory or Redic backed local indexes for much faster discovery responses
 - Added freetext discovery
+- Added result caching and notification support for "continuous" discovery queries
 
  
