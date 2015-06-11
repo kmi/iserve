@@ -56,18 +56,20 @@ public class RedisCache<K, V> implements Cache<K, V> {
      * Read the object from Base64 string.
      */
     private static Object fromString(String s) {
-        try {
-            byte[] data = Base64Coder.decode(s);
-            ObjectInputStream ois = new ObjectInputStream(
-                    new ByteArrayInputStream(data));
-            Object o = ois.readObject();
-            ois.close();
-            return o;
+        if (s != null) {
+            try {
+                byte[] data = Base64Coder.decode(s);
+                ObjectInputStream ois = new ObjectInputStream(
+                        new ByteArrayInputStream(data));
+                Object o = ois.readObject();
+                ois.close();
+                return o;
 
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
