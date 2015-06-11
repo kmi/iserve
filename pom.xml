@@ -19,7 +19,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.ac.open.kmi.iserve</groupId>
     <artifactId>iserve-parent</artifactId>
-    <version>2.0.0-RC4-SNAPSHOT</version>
+    <version>2.0.0</version>
     <packaging>pom</packaging>
 
     <name>iServe</name>
@@ -51,7 +51,7 @@
         <url>https://github.com/kmi/iserve</url>
         <connection>scm:git:git@github.com:kmi/iserve.git</connection>
         <developerConnection>scm:git:git@github.com:kmi/iserve.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v2.0.0</tag>
     </scm>
 
     <issueManagement>
