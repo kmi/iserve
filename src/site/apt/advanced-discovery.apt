@@ -63,7 +63,7 @@ http://<somehost.com>/<iserve-deployed-context>/discovery/
 
 {
     "discovery": {
-        "func-rdf": {
+        "func-rdfs": {
             "type": "svc",
             "classes": { ... }
         }

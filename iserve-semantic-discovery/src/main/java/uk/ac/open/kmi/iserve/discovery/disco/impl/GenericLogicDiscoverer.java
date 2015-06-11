@@ -63,7 +63,7 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         // Ensure that we have been given correct parameters
         if (types == null || types.isEmpty() ||
                 (!entityType.toASCIIString().equals(MSM.Service.getURI()) && !entityType.toASCIIString().equals(MSM.Operation.getURI())) ||
-                (!relationship.toASCIIString().equals(MSM.hasInput.getURI()) && !entityType.toASCIIString().equals(MSM.hasOutput.getURI()) && !relationship.toASCIIString().equals(SAWSDL.modelReference.getURI()))) {
+                (!relationship.toASCIIString().equals(MSM.hasInput.getURI()) && !relationship.toASCIIString().equals(MSM.hasOutput.getURI()) && !relationship.toASCIIString().equals(SAWSDL.modelReference.getURI()))) {
 
             return ImmutableMap.of();
         }
@@ -132,7 +132,7 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         // Ensure that we have been given correct parameters
         if (types == null || types.isEmpty() ||
                 (!entityType.toASCIIString().equals(MSM.Service.getURI()) && !entityType.toASCIIString().equals(MSM.Operation.getURI())) ||
-                (!relationship.toASCIIString().equals(MSM.hasInput.getURI()) && !entityType.toASCIIString().equals(MSM.hasOutput.getURI()) && !relationship.toASCIIString().equals(SAWSDL.modelReference.getURI()))) {
+                (!relationship.toASCIIString().equals(MSM.hasInput.getURI()) && !relationship.toASCIIString().equals(MSM.hasOutput.getURI()) && !relationship.toASCIIString().equals(SAWSDL.modelReference.getURI()))) {
 
             return ImmutableMap.of();
         }

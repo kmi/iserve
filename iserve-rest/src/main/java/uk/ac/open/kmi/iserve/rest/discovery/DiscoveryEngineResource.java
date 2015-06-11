@@ -278,14 +278,13 @@ public class DiscoveryEngineResource {
 
         JsonObject functionDiscoveryObject = new JsonObject();
         if (!inputs.isEmpty() && !outputs.isEmpty()) {
-            JsonObject operatorObject = new JsonObject();
             if (operator == null || operator.equals("")) {
                 operator = "or";
             }
-            operatorObject.add(operator, functionObject);
-            functionDiscoveryObject.add("expression", operatorObject);
+
+            functionDiscoveryObject.add(operator, functionObject);
         } else {
-            functionDiscoveryObject.add("expression", functionObject);
+            functionDiscoveryObject = functionObject;
         }
 
         functionDiscoveryObject.add("type", new JsonPrimitive(type));

@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,7 +17,7 @@ public class IODiscoveryFunction extends DiscoveryFunction {
     protected String operator;
     protected String type;
     protected String parameterType;
-    protected Set<URI> parameters;
+    protected Set<URI> parameters = new LinkedHashSet<URI>();
 
     public IODiscoveryFunction(JsonObject expression) {
         super(null);
@@ -34,6 +35,16 @@ public class IODiscoveryFunction extends DiscoveryFunction {
         if (discovery.isJsonObject()) {
             if (discovery.getAsJsonObject().has("io-rdfs")) {
                 type = discovery.getAsJsonObject().getAsJsonObject("io-rdfs").get("type").getAsString();
+                if (discovery.getAsJsonObject().getAsJsonObject("io-rdfs").has("input") || discovery.getAsJsonObject().getAsJsonObject("io-rdfs").has("output")) {
+                    if (discovery.getAsJsonObject().getAsJsonObject("io-rdfs").has("input")) {
+                        subFunctions.add(new IODiscoveryFunction(discovery.getAsJsonObject().getAsJsonObject("io-rdfs").get("input"), type, "input"));
+                    }
+                    if (discovery.getAsJsonObject().getAsJsonObject("io-rdfs").has("output")) {
+                        subFunctions.add(new IODiscoveryFunction(discovery.getAsJsonObject().getAsJsonObject("io-rdfs").get("output"), type, "output"));
+                    }
+                } else {
+                    subFunctions.add(new IODiscoveryFunction(discovery.getAsJsonObject().getAsJsonObject("io-rdfs"), type, null));
+                }
             }
             if (discovery.getAsJsonObject().has("input") || discovery.getAsJsonObject().has("output")) {
                 if (discovery.getAsJsonObject().has("input")) {
@@ -47,6 +58,7 @@ public class IODiscoveryFunction extends DiscoveryFunction {
                 if (discovery.getAsJsonObject().has("and")) {
                     operator = "and";
                     operatorEl = discovery.getAsJsonObject().get("and");
+                    //TODO INSERT PARSING
                 } else if (discovery.getAsJsonObject().has("or")) {
                     operator = "or";
                     operatorEl = discovery.getAsJsonObject().get("or");
@@ -54,13 +66,13 @@ public class IODiscoveryFunction extends DiscoveryFunction {
                     operator = "diff";
                     operatorEl = discovery.getAsJsonObject().get("diff");
                 }
-                if (operatorEl.isJsonPrimitive()) {
+                if (operatorEl != null && operatorEl.isJsonPrimitive()) {
                     try {
                         parameters.add(new URI(operatorEl.getAsString()));
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                     }
-                } else if (operatorEl.isJsonArray()) {
+                } else if (operatorEl != null && operatorEl.isJsonArray()) {
                     for (JsonElement clazz : operatorEl.getAsJsonArray()) {
                         if (clazz.isJsonPrimitive()) {
                             if (operator.equals("diff")) {
@@ -75,6 +87,13 @@ public class IODiscoveryFunction extends DiscoveryFunction {
                         } else if (clazz.isJsonObject()) {
                             subFunctions.add(new IODiscoveryFunction(clazz, type, parameterType));
                         }
+                    }
+                } else if (operatorEl != null && operatorEl.isJsonObject()) {
+                    if (operatorEl.getAsJsonObject().has("input")) {
+                        subFunctions.add(new IODiscoveryFunction(operatorEl.getAsJsonObject().get("input"), type, "input"));
+                    }
+                    if (operatorEl.getAsJsonObject().has("output")) {
+                        subFunctions.add(new IODiscoveryFunction(operatorEl.getAsJsonObject().get("output"), type, "output"));
                     }
                 }
             }
@@ -92,7 +111,8 @@ public class IODiscoveryFunction extends DiscoveryFunction {
             }
         } else if (discovery.isJsonPrimitive()) {
             try {
-                parameters.add(new URI(discovery.getAsString()));
+                String value = discovery.getAsJsonPrimitive().getAsString();
+                parameters.add(new URI(value));
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
@@ -142,17 +162,15 @@ public class IODiscoveryFunction extends DiscoveryFunction {
         if (!subFunctions.isEmpty()) {
             for (DiscoveryFunction subFunction : subFunctions) {
                 Map<URI, MatchResult> subResult = subFunction.join();
-                if (operator.equals("or")) {
+                if (operator == null || operator.equals("or")) {
                     resultMap.putAll(subResult);
-                }
-                if (operator.equals("and")) {
+                } else if (operator.equals("and")) {
                     if (resultMap.isEmpty()) {
                         resultMap.putAll(subResult);
                     } else {
                         resultMap.keySet().retainAll(subResult.keySet());
                     }
-                }
-                if (operator.equals("diff")) {
+                } else if (operator.equals("diff")) {
                     if (resultMap.isEmpty()) {
                         resultMap.putAll(subResult);
                     } else {
