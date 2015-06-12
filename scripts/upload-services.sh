@@ -26,6 +26,9 @@ case "$3" in
     ("hrests")
         MEDIA_TYPE="text/html"
         FILE_EXT="html";;
+    ("swagger")
+        MEDIA_TYPE="application/json"
+        FILE_EXT="json";;
     (*) echo "$3 is an unknown type. Nothing will be imported."
         exit 1;;
 esac
