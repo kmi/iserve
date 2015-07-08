@@ -91,6 +91,8 @@ public class DiscoveryEngineResource {
             @QueryParam("f") String function,
             @ApiParam(value = "Multivalued parameter indicating the functional classifications to match. The class should be the URL of the concept to match. This URL should be URL encoded.", required = true, allowMultiple = true)
             @QueryParam("class") List<String> resources,
+            @ApiParam(value = "Matching type: \"subsume\" returns all the entities that are subclasses of the requested class; \"plugin\" returns all the entities that are superclasses; \"exact\" returns all the entities that are exactly tha same class", allowableValues = "subsume,plugin,exact")
+            @DefaultValue("subsume") @QueryParam("matching") String matchingType,
             @ApiParam(value = "Filtering according to specific criteria.", allowableValues = "disabled,enabled")
             @DefaultValue("disabled") @QueryParam("filtering") String filtering,
             @ApiParam(value = "Popularity-based ranking. The value should be \"standard\" to rank the results according the popularity of the provider.", allowableValues = "standard,inverse")
@@ -103,7 +105,7 @@ public class DiscoveryEngineResource {
     ) throws
             WebApplicationException {
 
-        String query = buildClassQuery(type, function, resources, rankingType, filtering);
+        String query = buildClassQuery(type, function, resources, matchingType, rankingType, filtering);
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
             return transformAsJson(invokeDiscoveryEngine(query, rankingType, page, pageSize, null));
         }
@@ -167,13 +169,15 @@ public class DiscoveryEngineResource {
     public Response ioDiscovery(
             @ApiParam(value = "Parameter indicating the type of item to discover. The only values accepted are \"op\" for discovering operations, and \"svc\" for discovering services.", required = true, allowableValues = "svc,op")
             @PathParam("type") String type,
-            @ApiParam(value = "type of matching. The value should be either \"and\" or \"or\". The result should be the set- based conjunction or disjunction depending on the value selected between the services matching the inputs and those matching the outputs.", allowableValues = "and,or")
+            @ApiParam(value = "Operator function. The value should be either \"and\" or \"or\". The result should be the set- based conjunction or disjunction depending on the value selected between the services matching the inputs and those matching the outputs.", allowableValues = "and,or")
             @QueryParam("f") String function,
+            @ApiParam(value = "Matching type: \"subsume\" returns all the entities that are subclasses of the requested class; \"plugin\" returns all the entities that are superclasses; \"exact\" returns all the entities that are exactly tha same class", allowableValues = "subsume,plugin,exact")
+            @DefaultValue("plugin") @QueryParam("matching") String matchingType,
             @ApiParam(value = "Filtering according to specific criteria.", allowableValues = "disabled,enabled")
             @DefaultValue("disabled") @QueryParam("filtering") String filtering,
             @ApiParam(value = "Popularity-based ranking. The value should be \"standard\" to rank the results according the popularity of the provider.", allowableValues = "standard,inverse")
             @QueryParam("ranking") String rankingType,
-            @ApiParam(value = "Multivalued parameter indicating the classes that the input of the service should match to. The classes are indicated with the URL of the concept to match. This URL should be URL encoded.", required = true, allowMultiple = true)
+            @ApiParam(value = "Multivalued parameter indicating the classes that the input of the service should match to. The classes are indicated with the URL of the concept to match. This URL should be URL encoded.", allowMultiple = true)
             @QueryParam("i") List<String> inputs,
             @ApiParam(value = "Multivalued parameter indicating the classes that the output of the service should match to. The classes are indicated with the URL of the concept to match. This URL should be URL encoded.", allowMultiple = true)
             @QueryParam("o") List<String> outputs,
@@ -184,7 +188,7 @@ public class DiscoveryEngineResource {
     ) throws
             WebApplicationException {
 
-        String query = buildIOQuery(type, function, rankingType, filtering, inputs, outputs);
+        String query = buildIOQuery(type, function, matchingType, rankingType, filtering, inputs, outputs);
 
         if (request.getHeader("Accept") != null && request.getHeader("Accept").equals("application/json")) {
             return transformAsJson(invokeDiscoveryEngine(query, rankingType, page, pageSize, null));
@@ -193,7 +197,7 @@ public class DiscoveryEngineResource {
     }
 
 
-    private String buildClassQuery(String type, String operator, List<String> resources, String rankingType, String filtering) {
+    private String buildClassQuery(String type, String operator, List<String> resources, String matchingType, String rankingType, String filtering) {
 
         JsonObject query = new JsonObject();
         JsonArray parameters = new JsonArray();
@@ -209,6 +213,9 @@ public class DiscoveryEngineResource {
         JsonObject functionDiscoveryObject = new JsonObject();
         functionDiscoveryObject.add("classes", operatorObject);
         functionDiscoveryObject.add("type", new JsonPrimitive(type));
+        if (matchingType != null) {
+            functionDiscoveryObject.add("matching", new JsonPrimitive(matchingType));
+        }
 
         JsonObject discoveryObject = new JsonObject();
 
@@ -228,7 +235,7 @@ public class DiscoveryEngineResource {
         return query.toString();
     }
 
-    private String buildIOQuery(String type, String operator, String rankingType, String filtering, List<String> inputs, List<String> outputs) {
+    private String buildIOQuery(String type, String operator, String matchingType, String rankingType, String filtering, List<String> inputs, List<String> outputs) {
 
         JsonObject query = new JsonObject();
         JsonElement inputParameters;
@@ -288,6 +295,9 @@ public class DiscoveryEngineResource {
         }
 
         functionDiscoveryObject.add("type", new JsonPrimitive(type));
+        if (matchingType != null) {
+            functionDiscoveryObject.add("matching", new JsonPrimitive(matchingType));
+        }
 
         JsonObject discoveryObject = new JsonObject();
 

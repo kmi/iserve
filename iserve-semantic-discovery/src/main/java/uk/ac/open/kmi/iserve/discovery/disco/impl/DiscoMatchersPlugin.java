@@ -21,6 +21,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.multibindings.MapBinder;
 import uk.ac.open.kmi.iserve.discovery.api.*;
+import uk.ac.open.kmi.iserve.discovery.disco.util.impl.StringToLogicConceptMatchTypeConverter;
+import uk.ac.open.kmi.iserve.discovery.util.StringToMatchTypeConverter;
 import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
 
 /**
@@ -49,5 +51,6 @@ public class DiscoMatchersPlugin extends AbstractModule implements MatcherPlugin
         // Single bind discoverers for now
         bind(OperationDiscoverer.class).to(GenericLogicDiscoverer.class);
         bind(ServiceDiscoverer.class).to(GenericLogicDiscoverer.class);
+        bind(StringToMatchTypeConverter.class).to(StringToLogicConceptMatchTypeConverter.class);
     }
 }

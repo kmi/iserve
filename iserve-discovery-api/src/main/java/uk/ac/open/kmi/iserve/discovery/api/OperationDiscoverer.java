@@ -38,6 +38,8 @@ public interface OperationDiscoverer {
      */
     Map<URI, MatchResult> findOperationsConsumingAll(Set<URI> inputTypes);
 
+    Map<URI, MatchResult> findOperationsConsumingAll(Set<URI> inputTypes, MatchType matchType);
+
     /**
      * Discover registered operations that consume some (i.e., at least one) of the types of input provided. That is, all
      * those that have as input the types provided.
@@ -46,6 +48,8 @@ public interface OperationDiscoverer {
      * @return a Set containing all the matching operations. If there are no solutions, the Set should be empty, not null.
      */
     Map<URI, MatchResult> findOperationsConsumingSome(Set<URI> inputTypes);
+
+    Map<URI, MatchResult> findOperationsConsumingSome(Set<URI> inputTypes, MatchType matchType);
 
     /**
      * Discover registered operations that produce all of the types of output provided. That is, all those that can be
@@ -56,6 +60,8 @@ public interface OperationDiscoverer {
      */
     Map<URI, MatchResult> findOperationsProducingAll(Set<URI> outputTypes);
 
+    Map<URI, MatchResult> findOperationsProducingAll(Set<URI> outputTypes, MatchType matchType);
+
     /**
      * Discover registered operations that produce some (i.e., at least one) of the types of output provided. That is, all
      * those for which at least one output can be matched to the output types provided.
@@ -64,6 +70,8 @@ public interface OperationDiscoverer {
      * @return a Set containing all the matching operations. If there are no solutions, the Set should be empty, not null.
      */
     Map<URI, MatchResult> findOperationsProducingSome(Set<URI> outputTypes);
+
+    Map<URI, MatchResult> findOperationsProducingSome(Set<URI> outputTypes, MatchType matchType);
 
     /**
      * Discover the operations that are classified by all the types given. That is, all those that have some level of
@@ -74,6 +82,8 @@ public interface OperationDiscoverer {
      */
     Map<URI, MatchResult> findOperationsClassifiedByAll(Set<URI> modelReferences);
 
+    Map<URI, MatchResult> findOperationsClassifiedByAll(Set<URI> modelReferences, MatchType matchType);
+
     /**
      * Discover the operations that are classified by some (i.e., at least one) of the types given. That is, all those
      * that have some level of matching with respect to at least one entity provided in the model references.
@@ -83,6 +93,8 @@ public interface OperationDiscoverer {
      */
     Map<URI, MatchResult> findOperationsClassifiedBySome(Set<URI> modelReferences);
 
+    Map<URI, MatchResult> findOperationsClassifiedBySome(Set<URI> modelReferences, MatchType matchType);
+
     /**
      * Discover registered operations that can be invoked based on the types of input provided. That is, all those that
      * do not have any mandatory input that cannot be fulfilled with the provided ones.
@@ -91,5 +103,7 @@ public interface OperationDiscoverer {
      * @return a Set containing all the invocable operations. If there are no solutions, the Set should be empty, not null.
      */
     Map<URI, MatchResult> findOperationsInvocableWith(Set<URI> inputTypes);
+
+    Map<URI, MatchResult> findOperationsInvocableWith(Set<URI> inputTypes, MatchType matchType);
 
 }

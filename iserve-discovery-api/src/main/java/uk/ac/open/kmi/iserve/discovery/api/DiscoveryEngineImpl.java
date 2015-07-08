@@ -38,6 +38,7 @@ import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.ReverseRanker;
 import uk.ac.open.kmi.iserve.discovery.api.ranking.impl.StandardRanker;
 import uk.ac.open.kmi.iserve.discovery.util.CallbackEvent;
 import uk.ac.open.kmi.iserve.discovery.util.Pair;
+import uk.ac.open.kmi.iserve.discovery.util.StringToMatchTypeConverter;
 import uk.ac.open.kmi.iserve.sal.events.OntologyEvent;
 import uk.ac.open.kmi.iserve.sal.events.ServiceEvent;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
@@ -72,6 +73,8 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
     private ScoreComposer scoreComposer;
     private Logger logger = LoggerFactory.getLogger(DiscoveryEngineImpl.class);
     private EventBus callbackBus = new AsyncEventBus("callbacks", Executors.newCachedThreadPool());
+    @Inject
+    private StringToMatchTypeConverter converter;
 
     @Inject
     public DiscoveryEngineImpl(EventBus eventBus,
@@ -171,7 +174,7 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
 
         // Discovery parsing
         JsonObject discovery = requestObject.getAsJsonObject("discovery");
-        DiscoveryFunction discoveryFunction = new DiscoveryFunction(discovery, serviceDiscoverer, operationDiscoverer, freeTextSearchPlugin);
+        DiscoveryFunction discoveryFunction = new DiscoveryFunction(discovery, serviceDiscoverer, operationDiscoverer, freeTextSearchPlugin, converter);
 
         try {
             // filtering parsing

@@ -38,6 +38,8 @@ public interface ServiceDiscoverer {
      */
     Map<URI, MatchResult> findServicesConsumingAll(Set<URI> inputTypes);
 
+    Map<URI, MatchResult> findServicesConsumingAll(Set<URI> inputTypes, MatchType matchType);
+
     /**
      * Discover registered services that consume some (i.e., at least one) of the types of input provided. That is, all
      * those that have as input the types provided.
@@ -46,6 +48,8 @@ public interface ServiceDiscoverer {
      * @return a Set containing all the matching services. If there are no solutions, the Set should be empty, not null.
      */
     Map<URI, MatchResult> findServicesConsumingSome(Set<URI> inputTypes);
+
+    Map<URI, MatchResult> findServicesConsumingSome(Set<URI> inputTypes, MatchType matchType);
 
     /**
      * Discover registered services that produce all of the types of output provided. That is, all those that can be
@@ -56,6 +60,8 @@ public interface ServiceDiscoverer {
      */
     Map<URI, MatchResult> findServicesProducingAll(Set<URI> outputTypes);
 
+    Map<URI, MatchResult> findServicesProducingAll(Set<URI> outputTypes, MatchType matchType);
+
     /**
      * Discover registered services that produce some (i.e., at least one) of the types of output provided. That is, all
      * those for which at least one output can be matched to the output types provided.
@@ -64,6 +70,8 @@ public interface ServiceDiscoverer {
      * @return a Set containing all the matching services. If there are no solutions, the Set should be empty, not null.
      */
     Map<URI, MatchResult> findServicesProducingSome(Set<URI> outputTypes);
+
+    Map<URI, MatchResult> findServicesProducingSome(Set<URI> outputTypes, MatchType matchType);
 
     /**
      * Discover the services that are classified by all the types given. That is, all those that have some level of
@@ -74,6 +82,8 @@ public interface ServiceDiscoverer {
      */
     Map<URI, MatchResult> findServicesClassifiedByAll(Set<URI> modelReferences);
 
+    Map<URI, MatchResult> findServicesClassifiedByAll(Set<URI> modelReferences, MatchType matchType);
+
     /**
      * Discover the services that are classified by some (i.e., at least one) of the types given. That is, all those
      * that have some level of matching with respect to at least one entity provided in the model references.
@@ -83,6 +93,8 @@ public interface ServiceDiscoverer {
      */
     Map<URI, MatchResult> findServicesClassifiedBySome(Set<URI> modelReferences);
 
+    Map<URI, MatchResult> findServicesClassifiedBySome(Set<URI> modelReferences, MatchType matchType);
+
     /**
      * Discover registered services that can be invoked based on the types of input provided. That is, all those that
      * do not have any mandatory input that cannot be fulfilled with the provided ones.
@@ -91,4 +103,6 @@ public interface ServiceDiscoverer {
      * @return a Set containing all the invocable services. If there are no solutions, the Set should be empty, not null.
      */
     Map<URI, MatchResult> findServicesInvocableWith(Set<URI> inputTypes);
+
+    Map<URI, MatchResult> findServicesInvocableWith(Set<URI> inputTypes, MatchType matchType);
 }

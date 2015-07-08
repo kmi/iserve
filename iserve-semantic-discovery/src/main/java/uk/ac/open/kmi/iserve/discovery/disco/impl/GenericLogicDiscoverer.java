@@ -18,10 +18,7 @@ package uk.ac.open.kmi.iserve.discovery.disco.impl;
 
 import com.google.common.collect.*;
 import com.google.inject.Inject;
-import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
-import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
-import uk.ac.open.kmi.iserve.discovery.api.OperationDiscoverer;
-import uk.ac.open.kmi.iserve.discovery.api.ServiceDiscoverer;
+import uk.ac.open.kmi.iserve.discovery.api.*;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.discovery.disco.MatchResultsMerger;
 import uk.ac.open.kmi.iserve.sal.manager.ServiceManager;
@@ -56,9 +53,10 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      * @param entityType   the MSM URI of the type of entity we are looking for. Only supports Service and Operation.
      * @param relationship the MSM URI of the relationship we are looking for. Only supports hasInput and hasOutput.
      * @param types        the input/output types (modelReferences that is) we are looking for
+     * @param matchType
      * @return a Map mapping operation/services URIs to MatchResults.
      */
-    private Map<URI, MatchResult> findAll(URI entityType, URI relationship, Set<URI> types) {
+    private Map<URI, MatchResult> findAll(URI entityType, URI relationship, Set<URI> types, MatchType matchType) {
 
         // Ensure that we have been given correct parameters
         if (types == null || types.isEmpty() ||
@@ -71,14 +69,19 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         // Expand the input types to get all that match enough to be consumed
         // The structure is: <OriginalType, MatchingType, MatchResult>
         Table<URI, URI, MatchResult> expandedTypes;
-        if (relationship.toASCIIString().equals(SAWSDL.modelReference.getURI())) {
+        if (matchType.equals(LogicConceptMatchType.Subsume)) {
             expandedTypes = HashBasedTable.create();
             for (URI type : types) {
                 expandedTypes.putAll(this.conceptMatcher.listMatchesAtMostOfType(ImmutableSet.of(type), LogicConceptMatchType.Subsume));
                 expandedTypes.putAll(this.conceptMatcher.listMatchesOfType(ImmutableSet.of(type), LogicConceptMatchType.Exact));
             }
-        } else {
+        } else if (matchType.equals(LogicConceptMatchType.Plugin)) {
             expandedTypes = this.conceptMatcher.listMatchesAtLeastOfType(types, LogicConceptMatchType.Plugin);
+        } else {
+            expandedTypes = HashBasedTable.create();
+            for (URI type : types) {
+                expandedTypes.putAll(this.conceptMatcher.listMatchesOfType(ImmutableSet.of(type), LogicConceptMatchType.Exact));
+            }
         }
 
         // Track all the results in a multimap to push the details up the stack
@@ -91,7 +94,7 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         // For each original type
         for (URI inputType : rowMap.keySet()) {
             // obtain those entities that match any of the expanded matching types
-            intermediateMatches = findSome(entityType, relationship, rowMap.get(inputType).keySet());
+            intermediateMatches = findSome(entityType, relationship, rowMap.get(inputType).keySet(), matchType);
             if (firstTime) {
                 // Add all entries
                 firstTime = false;
@@ -125,9 +128,10 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      * @param entityType   the MSM URI of the type of entity we are looking for. Only supports Service and Operation.
      * @param relationship the MSM URI of the relationship we are looking for. Only supports hasInput and hasOutput.
      * @param types        the input/output types (modelReferences that is) we are looking for
+     * @param matchType
      * @return a Map mapping operation/services URIs to MatchResults.
      */
-    private Map<URI, MatchResult> findSome(URI entityType, URI relationship, Set<URI> types) {
+    private Map<URI, MatchResult> findSome(URI entityType, URI relationship, Set<URI> types, MatchType matchType) {
 
         // Ensure that we have been given correct parameters
         if (types == null || types.isEmpty() ||
@@ -138,18 +142,21 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
         }
 
         // Expand the input types to get all that match enough to be consumed
-        // TODO: The leastOfType should be configurable
+        // The structure is: <OriginalType, MatchingType, MatchResult>
         Table<URI, URI, MatchResult> expandedTypes;
-        if (relationship.toASCIIString().equals(SAWSDL.modelReference.getURI())) {
+        if (matchType.equals(LogicConceptMatchType.Subsume)) {
             expandedTypes = HashBasedTable.create();
-            //TODO: fix this properly
             for (URI type : types) {
                 expandedTypes.putAll(this.conceptMatcher.listMatchesAtMostOfType(ImmutableSet.of(type), LogicConceptMatchType.Subsume));
                 expandedTypes.putAll(this.conceptMatcher.listMatchesOfType(ImmutableSet.of(type), LogicConceptMatchType.Exact));
             }
-
-        } else {
+        } else if (matchType.equals(LogicConceptMatchType.Plugin)) {
             expandedTypes = this.conceptMatcher.listMatchesAtLeastOfType(types, LogicConceptMatchType.Plugin);
+        } else {
+            expandedTypes = HashBasedTable.create();
+            for (URI type : types) {
+                expandedTypes.putAll(this.conceptMatcher.listMatchesOfType(ImmutableSet.of(type), LogicConceptMatchType.Exact));
+            }
         }
 
         // Track all the results in a multimap to push the details up the stack
@@ -240,7 +247,12 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      */
     @Override
     public Map<URI, MatchResult> findOperationsConsumingAll(Set<URI> inputTypes) {
-        return findAll(URI.create(MSM.Operation.getURI()), URI.create(MSM.hasInput.getURI()), inputTypes);
+        return findOperationsConsumingAll(inputTypes, LogicConceptMatchType.Plugin);
+    }
+
+    @Override
+    public Map<URI, MatchResult> findOperationsConsumingAll(Set<URI> inputTypes, MatchType matchType) {
+        return findAll(URI.create(MSM.Operation.getURI()), URI.create(MSM.hasInput.getURI()), inputTypes, matchType);
     }
 
     /**
@@ -252,7 +264,12 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      */
     @Override
     public Map<URI, MatchResult> findOperationsConsumingSome(Set<URI> inputTypes) {
-        return findSome(URI.create(MSM.Operation.getURI()), URI.create(MSM.hasInput.getURI()), inputTypes);
+        return findServicesClassifiedBySome(inputTypes, LogicConceptMatchType.Plugin);
+    }
+
+    @Override
+    public Map<URI, MatchResult> findOperationsConsumingSome(Set<URI> inputTypes, MatchType matchType) {
+        return findSome(URI.create(MSM.Operation.getURI()), URI.create(MSM.hasInput.getURI()), inputTypes, matchType);
     }
 
     /**
@@ -264,7 +281,12 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      */
     @Override
     public Map<URI, MatchResult> findOperationsProducingAll(Set<URI> outputTypes) {
-        return findAll(URI.create(MSM.Operation.getURI()), URI.create(MSM.hasOutput.getURI()), outputTypes);
+        return findOperationsProducingAll(outputTypes, LogicConceptMatchType.Plugin);
+    }
+
+    @Override
+    public Map<URI, MatchResult> findOperationsProducingAll(Set<URI> outputTypes, MatchType matchType) {
+        return findAll(URI.create(MSM.Operation.getURI()), URI.create(MSM.hasOutput.getURI()), outputTypes, matchType);
     }
 
     /**
@@ -276,7 +298,12 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      */
     @Override
     public Map<URI, MatchResult> findOperationsProducingSome(Set<URI> outputTypes) {
-        return findSome(URI.create(MSM.Operation.getURI()), URI.create(MSM.hasOutput.getURI()), outputTypes);
+        return findServicesProducingSome(outputTypes, LogicConceptMatchType.Plugin);
+    }
+
+    @Override
+    public Map<URI, MatchResult> findOperationsProducingSome(Set<URI> outputTypes, MatchType matchType) {
+        return findSome(URI.create(MSM.Operation.getURI()), URI.create(MSM.hasOutput.getURI()), outputTypes, matchType);
     }
 
     /**
@@ -288,7 +315,12 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      */
     @Override
     public Map<URI, MatchResult> findOperationsClassifiedByAll(Set<URI> modelReferences) {
-        return findAll(URI.create(MSM.Operation.getURI()), URI.create(SAWSDL.modelReference.getURI()), modelReferences);
+        return findOperationsClassifiedByAll(modelReferences, LogicConceptMatchType.Subsume);
+    }
+
+    @Override
+    public Map<URI, MatchResult> findOperationsClassifiedByAll(Set<URI> modelReferences, MatchType matchType) {
+        return findAll(URI.create(MSM.Operation.getURI()), URI.create(SAWSDL.modelReference.getURI()), modelReferences, matchType);
     }
 
     /**
@@ -300,7 +332,12 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      */
     @Override
     public Map<URI, MatchResult> findOperationsClassifiedBySome(Set<URI> modelReferences) {
-        return findSome(URI.create(MSM.Operation.getURI()), URI.create(SAWSDL.modelReference.getURI()), modelReferences);
+        return findServicesClassifiedBySome(modelReferences, LogicConceptMatchType.Subsume);
+    }
+
+    @Override
+    public Map<URI, MatchResult> findOperationsClassifiedBySome(Set<URI> modelReferences, MatchType matchType) {
+        return findSome(URI.create(MSM.Operation.getURI()), URI.create(SAWSDL.modelReference.getURI()), modelReferences, matchType);
     }
 
     /**
@@ -312,6 +349,11 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      */
     @Override
     public Map<URI, MatchResult> findOperationsInvocableWith(Set<URI> inputTypes) {
+        return findOperationsInvocableWith(inputTypes, LogicConceptMatchType.Plugin);
+    }
+
+    @Override
+    public Map<URI, MatchResult> findOperationsInvocableWith(Set<URI> inputTypes, MatchType matchType) {
         return ImmutableMap.of();  // TODO: implement
     }
 
@@ -324,7 +366,12 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      */
     @Override
     public Map<URI, MatchResult> findServicesConsumingAll(Set<URI> inputTypes) {
-        return findAll(URI.create(MSM.Service.getURI()), URI.create(MSM.hasInput.getURI()), inputTypes);
+        return findServicesConsumingAll(inputTypes, LogicConceptMatchType.Plugin);
+    }
+
+    @Override
+    public Map<URI, MatchResult> findServicesConsumingAll(Set<URI> inputTypes, MatchType matchType) {
+        return findAll(URI.create(MSM.Service.getURI()), URI.create(MSM.hasInput.getURI()), inputTypes, matchType);
     }
 
     /**
@@ -336,7 +383,12 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      */
     @Override
     public Map<URI, MatchResult> findServicesConsumingSome(Set<URI> inputTypes) {
-        return findSome(URI.create(MSM.Service.getURI()), URI.create(MSM.hasInput.getURI()), inputTypes);
+        return findServicesConsumingSome(inputTypes, LogicConceptMatchType.Plugin);
+    }
+
+    @Override
+    public Map<URI, MatchResult> findServicesConsumingSome(Set<URI> inputTypes, MatchType matchType) {
+        return findSome(URI.create(MSM.Service.getURI()), URI.create(MSM.hasInput.getURI()), inputTypes, matchType);
     }
 
     /**
@@ -348,7 +400,12 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      */
     @Override
     public Map<URI, MatchResult> findServicesProducingAll(Set<URI> outputTypes) {
-        return findAll(URI.create(MSM.Service.getURI()), URI.create(MSM.hasOutput.getURI()), outputTypes);
+        return findServicesProducingAll(outputTypes, LogicConceptMatchType.Plugin);
+    }
+
+    @Override
+    public Map<URI, MatchResult> findServicesProducingAll(Set<URI> outputTypes, MatchType matchType) {
+        return findAll(URI.create(MSM.Service.getURI()), URI.create(MSM.hasOutput.getURI()), outputTypes, matchType);
     }
 
     /**
@@ -360,7 +417,12 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      */
     @Override
     public Map<URI, MatchResult> findServicesProducingSome(Set<URI> outputTypes) {
-        return findSome(URI.create(MSM.Service.getURI()), URI.create(MSM.hasOutput.getURI()), outputTypes);
+        return findServicesProducingSome(outputTypes, LogicConceptMatchType.Plugin);
+    }
+
+    @Override
+    public Map<URI, MatchResult> findServicesProducingSome(Set<URI> outputTypes, MatchType matchType) {
+        return findSome(URI.create(MSM.Service.getURI()), URI.create(MSM.hasOutput.getURI()), outputTypes, matchType);
     }
 
     /**
@@ -372,7 +434,12 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      */
     @Override
     public Map<URI, MatchResult> findServicesClassifiedByAll(Set<URI> modelReferences) {
-        return findAll(URI.create(MSM.Service.getURI()), URI.create(SAWSDL.modelReference.getURI()), modelReferences);
+        return findServicesClassifiedByAll(modelReferences, LogicConceptMatchType.Subsume);
+    }
+
+    @Override
+    public Map<URI, MatchResult> findServicesClassifiedByAll(Set<URI> modelReferences, MatchType matchType) {
+        return findAll(URI.create(MSM.Service.getURI()), URI.create(SAWSDL.modelReference.getURI()), modelReferences, matchType);
     }
 
     /**
@@ -384,7 +451,12 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      */
     @Override
     public Map<URI, MatchResult> findServicesClassifiedBySome(Set<URI> modelReferences) {
-        return findSome(URI.create(MSM.Service.getURI()), URI.create(SAWSDL.modelReference.getURI()), modelReferences);
+        return findServicesClassifiedBySome(modelReferences, LogicConceptMatchType.Plugin);
+    }
+
+    @Override
+    public Map<URI, MatchResult> findServicesClassifiedBySome(Set<URI> modelReferences, MatchType matchType) {
+        return findSome(URI.create(MSM.Service.getURI()), URI.create(SAWSDL.modelReference.getURI()), modelReferences, matchType);
     }
 
     /**
@@ -396,6 +468,11 @@ public class GenericLogicDiscoverer implements OperationDiscoverer, ServiceDisco
      */
     @Override
     public Map<URI, MatchResult> findServicesInvocableWith(Set<URI> inputTypes) {
+        return findServicesInvocableWith(inputTypes, LogicConceptMatchType.Plugin);
+    }
+
+    @Override
+    public Map<URI, MatchResult> findServicesInvocableWith(Set<URI> inputTypes, MatchType matchType) {
         return ImmutableMap.of();  // TODO: implement
     }
 }

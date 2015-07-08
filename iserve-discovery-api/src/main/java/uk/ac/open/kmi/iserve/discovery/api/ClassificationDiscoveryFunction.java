@@ -31,18 +31,19 @@ import java.util.Set;
  */
 public class ClassificationDiscoveryFunction extends DiscoveryFunction {
 
-    protected String operator;
     protected String type;
     protected Set<URI> parameters = new LinkedHashSet<URI>();
+    protected MatchType matchType;
 
     public ClassificationDiscoveryFunction(JsonElement expression) {
         super(null);
         parse(expression);
     }
 
-    public ClassificationDiscoveryFunction(JsonElement expression, String type) {
+    public ClassificationDiscoveryFunction(JsonElement expression, String type, MatchType matchType) {
         super(null);
         this.type = type;
+        this.matchType = matchType;
         parse(expression);
     }
 
@@ -51,8 +52,9 @@ public class ClassificationDiscoveryFunction extends DiscoveryFunction {
             if (discovery.getAsJsonObject().has("func-rdfs")) {
                 JsonObject functionObject = discovery.getAsJsonObject().getAsJsonObject("func-rdfs");
                 type = functionObject.get("type").getAsString();
+                matchType = converter.convert(functionObject.get("matching").getAsString());
                 JsonElement classes = discovery.getAsJsonObject().getAsJsonObject("func-rdfs").get("classes");
-                subFunctions.add(new ClassificationDiscoveryFunction(classes, type));
+                subFunctions.add(new ClassificationDiscoveryFunction(classes, type, matchType));
             } else {
                 JsonElement operatorEl = null;
                 if (discovery.getAsJsonObject().has("and")) {
@@ -77,7 +79,7 @@ public class ClassificationDiscoveryFunction extends DiscoveryFunction {
                     for (JsonElement clazz : operatorEl.getAsJsonArray()) {
                         if (clazz.isJsonPrimitive()) {
                             if (operator.equals("diff")) {
-                                subFunctions.add(new ClassificationDiscoveryFunction(clazz, type));
+                                subFunctions.add(new ClassificationDiscoveryFunction(clazz, type, matchType));
                             } else {
                                 try {
                                     parameters.add(new URI(clazz.getAsString()));
@@ -86,7 +88,7 @@ public class ClassificationDiscoveryFunction extends DiscoveryFunction {
                                 }
                             }
                         } else if (clazz.isJsonObject()) {
-                            subFunctions.add(new ClassificationDiscoveryFunction(clazz.getAsJsonObject(), type));
+                            subFunctions.add(new ClassificationDiscoveryFunction(clazz.getAsJsonObject(), type, matchType));
                         }
                     }
                 }
@@ -111,20 +113,39 @@ public class ClassificationDiscoveryFunction extends DiscoveryFunction {
             if (operator == null) {
                 operator = "or";
             }
-            if (operator.equals("or")) {
-                if (type.equals("svc")) {
-                    resultMap.putAll(serviceDiscoverer.findServicesClassifiedBySome(parameters));
+            if (matchType == null) {
+                if (operator.equals("or")) {
+                    if (type.equals("svc")) {
+                        resultMap.putAll(serviceDiscoverer.findServicesClassifiedBySome(parameters));
+                    }
+                    if (type.equals("op")) {
+                        resultMap.putAll(operationDiscoverer.findOperationsClassifiedBySome(parameters));
+                    }
                 }
-                if (type.equals("op")) {
-                    resultMap.putAll(operationDiscoverer.findOperationsClassifiedBySome(parameters));
+                if (operator.equals("and")) {
+                    if (type.equals("svc")) {
+                        resultMap.putAll(serviceDiscoverer.findServicesClassifiedByAll(parameters));
+                    }
+                    if (type.equals("op")) {
+                        resultMap.putAll(operationDiscoverer.findOperationsClassifiedByAll(parameters));
+                    }
                 }
-            }
-            if (operator.equals("and")) {
-                if (type.equals("svc")) {
-                    resultMap.putAll(serviceDiscoverer.findServicesClassifiedByAll(parameters));
+            } else {
+                if (operator.equals("or")) {
+                    if (type.equals("svc")) {
+                        resultMap.putAll(serviceDiscoverer.findServicesClassifiedBySome(parameters, matchType));
+                    }
+                    if (type.equals("op")) {
+                        resultMap.putAll(operationDiscoverer.findOperationsClassifiedBySome(parameters, matchType));
+                    }
                 }
-                if (type.equals("op")) {
-                    resultMap.putAll(operationDiscoverer.findOperationsClassifiedByAll(parameters));
+                if (operator.equals("and")) {
+                    if (type.equals("svc")) {
+                        resultMap.putAll(serviceDiscoverer.findServicesClassifiedByAll(parameters, matchType));
+                    }
+                    if (type.equals("op")) {
+                        resultMap.putAll(operationDiscoverer.findOperationsClassifiedByAll(parameters, matchType));
+                    }
                 }
             }
         }

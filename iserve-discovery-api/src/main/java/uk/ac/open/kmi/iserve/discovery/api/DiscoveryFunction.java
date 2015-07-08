@@ -20,6 +20,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import uk.ac.open.kmi.iserve.discovery.api.freetextsearch.FreeTextSearchPlugin;
+import uk.ac.open.kmi.iserve.discovery.util.StringToMatchTypeConverter;
 
 import java.net.URI;
 import java.util.LinkedList;
@@ -35,10 +36,12 @@ public class DiscoveryFunction extends RecursiveTask<Map<URI, MatchResult>> {
     protected static ServiceDiscoverer serviceDiscoverer;
     protected static OperationDiscoverer operationDiscoverer;
     protected static FreeTextSearchPlugin freeTextSearchPlugin;
+    protected static StringToMatchTypeConverter converter;
     protected List<DiscoveryFunction> subFunctions = new LinkedList<DiscoveryFunction>();
     protected String operator;
 
-    public DiscoveryFunction(JsonObject discovery, ServiceDiscoverer serviceDiscoverer, OperationDiscoverer operationDiscoverer, FreeTextSearchPlugin freeTextSearchPlugin) {
+    public DiscoveryFunction(JsonObject discovery, ServiceDiscoverer serviceDiscoverer, OperationDiscoverer operationDiscoverer, FreeTextSearchPlugin freeTextSearchPlugin, StringToMatchTypeConverter converter) {
+        DiscoveryFunction.converter = converter;
         parse(discovery);
         DiscoveryFunction.serviceDiscoverer = serviceDiscoverer;
         DiscoveryFunction.operationDiscoverer = operationDiscoverer;
