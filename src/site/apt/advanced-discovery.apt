@@ -65,19 +65,23 @@ http://<somehost.com>/<iserve-deployed-context>/discovery/
     "discovery": {
         "func-rdfs": {
             "type": "svc",
-            "classes": { ... }
+            "classes": { ... },
+            "matching" : "subsume"
         }
     }
 }
 
 +----------------------------------------------------------------------------------------------------+
 
-    “Type” assumes two values: “svc” for service discovery and “op” for operation discovery. The “classes” value can assume:
+    “Type” assumes two values: “svc” for service discovery and “op” for operation discovery.
+
+    The “classes” value can assume:
 
 	    * A string that specifies a single class. (e.g., “http://schema.org/CreateAction”);
 
         * A JSON object that specifies an intersection (<and>) , conjunction (<or>) or difference (<diff>) of classes, as shown below.
 
+    The below expression specifies that the service/operation must be a member of the classes CreateAction and DiscoverAction or a member of the class FollowAction.
 
 +----------------------------------------------------------------------------------------------------+
 
@@ -85,7 +89,14 @@ http://<somehost.com>/<iserve-deployed-context>/discovery/
 
 +----------------------------------------------------------------------------------------------------+
 
-    The above expression specifies that the service/operation must be a member of the classes CreateAction and DiscoverAction or a member of the class FollowAction.
+    The optional “matching” attribute can assume three values:
+
+        * “subsume” : the discovery performs a subsumption matching. The result will contain services or operations which their class is a subclass of the requested classes.
+
+        * “plugin”: the discovery performs a plugin matching. The result will contain services or operations which their class is a superclass of the requested classes.
+
+        * “exact”: the discovery performs an exact matching. The result will contain services or operations which their class exactly one of the requested classes.
+
 
     The I/O discovery retrieves services or operations that has inputs or outputs member of e specific class (e.g., all the service operations that has “temperature” as output).
     The following JSON object defines the input of I/O discovery.
@@ -96,13 +107,15 @@ http://<somehost.com>/<iserve-deployed-context>/discovery/
     "discovery": {
         "io-rdfs": {
             "type": "svc",
-            <expression>
+            <expression>,
+            "matching" : "plugin"
         }
     }
 }
 
 +----------------------------------------------------------------------------------------------------+
 
+    In the I/O discovery, the “type” and “matching” attributes have the same semantics that assume for functional classification discovery.
     The “expression” object can be an input or an output object defined as well as the “classes” for the functional classification discovery. For instance:
 
 +----------------------------------------------------------------------------------------------------+
