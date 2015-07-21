@@ -42,6 +42,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLConnection;
 import java.util.*;
 
 @Singleton
@@ -292,7 +293,9 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
             File file = new File(new StringBuilder(docDir.getAbsolutePath()).append("/index.").append(fileExtension).toString());
             FileOutputStream out = new FileOutputStream(file);
             FileUtil.createDirIfNotExists(file.getParentFile());
-            int size = IOUtils.copy(docRemoteLocation.toURL().openStream(), out);
+            URLConnection connection = docRemoteLocation.toURL().openConnection();
+            connection.addRequestProperty("Accept", mediaType);
+            int size = IOUtils.copy(connection.getInputStream(), out);
             log.info("Document internal URI - " + internalDocUri.toASCIIString() + " - " + size + " bytes.");
             storeMediaType(file.getAbsolutePath(), mediaType);
             if (fileExtension.equals("json")) {
@@ -333,7 +336,9 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
                 try {
                     URI apiDeclarationLocation = new URI(new StringBuilder(docRemoteLocation.toString()).append(path).toString());
                     FileOutputStream out = new FileOutputStream(file);
-                    int size = IOUtils.copy(apiDeclarationLocation.toURL().openStream(), out);
+                    URLConnection connection = apiDeclarationLocation.toURL().openConnection();
+                    connection.addRequestProperty("Accept", mediaType);
+                    int size = IOUtils.copy(connection.getInputStream(), out);
                     log.info("Document internal URI - " + file.getAbsolutePath() + " - " + size + " bytes.");
                     storeMediaType(file.getAbsolutePath(), mediaType);
                 } catch (FileNotFoundException e) {
