@@ -37,7 +37,10 @@ public class IODiscoveryFunction extends DiscoveryFunction {
         if (discovery.isJsonObject()) {
             if (discovery.getAsJsonObject().has("io-rdfs")) {
                 type = discovery.getAsJsonObject().getAsJsonObject("io-rdfs").get("type").getAsString();
-                matchType = converter.convert(discovery.getAsJsonObject().getAsJsonObject("io-rdfs").get("matching").getAsString());
+                JsonElement matching = discovery.getAsJsonObject().getAsJsonObject("io-rdfs").get("matching");
+                if (matching != null) {
+                    matchType = converter.convert(matching.getAsString());
+                }
                 if (discovery.getAsJsonObject().getAsJsonObject("io-rdfs").has("input") || discovery.getAsJsonObject().getAsJsonObject("io-rdfs").has("output")) {
                     if (discovery.getAsJsonObject().getAsJsonObject("io-rdfs").has("input")) {
                         subFunctions.add(new IODiscoveryFunction(discovery.getAsJsonObject().getAsJsonObject("io-rdfs").get("input"), type, "input", matchType));

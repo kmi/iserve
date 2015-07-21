@@ -52,7 +52,11 @@ public class ClassificationDiscoveryFunction extends DiscoveryFunction {
             if (discovery.getAsJsonObject().has("func-rdfs")) {
                 JsonObject functionObject = discovery.getAsJsonObject().getAsJsonObject("func-rdfs");
                 type = functionObject.get("type").getAsString();
-                matchType = converter.convert(functionObject.get("matching").getAsString());
+                JsonElement matching = functionObject.get("matching");
+                if (matching != null) {
+                    matchType = converter.convert(matching.getAsString());
+                }
+
                 JsonElement classes = discovery.getAsJsonObject().getAsJsonObject("func-rdfs").get("classes");
                 subFunctions.add(new ClassificationDiscoveryFunction(classes, type, matchType));
             } else {
