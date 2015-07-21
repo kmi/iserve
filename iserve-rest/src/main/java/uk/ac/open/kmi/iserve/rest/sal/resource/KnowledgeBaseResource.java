@@ -328,7 +328,7 @@ public class KnowledgeBaseResource {
     }
 
     private KnowledgeBaseResult createResultSet(URI uri) {
-        String label = (String) nfpManager.getPropertyValue(uri, URI.create(RDFS.label.getURI()), String.class);
+        Object label = nfpManager.getPropertyValue(uri, URI.create(RDFS.label.getURI()), String.class);
         return new KnowledgeBaseResult(uri, label);
     }
 
