@@ -8,9 +8,9 @@ import java.net.URI;
 public class KnowledgeBaseResult {
 
     private URI uri;
-    private String label;
+    private Object label;
 
-    public KnowledgeBaseResult(URI uri, String label) {
+    public KnowledgeBaseResult(URI uri, Object label) {
         setUri(uri);
         setLabel(label);
     }
@@ -23,11 +23,11 @@ public class KnowledgeBaseResult {
         this.uri = uri;
     }
 
-    public String getLabel() {
+    public Object getLabel() {
         return label;
     }
 
-    public void setLabel(String label) {
+    public void setLabel(Object label) {
         this.label = label;
     }
 }
