@@ -322,7 +322,7 @@ public class KnowledgeBaseResource {
         Set<KnowledgeBaseResult> r = Sets.newLinkedHashSet();
         Map<URI, Object> labels = nfpManager.getPropertyValueOfResources(new HashSet<URI>(uris), URI.create(RDFS.label.getURI()), String.class);
         for (URI uri : uris) {
-            r.add(new KnowledgeBaseResult(uri, (String) labels.get(uri)));
+            r.add(new KnowledgeBaseResult(uri, labels.get(uri)));
         }
         return r;
     }
