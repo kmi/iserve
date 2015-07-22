@@ -168,6 +168,8 @@ public class KnowledgeBaseResource {
     public Response listLinkedConcepts(
             @ApiParam(value = "Chain of properties that specify the link between concepts", required = true)
             @QueryParam("property") List<String> properties,
+            @ApiParam(value = "Specify which property of the chain is transitive (e.g., rdfs:subClassOf)")
+            @QueryParam("transitiveProperty") List<String> transitiveProperties,
             @ApiParam(value = "Class of the source concept")
             @QueryParam("sourceClass") String sourceClass,
             @ApiParam(value = "Class of the source concept")
@@ -186,7 +188,11 @@ public class KnowledgeBaseResource {
             for (String property : properties) {
                 propertyUris.add(new URI(property));
             }
-            Multimap<URI, URI> linkedConcepts = kbManager.listLinkedConcepts(propertyUris, sourceClassUri, targetClassUri);
+            Set<URI> transitivePropertyUris = Sets.newHashSet();
+            for (String transitiveProperty : transitiveProperties) {
+                transitivePropertyUris.add(new URI(transitiveProperty));
+            }
+            Multimap<URI, URI> linkedConcepts = kbManager.listLinkedConcepts(propertyUris, sourceClassUri, targetClassUri, transitivePropertyUris);
             createResultSet(linkedConcepts.keySet());
             createResultSet(linkedConcepts.values());
             for (URI source : linkedConcepts.keySet()) {

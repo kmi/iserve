@@ -130,7 +130,7 @@ public interface KnowledgeBaseManager extends iServeComponent {
      * @param targetClass class of the target concept (optional/nullable)
      * @return Multimap of linked concepts in the KnowledgeBaseManager
      */
-    Multimap<URI, URI> listLinkedConcepts(List<URI> properties, URI sourceClass, URI targetClass);
+    Multimap<URI, URI> listLinkedConcepts(List<URI> properties, URI sourceClass, URI targetClass, Set<URI> transitiveProperties);
 
     /**
      * The upload of services gets automatically notified via the event bus. Every Knowledge Base Manager should process

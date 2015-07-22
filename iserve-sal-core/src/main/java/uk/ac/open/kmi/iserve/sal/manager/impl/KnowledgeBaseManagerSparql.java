@@ -378,7 +378,7 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
     }
 
     @Override
-    public Multimap<URI, URI> listLinkedConcepts(List<URI> properties, URI sourceClass, URI targetClass) {
+    public Multimap<URI, URI> listLinkedConcepts(List<URI> properties, URI sourceClass, URI targetClass, Set<URI> transitiveProperties) {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("SELECT DISTINCT ?s ?t WHERE { ");
         if (sourceClass != null) {
@@ -386,7 +386,11 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
         }
         int c = 0;
         for (URI property : properties) {
-            strBuilder.append("?c").append(c).append(" <").append(property.toASCIIString()).append(">+ ?c").append(++c).append(" . ");
+            strBuilder.append("?c").append(c).append(" <").append(property.toASCIIString()).append(">");
+            if (transitiveProperties.contains(property)) {
+                strBuilder.append("+");
+            }
+            strBuilder.append(" ?c").append(++c).append(" . ");
         }
         if (targetClass != null) {
             strBuilder.append("?c").append(c).append(" <").append(RDFS.subClassOf.getURI()).append(">+ <").append(targetClass.toASCIIString()).append("> . ");
