@@ -449,16 +449,19 @@ public class SparqlLogicConceptMatcher extends AbstractMatcher implements Concep
         if (minType.compareTo(LogicConceptMatchType.Subsume) <= 0 && maxType.compareTo(LogicConceptMatchType.Subsume) >= 0) {
             // Match the origin concept to strict subclasses
             patterns.add(Util.generateMatchStrictSubclassesPattern(origin, destinationVar, SUB_VAR, true));
+            patterns.add(Util.generateMatchStrictSubclassesOfPropertyRangePattern(origin, destinationVar, SUB_VAR, true));
         }
 
         if (minType.compareTo(LogicConceptMatchType.Plugin) <= 0 && maxType.compareTo(LogicConceptMatchType.Plugin) >= 0) {
             // Match the origin concept to strict superclasses
             patterns.add(Util.generateMatchStrictSuperclassesPattern(origin, destinationVar, SUPER_VAR, true));
+            patterns.add(Util.generateMatchStrictSuperclassesOfPropertyRangePattern(origin, destinationVar, SUPER_VAR, true));
         }
 
         if (minType.compareTo(LogicConceptMatchType.Exact) <= 0 && maxType.compareTo(LogicConceptMatchType.Exact) >= 0) {
             // Match the origin concept to exact matches
             patterns.add(Util.generateExactMatchPattern(origin, destinationVar, EXACT_VAR, true));
+            patterns.add(Util.generateExactMatchForPropertyRangePattern(origin, destinationVar, EXACT_VAR, true));
         }
 
         return patterns;
