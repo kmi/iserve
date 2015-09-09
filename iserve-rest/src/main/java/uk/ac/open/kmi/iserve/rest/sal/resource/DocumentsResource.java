@@ -126,7 +126,8 @@ public class DocumentsResource {
             InputStream is = registryManager.getDocumentManager().getDocument(docUri);
             String docMediaType = registryManager.getDocumentManager().getDocumentMediaType(docUri);
             if (is != null) {
-                if (accept.contains(MediaType.TEXT_HTML) && docMediaType.equals(MediaType.APPLICATION_JSON)) {
+                if (accept.contains(MediaType.TEXT_HTML) && docMediaType.equals(MediaType.APPLICATION_JSON)
+                        && !accept.equals("text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2") /* FIXME This is a hack due a bug in Swagger4J used by MSM4j. This is the related issue https://github.com/SmartBear/swagger4j/issues/11 */) {
                     logger.debug("Generating Swagger UI");
                     String result = generateSwaggerUI(docUri);
                     return Response.status(Status.OK).entity(result).build();
