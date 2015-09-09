@@ -552,6 +552,9 @@ public class ServicesResource {
         } catch (NumberFormatException nfe) {
             try {
                 valueObj = new URI(value);
+                if (!((URI) valueObj).isAbsolute()) {
+                    valueObj = value;
+                }
             } catch (URISyntaxException e) {
                 valueObj = value;
             }
