@@ -365,7 +365,11 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
                 .append("?class <").append(RDF.type.getURI()).append("> <").append(RDFS.Class.getURI()).append("> .")
                 .append(" } UNION { ")
                 .append("?class <").append(RDF.type.getURI()).append("> <").append(OWL.Class.getURI()).append("> .")
-                .append(" } ");
+                .append(" } UNION { ")
+                .append("?class <").append(RDFS.subClassOf.getURI()).append("> ?x .")
+                .append(" } UNION { ")
+                .append("?y <").append(RDFS.subClassOf.getURI()).append("> ?class .")
+                .append(" }");
 
         // Close the graph wrapper if necessary
         if (graphID != null) {
