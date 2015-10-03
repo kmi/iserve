@@ -42,6 +42,7 @@ import javax.inject.Inject;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -319,6 +320,14 @@ public class RegistryManagerImpl extends IntegratedComponent implements Registry
                     // The service is being imported -> update the source
                     URI originalSource = service.getSource();
                     service.setSource(sourceDocUri);
+                    // If the source is swagger the source is also the documentation
+                    if (mediaType.equals("application/json")) {
+                        try {
+                            service.setDocumentation(sourceDocUri.toURL());
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     for (Operation op : service.getOperations()) {
                         if (op.getSource().equals(originalSource)) {
                             op.setSource(sourceDocUri);
