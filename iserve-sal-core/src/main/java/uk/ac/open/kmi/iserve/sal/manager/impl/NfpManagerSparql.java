@@ -42,6 +42,7 @@ import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
 import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
 import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
 import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
+import uk.ac.open.kmi.msm4j.vocabulary.SAWSDL;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -101,8 +102,10 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
         RDFNode object;
         if (value instanceof URI) {
             object = model.createResource(((URI) value).toASCIIString());
-            if (graphStoreManager.fetchAndStore((URI) value)) {
-                getEventBus().post(new OntologyCreatedEvent(new Date(), (URI) value));
+            if (property.toASCIIString().equals(SAWSDL.modelReference)) {
+                if (graphStoreManager.fetchAndStore((URI) value)) {
+                    getEventBus().post(new OntologyCreatedEvent(new Date(), (URI) value));
+                }
             }
         } else {
             object = model.createTypedLiteral(value);
@@ -367,7 +370,9 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
         RDFNode object;
         if (value instanceof URI) {
             object = model.createResource(((URI) value).toASCIIString());
-            graphStoreManager.fetchAndStore((URI) value);
+            if (property.toASCIIString().equals(SAWSDL.modelReference)) {
+                graphStoreManager.fetchAndStore((URI) value);
+            }
         } else {
             object = model.createTypedLiteral(value);
         }
