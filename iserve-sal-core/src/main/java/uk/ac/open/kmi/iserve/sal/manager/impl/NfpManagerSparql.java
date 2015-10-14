@@ -108,10 +108,6 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
             object = model.createTypedLiteral(value);
         }
 
-        if (graphStoreManager.fetchAndStore(property)) {
-            getEventBus().post(new OntologyCreatedEvent(new Date(), property));
-        }
-
         Statement triple = model.createStatement(model.createResource(resource.toASCIIString()), model.createProperty(property.toASCIIString()), object);
         model.add(triple);
         URI graphUri = graphStoreManager.getGraphUriByResource(resource);
