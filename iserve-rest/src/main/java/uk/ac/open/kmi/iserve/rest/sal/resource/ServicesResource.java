@@ -572,7 +572,7 @@ public class ServicesResource {
 
     private String buildSuccessMessageForPropertyStorage(String resource, String property, String value, String accept) {
         String response;
-        if (accept.contains(MediaType.TEXT_HTML)) {
+        if (accept != null && accept.contains(MediaType.TEXT_HTML)) {
             response = "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n" +
                     "<body>\nProperty stored.\n</body>\n</html>";
         } else {
