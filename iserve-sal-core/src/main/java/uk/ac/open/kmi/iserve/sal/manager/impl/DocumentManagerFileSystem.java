@@ -36,6 +36,11 @@ import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
 import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.util.UriUtil;
+import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
+import uk.ac.open.kmi.iserve.sal.util.caching.CacheException;
+import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
+import uk.ac.open.kmi.iserve.sal.util.caching.impl.InMemoryCache;
+import uk.ac.open.kmi.iserve.sal.util.caching.impl.RedisCache;
 import uk.ac.open.kmi.msm4j.io.util.FileUtil;
 
 import java.io.*;
@@ -43,7 +48,10 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLConnection;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 @Singleton
 public class DocumentManagerFileSystem extends IntegratedComponent implements DocumentManager {
@@ -58,10 +66,13 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
     private URI documentsInternalPath;
     private URI documentsPublicUri;
 
+    private Cache<String, String> fileMediatypeMap;
+
     @Inject
     DocumentManagerFileSystem(EventBus eventBus,
                               @iServeProperty(ConfigurationProperty.ISERVE_URL) String iServeUri,
-                              @iServeProperty(ConfigurationProperty.DOCUMENTS_FOLDER) String documentsFolderPath) throws SalException {
+                              @iServeProperty(ConfigurationProperty.DOCUMENTS_FOLDER) String documentsFolderPath,
+                              CacheFactory cacheFactory) throws SalException {
 
         super(eventBus, iServeUri);
 
@@ -105,6 +116,26 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
                 throw new DocumentException("There already exists a file with the documents folder URI.");
             }
         }
+
+        if (fileMediatypeMap == null) {
+            try {
+                fileMediatypeMap = cacheFactory.createPersistentCache("documents-media-type");
+
+            } catch (CacheException e) {
+                fileMediatypeMap = cacheFactory.createInMemoryCache("documents-media-type");
+            }
+            // It stores legacy map in persistent cache
+            Map<String, String> legacyMap = getFileMediaTypeMap();
+            if (legacyMap != null) {
+                fileMediatypeMap.putAll(legacyMap);
+                if (fileMediatypeMap instanceof RedisCache) {
+                    // delete legacy file
+                    File legacyFile = new File(URI.create(new StringBuilder(documentsInternalPath.toString()).append("/mediaTypeMap.json").toString()));
+                    legacyFile.delete();
+                }
+            }
+        }
+
     }
 
     /**
@@ -243,9 +274,11 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
 
     private synchronized void storeMediaType(String absolutePath, String mediaType) {
         log.debug("Storing Media Type for file {}: {}", absolutePath, mediaType);
-        Map<String, String> fileMediatypeMap = getFileMediaTypeMap();
         fileMediatypeMap.put(absolutePath, mediaType);
-        storeMediaTypeMap(fileMediatypeMap);
+        if (fileMediatypeMap instanceof InMemoryCache) {
+            storeMediaTypeMap(fileMediatypeMap);
+        }
+
     }
 
     public Map<String, String> getFileMediaTypeMap() {
@@ -368,14 +401,15 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
                 FileUtils.deleteDirectory(file);
                 log.info("File deleted: " + file.getName());
                 //delete entry in mediatype map
-                Map<String, String> mediaTypeMap = getFileMediaTypeMap();
-                Set<String> filePaths = new HashSet<String>(mediaTypeMap.keySet());
-                for (String filePath : filePaths) {
+
+                for (String filePath : fileMediatypeMap.keySet()) {
                     if (filePath.matches(new StringBuilder(file.getAbsolutePath()).append(".*").toString())) {
-                        mediaTypeMap.remove(filePath);
+                        fileMediatypeMap.remove(filePath);
                     }
                 }
-                storeMediaTypeMap(mediaTypeMap);
+                if (fileMediatypeMap instanceof InMemoryCache) {
+                    storeMediaTypeMap(fileMediatypeMap);
+                }
                 // Generate Event
                 this.getEventBus().post(new DocumentDeletedEvent(new Date(), documentUri));
                 return true;
