@@ -431,8 +431,12 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
      */
     @Override
     public boolean clearDocuments() throws DocumentException {
+
         File mapFile = new File(URI.create(new StringBuilder(documentsInternalPath.toString()).append("/mediaTypeMap.json").toString()));
-        mapFile.delete();
+        if (mapFile.exists()) {
+            mapFile.delete();
+        }
+        fileMediatypeMap.clear();
         File internalFolder = new File(this.getDocumentsInternalPath());
         File[] files = internalFolder.listFiles();
         for (File file : files) {
