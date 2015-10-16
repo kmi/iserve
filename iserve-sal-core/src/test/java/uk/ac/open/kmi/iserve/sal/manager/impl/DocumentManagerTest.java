@@ -16,6 +16,8 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
+import com.google.inject.assistedinject.FactoryModuleBuilder;
+import com.google.inject.name.Names;
 import junit.framework.Assert;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
@@ -24,11 +26,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
+import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
+import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
+import uk.ac.open.kmi.iserve.sal.util.caching.impl.InMemoryCache;
+import uk.ac.open.kmi.iserve.sal.util.caching.impl.RedisCache;
 import uk.ac.open.kmi.msm4j.io.MediaType;
 import uk.ac.open.kmi.msm4j.io.Syntax;
 import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
+import uk.ac.open.kmi.msm4j.io.impl.TransformerModule;
 import uk.ac.open.kmi.msm4j.io.util.FilenameFilterBySyntax;
 
 import java.io.*;
@@ -180,7 +188,20 @@ public class DocumentManagerTest {
     public static class InnerModule extends JukitoModule {
         @Override
         protected void configureTest() {
-            install(new RegistryManagementModule());
+            // Get configuration
+            install(new ConfigurationModule());
+
+            // Add transformer module
+            install(new TransformerModule());
+
+            install(new FactoryModuleBuilder()
+                    .implement(Cache.class, Names.named("in-memory"), InMemoryCache.class)
+                    .implement(Cache.class, Names.named("persistent"), RedisCache.class)
+                    .build(CacheFactory.class));
+
+            // bind
+            bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
+
             // Necessary to verify interaction with the real object
             bindSpy(DocumentManagerFileSystem.class);
         }
