@@ -24,13 +24,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.ConfigurationModule;
 import uk.ac.open.kmi.iserve.sal.exception.DocumentException;
 import uk.ac.open.kmi.iserve.sal.manager.DocumentManager;
 import uk.ac.open.kmi.msm4j.io.MediaType;
 import uk.ac.open.kmi.msm4j.io.Syntax;
 import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
-import uk.ac.open.kmi.msm4j.io.impl.TransformerModule;
 import uk.ac.open.kmi.msm4j.io.util.FilenameFilterBySyntax;
 
 import java.io.*;
@@ -182,15 +180,7 @@ public class DocumentManagerTest {
     public static class InnerModule extends JukitoModule {
         @Override
         protected void configureTest() {
-            // Get configuration
-            install(new ConfigurationModule());
-
-            // Add transformer module
-            install(new TransformerModule());
-
-            // bind
-            bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
-
+            install(new RegistryManagementModule());
             // Necessary to verify interaction with the real object
             bindSpy(DocumentManagerFileSystem.class);
         }

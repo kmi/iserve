@@ -16,8 +16,6 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
-import com.google.common.eventbus.EventBus;
-import com.google.inject.assistedinject.FactoryModuleBuilder;
 import junit.framework.Assert;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
@@ -26,12 +24,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.open.kmi.iserve.core.ConfigurationModule;
-import uk.ac.open.kmi.iserve.sal.manager.*;
+import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 import uk.ac.open.kmi.msm4j.io.MediaType;
 import uk.ac.open.kmi.msm4j.io.Syntax;
 import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
-import uk.ac.open.kmi.msm4j.io.impl.TransformerModule;
 import uk.ac.open.kmi.msm4j.io.util.FilenameFilterBySyntax;
 
 import java.io.File;
@@ -122,25 +118,27 @@ public class RegistryManagerImplTest {
         @Override
         protected void configureTest() {
 
-            // Ensure configuration is loaded
-            install(new ConfigurationModule());
+//            // Ensure configuration is loaded
+//            install(new ConfigurationModule());
+//
+//            // Add transformation module
+//            install(new TransformerModule());
+//
+//            // Assisted Injection for the Graph Store Manager
+//            install(new FactoryModuleBuilder()
+//                    .implement(SparqlGraphStoreManager.class, ConcurrentSparqlGraphStoreManager.class)
+//                    .build(SparqlGraphStoreFactory.class));
+//
+//            // Create the EventBus
+//            final EventBus eventBus = new EventBus("iServe");
+//            bind(EventBus.class).toInstance(eventBus);
+//
+//            bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
+//            bind(ServiceManager.class).to(ServiceManagerSparql.class);
+//            bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class);
+//            bind(RegistryManager.class).to(RegistryManagerImpl.class);
 
-            // Add transformation module
-            install(new TransformerModule());
-
-            // Assisted Injection for the Graph Store Manager
-            install(new FactoryModuleBuilder()
-                    .implement(SparqlGraphStoreManager.class, ConcurrentSparqlGraphStoreManager.class)
-                    .build(SparqlGraphStoreFactory.class));
-
-            // Create the EventBus
-            final EventBus eventBus = new EventBus("iServe");
-            bind(EventBus.class).toInstance(eventBus);
-
-            bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
-            bind(ServiceManager.class).to(ServiceManagerSparql.class);
-            bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class);
-            bind(RegistryManager.class).to(RegistryManagerImpl.class);
+            install(new RegistryManagementModule());
 
             // Necessary to verify interaction with the real object
             bindSpy(RegistryManagerImpl.class);
