@@ -64,6 +64,9 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
     private String sparqlEndpoint;
     private SparqlGraphStoreManager graphStoreManager;
 
+    private static final URI MSM_NFP_URI = URI.create("http://iserve.kmi.open.ac.uk/ns/msm-nfp");
+    private static final URI SIOC_URI = URI.create("http://rdfs.org/sioc/ns");
+
     @Inject
     public NfpManagerSparql(EventBus eventBus,
                             @iServeProperty(ConfigurationProperty.ISERVE_URL) String iServeUri,
@@ -81,6 +84,8 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
 
         // Configuration for quick retrieval of ontologies by resolving them to local files.
         ImmutableMap.Builder<String, String> mappingsBuilder = ImmutableMap.builder();
+        mappingsBuilder.put(MSM_NFP_URI.toASCIIString(), this.getClass().getResource("/msm-nfp-2015-10-01.ttl").toString());
+        mappingsBuilder.put(SIOC_URI.toASCIIString(), this.getClass().getResource("/sioc-2010-03-25.ttl").toString());
 
         // Configuration for avoiding the import of certain files
         ImmutableSet<String> ignoredImports = ImmutableSet.of();
