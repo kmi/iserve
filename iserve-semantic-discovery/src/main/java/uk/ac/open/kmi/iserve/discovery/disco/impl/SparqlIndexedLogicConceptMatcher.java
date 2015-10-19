@@ -68,7 +68,9 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
     private transient Cache<URI, ConcurrentMap<URI, MatchResult>> indexedMatches;
 
     @Inject
-    protected SparqlIndexedLogicConceptMatcher(RegistryManager registryManager, @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_QUERY) String sparqlEndpoint, CacheFactory cacheFactory) throws SalException, URISyntaxException {
+    protected SparqlIndexedLogicConceptMatcher(RegistryManager registryManager,
+                                               @iServeProperty(ConfigurationProperty.SERVICES_SPARQL_QUERY) String sparqlEndpoint,
+                                               CacheFactory cacheFactory) throws SalException, URISyntaxException {
 
         super(EnumMatchTypes.of(LogicConceptMatchType.class));
 
@@ -83,15 +85,14 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
             }
         }
         if (indexedMatches.isEmpty()) {
-            log.info("Populating Matcher Index...");// if index is empty
-            Stopwatch w = new Stopwatch().start();
             populate();
-            log.info("Population done in {}. Number of entries {}", w.stop().toString(), indexedMatches.size());
         }
 
     }
 
     private synchronized void populate() {
+        log.info("Populating Matcher Index...");// if index is empty
+        Stopwatch w = new Stopwatch().start();
         Set<URI> classes = new HashSet<URI>(this.manager.getKnowledgeBaseManager().listConcepts(null));
         Map<URI, Map<URI, MatchResult>> matchesTable = sparqlMatcher.listMatchesAtLeastOfType(classes, LogicConceptMatchType.Subsume).rowMap();
         for (URI c : classes) {
@@ -99,6 +100,7 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
                 indexedMatches.put(c, new ConcurrentHashMap(matchesTable.get(c)));
             }
         }
+        log.info("Population done in {}. Number of entries {}", w.stop().toString(), indexedMatches.size());
     }
 
     @Override
