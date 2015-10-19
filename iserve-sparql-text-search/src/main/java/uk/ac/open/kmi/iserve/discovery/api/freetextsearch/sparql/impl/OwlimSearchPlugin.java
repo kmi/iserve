@@ -68,7 +68,7 @@ public class OwlimSearchPlugin extends SparqlSearchPlugin {
     @AllowConcurrentEvents
     public void handleServiceEvent(ServiceEvent event) {
         logger.debug("Processing Service  Event {}", event);
-        //runIndexing();
+        runIndexing();
     }
 
 }
