@@ -98,7 +98,7 @@ spec:about a api:ItemEndpoint
         ; rdfs:comment        "A generic item endpoint API for asking about a specific thing by 'uri'."
         ; api:itemTemplate    "{uri}"
         ; api:viewer          api:basicViewer, api:describeViewer, api:labelledDescribeViewer
-        ; api:defaultViewer   api:describeViewer
+        ; api:defaultViewer   api:basicViewer
         .
 
 #
@@ -130,15 +130,23 @@ spec:mentions a api:ListEndpoint
 
 spec:serviceViewer a api:Viewer ;
 	api:name "service" ;
-	api:properties "label,comment,created,issued,type,modelReference,modelReference,hasOperation.label,hasOperation.modelReference,hasOperation.modelReference.type,hasOperation.modelReference.value,hasOperation.hasInput.label,hasOperation.hasInput.modelReference,hasOperation.hasOutput.label,hasOperation.hasOutput.modelReference,source,isGroundedIn,provider.label,provider.hasPopularity,hasForum.label,hasForum.hasVitality,hasTotalMashups,hasRecentMashups,seeAlso" .
+	api:properties "label,comment,created,issued,type,modelReference,modelReference.label,hasOperation.label,hasOperation.modelReference,hasOperation.modelReference.label,hasOperation.hasInput.label,hasOperation.hasInput.modelReference,hasOperation.hasInput.modelReference.label,hasOperation.hasOutput.label,hasOperation.hasOutput.modelReference,hasOperation.hasOutput.modelReference.label,source,isGroundedIn,isBasedOnUrl,provider.label,provider.hasPopularity,hasForum.label,hasForum.hasVitality,hasTotalMashups,hasRecentMashups,seeAlso,hasDocumentation" .
+
+spec:serviceBasic a api:Viewer ;
+	api:name "service" ;
+	api:properties "label,comment,created,modelReference,modelReference.label,hasOperation.label,isBasedOnUrl,provider.label,hasDocumentation" .
 
 spec:operationViewer a api:Viewer ;
 	api:name "operation" ;
-	api:properties "label,comment,type,modelReference,modelReference.type,modelReference.value,hasInput.label,hasInput.modelReference,hasOutput.label,hasOutput.modelReference,hasInputFault.label,hasOutputFault.label,hasOutputFault.label,hasOutputFault.type,source,isGroundedIn" .
+	api:properties "label,comment,type,modelReference,modelReference.label,hasInput.label,hasInput.modelReference,hasOutput.label,hasOutput.modelReference,hasOutput.modelReference.label,hasInputFault.label,hasOutputFault.label,hasOutputFault.label,source,isGroundedIn,hasDocumentation" .
+
+spec:operationBasic a api:Viewer ;
+	api:name "operation" ;
+	api:properties "label,comment,modelReference,modelReference.label,hasInput.label,hasInput.modelReference,hasOutput.label,hasOutput.modelReference,hasOutput.modelReference.label,hasDocumentation" .
 
 spec:messagePartViewer a api:Viewer ;
 	api:name "messagePart" ;
-	api:properties "label,comment,type,modelReference,hasMandatoryPart.label,hasMandatoryPart.modelReference,hasOptionalPart.label,hasOptionalPart.modelReference,source,isGroundedIn" .
+	api:properties "label,comment,type,modelReference,modelReference.label,hasMandatoryPart.label,hasMandatoryPart.modelReference,hasMandatoryPart.modelReference.label,hasOptionalPart.label,hasOptionalPart.modelReference,hasOptionalPart.modelReference.label,source,isGroundedIn" .
 
 spec:schemeViewer a api:Viewer ;
 	api:name "scheme" ;
@@ -304,15 +312,15 @@ spec:serviceList a api:ListEndpoint ;
 	rdfs:label "Services List"@en ;
 	api:uriTemplate "/doc/services" ;
 	api:selector spec:servicesSelect ;
-    api:viewer api:describeViewer, api:basicViewer, spec:serviceViewer ;
-    api:defaultViewer spec:serviceViewer .
+    api:viewer api:describeViewer, spec:serviceViewer, spec:serviceBasic ;
+    api:defaultViewer spec:serviceBasic .
 
 spec:operationsList a api:ListEndpoint ;
 	rdfs:label "Operations List"@en ;
 	api:uriTemplate "/doc/operations" ;
 	api:selector spec:operationsSelect ;
-    api:viewer api:describeViewer, api:basicViewer, spec:operationViewer ;
-    api:defaultViewer spec:operationViewer .
+    api:viewer api:describeViewer, spec:operationViewer, spec:operationBasic ;
+    api:defaultViewer spec:operationBasic .
 
 spec:operationInputsList a api:ListEndpoint ;
 	rdfs:label "Operation Inputs List"@en ;
@@ -390,6 +398,13 @@ spec:messagePart a api:ItemEndpoint ;
     rdfs:label "Message Part"@en ;
     api:uriTemplate "/doc/services/{svcId}/{serviceName}/{opName}/{messageName}/{messagePart}" ;
     api:itemTemplate "%ISERVE_PATH%/id/services/{svcId}/{serviceName}/{opName}/{messageName}/{messagePart}" ;
+    api:viewer api:describeViewer, api:basicViewer, spec:messagePartViewer ;
+    api:defaultViewer spec:messagePartViewer .
+
+spec:innerMessagePart a api:ItemEndpoint ;
+    rdfs:label "Message Part"@en ;
+    api:uriTemplate "/doc/services/{svcId}/{serviceName}/{opName}/{messageName}/{messagePart}/{innerPart}" ;
+    api:itemTemplate "%ISERVE_PATH%/id/services/{svcId}/{serviceName}/{opName}/{messageName}/{messagePart}/{innerPart}" ;
     api:viewer api:describeViewer, api:basicViewer, spec:messagePartViewer ;
     api:defaultViewer spec:messagePartViewer .
 
@@ -510,6 +525,10 @@ msm-nfp:hasRecentMashups
         a owl:DatatypeProperty ;
         rdfs:range xsd:int ;
         api:label "hasRecentMashups" .
+
+msm-nfp:hasDocumentation
+    api:label "hasDocumentation" ;
+    rdfs:range xsd:string .
 
 # SAWSDL	
 sawsdl:modelReference 
@@ -641,3 +660,9 @@ dct:creator
 	rdfs:range rdfs:Resource ;
 	api:multiValued true ;
   	api:label "creator" .
+
+# Schema.org
+
+schema:isBasedOnUrl
+    api:label "isBasedOnUrl" ;
+    rdfs:range xsd:string .
