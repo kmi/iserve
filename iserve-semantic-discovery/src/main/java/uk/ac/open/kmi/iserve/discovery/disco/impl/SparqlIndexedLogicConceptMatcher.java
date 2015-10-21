@@ -115,7 +115,18 @@ public class SparqlIndexedLogicConceptMatcher extends AbstractMatcher implements
 
     @Override
     public synchronized MatchResult match(final URI origin, final URI destination) {
-        MatchResult result = this.indexedMatches.get(origin).get(destination);
+
+        MatchResult result = null;
+        if (this.indexedMatches == null) {
+            log.warn("The cache of indexed matches is null");
+        } else {
+            if (this.indexedMatches.get(origin) == null) {
+                log.warn("The cache does not contain matches for {}", origin);
+            } else {
+                result = this.indexedMatches.get(origin).get(destination);
+            }
+        }
+
         // If there are no entries for origin,dest assume fail.
         if (result == null) {
             result = new AtomicMatchResult(origin, destination, LogicConceptMatchType.Fail, this);
