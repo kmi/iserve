@@ -217,22 +217,10 @@ public class Util {
     public static String generateSubclassPattern(URI origin, String matchVariable) {
         return new StringBuilder()
                 .append("?").append(matchVariable).append(" ")
-                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append("* ")
+                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append("+ ")
                 .append(sparqlWrapUri(origin)).append(" .")
                 .toString();
     }
-
-    public static String generateSubclassOfPropertyRangePattern(URI origin, String matchVariable) {
-        return new StringBuilder()
-                .append("?range ")
-                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append("* ")
-                .append(sparqlWrapUri(origin)).append(" .")
-                .append("?").append(matchVariable).append(" ")
-                .append(sparqlWrapUri(RDFS.range.getURI())).append(" ")
-                .append("?range .")
-                .toString();
-    }
-
 
     /**
      * Generate a pattern for checking if destination is a subclass of origin
@@ -244,7 +232,7 @@ public class Util {
     public static String generateSubclassPattern(URI origin, URI destination) {
         return new StringBuilder()
                 .append(sparqlWrapUri(destination)).append(" ")
-                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append("* ")
+                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append("+ ")
                 .append(sparqlWrapUri(origin)).append(" .")
                 .toString();
     }
@@ -259,22 +247,10 @@ public class Util {
     public static String generateSuperclassPattern(URI origin, String matchVariable) {
         return new StringBuilder()
                 .append(sparqlWrapUri(origin)).append(" ")
-                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append("* ")
-                .append("?").append(matchVariable).append(" . ")
+                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append("+ ")
+                .append("?").append(matchVariable).append(" .")
                 .toString();
     }
-
-    public static String generateSuperclassOfPropertyRangePattern(URI origin, String matchVariable) {
-        return new StringBuilder()
-                .append(sparqlWrapUri(origin)).append(" ")
-                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append("* ")
-                .append("?range . ")
-                .append("?").append(matchVariable).append(" ")
-                .append(sparqlWrapUri(RDFS.range.getURI())).append(" ")
-                .append("?range . ")
-                .toString();
-    }
-
 
     private static String sparqlWrapUri(URI uri) {
         return new StringBuilder().append("<").append(uri.toASCIIString().replace(">", "%3e")).append(">").toString();
@@ -294,7 +270,7 @@ public class Util {
     public static String generateSuperclassPattern(URI origin, URI destination) {
         return new StringBuilder()
                 .append(sparqlWrapUri(origin)).append(" ")
-                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append("* ")
+                .append(sparqlWrapUri(RDFS.subClassOf.getURI())).append("+ ")
                 .append(sparqlWrapUri(destination)).append(" .")
                 .toString();
     }
@@ -354,24 +330,6 @@ public class Util {
         StringBuffer query = new StringBuffer();
         query.append(Util.generateSubclassPattern(origin, matchVariable) + NL);
         query.append(Util.generateSuperclassPattern(origin, matchVariable) + NL);
-        // Bind a variable for inspection
-        query.append("BIND (true as ?" + bindingVar + ") ." + NL);
-        // Include origin and destination in the returned bindings if requested
-        if (includeUrisBound) {
-            query.append("BIND (").append(sparqlWrapUri(origin)).append(" as ?origin) .").append(NL);
-            query.append("BIND (?").append(matchVariable).append(" as ?destination) .").append(NL);    // FIXME
-        }
-        return query.toString();
-    }
-
-    public static String generateExactMatchForPropertyRangePattern(URI origin,
-                                                                   String matchVariable,
-                                                                   String bindingVar,
-                                                                   boolean includeUrisBound) {
-
-        StringBuffer query = new StringBuffer();
-        query.append(Util.generateSubclassOfPropertyRangePattern(origin, matchVariable) + NL);
-        query.append(Util.generateSuperclassOfPropertyRangePattern(origin, matchVariable) + NL);
         // Bind a variable for inspection
         query.append("BIND (true as ?" + bindingVar + ") ." + NL);
         // Include origin and destination in the returned bindings if requested
@@ -443,27 +401,6 @@ public class Util {
         return query.toString();
     }
 
-    public static String generateMatchStrictSubclassesOfPropertyRangePattern(URI origin,
-                                                                             String matchVariable,
-                                                                             String flagVar,
-                                                                             boolean includeUrisBound) {
-        StringBuffer query = new StringBuffer();
-        query.append(Util.generateSubclassOfPropertyRangePattern(origin, matchVariable) + NL);
-        query.append("FILTER NOT EXISTS { ")
-                .append(Util.generateSuperclassOfPropertyRangePattern(origin, matchVariable))
-                .append("}")
-                .append(NL);
-        // Bind a variable for inspection
-        query.append("BIND (true as ?").append(flagVar).append(") .").append(NL);
-        // Include origin and destination in the returned bindings if requested
-        if (includeUrisBound) {
-            query.append("BIND (").append(sparqlWrapUri(origin)).append(" as ?origin) .").append(NL);
-            query.append("BIND (?").append(matchVariable).append(" as ?destination) .").append(NL);    //FIXME
-        }
-        return query.toString();
-    }
-
-
     /**
      * Generate a pattern for obtaining the strict subclasses of a concept.
      * Uses BIND which Requires SPARQL 1.1
@@ -510,23 +447,6 @@ public class Util {
                                                                 boolean includeUrisBound) {
         StringBuffer query = new StringBuffer();
         query.append(Util.generateSuperclassPattern(origin, matchVariable) + NL);
-        query.append("FILTER NOT EXISTS { " + Util.generateSubclassPattern(origin, matchVariable) + "}" + NL);
-        // Bind a variable for inspection
-        query.append("BIND (true as ?" + bindingVar + ") ." + NL);
-        // Include origin and destination in the returned bindings if requested
-        if (includeUrisBound) {
-            query.append("BIND (").append(sparqlWrapUri(origin)).append(" as ?origin) .").append(NL);
-            query.append("BIND (?").append(matchVariable).append(" as ?destination) .").append(NL);   // FIXME
-        }
-        return query.toString();
-    }
-
-    public static String generateMatchStrictSuperclassesOfPropertyRangePattern(URI origin,
-                                                                               String matchVariable,
-                                                                               String bindingVar,
-                                                                               boolean includeUrisBound) {
-        StringBuffer query = new StringBuffer();
-        query.append(Util.generateSuperclassOfPropertyRangePattern(origin, matchVariable) + NL);
         query.append("FILTER NOT EXISTS { " + Util.generateSubclassPattern(origin, matchVariable) + "}" + NL);
         // Bind a variable for inspection
         query.append("BIND (true as ?" + bindingVar + ") ." + NL);
