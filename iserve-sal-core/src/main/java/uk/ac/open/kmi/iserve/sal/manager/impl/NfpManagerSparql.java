@@ -107,7 +107,7 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
         RDFNode object;
         if (value instanceof URI) {
             object = model.createResource(((URI) value).toASCIIString());
-            if (property.toASCIIString().equals(SAWSDL.modelReference)) {
+            if (property.toASCIIString().equals(SAWSDL.modelReference.getURI())) {
                 if (graphStoreManager.fetchAndStore((URI) value)) {
                     getEventBus().post(new OntologyCreatedEvent(new Date(), (URI) value));
                 }
@@ -118,6 +118,8 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
 
         Statement triple = model.createStatement(model.createResource(resource.toASCIIString()), model.createProperty(property.toASCIIString()), object);
         model.add(triple);
+        // TODO: Do we really need to get the Graph back to upload it again?!
+
         URI graphUri = graphStoreManager.getGraphUriByResource(resource);
         if (graphUri == null) {
             throw new SalException("The requested resource does not exist");
@@ -375,9 +377,10 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
         RDFNode object;
         if (value instanceof URI) {
             object = model.createResource(((URI) value).toASCIIString());
-            if (property.toASCIIString().equals(SAWSDL.modelReference)) {
-                graphStoreManager.fetchAndStore((URI) value);
-            }
+// No need, we are deleting
+//            if (property.toASCIIString().equals(SAWSDL.modelReference)) {
+//                graphStoreManager.fetchAndStore((URI) value);
+//            }
         } else {
             object = model.createTypedLiteral(value);
         }

@@ -784,7 +784,9 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
 
         Callable<Boolean> task = new CrawlCallable(this, modelSpec, modelUri, syntax);
         log.debug("Fetching model - {}", modelUri);
-        return this.executor.submit(task);
+        Future<Boolean> future = this.executor.submit(task);
+        this.fetchingMap.put(modelUri, future);
+        return future;
     }
 
     /**

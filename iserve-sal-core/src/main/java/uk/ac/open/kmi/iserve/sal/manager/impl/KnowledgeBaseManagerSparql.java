@@ -54,9 +54,11 @@ import java.util.concurrent.Future;
 /**
  * This class is a parametric tool for crawling for RDF data.
  *
- * todo parameters: timeout, max allowed file size, max allowed files, number of
+ * TODO parameters: timeout, max allowed file size, max allowed files, number of
  * threads, request throttling (global, per-host) todo add logging with
  * ScutterVocab?
+ *
+ * TODO: We should merge NFP Manager with this (or extend this)
  *
  * @author <a href="mailto:carlos.pedrinaci@open.ac.uk">Carlos Pedrinaci</a> (KMi - The Open University)
  */
@@ -70,6 +72,7 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
 
     // Set backed by a ConcurrentHashMap to avoid race conditions
     // Tracks unreachability and the moment this was last attempted
+    // This should actually be pushed down where the fetching occurs
     private Map<URI, Date> unreachableModels;
 
     private SparqlGraphStoreManager graphStoreManager;
@@ -197,7 +200,6 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
      * @return True if all the models were properly fetched, false otherwise
      */
     private boolean fetchModelsForService(Service svc) {
-
         boolean result = true;
 
         Set<URI> modelUris = obtainReferencedModelUris(svc);
