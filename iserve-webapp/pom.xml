@@ -60,14 +60,18 @@
                     <!-- Include your own setup for this -->
                     <container>
                         <containerId>tomcat7x</containerId>
-                        <type>remote</type>
+                        <systemProperties>
+                            <log4j.configuration>file:${project.parent.basedir}/conf/log4j.properties</log4j.configuration>
+                            <iserve.config>${project.parent.basedir}/conf/config.properties</iserve.config>
+                        </systemProperties>
                     </container>
+
+                    <!-- Configuration to use with the container -->
                     <configuration>
-                        <type>runtime</type>
+                        <home>${project.build.directory}/tomcat7x</home>
                         <properties>
-                            <cargo.tomcat.manager.url>${deployment.server.url}</cargo.tomcat.manager.url>
-                            <cargo.remote.username>${deployment.server.user}</cargo.remote.username>
-                            <cargo.remote.password>${deployment.server.password}</cargo.remote.password>
+                            <cargo.servlet.port>9090</cargo.servlet.port>
+                            <!--<cargo.logging>high</cargo.logging>-->
                         </properties>
                     </configuration>
                     <!-- Deployables configuration -->
@@ -77,7 +81,7 @@
                             <artifactId>${project.artifactId}</artifactId>
                             <type>war</type>
                             <properties>
-                                <context>${deployment.server.context}</context>
+                                <context>/iserve</context>
                             </properties>
                         </deployable>
                     </deployables>
