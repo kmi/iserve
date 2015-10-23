@@ -20,6 +20,8 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.Table;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import junit.framework.Assert;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
@@ -31,20 +33,11 @@ import org.slf4j.LoggerFactory;
 import uk.ac.open.kmi.iserve.discovery.api.ConceptMatcher;
 import uk.ac.open.kmi.iserve.discovery.api.MatchResult;
 import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
-import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
-import uk.ac.open.kmi.msm4j.io.MediaType;
-import uk.ac.open.kmi.msm4j.io.Syntax;
-import uk.ac.open.kmi.msm4j.io.util.FilenameFilterBySyntax;
 
 import javax.inject.Inject;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -57,11 +50,9 @@ import java.util.Set;
  * @since 01/08/2013
  */
 @RunWith(JukitoRunner.class)
-public class ConceptMatcherOwlTcTest {
+public class ConceptMatcherSumoTest {
 
-    private static final Logger log = LoggerFactory.getLogger(ConceptMatcherOwlTcTest.class);
-
-    private static final String OWLS_TC_MSM = "/services/OWLS-1.1-MSM";
+    private static final Logger log = LoggerFactory.getLogger(ConceptMatcherSumoTest.class);
 
     private static final String OWL_THING = "http://www.w3.org/2002/07/owl#Thing";
     private static final String OWL_NOTHING = "http://www.w3.org/2002/07/owl#Nothing";
@@ -76,6 +67,8 @@ public class ConceptMatcherOwlTcTest {
     private static final String SUMO_THERAPEUTIC_PROCESS = "http://127.0.0.1:8000/ontology/SUMO.owl#TherapeuticProcess";
     private static final String SUMO_INTENTIONAL_PROCESS = "http://127.0.0.1:8000/ontology/SUMO.owl#IntentionalProcess";
     private static final String SUMO_ENTITY = "http://127.0.0.1:8000/ontology/SUMO.owl#Entity";
+    private static final String SUMO_CM = "http://127.0.0.1:8000/ontology/SUMO.owl#Centimeter";
+    private static final String SUMO_OWL = "http://127.0.0.1:8000/ontology/SUMO.owl";
 
     @Inject
     private ConceptMatcher conceptMatcher;
@@ -85,39 +78,60 @@ public class ConceptMatcherOwlTcTest {
         Injector injector = Guice.createInjector(new RegistryManagementModule());
         RegistryManager registryManager = injector.getInstance(RegistryManager.class);
         registryManager.clearRegistry();
-        uploadOwlsTc(registryManager);
+
+        // Upload SUMO
+        Model model = ModelFactory.createDefaultModel();
+        model.read(SUMO_OWL);
+        registryManager.getKnowledgeBaseManager().uploadModel(new URI(SUMO_OWL), model, true);
     }
 
-    private static void uploadOwlsTc(RegistryManager registryManager) throws URISyntaxException,
-            FileNotFoundException, SalException {
-        // Obtain service documents
-        URI testFolder = ConceptMatcherOwlTcTest.class.getResource(OWLS_TC_MSM).toURI();
-        FilenameFilter ttlFilter = new FilenameFilterBySyntax(Syntax.TTL);
-        File dir = new File(testFolder);
-        File[] msmTtlTcFiles = dir.listFiles(ttlFilter);
-
-        FileInputStream in;
-        // Upload every document and obtain their URLs
-        for (File ttlFile : msmTtlTcFiles) {
-            log.debug("Importing {}", ttlFile.getAbsolutePath());
-            in = new FileInputStream(ttlFile);
-            registryManager.importServices(in, MediaType.TEXT_TURTLE.getMediaType());
-        }
-        log.debug("Ready");
-    }
-
+    @Test
     public void testMatch() throws Exception {
 
-        URI origin = URI.create(SUMO_EURO_DOLLAR);
-        URI destination = URI.create(SUMO_QUANTITY);
+        URI euro = URI.create(SUMO_EURO_DOLLAR);
+        URI quantity = URI.create(SUMO_QUANTITY);
+        URI cm = URI.create(SUMO_CM);
 
         // Obtain matches
+        // Check Plugin
         Stopwatch stopwatch = new Stopwatch().start();
-        MatchResult match = conceptMatcher.match(origin, destination);
+        MatchResult match = conceptMatcher.match(euro, quantity);
         stopwatch.stop();
 
         log.info("Obtained match in {} \n {}", stopwatch, match);
         Assert.assertEquals(match.getMatchType(), LogicConceptMatchType.Plugin);
+
+        // Check Subsumes
+        stopwatch = new Stopwatch().start();
+        match = conceptMatcher.match(quantity, euro);
+        stopwatch.stop();
+
+        log.info("Obtained match in {} \n {}", stopwatch, match);
+        Assert.assertEquals(match.getMatchType(), LogicConceptMatchType.Subsume);
+
+        // Check Exact
+        stopwatch = new Stopwatch().start();
+        match = conceptMatcher.match(euro, euro);
+        stopwatch.stop();
+
+        log.info("Obtained match in {} \n {}", stopwatch, match);
+        Assert.assertEquals(match.getMatchType(), LogicConceptMatchType.Exact);
+
+        // Check Fail
+        stopwatch = new Stopwatch().start();
+        match = conceptMatcher.match(euro, cm);
+        stopwatch.stop();
+
+        log.info("Obtained match in {} \n {}", stopwatch, match);
+        Assert.assertEquals(match.getMatchType(), LogicConceptMatchType.Fail);
+
+        stopwatch = new Stopwatch().start();
+        match = conceptMatcher.match(cm, euro);
+        stopwatch.stop();
+
+        log.info("Obtained match in {} \n {}", stopwatch, match);
+        Assert.assertEquals(match.getMatchType(), LogicConceptMatchType.Fail);
+
     }
 
     @Test
@@ -154,10 +168,11 @@ public class ConceptMatcherOwlTcTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) exact matches - {} - in {} \n", matches.size(), matches, stopwatch);
+        Assert.assertTrue(matches.size() == 1);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_EURO_DOLLAR)));
         stopwatch.reset();
 
-        // Obtain only plugin
+        // Obtain only plugin for Euro
         stopwatch.start();
         matches = conceptMatcher.listMatchesOfType(URI.create(SUMO_EURO_DOLLAR), LogicConceptMatchType.Plugin);
         stopwatch.stop();
