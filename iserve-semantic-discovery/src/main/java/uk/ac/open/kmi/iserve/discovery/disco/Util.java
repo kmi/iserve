@@ -32,6 +32,7 @@ import uk.ac.open.kmi.msm4j.io.util.URIUtil;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -342,10 +343,8 @@ public class Util {
 
     /**
      * Generate a pattern for check if two concepts have an exact match.
-     * Basically we look for those that are subclasses and superclasses
+     * Basically we look for either identical classes or equivalent ones
      * Uses BIND which Requires SPARQL 1.1
-     *
-     * TODO: Does not match if we don't know a certain element is a class!
      *
      * @param origin           the URL of the class we want to find exact matches for
      * @param destination      the URL of the class we are checking the match for
@@ -357,17 +356,35 @@ public class Util {
     public static String generateExactMatchPattern(URI origin,
                                                    URI destination, String bindingVar, boolean includeUrisBound) {
 
+        List<String> patterns = new ArrayList<String>();
+
+        // Exact match pattern
         StringBuffer query = new StringBuffer();
         query.append(Util.generateSubclassPattern(origin, destination) + NL);
         query.append(Util.generateSuperclassPattern(origin, destination) + NL);
+
+        patterns.add(query.toString());
+
+        // Find same term cases
+        query = new StringBuffer();
+        query.append("FILTER (sameTerm(").
+                append(sparqlWrapUri(origin)).
+                append(",").
+                append(sparqlWrapUri(destination)).
+                append(") ) . " + NL);
+
+        patterns.add(query.toString());
+
+        StringBuffer result = new StringBuffer(generateUnionStatement(patterns));
+
         // Bind a variable for inspection
-        query.append("BIND (true as ?" + bindingVar + ") ." + NL);
+        result.append("BIND (true as ?" + bindingVar + ") ." + NL);
         // Include origin and destination in the returned bindings if requested
         if (includeUrisBound) {
-            query.append("BIND (").append(sparqlWrapUri(origin)).append(" as ?origin) .").append(NL);
-            query.append("BIND (").append(sparqlWrapUri(destination)).append(" as ?destination) .").append(NL);
+            result.append("BIND (").append(sparqlWrapUri(origin)).append(" as ?origin) .").append(NL);
+            result.append("BIND (").append(sparqlWrapUri(destination)).append(" as ?destination) .").append(NL);
         }
-        return query.toString();
+        return result.toString();
     }
 
     /**

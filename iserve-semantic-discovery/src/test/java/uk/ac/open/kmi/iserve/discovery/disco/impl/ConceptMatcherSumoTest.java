@@ -99,7 +99,7 @@ public class ConceptMatcherSumoTest {
         stopwatch.stop();
 
         log.info("Obtained match in {} \n {}", stopwatch, match);
-        Assert.assertEquals(match.getMatchType(), LogicConceptMatchType.Plugin);
+        Assert.assertEquals(LogicConceptMatchType.Plugin, match.getMatchType());
 
         // Check Subsumes
         stopwatch = new Stopwatch().start();
@@ -107,7 +107,7 @@ public class ConceptMatcherSumoTest {
         stopwatch.stop();
 
         log.info("Obtained match in {} \n {}", stopwatch, match);
-        Assert.assertEquals(match.getMatchType(), LogicConceptMatchType.Subsume);
+        Assert.assertEquals(LogicConceptMatchType.Subsume, match.getMatchType());
 
         // Check Exact
         stopwatch = new Stopwatch().start();
@@ -115,7 +115,7 @@ public class ConceptMatcherSumoTest {
         stopwatch.stop();
 
         log.info("Obtained match in {} \n {}", stopwatch, match);
-        Assert.assertEquals(match.getMatchType(), LogicConceptMatchType.Exact);
+        Assert.assertEquals(LogicConceptMatchType.Exact, match.getMatchType());
 
         // Check Fail
         stopwatch = new Stopwatch().start();
@@ -123,14 +123,14 @@ public class ConceptMatcherSumoTest {
         stopwatch.stop();
 
         log.info("Obtained match in {} \n {}", stopwatch, match);
-        Assert.assertEquals(match.getMatchType(), LogicConceptMatchType.Fail);
+        Assert.assertEquals(LogicConceptMatchType.Fail, match.getMatchType());
 
         stopwatch = new Stopwatch().start();
         match = conceptMatcher.match(cm, euro);
         stopwatch.stop();
 
         log.info("Obtained match in {} \n {}", stopwatch, match);
-        Assert.assertEquals(match.getMatchType(), LogicConceptMatchType.Fail);
+        Assert.assertEquals(LogicConceptMatchType.Fail, match.getMatchType());
 
     }
 
@@ -178,14 +178,14 @@ public class ConceptMatcherSumoTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) plugin matches - {} - in {} \n", matches.size(), matches, stopwatch);
-        Assert.assertTrue(matches.size() == 23 || matches.size() == 24);
+        Assert.assertTrue(matches.size() == 5 || matches.size() == 6);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CONSTANT_QUANTITY)));
         // Depending on the reasoning use there should also be "http://www.w3.org/2002/07/owl#Thing"
-        if (matches.size() == 24) {
+        if (matches.size() == 6) {
             Assert.assertTrue(matches.containsKey(URI.create(OWL_THING)));
         }
 
@@ -225,7 +225,7 @@ public class ConceptMatcherSumoTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) At least Exact matches - {} - in {} \n", matches.size(), matches, stopwatch);
-        Assert.assertTrue(matches.size() == 24 || matches.size() == 25);
+        Assert.assertTrue(matches.size() == 6 || matches.size() == 7);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
@@ -233,7 +233,7 @@ public class ConceptMatcherSumoTest {
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CONSTANT_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_EURO_DOLLAR)));
         // Depending on the reasoning use there should also be "http://www.w3.org/2002/07/owl#Thing"
-        if (matches.size() == 25) {
+        if (matches.size() == 7) {
             Assert.assertTrue(matches.containsKey(URI.create(OWL_THING)));
         }
 
@@ -245,7 +245,7 @@ public class ConceptMatcherSumoTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) At least Plugin matches - {} - in {} \n", matches.size(), matches, stopwatch);
-        Assert.assertTrue(matches.size() == 24 || matches.size() == 25);
+        Assert.assertTrue(matches.size() == 6 || matches.size() == 8);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
@@ -253,7 +253,7 @@ public class ConceptMatcherSumoTest {
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CONSTANT_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_EURO_DOLLAR)));
         // Depending on the reasoning use there should also be "http://www.w3.org/2002/07/owl#Thing" and Nothing
-        if (matches.size() == 25) {
+        if (matches.size() == 7) {
             Assert.assertTrue(matches.containsKey(URI.create(OWL_THING)));
             Assert.assertTrue(matches.containsKey(URI.create(OWL_NOTHING)));
         }
@@ -265,7 +265,7 @@ public class ConceptMatcherSumoTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) At least Fail matches - {} - in {} \n", matches.size(), matches, stopwatch);
-        Assert.assertTrue(matches.size() == 24 || matches.size() == 26);
+        Assert.assertTrue(matches.size() == 6 || matches.size() == 8);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
@@ -274,7 +274,7 @@ public class ConceptMatcherSumoTest {
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_EURO_DOLLAR)));
         // Depending on the reasoning use there should also be "http://www.w3.org/2002/07/owl#Thing" and
         // owl:Nothing
-        if (matches.size() == 26) {
+        if (matches.size() == 8) {
             Assert.assertTrue(matches.containsKey(URI.create(OWL_THING)));
             Assert.assertTrue(matches.containsKey(URI.create(OWL_NOTHING)));
         }
@@ -290,7 +290,7 @@ public class ConceptMatcherSumoTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) At most Exact matches - {} - in {} \n", matches.size(), matches, stopwatch);
-        Assert.assertTrue(matches.size() == 24 || matches.size() == 26);
+        Assert.assertTrue(matches.size() == 6 || matches.size() == 8);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
@@ -299,7 +299,7 @@ public class ConceptMatcherSumoTest {
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_EURO_DOLLAR)));
         // Depending on the reasoning use there should also be "http://www.w3.org/2002/07/owl#Thing" and
         // owl:Nothing
-        if (matches.size() == 26) {
+        if (matches.size() == 8) {
             Assert.assertTrue(matches.containsKey(URI.create(OWL_THING)));
             Assert.assertTrue(matches.containsKey(URI.create(OWL_NOTHING)));
         }
@@ -311,7 +311,7 @@ public class ConceptMatcherSumoTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) At most Plugin matches - {} - in {} \n", matches.size(), matches, stopwatch);
-        Assert.assertTrue(matches.size() == 23 || matches.size() == 25);
+        Assert.assertTrue(matches.size() == 5 || matches.size() == 7);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
@@ -319,7 +319,7 @@ public class ConceptMatcherSumoTest {
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CONSTANT_QUANTITY)));
         // Depending on the reasoning use there should also be "http://www.w3.org/2002/07/owl#Thing" and
         // owl:Nothing
-        if (matches.size() == 25) {
+        if (matches.size() == 7) {
             Assert.assertTrue(matches.containsKey(URI.create(OWL_THING)));
             Assert.assertTrue(matches.containsKey(URI.create(OWL_NOTHING)));
         }
@@ -358,7 +358,7 @@ public class ConceptMatcherSumoTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) all matches - {} - in {} \n", matches.size(), matches, stopwatch);
-        Assert.assertTrue(matches.size() == 24 || matches.size() == 26);
+        Assert.assertTrue(matches.size() == 6 || matches.size() == 8);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
@@ -367,7 +367,7 @@ public class ConceptMatcherSumoTest {
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_EURO_DOLLAR)));
         // Depending on the reasoning use there should also be "http://www.w3.org/2002/07/owl#Thing" and
         // owl:Nothing
-        if (matches.size() == 26) {
+        if (matches.size() == 8) {
             Assert.assertTrue(matches.containsKey(URI.create(OWL_THING)));
             Assert.assertTrue(matches.containsKey(URI.create(OWL_NOTHING)));
         }
@@ -389,7 +389,7 @@ public class ConceptMatcherSumoTest {
         stopwatch.stop();
 
         log.info("Obtained ({}) matches >= Plugin - {} - in {} \n", matches.size(), matches, stopwatch);
-        Assert.assertTrue(matches.size() == 24 || matches.size() == 25);
+        Assert.assertTrue(matches.size() == 6 || matches.size() == 7);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
@@ -397,7 +397,7 @@ public class ConceptMatcherSumoTest {
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CONSTANT_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_EURO_DOLLAR)));
         // Depending on the reasoning use there should also be "http://www.w3.org/2002/07/owl#Thing"
-        if (matches.size() == 25) {
+        if (matches.size() == 7) {
             Assert.assertTrue(matches.containsKey(URI.create(OWL_THING)));
         }
         stopwatch.reset();
@@ -409,7 +409,7 @@ public class ConceptMatcherSumoTest {
 
         log.info("Obtained ({}) Subsumes >= matches >= Plugin - {} - in {} \n", matches.size(),
                 matches, stopwatch);
-        Assert.assertTrue(matches.size() == 23 || matches.size() == 24);
+        Assert.assertTrue(matches.size() == 5 || matches.size() == 6);
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_ABSTRACT)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_PHYSICAL_QUANTITY)));
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CURRENCY_MEASURE)));
@@ -417,7 +417,7 @@ public class ConceptMatcherSumoTest {
         Assert.assertTrue(matches.containsKey(URI.create(SUMO_CONSTANT_QUANTITY)));
         // Depending on the reasoning use there should also be "http://www.w3.org/2002/07/owl#Thing" and
         // owl:Nothing
-        if (matches.size() == 24) {
+        if (matches.size() == 6) {
             Assert.assertTrue(matches.containsKey(URI.create(OWL_THING)));
         }
         stopwatch.reset();

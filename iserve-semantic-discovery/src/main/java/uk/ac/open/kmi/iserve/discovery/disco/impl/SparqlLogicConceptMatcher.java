@@ -146,7 +146,6 @@ public class SparqlLogicConceptMatcher extends AbstractMatcher implements Concep
             stopwatch.stop();
             log.debug("Time taken for querying the registry: {}", stopwatch);
 
-            // Obtain matches if any and figure out the type
             if (qResults.hasNext()) {
                 QuerySolution soln = qResults.nextSolution();
                 type = getMatchType(soln);
