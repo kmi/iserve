@@ -367,9 +367,9 @@ public class Util {
 
         // Find same term cases
         query = new StringBuffer();
-        query.append("FILTER (sameTerm(").
+        query.append("FILTER (str(").
                 append(sparqlWrapUri(origin)).
-                append(",").
+                append(") = str(").
                 append(sparqlWrapUri(destination)).
                 append(") ) . " + NL);
 
