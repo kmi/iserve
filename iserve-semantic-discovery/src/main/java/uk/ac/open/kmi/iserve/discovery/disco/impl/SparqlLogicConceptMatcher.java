@@ -184,7 +184,21 @@ public class SparqlLogicConceptMatcher extends AbstractMatcher implements Concep
 
         log.debug("SPARQL Query generated: \n {}", queryStr);
 
-        return queryForMatchResults(queryStr);
+        // This only returns positive matches. Fill up the rest with Fails
+        Table<URI, URI, MatchResult> positiveMatches = queryForMatchResults(queryStr);
+        ImmutableTable.Builder<URI, URI, MatchResult> results = ImmutableTable.builder();
+        results.putAll(positiveMatches);
+
+        // Fill up those not present with Fails
+        for (URI origin : origins) {
+            for (URI destination : destinations) {
+                if (!positiveMatches.contains(origin, destination)) {
+                    results.put(origin, destination, new AtomicMatchResult(origin, destination, LogicConceptMatchType.Fail, this));
+                }
+            }
+        }
+
+        return results.build();
     }
 
     private Table<URI, URI, MatchResult> queryForMatchResults(String queryStr) {
