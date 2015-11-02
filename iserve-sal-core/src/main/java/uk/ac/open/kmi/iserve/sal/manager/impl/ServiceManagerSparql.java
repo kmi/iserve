@@ -864,18 +864,10 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
             queryBuilder.append(" ?entity <").append(dataPropertyType.getURI()).append("> ?message .").append("\n");
         }
 
-// TODO: Fix this bit
-// Important: This assumes the chains will always be mandatory or optional. If there are optional parts within
-// mandatory we won't get and vice versa. For those cases we'd really want reasoning
-// Remove these for now since we are now using variable length paths
-//        queryBuilder.append("{ ?message <").append(MSM.hasPartTransitive.getURI()).append("> ?part . }").append("\n");
-//        queryBuilder.append(" UNION \n");
-//        queryBuilder.append("{ ?message <").append(MSM.hasPart.getURI()).append("> ?part . }").append("\n");
-//        queryBuilder.append(" UNION \n");
-        queryBuilder.append("{ ?message <").append(MSM.hasOptionalPart.getURI()).append(">+ ?part . }").append("\n");
-        queryBuilder.append(" UNION \n");
-        queryBuilder.append("{ ?message <").append(MSM.hasMandatoryPart.getURI()).append(">+ ?part . }").append("\n");
-        queryBuilder.append(" ?part <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").append("\n } } ");
+        queryBuilder.append("?message (<").append(MSM.hasOptionalPart.getURI()).
+                append("> | <").append(MSM.hasMandatoryPart.getURI()).append(">)+ ?part . \n").
+                append(" ?part <").append(SAWSDL.modelReference.getURI()).append("> <").append(modelReference.toASCIIString()).append("> .").
+                append("}}");
 
         return this.graphStoreManager.listResourcesByQuery(queryBuilder.toString(), "entity");
     }
