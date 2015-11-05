@@ -82,7 +82,7 @@ public class SwaggerModule extends ServletModule {
         log.debug("Setting Swagger API info");
         ApiInfo info = new ApiInfo(
                 "iServe RESTful API",                             /* title */
-                "This is the documentation of the RESTful API to access iServe functionalities. You can find out more about iServe " +
+                "This is the documentation of the RESTful API to access iServe functionality. You can find out more about iServe " +
                         "at <a href=\"http://iserve.kmi.open.ac.uk\">http://iserve.kmi.open.ac.uk</a>.",
                 "",                  /* TOS URL */
                 "iserve-general@googlegroups.com",                            /* Contact */
