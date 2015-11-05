@@ -5,6 +5,9 @@ import java.util.Set;
 
 /**
  * Created by Luca Panziera on 10/11/14.
+ *
+ * TODO: Structure this better so that we distinguish between scorers, rankers, filters, etc
+ *
  */
 public class DiscoveryRequest {
     private DiscoveryFunction discoveryFunction;

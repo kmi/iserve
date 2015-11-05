@@ -100,8 +100,12 @@ public class PopularityBasedRankingTest {
 
     @Test
     public void discoveryTest(DiscoveryEngine discoveryEngine) {
-        
-        String query = "{\n" +
+
+        String query;
+        Stopwatch stopwatch;
+        Map<URI, Pair<Double, MatchResult>> result;
+
+        query = "{\n" +
                 "    \"discovery\": {\n" +
                 "        \"func-rdfs\": {\n" +
                 "            \"classes\": {\n" +
@@ -121,15 +125,54 @@ public class PopularityBasedRankingTest {
                 "    \"ranking\": \"standard\"\n" +
                 "}\n";
 
-        Stopwatch stopwatch = new Stopwatch().start();
-        Map<URI, Pair<Double, MatchResult>> result = discoveryEngine.discover(new JsonParser().parse(query));
+
+        stopwatch = new Stopwatch().start();
+        result = discoveryEngine.discover(new JsonParser().parse(query));
         stopwatch.stop();
 
         logger.info("Discovery complete in {}", stopwatch);
         logger.info("Result contains {} resources", result.size());
 
         Assert.assertTrue(!result.isEmpty());
+        Assert.assertEquals(67, result.size());
 
+        // Now use the scorer
+        query = "{\n" +
+                "    \"discovery\": {\n" +
+                "        \"func-rdfs\": {\n" +
+                "            \"classes\": {\n" +
+                "                \"or\": [\n" +
+                "                    {\n" +
+                "                        \"and\": [\n" +
+                "                            \"http://schema.org/BefriendAction\",\n" +
+                "                            \"http://schema.org/FollowAction\"\n" +
+                "                        ]\n" +
+                "                    },\n" +
+                "                    \"http://schema.org/DiscoverAction\"\n" +
+                "                ]\n" +
+                "            },\n" +
+                "            \"type\": \"svc\"\n" +
+                "        }\n" +
+                "    },\n" +
+                "    \"scoring\": [\n" +
+                "        {\n" +
+                "            \"scorerClass\": \"uk.ac.open.kmi.iserve.discovery.ranking.impl.ProviderPopularityScorer\"\n" +
+                "        }\n" +
+                "    ],\n" +
+                "    \"ranking\": \"standard\"\n" +
+                "}\n";
+
+        stopwatch = new Stopwatch().start();
+        result = discoveryEngine.discover(new JsonParser().parse(query));
+        stopwatch.stop();
+
+        logger.info("Discovery complete in {}", stopwatch);
+        logger.info("Result contains {} resources", result.size());
+
+        Assert.assertTrue(!result.isEmpty());
+        Assert.assertEquals(67, result.size());
+
+        // TODO: Check the order is right
     }
 
     /**

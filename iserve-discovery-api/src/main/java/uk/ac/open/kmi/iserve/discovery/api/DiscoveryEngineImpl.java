@@ -16,6 +16,7 @@
 
 package uk.ac.open.kmi.iserve.discovery.api;
 
+import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -240,8 +241,8 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
                 } else {
                     filterClass = filter.getClass();
                 }
-                if (discoveryRequest.getRequestedModules().isEmpty() || discoveryRequest.getRequestedModules().contains(filterClass)) {
-                    logger.info("Filtering: {}", filter);
+                if (discoveryRequest.getRequestedModules() != null && discoveryRequest.getRequestedModules().contains(filterClass)) {
+                    logger.debug("Filtering results with {}", filter);
                     if (discoveryRequest.getModuleParametersMap().containsKey(filterClass)) {
                         filteredResources = filter.apply(filteredResources, discoveryRequest.getModuleParametersMap().get(filterClass));
                     } else {
@@ -252,58 +253,65 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
         }
 
         if (discoveryRequest.rank()) {
-            if (scorers == null) {
-                logger.warn("Injection of scores without score composer: Ranking omitted!");
-            } else {
-                logger.info("Scoring");
-                Map<Scorer, Map<URI, Double>> localScoresMap = Maps.newHashMap();
+            // Rank if requested
+            logger.debug("Preparing scoring");
+            Map<Scorer, Map<URI, Double>> localScoresMap = Maps.newHashMap();
 
-                for (Scorer scorer : scorers) {
-                    Class scorerClass;
-                    if (scorer instanceof MolecularScorer) {
-                        scorerClass = ((MolecularScorer) scorer).getAtomicScorer().getClass();
-                    } else {
-                        scorerClass = scorer.getClass();
-                    }
-                    if (discoveryRequest.getRequestedModules().isEmpty() || discoveryRequest.getRequestedModules().contains(scorerClass)) {
-                        Map<URI, Double> localScores;
-                        if (discoveryRequest.getModuleParametersMap().containsKey(scorerClass)) {
-                            localScores = scorer.apply(filteredResources, discoveryRequest.getModuleParametersMap().get(scorerClass));
-                        } else {
-                            localScores = scorer.apply(filteredResources);
-                        }
-                        localScoresMap.put(scorer, localScores);
-                    }
-                }
-
-                Map<URI, Double> globalScores = scoreComposer.compose(localScoresMap);
-
-
-                logger.info("Ranking");
-                Map<URI, Double> rankedURIs;
-                if (discoveryRequest.getRankingType().equals("standard")) {
-                    rankedURIs = new StandardRanker().rank(globalScores);
+            for (Scorer scorer : scorers) {
+                Class scorerClass;
+                if (scorer instanceof MolecularScorer) {
+                    scorerClass = ((MolecularScorer) scorer).getAtomicScorer().getClass();
                 } else {
-                    rankedURIs = new ReverseRanker().rank(globalScores);
+                    scorerClass = scorer.getClass();
                 }
-
-                ImmutableMap.Builder<URI, Pair<Double, MatchResult>> builder = ImmutableMap.builder();
-                for (URI resource : rankedURIs.keySet()) {
-                    builder.put(resource, new Pair<Double, MatchResult>(rankedURIs.get(resource), funcResults.get(resource)));
+                // Find out which ones need to be applied
+                if (discoveryRequest.getRequestedModules() != null && discoveryRequest.getRequestedModules().contains(scorerClass)) {
+                    Map<URI, Double> localScores;
+                    if (discoveryRequest.getModuleParametersMap().containsKey(scorerClass)) {
+                        localScores = scorer.apply(filteredResources, discoveryRequest.getModuleParametersMap().get(scorerClass));
+                    } else {
+                        localScores = scorer.apply(filteredResources);
+                    }
+                    localScoresMap.put(scorer, localScores);
                 }
-
-
-                return builder.build();
             }
-        } else {
+
+            logger.info("Calculating final ranking ...");
+            Map<URI, Double> finalScores;
+            if (!localScoresMap.isEmpty()) {
+                // Scorers were provided
+                logger.debug("Composing scores using {}", localScoresMap.keySet());
+                finalScores = scoreComposer.compose(localScoresMap);
+            } else {
+                // Dummy scorer that assigns one by default
+                logger.debug("Applying constant scoring to all results");
+                finalScores = Maps.asMap(filteredResources, Functions.constant((double) 1));
+            }
+
+            Map<URI, Double> rankedURIs;
+            if (discoveryRequest.getRankingType().equals("standard")) {
+                logger.debug("Applying Standard Ranker");
+                rankedURIs = new StandardRanker().rank(finalScores);
+            } else {
+                logger.debug("Applying Reverse Ranker");
+                rankedURIs = new ReverseRanker().rank(finalScores);
+            }
+
             ImmutableMap.Builder<URI, Pair<Double, MatchResult>> builder = ImmutableMap.builder();
-            for (URI resource : filteredResources) {
-                builder.put(resource, new Pair<Double, MatchResult>(new Double(0), funcResults.get(resource)));
+            for (URI resource : rankedURIs.keySet()) {
+                builder.put(resource, new Pair<Double, MatchResult>(rankedURIs.get(resource), funcResults.get(resource)));
             }
+
             return builder.build();
         }
 
-        return ImmutableMap.of();
+        // Returns the filtered results otherwise
+        logger.debug("Returning filtering results without ranking");
+        ImmutableMap.Builder<URI, Pair<Double, MatchResult>> builder = ImmutableMap.builder();
+        for (URI resource : filteredResources) {
+            builder.put(resource, new Pair<Double, MatchResult>(new Double(0), funcResults.get(resource)));
+        }
+        return builder.build();
     }
 
     @Override
@@ -317,14 +325,14 @@ public class DiscoveryEngineImpl extends IntegratedComponent implements Discover
         descriptionBuilder.append("Operation Discoverer: ").append(operationDiscoverer.getClass().getName()).append("\n")
                 .append("Service Discoverer: ").append(serviceDiscoverer.getClass().getName()).append("\n");
         if (!filters.isEmpty()) {
-            descriptionBuilder.append("Filters: { ");
+            descriptionBuilder.append("Available Filters: { ");
             for (Filter filter : filters) {
                 descriptionBuilder.append(filter.getClass().getName()).append(" ");
             }
             descriptionBuilder.append("}\n");
         }
         if (!scorers.isEmpty()) {
-            descriptionBuilder.append("Scorers: { ");
+            descriptionBuilder.append("Available Scorers: { ");
             for (Scorer scorer : scorers) {
                 descriptionBuilder.append(scorer.getClass().getName()).append(" ");
             }
