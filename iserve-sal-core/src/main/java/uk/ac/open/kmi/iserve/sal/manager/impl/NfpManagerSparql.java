@@ -42,6 +42,7 @@ import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
 import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
 import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
 import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
+import uk.ac.open.kmi.msm4j.io.util.URIUtil;
 import uk.ac.open.kmi.msm4j.vocabulary.SAWSDL;
 
 import java.net.URI;
@@ -108,8 +109,17 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
         if (value instanceof URI) {
             object = model.createResource(((URI) value).toASCIIString());
             if (property.toASCIIString().equals(SAWSDL.modelReference.getURI())) {
-                if (graphStoreManager.fetchAndStore((URI) value)) {
-                    getEventBus().post(new OntologyCreatedEvent(new Date(), (URI) value));
+                URI modelUri;
+                try {
+                    modelUri = URIUtil.getNameSpace((URI) value);
+                    if (!graphStoreManager.containsGraph(modelUri)) {
+                        if (graphStoreManager.fetchAndStore(modelUri)) {
+                            getEventBus().post(new OntologyCreatedEvent(new Date(), modelUri));
+                        }
+                    }
+                } catch (URISyntaxException e) {
+                    logger.warn("Ignoring modelReference URI. URI syntax exception: {}", value );
+                    e.printStackTrace();
                 }
             }
         } else {
