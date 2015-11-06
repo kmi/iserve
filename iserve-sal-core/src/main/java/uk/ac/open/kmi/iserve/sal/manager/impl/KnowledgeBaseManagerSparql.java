@@ -193,7 +193,7 @@ public class KnowledgeBaseManagerSparql extends IntegratedComponent implements K
     }
 
     /**
-     * Given a service, this method will fetch an upload of the models referred to by the service.
+     * Given a service, this method will fetch and upload the models referred to by the service.
      * This is a synchronous implementation that will therefore wait until its fetched and uploaded.
      *
      * @param svc the service to be checked for referred models.
