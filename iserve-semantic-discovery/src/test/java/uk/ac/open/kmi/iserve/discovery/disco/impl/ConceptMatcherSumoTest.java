@@ -23,6 +23,7 @@ import com.google.inject.Injector;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import junit.framework.Assert;
+import org.jukito.All;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.BeforeClass;
@@ -36,7 +37,6 @@ import uk.ac.open.kmi.iserve.discovery.disco.LogicConceptMatchType;
 import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
 import uk.ac.open.kmi.iserve.sal.manager.impl.RegistryManagementModule;
 
-import javax.inject.Inject;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Map;
@@ -70,8 +70,8 @@ public class ConceptMatcherSumoTest {
     private static final URI SUMO_ENTITY = URI.create(SUMO_OWL_STR + "#Entity");
     private static final URI SUMO_CM = URI.create(SUMO_OWL_STR + "#Centimeter");
 
-    @Inject
-    private ConceptMatcher conceptMatcher;
+//    @Inject
+//    private ConceptMatcher conceptMatcher;
 
     /**
      * JukitoModule.
@@ -82,17 +82,20 @@ public class ConceptMatcherSumoTest {
             // Get the Registry Management
             install(new RegistryManagementModule());
 
+            // Bind to all implementations
+            bindMany(ConceptMatcher.class,
+                    SparqlLogicConceptMatcher.class,
+                    SparqlIndexedLogicConceptMatcher.class);
+
 //            // bind
 //            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
-//
 //            // Necessary to verify interaction with the real object
 //            bindSpy(SparqlLogicConceptMatcher.class);
 
-            // bind
-            bind(ConceptMatcher.class).to(SparqlIndexedLogicConceptMatcher.class);
-
-            // Necessary to verify interaction with the real object
-            bindSpy(SparqlIndexedLogicConceptMatcher.class);
+//            // bind
+//            bind(ConceptMatcher.class).to(SparqlIndexedLogicConceptMatcher.class);
+//            // Necessary to verify interaction with the real object
+//            bindSpy(SparqlIndexedLogicConceptMatcher.class);
         }
     }
 
@@ -109,7 +112,7 @@ public class ConceptMatcherSumoTest {
     }
 
     @Test
-    public void testMatch() throws Exception {
+    public void testMatch(@All ConceptMatcher conceptMatcher) throws Exception {
 
         // Obtain matches
         // Check Plugin
@@ -154,7 +157,7 @@ public class ConceptMatcherSumoTest {
     }
 
     @Test
-    public void testMatchBySets() throws Exception {
+    public void testMatchBySets(@All ConceptMatcher conceptMatcher) throws Exception {
 
         Set<URI> origins = new HashSet<URI>();
         origins.add(SUMO_EURO_DOLLAR);
@@ -191,7 +194,7 @@ public class ConceptMatcherSumoTest {
     }
 
     @Test
-    public void testListMatchesOfType() throws Exception {
+    public void testListMatchesOfType(@All ConceptMatcher conceptMatcher) throws Exception {
         // Obtain only exact
         Stopwatch stopwatch = new Stopwatch().start();
         Map<URI, MatchResult> matches =
@@ -237,7 +240,7 @@ public class ConceptMatcherSumoTest {
     }
 
     @Test
-    public void testListMatchesAtLeastOfType() throws Exception {
+    public void testListMatchesAtLeastOfType(@All ConceptMatcher conceptMatcher) throws Exception {
         // Obtain at least exact
         Stopwatch stopwatch = new Stopwatch().start();
         Map<URI, MatchResult> matches =
@@ -313,7 +316,7 @@ public class ConceptMatcherSumoTest {
     }
 
     @Test
-    public void testListMatchesAtMostOfType() throws Exception {
+    public void testListMatchesAtMostOfType(@All ConceptMatcher conceptMatcher) throws Exception {
         // Obtain at least exact
         Stopwatch stopwatch = new Stopwatch().start();
         Map<URI, MatchResult> matches =
@@ -380,7 +383,7 @@ public class ConceptMatcherSumoTest {
     }
 
     @Test
-    public void testListMatchesWithinRange() throws Exception {
+    public void testListMatchesWithinRange(@All ConceptMatcher conceptMatcher) throws Exception {
 
         // Obtain all matches
         Stopwatch stopwatch = new Stopwatch().start();

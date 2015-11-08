@@ -18,6 +18,7 @@ package uk.ac.open.kmi.iserve.sal.manager.impl;
 
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import junit.framework.Assert;
+import org.jukito.All;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.AfterClass;
@@ -75,9 +76,9 @@ public class ServiceManagerTest {
             install(new TransformerModule());
 
             // bind all the implementations
-            bind(ServiceManager.class).to(ServiceManagerSparql.class);
-//            bindMany(ServiceManager.class, ServiceManagerSparql.class, ServiceManagerIndexRdf.class);
+            bindMany(ServiceManager.class, ServiceManagerSparql.class, ServiceManagerIndexRdf.class);
 
+//            bind(ServiceManager.class).to(ServiceManagerSparql.class);
             // Necessary to verify interaction with the real object
 //            bindSpy(ServiceManagerSparql.class);
 
@@ -153,7 +154,7 @@ public class ServiceManagerTest {
     }
 
     @Test
-    public void testListServices(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager) throws Exception {
+    public void testListServices(ServiceTransformationEngine transformationEngine, @All ServiceManager serviceManager) throws Exception {
 
         //check and import services
         checkAndImportServices(transformationEngine, serviceManager);
@@ -186,7 +187,7 @@ public class ServiceManagerTest {
 
     @Test
     //@Ignore
-    public void testListOperations(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager) throws Exception {
+    public void testListOperations(ServiceTransformationEngine transformationEngine, @All ServiceManager serviceManager) throws Exception {
 
         //check and import services
         checkAndImportServices(transformationEngine, serviceManager);
@@ -204,7 +205,7 @@ public class ServiceManagerTest {
 
     @Test
     //@Ignore
-    public void testListInputs(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager) throws Exception {
+    public void testListInputs(ServiceTransformationEngine transformationEngine, @All ServiceManager serviceManager) throws Exception {
 
         //check and import services
         checkAndImportServices(transformationEngine, serviceManager);
@@ -222,7 +223,7 @@ public class ServiceManagerTest {
     }
 
     @Test
-    public void testInputParts(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager) throws Exception {
+    public void testInputParts(ServiceTransformationEngine transformationEngine, @All ServiceManager serviceManager) throws Exception {
 
         //check and import services
         checkAndImportServices(transformationEngine, serviceManager);
@@ -252,7 +253,7 @@ public class ServiceManagerTest {
     }
 
     @Test
-    public void testListOutputs(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager) throws Exception {
+    public void testListOutputs(ServiceTransformationEngine transformationEngine, @All ServiceManager serviceManager) throws Exception {
 
         //check and import services
         checkAndImportServices(transformationEngine, serviceManager);
@@ -270,7 +271,7 @@ public class ServiceManagerTest {
     }
 
     @Test
-    public void testListOperationsWithInputType(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager)
+    public void testListOperationsWithInputType(ServiceTransformationEngine transformationEngine, @All ServiceManager serviceManager)
             throws Exception {
 
         //check and import services
@@ -304,7 +305,7 @@ public class ServiceManagerTest {
 
 
     @Test
-    public void testListOperationsWithOutputType(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager)
+    public void testListOperationsWithOutputType(ServiceTransformationEngine transformationEngine, @All ServiceManager serviceManager)
             throws Exception {
 
         //check and import services
@@ -337,7 +338,7 @@ public class ServiceManagerTest {
     }
 
     @Test
-    public void testListServicesWithInputType(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager) throws
+    public void testListServicesWithInputType(ServiceTransformationEngine transformationEngine, @All ServiceManager serviceManager) throws
             Exception {
 
         //check and import services
@@ -371,7 +372,7 @@ public class ServiceManagerTest {
 
 
     @Test
-    public void testListServicesWithOutputType(ServiceTransformationEngine transformationEngine, ServiceManager serviceManager)
+    public void testListServicesWithOutputType(ServiceTransformationEngine transformationEngine, @All ServiceManager serviceManager)
             throws Exception {
 
         //check and import services

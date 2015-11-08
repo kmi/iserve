@@ -25,6 +25,7 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import junit.framework.Assert;
+import org.jukito.All;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.BeforeClass;
@@ -43,7 +44,6 @@ import uk.ac.open.kmi.msm4j.*;
 import uk.ac.open.kmi.msm4j.io.TransformationException;
 import uk.ac.open.kmi.msm4j.io.impl.ServiceTransformationEngine;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
@@ -78,9 +78,6 @@ public class ConceptMatcherWSC08Test {
 
     private static final String MEDIATYPE = "text/xml";
 
-    @Inject
-    private ConceptMatcher conceptMatcher;
-
     /**
      * JukitoModule.
      */
@@ -90,11 +87,17 @@ public class ConceptMatcherWSC08Test {
             // bind
             install(new RegistryManagementModule());
 
-            bind(ConceptMatcher.class).to(SparqlIndexedLogicConceptMatcher.class);
-//                        bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
+//            bind(ConceptMatcher.class).to(SparqlLogicConceptMatcher.class);
+//            bindSpy(SparqlLogicConceptMatcher.class);
+//
+//            bind(ConceptMatcher.class).to(SparqlIndexedLogicConceptMatcher.class);
+//            bindSpy(SparqlIndexedLogicConceptMatcher.class);
 
-            // Necessary to verify interaction with the real object
-            bindSpy(SparqlIndexedLogicConceptMatcher.class);
+            // Bind to all implementations
+            bindMany(ConceptMatcher.class,
+//                    SparqlLogicConceptMatcher.class,
+                    SparqlIndexedLogicConceptMatcher.class);
+
         }
     }
 
@@ -150,14 +153,14 @@ public class ConceptMatcherWSC08Test {
     }
 
     @Test
-    public void testDirectPluginMatch() throws Exception {
+    public void testDirectPluginMatch(@All ConceptMatcher conceptMatcher) throws Exception {
 
         URI origin = URI.create(WSC_01_TAXONOMY_NS + "con1655991159");
         URI destination = URI.create(WSC_01_TAXONOMY_NS + "con409488015");
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
-        MatchResult match = this.conceptMatcher.match(origin, destination);
+        MatchResult match = conceptMatcher.match(origin, destination);
         stopwatch.stop();
 
         log.info("Obtained match in {} \n {}", stopwatch, match);
@@ -165,14 +168,14 @@ public class ConceptMatcherWSC08Test {
     }
 
     @Test
-    public void testDirectSubsumeMatch() throws Exception {
+    public void testDirectSubsumeMatch(@All ConceptMatcher conceptMatcher) throws Exception {
 
         URI origin = URI.create(WSC_01_TAXONOMY_NS + "con409488015");
         URI destination = URI.create(WSC_01_TAXONOMY_NS + "con1655991159");
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
-        MatchResult match = this.conceptMatcher.match(origin, destination);
+        MatchResult match = conceptMatcher.match(origin, destination);
         stopwatch.stop();
 
         log.info("Obtained match in {} \n {}", stopwatch, match);
@@ -180,14 +183,14 @@ public class ConceptMatcherWSC08Test {
     }
 
     @Test
-    public void testIndirectPluginMatch() throws Exception {
+    public void testIndirectPluginMatch(@All ConceptMatcher conceptMatcher) throws Exception {
 
         URI origin = URI.create(WSC_01_TAXONOMY_NS + "con1901563774");
         URI destination = URI.create(WSC_01_TAXONOMY_NS + "con241744282");
 
         // Obtain matches
         Stopwatch stopwatch = new Stopwatch().start();
-        MatchResult match = this.conceptMatcher.match(origin, destination);
+        MatchResult match = conceptMatcher.match(origin, destination);
         stopwatch.stop();
 
         log.info("Obtained match in {} \n {}", stopwatch, match);
@@ -197,7 +200,7 @@ public class ConceptMatcherWSC08Test {
 
     @Test
 //    @Ignore("Integration test (not a proper unit test), takes too long to complete")
-    public void testMultipleDiscovery(RegistryManager registryManager) throws Exception {
+    public void testMultipleDiscovery(@All ConceptMatcher conceptMatcher, RegistryManager registryManager) throws Exception {
         // Define the available inputs
         Set<URI> available = new HashSet<URI>();
 
@@ -245,7 +248,7 @@ public class ConceptMatcherWSC08Test {
                             log.info("\t> Match " + from + "->" + to + ":" + result.getMatchType());
                             candidates.add(srv.getLabel());
                             // Check if the candidate is invokable
-                            log.info("Can the operation be invoked: {}", isInvokable(available, op));
+                            log.info("Can the operation be invoked: {}", isInvokable(conceptMatcher, available, op));
                             assertTrue(expectedServices.contains(srv.getLabel()));
                             break opLoop;
                         }
@@ -261,7 +264,7 @@ public class ConceptMatcherWSC08Test {
     // With indexed matchers this test can easily be run
     @Test
     @Ignore("Integration test (not a proper unit test), takes too long to complete")
-    public void discoverAllCandidates(RegistryManager registryManager) throws Exception {
+    public void discoverAllCandidates(@All ConceptMatcher conceptMatcher, RegistryManager registryManager) throws Exception {
 
         String[][] expectedServices = {{"serv1529824753", "serv1253734327", "serv1462031026", "serv212250832", "serv906573162", "serv144457143", "serv1599256986", "serv75024910", "serv561050541", "serv2015850384", "serv1668689219", "serv213889376", "serv837140929", "serv1667050675", "serv7231183", "serv1323166560"},
                 {"serv1043799122", "serv1736482908", "serv281683065", "serv974366889", "serv1805915141", "serv351115298", "serv769347240", "serv976005395", "serv1392598793", "serv630482774", "serv76663416", "serv2085282617"},
@@ -303,8 +306,8 @@ public class ConceptMatcherWSC08Test {
                 for (Operation op : srv.getOperations()) {
                     if (allRelevantOps.contains(op)) continue;
                     // Fast check if there is some input that matches
-                    if (consumesAny(newInputs, op)) {
-                        if (isInvokable2(availableInputs, op)) {
+                    if (consumesAny(conceptMatcher, newInputs, op)) {
+                        if (isInvokable2(conceptMatcher, availableInputs, op)) {
                             log.debug(" >> Invokable!");
                             relevantOps.add(op);
                             Set<URI> outputs = getOutputs(op);
@@ -343,11 +346,11 @@ public class ConceptMatcherWSC08Test {
         return names;
     }
 
-    private boolean consumesAny(Set<URI> inputs, Operation op) {
+    private boolean consumesAny(ConceptMatcher conceptMatcher, Set<URI> inputs, Operation op) {
         Set<URI> opInputs = getInputs(op);
         for (URI from : inputs) {
             for (URI to : opInputs) {
-                MatchResult match = this.conceptMatcher.match(from, to);
+                MatchResult match = conceptMatcher.match(from, to);
                 if (match.getMatchType().compareTo(LogicConceptMatchType.Plugin) >= 0) {
                     return true;
                 }
@@ -356,14 +359,14 @@ public class ConceptMatcherWSC08Test {
         return false;
     }
 
-    private boolean isInvokable2(Set<URI> availableInputs, Operation op) {
+    private boolean isInvokable2(ConceptMatcher conceptMatcher, Set<URI> availableInputs, Operation op) {
         Set<URI> opInputs = getInputs(op);
         Set<URI> matched = new HashSet<URI>();
         for (URI from : availableInputs) {
             for (URI to : opInputs) {
                 // skip if already matched
                 if (matched.contains(to)) continue;
-                MatchResult match = this.conceptMatcher.match(from, to);
+                MatchResult match = conceptMatcher.match(from, to);
                 if (match.getMatchType().compareTo(LogicConceptMatchType.Plugin) >= 0) {
                     matched.add(to);
                     if (matched.size() == opInputs.size()) {
@@ -375,8 +378,8 @@ public class ConceptMatcherWSC08Test {
         return false;
     }
 
-    private boolean isInvokable(Set<URI> availableInputs, Operation op) {
-        Table<URI, URI, MatchResult> result = this.conceptMatcher.match(availableInputs, getInputs(op));
+    private boolean isInvokable(ConceptMatcher conceptMatcher, Set<URI> availableInputs, Operation op) {
+        Table<URI, URI, MatchResult> result = conceptMatcher.match(availableInputs, getInputs(op));
         for (URI column : result.columnKeySet()) {
             // Each column (destination) should contain a valid match.
             boolean hasValidMatch = false;
