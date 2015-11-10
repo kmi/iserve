@@ -20,7 +20,7 @@
     <parent>
         <artifactId>iserve-parent</artifactId>
         <groupId>uk.ac.open.kmi.iserve</groupId>
-        <version>2.0.2-SNAPSHOT</version>
+        <version>2.0.2</version>
     </parent>
 
     <artifactId>iserve-sal-core</artifactId>
