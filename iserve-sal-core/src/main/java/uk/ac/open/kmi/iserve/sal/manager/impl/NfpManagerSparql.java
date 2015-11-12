@@ -67,6 +67,9 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
 
     private static final URI MSM_NFP_URI = URI.create("http://iserve.kmi.open.ac.uk/ns/msm-nfp");
     private static final URI SIOC_URI = URI.create("http://rdfs.org/sioc/ns");
+    private static final URI FOAF_0_1_URI = URI.create("http://xmlns.com/foaf/0.1/");
+    private static final URI CONTENT_VOCAB_URI = URI.create("http://www.w3.org/2011/content");
+    private static final URI DCTERMS_URI = URI.create("http://purl.org/dc/terms/");
 
     @Inject
     public NfpManagerSparql(EventBus eventBus,
@@ -80,11 +83,14 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
         this.sparqlEndpoint = sparqlQueryEndpoint;
         propertyValueCache = cacheFactory.createInMemoryCache("nfp");
 
-        Set<URI> defaultModelsToLoad = ImmutableSet.of();
-
+        Set<URI> defaultModelsToLoad = ImmutableSet.of(MSM_NFP_URI, SIOC_URI, FOAF_0_1_URI, CONTENT_VOCAB_URI,
+                DCTERMS_URI);
 
         // Configuration for quick retrieval of ontologies by resolving them to local files.
         ImmutableMap.Builder<String, String> mappingsBuilder = ImmutableMap.builder();
+        mappingsBuilder.put(FOAF_0_1_URI.toASCIIString(), this.getClass().getResource("/foaf-2010-08-09.ttl").toString());
+        mappingsBuilder.put(CONTENT_VOCAB_URI.toASCIIString(), this.getClass().getResource("/content-2011-04-29.ttl").toString());
+        mappingsBuilder.put(DCTERMS_URI.toASCIIString(), this.getClass().getResource("/dcterms-2012-06-14.ttl").toString());
         mappingsBuilder.put(MSM_NFP_URI.toASCIIString(), this.getClass().getResource("/msm-nfp-2015-10-01.ttl").toString());
         mappingsBuilder.put(SIOC_URI.toASCIIString(), this.getClass().getResource("/sioc-2010-03-25.ttl").toString());
 

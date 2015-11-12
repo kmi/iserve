@@ -77,7 +77,7 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
     private static final URI HTTP_VOCAB_URI = URI.create("http://www.w3.org/2011/http");
     private static final URI HTTP_METHODS_URI = URI.create("http://www.w3.org/2011/http-methods");
     private static final URI FOAF_0_1_URI = URI.create("http://xmlns.com/foaf/0.1/");
-    private static final URI CONTENT_VOCAB_URI = URI.create("http://www.w3.org/2011/content#");
+    private static final URI CONTENT_VOCAB_URI = URI.create("http://www.w3.org/2011/content");
     private static final URI DCTERMS_URI = URI.create("http://purl.org/dc/terms/");
     private static final URI HTTP_STATUS_URI = URI.create("http://www.w3.org/2011/http-statusCodes");
     private static final URI MEDIA_TYPES_URI = URI.create("http://purl.org/NET/mediatype");
@@ -109,13 +109,13 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
 //                MSM_SWAGGER_URI, WSMO_LITE_URI, HTTP_VOCAB_URI, HTTP_METHODS_URI, CONTENT_VOCAB_URI,
 //                DCTERMS_URI, HTTP_STATUS_URI, MEDIA_TYPES_URI, MSM_NFP_URI, SIOC_URI);
 
-        Set<URI> defaultModelsToLoad = ImmutableSet.of(MSM_URI, DCTERMS_URI);
-
+        Set<URI> defaultModelsToLoad = ImmutableSet.of(MSM_URI, MSM_WSDL_URI, MSM_SWAGGER_URI, WSMO_LITE_URI,
+                SAWSDL_URI, FOAF_0_1_URI, SIOC_URI, DCTERMS_URI);
 
         // Configuration for quick retrieval of ontologies by resolving them to local files.
         ImmutableMap.Builder<String, String> mappingsBuilder = ImmutableMap.builder();
-        //mappingsBuilder.put(FOAF_0_1_URI.toASCIIString(), this.getClass().getResource("/foaf-2010-08-09.ttl").toString());
-        //mappingsBuilder.put(HRESTS_URI.toASCIIString(), this.getClass().getResource("/hrests-2013-10-03.ttl").toString());
+        mappingsBuilder.put(FOAF_0_1_URI.toASCIIString(), this.getClass().getResource("/foaf-2010-08-09.ttl").toString());
+        mappingsBuilder.put(HRESTS_URI.toASCIIString(), this.getClass().getResource("/hrests-2013-10-03.ttl").toString());
         mappingsBuilder.put(MSM_URI.toASCIIString(), this.getClass().getResource("/msm-2014-09-03.ttl").toString());
         mappingsBuilder.put(MSM_WSDL_URI.toASCIIString(), this.getClass().getResource("/msm-wsdl-2014-09-03.ttl").toString());
         mappingsBuilder.put(MSM_SWAGGER_URI.toASCIIString(), this.getClass().getResource("/msm-swagger-2014-09-03.ttl").toString());
@@ -127,8 +127,8 @@ public class ServiceManagerSparql extends IntegratedComponent implements Service
         mappingsBuilder.put(DCTERMS_URI.toASCIIString(), this.getClass().getResource("/dcterms-2012-06-14.ttl").toString());
         mappingsBuilder.put(HTTP_STATUS_URI.toASCIIString(), this.getClass().getResource("/http-statusCodes-2014-09-03.ttl").toString());
         mappingsBuilder.put(MEDIA_TYPES_URI.toASCIIString(), this.getClass().getResource("/media-types-2014-09-03.ttl").toString());
-        //mappingsBuilder.put(MSM_NFP_URI.toASCIIString(), this.getClass().getResource("/msm-nfp-2014-07-10.ttl").toString());
-//        mappingsBuilder.put(SIOC_URI.toASCIIString(), this.getClass().getResource("/sioc-2010-03-25.ttl").toString());
+        mappingsBuilder.put(MSM_NFP_URI.toASCIIString(), this.getClass().getResource("/msm-nfp-2015-10-01.ttl").toString());
+        mappingsBuilder.put(SIOC_URI.toASCIIString(), this.getClass().getResource("/sioc-2010-03-25.ttl").toString());
 
         // Configuration for avoiding the import of certain files
         ImmutableSet<String> ignoredImports = ImmutableSet.of();
