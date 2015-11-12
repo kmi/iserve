@@ -78,11 +78,6 @@ public class RegistryManagementModule extends AbstractModule {
         // Create the EventBus
         bind(EventBus.class).toInstance(eventBus);
 
-        // Bind each of the managers
-//        bind(DocumentManager.class).to(DocumentManagerFileSystem.class).in(Singleton.class);
-//        bind(ServiceManager.class).to(ServiceManagerIndexRdf.class).in(Singleton.class);
-//        bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class).in(Singleton.class);
-
         // Cache injection
         install(new FactoryModuleBuilder()
                 .implement(Cache.class, Names.named("in-memory"), InMemoryCache.class)
@@ -92,7 +87,9 @@ public class RegistryManagementModule extends AbstractModule {
         bind(DocumentManager.class).to(DocumentManagerFileSystem.class);
         bind(ServiceManager.class).to(ServiceManagerSparql.class);
         bind(KnowledgeBaseManager.class).to(KnowledgeBaseManagerSparql.class);
-        bind(RegistryManager.class).to(RegistryManagerImpl.class);
+        // bind as singleton. All managers will effectively be singletons
+        bind(RegistryManager.class).to(RegistryManagerImpl.class).asEagerSingleton();
+        // bind as singleton
         bind(NfpManager.class).to(NfpManagerSparql.class).asEagerSingleton();
 
     }
