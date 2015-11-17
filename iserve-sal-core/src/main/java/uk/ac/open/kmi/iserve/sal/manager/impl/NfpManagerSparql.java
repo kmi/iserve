@@ -134,7 +134,6 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
 
         Statement triple = model.createStatement(model.createResource(resource.toASCIIString()), model.createProperty(property.toASCIIString()), object);
         model.add(triple);
-        // TODO: Do we really need to get the Graph back to upload it again?!
 
         URI graphUri = graphStoreManager.getGraphUriByResource(resource);
         if (graphUri == null) {
