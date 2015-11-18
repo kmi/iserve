@@ -16,6 +16,7 @@
 
 package uk.ac.open.kmi.iserve.sal.manager;
 
+import com.google.common.collect.Table;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
 
 import java.net.URI;
@@ -34,6 +35,17 @@ public interface NfpManager extends iServeComponent {
     // CREATE (return boolean or throw exception?)
 
     public void createPropertyValue(URI resource, URI property, Object value) throws SalException;
+
+    /**
+     * Add a set of Subject, Property, Object entries to the given graph.
+     * This provides a convenience method to create a single SPARQL Update request when many values
+     * need to be added to a graph/service description.
+     *
+     * @param graphUri URI of the graph to be updated. This typically corresponds to a Service Uri
+     * @param subjectPropertyValues A table providing the set of Subject-Property-Object values to add.
+     * @throws SalException Exception triggered if there where issues saving these results
+     */
+    public void createPropertyValues(URI graphUri, Table<URI, URI, Object> subjectPropertyValues) throws SalException;
 
     public void createPropertyValuesOfResource(Map<URI, Object> propertyValueMap, URI resource) throws SalException;
 

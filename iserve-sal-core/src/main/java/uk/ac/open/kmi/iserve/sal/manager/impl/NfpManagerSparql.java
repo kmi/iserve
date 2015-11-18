@@ -16,10 +16,7 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import com.google.common.collect.*;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
@@ -141,6 +138,79 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
         }
         graphStoreManager.addModelToGraph(graphUri, model);
         propertyValueCache.remove(resource.toASCIIString());
+    }
+
+    /**
+     * Add a set of Subject, Property, Object entries to the given graph.
+     * This provides a convenience method to create a single SPARQL Update request when many values
+     * need to be added to a graph/service description.
+     *
+     * @param graphUri              URI of the graph to be updated. This typically corresponds to a Service Uri
+     * @param subjectPropertyValues A table providing the set of Subject-Property-Object values to add.
+     * @throws uk.ac.open.kmi.iserve.sal.exception.SalException Exception triggered if there where issues saving these results
+     */
+    @Override
+    public void createPropertyValues(URI graphUri, Table<URI, URI, Object> subjectPropertyValues) throws SalException {
+
+        // Validate the input
+        if (graphUri == null || !graphStoreManager.containsGraph(graphUri)) {
+            // The graph cannot be updated
+            throw new SalException("The graph to update does not exist: " + graphUri.toASCIIString());
+        }
+
+        if (subjectPropertyValues == null || subjectPropertyValues.isEmpty()) {
+            // Nothing to update
+            return;
+        }
+
+        OntModel model = ModelFactory.createOntologyModel();
+
+        URI subject = null;
+        URI property;
+        Object value;
+        RDFNode object;
+        Statement triple;
+
+        // Loop over every subject-property-object entry
+        for (Map.Entry<URI, Map<URI, Object>> spoEntry : subjectPropertyValues.rowMap().entrySet()) {
+            subject = spoEntry.getKey();
+            // Loop over every property-object pair
+            for (Map.Entry<URI, Object> poEntry : spoEntry.getValue().entrySet()) {
+                property = poEntry.getKey();
+                value = poEntry.getValue();
+
+                // Create the proper object for the update
+                if (value instanceof URI) {
+                    object = model.createResource(((URI) value).toASCIIString());
+                    if (property.toASCIIString().equals(SAWSDL.modelReference.getURI())) {
+                        URI modelUri;
+                        try {
+                            modelUri = URIUtil.getNameSpace((URI) value);
+                            if (!graphStoreManager.containsGraph(modelUri)) {
+                                if (graphStoreManager.fetchAndStore(modelUri)) {
+                                    getEventBus().post(new OntologyCreatedEvent(new Date(), modelUri));
+                                }
+                            }
+                        } catch (URISyntaxException e) {
+                            logger.warn("Ignoring modelReference URI. URI syntax exception: {}", value );
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
+                    object = model.createTypedLiteral(value);
+                }
+
+                // Create the statement
+                triple = model.createStatement(model.createResource(subject.toASCIIString()), model.createProperty(property.toASCIIString()), object);
+                model.add(triple);
+            }
+        }
+
+        // All spo have been added to the model now. Update the graph
+        graphStoreManager.addModelToGraph(graphUri, model);
+        if (subject != null) {
+            propertyValueCache.remove(subject.toASCIIString());
+        }
     }
 
     @Override
