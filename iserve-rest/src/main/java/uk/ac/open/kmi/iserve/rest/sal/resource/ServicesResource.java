@@ -16,9 +16,9 @@
 
 package uk.ac.open.kmi.iserve.rest.sal.resource;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Table;
+import com.google.gson.*;
 import com.wordnik.swagger.annotations.*;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -596,6 +596,122 @@ public class ServicesResource {
         } else {
             JsonObject messageObj = new JsonObject();
             messageObj.add("message", new JsonPrimitive(message));
+            response = messageObj.toString();
+        }
+        return response;
+    }
+
+    @POST
+    @Path("/{uniqueId}/{serviceName}/properties")
+    @Produces({MediaType.TEXT_HTML, "application/json"})
+    @ApiOperation(value = "Add a new property to the service",
+            notes = "Returns a message which confirms the property storage")
+    @ApiResponses(
+            value = {@ApiResponse(code = 201, message = "Stored property"),
+                    @ApiResponse(code = 403, message = "You have not got the appropriate permissions for storing the property"),
+                    @ApiResponse(code = 500, message = "Internal error")})
+    public Response setProperties(
+            @ApiParam(value = "JSON document that specifies the graphURI and the subject-property-object updates", required = true)
+            String jsonReq,
+            @ApiParam(value = "Service ID", required = true)
+            @PathParam("uniqueId") String uniqueId,
+            @ApiParam(value = "Service name", required = true)
+            @PathParam("serviceName") String serviceName,
+            @ApiParam(value = "Response message media type", allowableValues = "application/json,text/html")
+            @HeaderParam("Accept") String accept) {
+
+        JsonElement jsonSpoEntries = new JsonParser().parse(jsonReq);
+        // Obtain the graphUri
+        URI graphUri = uriInfo.getBaseUri().resolve("services/" + uniqueId);
+        Table<URI, URI, Object> spoEntries = parseSpoUpdates(jsonSpoEntries);
+
+        if (graphUri != null && spoEntries != null && !spoEntries.isEmpty()) {
+            try {
+                nfpManager.createPropertyValues(graphUri, spoEntries);
+            } catch (SalException e) {
+                return Response.status(Status.BAD_REQUEST).entity(buildErrorMessageByMediaType(e.getMessage(), accept)).build();
+            }
+            return Response.status(Status.CREATED).entity(buildSuccessMessageForPropertiesStorage(graphUri, spoEntries, accept)).build();
+        } else {
+            return Response.status(Status.BAD_REQUEST).entity(buildErrorMessageByMediaType("No content to update.", accept)).build();
+        }
+    }
+
+
+    /**
+     * Given a JSON Element parse it into a Table of SPO Entries.
+     * The JSON received should be of the form:
+     *  {updates: [
+     *      {subject: .., property: ..., object: ...},
+     *      {subject: .., property: ..., object: ...},
+     *      {subject: .., property: ..., object: ...}
+     *  ]}
+     *
+     * @param jsonSpoEntries
+     * @return
+     */
+    private Table<URI, URI, Object> parseSpoUpdates(JsonElement jsonSpoEntries) {
+
+        if (jsonSpoEntries == null || jsonSpoEntries.isJsonNull()) {
+            return ImmutableTable.of();
+        }
+
+        ImmutableTable.Builder<URI, URI, Object> result = ImmutableTable.builder();
+        JsonObject request = jsonSpoEntries.getAsJsonObject();
+        JsonArray updates = request.getAsJsonArray("updates");
+
+        JsonObject update;
+        URI subject;
+        URI property;
+        Object object = null;
+        for (JsonElement updateEntry : updates) {
+            update = updateEntry.getAsJsonObject();
+            if (update.has("subject") && update.has("property") && update.has("object")) {
+                try {
+                    subject = new URI(update.get("subject").getAsString());
+                    property = new URI(update.get("property").getAsString());
+                    JsonPrimitive objectElmt = update.get("object").getAsJsonPrimitive();
+                    if (objectElmt.isNumber()) {
+                        object = (Double) objectElmt.getAsDouble();
+                    } else if (objectElmt.isString()) {
+                        object = new URI(objectElmt.getAsString());
+                    }
+
+                    result.put(subject, property, object);
+
+                } catch (URISyntaxException e) {
+                    log.warn("Skipping entry...");
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        // Build the result
+        return result.build();
+    }
+
+    private String buildSuccessMessageForPropertiesStorage(URI graphUri, Table<URI, URI, Object> spoEntries, String accept) {
+        String response;
+        StringBuilder builder = new StringBuilder();
+        if (accept != null && accept.contains(MediaType.TEXT_HTML)) {
+            builder.append("<html>\n").
+                    append("<head>\n").
+                    append("<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"> \n").
+                    append("</head>\n").
+                    append("<body>\n").
+                    append("Graph ").append(graphUri.toASCIIString()).
+                    append(" updated with ").append(spoEntries.size()).append(" new property values").
+                    append("</body>\n").
+                    append("</html>");
+            response = builder.toString();
+        } else {
+            JsonObject messageObj = new JsonObject();
+            messageObj.add("message", new JsonPrimitive(spoEntries.size() + " properties stored in graph " + graphUri.toASCIIString()));
+//            JsonObject triple = new JsonObject();
+//            triple.add("resource", new JsonPrimitive(resource));
+//            triple.add("property", new JsonPrimitive(property));
+//            triple.add("value", new JsonPrimitive(value));
+//            messageObj.add("statement", triple);
             response = messageObj.toString();
         }
         return response;
