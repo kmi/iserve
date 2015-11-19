@@ -509,7 +509,7 @@ public class ServicesResource {
     }
 
     @POST
-    @Path("/{uniqueId}/{serviceName}/properties")
+    @Path("/{uniqueId}/{serviceName}/property")
     @Produces({MediaType.TEXT_HTML, "application/json"})
     @ApiOperation(value = "Add a new property to the service",
             notes = "Returns a message which confirms the property storage")
