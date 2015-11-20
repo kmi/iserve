@@ -16,10 +16,11 @@
 
 package uk.ac.open.kmi.iserve.sal.manager;
 
-import com.google.common.collect.Table;
 import uk.ac.open.kmi.iserve.sal.exception.SalException;
+import uk.ac.open.kmi.iserve.sal.util.Triplet;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,7 +46,7 @@ public interface NfpManager extends iServeComponent {
      * @param subjectPropertyValues A table providing the set of Subject-Property-Object values to add.
      * @throws SalException Exception triggered if there where issues saving these results
      */
-    public void createPropertyValues(URI graphUri, Table<URI, URI, Object> subjectPropertyValues) throws SalException;
+    public void createPropertyValues(URI graphUri, List<Triplet<URI, URI, Object>> subjectPropertyValues) throws SalException;
 
     public void createPropertyValuesOfResource(Map<URI, Object> propertyValueMap, URI resource) throws SalException;
 

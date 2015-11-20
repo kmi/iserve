@@ -16,8 +16,7 @@
 
 package uk.ac.open.kmi.iserve.rest.sal.resource;
 
-import com.google.common.collect.ImmutableTable;
-import com.google.common.collect.Table;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.*;
 import com.wordnik.swagger.annotations.*;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -28,6 +27,7 @@ import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.exception.ServiceException;
 import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
 import uk.ac.open.kmi.iserve.sal.manager.RegistryManager;
+import uk.ac.open.kmi.iserve.sal.util.Triplet;
 import uk.ac.open.kmi.msm4j.Service;
 
 import javax.inject.Inject;
@@ -621,9 +621,10 @@ public class ServicesResource {
             @HeaderParam("Accept") String accept) {
 
         JsonElement jsonSpoEntries = new JsonParser().parse(jsonReq);
+
         // Obtain the graphUri
         URI graphUri = uriInfo.getBaseUri().resolve("services/" + uniqueId);
-        Table<URI, URI, Object> spoEntries = parseSpoUpdates(jsonSpoEntries);
+        List<Triplet<URI, URI, Object>> spoEntries = parseSpoUpdates(jsonSpoEntries);
 
         if (graphUri != null && spoEntries != null && !spoEntries.isEmpty()) {
             try {
@@ -650,13 +651,13 @@ public class ServicesResource {
      * @param jsonSpoEntries
      * @return
      */
-    private Table<URI, URI, Object> parseSpoUpdates(JsonElement jsonSpoEntries) {
+    private List<Triplet<URI, URI, Object>> parseSpoUpdates(JsonElement jsonSpoEntries) {
 
         if (jsonSpoEntries == null || jsonSpoEntries.isJsonNull()) {
-            return ImmutableTable.of();
+            return ImmutableList.of();
         }
 
-        ImmutableTable.Builder<URI, URI, Object> result = ImmutableTable.builder();
+        ImmutableList.Builder<Triplet<URI, URI, Object>> result = ImmutableList.builder();
         JsonObject request = jsonSpoEntries.getAsJsonObject();
         JsonArray updates = request.getAsJsonArray("updates");
 
@@ -677,7 +678,7 @@ public class ServicesResource {
                         object = new URI(objectElmt.getAsString());
                     }
 
-                    result.put(subject, property, object);
+                    result.add(new Triplet(subject, property, object));
 
                 } catch (URISyntaxException e) {
                     log.warn("Skipping entry...");
@@ -690,7 +691,7 @@ public class ServicesResource {
         return result.build();
     }
 
-    private String buildSuccessMessageForPropertiesStorage(URI graphUri, Table<URI, URI, Object> spoEntries, String accept) {
+    private String buildSuccessMessageForPropertiesStorage(URI graphUri, List<Triplet<URI, URI, Object>> spoEntries, String accept) {
         String response;
         StringBuilder builder = new StringBuilder();
         if (accept != null && accept.contains(MediaType.TEXT_HTML)) {
@@ -793,5 +794,4 @@ public class ServicesResource {
         }
         return response;
     }
-
 }

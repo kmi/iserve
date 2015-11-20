@@ -37,6 +37,7 @@ import uk.ac.open.kmi.iserve.sal.exception.SalException;
 import uk.ac.open.kmi.iserve.sal.manager.IntegratedComponent;
 import uk.ac.open.kmi.iserve.sal.manager.NfpManager;
 import uk.ac.open.kmi.iserve.sal.manager.SparqlGraphStoreManager;
+import uk.ac.open.kmi.iserve.sal.util.Triplet;
 import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
 import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
 import uk.ac.open.kmi.msm4j.io.util.URIUtil;
@@ -44,10 +45,7 @@ import uk.ac.open.kmi.msm4j.vocabulary.SAWSDL;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -150,7 +148,7 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
      * @throws uk.ac.open.kmi.iserve.sal.exception.SalException Exception triggered if there where issues saving these results
      */
     @Override
-    public void createPropertyValues(URI graphUri, Table<URI, URI, Object> subjectPropertyValues) throws SalException {
+    public void createPropertyValues(URI graphUri, List<Triplet<URI, URI, Object>> subjectPropertyValues) throws SalException {
 
         // Validate the input
         if (graphUri == null || !graphStoreManager.containsGraph(graphUri)) {
@@ -172,38 +170,35 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
         Statement triple;
 
         // Loop over every subject-property-object entry
-        for (Map.Entry<URI, Map<URI, Object>> spoEntry : subjectPropertyValues.rowMap().entrySet()) {
-            subject = spoEntry.getKey();
-            // Loop over every property-object pair
-            for (Map.Entry<URI, Object> poEntry : spoEntry.getValue().entrySet()) {
-                property = poEntry.getKey();
-                value = poEntry.getValue();
+        for (Triplet<URI, URI, Object> triplet : subjectPropertyValues) {
+            subject = triplet.getSubject();
+            property = triplet.getProperty();
+            value = triplet.getObject();
 
-                // Create the proper object for the update
-                if (value instanceof URI) {
-                    object = model.createResource(((URI) value).toASCIIString());
-                    if (property.toASCIIString().equals(SAWSDL.modelReference.getURI())) {
-                        URI modelUri;
-                        try {
-                            modelUri = URIUtil.getNameSpace((URI) value);
-                            if (!graphStoreManager.containsGraph(modelUri)) {
-                                if (graphStoreManager.fetchAndStore(modelUri)) {
-                                    getEventBus().post(new OntologyCreatedEvent(new Date(), modelUri));
-                                }
+            // Create the proper object for the update
+            if (value instanceof URI) {
+                object = model.createResource(((URI) value).toASCIIString());
+                if (property.toASCIIString().equals(SAWSDL.modelReference.getURI())) {
+                    URI modelUri;
+                    try {
+                        modelUri = URIUtil.getNameSpace((URI) value);
+                        if (!graphStoreManager.containsGraph(modelUri)) {
+                            if (graphStoreManager.fetchAndStore(modelUri)) {
+                                getEventBus().post(new OntologyCreatedEvent(new Date(), modelUri));
                             }
-                        } catch (URISyntaxException e) {
-                            logger.warn("Ignoring modelReference URI. URI syntax exception: {}", value );
-                            e.printStackTrace();
                         }
+                    } catch (URISyntaxException e) {
+                        logger.warn("Ignoring modelReference URI. URI syntax exception: {}", value );
+                        e.printStackTrace();
                     }
-                } else {
-                    object = model.createTypedLiteral(value);
                 }
-
-                // Create the statement
-                triple = model.createStatement(model.createResource(subject.toASCIIString()), model.createProperty(property.toASCIIString()), object);
-                model.add(triple);
+            } else {
+                object = model.createTypedLiteral(value);
             }
+
+            // Create the statement
+            triple = model.createStatement(model.createResource(subject.toASCIIString()), model.createProperty(property.toASCIIString()), object);
+            model.add(triple);
         }
 
         // All spo have been added to the model now. Update the graph
