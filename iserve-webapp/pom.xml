@@ -63,6 +63,7 @@
                         <systemProperties>
                             <log4j.configuration>file:${project.parent.basedir}/conf/log4j.properties</log4j.configuration>
                             <iserve.config>${project.parent.basedir}/conf/config.properties</iserve.config>
+                            <elda.spec>${project.parent.basedir}/conf/elda-spec-iserve.ttl</elda.spec>
                         </systemProperties>
                     </container>
 
