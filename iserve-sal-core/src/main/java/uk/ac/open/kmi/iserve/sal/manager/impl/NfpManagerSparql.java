@@ -16,7 +16,10 @@
 
 package uk.ac.open.kmi.iserve.sal.manager.impl;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
@@ -43,6 +46,7 @@ import uk.ac.open.kmi.iserve.sal.util.caching.CacheFactory;
 import uk.ac.open.kmi.msm4j.io.util.URIUtil;
 import uk.ac.open.kmi.msm4j.vocabulary.SAWSDL;
 
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -153,11 +157,13 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
         // Validate the input
         if (graphUri == null || !graphStoreManager.containsGraph(graphUri)) {
             // The graph cannot be updated
+            logger.error("The graph to update does not exist: {}", graphUri);
             throw new SalException("The graph to update does not exist: " + graphUri.toASCIIString());
         }
 
         if (subjectPropertyValues == null || subjectPropertyValues.isEmpty()) {
             // Nothing to update
+            logger.error("Nothing to update (?). Skipping.");
             return;
         }
 
@@ -199,6 +205,15 @@ public class NfpManagerSparql extends IntegratedComponent implements NfpManager 
             // Create the statement
             triple = model.createStatement(model.createResource(subject.toASCIIString()), model.createProperty(property.toASCIIString()), object);
             model.add(triple);
+        }
+
+        if (logger.isDebugEnabled()) {
+            // Print out the model
+            String syntax = "TURTLE";
+            StringWriter out = new StringWriter();
+            model.write(out, syntax);
+            String result = out.toString();
+            logger.debug("Uploading model: {}", result);
         }
 
         // All spo have been added to the model now. Update the graph
