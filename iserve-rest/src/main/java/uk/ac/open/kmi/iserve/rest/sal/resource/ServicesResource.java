@@ -626,6 +626,8 @@ public class ServicesResource {
         URI graphUri = uriInfo.getBaseUri().resolve("services/" + uniqueId);
         List<Triplet<URI, URI, Object>> spoEntries = parseSpoUpdates(jsonSpoEntries);
 
+        log.debug("Uploading {} properties to graph", spoEntries.size());
+
         if (graphUri != null && spoEntries != null && !spoEntries.isEmpty()) {
             try {
                 nfpManager.createPropertyValues(graphUri, spoEntries);
