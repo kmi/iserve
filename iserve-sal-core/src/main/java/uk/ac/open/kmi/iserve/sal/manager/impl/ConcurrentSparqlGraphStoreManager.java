@@ -70,9 +70,6 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
     private static final String JAVA_PROXY_PORT_PROP = "http.proxyPort";
     private static final int NUM_THREADS = 2;
 
-    // Set backed by a ConcurrentHashMap to avoid race conditions
-    private Set<URI> loadedModels;
-
     // Default model that this Graph Store should have even when it is empty
     // You can see this as default initialisation graphs that should be pre-loaded
     private Set<URI> baseModels;
@@ -198,16 +195,6 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
      * If necessary it should take care of updating any indexes on boot time.
      */
     private void initialise() {
-        // Figure out models loaded
-        if (this.loadedModels != null) {
-            this.loadedModels.clear();
-        } else {
-            this.loadedModels = Collections.newSetFromMap(new ConcurrentHashMap<URI, Boolean>());
-        }
-        // Add models that are present by definition in the store
-        this.loadedModels.addAll(CORE_MODELS);
-        // Index those that are present in the store
-        this.loadedModels.addAll(listStoredGraphs());
         // Check and load default models
         loadDefaultModels();
     }
@@ -251,7 +238,7 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
 
         Map<URI, Future<Boolean>> concurrentTasks = new HashMap<URI, Future<Boolean>>();
         for (URI modelUri : baseModels) {
-            if (modelUri != null && modelUri.isAbsolute() && !this.loadedModels.contains(modelUri)) {
+            if (modelUri != null && modelUri.isAbsolute() && !this.containsGraph(modelUri)) {
                 concurrentTasks.put(modelUri, this.asyncFetchModel(modelUri, Syntax.N3.getName()));
             }
         }
@@ -336,16 +323,12 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
      */
     @Override
     public boolean containsGraph(URI graphUri) {
-
-        if (graphUri == null)
-            return false;
-
-        return this.loadedModels.contains(graphUri);
+        return this.containsGraphSparqlQuery(graphUri);
     }
 
     private boolean containsGraphSparqlQuery(URI graphUri) {
 
-        if (graphUri == null)
+        if (graphUri == null || CORE_MODELS.contains(graphUri))
             return true; // Default graph always exists
 
         StringBuilder queryStr = new StringBuilder("ASK { GRAPH <").append(graphUri).append("> {?s a ?o} } \n");
@@ -379,7 +362,6 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
             deleteGraphSparqlUpdate(graphUri);
         }
 
-        this.loadedModels.remove(graphUri);
         log.debug("Graph deleted: {}", graphUri.toASCIIString());
     }
 
@@ -573,7 +555,6 @@ public class ConcurrentSparqlGraphStoreManager implements SparqlGraphStoreManage
             this.putGraphSparqlQuery(graphUri, data);
         }
 
-        this.loadedModels.add(graphUri);
         log.info("Graph added to store: {}", graphUri.toASCIIString());
     }
 
