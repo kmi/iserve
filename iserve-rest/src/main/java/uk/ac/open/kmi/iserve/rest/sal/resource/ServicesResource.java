@@ -677,7 +677,11 @@ public class ServicesResource {
                     if (objectElmt.isNumber()) {
                         object = (Double) objectElmt.getAsDouble();
                     } else if (objectElmt.isString()) {
+                        // Try with a URL and fallback to String if it is not
                         object = new URI(objectElmt.getAsString());
+                        if (!((URI)object).isAbsolute()) {
+                            object = objectElmt.getAsString();
+                        }
                     }
 
                     result.add(new Triplet(subject, property, object));
