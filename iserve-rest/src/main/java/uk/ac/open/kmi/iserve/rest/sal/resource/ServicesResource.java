@@ -725,7 +725,7 @@ public class ServicesResource {
     }
 
     @DELETE
-    @Path("/{uniqueId}/{serviceName}/properties")
+    @Path("/{uniqueId}/{serviceName}/property")
     @Produces({MediaType.TEXT_HTML, "application/json"})
     @ApiOperation(value = "Delete a property of the service",
             notes = "Returns a message which confirms the property deletion")
