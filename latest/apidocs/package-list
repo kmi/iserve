@@ -10,6 +10,7 @@ uk.ac.open.kmi.iserve.discovery.api.ranking
 uk.ac.open.kmi.iserve.discovery.api.ranking.impl
 uk.ac.open.kmi.iserve.discovery.disco
 uk.ac.open.kmi.iserve.discovery.disco.impl
+uk.ac.open.kmi.iserve.discovery.disco.util.impl
 uk.ac.open.kmi.iserve.discovery.ranking.impl
 uk.ac.open.kmi.iserve.discovery.util
 uk.ac.open.kmi.iserve.elda
