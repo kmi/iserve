@@ -20,7 +20,7 @@
     <parent>
         <artifactId>iserve-parent</artifactId>
         <groupId>uk.ac.open.kmi.iserve</groupId>
-        <version>2.0.3-SNAPSHOT</version>
+        <version>2.1.0</version>
     </parent>
     <artifactId>iserve-rest</artifactId>
     <packaging>war</packaging>
