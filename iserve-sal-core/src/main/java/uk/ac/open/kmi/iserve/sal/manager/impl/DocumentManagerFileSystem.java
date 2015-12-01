@@ -476,7 +476,9 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
      */
     @Override
     public void shutdown() {
-        return;
+        if (fileMediatypeMap instanceof InMemoryCache) {
+            storeMediaTypeMap(fileMediatypeMap);
+        }
     }
 
 
