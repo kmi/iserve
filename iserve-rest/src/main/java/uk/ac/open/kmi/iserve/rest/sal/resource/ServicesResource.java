@@ -187,8 +187,8 @@ public class ServicesResource {
     public Response addService(
             @ApiParam(value = "URI of service description", required = true)
             @HeaderParam("Content-Location") String locationUri,
-            @ApiParam(value = "Service description Media type", required = true)
-            @HeaderParam("Content-Type") String mediaType,
+            @ApiParam(value = "Service description Content Type", required = true)
+            @HeaderParam("Content-Type") String contentType,
             @ApiParam(value = "Service description passed as location URI")
             @QueryParam("store") Boolean store,
             @ApiParam(value = "Response message media type", allowableValues = "application/json,text/html")
@@ -210,6 +210,15 @@ public class ServicesResource {
 
         // The user is allowed to create services
         List<URI> servicesUris;
+        String mediaType;
+        // Remove additional parameters from the media type information
+        if (contentType.indexOf(';') > 0) {
+            mediaType = contentType.substring(0, contentType.indexOf(';'));
+        } else {
+            mediaType = contentType;
+        }
+
+        mediaType = mediaType.trim();
 
         try {
             if (store != null && store) {
