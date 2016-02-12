@@ -125,6 +125,10 @@ public class DocumentsResource {
             URI docUri = uriInfo.getAbsolutePath(); // Drop any query parameters
             InputStream is = registryManager.getDocumentManager().getDocument(docUri);
             String docMediaType = registryManager.getDocumentManager().getDocumentMediaType(docUri);
+
+            logger.debug("File: {}", docUri);
+            logger.debug("Media type: {}", docMediaType);
+
             if (is != null) {
                 if (accept.contains(MediaType.TEXT_HTML) && docMediaType.equals(MediaType.APPLICATION_JSON)
                         && !accept.equals("text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2") /* FIXME This is a hack due a bug in Swagger4J used by MSM4j. This is the related issue https://github.com/SmartBear/swagger4j/issues/11 */) {
@@ -132,7 +136,7 @@ public class DocumentsResource {
                     String result = generateSwaggerUI(docUri);
                     return Response.status(Status.OK).entity(result).build();
                 } else {
-                    logger.debug("Document found!");
+                    logger.debug("Document found at {}", docUri);
                     String result = IOUtils.toString(is, "UTF-8");
                     return Response.status(Status.OK).header("Content-Type", docMediaType).entity(result).build();
                 }
