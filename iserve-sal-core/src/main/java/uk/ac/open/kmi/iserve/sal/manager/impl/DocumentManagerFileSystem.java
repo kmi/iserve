@@ -62,6 +62,7 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
     // Note that any change here should also affect the REST API
     // Keep the trailing slash
     private static final String DEFAULT_DOC_URL_PATH = "id/documents/";
+    public static final String MEDIA_TYPE_INDEX = "mediaTypeMap.json";
 
     private URI documentsInternalPath;
     private URI documentsPublicUri;
@@ -130,12 +131,11 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
                 fileMediatypeMap.putAll(legacyMap);
                 if (fileMediatypeMap instanceof RedisCache) {
                     // delete legacy file
-                    File legacyFile = new File(URI.create(new StringBuilder(documentsInternalPath.toString()).append("/mediaTypeMap.json").toString()));
+                    File legacyFile = new File(URI.create(new StringBuilder(documentsInternalPath.toString()).append("/" + MEDIA_TYPE_INDEX).toString()));
                     legacyFile.delete();
                 }
             }
         }
-
     }
 
     /**
@@ -214,18 +214,20 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
     }
 
     @Override
-    public String getDocumentMediaType(URI documentUri) throws DocumentException {
-        if (!documentExists(documentUri)) {
+    public String getDocumentMediaType(URI publicDocUri) throws DocumentException {
+        if (!documentExists(publicDocUri)) {
+            log.warn("Document {} does not exist", publicDocUri);
             return null;
         }
 
-        File dir = new File(this.getDocumentInternalUri(documentUri));
+        File dir = new File(this.getDocumentInternalUri(publicDocUri));
         for (File file : dir.listFiles()) {
             if (file.getName().matches("^index\\..*")) {
-                return getFileMediaTypeMap().get(file.getAbsolutePath());
+                return this.fileMediatypeMap.get(file.getAbsolutePath());
             }
         }
-        return null;
+        // Make it application/json by default
+        return "application/json";
     }
 
 //	/* (non-Javadoc)
@@ -276,13 +278,13 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
         log.debug("Storing Media Type for file {}: {}", absolutePath, mediaType);
         fileMediatypeMap.put(absolutePath, mediaType);
         if (fileMediatypeMap instanceof InMemoryCache) {
-            storeMediaTypeMap(fileMediatypeMap);
+            writeMediaTypeMapToDisk(fileMediatypeMap);
         }
 
     }
 
-    public Map<String, String> getFileMediaTypeMap() {
-        File mapFile = new File(URI.create(new StringBuilder(documentsInternalPath.toString()).append("/mediaTypeMap.json").toString()));
+    private Map<String, String> getFileMediaTypeMap() {
+        File mapFile = new File(URI.create(new StringBuilder(documentsInternalPath.toString()).append("/" + MEDIA_TYPE_INDEX).toString()));
         if (!mapFile.exists()) {
             return new HashMap<String, String>();
         } else {
@@ -298,9 +300,9 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
         return null;
     }
 
-    private void storeMediaTypeMap(Map<String, String> fileMediatypeMap) {
+    private void writeMediaTypeMapToDisk(Map<String, String> fileMediatypeMap) {
         try {
-            File mapFile = new File(URI.create(new StringBuilder(documentsInternalPath.toString()).append("/mediaTypeMap.json").toString()));
+            File mapFile = new File(URI.create(new StringBuilder(documentsInternalPath.toString()).append("/" + MEDIA_TYPE_INDEX).toString()));
             Gson gson = new GsonBuilder().create();
             String json = gson.toJson(fileMediatypeMap);
             FileOutputStream fos = new FileOutputStream(mapFile);
@@ -408,7 +410,7 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
                     }
                 }
                 if (fileMediatypeMap instanceof InMemoryCache) {
-                    storeMediaTypeMap(fileMediatypeMap);
+                    writeMediaTypeMapToDisk(fileMediatypeMap);
                 }
                 // Generate Event
                 this.getEventBus().post(new DocumentDeletedEvent(new Date(), documentUri));
@@ -432,11 +434,6 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
     @Override
     public boolean clearDocuments() throws DocumentException {
 
-        File mapFile = new File(URI.create(new StringBuilder(documentsInternalPath.toString()).append("/mediaTypeMap.json").toString()));
-        if (mapFile.exists()) {
-            mapFile.delete();
-        }
-        fileMediatypeMap.clear();
         File internalFolder = new File(this.getDocumentsInternalPath());
         File[] files = internalFolder.listFiles();
         for (File file : files) {
@@ -448,6 +445,13 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
             }
             log.info("File deleted: {}", file.getAbsolutePath());
         }
+
+        // Clear media types index
+        File mapFile = new File(URI.create(new StringBuilder(documentsInternalPath.toString()).append("/" + MEDIA_TYPE_INDEX).toString()));
+        if (mapFile.exists()) {
+            mapFile.delete();
+        }
+        fileMediatypeMap.clear();
 
         // Generate Event
         this.getEventBus().post(new DocumentsClearedEvent(new Date()));
@@ -476,7 +480,9 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
      */
     @Override
     public void shutdown() {
-        return;
+        if (fileMediatypeMap instanceof InMemoryCache) {
+            writeMediaTypeMapToDisk(fileMediatypeMap);
+        }
     }
 
 

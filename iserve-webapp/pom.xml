@@ -65,6 +65,7 @@
                             <iserve.config>${project.parent.basedir}/conf/config.properties</iserve.config>
                             <elda.spec>${project.parent.basedir}/conf/elda-spec-iserve.ttl</elda.spec>
                         </systemProperties>
+                        <timeout>1800000</timeout>
                     </container>
 
                     <!-- Configuration to use with the container -->
@@ -72,6 +73,7 @@
                         <home>${project.build.directory}/tomcat7x</home>
                         <properties>
                             <cargo.servlet.port>9090</cargo.servlet.port>
+                            <cargo.jvmargs>-Xmx1000m</cargo.jvmargs>
                             <!--<cargo.logging>high</cargo.logging>-->
                         </properties>
                     </configuration>
