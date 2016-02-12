@@ -31,8 +31,6 @@ public class RestModule extends ServletModule {
     protected void configureServlets() {
         logger.debug("Loading Discovery Rest module...");
 
-        logger.debug("Loading Discovery iServe components...");
-
         RegistryManagementModule rmm = new RegistryManagementModule();
 
         install(rmm);
