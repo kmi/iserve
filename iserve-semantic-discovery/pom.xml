@@ -97,12 +97,6 @@
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>iserve-discovery-api</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-jdk14</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -121,6 +115,16 @@
             <artifactId>apache-jena-libs</artifactId>
             <version>${jena.version}</version>
             <type>pom</type>
+            <exclusions>
+                <exclusion>
+                    <artifactId>log4j</artifactId>
+                    <groupId>log4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>slf4j-log4j12</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- For testing of REST services. Place before JUnit-->
@@ -178,6 +182,21 @@
 
     <build>
         <plugins>
+            <!-- Configuration for tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <systemProperties>
+                        <logback.configurationFile>${project.parent.basedir}/conf/logback.xml</logback.configurationFile>
+                        <iserve.config>${project.parent.basedir}/conf/config.properties</iserve.config>
+                        <elda.spec>${project.parent.basedir}/conf/elda-spec-iserve.ttl</elda.spec>
+                        <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+
             <!--Obtain shared resources-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -221,18 +240,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-
-            <!-- Test configuration -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.15</version>
-                <configuration>
-                    <!--<forkCount>0</forkCount>-->
-                    <!--<reuseForks>false</reuseForks>-->
-                    <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
-                </configuration>
             </plugin>
 
         </plugins>

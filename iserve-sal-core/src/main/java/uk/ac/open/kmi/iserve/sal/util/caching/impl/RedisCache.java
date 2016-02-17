@@ -47,6 +47,7 @@ public class RedisCache<K, V> implements Cache<K, V> {
 //        config.setCodec(new StringCodec());
         redisson = Redisson.create(config);
         rMap = redisson.getMap(name);
+
     }
 
     /**

@@ -81,6 +81,16 @@
             <artifactId>apache-jena-libs</artifactId>
             <version>${jena.version}</version>
             <type>pom</type>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-log4j12</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>log4j</artifactId>
+                    <groupId>log4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>commons-cli</groupId>
@@ -151,11 +161,11 @@
             <artifactId>redisson</artifactId>
             <version>2.2.0</version>
         </dependency>
-        <dependency>
-            <groupId>biz.source_code</groupId>
-            <artifactId>base64coder</artifactId>
-            <version>2010-09-21</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>biz.source_code</groupId>-->
+            <!--<artifactId>base64coder</artifactId>-->
+            <!--<version>2010-09-21</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
@@ -184,6 +194,19 @@
 
     <build>
         <plugins>
+            <!-- Configuration for tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <systemProperties>
+                        <logback.configurationFile>${project.parent.basedir}/conf/logback.xml</logback.configurationFile>
+                        <iserve.config>${project.parent.basedir}/conf/config.properties</iserve.config>
+                        <elda.spec>${project.parent.basedir}/conf/elda-spec-iserve.ttl</elda.spec>
+                    </systemProperties>
+                </configuration>
+            </plugin>
             <!--Obtain shared resources-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

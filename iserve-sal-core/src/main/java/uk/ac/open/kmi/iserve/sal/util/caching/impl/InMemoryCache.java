@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentMap;
  * Created by Luca Panziera on 12/02/15.
  */
 public class InMemoryCache<K, V> implements Cache<K, V> {
-    private Logger log = LoggerFactory.getLogger(RedisCache.class);
+    private Logger log = LoggerFactory.getLogger(InMemoryCache.class);
     private ConcurrentMap<K, V> cacheMap;
 
     @Inject

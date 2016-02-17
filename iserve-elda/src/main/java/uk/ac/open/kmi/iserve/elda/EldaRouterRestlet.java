@@ -553,6 +553,7 @@ public class EldaRouterRestlet {
             ServletContext sc = sce.getServletContext();
             if (announced == false) {
                 String baseFilePath = ServletUtils.withTrailingSlash(sc.getRealPath("/"));
+                // TODO: Adapt to new logging
                 String propertiesFile = "log4j.properties";
                 PropertyConfigurator.configure(baseFilePath + propertiesFile);
                 log.info("\n\n    =>=> Starting Elda (Init)" + Version.string + "\n");

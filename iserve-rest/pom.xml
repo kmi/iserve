@@ -352,6 +352,20 @@
 
     <build>
         <plugins>
+            <!-- Configuration for tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <systemProperties>
+                        <logback.configurationFile>${project.parent.basedir}/conf/logback.xml</logback.configurationFile>
+                        <iserve.config>${project.parent.basedir}/conf/config.properties</iserve.config>
+                        <elda.spec>${project.parent.basedir}/conf/elda-spec-iserve.ttl</elda.spec>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+
             <!--Obtain shared resources-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
