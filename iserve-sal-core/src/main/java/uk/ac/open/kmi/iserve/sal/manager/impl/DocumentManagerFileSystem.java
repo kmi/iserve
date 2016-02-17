@@ -437,13 +437,22 @@ public class DocumentManagerFileSystem extends IntegratedComponent implements Do
         File internalFolder = new File(this.getDocumentsInternalPath());
         File[] files = internalFolder.listFiles();
         for (File file : files) {
-            try {
-                FileUtils.deleteDirectory(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new DocumentException("Unable to delete " + file.getAbsolutePath());
+            if (file.isDirectory()) {
+                try {
+                    FileUtils.deleteDirectory(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new DocumentException("Unable to delete " + file.getAbsolutePath());
+                }
+                log.info("Folder deleted: {}", file.getAbsolutePath());
+            } else {
+                boolean deleted = file.delete();
+                if (deleted) {
+                    log.info("File deleted: {}", file.getAbsolutePath());
+                } else {
+                    log.warn("Unable to delete file: {}", file.getAbsolutePath());
+                }
             }
-            log.info("File deleted: {}", file.getAbsolutePath());
         }
 
         // Clear media types index
