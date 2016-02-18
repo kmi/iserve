@@ -2,13 +2,10 @@ package uk.ac.open.kmi.iserve.sal.util.caching.impl;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import org.redisson.Config;
-import org.redisson.Redisson;
 import org.redisson.RedissonClient;
 import org.redisson.core.RMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import redis.clients.jedis.Jedis;
 import uk.ac.open.kmi.iserve.core.ConfigurationProperty;
 import uk.ac.open.kmi.iserve.core.iServeProperty;
 import uk.ac.open.kmi.iserve.sal.util.caching.Cache;
@@ -30,23 +27,26 @@ public class RedisCache<K, V> implements Cache<K, V> {
     public RedisCache(@iServeProperty(ConfigurationProperty.REDIS_HOST) String host,
                       @iServeProperty(ConfigurationProperty.REDIS_PORT) String port,
                       @Assisted String name) throws CacheException {
-        log.debug("Creating Redis-based cache named {}...", name);
 
-        //TODO: remove. Testing connection synchronously
-        try {
-            Jedis jedis = new Jedis(host, Integer.valueOf(port));
-            jedis.randomKey();
-            jedis.close();
-        } catch (Exception e) {
-            log.debug("Unable to connect to the Redis server");
-            throw new CacheException("Unable to connect to the Redis server");
-        }
+        // Disable for now
+        throw new CacheException("Redis cache is disabled.");
 
-        Config config = new Config();
-        config.useSingleServer().setAddress(host + ":" + port);
-//        config.setCodec(new StringCodec());
-        redisson = Redisson.create(config);
-        rMap = redisson.getMap(name);
+//        log.debug("Creating Redis-based cache named {}...", name);
+//
+//        //TODO: remove. Testing connection synchronously
+//        try {
+//            Jedis jedis = new Jedis(host, Integer.valueOf(port));
+//            jedis.randomKey();
+//            jedis.close();
+//        } catch (Exception e) {
+//            log.debug("Unable to connect to the Redis server");
+//            throw new CacheException("Unable to connect to the Redis server");
+//        }
+//
+//        Config config = new Config();
+//        config.useSingleServer().setAddress(host + ":" + port);
+//        redisson = Redisson.create(config);
+//        rMap = redisson.getMap(name);
 
     }
 
