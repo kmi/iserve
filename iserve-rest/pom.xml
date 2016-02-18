@@ -352,20 +352,6 @@
 
     <build>
         <plugins>
-            <!-- Configuration for tests -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.9</version>
-                <configuration>
-                    <systemProperties>
-                        <logback.configurationFile>${project.parent.basedir}/conf/logback.xml</logback.configurationFile>
-                        <iserve.config>${project.parent.basedir}/conf/config.properties</iserve.config>
-                        <elda.spec>${project.parent.basedir}/conf/elda-spec-iserve.ttl</elda.spec>
-                    </systemProperties>
-                </configuration>
-            </plugin>
-
             <!--Obtain shared resources-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -407,6 +393,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.15</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <logback.configurationFile>${project.parent.basedir}/conf/logback.xml</logback.configurationFile>
+                        <iserve.config>${project.parent.basedir}/conf/config.properties</iserve.config>
+                        <elda.spec>${project.parent.basedir}/conf/elda-spec-iserve.ttl</elda.spec>
+                    </systemPropertyVariables>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -424,6 +417,21 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${jetty.version}</version>
                 <configuration>
+                    <systemProperties>
+                        <force>true</force>
+                        <systemProperty>
+                            <name>logback.configurationFile</name>
+                            <value>${project.parent.basedir}/conf/logback.xml</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>iserve.config</name>
+                            <value>${project.parent.basedir}/conf/config.properties</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>elda.spec</name>
+                            <value>${project.parent.basedir}/conf/elda-spec-iserve.ttl</value>
+                        </systemProperty>
+                    </systemProperties>
                     <webAppConfig>
                         <contextPath>/iserve</contextPath>
                         <containerIncludeJarPattern>
